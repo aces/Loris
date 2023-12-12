@@ -9,14 +9,12 @@ import PropTypes from 'prop-types';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- **/
+ */
 const spanStyle = {
   marginLeft: '15px',
   marginRight: '15px',
   fontSize: '110%',
   fontWeight: 'bold',
-  fontFamily: 'verdana, sans-serif, bold',
   color: '#034785',
   border: '0px',
   display: 'inline-block',
@@ -31,7 +29,6 @@ const commentStyle = {
   paddingLeft: '10px',
   paddingRight: '10px',
   borderRadius: '5px',
-  fontFamily: 'verdana, sans-serif',
   fontStyle: 'italic',
   color: '#034785',
   backgroundColor: '#E4EBF2',
@@ -51,14 +48,33 @@ const headerRow = {
   textAlign: 'justify',
 };
 
+/**
+ * Child tree component
+ */
 class ChildTree extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.action = this.action.bind(this);
   }
+
+  /**
+   * Action
+   *
+   * @param {object} obj
+   */
   action(obj) {
     this.props.action(obj);
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let childList = null;
     let childrenNode = this.props.childrenNode;
@@ -81,8 +97,9 @@ class ChildTree extends Component {
               </div>
                 {
                   Object.values(node)[2] !== null &&
-                    <div style={commentStyle} className="tip">{Object.values(node)[2]}</div>
-
+                    <div style={commentStyle}
+                         className="tip">{Object.values(node)[2]}
+                    </div>
                 }
             </div>
           </td>

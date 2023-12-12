@@ -6,7 +6,7 @@
    [Automation Testing]
 3. Check that the warning text is accurate if the `project/instruments` or `project/tables_sql` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
    [Manual Testing]
-4. Take the sample .linst instrument file `test_all_fields.linst` in `docs/instruments` and upload it in Instrument Manager. This must be done be a user with the `superuser` permission.
+4. Take the sample .linst instrument file `test_all_fields.linst` in `test/instruments` and upload it in Instrument Manager. This must be done by a user with the `instrument_manager_write` permission.
 Check that instrument gets installed properly. (New files should exist in `project/instruments/` & `project/tables_sql/`.) 
 Also check the paths in the code - eg uploaded instruments in the instruments directory with right permissions.
    [Manual Testing]
@@ -20,3 +20,6 @@ Then alter the linst file so that it doesn't exactly match the instrument table 
 Check that function CheckTable performs the appropriate checks (catches these discrepancies) on the instrument builder files and validates them properly - 
 eg "Table Valid" column is valid when instrument fields match up and "Pages Valid" is valid when subpages are valid.
    [Manual Testing]
+9. With a user who has the `instrument_manager_write` permission, click the button in the `Permission Required` column. A modal should popup where you can edit the permissions.
+   - Check that modifying the permissions saves the new permissions.
+   - Check that a user can access that instruments if and only if they has that permission.

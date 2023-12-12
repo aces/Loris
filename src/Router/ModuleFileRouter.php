@@ -45,6 +45,8 @@ class ModuleFileRouter implements RequestHandlerInterface
     protected $subdir;
 
     protected $contenttype;
+
+    protected string $moduledir;
     /**
      * The constructor for a ModuleFileRouter takes the Module class,
      * the directory which the module is stored in, and the subdirectory of

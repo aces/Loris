@@ -37,7 +37,7 @@ class ValidateIDs extends \NDB_Page
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool true iff the user has access to this page.
+     * @return bool true only if the user has access to this page.
      */
     function _hasAccess(\User $user) : bool
     {
@@ -58,23 +58,11 @@ class ValidateIDs extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // The parent handles things like hasAccess checks.
-        $resp = parent::handle($request);
-        switch ($resp->getStatusCode()) {
-        case 200:
-            // If it was a 200 code, it just means display was called and
-            // access validated. We still need to do other validations
-            // and add the result body.
-            break;
-        default:
-            return $resp;
-        }
-
         // Ensure it's a GET request.
         if ($request->getMethod() != "GET") {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
+                ->withHeader("Content-Type", "text/plain")
                 ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -87,8 +75,8 @@ class ValidateIDs extends \NDB_Page
         $gets = $request->getQueryParams();
         if (!isset($gets['CandID'], $gets['PSCID'])) {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(400)
+                ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         "Must provide PSCID and CandID to validate"
@@ -96,18 +84,22 @@ class ValidateIDs extends \NDB_Page
                 );
         }
 
-        // Return "0" or "1" based on whether it exists or not.
-        // We always return a 200 error code and not a 404, because
-        // even if the CandID doesn't exist or match, the validateids
-        // endpoint still exists and has a valid response.
-        $exists = \Candidate::candidateExists(
-            new CandID($gets['CandID']),
-            $gets['PSCID']
-        ) ? "1" : "0";
+        try {
+            // Return "0" or "1" based on whether it exists or not.
+            // We always return a 200 error code and not a 404, because
+            // even if the CandID doesn't exist or match, the validateids
+            // endpoint still exists and has a valid response.
+            $exists = \Candidate::candidateExists(
+                new CandID($gets['CandID']),
+                $gets['PSCID']
+            ) ? "1" : "0";
+        } catch (\Exception $e) {
+            $exists = "0";
+        }
 
         return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
             ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
             ->withBody(new \LORIS\Http\StringStream($exists));
     }
 }

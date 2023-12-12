@@ -3,12 +3,12 @@
  *
  * @author Henri Rabalais
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
+import {CTA} from 'jsx/Form';
 
 /**
  * Triggerable Modal Component.
@@ -30,17 +30,29 @@ import Modal from 'Modal';
  *
  */
 class TriggerableModal extends Component {
+  /**
+   * @constructor
+   */
   constructor() {
     super();
     this.state = {open: false};
     this.close = this.close.bind(this);
   }
 
+  /**
+   * Close the modal
+   * and trigger onClose
+   */
   close() {
     this.setState({open: false});
     if (this.props.onClose instanceof Function) this.props.onClose();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {label, onUserInput} = this.props;
 
@@ -63,6 +75,7 @@ class TriggerableModal extends Component {
 TriggerableModal.propTypes = {
   label: PropTypes.string.isRequired,
   onClose: PropTypes.func,
+  onUserInput: PropTypes.func,
 };
 
 export default TriggerableModal;

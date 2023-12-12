@@ -6,8 +6,16 @@ import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
+import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
 
+/**
+ * Imaging uploader component
+ */
 class ImagingUploader extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     loris.hiddenHeaders = ['PatientName', 'SessionID'];
@@ -34,6 +42,9 @@ class ImagingUploader extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
@@ -44,18 +55,22 @@ class ImagingUploader extends Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) => {
         this.setState({
           data: data,
           isLoaded: true,
         });
-      },
-      error: function(error) {
-        console.error(error);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -83,7 +98,6 @@ class ImagingUploader extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -121,8 +135,8 @@ class ImagingUploader extends Component {
       }
 
       if (cell === 'Success') {
-        const created = row['Number Of MINC Created'];
-        const inserted = row['Number Of MINC Inserted'];
+        const created = row['Number Of Files Created'];
+        const inserted = row['Number Of Files Inserted'];
         return (
           <td style={cellStyle}>
           {cell} ({inserted} out of {created})
@@ -150,7 +164,7 @@ class ImagingUploader extends Component {
       );
     }
 
-    if (column === 'Number Of MINC Inserted') {
+    if (column === 'Number Of Files Inserted') {
       if (cell > 0) {
         const url = loris.BaseURL
                     + '/imaging_browser/viewSession/?sessionID='
@@ -163,16 +177,19 @@ class ImagingUploader extends Component {
       }
     }
 
-    if (column === 'Number Of MINC Created') {
+    if (column === 'Number Of Files Created') {
       let violatedScans;
-      if (row['Number Of MINC Created'] - row['Number Of MINC Inserted'] > 0) {
+      if (
+        row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0
+      ) {
         let numViolatedScans =
-             row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
+             row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
-        let patientName = row.PatientName;
-        violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
+        const violUrl = loris.BaseURL +
+                         '/mri_violations/?patientName=' + row.PatientName;
+        violatedScans = <a href={violUrl}>
            ({numViolatedScans} violated scans)
-         </a>;
+        </a>;
       }
 
       return (
@@ -188,17 +205,10 @@ class ImagingUploader extends Component {
   }
 
   /**
-   * Opens MRI Violations for when there are violated scans
+   * Renders the React component.
    *
-   * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
-   * @param {object} e - event info
+   * @return {JSX} - React markup for the component
    */
-  openViolatedScans(patientName, e) {
-    loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName,
-    })(e);
-  }
-
   render() {
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -225,7 +235,11 @@ class ImagingUploader extends Component {
                 <TextboxElement {... this.state.data.form.candID} />
                 <TextboxElement {... this.state.data.form.pSCID} />
                 <SelectElement {... this.state.data.form.visitLabel} />
-                <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
+                <ButtonElement
+                  type='reset'
+                  label='Clear Filters'
+                  onUserInput={this.resetFilters}
+                />
               </FilterForm>
             </div>
             <div className='col-md-7'>
@@ -247,7 +261,9 @@ class ImagingUploader extends Component {
             form={this.state.data.form}
             mriList={this.state.data.mriList}
             maxUploadSize={this.state.data.maxUploadSize}
-            imagingUploaderAutoLaunch={this.state.data.imagingUploaderAutoLaunch}
+            imagingUploaderAutoLaunch={
+              this.state.data.imagingUploaderAutoLaunch
+            }
           />
         </TabPane>
       </Tabs>

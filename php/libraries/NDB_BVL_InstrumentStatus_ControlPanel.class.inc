@@ -30,22 +30,38 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $ValidityEnabled;
     public $ValidityRequired;
     protected $instrument;
+
+    protected CandID $candID;
+    protected SessionID $sessionID;
+
+    protected string $testname;
+    protected ?string $subtest;
+
+    protected $loris;
+
     /**
      * Construct a controller for the instrument status control panel
      *
-     * @param string  $testname  The instrument name being managed
-     * @param string  $commentid The commentID being loaded
-     * @param CandID  $candid    The candidate who this instrument belongs to
-     * @param int     $sessionid The session at which the instrument took place
-     * @param ?string $subtest   The page of the instrument being accessed
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance containing this
+     *                                        instrument
+     * @param string               $testname  The instrument name being managed
+     * @param string               $commentid The commentID being loaded
+     * @param CandID               $candid    The candidate who this
+     *                                        instrument belongs to
+     * @param SessionID            $sessionid The session at which the
+     *                                        instrument took place
+     * @param ?string              $subtest   The page of the instrument
+     *                                        being accessed
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         string $testname,
         string $commentid,
         CandID $candid,
-        int $sessionid,
+        SessionID $sessionid,
         ?string $subtest
     ) {
+        $this->loris      = $loris;
         $this->candID     = $candid;
         $this->testname   = $testname;
         $this->_commentID = $commentid;
@@ -91,6 +107,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
             // create an instance of the instrument
             $instrument = NDB_BVL_Instrument::factory(
+                $this->loris,
                 $this->testname,
                 $this->_commentID,
                 $this->subtest ?? ''
@@ -126,7 +143,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
             }
 
-            if ($config->getSetting('InstrumentResetting')
+            if ($config->settingEnabled('InstrumentResetting')
                 && $this->getDataEntryStatus() != 'Complete'
             ) {
                 $user = User::singleton();
@@ -160,22 +177,23 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $user = User::singleton();
             if ($user->hasPermission('send_to_dcc')) {
                 $instrument = \NDB_BVL_Instrument::factory(
+                    $this->loris,
                     $this->testname,
                     $this->_commentID,
                     $this->subtest ?? ''
                 );
                 $instrument->clearInstrument();
-                return false;
+                return true;
             } else {
                 return false;
             }
         }
         // get control panel selections from _REQUEST
-        $possibleFlags = array(
+        $possibleFlags = [
             'setDataEntry',
             'setAdministration',
             'setValidity',
-        );
+        ];
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
         // make sure there are at least one flag to save
         if (is_array($flagsToSave) && count($flagsToSave) > 0) {
@@ -236,9 +254,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     if (isset($this->instrument)) {
                         if ($showLink == true) {
                             $CompStatus
-                                = $this->instrument->getDataEntryCompletionStatus();
+                                = $this->instrument
+                                ->getRequiredElementsCompletedFlag();
 
-                            $showLink = $CompStatus == 'Complete';
+                            $showLink = $CompStatus === 'Y';
 
                             if (!$showLink) {
                                 $this->tpl_data['data_entry'][$i]['tooltip']
@@ -398,7 +417,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if (!$user->hasPermission('data_entry')
             || !in_array(
                 $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
+                $user->getCenterIDs()
             )
         ) {
             return false;
@@ -406,7 +425,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         // make a feedback object
         $feedback = \NDB_BVL_Feedback::singleton(
-            $user->getData('UserID'),
+            $user->getUsername(),
             null,
             null,
             $this->_commentID

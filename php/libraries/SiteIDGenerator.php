@@ -128,14 +128,14 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     protected function getExistingIDs(): array
     {
-        $ids = \Database::singleton()->pselectCol(
+        $ids = \NDB_Factory::singleton()->database()->pselectCol(
             "SELECT substring($this->kind, LENGTH('{$this->prefix}') +1)
             from candidate
             WHERE {$this->kind} LIKE '{$this->prefix}%'",
-            array()
+            []
         );
         if (empty($ids)) {
-            return array();
+            return [];
         }
         // Filter out non-numeric ids if using a numeric alphabet.
         if (empty(array_diff($this->alphabet, range('0', '9')))) {
@@ -150,28 +150,30 @@ class SiteIDGenerator extends IdentifierGenerator
      * @param string $setting One of: 'generation', 'length', 'alphabet',
      *                        'min', 'max'.
      *
-     * @return array<int,int|float>|string|null
+     * @return array<int,int|string>|string|null
      */
     private function _getIDSetting(
         string $setting
     ) {
+        $config = \NDB_Factory::singleton()->config();
+        $kind   = $config->getSetting($this->kind);
+
+        if (!is_array($kind)) {
+            throw new \LorisException("Invalid config for $this->kind");
+        };
         // The generation setting can be easily extracted and returned.
         if ($setting == 'generation') {
-            return \NDB_Factory::singleton()
-                ->config()
-                ->getSetting($this->kind)['generation'];
+            return $kind['generation'];
         }
 
         // Values other than 'generation' are found within 'seq' elements and
         // require more complex processing.
-        $idStructure = \NDB_Factory::singleton()
-            ->config()
-            ->getSetting($this->kind)['structure']['seq'];
+        $idStructure = $kind['structure']['seq'];
 
         if (!$idStructure[0]) {
             // There's only one seq tag so the param format
             // needs to be fixed
-            $temp        = array();
+            $temp        = [];
             $temp[]      = $idStructure;
             $idStructure = $temp;
         }
@@ -230,10 +232,12 @@ class SiteIDGenerator extends IdentifierGenerator
      * configured. Do error handling to make sure that there is exactly one
      * value corresponding to the requested setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
-     *                                  extracted from project/config.sml
-     * @param string       $setting     The name of the variable for which we
-     *                                  want the value.
+     * @param array<array<array<string>>> $idStructure Settings concerning ID
+     *                                                 structure extracted from
+     *                                                 project/config.sml
+     * @param string                      $setting     The name of the variable
+     *                                                 for which we want the
+     *                                                 value.
      *
      * @throws \ConfigurationException
      *
@@ -247,7 +251,7 @@ class SiteIDGenerator extends IdentifierGenerator
          * 'type' attributes within 'seq' elements. See project/config.xml for
          * examples.
          */
-        switch($setting) {
+        switch ($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
                 self::_getSeqAttribute($idStructure, 'type'),
@@ -285,17 +289,24 @@ class SiteIDGenerator extends IdentifierGenerator
                 'Too many values found for config setting: ' . $setting
             );
         }
-        return array_pop($seqAttributes);
+
+        $val = array_pop($seqAttributes);
+        if ($val === null) {
+            return null;
+        }
+        return strval($val);
     }
 
     /**
      * Traverse the $idStructure array and collect all values that exist
      * for $setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
-     *                                  extracted from project/config.xml
-     * @param string       $setting     The name of the variable for which
-     *                                  we want the value.
+     * @param array<array<array<string>>> $idStructure Settings concerning ID
+     *                                                 structure extracted from
+     *                                                 project/config.xml
+     * @param string                      $setting     The name of the variable
+     *                                                 for which we want the
+     *                                                 value.
      *
      * @return array<int,mixed> The value(s) corresponding to $setting.
      */
@@ -303,7 +314,7 @@ class SiteIDGenerator extends IdentifierGenerator
         array $idStructure,
         string $setting
     ): array {
-        $seqAttributes = array();
+        $seqAttributes = [];
         foreach ($idStructure as $seq) {
             if (isset($seq['@'][$setting])) {
                 $seqAttributes[] = $seq['@'][$setting];

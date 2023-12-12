@@ -39,6 +39,13 @@ class Settings
     private $_database;
 
     /**
+     * The base of the URL at which LORIS is being served.
+     *
+     * @var string
+     */
+    private $_baseURL;
+
+    /**
      * Settings constructor.
      *
      * @param NDB_Config $_config config object
@@ -46,8 +53,8 @@ class Settings
      */
     public function __construct(NDB_Config $_config, string $baseURL='')
     {
-        $this->_config = $_config;
-        $this->baseURL = $baseURL;
+        $this->_config  = $_config;
+        $this->_baseURL = $baseURL;
     }
 
     /**
@@ -58,7 +65,7 @@ class Settings
      */
     public function getBaseURL(): string
     {
-        return $this->baseURL;
+        return $this->_baseURL;
     }
 
     /**
@@ -128,6 +135,11 @@ class Settings
      */
     private function _getDatabaseSetting(string $settingName): string
     {
+        $envvar = getenv("LORIS_DB_" . strtoupper($settingName));
+        if ($envvar !== false && $envvar !== "") {
+            return $envvar;
+        }
+
         if (empty($this->_database)) {
             $this->_database = $this->_config->getSetting('database');
         }
@@ -164,5 +176,17 @@ class Settings
         return false;
     }
 
+    /**
+     * Determines whether the useConsent configuration setting is
+     * enabled
+     *
+     * @return bool True if the useConsent setting is enabled
+     */
+    function consentEnabled(): bool
+    {
+        return \NDB_Factory::singleton()->config()->settingEnabled(
+            'useConsent'
+        );
+    }
 
 }

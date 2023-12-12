@@ -34,10 +34,18 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
     function testBrainbrowserDoespageLoad()
     {
         $this->safeGet($this->url . "/brainbrowser/?minc_id=[]");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Brainbrowser", $bodyText);
+        $this->assertStringContainsString("Brainbrowser", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 }
 

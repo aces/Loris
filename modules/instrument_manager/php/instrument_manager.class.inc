@@ -1,38 +1,20 @@
-<?php
-/**
- * Instrument_manager
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
- */
-
+<?php declare(strict_types=1);
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Http\EmptyStream;
 
 /**
- * Instrument_manager
+ * Contains functions used to view and manage instruments installed in LORIS.
+ * LINST instruments can be uploaded and installed automatically.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Instrument_Manager extends \NDB_Menu_Filter
+class Instrument_Manager extends \DataFrameworkMenu
 {
-    const PERMISSIONS = array(
+    const PERMISSIONS = [
         'instrument_manager_read',
         'instrument_manager_write'
-    );
+    ];
     // Error messages
     const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
                                   'test battery.';
@@ -51,28 +33,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                                   'administrator.';
     const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
                                   'instrument needs to be installed manually.';
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @param Module $module    The test name being accessed
-     * @param string $page      The subtest being accessed (may be an empty string)
-     * @param string $id        The identifier for the data to load on this page
-     * @param string $commentID The CommentID to load the data for
-     * @param string $formname  The name to give this form
-     */
-    public function __construct($module, $page, $id, $commentID, $formname)
-    {
-        $this->AjaxModule   = true;
-        $this->skipTemplate = true;
-        $this->factory      = \NDB_Factory::singleton();
-        $this->path         = $this->factory->config()->getSetting("base");
-
-        parent::__construct($module, $page, $id, $commentID);
-    }
-
+    private string $_path;
     /**
      * Checking permissions
      *
@@ -84,7 +45,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
-
     /**
      * Handle a PSR7 Request for that endpoint.
      *
@@ -115,35 +75,25 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
+        $loris = $request->getAttribute('loris');
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('superuser')) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(403, 'Forbidden')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => 'Forbidden')
-                        )
-                    )
-                );
+        if (! $request->getAttribute('user')->hasPermission(
+            'instrument_manager_write'
+        )
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
         // Ensure the server is properly configured.
         if (!$this->canWriteFiles()) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::CANNOT_WRITE_FILES)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::CANNOT_WRITE_FILES
+            );
         }
 
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
-        $targetdir     = new \SplFileInfo($this->path . 'project/instruments/');
+        $targetdir     = new \SplFileInfo($this->_path . 'project/instruments/');
         $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
         if ($this->instrumentExists($instrument)) {
@@ -163,7 +113,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         $response = $uploader->handle($request);
 
-        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
             if ($response->getStatusCode() == 409) {
                 /* Don't update the file if it already exists on the back-end.
                  * Instead, inform users that an administrator must install it
@@ -180,7 +130,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
-        chdir($this->path . "/tools");
+        chdir($this->_path . "/tools");
         // Use tools/ script to generate an SQL patch file based on the
         // structure of the uploaded .linst file.
         exec(
@@ -188,18 +138,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
             . escapeshellarg($fullpath)
         );
 
-        if (!$this->isQuatUserConfigured()) {
+        if (!$this->isAdminUserConfigured()) {
             // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \LORIS\Http\Response())
-                ->withStatus(200, 'OK')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('message' => self::UPLOAD_NO_INSTALL)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\OK(
+                ['success' => self::UPLOAD_NO_INSTALL]
+            );
         }
 
         // Install the instrument by directly sourcing the SQL file
@@ -209,32 +153,37 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
         try {
-            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+            $table_name = \NDB_BVL_Instrument::factory(
+                $this->loris,
+                $instrument,
+                '',
+                '',
+            )->table;
         } catch (\NotFound $e) {
             return (new \LORIS\Http\Response\JSON\NotFound(
                 $e->getMessage()
             ));
         } catch (\Exception $e) {
-            return (new \LORIS\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
-            ));
+            );
         }
 
-        $db_config = $this->factory->config()->getSetting('database');
+        $db_config = $loris->getConfiguration()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
             " -u" . escapeshellarg($db_config['adminUser']).
             " -p" . escapeshellarg($db_config['adminPassword']).
             " " . escapeshellarg($db_config['database']).
-            " < " . $this->path . "project/tables_sql/".
+            " < " . $this->_path . "project/tables_sql/".
             escapeshellarg($table_name . '.sql'),
             $output, // $output and $status are created automatically
             $status  // by `exec` and so need not be declared above.
         );
         // An exit code of 0 is a success and 1 means failure
         if ($status) {
-            error_log(
+            $this->logger->error(
                 "The installation of $instrument.sql failed. "
                 . "Either: the instrument table exists (but is not in the "
                 . "test_names table), or "
@@ -242,353 +191,74 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "credentials supplied in the config file. "
                 . "Exec output: `" . implode("\n", $output) . "`"
             );
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::UPLOAD_INSTALL_FAILED
+            );
         }
 
-        return (new \LORIS\Http\Response())
-            ->withStatus(201, 'Created')
-            ->withBody(new EmptyStream());
+        return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
     }
-
     /**
-     * SetupVariables function
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return void
+     * @return ?array of site permissions or null
      */
-    function _setupVariables()
+    public function allSitePermissionNames() : ?array
     {
-        $this->headers      = array(
-            'Instrument',
-            'Instrument_Type',
-            'Table_Installed',
-            'Table_Valid',
-            'Pages_Valid',
-        );
-        $this->columns      = array('Test_name as Instrument');
-        $this->query        = " FROM test_names";
-        $this->validFilters = array();
-        $this->formToFilter = array();
-    }
-
-    /**
-     * Converts this menu filter to an array of the form
-     *
-     * Headers => (string array)
-     * Data => (array of arrays of row data)
-     *
-     * Suitable for serializing to JSON, CSV, etc..
-     *
-     * @return array
-     */
-    function toArray()
-    {
-        $data = array_map(
-            function ($row) {
-                $instrument = $row['Instrument'];
-                $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
-                $row['Table_Installed'] = $this->checkTableInstalled($instrument);
-                $row['Table_Valid']     = $this->checkTableValid($instrument);
-                $row['Pages_Valid']     = $this->checkPagesValid($instrument);
-                return $row;
-            },
-            $this->_getFullList()
-        );
-
-        $headers = array_map(
-            function ($header) {
-                return ucwords(str_replace('_', ' ', $header));
-            },
-            $this->headers
-        );
-
-        $MappedData = array();
-        foreach ($data as $row) {
-            $MappedData[] = array_values($row);
-        }
-
-        return array(
-            'Headers'      => $headers,
-            'Data'         => $MappedData,
-            'fieldOptions' => $this->fieldOptions,
-            'writable'     => $this->canWriteFiles(),
-            'caninstall'   => $this->isQuatUserConfigured(),
-        );
-    }
-
-    /**
-     * SetFilterForm function
-     *
-     * @return void
-     */
-    function _setFilterForm()
-    {
-    }
-
-    /**
-     * Determine the instrument type between LINST and PHP
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return string The instrument type
-     */
-    protected function checkInstrumentType(string $instrument): string
-    {
-        $linst = $this->path . "/project/instruments/$instrument.linst";
-        if (file_exists($linst)) {
-            return 'Instrument Builder';
-        }
-
-        $php = $this->path .
-            "/project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
-
-        if (file_exists($php)) {
-            return 'PHP';
-        }
-
-        return 'Missing';
-    }
-
-    /**
-     * Checks if entries exists in the subtest table for each pages of the
-     * instrument's linst file.
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return string An evocative answer
-     */
-    protected function checkPagesValid(string $instrument): string
-    {
-        $filename = $this->path . "/project/instruments/$instrument.linst";
-        if (!file_exists($filename)) {
-            return '?';
-        } else {
-            return $this->checkPages($instrument);
-        }
-    }
-
-    /**
-     * Checks if a table with that instrument name exists
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return string An evocative answer
-     */
-    protected function checkTableValid(string $instrument): string
-    {
-        $filename = $this->path . "/project/instruments/$instrument.linst";
-        if (!file_exists($filename)) {
-            return '?';
-        } else {
-            return $this->checkTable($instrument);
-        }
-    }
-
-    /**
-     * Checks if a table with that instrument name exists
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return string An evocative answer
-     */
-    protected function checkTableInstalled(string $instrument): string
-    {
-        // This should also check that all the columns exist and
-        // have the right type, for new style instruments
-        $exists = $this->factory->database()->pselectOne(
-            '
-           SELECT count(*)
-           FROM information_schema.tables
-           WHERE TABLE_SCHEMA=:dbname AND
-           TABLE_NAME=:tablename
-          ',
-            array(
-                'dbname'    => $this->factory->settings()->dbName(),
-                'tablename' => $instrument,
-            )
-        );
-        return ($exists > 0) ? 'Exists' : 'Missing';
-    }
-
-    /**
-     * Checks the test_names table for the existence of the instrument
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return bool True if the name is found in the table
-     */
-    protected function instrumentExists(string $instrument): bool
-    {
-        $count = $this->factory->database()->pselectOne(
-            'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
-            array(':v_instrument' => $instrument)
-        );
-        return $count > 0;
-    }
-
-    /**
-     * CheckType function
-     *
-     * @param string $tablename  the value of table name
-     * @param string $columnname the value of column name
-     * @param string $type       the value of the type
-     *
-     * @return ?string
-     */
-    protected function checkType($tablename, $columnname, $type)
-    {
-        $db           = $this->factory->database();
-        $sqlSelectOne = "SELECT count(*)".
-                        " FROM information_schema.columns".
-                        " WHERE TABLE_SCHEMA=:dbname".
-                        " AND TABLE_NAME=:tablename".
-                        " AND COLUMN_NAME=:columnname".
-                        " AND DATA_TYPE=:typename";
-        $exists       = $db->pselectOne(
-            $sqlSelectOne,
-            array(
-                'dbname'     => $this->factory->settings()->dbName(),
-                'columnname' => $columnname,
-                'tablename'  => $tablename,
-                'typename'   => $type,
-            )
-        );
-        if (!$exists) {
-            return "Column $columnname invalid";
-        }
         return null;
     }
 
     /**
-     * CheckTable function
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
      *
-     * @param string $instname the value of instname
-     *
-     * @return string An evocative answer
+     * @return bool false
      */
-    protected function checkTable($instname): string
+    public function useProjectFilter() : bool
     {
-        $filename = $this->path . "project/instruments/$instname.linst";
-        $fp       = fopen($filename, "r");
-        $db       = $this->factory->database();
-
-        while (($line = fgets($fp, 4096)) !== false) {
-            $pieces = explode("{@}", $line);
-            $type   = $pieces[0];
-            $name   = $pieces[1];
-            if ($name == 'Examiner') {
-                continue;
-            }
-            switch($type) {
-            case 'page':
-            case 'table':
-            case 'title':
-                break;
-            case 'selectmultiple': // fallthrough, both selectmultiple and text
-                // require varchar to save
-            case 'text':
-                $error = $this->checkType($instname, $name, 'varchar');
-                if ($error == null) {
-                    break;
-                }
-                return $error;
-            case 'textarea':
-                $error = $this->checkType($instname, $name, 'text');
-                if ($error == null) {
-                    break;
-                }
-                return $error;
-            case 'date':
-                $error = $this->checkType($instname, $name, 'date');
-                if ($error == null) {
-                    break;
-                }
-                return $error;
-            case 'select':
-                // Enums can't just check the type, they also need to
-                // check the values in the enum
-                $enums        = explode("{-}", $pieces[3]);
-                $sqlSelectOne = "SELECT COLUMN_TYPE".
-                                " FROM information_schema.columns".
-                                " WHERE TABLE_SCHEMA=:dbname".
-                                " AND TABLE_NAME=:tablename".
-                                " AND COLUMN_NAME=:columnname".
-                                " AND DATA_TYPE='enum'";
-                $db_enum      = $db->pselectOne(
-                    $sqlSelectOne,
-                    array(
-                        'dbname'     => $this->factory->settings()->dbName(),
-                        'columnname' => $name,
-                        'tablename'  => $instname,
-                    )
-                );
-                $options      = array();
-                foreach ($enums as $enum) {
-                    $enum_split = explode("=>", $enum);
-                    $key        = $enum_split[0];
-                    if ($key == 'NULL') {
-                        continue;
-                    } else {
-                        $options[] = $key;
-                    }
-                }
-                if ('enum(' . join(",", $options) . ')' !== $db_enum) {
-                    return "$name enum invalid";
-                }
-            default:
-                break;
-            }
-        }
-
-        return "Appears Valid";
+        return false;
     }
 
     /**
-     * CheckPages function
+     * {@inheritDoc}
      *
-     * @param string $instname the value of instname
-     *
-     * @return string An evocative response
+     * @return array
      */
-    protected function checkPages($instname): string
+    protected function getFieldOptions() : array
     {
-        $filename = $this->path . "project/instruments/$instname.linst";
-        $fp       = fopen($filename, "r");
-        $db       = $this->factory->database();
+        $db    = $this->loris->getDatabaseConnection();
+        $perms = $db->pselectCol("SELECT code FROM permissions", []);
+        return [
+            'allPermissionCodes' => $perms,
+            'writable'           => $this->canWriteFiles(),
+            'caninstall'         => $this->isAdminUserConfigured()
+        ];
 
-        while (($line = fgets($fp, 4096)) !== false) {
-            $pieces       = explode("{@}", $line);
-            $type         = $pieces[0];
-            $sqlSelectOne = "SELECT count(*)".
-                            " FROM instrument_subtests".
-                            " WHERE Test_name=:testname".
-                            " AND Description=:testdesc";
-            switch($type) {
-            case 'page':
-                $exists = $db->pselectOne(
-                    $sqlSelectOne,
-                    array(
-                        'testname' => $instname,
-                        'testdesc' => trim($pieces[2]),
-                    )
-                );
-                if ($exists <= 0) {
-                    return "Missing page '" . trim($pieces[2]) . "'";
-                }
-            default:
-                break;
-            }
-        }
-        return 'Appears Valid';
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new InstrumentManagerProvisioner();
     }
 
+    /**
+     * Checks if the instruments and table_sql are writable
+     *
+     * @return bool True if both directories are writable
+     */
+    protected function canWriteFiles(): bool
+    {
+        $this->_path    =  $this->loris->getConfiguration()->getSetting('base');
+        $instrument_dir = $this->_path . 'project/instruments';
+        $table_dir      = $this->_path . 'project/tables_sql';
+
+        return is_writable($instrument_dir) && is_writable($table_dir);
+    }
     /**
      * Return whether the adminUser is properly configured, ie. credentials are
      * set and are valid.
@@ -598,10 +268,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @return bool True if a adminUser is configured properly. False if not.
      */
-    protected function isQuatUserConfigured() : bool
+    protected function isAdminUserConfigured() : bool
     {
-        $db        = $this->factory->database();
-        $db_config = $this->factory->config()->getSetting('database');
+        $db        = $this->loris->getDatabaseConnection();
+        $db_config = $this->loris->getConfiguration()->getSetting('database');
 
         $credentials_set = !empty($db_config['adminUser'])
             && !empty($db_config['adminPassword']);
@@ -612,49 +282,53 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // If the credentials are invalid, an error message will be logged to
         // the backend.
         try {
+            $dbname = $db_config['database'];
+            putenv("LORIS_{$dbname}_USERNAME=" . $db_config['adminUser']);
+            putenv("LORIS_{$dbname}_PASSWORD=" . $db_config['adminPassword']);
+            putenv("LORIS_{$dbname}_HOST=" . $db_config['host']);
             $connected = $db->connect(
-                $db_config['database'],
-                $db_config['adminUser'],
-                $db_config['adminPassword'],
-                $db_config['host'],
+                $dbname,
                 false
             );
+            putenv("LORIS_{$dbname}_USERNAME=");
+            putenv("LORIS_{$dbname}_PASSWORD=");
+            putenv("LORIS_{$dbname}_HOST=");
         } catch (\DatabaseException $e) {
             $connected = false;
         }
         return $connected;
     }
-
     /**
-     * Checks if the instruments and table_sql are writable
+     * Checks the test_names table for the existence of the instrument
      *
-     * @return bool True if both directories are writable
+     * @param string $instrument The instrument name
+     *
+     * @return bool True if the name is found in the table
      */
-    protected function canWriteFiles(): bool
+    protected function instrumentExists(string $instrument): bool
     {
-        $instrument_dir = $this->path . 'project/instruments';
-        $table_dir      = $this->path . 'project/tables_sql';
-
-        return is_writable($instrument_dir) && is_writable($table_dir);
+        $count = $this->loris->getDatabaseConnection()->pselectOne(
+            'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
+            [':v_instrument' => $instrument]
+        );
+        return $count > 0;
     }
 
-
     /**
-     * Adds React table related dependencies to menu filters, since forms don't
-     * usually have tables or pagination
+     * {@inheritDoc}
      *
-     * @return array of javascript files to be sourced
+     * @return array of javascript to be inserted
      */
-    public function getJSDependencies(): array
+    function getJSDependencies() : array
     {
-        $depends = parent::getJSDependencies();
-        $baseURL = $this->factory->settings()->getBaseURL();
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
         return array_merge(
-            $depends,
-            array(
-                $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
-            )
+            $deps,
+            [
+                $baseURL . "/instrument_manager/js/instrumentManagerIndex.js",
+            ]
         );
     }
 }
-

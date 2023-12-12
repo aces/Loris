@@ -36,13 +36,14 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
 
         $nProjects = $db->pselectOne(
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
             'WHERE UserID=:uid',
-            array('uid' => $user->getId())
+            ['uid' => $user->getId()]
         );
         return ($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
@@ -58,8 +59,9 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _setupVariables() : void
     {
-        $user  = \User::singleton();
-        $query = " FROM publication p ".
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $query   = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_parameter_type_rel pptr ".
@@ -83,7 +85,11 @@ class Publication extends \NDB_Menu_Filter_Form
             "LEFT JOIN publication_keyword pk ".
             "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
             "LEFT JOIN publication_users_edit_perm_rel puepr ".
-            "ON puepr.PublicationID=p.PublicationID ";
+            "ON puepr.PublicationID=p.PublicationID ".
+            "LEFT JOIN users u ".
+            "ON u.ID=p.UserID ".
+            "LEFT JOIN Project pr ".
+            "ON p.project=pr.ProjectID ";
         $query .= " WHERE 1=1 ";
         // allow user access to module if they have edit
         // access to any project proposal
@@ -97,11 +103,17 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $query .= " GROUP BY p.PublicationID ";
 
-        $this->columns = array(
+        $this->columns = [
             'p.Title',
             'pcli.Name as LeadInvestigator',
             'p.DateProposed',
             'ps.Label', // Status (Approved, Pending, Rejected, etc.)
+            'pr.Name as project',
+            'p.journal',
+            'p.link',
+            'p.publishingStatus',
+            'p.datePublication',
+            'u.Real_name',
             'p.Description',
             'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
@@ -112,38 +124,44 @@ class Publication extends \NDB_Menu_Filter_Form
                           )',
             'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
             'p.PublicationID',
-        );
+        ];
 
         $this->query   = $query;
-        $this->headers = array(
+        $this->headers = [
             'Title',
             'Lead Investigator',
             'Date Proposed',
             'Approval Status',
+            'Project',
+            'Journal',
+            'Link',
+            'Publishing Status',
+            'Date published',
+            'Project Proposal Creator',
             'Description',
             'Collaborators',
             'Variables Of Interest',
             'Keywords',
             'Publication ID',
-        );
+        ];
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'p.Title',
             'p.ApprovalStatus',
             'pc.Name',
             'pk.Label',
             'pcli.Name', // Lead Investigator's name
             'pt.Name',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'titleOrDescription'  => 'p.Title',
             'approvalStatus'      => 'ps.Label',
             'collaborators'       => 'pc.Name',
             'keywords'            => 'pk.Label',
             'variablesOfInterest' => 'pt.Name',
             'leadInvestigator'    => 'pcli.Name',
-        );
+        ];
     }
 
     /**
@@ -155,15 +173,25 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $rawStatus = $db->pselectCol(
             'SELECT Label FROM publication_status',
-            array()
+            []
         );
 
-        $statusOptions = array();
+        $statusOptions = [];
         foreach ($rawStatus as $rs) {
             $statusOptions[$rs] = $rs;
+        }
+
+        $rawProject = $db->pselect(
+            'SELECT ProjectID, Name FROM Project',
+            []
+        );
+
+        $projectOptions = [];
+        foreach ($rawProject as $data) {
+            $projectOptions[$data['Name']] = $data['Name'];
         }
 
         $this->addBasicText(
@@ -192,9 +220,35 @@ class Publication extends \NDB_Menu_Filter_Form
             'keywords',
             'Keywords'
         );
+
         $this->addBasicText(
             'variablesOfInterest',
             'Variables of Interest'
+        );
+
+        $this->addBasicText(
+            'journal',
+            'Journal'
+        );
+
+        $this->addSelect(
+            'project',
+            'Project',
+            $projectOptions
+        );
+
+        $this->addBasicText(
+            'link',
+            'Link'
+        );
+
+        $this->addSelect(
+            'publishingStatus',
+            'Publishing Status',
+            [
+                'Published'   => 'Published',
+                'In Progress' => 'In Progress'
+            ]
         );
     }
 
@@ -212,7 +266,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/publication/js/publicationIndex.js')
+            [$baseURL . '/publication/js/publicationIndex.js']
         );
     }
 
@@ -229,7 +283,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/publication/css/publication.css')
+            [$baseURL . '/publication/css/publication.css']
         );
     }
 
@@ -247,7 +301,7 @@ class Publication extends \NDB_Menu_Filter_Form
         array_walk_recursive(
             $result,
             function (&$r) {
-                $r = htmlspecialchars_decode($r);
+                $r = htmlspecialchars_decode($r ?? '');
             }
         );
         $result['form'] = $this->form->form;

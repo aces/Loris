@@ -27,7 +27,7 @@ class ImageQcStatus
     /**
      * The label to display to the frontend user
      *
-     * @var string
+     * @var ?string
      */
     private $_qcstatus;
 

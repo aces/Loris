@@ -34,9 +34,10 @@ class Project
     /**
      * Constructor
      *
-     * @param \Project $project The project to format
+     * @param \Project $project    The project to format
+     * @param string   $apiversion The version of the API being accessed
      */
-    public function __construct(\Project $project)
+    public function __construct(\Project $project, private string $apiversion = '')
     {
         $this->_project = $project;
     }
@@ -49,14 +50,27 @@ class Project
      */
     public function toArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        $obj = [
             'Meta'        => $meta,
             'Candidates'  => $this->_project->getCandidateIds(),
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
-        );
+        ];
+        switch ($this->apiversion) {
+        case 'v0.0.3':
+            return $obj;
+        default:
+            // >= v0.0.4
+            $obj['Cohorts'] = array_map(
+                function ($cohort) {
+                    return $cohort['title'];
+                },
+                $this->_project->getCohorts()
+            );
+        }
+        return $obj;
     }
 
     /**
@@ -67,12 +81,12 @@ class Project
      */
     public function toCandidateArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        return [
             'Meta'       => $meta,
             'Candidates' => $this->_project->getCandidateIds(),
-        );
+        ];
     }
 
     /**
@@ -83,12 +97,12 @@ class Project
      */
     public function toVisitArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        return [
             'Meta'   => $meta,
             'Visits' => $this->_getVisits(),
-        );
+        ];
     }
 
     /**
@@ -98,9 +112,9 @@ class Project
      */
     private function _getVisits(): array
     {
-        // TODO :: This should be replace by $this->_project->getVisitLabels();
+        // TODO :: This should be replaced by $this->_project->getVisitLabels();
         return array_keys(
-            \Utility::getExistingVisitLabels(
+            \Utility::getVisitList(
                 $this->_project->getId()
             )
         );

@@ -48,7 +48,8 @@ class Module extends \Module
             }
         } catch (\NotFound $e) {
         }
-        $page = $this->loadPage("timepoint_list");
+        $loris = $request->getAttribute("loris");
+        $page  = $this->loadPage($loris, "timepoint_list");
         return $page->process($request, $page);
     }
 
@@ -61,4 +62,15 @@ class Module extends \Module
     {
         return "Timepoint List";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool Whether an api schema is available fro this module.
+     */
+    public function hasAPISpecification(): bool
+    {
+        return true;
+    }
+
 }

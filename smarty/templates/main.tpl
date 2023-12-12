@@ -4,6 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/css/tooltip.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
@@ -12,7 +13,7 @@
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        let loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
@@ -26,36 +27,50 @@
             {$study_title}
         </title>
         <script type="text/javascript">
-          $(document).ready(function() {
-            {if $breadcrumbs != "" && empty($error_message)}
+          let breadcrumbsRoot;
+          document.addEventListener('DOMContentLoaded', () => {
+            {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-
-              ReactDOM.render(
-                RBreadcrumbs({
+              breadcrumbsRoot = ReactDOM.createRoot(
+                document.getElementById("breadcrumbs")
+              );
+              breadcrumbsRoot.render(
+                React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
-                }),
-                document.getElementById("breadcrumbs")
+                })
               );
               document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
                 return carry.concat(' - ', item.text);
               }, ''));
             {/if}
-
-            // Initialize bootstrap tooltip for site affiliations
-            $('#site-affiliations').tooltip({
-              html: true,
-              container: 'body'
-            });
+            {if !$breadcrumbs|strstr:'"Edit Help Content"'}
+              const helpContainers = document.getElementsByClassName('help-container');
+              for (let i = 0; i < helpContainers.length; i++) {
+                ReactDOM.createRoot(
+                  helpContainers.item(i)
+                ).render(
+                  React.createElement(RHelp, {
+                    testname: loris.TestName,
+                    subtest: loris.Subtest,
+                    baseURL: loris.BaseURL,
+                  })
+                );
+              }
+            {/if}
 
             // Make Navigation bar toggle change glyphicon up/down
-            $('.nav-button').on("click", function() {
-              if ($(this).hasClass('collapsed')) {
+            let navBtn = document.querySelector('.nav-button');
+            navBtn.addEventListener('click', function() {
+              let toggleIcon = document.querySelector('.toggle-icon');
+              if (navBtn.classList.contains('collapsed')) {
                 // change chevron to up
-                $('.toggle-icon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                toggleIcon.classList.remove('glyphicon-chevron-down');
+                toggleIcon.classList.add('glyphicon-chevron-up');
               } else {
                 // change chevron to down
-                $('.toggle-icon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                toggleIcon.classList.remove('glyphicon-chevron-up');
+                toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
           });
@@ -86,11 +101,8 @@
                             <span class="sr-only">Toggle navigation</span>
                             <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
-                        <button type="button" class="navbar-toggle help-button">
-                            <span class="sr-only">Toggle navigation</span>
-                            <img width=17 src="{$baseurl}/images/help.gif">
-                        </button>
-                       {if $bvl_feedback}
+                        <span class='help-container navbar-toggle'></span>
+                       {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="glyphicon glyphicon-edit" style="color:white"></span>
@@ -99,7 +111,7 @@
 
 
                        <!-- toggle sidebar in mobile view -->
-                        {if $control_panel}
+                        {if $control_panel|default}
                             <a id="menu-toggle" href="#" class="navbar-brand">
                                 <span class="glyphicon glyphicon-th-list"></span>
                             </a>
@@ -124,7 +136,7 @@
                             {/foreach}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
-                            {if $bvl_feedback}
+                            {if $bvl_feedback|default}
                             <li class="hidden-xs hidden-sm">
                                 <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                     <span class="glyphicon glyphicon-edit"></span>
@@ -132,18 +144,11 @@
                             </li>
                             {/if}
 
-                            <li class="hidden-xs hidden-sm">
-                                <a href="#" class="navbar-brand pull-right help-button">
-                                    <img width=17 src="{$baseurl}/images/help.gif">
-                                </a>
-                            </li>
+                            <li class="hidden-xs hidden-sm help-container"></li>
                             <li class="nav">
-                                <a href="#"
-                                   id="site-affiliations"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   title="{$user.SitesTooltip}">
+                                <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
+                                    <span class="tooltip-text">{$user.SitesTooltip}</span>
                                 </a>
                             </li>
 
@@ -152,11 +157,13 @@
                                     {$user.Real_name|escape} <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
                                             My Preferences
                                         </a>
                                     </li>
+                                    {/if}
                                     <li>
                                         <a href="{$baseurl}/?logout=true">
                                             Log Out
@@ -170,14 +177,14 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-		{if $control_panel or $feedback_panel}
-			{if $control_panel}
+		{if $control_panel|default or $feedback_panel|default}
+			{if $control_panel|default}
 				<div id = "page_wrapper_sidebar" class ="wrapper">
 			{/if}
 		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
-                            {$feedback_panel}
-			    {if $control_panel}
+                            {$feedback_panel|default}
+			    {if $control_panel|default}
                     <div id="sidebar-wrapper" class="sidebar-div">
                        <div id="sidebar-content">
                             {$control_panel}
@@ -212,11 +219,11 @@
                     </div>
 
                 {/if}
-                {if $breadcrumbs != "" && empty($error_message)}
+                {if $breadcrumbs|default != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
-                            {if $error_message != ""}
+                            {if $error_message|default != ""}
                                 <p>
                                     The following errors occurred while attempting to display this page:
                                     <ul>
@@ -258,12 +265,12 @@
 
 	</div>
 
-        {if $control_panel or $feedback_panel}
+        {if $control_panel|default or $feedback_panel|default}
         </div></div>
         {/if}
 
         {if $dynamictabs neq "dynamictabs"}
-            {if $control_panel}
+            {if $control_panel|default}
             <div id="footer" class="footer navbar-bottom wrapper">
             {else}
             <div id="footer" class="footer navbar-bottom">
@@ -296,35 +303,5 @@
         {if $FormAction}
         </form>
         {/if}
-
-        <a id="login-modal-button" href="#" data-toggle="modal" data-target="#login-modal" style="display: none;">Login</a>
-
-        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Login to Your Account
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <font color="red" align="middle" id="login-modal-error" style="display: none;">
-                                    Incorrect username or password
-                                </font>
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input id="modal-username" name="username" class="form-control" type="text" value="" placeholder="User">
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input id="modal-password" name="password" class="form-control" type="password" placeholder="Password">
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input class="btn btn-primary col-xs-12" id="modal-login" name="login" type="submit" value="Login">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </body>
 </html>

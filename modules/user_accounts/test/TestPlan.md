@@ -1,7 +1,7 @@
 User Account module - Test plan
 ===============================
 
-1. The page should only load if a user has the `user_accounts` or `user_accounts_multisite` permission.
+1. The page should only load if a user has the _User Accounts: View/Create/Edit User Accounts - Own Sites_ (`user_accounts`) or `user_accounts_multisite` permission.
 2. The User Module should display only users belonging to the same site as the active user, unless they have the permission `Across all sites create and edit users`.
 3. Click the `Clear Filters` button and verify it resets all filters.
 4. Verify that searching functions with all criteria: 
@@ -11,8 +11,7 @@ User Account module - Test plan
     * full name, 
     * pending approval, 
     * email
-5. The empty option in the site filter should display users from all sites, even if they are different from the active user.
-6. Ensure adding a new user with the same name as an existing user fails.
+5. Ensure adding a new user with the same username as an existing user fails.
 
 When creating or editing a user: (subtest: edit_user)
 ========================================================
@@ -23,7 +22,9 @@ When creating or editing a user: (subtest: edit_user)
       - Password (and confirm password),
       - First name,
       - Last name,
-      - Email.
+      - Email,
+      - Sites,
+      - Projects.
 9. If password and confirmed password do not match, an error should be displayed. [Automated]
 10. Email fields containing submitted with invalid formats should generate an error. 
      
@@ -32,7 +33,7 @@ When creating or editing a user: (subtest: edit_user)
 11. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
     Save. Check that an email is sent to the user with the new password. 
     Check that after logging in, the user is immediately asked to update his/her password.
-12. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
+12. Check that if creating a new user and selecting "Send email to user" an email is sent to him/her (requires email server). Also check that when a new
     user is logging in for the first time he/she is asked to change his/her password.
     1. Check that when creating a new user, leading and trailing spaces in the username are stripped.
     2. Check that you can create a new user with name 00 (double zero).
@@ -42,9 +43,8 @@ When creating or editing a user: (subtest: edit_user)
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change). [Automated]
 15. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
     the editor's associated sites, otherwise all sites are displayed.
-16. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
-    Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
-    FAX are not shown.
+16. Check that if the 'Additional user information' entry is set to false in the Configuration module, fields Degree,
+    Academic Position, Institution, Department, Street Address, City, State/Province, Country and FAX are not shown.
 17. Check that the 'Examiner At:' and 'Examiner Status' sections are available only if you have the 'Across all sites add and certify examiners'.
 18. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list (and in examiners table).
 19. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
@@ -61,7 +61,7 @@ When creating or editing a user: (subtest: edit_user)
     without saving any changes to the user profile.
 28. Check that if config setting 'Enable "Pwned Password" check' is set to 'Yes', then validation to make sure that the password
     entered (both for add user and edit user pages) has not been pwned is done. Also check that disabling this setting disables the 
-    validation. Example of a pwned password: a1b2c3!!
+    validation. Example of a pwned password: ji32k7au4a83
 29. Check that a 'Reject user' button will be available on the edit user page if the editee is a user whose account is awaiting approval and the editee
     has not yet logged in.
 30. Edit a user that fits the conditions listed above and reject it. Make sure that the user has been removed from the database and does not show up in
@@ -81,9 +81,9 @@ When creating or editing a user: (subtest: edit_user)
 
 ### Widget registration on the dashboard page
 
-36. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
-    account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries
-    in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval
-    set to 'Yes'. The Site displayed will be 'All user sites'. Check that you are taken to that page (with the
-    Selection Filter correctly set) when you click on the task.
+36. Verify that if a user has `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to all sites except Data Coordinating Center and Pending Approval set to 'Yes'. The Site displayed will be 'All'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
     [Automate Test on Travis_CI]
+
+37. Verify that if a user has `user_accounts` without `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The Site displayed will be 'All User Sites'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
+    [Automate Test on Travis_CI]
+

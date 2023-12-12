@@ -54,7 +54,6 @@ h3 {
 
 .views {
     margin-right: 10px;
-    margin-top: -2px;
 }
 
 .btn-volume-viewer {
@@ -65,7 +64,6 @@ h3 {
 }
 
 .header-info {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
 }
 
@@ -78,10 +76,18 @@ h3 {
     margin: 25px 0;
 }
 
-.history-item-label > span {
-  font-weight: bold;
-}
 
 .history-item-changes {
   margin-left: 2em;
+  margin-top: 1em;
+}
+
+.history-item-user {
+  font-weight: bold;
+  margin: 0 4px;
+}
+
+.history-comment {
+  margin-top: 1em;
+  margin-left: 4em;
 }

@@ -10,15 +10,40 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <!-- handled by Squiz.ControlStructures.ControlSignature, which
+             can be autofixed -->
+        <exclude name="PEAR.ControlStructures.ControlSignature"/>
     </rule>
 
     <!-- Pieces of other standards to include... -->
 
     <!-- Make sure there's no weird spacing for array brackets -->
     <rule ref="Squiz.Arrays.ArrayBracketSpacing" />
+    <rule ref="Squiz.ControlStructures.ControlSignature" />
 
     <!-- Pick up any calls to deprecated functions. -->
     <rule ref="Generic.PHP.DeprecatedFunctions"/>
+    <!-- These can not yet be forbidden because of ajax directories and tools,
+         but should be forbidden for non-tools once ajax is gone -->
+    <!--rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="print" value="Logger"/>
+                <element key="echo" value="Logger"/>
+                <element key="print_r" value="var_dump"/>
+                <element key="var_dump" value="null"/>
+                <element key="die" value="null" />
+                <element key="exit" value="null" />
+                <element key="create_function" value="null"/>
+                <element key="http_response_code" value="(PSR-7)"/>
+                <element key="header" value="(PSR-7)"/>
+                <element key="ini_set" value="null"/>
+                <element key="ini_alter" value="null"/>
+            </property>
+        </properties>
+    </rule-->
 
     <!-- Multiline functions should include one argument per line -->
     <rule ref="PEAR.Functions.FunctionCallSignature">
@@ -70,4 +95,7 @@
      </rule>
      <!-- Do not allow PHP closing tags because they can cause problems -->
      <rule ref="PSR2.Files.ClosingTag"/>
+
+     <!-- Force short array syntax -->
+     <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
 </ruleset>

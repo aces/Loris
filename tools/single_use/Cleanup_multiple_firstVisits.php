@@ -19,15 +19,13 @@ if (isset($argv[1]) && $argv[1] === "confirm") {
     $confirm = true;
 }
 
-$db = \Database::singleton();
-
 // Find CandIDs where there are multiple first visits
-$query_candID = "SELECT CandID 
-                  FROM `session` 
-                  WHERE VisitNo=1 
-                  GROUP BY CandID 
+$query_candID = "SELECT CandID
+                  FROM `session`
+                  WHERE VisitNo=1
+                  GROUP BY CandID
                   HAVING COUNT(CandID) > 1";
-$candIDs      = $db->pselect($query_candID, array());
+$candIDs      = $DB->pselect($query_candID, []);
 
 if (empty($candIDs)) {
     echo "No multiple first visits.\n";
@@ -36,22 +34,22 @@ if (empty($candIDs)) {
         // Order session IDs by date of visit
         echo "Multiple first visits detected for CandID $entry[CandID]\n";
         $candID          = $entry['CandID'];
-        $query_sessionID = "SELECT ID, VisitNo 
-                            FROM `session` 
-                            WHERE CandID=:candID 
+        $query_sessionID = "SELECT ID, VisitNo
+                            FROM `session`
+                            WHERE CandID=:candID
                             ORDER BY Date_visit";
-        $where           = array('candID' => $candID);
-        $sessionIDs      = $db->pselect($query_sessionID, $where);
+        $where           = ['candID' => $candID];
+        $sessionIDs      = $DB->pselect($query_sessionID, $where);
 
         // Reset visit number in order of date of visit
         $visitNo = 1;
         foreach ($sessionIDs as $result) {
             echo "      Changing visit number: $result[VisitNo] to $visitNo\n";
             $sessionID = $result['ID'];
-            $set       = array('VisitNo' => $visitNo);
-            $where_sessionID = array('ID' => $sessionID);
+            $set       = ['VisitNo' => $visitNo];
+            $where_sessionID = ['ID' => $sessionID];
             if ($confirm) {
-                $db->update('session', $set, $where_sessionID);
+                $DB->update('session', $set, $where_sessionID);
             }
             $visitNo++;
         }

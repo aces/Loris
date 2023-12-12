@@ -37,11 +37,11 @@ class Brainbrowser extends \NDB_Page
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-            array(
+            [
                 'imaging_browser_view_allsites',
                 'imaging_browser_phantom_allsites',
                 'imaging_browser_phantom_ownsite',
-            )
+            ]
         )
         || (
             $user->hasStudySite()
@@ -63,14 +63,14 @@ class Brainbrowser extends \NDB_Page
         $deps = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/brainbrowser/js/Brainbrowser.js",
                 $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
                 $baseURL . "/brainbrowser/js/three.min.js",
                 $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
                 $baseURL . "/brainbrowser/js/brainbrowser.config.js",
                 $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
-            )
+            ]
         );
     }
 

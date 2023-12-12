@@ -23,8 +23,14 @@ namespace LORIS;
  */
 class ImageCaveats
 {
+    private ?string $_severity;
+    private ?string $_header;
+    private ?string $_value;
+    private ?string $_validrange;
+    private ?string $_validregex;
+
     /**
-     * Contructor
+     * Constructor
      *
      * @param ?string $severity   Severity
      * @param ?string $header     Header

@@ -68,7 +68,7 @@ class Stats_Demographic extends \NDB_Form
      * @param array   $subcats          the value of subcats
      * @param ?array  $visits           the value of visits
      * @param string  $dropdownName     the value of dropdownName
-     * @param string  $dropdownOpt      the value of dropdownOpt
+     * @param array   $dropdownOpt      the value of dropdownOpt
      * @param string  $dropdownSelected the value of dropdownSelected
      * @param array   $centers          the value of centers
      * @param array   $data             the value of data
@@ -97,36 +97,55 @@ class Stats_Demographic extends \NDB_Form
     ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
-        $projectID = empty($projectID) ? null : $projectID;
-        $tpl_data  = array();
+        $projectID = empty($projectID) ? null : new \ProjectID($projectID);
+        $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
-        $smarty = new \Smarty_neurodb('statistics');
+        $smarty = new \Smarty_NeuroDB('statistics');
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject(intval($projectID));
-        $tpl_data['Subprojects']      = $tpl_var;
+        $tpl_var = \Utility::getCohortsForProject($projectID);
+        $tpl_data['Cohorts']          = $tpl_var;
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
         $tpl_data['DropdownSelected'] = $dropdownSelected;
-        $tpl_data['Centers']          = $centers ?? array();
+        $tpl_data['Centers']          = $centers ?? [];
+
+        $tpl_data['data'] = [];
+
         foreach ($data as $row) {
-            $subproj = $row['SubprojectID'];
+            $subproj = $row['CohortID'];
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits ?? array())
+            if (in_array($vl, $visits ?? [])
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
-                // Ensure $tpl_data['data'] is not null before continuing
-                $tpl_data['data'] = $tpl_data['data'] ?? array();
+                // Ensure keys are properly set before continuing
+                $this->setDefault($tpl_data, ['data', $subproj, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, 'total']);
+                $this->setDefault($tpl_data, ['data', $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, 'total']);
+                $this->setDefault($tpl_data, ['data', $C, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $C, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $C, $subcat]);
+                $this->setDefault($tpl_data, ['data', $C, 'total']);
+                $this->setDefault($tpl_data, ['data', $subcat]);
+                $this->setDefault($tpl_data, ['data', 'total']);
+
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
@@ -144,13 +163,38 @@ class Stats_Demographic extends \NDB_Form
                 $tpl_data['data'][$subcat]     += $row['val'];
                 $tpl_data['data']['total']     += $row['val'];
             }
-
         }
         $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch('table_statistics.tpl');
         return $html;
+    }
 
+    /**
+     * Stats_demographic function
+     * Check if keys in an array are defined
+     * and set default value otherwise (array|0)
+     *
+     * @param array $array   the array passed by reference
+     * @param array $indexes the indexes of the path to the value
+     *
+     * @return void
+     */
+    function setDefault(&$array, $indexes)
+    {
+        $total  = count($indexes)-1;
+        $parent = &$array;
+
+        foreach ($indexes as $i=>$index) {
+            if (!isset($parent[$index])) {
+                if ($i == $total) {
+                    $parent[$index] = 0;
+                } else {
+                    $parent[$index] = [];
+                }
+            }
+            $parent = &$parent[$index];
+        }
     }
 
     /**
@@ -161,8 +205,8 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getExistingVisitLabels();
-        $db     = \Database::singleton();
+        $visits = \Utility::getVisitList();
+        $db     = $this->loris->getDatabaseConnection();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;
@@ -178,12 +222,12 @@ class Stats_Demographic extends \NDB_Form
         $user           = $factory->user();
         $allProjectList = \Utility::getProjectList();
 
-        $projects     = array();
+        $projects     = [];
         $projects[''] = 'All Projects';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         if ($user->hasPermission('access_all_profiles')) {
@@ -196,26 +240,29 @@ class Stats_Demographic extends \NDB_Form
         $paramProject       = '';
 
         if (!empty($demographicProject)) {
-            $demographicProject = htmlspecialchars($demographicProject);
+            $demographicProject = intval($demographicProject);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $demographicProject,
-                    'Name' => $projects[$demographicProject] ?? '',
-                );
+                    'Name' => $projects["$demographicProject"] ?? '',
+                ];
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
 
-        //SUBPROJECTS
-        $subprojectQuery = '';
-        // Only search for subprojects if $demographicProject is a positive int.
+        //COHORTS
+        $cohortQuery = '';
+        $cohorts     = \Utility::getCohortList();
+        $this->tpl_data['Cohorts'] = $cohorts;
+        // Only search for cohorts if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
-            $subprojList = implode(',', array_keys($subprojects));
+            $cohorts     = \Utility::getCohortsForProject(
+                new \ProjectID($demographicProject)
+            );
+            $subprojList = implode(',', array_keys($cohorts));
             if (!empty($subprojList)) {
-                $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
+                $cohortQuery ="AND s.CohortID IN ($subprojList)";
             }
-            $this->tpl_data['Subprojects'] = $subprojects;
         }
 
         //SITES
@@ -248,20 +295,20 @@ class Stats_Demographic extends \NDB_Form
             WHERE CenterID <> '1'
 		    AND Study_site = 'Y'
 	            AND CenterID IN (" . $sitesString . ")",
-            array()
+            []
         );
 
-        $sites     = array();
+        $sites     = [];
         $sites[''] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
-                    $this->tpl_data['CurrentSite'] = array(
+                    $this->tpl_data['CurrentSite'] = [
                         'ID'   => $row['NumericID'],
                         'Name' => $row['LongName'],
-                    );
+                    ];
                 }
             }
         }
@@ -269,6 +316,7 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['Sites']    = $sites;
         $this->tpl_data['Projects'] = $projects;
         $this->tpl_data['Visits']   = $visits;
+        $this->tpl_data['Cohorts']  = $cohorts;
 
         /**
          * REGISTERED CANDIDATES ROW
@@ -276,7 +324,7 @@ class Stats_Demographic extends \NDB_Form
          * and should be safe from SQL injection
         **/
         $result = $db->pselect(
-            "SELECT s.subprojectid as rowid,
+            "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                           LEFT JOIN session s ON (s.CandID=c.CandID)
@@ -288,8 +336,8 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Active = 'Y'
                           $paramProject
                           $paramSite
-                      GROUP BY s.subprojectid",
-            $this->params ?? array()
+                      GROUP BY s.cohortid",
+            $this->params ?? []
         );
 
         $this->tpl_data['registered']['total'] = 0;
@@ -304,10 +352,12 @@ class Stats_Demographic extends \NDB_Form
 
         //PARTICIPANT STATUS ACTIVE
         $result = $db->pselect(
-            "SELECT s.subprojectid as rowid,
+            "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso
+                                    ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -315,12 +365,12 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1
-                               OR ps.participant_status IS NULL)
+                          AND (pso.Description='Active'
+                               OR pso.Description IS NULL)
                           $paramProject
                           $paramSite
-                      GROUP BY s.subprojectid",
-            $this->params ?? array()
+                      GROUP BY s.cohortid",
+            $this->params ?? []
         );
 
         $this->tpl_data['ps_active']['total'] = 0;
@@ -335,10 +385,12 @@ class Stats_Demographic extends \NDB_Form
 
         //PARTICIPANT STATUS INACTIVE
         $result = $db->pselect(
-            "SELECT s.subprojectid as rowid,
+            "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso
+                                      ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -346,11 +398,11 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND ps.participant_status=5
+                          AND pso.Description='Inactive'
                           $paramProject
                           $paramSite
-                      GROUP BY s.subprojectid",
-            $this->params ?? array()
+                      GROUP BY s.cohortid",
+            $this->params ?? []
         );
 
         $this->tpl_data['ps_inactive']['total'] = 0;
@@ -361,7 +413,7 @@ class Stats_Demographic extends \NDB_Form
 
         //MALE
         $result = $db->pselect(
-            "SELECT s.subprojectid as rowid,
+            "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
@@ -378,8 +430,8 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Sex='Male'
                           $paramProject
                           $paramSite
-                      GROUP BY s.subprojectid",
-            $this->params ?? array()
+                      GROUP BY s.cohortid",
+            $this->params ?? []
         );
 
         $this->tpl_data['sex_male']['total'] = 0;
@@ -394,7 +446,7 @@ class Stats_Demographic extends \NDB_Form
 
         //FEMALE
         $result = $db->pselect(
-            "SELECT s.subprojectid as rowid,
+            "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
@@ -411,8 +463,8 @@ class Stats_Demographic extends \NDB_Form
                           AND c.Sex='Female'
                           $paramProject
                           $paramSite
-                      GROUP BY s.subprojectid",
-            $this->params ?? array()
+                      GROUP BY s.cohortid",
+            $this->params ?? []
         );
 
         $this->tpl_data['sex_female']['total'] = 0;
@@ -429,7 +481,7 @@ class Stats_Demographic extends \NDB_Form
         $result = $db->pselect(
             "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
               FROM
-              (SELECT DISTINCT c.CandID, s.subprojectid as rowid,
+              (SELECT DISTINCT c.CandID, s.cohortid as rowid,
                           c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
@@ -444,10 +496,10 @@ class Stats_Demographic extends \NDB_Form
                           OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $paramProject
-                          $paramSite) 
+                          $paramSite)
                                 as res
               GROUP BY rowid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
@@ -461,22 +513,22 @@ class Stats_Demographic extends \NDB_Form
         //START BIG TABLE
         $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
-            array( '' => 'Recruit Breakdown by Sex'),
+            [ '' => 'Recruit Breakdown by Sex'],
             $instrumentList
         );
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars($demographicInstrument);
-            $subcategories         = array(
+            $subcategories         = [
                 'Complete',
                 'Incomplete',
-            );
+            ];
             $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
                         c.RegistrationCenterID as CenterID,
-                        s.SubprojectID as SubprojectID,
+                        s.CohortID as CohortID,
                         s.visit_label as VLabel
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
@@ -492,19 +544,19 @@ class Stats_Demographic extends \NDB_Form
                 AND f.Administration='All'
                 AND f.CommentID NOT LIKE 'DDE%'
                 $paramProject
-                GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.RegistrationCenterID, CohortID, VLabel, Subcat
                 UNION
                 SELECT count(*) as val,
                        'Incomplete' as Subcat,
                        c.RegistrationCenterID as CenterID,
-                       s.SubprojectID as SubprojectID,
+                       s.CohortID as CohortID,
                        s.visit_label as VLabel
                 FROM session s
                 JOIN candidate c USING(CandID)
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
-                WHERE s.Active='Y' 
+                WHERE s.Active='Y'
                     AND c.RegistrationCenterID <> '1'
                     AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
@@ -512,9 +564,9 @@ class Stats_Demographic extends \NDB_Form
                     $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
-                GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.RegistrationCenterID, CohortID, VLabel, Subcat
                 ",
-                $this->params ?? array()
+                $this->params ?? []
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -532,28 +584,28 @@ class Stats_Demographic extends \NDB_Form
                 $demographicProject
             );
         } else {
-            $subcategories = array(
+            $subcategories = [
                 'Male',
                 'Female',
-            );
+            ];
             $result        = $db->pselect(
                 "SELECT s.CenterID as CenterID,
-                        s.SubprojectID as SubprojectID,
+                        s.CohortID as CohortID,
                         s.visit_label as VLabel,
                         c.sex as Subcat,
                         count(s.CandID) as val
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE s.active='Y' AND s.CenterID <> '1' 
+                WHERE s.active='Y' AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
                 AND c.RegistrationProjectID IN (" . $projectsString . ")
                 AND c.RegistrationCenterID <> '1'
                 AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                $subprojectQuery)
+                $cohortQuery)
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                GROUP BY s.CenterID, SubprojectID, VLabel, Subcat",
-                array()
+                GROUP BY s.CenterID, CohortID, VLabel, Subcat",
+                []
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -585,10 +637,10 @@ class Stats_Demographic extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . '/statistics/js/table_statistics.js',
                 $baseURL . '/statistics/js/form_stats_demographic.js',
-            )
+            ]
         );
     }
     /**
@@ -603,7 +655,7 @@ class Stats_Demographic extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/statistics/css/statistics.css')
+            [$baseURL . '/statistics/css/statistics.css']
         );
     }
 

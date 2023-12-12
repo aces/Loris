@@ -49,48 +49,65 @@ class UploadHelper
     private $_values;
 
     /**
+     * The error message if something fails.
+     */
+    public $errorMessage;
+
+    /**
      * Setup uploading configurations.
      *
-     * @param object $user   The user uploading.
-     * @param array  $files  The $_FILES array content.
-     * @param array  $values The post message array content.
+     * @param \User $user   The user uploading.
+     * @param array $files  The $_FILES array content.
+     * @param array $values The post message array content.
      *
-     * @return array (success|error) with a message for the frontend.
+     * @return boolean      success/fail
      */
-    function setupUploading(\User $user, array $files, array $values) : array
-    {
+    function setupUploading(
+        \User $user,
+        array $files,
+        array $values
+    ) : bool {
         // Check if post.ini max_post configured for the file_size.
-        if (!isset($files['file']['tmp_name'])
-            || empty($files['file']['tmp_name'])
+        if (!isset($files['file'])
+            || empty($files['file']->getStream()->getMetadata('uri'))
         ) {
-            return array(
-                'error' =>
-                    'The server is not configured to receive a file this large.'
-            );
+            $this->errorMessage
+                = 'The server is not configured to receive a file this large.';
+            return false;
         }
         $this->_user   = $user;
-        $this->_bytes  = $files['file']['size'];
+        $this->_bytes  = $files['file']->getSize();
         $this->_values = $values;
 
         $this->_fileToUpload
-            = (object) array(
-                'file'        => $files['file']['name'],
-                'file_hash'   => $this->generateHash($files['file']['tmp_name']),
-                'mime_type'   => $this->getFileMimeType($files['file']['name']),
-                'tmp_name'    => $files['file']['tmp_name'],
+            = (object) [
+                'file'        => $files['file']->getClientFilename(),
+                'file_hash'   => $this->generateHash(
+                    $files['file']->getStream()->getMetadata('uri')
+                ),
+                'mime_type'   => $this->getFileMimeType(
+                    $files['file']->getClientFilename()
+                ),
+                'tmp_name'    => $files['file']->getStream()->getMetadata('uri'),
                 'size'        => $this->_bytes,
-                'inserted_by' => $this->_user->getData('UserID'),
+                'inserted_by' => $this->_user->getUsername(),
                 'description' => $this->_values['fileDescription'] ?? '',
-            );
+            ];
 
-        $this->setFullPath($this->_fileToUpload);
+        if (!$this->setFullPath($this->_fileToUpload)) {
+            $this->errorMessage
+                = 'The server is not configured for attachments';
+            return false;
+        }
 
         $DB = \NDB_Factory::singleton()->database();
         $DB->beginTransaction();
-        $this->registerFile($this->_fileToUpload);
+        $this->registerFile(
+            $this->_fileToUpload,
+            $files['file']->getStream()->getMetadata('uri')
+        );
         $this->endWithSuccess();
-
-        return array('success' => true);
+        return true;
     }
 
     /**
@@ -99,12 +116,12 @@ class UploadHelper
      *
      * @param object $fileToUpload The file to upload
      *
-     * @return void
-     * @throws \LorisException
+     * @return boolean success/fail
      */
-    function setFullPath(Object &$fileToUpload) : void
+    function setFullPath(Object &$fileToUpload) : bool
     {
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $attachment_data_dir = trim(
             rtrim(
                 $config->getSetting('IssueTrackerDataPath'),
@@ -118,11 +135,9 @@ class UploadHelper
             if (!is_dir($fileToUpload->full_path)) {
                 mkdir($fileToUpload->full_path, 0770, true);
             }
-        } else {
-            throw new \LorisException(
-                'Issue_Tracker attachments directory not writable.'
-            );
+            return true;
         }
+        return false;
 
     }
 
@@ -131,13 +146,14 @@ class UploadHelper
      *
      * @param object $fileToUpload The object containing
      *                             the $_FILES and the $_POST values.
+     * @param string $tmpFilePath  The temporary file path.
      *
      * @return void
      */
-    function registerFile(Object &$fileToUpload) : void
+    function registerFile(Object &$fileToUpload, string $tmpFilePath) : void
     {
         $DB     = \NDB_Factory::singleton()->database();
-        $values = array(
+        $values = [
             'issueID'     => $this->_values['issueID'],
             'file_hash'   => $fileToUpload->file_hash,
             'date_added'  => date('Y-m-d h:i:s', time()),
@@ -147,17 +163,16 @@ class UploadHelper
             'description' => $fileToUpload->description,
             'file_size'   => $fileToUpload->size,
             'mime_type'   => $fileToUpload->mime_type
-        );
+        ];
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
             $path = $fileToUpload->full_path . '/' . $fileToUpload->file_hash;
-            move_uploaded_file($_FILES['file']['tmp_name'], $path);
+            move_uploaded_file($tmpFilePath, $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
-            error_log($e->getMessage());
             throw new \LorisException(
-                'Could not write to the Database'
+                $e->getMessage()
             );
         }
     }
@@ -171,7 +186,7 @@ class UploadHelper
      */
     function getFileMimeType(string $file) : string
     {
-        $known_mime_types = array(
+        $known_mime_types = [
             'htm'  => 'text/html',
             'csv'  => 'text/csv',
             'exe'  => 'application/octet-stream',
@@ -187,7 +202,7 @@ class UploadHelper
             'html' => 'text/html',
             'png'  => 'image/png',
             'jpeg' => 'image/jpg',
-        );
+        ];
         if (strpos($file, '.') !== false) {
             $file_extension = strtolower(substr(strrchr($file, '.'), 1));
             if (array_key_exists($file_extension, $known_mime_types)) {
@@ -221,7 +236,8 @@ class UploadHelper
      */
     function endWithFailure() : void
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $DB->rollBack();
     }
 
@@ -233,7 +249,8 @@ class UploadHelper
      */
     function endWithSuccess() : void
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $DB->commit();
     }
 }

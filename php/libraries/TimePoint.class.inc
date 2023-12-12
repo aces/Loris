@@ -23,14 +23,15 @@ use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class TimePoint
+class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     /* NOTE If these are private variables then they should probably be
      * declared and scoped as such. var is equivalent to public.
      */
     var $_timePointInfo;
 
-    var $_stageOptions = array(
+    var $_stageOptions = [
         null,
         'Not Started',
         'Screening',
@@ -38,113 +39,142 @@ class TimePoint
         'Approval',
         'Subject',
         'Recycling Bin',
-    );
+    ];
 
-    var $_dynamicStageOptions = array(
+    var $_dynamicStageOptions = [
         'Screening',
         'Visit',
         'Approval',
-    );
+    ];
 
-    var $_statusOptions = array(
+    var $_statusOptions = [
         null,
         'Pass',
         'Failure',
         'Withdrawal',
         'In Progress',
-    );
+    ];
 
-    var $bvlQcTypes = array(
+    var $bvlQcTypes = [
         null,
         'Visual',
         'Hardcopy',
-    );
+    ];
 
-    var $bvlQcStatuses = array(
+    var $bvlQcStatuses = [
         null,
         'Complete',
-    );
+    ];
 
-    var $bvlQcExclusionStatuses = array(
+    var $bvlQcExclusionStatuses = [
         null,
         'Excluded',
         'Not Excluded',
-    );
+    ];
 
+
+    /**
+     * A DTO for TimePoint related data
+     */
+    protected ?TimePointData $data;
+
+    /**
+     * Construct a TimePoint object seeded with the data
+     * from the given DTO.
+     *
+     * @param ?TimePointData $data The Timepoint DTO
+     */
+    public function __construct(?TimePointData $data=null)
+    {
+        $this->data = $data;
+    }
 
     /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
      *
-     * @param integer $sessionID The ID of the TimePoint to retrieve from the
-     *                           database
+     * @param SessionID $sessionID The ID of the TimePoint to retrieve from the
+     *                             database
      *
      * @return TimePoint object representing $sessionID
      */
-    static function &singleton(int $sessionID)
+    static function &singleton(SessionID $sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList = array();
-        if (!isset($timePointList[$sessionID])) {
+        static $timePointList = [];
+        if (!isset($timePointList["$sessionID"])) {
             try {
-                $timePointList[$sessionID] = new TimePoint();
+                $timePointList["$sessionID"] = new TimePoint();
 
-                $timePointList[$sessionID]->select($sessionID);
+                $timePointList["$sessionID"]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[$sessionID]);
+                unset($timePointList["$sessionID"]);
                 throw $e;
             }
         }
 
-        return $timePointList[$sessionID];
+        return $timePointList["$sessionID"];
     }
 
 
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
-     * @param integer $sessionID The $sessionID to load.
+     * @param SessionID $sessionID The $sessionID to load.
      *
      * @return void (but side-effect loads current object.)
      */
-    function select(int $sessionID): void
+    function select(SessionID $sessionID): void
     {
-        $config         =& NDB_Config::singleton();
-        $useScreening   = $config->getSetting('useScreening');
+        $factory      = NDB_Factory::singleton();
+        $db           = $factory->database();
+        $config       = $factory->config();
+        $useScreening = $config->getSetting('useScreening');
         $screeningIndex = array_search('Screening', $this->_stageOptions);
         if ($useScreening != 'true' && $screeningIndex !== false) {
             unset($this->_stageOptions[$screeningIndex]);
             $this->_stageOptions = array_values($this->_stageOptions);
         }
 
-        // make a local reference to the Database object
-        $db =& Database::singleton();
-
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
-                         s.VisitNo, s.Visit_label, s.SubprojectID, s.Submitted,
+                         s.VisitNo, s.Visit_label, s.CohortID, s.Submitted,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
-                         pr.Name as ProjectName, p.Alias as SiteAlias
+                         pr.Name as ProjectName, p.Alias as SiteAlias,
+                         s.ProjectID as ProjectID
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $db->pselectRow($query, array('SID' => $sessionID));
+        $row   = $db->pselectRow(
+            $query,
+            ['SID' => $sessionID]
+        );
+
+        $this->data = new TimePointData(
+            $sessionID,
+            isset($row['ProjectID'])
+                ? new ProjectID($row['ProjectID'])
+                : null,
+            isset($row['CenterID'])
+                ? new \CenterID($row['CenterID'])
+                : null,
+        );
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $subprojectSettings   = $config->getSubprojectSettings(
-                intval($row['SubprojectID'])
+            $cohortSettings       = $config->getCohortSettings(
+                intval($row['CohortID'] ?? null)
             );
-            $title = $subprojectSettings['title'] ?? '';
-            $this->_timePointInfo['SubprojectTitle'] = $title;
+            $title = $cohortSettings['title'] ?? '';
+            $this->_timePointInfo['CohortTitle'] = $title;
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -160,10 +190,10 @@ class TimePoint
                             JOIN session s ON (s.ID=ss.SessionID)
                         WHERE s.ID=:sessionID AND s.Active='Y'";
 
-            $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
+            $statuses = $db->pselect($query, [":sessionID" => $sessionID]);
             foreach ($statuses as $row) {
                 if (!isset($this->_timePointInfo['status'])) {
-                    $this->_timePointInfo['status'] = array();
+                    $this->_timePointInfo['status'] = [];
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
             }
@@ -181,7 +211,7 @@ class TimePoint
                             LOWER(w.Visit_label)=LOWER(s.Visit_label)
                         )
                     WHERE s.ID=:sessionID",
-                array(":sessionID" => $sessionID)
+                [":sessionID" => $sessionID]
             );
 
         }
@@ -193,7 +223,7 @@ class TimePoint
      * Registers a new timepoint into the session table
      *
      * @param \Candidate   $candidate      The Candidate to create this timepoint for
-     * @param integer      $SubprojectID   The subprojectID of the new timepoint
+     * @param integer      $CohortID       The cohortID of the new timepoint
      * @param string|null  $nextVisitLabel The visit label of the timepoint
      *                                     being created. If null,
      *                                     consecutive V1, V2, etc will be
@@ -208,7 +238,7 @@ class TimePoint
      */
     static function createNew(
         \Candidate $candidate,
-        int $SubprojectID,
+        int $CohortID,
         ?string $nextVisitLabel,
         \Site $psc,
         \Project $project,
@@ -216,7 +246,7 @@ class TimePoint
     ): void {
 
         // insert into session set CandID=$candID,
-        // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
+        // CohortID=$CohortID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
         // specified here!
         $factory = NDB_Factory::singleton();
@@ -247,12 +277,12 @@ class TimePoint
             $language = array_key_first($langList);
         }
 
-        $insertData = array(
+        $insertData = [
             'CandID'          => $candidate->getCandID(),
-            'SubprojectID'    => $SubprojectID,
+            'CohortID'        => $CohortID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
-            'CenterID'        => $psc->getCenterID(),
+            'CenterID'        => $psc->getCenterID()->__toString(),
             'ProjectID'       => $project->getId(),
             'Current_stage'   => 'Not Started',
             'Submitted'       => 'N',
@@ -261,7 +291,7 @@ class TimePoint
             'Date_registered' => $today,
             'Date_active'     => $today,
             'languageID'      => $language,
-        );
+        ];
 
         // insert the data
         $db->insert('session', $insertData);
@@ -271,9 +301,10 @@ class TimePoint
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID  $candid       The candidate identifier
-     * @param integer $subprojectID The subprojectID
-     * @param string  $visitLabel   The visit label
+     * @param CandID     $candid    The candidate identifier
+     * @param \ProjectID $projectID The Project identifier
+     * @param integer    $cohortID  The cohortID
+     * @param string     $visitName The visit name
      *
      * @throws LorisException
      *
@@ -281,49 +312,40 @@ class TimePoint
      */
     static function isValidVisitLabel(
         CandID $candid,
-        int $subprojectID,
-        string $visitLabel
+        \ProjectID $projectID,
+        int $cohortID,
+        string $visitName
     ): void {
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
-        if (empty($visitLabel)) {
+        if (empty($visitName)) {
             throw new \LorisException(
                 'A visit label is required.'
             );
         }
 
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $isValid            = false;
-        foreach (\Utility::associativeToNumericArray($visitLabelSettings)
-            as $visitLabelSetting) {
-            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
-                $items = \Utility::associativeToNumericArray(
-                    $visitLabelSetting['labelSet']['item']
-                );
-                foreach ($items as $item) {
-                    if ($item['@']['value'] == $visitLabel) {
-                        $isValid = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if (!$isValid) {
+        // Check if visit label exists for this cohort
+        if (!array_key_exists(
+            $visitName,
+            \Utility::getVisitsForCohort(
+                $cohortID
+            )
+        )
+        ) {
             throw new \LorisException(
-                'This visit label is not valid for this subproject.'
+                'This visit label is not valid for this cohort.'
             );
         }
 
         $candidate =& \Candidate::singleton($candid);
 
+        // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
 
         //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($visitLabel, $used_label) == 0) {
+        foreach ($timePointArray AS $used_name) {
+            if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
                     'This visit label is not unique.'
                 );
@@ -378,15 +400,15 @@ class TimePoint
             );
         }
 
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'session',
             $newData,
-            array(
+            [
                 'ID' => $this->getData('SessionID'),
-            )
+            ]
         );
         // this select updates the timepoint object
-        $this->select(intval($this->getData('SessionID')));
+        $this->select($this->getSessionID());
         return true;
     }
 
@@ -407,15 +429,11 @@ class TimePoint
     /**
      * Returns the SessionID for this visit.
      *
-     * @return integer The ID for this session.
+     * @return SessionID The ID for this session.
      */
-    function getSessionID(): int
+    function getSessionID(): SessionID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo["SessionID"]);
+        return $this->data->getSessionID();
     }
 
     /**
@@ -431,15 +449,11 @@ class TimePoint
     /**
      * Returns the CenterID for this visit.
      *
-     * @return integer the ID representing the PSC for this visit
+     * @return \CenterID
      */
-    function getCenterID(): int
+    function getCenterID(): \CenterID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo['CenterID']);
+        return $this->data->getCenterID();
     }
 
     /**
@@ -467,18 +481,18 @@ class TimePoint
     }
 
     /**
-     * Returns the SubprojectID of this timepoint.
+     * Returns the CohortID of this timepoint.
      *
-     * @return int|null the SubprojectID, or null
+     * @return int|null the CohortID, or null
      */
-    function getSubprojectID(): ?int
+    function getCohortID(): ?int
     {
         /* _timePointInfo contains information that comes from the database
          * which returns values in string format. Intval is used here to
          * ensure we return a numerical ID instead of its string representation.
          */
-        if (is_numeric($this->_timePointInfo["SubprojectID"])) {
-            return intval($this->_timePointInfo["SubprojectID"]);
+        if (is_numeric($this->_timePointInfo["CohortID"])) {
+            return intval($this->_timePointInfo["CohortID"]);
         }
         return null;
     }
@@ -486,9 +500,9 @@ class TimePoint
     /**
      * Gets this timepoint's screening status.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getScreeningStatus(): string
+    function getScreeningStatus(): ?string
     {
         return $this->_timePointInfo["Screening"];
     }
@@ -727,10 +741,10 @@ class TimePoint
      */
     function setCurrentStage(): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // this class does not handle Subject & Recycling Bin stage at the moment
-        if (in_array($this->getCurrentStage(), array('Subject', 'Recycling Bin'))) {
+        if (in_array($this->getCurrentStage(), ['Subject', 'Recycling Bin'])) {
             return;
         }
 
@@ -741,11 +755,11 @@ class TimePoint
                 // delete from conflicts_unresolved if marked Recycling Bin
                 $commentIDs = $db->pselect(
                     "SELECT CommentID FROM flag WHERE SessionID=:SID",
-                    array('SID' => $this->getSessionID())
+                    ['SID' => $this->getSessionID()]
                 );
                 foreach ($commentIDs as $commentID) {
-                    $deleteWhere1 = array('CommentId1' => $commentID);
-                    $deleteWhere2 = array('CommentId2' => $commentID);
+                    $deleteWhere1 = ['CommentId1' => $commentID];
+                    $deleteWhere2 = ['CommentId2' => $commentID];
                     $db->delete('conflicts_unresolved', $deleteWhere1);
                     $db->delete('conflicts_unresolved', $deleteWhere2);
                 }
@@ -768,15 +782,15 @@ class TimePoint
         $today = date("Y-m-d");
 
         // update session table
-        $update_columns = array(
+        $update_columns = [
             "Date_stage_change" => $today,
             'Current_stage'     => $newCurrentStage,
-        );
+        ];
 
         $db->update(
             'session',
             $update_columns,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -794,15 +808,16 @@ class TimePoint
      */
     function startStage(string $stage): void
     {
-        $setArray = array(
+        $setArray = [
             'Current_stage'     => $stage,
             'Date_stage_change' => date('Y-m-d'),
-        );
+        ];
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null
         ) {
             $setArray[$stage] = 'In Progress';
+            $setArray['Date_status_change'] = date('Y-m-d');
         }
 
         if ($setArray['Current_stage'] == 'Approval') {
@@ -824,19 +839,19 @@ class TimePoint
      */
     function setBVLQCType(string $type): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         if (!in_array($type, $this->bvlQcTypes)) {
             throw new Exception("You need to specify a valid BVL QC Type");
         }
 
-        $setArray = array('BVLQCType' => $type);
+        $setArray = ['BVLQCType' => $type];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -853,7 +868,7 @@ class TimePoint
      */
     function setBVLQCStatus(string $status): void
     {
-        $db =& Database::singleton();
+        $db =& \NDB_Factory::singleton()->database();
 
         if (!in_array($status, $this->bvlQcStatuses)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -867,13 +882,13 @@ class TimePoint
             throw new Exception("Cannot complete QC until the type is defined");
         }
 
-        $setArray = array('BVLQCStatus' => $status);
+        $setArray = ['BVLQCStatus' => $status];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -890,7 +905,7 @@ class TimePoint
      */
     function setBVLQCExclusion(string $status): bool
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // check the status
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
@@ -901,13 +916,13 @@ class TimePoint
         }
 
         // fields to update
-        $setArray = array('BVLQCExclusion' => $status);
+        $setArray = ['BVLQCExclusion' => $status];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -921,7 +936,7 @@ class TimePoint
      *
      * Rules:  1. User must have permission.
      *         2. If the stage to be started is a testing stage, then there can
-     *            be no other timepoints of the same subproject that are in a
+     *            be no other timepoints of the same cohort that are in a
      *            testing stage (screening or visit).
      *         3. If the stage to be started is not a testing stage, the the
      *            current stage status cannot be "In Progress".
@@ -937,7 +952,7 @@ class TimePoint
         if ($currentStage == 'Not Started') {
             return true;
         } elseif ($currentStage == 'Screening'
-            && in_array($this->getData('Screening'), array('Pass', 'Failure'))
+            && in_array($this->getData('Screening'), ['Pass', 'Failure'])
         ) {
             return true;
         }
@@ -945,7 +960,7 @@ class TimePoint
     }
 
     /**
-     * Returns either EDC or DOB depending on the settings of the subproject
+     * Returns either EDC or DOB depending on the settings of the cohort
      * that this timepoint belongs to.
      *
      * @return string|null date YYYY-MM-DD
@@ -953,10 +968,12 @@ class TimePoint
     function getEffectiveDateOfBirth(): ?string
     {
         $candidate = \Candidate::singleton($this->getCandID());
-        if (!is_null($this->getSubprojectID())) {
+        if (!is_null($this->getCohortID())) {
             $settings = \NDB_Config::singleton()
-                ->getSubprojectSettings($this->getSubprojectID());
-            if ($settings['options']['useEDC'] == "true") {
+                ->getCohortSettings($this->getCohortID());
+            if (isset($settings['options']['useEDC'])
+                && $settings['options']['useEDC'] == "true"
+            ) {
                 return $candidate->getCandidateEDC();
             }
         }
@@ -1021,7 +1038,7 @@ class TimePoint
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     * @return \LORIS\Data\Models\RecordingDTO[] A traversable of RecordingDTO.php
      */
     public function getRecordings(\User $user): array
     {
@@ -1031,7 +1048,7 @@ class TimePoint
             );
 
         $filter = new HasAnyPermissionOrUserSiteMatch(
-            array('electrophysiology_browser_view_allsites')
+            ['electrophysiology_browser_view_allsites']
         );
 
         $provisioner = $provisioner->filter($filter);
@@ -1110,10 +1127,10 @@ class TimePoint
              WHERE
                tarchive.SessionID = :v_sessionid AND
                tarchive.ArchiveLocation LIKE :v_basename',
-            array(
+            [
                 'v_sessionid' => $this->getSessionID(),
                 'v_basename'  => '%' . $tarname,
-            )
+            ]
         );
 
         if (empty($row)) {
@@ -1142,7 +1159,7 @@ class TimePoint
              WHERE
                ID = :v_sessionid
             ',
-            array('v_sessionid' => $this->getSessionID())
+            ['v_sessionid' => $this->getSessionID()]
         );
 
         return new \LORIS\TimePointImagingQC(
@@ -1172,7 +1189,7 @@ class TimePoint
              WHERE
                SessionID = :v_sessionid
             ',
-            array('v_sessionid' => $this->getSessionID())
+            ['v_sessionid' => $this->getSessionID()]
         );
         return $result;
     }
@@ -1187,6 +1204,33 @@ class TimePoint
         return \NDB_Factory::singleton()->project(
             $this->getData('ProjectName')
         );
+    }
+
+    /**
+     * Returns the ProjectID for this TimePoint
+     *
+     * @return \ProjectID
+     */
+    public function getProjectID() : \ProjectID
+    {
+        return $this->data->getProjectID();
+    }
+
+    /**
+     * Implements the AccessibleResource interface. A TimePoint can
+     * be accessed by a user if it has a project and a site in common.
+     *
+     * @param \User $user The user whose access should be validated.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user) : bool
+    {
+        $centers = $user->getCenterIDs();
+
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
+        $centerMatch = in_array($this->getCenterID(), $centers);
+        return $projMatch && $centerMatch;
     }
 }
 

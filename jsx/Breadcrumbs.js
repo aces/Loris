@@ -7,7 +7,6 @@
  * @author Alex Ilea
  * @author Jake Penny
  * @version 2.0.0
- *
  */
 
 import React, {Component} from 'react';
@@ -18,6 +17,10 @@ import PropTypes from 'prop-types';
  * Used for navigation on all Loris pages.
  */
 class Breadcrumbs extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -28,6 +31,9 @@ class Breadcrumbs extends Component {
     this.checkScreenSize = this.checkScreenSize.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
@@ -35,15 +41,20 @@ class Breadcrumbs extends Component {
     }
   }
 
+  /**
+   * Invoked immediately before a component is unmounted and destroyed.
+   */
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.checkScreenSize);
     }
   }
 
+  /**
+   * Used to check to current window size and
+   * sets the number of breadcrumbs to show
+   */
   checkScreenSize() {
-    // Used to check to current window size and
-    // sets the number of breadcrumbs to show
     const windowWidth = window.innerWidth;
     let displayCount = 4;
 
@@ -64,6 +75,11 @@ class Breadcrumbs extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const baseURL = this.props.baseURL;
     const breadcrumbs = [];
@@ -75,17 +91,24 @@ class Breadcrumbs extends Component {
     for (let i = 0; i < this.props.breadcrumbs.length; i++) {
       const element = this.props.breadcrumbs[i];
       const url = baseURL + element.query;
+      const onClick=this.props.breadcrumbs[i].onClick
+        ? this.props.breadcrumbs[i].onClick
+        : () => {};
+
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
           <li key={'drop_' + i}>
-            <a href={url}>
+            <a href={url} onClick={onClick}>
               {element.text}
             </a>
           </li>
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
+          <a key={'crumb_' + i}
+             href={url}
+             className='btn btn-primary'
+             onClick={onClick}>
             <div>
               {element.text}
             </div>
@@ -123,14 +146,12 @@ class Breadcrumbs extends Component {
     );
   }
 }
+
 Breadcrumbs.propTypes = {
   baseURL: PropTypes.string,
   breadcrumbs: PropTypes.array,
 };
 
-let RBreadcrumbs = React.createFactory(Breadcrumbs);
-
 window.Breadcrumbs = Breadcrumbs;
-window.RBreadcrumbs = RBreadcrumbs;
 
 export default Breadcrumbs;

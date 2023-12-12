@@ -30,29 +30,17 @@ require_once __DIR__ .
  */
 class ExaminerTest extends LorisIntegrationTest
 {
-
-    /**
-     * UI elements and locations
-     * Breadcrumb - 'Examiner'
-     * Button
-     * Table headers
-     */
-    private $_loadingUI
-        =  array(
-            'Examiner'         => '#bc2 > a:nth-child(2) > div',
-            'Selection Filter' => '#lorisworkspace > div.row > '.
-                                  'div.col-sm-12.col-md-7 > div > div.panel-heading',
-            'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
-                                  'div > div:nth-child(1)',
-            'Add'              => '#examiner > div:nth-child(3) > div > button',
-        );
+    static $examnier = 'input[name="examiner"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
 
     /**
      * Insert testing data
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -61,16 +49,16 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "examiners",
-            array('full_name' => 'Test_Examiner')
+            ['full_name' => 'Test_Examiner']
         );
 
         $this->DB->delete(
             "psc",
-            array('Name' => 'TEST_Site')
+            ['Name' => 'TEST_Site']
         );
          parent::tearDown();
     }
@@ -82,17 +70,22 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testResultTableLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
-        $tableText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Examiner", $tableText);
-        $this->assertContains("Site", $tableText);
-        $this->assertContains("Radiologist", $tableText);
-
+        $this->assertStringContainsString("Examiner", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -103,12 +96,19 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -119,12 +119,19 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesLoadWithoutSuperuser()
     {
-        $this->setupPermissions(array('superuser'));
+        $this->setupPermissions(['superuser']);
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -135,14 +142,11 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerFilterClearForm()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->safeGet($this->url . "/examiner/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("examiner")
         )->sendKeys("XXXX");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
         $bodyText = $this->safeFindElement(
@@ -157,58 +161,33 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerAddExaminer()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         //insert a new exmainer with name "Test_Examiner" and radiologist
         //in the TEST_Site.
         $this->safeGet($this->url . "/examiner/");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#default-panel > div > div > div.table-header ".
+                "> div > div > div:nth-child(2) > button:nth-child(1)"
+            )
+        );
         $this->safeFindElement(
             WebDriverBy::Name("addName")
         )->sendKeys("Test_Examiner");
-        $this->safeFindElement(
-            WebDriverBy::Name("addRadiologist")
-        )->click();
         $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("Montreal");
-        $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::Name("fire_away")
-        )->click();
-        $this->safeGet($this->url . "/examiner/");
-        //search the examiner which inserted
-        $this->webDriver->findElement(
-            WebDriverBy::Name("examiner")
-        )->sendKeys("Test_Examiner");
-        $this->webDriver->findElement(
-            WebDriverBy::Name("filter") // Filter button removed in
-        )->click();                     // Reactified menu filter
-        $text = $this->webDriver->executescript(
-            "return document.querySelector".
-                "('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a')".
-                ".textContent"
-        );
-        $this->assertContains("Test_Examiner", $text);
-    }
-    /**
-     * Testing UI elements when page loads
-     *
-     * @return void
-     */
-    function testPageUIs()
-    {
-        $this->markTestSkipped(
-            'Skipped tests until Travis and React get along better'
         );
         $this->safeGet($this->url . "/examiner/");
-        foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains($key, $text);
-        }
+        $this->_filterTest(
+            self::$examnier,
+            self::$display,
+            self::$clearFilter,
+            'Test_Examiner',
+            '1 row'
+        );
     }
-
 
 }
 

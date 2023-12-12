@@ -13,21 +13,20 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.141.59-zirconium
     volumes:
       - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
-    environment:
-      - SE_OPTS=-enablePassThrough false
 
   web:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
-      - ./test/test_instrument:/app/project/instruments
+      - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
+      - ./raisinbread/instruments:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -37,7 +36,7 @@ services:
   unit-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
     working_dir: /app
@@ -50,13 +49,14 @@ services:
   integration-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
       - SELENIUM_REQUIRED=true
+      - DOCKER_WEB_SERVER=http://web:8000
     depends_on:
       - db
       - selenium
@@ -64,7 +64,7 @@ services:
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox-debug:2.53.1
+    image: selenium/standalone-firefox-debug:3.141.59-zirconium
     links:
       - web-debug:web
     ports:
@@ -73,7 +73,7 @@ services:
   web-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
@@ -88,7 +88,7 @@ services:
   unit-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
     working_dir: /app
@@ -103,7 +103,7 @@ services:
   integration-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
     working_dir: /app

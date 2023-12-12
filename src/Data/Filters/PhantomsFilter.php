@@ -37,7 +37,15 @@ class PhantomsFilter implements Filter
      */
     public function filter(\User $user, DataInstance $resource) : bool
     {
-        if (!$resource->isPhantom()) {
+        // phan only understands method_exists on simple variables, not
+        // Assigning to a variable is the a workaround
+        // for false positive 'getCenterIDs doesn't exist errors suggested
+        // in https://github.com/phan/phan/issues/2628
+        $res = $resource;
+
+        '@phan-var object $res';
+        if (method_exists($res, 'isPhantom')
+            && !$res->isPhantom()) {
             // This filter only have jurisdiction over phantom images.
             return true;
         }
@@ -45,7 +53,9 @@ class PhantomsFilter implements Filter
             return true;
         }
 
-        if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
+        if ($resource instanceof \LORIS\StudyEntities\SiteHaver
+            && $user->hasPermission('imaging_browser_phantom_ownsite')
+        ) {
             return $user->hasCenter($resource->getCenterID());
         }
 

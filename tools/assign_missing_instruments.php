@@ -15,16 +15,16 @@
  * Usage: php assign_missing_instruments.php [Visit_label] [confirm]
  *
  * Example: php assign_missing_instruments.php 18month
- * (Will use regular mode and print the missing instruments)
+ * (Will use regular mode and print the missing instruments
+ * for the specified timepoint)
  *
  * Example: php assign_missing_instruments.php 18month confirm
- * (Will use confirm mode and assign the missing instruments)
- *
- * Note:  As per ... only timepoints in the 'Visit' stage are examined.
+ * (Will use confirm mode and assign the missing instruments
+ * for the specified timepoint)
  *
  * Note: This tool will NOT remove instruments that do exist in the
  * assigned battery but have been removed from the battery lookup table (or
- * set to Active=N).  This behavior is intended, instruments should NEVER be
+ * set to Active=N).  This behaviour is intended, instruments should NEVER be
  * removed.  Ever.
  *
  * PHP version 7
@@ -60,7 +60,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB = Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $visit_label = $argv[1];
 } else {
@@ -68,7 +68,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
         "SELECT DISTINCT Visit_label FROM session
         WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label
         NOT LIKE 'Vsup%' AND COALESCE(Submitted,'N')='N'  ",
-        array()
+        []
     );
 }
 
@@ -87,11 +87,11 @@ function populateVisitLabel($result, $visit_label)
     $battery = new NDB_BVL_Battery;
 
     // select a specific time point (sessionID) for the battery
-    $battery->selectBattery($result['ID']);
-    $timePoint = TimePoint::singleton($result['ID']);
+    $sessionID = new \SessionID(strval($result['ID']));
+    $battery->selectBattery($sessionID);
+    $timePoint = TimePoint::singleton($sessionID);
 
-    $DB        = Database::singleton();
-    $candidate = Candidate::singleton(new CandID($result['CandID']));
+    $candidate         = Candidate::singleton(new CandID($result['CandID']));
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
     if ($result_firstVisit == $visit_label) {
@@ -101,17 +101,13 @@ function populateVisitLabel($result, $visit_label)
     //To assign missing instruments to all sessions, sent to DCC or not.
     $defined_battery =$battery->lookupBattery(
         $battery->age,
-        $result['subprojectID'],
+        $result['cohortID'],
         $timePoint->getCurrentStage(),
         $visit_label,
         $timePoint->getCenterID(),
         $isFirstVisit
     );
-    $actual_battery  =$battery->getBattery(
-        $timePoint->getCurrentStage(),
-        $result['subprojectID'],
-        $visit_label
-    );
+    $actual_battery  =$battery->getBattery();
 
     $diff = array_unique(array_diff($defined_battery, $actual_battery));
     if (!empty($diff)) {
@@ -119,9 +115,17 @@ function populateVisitLabel($result, $visit_label)
         $timePoint->getVisitLabel()."\nMissing Instruments:\n";
         print_r($diff);
     }
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
+        );
     if ($confirm === true) {
         foreach ($diff as $test_name) {
-            $battery->addInstrument($test_name);
+            $battery->addInstrument($lorisinstance, $test_name);
         }
     }
 
@@ -130,21 +134,21 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query ="SELECT s.ID, s.subprojectID, s.CandID from session 
-            s LEFT JOIN candidate c USING (CandID) 
+    $query ="SELECT s.ID, s.cohortID, s.CandID from session
+            s LEFT JOIN candidate c USING (CandID)
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
-    $where = array('vl' => $argv[1]);
+    $where = ['vl' => $argv[1]];
 
     $results = $DB->pselect($query, $where);
     foreach ($results as $result) {
         populateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s 
-            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
+    $query   ="SELECT s.ID, s.cohortID, s.Visit_label, s.CandID from session s
+            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y'
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
-    $results = $DB->pselect($query, array());
+    $results = $DB->pselect($query, []);
     foreach ($results as $result) {
         populateVisitLabel($result, $result['Visit_label']);
     }

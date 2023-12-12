@@ -1,16 +1,4 @@
 <?php
-/**
- * This file contains the NDB_Menu_Filter_battery_manager class
- *
- * PHP Version 7
- *
- * @category Module
- * @package  Battery_Manager
- * @author   Victoria Foing <victoria.foing@mcin.ca>
- * @author   Henri Rabalais <henri.rabalais@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\battery_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -82,9 +70,9 @@ class Battery_Manager extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/battery_manager/js/batteryManagerIndex.js",
-            )
+            ]
         );
     }
 }

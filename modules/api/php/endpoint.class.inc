@@ -16,8 +16,7 @@ namespace LORIS\Api;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
-
-
+use \LORIS\Http\Endpoint as LORISEndpoint;
 /**
  * An abstract class for common concerns of different API endpoints.
  *
@@ -27,7 +26,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-abstract class Endpoint implements RequestHandlerInterface
+abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
 {
     /**
      * Return an array of valid HTTP methods for this endpoint
@@ -45,16 +44,13 @@ abstract class Endpoint implements RequestHandlerInterface
     abstract protected function supportedVersions() : array;
 
     /**
-     * An API endpoint overrides the default LORIS middleware to remove the
-     * PageDecorationMiddleware, since the API only deals with JSON.
-     *
-     * It also acts as its own middleware by validating that an endpoint supports
-     * both the version of the API passed, and the HTTP method request type.
+     * An API endpoint overrides the default LORIS Endpoint to add checks for
+     * supported version(s).
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 request handler
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return ResponseInterface
      */
     public function process(
         ServerRequestInterface $request,
@@ -63,13 +59,11 @@ abstract class Endpoint implements RequestHandlerInterface
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
+            // If it's not supported by a version of the API, that means the
+            // endpoint for that version should be not found
+            return new \LORIS\Http\Response\JSON\NotFound('Unsupported version');
         }
 
-        if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
-            return (new \LORIS\Middleware\ETag())->process($request, $handler);
-        }
-
-        return $handler->handle($request);
+        return parent::process($request, $handler);
     }
 }

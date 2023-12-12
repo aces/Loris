@@ -41,20 +41,29 @@ class UserProjectMatch implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        if (method_exists($resource, 'getProjectIDs')) {
+        // phan only understands method_exists on simple variables, not
+        // Assigning to a variable is the a workaround
+        // for false positive 'getCenterIDs doesn't exist errors suggested
+        // in https://github.com/phan/phan/issues/2628
+        $res = $resource;
+        '@phan-var object $res';
+
+        if (method_exists($res, 'getProjectIDs')) {
             // If the Resource belongs to multiple ProjectIDs, the user can
             // access the data if the user is part of any of those projects.
-            $resourceProjects = $resource->getProjectIDs();
+            $resourceProjects = $res->getProjectIDs();
             foreach ($resourceProjects as $project) {
                 if ($user->hasProject($project)) {
                     return true;
                 }
             }
             return false;
-        } elseif (method_exists($resource, 'getProjectID')) {
-            $resourceProject = $resource->getProjectID();
+        } elseif (method_exists($res, 'getProjectID')) {
+            $resourceProject = $res->getProjectID();
             if (!is_null($resourceProject)) {
-                return $user->hasProject($resourceProject);
+                return $user->hasProject(
+                    new \ProjectID(strval($resourceProject))
+                );
             }
             // We don't know if the resource thought a null ProjectID
             // should mean "no one can access it" or "anyone can access

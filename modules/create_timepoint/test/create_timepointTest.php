@@ -32,7 +32,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
     }
@@ -57,12 +57,20 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         $this->safeGet(
             $this->url . "/create_timepoint/".
-            "?candID=900000&identifier=900000&subprojectID=1"
+            "?candID=900000&identifier=900000&cohortID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -73,11 +81,12 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'Stale', 'V1');
-        $bodyText = $this->webDriver->findElement(
+        $this->_createTimepoint("900000", "Stale", "V2");
+        $this->safeGet($this->url . "/900000/");
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("New time point successfully registered", $bodyText);
+        $this->assertStringContainsString("900000", $bodyText);
 
     }
 
@@ -85,44 +94,43 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * Create a timepoint with three parameters.
      *
      * @param string $canID      ID of candidate
-     * @param string $subproject text of subproject
+     * @param string $cohort     text of cohort
      * @param string $visitlabel text of visit label
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
+    private function _createTimepoint($canID, $cohort, $visitlabel)
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
+        $select  = $this->safeFindElement(WebDriverBy::Name("cohort"));
         $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
+        $element->selectByVisibleText($cohort);
+        $this->safeFindElement(
+            WebDriverBy::Name("visit")
         )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::Name("fire_away")
-        )->click();
-        sleep(1);
+        );
     }
 
 
     /**
-     * Tests that, create a timepoint and input a empty subproject
+     * Tests that, create a timepoint and input a empty cohort
      * get Error message
      *
      * @return void
      */
-    function testCreateTimepointErrorEmptySubproject()
+    function testCreateTimepointErrorEmptyCohort()
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
+        $this->safeFindElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "New time point successfully registered.",
             $bodyText
         );
@@ -135,15 +143,18 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     public function testCreateTimepointPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 }

@@ -46,12 +46,12 @@ class Statistics extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
                  FROM StatisticsTabs
                  ORDER BY OrderNo",
-            array()
+            []
         );
 
     }
@@ -69,9 +69,9 @@ class Statistics extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/statistics/js/statistics.js",
-            )
+            ]
         );
     }
     /**
@@ -86,7 +86,7 @@ class Statistics extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

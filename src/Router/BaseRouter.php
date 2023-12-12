@@ -30,8 +30,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $projectdir;
-    protected $moduledir;
+    protected $loris;
     protected $user;
 
     /**
@@ -44,9 +43,15 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function __construct(\User $user, string $projectdir, string $moduledir)
     {
-        $this->user       = $user;
-        $this->projectdir = $projectdir;
-        $this->moduledir  = $moduledir;
+        $this->user  = $user;
+        $this->loris = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+             $projectdir . "/modules",
+             $moduledir,
+            ]
+        );
     }
 
     /**
@@ -66,7 +71,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
         $path    = preg_replace("/\/$/", "", $path);
-        $request = $request->withAttribute("user", $this->user);
+        $request = $request->withAttribute("user", $this->user)
+            ->withAttribute("loris", $this->loris);
+
         if ($path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
@@ -84,9 +91,21 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
-        if (is_dir($this->moduledir . "/" . $modulename)
-            || is_dir($this->projectdir . "/modules/" . $modulename)
-        ) {
+
+        $factory           = \NDB_Factory::singleton();
+        $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
+        $logSettings       = $this->loris->getConfiguration()->getLogSettings();
+        $exceptionloglevel = $logSettings->getExceptionLogLevel();
+
+        if ($exceptionloglevel != "none") {
+            $ehandler->setLogger(
+                new \LORIS\Log\ErrorLogLogger($exceptionloglevel)
+            );
+        } else {
+            $ehandler->setLogger(new \PSR\Log\NullLogger);
+        }
+
+        if ($this->loris->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
 
@@ -96,41 +115,56 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
-            $factory = \NDB_Factory::singleton();
             $factory->setBaseURL($baseurl);
 
-            $module  = \Module::factory($modulename);
+            $module = $this->loris->getModule($modulename);
+            $module->registerAutoloader();
+            $requestloglevel = $logSettings->getRequestLogLevel();
+            if ($requestloglevel != "none") {
+                $module->setLogger(
+                    new \LORIS\Log\ErrorLogLogger($requestloglevel)
+                );
+            } else {
+                $module->setLogger(new \PSR\Log\NullLogger);
+            }
             $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
-            return $mr->handle($request);
+            return $ehandler->process($request, $mr);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
-            // FIXME: This assumes the baseURL is under /
-            $path    = $uri->getPath();
             $baseurl = $uri->withPath("")->withQuery("");
 
-            $factory = \NDB_Factory::singleton();
             $factory->setBaseURL($baseurl);
             if (count($components) == 1) {
                 $request = $request
-                ->withAttribute("baseurl", $baseurl->__toString())
-                ->withAttribute("CandID", $components[0]);
-                $module  = \Module::factory("timepoint_list");
-                $mr      = new ModuleRouter($module);
-                return $mr->handle($request);
+                    ->withAttribute("baseurl", $baseurl->__toString())
+                    ->withAttribute("CandID", $components[0]);
+
+                $module = $this->loris->getModule("timepoint_list");
+                $module->registerAutoloader();
+
+                $requestloglevel = $logSettings->getRequestLogLevel();
+                if ($requestloglevel != "none") {
+                    $module->setLogger(
+                        new \LORIS\Log\ErrorLogLogger($requestloglevel)
+                    );
+                } else {
+                    $module->setLogger(new \PSR\Log\NullLogger);
+                }
+                $mr = new ModuleRouter($module);
+                return $ehandler->process($request, $mr);
             }
         }
 
         // Fall through to 404. We don't have any routes that go farther
         // than 1 level..
-        return (new \LORIS\Middleware\PageDecorationMiddleware(
-            $this->user
-        ))->process(
-            $request,
-            new NoopResponder(new \LORIS\Http\Error($request, 404))
-        );
+        return (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
+                ->process(
+                    $request,
+                    new NoopResponder(new \LORIS\Http\Error($request, 404))
+                );
     }
 }

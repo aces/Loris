@@ -3,7 +3,7 @@
         <ul class="nav nav-tabs">
             {foreach from=$StatsTabs item=tab name=tabs}
             <li class="statsTab{if $smarty.foreach.tabs.first} active onLoad{/if}">
-                <a class="statsTabLink" value="{$baseurl}/{$tab.ModuleName}/{$tab.SubModuleName}/?dynamictabs=dynamictabs">{$tab.Description}</a>
+                <a class="statsTabLink" value="{$baseurl|default}/{$tab.ModuleName}/{$tab.SubModuleName}/?dynamictabs=dynamictabs">{$tab.Description}</a>
             </li>
             {/foreach}
         </ul>
@@ -17,7 +17,7 @@
         <ul class="list-group" style="display:none" id="tabsContent">
             {foreach from=$StatsTabs item=tab}
             <li class="statsTab list-group-item">
-                <a class="statsTabLink" value="{$baseurl}/{$tab.ModuleName}/{$tab.SubModuleName}/?dynamictabs=dynamictabs">{$tab.Description}</a>
+                <a class="statsTabLink" value="{$baseurl|default}/{$tab.ModuleName}/{$tab.SubModuleName}/?dynamictabs=dynamictabs">{$tab.Description}</a>
             </li>
             {/foreach}
         </ul>

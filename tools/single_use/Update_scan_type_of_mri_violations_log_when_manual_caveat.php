@@ -19,14 +19,14 @@
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
 
 // select all SeriesUID missing data from mri_violations_log
-$seriesUIDs_list = selectManualCaveat();
+$db = $lorisInstance->getDatabaseConnection();
+$seriesUIDs_list = selectManualCaveat($db);
 // loop through all SeriesUID to update the Scan_type field in
 // mri_violations_log
 foreach ($seriesUIDs_list as $seriesUID) {
-    updateScanType($seriesUID['SeriesUID']);
+    updateScanType($seriesUID['SeriesUID'], $db);
 }
 
 /**
@@ -36,16 +36,14 @@ foreach ($seriesUIDs_list as $seriesUID) {
  * @return array of seriesUID without Scan_type set in mri_violations_log
  * @throws DatabaseException
  */
-function selectManualCaveat()
+function selectManualCaveat($db)
 {
-    $db = Database::singleton();
-
     $query = "SELECT DISTINCT(SeriesUID) 
               FROM mri_violations_log 
               WHERE HEADER LIKE \"Manual Caveat Set by%\" 
               AND Scan_type IS NULL";
 
-    $result = $db->pselect($query, array());
+    $result = $db->pselect($query, []);
 
     return $result;
 }
@@ -61,14 +59,12 @@ function selectManualCaveat()
  * @return nothing
  * @throws DatabaseException
  */
-function updateScanType($seriesUID)
+function updateScanType($seriesUID, $db)
 {
-    $db = Database::singleton();
-
     // select scan type for the SeriesUID given as an argument
     $scan_type_list = $db->pselectCol(
         "SELECT AcquisitionProtocolID FROM files WHERE SeriesUID=:seriesUID",
-        array('seriesUID' => $seriesUID)
+        ['seriesUID' => $seriesUID]
     );
 
     // update mri_violations_log if only one scan type found
@@ -77,8 +73,8 @@ function updateScanType($seriesUID)
         print "Updating scan type to $scan_type for SeriesUID $seriesUID \n";
         $db->update(
             'mri_violations_log',
-            array('Scan_type'=>$scan_type),
-            array('SeriesUID'=>$seriesUID)
+            ['Scan_type'=>$scan_type],
+            ['SeriesUID'=>$seriesUID]
         );
     } elseif (count($scan_type_list) == 0) {
         print "Could not find any scan type for SeriesUID $seriesUID \n";
@@ -87,4 +83,4 @@ function updateScanType($seriesUID)
     }
 }
 
-?>
+

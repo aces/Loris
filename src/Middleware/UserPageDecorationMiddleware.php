@@ -16,14 +16,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $BaseURL;
     protected $PageName;
 
+    protected \User $user;
+
     public function __construct(
         \User $user,
         string $baseurl,
         string $pagename,
         \NDB_Config $config,
         array $JS,
-        array $CSS,
-        \Database $DB
+        array $CSS
     ) {
 
         $this->JSFiles  = $JS;
@@ -32,7 +33,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
         $this->user     = $user;
-        $this->DB       = $DB;
     }
 
     /**
@@ -48,14 +48,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     {
         ob_start();
         // Set the page template variables
-        // $user is set by the page base router
+        // $user and $loris is set by the page base router
         $user     = $request->getAttribute("user");
+        $loris    = $request->getAttribute("loris");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
+        $menu     = [];
 
-        $menu    = [];
-        $modules = \Module::getActiveModules($this->DB);
+        $modules = $loris->getActiveModules();
         foreach ($modules as $module) {
             if (!$module->hasAccess($user)) {
                 continue;
@@ -130,25 +131,29 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
-
-        // I don't think anyone uses this. It's not really supported
-        $tpl_data['css'] = $this->Config->getSetting('css');
+        $tpl_data['css'] = 'main.css';
 
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
-        if (method_exists($page, 'getFeedbackPanel')
+
+        if ($page !== null
+            && method_exists($page, 'getFeedbackPanel')
+            && $loris->hasModule("bvl_feedback")
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
+            $sessionID = null;
+            if (isset($get['sessionID'])) {
+                $sessionID = new \SessionID($get['sessionID']);
+            }
+
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
                 $candID,
-                $get['sessionID'] ?? null
+                $sessionID
             );
 
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->PageName
-            );
+            $tpl_data['bvl_feedback'] = true;
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
@@ -182,7 +187,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr    = $this->user->getData('CenterIDs');
+        $site_arr    = $this->user->getCenterIDs();
         $site        = array();
         $isStudySite = array();
         foreach ($site_arr as $key => $val) {
@@ -191,14 +196,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
 
         $oneIsStudySite   = in_array("1", $isStudySite);
-        $tpl_data['user'] = $this->user->getData();
+        $tpl_data['user'] = [];
+        $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = str_replace(
-            ";",
+        $tpl_data['user']['SitesTooltip'] = implode(
             "<br/>",
-            $this->user->getData('Sites')
+            $this->user->getSiteNames()
         );
 
         $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
@@ -214,7 +219,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         $tpl_data['userPerms'] = $realPerms;
 
-        //Display the footer links, as specified in the config file
+        // Do not show menu item if module not active
+        $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
+        $tpl_data['userjson']       = json_encode(
+            [
+             'username' => $user->getUsername(),
+             'id'       => $user->getId(),
+            ]
+        );
+        // Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 
         $tpl_data['links'] = array();
@@ -244,7 +257,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for updated data
         // on the controlPanel to be properly displayed.
-        if (method_exists($page, 'getControlPanel')) {
+
+        if ($page !== null
+            && method_exists($page, 'getControlPanel')
+        ) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
 
@@ -267,7 +283,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                       'workspace' => $undecorated->getBody(),
                      );
 
-        $smarty = new \Smarty_neurodb;
+        $smarty = new \Smarty_NeuroDB;
         $smarty->assign($tpl_data);
         return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("main.tpl")));
     }

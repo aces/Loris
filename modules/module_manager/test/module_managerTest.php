@@ -33,14 +33,14 @@ class ModuleManagerTest extends LorisIntegrationTest
      */
     function testLoadPageWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/module_manager/");
 
         // Test that the Imaging menu appears in the first row
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -56,36 +56,40 @@ class ModuleManagerTest extends LorisIntegrationTest
     function testLoadPageWithPermission()
     {
         // View permission
-        $this->setupPermissions(array("module_manager_view"));
+        $this->setupPermissions(["module_manager_view"]);
         $this->safeGet($this->url . "/module_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
             $bodyText
         );
         $this->resetPermissions();
 
         // Edit permission
-        $this->setupPermissions(array("module_manager_edit"));
+        $this->setupPermissions(["module_manager_edit"]);
         $this->safeGet($this->url . "/module_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
         $this->resetPermissions();
 
         // Both
-        $this->setupPermissions(array("module_manager_view", "module_manager_edit"));
+        $this->setupPermissions(["module_manager_view", "module_manager_edit"]);
         $this->safeGet($this->url . "/module_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );

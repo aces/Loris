@@ -32,14 +32,14 @@ $summary  = $_POST['summary'] === 'true';
 /* Fetch columns Inserting and InsertionComplete from table mri_upload
  * create Database object
  */
-$DB    =& Database::singleton();
+$DB    = \NDB_Factory::singleton()->database();
 $query = "SELECT Inserting, InsertionComplete 
           FROM mri_upload
           WHERE UploadId =:uploadId";
 
 $row       = $DB->pselectRow(
     $query,
-    array('uploadId' => $uploadId)
+    ['uploadId' => $uploadId]
 );
 $inserting = $row['Inserting'] ?? '';
 $insertionComplete = $row['InsertionComplete'] ?? '';
@@ -57,16 +57,16 @@ if ($summary) {
 
 $notifications = $DB->pselect(
     $query,
-    array('processId' => $uploadId)
+    ['processId' => $uploadId]
 );
 
 // Return JSON object encapsulating the response
 echo json_encode(
-    array(
+    [
         'inserting'         => $inserting,
         'insertionComplete' => $insertionComplete,
         'notifications'     => $notifications ?? '',
-    )
+    ]
 );
 
 /**

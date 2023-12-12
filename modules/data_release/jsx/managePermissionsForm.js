@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
+import swal from 'sweetalert2';
 import Modal from 'Modal';
 
 /**
@@ -9,6 +10,10 @@ import Modal from 'Modal';
  * Module component rendering the manage permissions form modal window
  */
 class ManagePermissionsForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -23,6 +28,9 @@ class ManagePermissionsForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
     .then(() => this.setState({isLoaded: true}));
@@ -43,10 +51,14 @@ class ManagePermissionsForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {data, error, isLoaded} = this.state;
     const {options} = this.props;
-
 
     // Data loading error
     if (error !== undefined) {
@@ -70,12 +82,10 @@ class ManagePermissionsForm extends Component {
         onClose={this.props.onClose}
         onSubmit={this.handleSubmit}
       >
-        <FormElement>
-          {Object.entries(data).map(([userId, user]) =>
-            <StaticElement
-              label={user.name}
-              text={Object.values(options.versions).map((version) =>
-                <div>
+        <FormElement name="manage_permissions">
+          {Object.entries(data).map(([userId, user]) => {
+            const versions = Object.values(options.versions).map((version) =>
+                <div key={version}>
                   <CheckboxElement
                     name={version}
                     label={version || 'Unversioned'}
@@ -85,9 +95,14 @@ class ManagePermissionsForm extends Component {
                     }
                   /><br/>
                 </div>
-              )}
-            />
-          )}
+            );
+
+            return <StaticElement
+                      key={userId}
+                      label={user.name}
+                      text={<div>{versions}</div>}
+                   />;
+         })};
         </FormElement>
       </Modal>
     );
@@ -98,7 +113,7 @@ class ManagePermissionsForm extends Component {
    *
    * @param {string} userId
    * @param {string} version
-   * @param {boulean} permission
+   * @param {boolean} permission
    */
   setFormData(userId, version, permission) {
     let {data} = JSON.parse(JSON.stringify(this.state));
@@ -114,7 +129,7 @@ class ManagePermissionsForm extends Component {
   /**
    * Handles submission of the form
    *
-   * @return {promise}
+   * @return {Promise}
    */
   handleSubmit() {
     const {data} = JSON.parse(JSON.stringify(this.state));
@@ -130,7 +145,7 @@ class ManagePermissionsForm extends Component {
     })
     .then((response) => {
       if (response.ok) {
-        swal({
+        swal.fire({
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
@@ -140,7 +155,7 @@ class ManagePermissionsForm extends Component {
       } else {
         let msg = response.statusText ?
           response.statusText : 'Submission Error!';
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
         return Promise.reject();
       }
@@ -151,6 +166,10 @@ class ManagePermissionsForm extends Component {
 ManagePermissionsForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  options: PropTypes.object,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
+  fetchData: PropTypes.func,
 };
 
 export default ManagePermissionsForm;

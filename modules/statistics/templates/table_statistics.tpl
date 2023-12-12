@@ -6,13 +6,13 @@
      - DropdownOptions (options in the dropdown to change what you're seeing)
      - DropdownName (name that the selection is submitted as)
      - DropdownSelected (current option selected)
-     - Subprojects (the valid subprojectIDs from the config file)
+     - Cohorts (the valid cohortIDs from the config file)
      - Subcategories (the ways this data is broken down)
      - Centers (the valid centerIDs from the psc table)
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
+<script type="text/javascript" src="{$baseurl|default}/statistics/js/table_statistics.js"></script>
 <h2 class="statsH3">{$SectionHeader}</h2>
 <h3 class="statsH3">{$TableHeader}</h3>
 <p>{$Disclamer}</p>
@@ -48,16 +48,16 @@
   <table id="bigtable" class="data table table-primary table-bordered dynamictable">
     <thead>
     <tr>
-      <th rowspan="1" id="tpcol">Subproject</th>
+      <th rowspan="1" id="tpcol">Cohort</th>
       {assign var='colspan' value=count($Subcategories)}
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         <th colspan="{$colspan}">{$name|capitalize}</th>
       {/foreach}
-      <th colspan="{$colspan}">Total Across Subprojects</th>
+      <th colspan="{$colspan}">Total Across Cohorts</th>
     </tr>
     <tr>
       <th>Categories</th>
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         {* Go through each category once, and add the total
            for each cohort *}
         {foreach key=subcategory item=category from=$Subcategories}
@@ -75,12 +75,12 @@
     <tr>
       {foreach item=center from=$Centers}
       {* Calculation for the colspan is:
-               (number of subprojects + 1 for total)
+               (number of cohorts + 1 for total)
                x
                (number of subcategories + 1 for percent)
                +1 for timepoint list
       *}
-      {assign var='colspan' value=(count($Subcategories))*(count($Subprojects)+1)}
+      {assign var='colspan' value=(count($Subcategories))*(count($Cohorts)+1)}
       <th>{$center.LongName}</th>
       <th colspan="{$colspan}" width="50%"><br></th>
     </tr>
@@ -88,14 +88,14 @@
       <tr id="visitrow">
         {assign var="rowtotal" value="0"}
         <td>{$title}</td>
-        {foreach key="proj" item="value" from=$Subprojects}
+        {foreach key="proj" item="value" from=$Cohorts}
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
-              {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]}
-              {assign var="subtotal" value={$data[$proj][$center.ID][$visit].total}}
+              {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]|default}
+              {assign var="subtotal" value={$data[$proj][$center.ID][$visit].total|default}}
               {if $subtotal > 0 and $Numerator > 0}
-                {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                {assign var="percent" value={($Numerator*100/$subtotal)|round:0}}
               {else}
                 {assign var="percent" value='0'}
               {/if}
@@ -108,10 +108,10 @@
         {* Totals for row *}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]}
-            {assign var="rowtotal" value=$data[$center.ID][$visit].total}
+            {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]|default}
+            {assign var="rowtotal" value=$data[$center.ID][$visit].total|default}
             {if $rowtotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$rowtotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$rowtotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -125,14 +125,14 @@
     <tr>
       <td class="subtotal">Site Total Across All Visits</td>
       {assign var="totalsitetotal" value="0"}
-      {foreach key=proj item=value from=$Subprojects}
+      {foreach key=proj item=value from=$Cohorts}
         {assign var="sitetotal" value="0"}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]}
+            {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]|default}
             {assign var="sitetotal" value=$data[$proj][$center.ID].total}
             {if $sitetotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$sitetotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$sitetotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -144,10 +144,10 @@
       {/foreach}
       {foreach key=sub item=subcat from=$Subcategories}
         {if $subcat@index eq 0}
-          {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]}
-          {assign var="totalsitetotal" value=$data[$center.ID].total}
+          {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]|default}
+          {assign var="totalsitetotal" value=$data[$center.ID].total|default}
           {if $totalsitetotal > 0 and $Numerator > 0}
-            {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totalsitetotal format="%.0f"}}
+            {assign var="percent" value={($Numerator*100/$totalsitetotal)|round:0}}
           {else}
             {assign var="percent" value='0'}
           {/if}
@@ -163,21 +163,21 @@
 
     {* Totals at the bottom *}
     <tr>
-      {assign var='colspan' value=(count($Subcategories))*(count($Subprojects)+1)}
+      {assign var='colspan' value=(count($Subcategories))*(count($Cohorts)+1)}
       <th>Total</th>
       <th colspan="{$colspan}" width="50%"></th>
     </tr>
     {foreach from=$Visits item=visit key=title}
       <tr id="visitrow">
         <td>{$title}</td>
-        {foreach from=$Subprojects key=proj item=value}
+        {foreach from=$Cohorts key=proj item=value}
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
-              {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]}
-              {assign var="subtotal" value={$data[$proj][$visit].total}}
+              {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]|default}
+              {assign var="subtotal" value={$data[$proj][$visit].total|default}}
               {if $subtotal > 0 and $Numerator > 0}
-                {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                {assign var="percent" value={($Numerator*100/$subtotal)|round:0}}
               {else}
                 {assign var="percent" value='0'}
               {/if}
@@ -190,10 +190,10 @@
         {assign var="finaltotal" value="0" }
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$visit][$Subcategories.0]}
-            {assign var="finaltotal" value=$data[$visit].total}
+            {assign var="Numerator" value=$data[$visit][$Subcategories.0]|default}
+            {assign var="finaltotal" value=$data[$visit].total|default}
             {if $finaltotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$finaltotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$finaltotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -207,17 +207,17 @@
 
     <tr>
       <td class="total">Grand Total</td>
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         {* Calculate the total instead of just looking it up, because of the potential
            for invalid visit labels throwing off the lookup, or some visits intentionally
            being excluded from stats *}
         {assign var="total" value="0"}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$proj][$Subcategories.0]}
-            {assign var="total" value=$data[$proj].total}
+            {assign var="Numerator" value=$data[$proj][$Subcategories.0]|default}
+            {assign var="total" value=$data[$proj].total|default}
             {if $total > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$total format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$total)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -230,10 +230,10 @@
       {* Totals for grand total *}
       {foreach key=sub item=subcat from=$Subcategories}
         {if $subcat@index eq 0}
-          {assign var="Numerator" value=$data[$Subcategories.0]}
-          {assign var="totaltotal" value=$data.total}
+          {assign var="Numerator" value=$data[$Subcategories.0]|default}
+          {assign var="totaltotal" value=$data.total|default}
           {if $totaltotal > 0 and $Numerator > 0}
-            {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totaltotal format="%.0f"}}
+            {assign var="percent" value={($Numerator*100/$totaltotal)|round:0}}
           {else}
             {assign var="percent" value='0'}
           {/if}

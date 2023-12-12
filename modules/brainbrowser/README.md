@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Brainbrowser allows visualization and navigation of the MINC images of a 
+Brainbrowser allows visualization and navigation of the MINC/NIfTI images of a 
 candidate's imaging session.
 
 
@@ -15,7 +15,7 @@ The two primary types of users are:
 
 ## Scope
 
-Brainbrowser allows visualization of MINC images directly within its browser.
+Brainbrowser allows visualization of MINC/NIfTI images directly within its browser.
 The user can navigate those images with sagittal, coronal, and transverse 
 slices displayed.  In addition, a `Play` button is available to make feasible 
 the navigation through a 4-Dimensional image (such as time in the case of 
@@ -38,5 +38,5 @@ for access details.
 
 ## Configurations
 
-For Brainbrowser to load the MINC images successfully, the configuration path option 
+For Brainbrowser to load the images successfully, the configuration path option 
 `MINCToolsPath` should point to the path where the MINC toolkit is installed.

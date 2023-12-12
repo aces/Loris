@@ -26,14 +26,14 @@ namespace LORIS\server_processes_manager;
 class DefaultDatabaseProvider implements IDatabaseProvider
 {
     /**
-     * Gets access to the database through the Database::singleton() method.
+     * Gets access to the database
      *
      * @return \Database an instance of the database.
      * @throws \DatabaseException if connection to the database cannot be established
      */
     public function getDatabase()
     {
-        return \Database::singleton();
+        return \NDB_Factory::singleton()->database();
     }
 }
 

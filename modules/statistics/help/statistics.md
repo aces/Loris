@@ -2,7 +2,7 @@
 
 This module calculates and displays summary numbers on data acquisition, data processing, and data entry for both behavioural and imaging data collections in LORIS. 
 
-The module is comprised of 3 sections: Demographic Statistics, Behavioral Statistics, and Imaging Statistics. You can view a description of each under the **General Description** tab. 
+The module is comprised of 3 sections: Demographic Statistics, Behavioural Statistics, and Imaging Statistics. You can view a description of each under the **General Description** tab. 
 
 ## Demographic Statistics
 

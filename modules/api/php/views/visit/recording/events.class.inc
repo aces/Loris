@@ -45,18 +45,18 @@ class Events
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
             'File'   => $this->_recording->getFileInfo()->getFilename(),
-        );
+        ];
 
         $events = array_map(
             function ($event) {
                 $fileinfo = $event->getFileInfo();
                 $filename = $fileinfo->getFilename();
 
-                return array(
+                return [
                     'Onset'         => $event->getOnset(),
                     'Duration'      => $event->getDuration(),
                     'EventCode'     => $event->getEventCode(),
@@ -65,14 +65,14 @@ class Events
                     'TrialType'     => $event->getTrialType(),
                     'ResponseTime'  => $event->getResponseTime(),
                     'EventFilePath' => $filename,
-                );
+                ];
             },
             $this->_recording->getEvents()
         );
 
-        return array(
+        return [
             'Meta'       => $meta,
             'TaskEvents' => $events,
-        );
+        ];
     }
 }

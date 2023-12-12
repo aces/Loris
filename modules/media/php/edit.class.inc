@@ -35,7 +35,7 @@ class Edit extends \NDB_Form
     {
         parent::setup();
 
-        $db      =& \Database::singleton();
+        $db      = $this->loris->getDatabaseConnection();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
@@ -45,7 +45,7 @@ class Edit extends \NDB_Form
         if (isset($idMediaFile)) {
             $result = $db->pselectRow(
                 "SELECT id FROM media WHERE id = :mid",
-                array('mid' => $idMediaFile)
+                ['mid' => $idMediaFile]
             );
             if (empty($result)) {
                 header('Location: ' . $baseURL . '/media/');

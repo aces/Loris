@@ -29,8 +29,22 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class TestEndpoint implements RequestHandlerInterface
+class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
+
+    /**
+     * The database connection
+     *
+     * @var \Database
+     */
+    protected $db;
+
+    /**
+     * The user accessing the endpoint
+     *
+     * @var \User
+     */
+    protected $user;
 
     /**
      * Returns true if user has access to this endpoint.
@@ -63,6 +77,20 @@ class TestEndpoint implements RequestHandlerInterface
     }
 
     /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+    }
+
+    /**
      * This acts as an Ajax enpoint that handles all action requests from the
      * Battery Manager Module.
      *
@@ -72,11 +100,11 @@ class TestEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = \Database::singleton();
+        $this->db   = $this->loris->getDatabaseConnection();
         $this->user = $request->getAttribute('user');
         $method     = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return $this->_getInstances();
         case 'POST':
@@ -93,7 +121,7 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new TestProvisioner();
+        $provisioner = new TestProvisioner($this->loris);
 
         if ($this->user->hasPermission('access_all_profiles') == false) {
             $provisioner = $provisioner->filter(
@@ -114,7 +142,7 @@ class TestEndpoint implements RequestHandlerInterface
     private function _putInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($testArray);
+        $test      = new Test($this->loris, null, $testArray);
         return $this->_saveInstance($test);
     }
 
@@ -128,7 +156,7 @@ class TestEndpoint implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($testArray);
+        $test      = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test);
     }
@@ -186,13 +214,13 @@ class TestEndpoint implements RequestHandlerInterface
                          AgeMinDays,
                          AgeMaxDays,
                          Stage,
-                         SubprojectID,
+                         CohortID,
                          Visit_label,
                          CenterID,
                          firstVisit
                   FROM test_battery";
         // Select duplicate entry from Test Battery
-        $entries = $this->db->pselect($query, array());
+        $entries = $this->db->pselect($query, []);
 
         $testArray = $test->toSQL();
         foreach ($entries as $entry) {
@@ -201,7 +229,7 @@ class TestEndpoint implements RequestHandlerInterface
                 && $testArray['AgeMinDays'] == $entry['AgeMinDays']
                 && $testArray['AgeMaxDays'] == $entry['AgeMaxDays']
                 && $testArray['Stage'] == $entry['Stage']
-                && $testArray['SubprojectID'] == $entry['SubprojectID']
+                && $testArray['CohortID'] == $entry['CohortID']
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
@@ -243,11 +271,32 @@ class TestEndpoint implements RequestHandlerInterface
         if (!isset($test->row['ageMinDays'])) {
             $errors[] = 'Minimum age is a required field.';
         }
+        if (isset($test->row['ageMinDays']) && $test->row['ageMinDays'] < 0) {
+            $errors[] = 'Minimum age must be greater than 0.';
+        }
         if (!isset($test->row['ageMaxDays'])) {
             $errors[] = 'Maximum age is a required field.';
         }
+        if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] < 0) {
+            $errors[] = 'Maximum age must be greater than 0.';
+        }
+        if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] > 99999) {
+             $errors[] = 'Maximum age must be less than 99999.';
+        }
+        if (isset($test->row['ageMinDays']) && $test ->row['ageMinDays'] > 99999) {
+             $errors[] = 'Minimum age must be less than 99999';
+        }
+        if ($test->row['ageMaxDays'] < $test->row['ageMinDays']) {
+            $errors[] = 'Maximum age must be greater than minimum age.';
+        }
         if (!isset($test->row['stage'])) {
             $errors[] = 'Stage is a required field.';
+        }
+        if (isset($test->row['instrumentOrder'])
+            && ($test->row['instrumentOrder'] > 127
+            || $test->row['instrumentOrder'] < -127)
+        ) {
+            $errors[] = 'Instrument order must be between -127 and 127';
         }
 
         return $errors;

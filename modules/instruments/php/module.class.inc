@@ -55,7 +55,7 @@ class Module extends \Module
         }
 
         $path           = $request->getURI()->getPath();
-        $pathComponents = array();
+        $pathComponents = [];
 
         // Breakdown path information from the request.
         preg_match(
@@ -67,18 +67,29 @@ class Module extends \Module
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
+        $this->logger->debug("Loading $instrumentName $page");
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
             return (new \Laminas\Diactoros\Response())
-                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
-                ->withStatus(400);
+                ->withStatus(400)
+                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"));
         }
+
+        $loris      = $request->getAttribute("loris");
         $instrument = \NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentID,
             $page
         );
+
+        $user = $request->getAttribute("user");
+        if ($instrument->_hasAccess($user) == false) {
+            return (new \Laminas\Diactoros\Response())
+                ->withStatus(403)
+                ->withBody(new \LORIS\Http\StringStream("Permission denied"));
+        }
 
         $request = $request->withAttribute('pageclass', $instrument);
 
@@ -107,7 +118,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
@@ -146,5 +157,14 @@ class Module extends \Module
         }
         return [];
     }
-}
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new InstrumentQueryEngine($this->loris);
+    }
+}

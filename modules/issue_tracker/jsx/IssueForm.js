@@ -3,6 +3,18 @@ import Modal from 'jsx/Modal';
 import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
+import swal from 'sweetalert2';
+import Markdown from 'jsx/Markdown';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {
+  SelectElement,
+  StaticElement,
+  FormElement,
+  TextboxElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Issue add/edit form
@@ -12,11 +24,12 @@ import AttachmentsList from './attachments/attachmentsList';
  * and editing an existing issue.
  *
  * @author Caitrin Armstrong
- * */
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
+ */
 class IssueForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -37,18 +50,31 @@ class IssueForm extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
-    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal.bind(this);
+    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
+                                      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.getFormData();
   }
 
+  /**
+   * Open 'Attachment Upload' Modal
+   *
+   * @param {object} e - Event object
+   */
   openAttachmentUploadModal(e) {
     e.preventDefault();
     this.setState({showAttachmentUploadModal: true});
   }
+
+  /**
+   * Close 'Attachment Upload' Modal
+   */
   closeAttachmentUploadModal() {
     this.setState({
       upload: {
@@ -61,6 +87,11 @@ class IssueForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -88,6 +119,11 @@ class IssueForm extends Component {
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
+
+    const siteOptions = this.state.Data.sites;
+    // Add an 'All Sites' options in the Site dropdown
+    // to allow NULL value
+    siteOptions['all'] = 'All Sites';
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -125,6 +161,7 @@ class IssueForm extends Component {
                        baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
+                       whoami={this.state.issueData.whoami}
       />
     );
 
@@ -172,12 +209,13 @@ class IssueForm extends Component {
         </div>
       );
 
+      const descr = <Markdown content={this.state.issueData.desc} />;
       description = (
         <StaticElement
           name='description'
           label='Description'
           ref='description'
-          text={this.state.issueData.desc}
+          text={descr}
         />
       );
     }
@@ -214,16 +252,17 @@ class IssueForm extends Component {
             label='Assignee'
             emptyOption={true}
             options={this.state.Data.assignees}
+            disabledOptions={this.state.Data.inactiveUsers}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
-            required={true}
+            required={false}
           />
           <SelectElement
             name='centerID'
             label='Site'
             emptyOption={true}
-            options={this.state.Data.sites}
+            options={siteOptions}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
@@ -295,6 +334,7 @@ class IssueForm extends Component {
             name='othersWatching'
             label='Add others to watching?'
             emptyOption={true}
+            autoSelect={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
@@ -320,49 +360,72 @@ class IssueForm extends Component {
    * Creates an ajax request and sets the state with the result
    */
   getFormData() {
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let newIssue = !data.issueData.issueID;
-        let formData = data.issueData;
-        // ensure that if the user is at multiple sites and
-        // its a new issue, the centerID (which is a dropdown)
-        // is set to the empty option instead of an array of
-        // the user's sites.
-        if (newIssue) {
-            formData.centerID = null;
-        }
-
-        this.setState({
-          Data: data,
-          isLoaded: true,
-          issueData: data.issueData,
-          formData: formData,
-          isNewIssue: !data.issueData.issueID,
-        });
-      }.bind(this),
-      error: function(err) {
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
         this.setState({
           error: 'An error occurred when loading the form!\n Error: ' +
-          err.status + ' (' + err.statusText + ')',
+          response.status + ' (' + response.statusText + ')',
         });
-      }.bind(this),
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let newIssue = !data.issueData.issueID;
+          let formData = data.issueData;
+          // ensure that if the user is at multiple sites and
+          // its a new issue, the centerID (which is a dropdown)
+          // is set to the empty option instead of an array of
+          // the user's sites.
+          if (newIssue) {
+            formData.centerID = null;
+            Object.keys(data.inactiveUsers).map((user) => {
+              delete data.assignees[user];
+            });
+            data.inactiveUsers = {};
+          } else {
+            // if we edit an issue
+            // a NULL centerID (= All Sites) is converted to the ALL Sites option
+            if (formData.centerID == null) {
+              formData.centerID = 'all';
+            }
+          }
+
+          this.setState({
+            Data: data,
+            isLoaded: true,
+            issueData: data.issueData,
+            formData: formData,
+            isNewIssue: !data.issueData.issueID,
+          });
+        }
+      );
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
   /**
-   * Handles form submission
+   * Handles form submission for new issue being created
    *
    * @param {event} e form submit event
    */
   handleSubmit(e) {
     e.preventDefault();
 
-    // Prevent new issue submissions while one is already in progress
-    if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: 'pending'});
-
-    const myFormData = this.state.formData;
+    const state = Object.assign({}, this.state);
+    // issue submissions already in progress
+    if (state.submissionResult && state.isNewIssue) {
+      return;
+    }
+    const myFormData = state.formData;
     const formRefs = this.refs;
     const formData = new FormData();
 
@@ -371,37 +434,52 @@ class IssueForm extends Component {
       return;
     }
 
+    // Prevent multiple submissions
+    this.setState({submissionResult: 'pending'});
+
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
+        // All Sites selected - Ignore value to store NULL in DB
+        if (myFormData['centerID'] == 'all') {
+          myFormData['centerID'] = null;
+        }
         formData.append(key, myFormData[key]);
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      dataType: 'json',
-      contentType: false,
-      processData: false,
-      success: function(data) {
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          this.setState({submissionResult: 'error'});
+          let msgType = 'error';
+          const message = data.error ?? data.message;
+          this.showAlertMessage(msgType, message);
+        });
+        return;
+      }
+
+      response.json().then((data) => {
         let msgType = 'success';
-        let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
+        let message = this.state.isNewIssue ?
+          'You will be redirected to main page in 2 seconds!' :
+          '';
         this.showAlertMessage(msgType, message);
         this.setState({
           submissionResult: 'success',
           issueID: data.issueID,
         });
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        this.setState({submissionResult: 'error'});
-        let msgType = 'error';
-        let message = err.responseJSON.message || 'Failed to submit issue :(';
-
-        this.showAlertMessage(msgType, message);
-      }.bind(this),
+      });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({submissionResult: 'error'});
+      let msgType = 'error';
+      let message = 'Failed to submit issue :(';
+      this.showAlertMessage(msgType, message);
     });
   }
 
@@ -451,6 +529,7 @@ class IssueForm extends Component {
 
   /**
    * Display a success/error alert message after form submission
+   *
    * @param {string} msgType - error/success message
    * @param {string} message - message content
    */
@@ -485,7 +564,7 @@ class IssueForm extends Component {
       };
     }
 
-    swal({
+    swal.fire({
       title: title,
       type: type,
       text: text,
@@ -493,7 +572,7 @@ class IssueForm extends Component {
       allowOutsideClick: false,
       allowEscapeKey: false,
       showConfirmButton: confirmation,
-    }, callback.bind(this));
+    }).then(callback.bind(this));
   }
 }
 
@@ -502,7 +581,7 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
+  userHasPermission: PropTypes.bool,
 };
 
 export default IssueForm;

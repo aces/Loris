@@ -4,8 +4,7 @@
  * are usually singletons. Instead of directly calling class::singleton staticly,
  * this factory should be used so that a mock class can be subbed in for testing.
  *
- * If the Factory is in testing mode (setTesting(true) was called), a mock will
- * be returned. Otherwise, the normal NDB_ prefixed object will be returned.
+ * Mocks are injected using the setDatabase/setConfig/etc methods.
  *
  * PHP Version 7
  *
@@ -25,11 +24,6 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
- *
- * Phan currently has bad support for PHPUnit's Mock objects which is
- * creating false positive with the below rule.
- *
- * @phan-file-suppress PhanUndeclaredClassMethod
  */
 class NDB_Factory
 {
@@ -37,35 +31,20 @@ class NDB_Factory
     public static $db     = null;
     public static $config = null;
 
-    private static $_couchdb    = array();
+    private static $_couchdb    = [];
     private static $_user       = null;
-    private static $_candidates = array();
-    private static $_timepoints = array();
+    private static $_candidates = [];
+    private static $_timepoints = [];
 
     private $_baseURL = "";
-    var $Testing; // Whether or not Mock objects should be returned instead of
-                  // real ones
-    //
 
     /**
      * Settings object
      * A proxy to NDB_Config
      *
-     * @var Settings object
+     * @var ?\Settings
      */
     private static $_settings = null;
-
-    /**
-     * Sets whether the factory should return real objects or testing objects
-     *
-     * @param boolean $val Whether testing should be enabled
-     *
-     * @return void
-     */
-    function setTesting(bool $val): void
-    {
-        $this->Testing = $val;
-    }
 
     /**
      * Returns a single factory object. This must be used instead of being
@@ -94,15 +73,15 @@ class NDB_Factory
         self::$testdb = null;
         self::$db     = null;
 
-        self::$_couchdb = array();
+        self::$_couchdb = [];
         self::$_user    = null;
 
         self::$config = null;
 
         self::$_settings = null;
 
-        self::$_candidates = array();
-        self::$_timepoints = array();
+        self::$_candidates = [];
+        self::$_timepoints = [];
 
         $this->_baseURL = "";
     }
@@ -117,34 +96,14 @@ class NDB_Factory
      */
     function config(?string $configfile = '../project/config.xml'): \NDB_Config
     {
-        if (self::$config !== null) {
-            // The below suppression is necessary to satisfy phan. It flags an
-            // error here because the function is declared to return
-            // NDB_Config and phan doesn't understand MockNDB_Config (as it is
-            // generated dynamically by PHPUnit).
-            // We know this will always return \NDB_Config since this is guaranteed
-            // by the return type of the function.
-            //
-            // @phan-suppress-next-line PhanTypeMismatchReturn
-            return self::$config;
+        $config = self::$config;
+        if ($config !== null) {
+            return $config;
         }
-        if ($this->Testing) {
-            $config     = new MockNDB_Config();
-            $configfile = '../test/config.xml';
-        } else {
-            $config = NDB_Config::singleton($configfile);
-        }
+
+        $config = NDB_Config::singleton($configfile);
 
         self::$config = $config;
-
-        // The below suppression is necessary to satisfy phan. It flags an
-        // error here because the function is declared to return
-        // NDB_Config and phan doesn't understand MockNDB_Config (as it is
-        // generated dynamically by PHPUnit).
-        // We know this will always return \NDB_Config since this is guaranteed
-        // by the return type of the function.
-        //
-        // @phan-suppress-next-line PhanTypeMismatchReturn
         return $config;
     }
 
@@ -169,22 +128,11 @@ class NDB_Factory
      */
     function user(): \User
     {
-        if (self::$_user !== null) {
-            // The below suppression is necessary to satisfy phan. It flags an
-            // error here because the function is declared to return
-            // User and phan doesn't understand MockUser (as it is
-            // generated dynamically by PHPUnit).
-            // We know this will always return \User since this is guaranteed
-            // by the return type of the function.
-            // @phan-suppress-next-line PhanTypeMismatchReturn
-            return self::$_user;
+        $user = self::$_user;
+        if ($user !== null) {
+            return $user;
         }
-        if ($this->Testing) {
-            Mock::generate("User");
-            $user = new MockUser();
-        } else {
-            $user = \User::singleton();
-        }
+        $user        = \User::singleton();
         self::$_user = $user;
         return $user;
     }
@@ -210,38 +158,39 @@ class NDB_Factory
      */
     function database(): \Database
     {
-        $db_ref = null;
-        if ($this->Testing) {
-            $db_ref = &self::$testdb;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            //self::$testdb = Mock::generate("Database");
-            self::$testdb = new MockDatabase();
-        } else {
-            $db_ref = &self::$db;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            self::$db = Database::singleton();
+        $db_ref = &self::$db;
+        if ($db_ref !== null) {
+            return $db_ref;
         }
-        $config = $this->config();
-        $dbc    = $config->getSetting('database');
-        // This check was added to satisfy phan, our static analysis tool.
-        // $db_ref should be set to either a new MockDatabase or a Database
-        // singleton above.
-        if ($db_ref === null) {
-            throw new \ConfigurationException(
-                'Could not configure database for LORIS'
-            );
-        }
+
+        $settings = $this->settings();
+
+        // Pass the credentials in environment variables, so that they
+        // don't potentially show up in a stack trace if something goes
+        // wrong.
+        $dbname = $settings->dbName();
+        putenv("LORIS_{$dbname}_USERNAME=" . $settings->dbUserName());
+        putenv("LORIS_{$dbname}_PASSWORD=" . $settings->dbPassword());
+        putenv("LORIS_{$dbname}_HOST=" . $settings->dbHost());
+
+        $db_ref = new Database();
         $db_ref->connect(
-            $dbc['database'],
-            $dbc['username'],
-            $dbc['password'],
-            $dbc['host'],
-            true
+            $settings->dbName(),
+            true,
         );
+
+        // Unset the variables now that they're no longer needed.
+        putenv("LORIS_{$dbname}_USERNAME=");
+        putenv("LORIS_{$dbname}_PASSWORD=");
+        putenv("LORIS_{$dbname}_HOST=");
+
+        self::$db = $db_ref;
+
+        $config   = \NDB_Config::singleton();
+        $loglevel = $config->getLogSettings()->getDatabaseLogLevel();
+        if ($loglevel !== "none") {
+            $db_ref->setLogger(new \LORIS\Log\ErrorLogLogger($loglevel));
+        }
         return $db_ref;
     }
 
@@ -329,7 +278,7 @@ class NDB_Factory
             || empty($password)
         ) {
             // check if only some parameters given but not all AND does not
-            // enter any of the above IF statements. this behavior was never
+            // enter any of the above IF statements. this behaviour was never
             // supported and should be an error.
             throw new ConfigurationException(
                 "NDB_Factory::CouchDB() requires all parameters to be supplied."
@@ -339,29 +288,16 @@ class NDB_Factory
         if (!empty(self::$_couchdb[$database])) {
             return self::$_couchdb[$database];
         }
-        if ($this->Testing) {
-            Mock::generatePartial(
-                'CouchDB',
-                'MockCouchDBWrap',
-                /* mock out the functions that make HTTP requests */
-                array(
-                    '_getRelativeURL',
-                    '_postRelativeURL',
-                    '_postURL',
-                    '_getURL',
-                )
-            );
-            self::$_couchdb[$database] = new MockCouchDBWrap();
-        } else {
-            self::$_couchdb[$database] = CouchDB::getInstance(
-                $database,
-                $host,
-                $port,
-                $user,
-                $password
-            );
-        }
-        return self::$_couchdb[$database];
+
+        $couch = CouchDB::getInstance(
+            $database,
+            $host,
+            $port,
+            $user,
+            $password
+        );
+        self::$_couchdb[$database] = $couch;
+        return $couch;
     }
 
     /**
@@ -388,7 +324,9 @@ class NDB_Factory
      */
     public function setBaseURL(string $baseURL)
     {
-        $this->_baseURL = $baseURL;
+        // Reset static settings object so that the base URL can be properly set
+        self::$_settings = null;
+        $this->_baseURL  = $baseURL;
     }
     /**
      * Returns a singleton settings object
@@ -399,8 +337,12 @@ class NDB_Factory
      */
     public function settings(string $configfile = "../project/config.xml"): \Settings
     {
-        if (self::$_settings !== null) {
-            return self::$_settings;
+        // self::$_settings needs to be put into a simple var because of
+        // phan/phan#4169, otherwise we get a false positive warning about
+        // how it may return null inside of the if.
+        $settings = self::$_settings;
+        if ($settings !== null) {
+            return $settings;
         }
         self::$_settings = new Settings($this->config($configfile), $this->_baseURL);
         return self::$_settings;
@@ -415,15 +357,7 @@ class NDB_Factory
      */
     public function project(string $projectName): \Project
     {
-        $project = null;
-
-        if ($this->Testing) {
-            $project = new MockProject($projectName);
-        } else {
-            $project = \Project::singleton($projectName);
-        }
-
-        return $project;
+        return \Project::singleton($projectName);
     }
 
     /**
@@ -439,11 +373,7 @@ class NDB_Factory
         if (isset(self::$_candidates[$key])) {
             return self::$_candidates[$key];
         }
-        if ($this->Testing) {
-            self::$_candidates[$key] = new MockCandidate($CandID);
-        } else {
-            self::$_candidates[$key] = Candidate::singleton($CandID);
-        }
+        self::$_candidates[$key] = Candidate::singleton($CandID);
         return self::$_candidates[$key];
 
     }
@@ -451,22 +381,20 @@ class NDB_Factory
     /**
      * Retrieve a TimePoint object representing this session
      *
-     * @param integer $sessionID The sessionID of the timepoint
-     *                           to retrieve
+     * @param SessionID $sessionID The sessionID of the timepoint
+     *                             to retrieve
      *
      * @return TimePoint object for $sessionID
      */
-    function timepoint(int $sessionID): \TimePoint
+    function timepoint(SessionID $sessionID): \TimePoint
     {
-        if (isset(self::$_timepoints[$sessionID])) {
-            return self::$_timepoints[$sessionID];
+        if (isset(self::$_timepoints[(string) $sessionID])) {
+            return self::$_timepoints[(string) $sessionID];
         }
-        if ($this->Testing) {
-            self::$_timepoints[$sessionID] = new MockTimepoint($sessionID);
-        } else {
-            self::$_timepoints[$sessionID] = \TimePoint::singleton($sessionID);
-        }
-        return self::$_timepoints[$sessionID];
+        self::$_timepoints[(string) $sessionID] = \TimePoint::singleton(
+            $sessionID
+        );
+        return self::$_timepoints[(string) $sessionID];
     }
 }
 

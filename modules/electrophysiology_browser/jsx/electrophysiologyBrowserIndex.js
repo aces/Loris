@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -14,9 +15,12 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Cecile Madjar
  * @version 1.0.0
- *
  */
 class ElectrophysiologyBrowserIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -30,6 +34,9 @@ class ElectrophysiologyBrowserIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -56,7 +63,6 @@ class ElectrophysiologyBrowserIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -66,6 +72,7 @@ class ElectrophysiologyBrowserIndex extends Component {
       case 'Links':
         let cellTypes = cell.split(',');
         let cellLinks = [];
+        cellTypes.reverse();
         for (let i = 0; i < cellTypes.length; i += 1) {
           cellLinks.push(<a key={i} href={loris.BaseURL +
             '/electrophysiology_browser/sessions/' +
@@ -73,14 +80,18 @@ class ElectrophysiologyBrowserIndex extends Component {
             cellTypes[i]}>
               {cellTypes[i]}
             </a>);
-            cellLinks.push(' | ');
-        }
 
-        cellLinks.push(<a key="all" href={loris.BaseURL +
-        '/electrophysiology_browser/sessions/' +
-        row.SessionID}>
-          all types
-        </a>);
+            if (cellTypes.length > 1) {
+              cellLinks.push(' | ');
+            }
+        }
+        if (cellTypes.length > 1) {
+          cellLinks.push(<a key="all" href={loris.BaseURL +
+          '/electrophysiology_browser/sessions/' +
+          row.SessionID}>
+            all types
+          </a>);
+        }
         result = (<td>{cellLinks}</td>);
         break;
     }
@@ -88,6 +99,11 @@ class ElectrophysiologyBrowserIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message
     if (this.state.error) {
@@ -130,6 +146,11 @@ class ElectrophysiologyBrowserIndex extends Component {
       {label: 'Acquisition Time', show: true},
       {label: 'Insertion Time', show: true},
       {label: 'Links', show: true},
+      {label: 'Type', show: false, filter: {
+        name: 'type',
+        type: 'multiselect',
+        options: options.types,
+      }},
       {label: 'SessionID', show: false},
     ];
 
@@ -149,10 +170,11 @@ ElectrophysiologyBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ElectrophysiologyBrowserIndex
       dataURL={`${loris.BaseURL}/electrophysiology_browser/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

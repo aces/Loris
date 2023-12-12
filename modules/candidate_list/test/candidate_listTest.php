@@ -25,22 +25,21 @@ require_once __DIR__
 class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     //filter location
-    static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
-    static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $PSCID          = 'input[name="pscid"]';
+    static $DCCID          = 'input[name="dccid"]';
     static $visitLabel     = 'select[name="visitLabel"]';
     static $site           = 'select[name="site"]';
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
-                             " button:nth-child(1)";
+    static $cohort         = 'select[name="cohort"]';
+    static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
     static $dob         = 'input[name="DoB"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
-    static $lastVisit   = 'select[name="latestVisitStatus"]';
     static $edc         = 'input[name="edc"]';
 
 
@@ -48,9 +47,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
 
 
-    static $openProfile = ".table-header > div > div > div:nth-child(2) >".
-                             " button:nth-child(2)";
-    static $clearFilter = ".col-sm-9 > .btn";
+    static $openProfile = "div:nth-child(2) > .btn:nth-child(2)";
+    static $clearFilter = ".nav-tabs a";
     static $display     = ".table-header > div > div > div:nth-child(1)";
     static $pscidLink   = "tr:nth-child(1) a";
 
@@ -60,7 +58,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
@@ -84,12 +82,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testPageLoadsWithoutPermissionsAccessAllProfiles()
     {
-        $this->setupPermissions(array("access_all_profiles"));
+        $this->setupPermissions(["access_all_profiles"]);
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -107,14 +105,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
         $btn        = self::$advancedFilter;
         $buttonText = $this->safeFindElement(
             WebDriverBy::cssSelector($btn)
         )->getText();
-        $this->assertContains("Advanced", $buttonText);
+        $this->assertStringContainsString("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -126,9 +124,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode
         $btn = self::$advancedFilter;
         $this->safeClick(WebDriverBy::cssSelector($btn));
@@ -156,10 +154,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            $this->assertEquals("input", $edcOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-        $latestVisitOptions = $this->safeFindElement(
-            WebDriverBy::Name("latestVisitStatus")
-        );
-           $this->assertEquals("select", $latestVisitOptions->getTagName());
         $feedbackOptions = $this->safeFindElement(
             WebDriverBy::Name("feedback")
         );
@@ -243,7 +237,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             "Female",
-            '225'
+            '226'
         );
         $this->_filterTest(
             self::$sex,
@@ -284,15 +278,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$feedback,
             self::$display,
             self::$clearFilter,
-            "closed",
+            "Closed",
             '11 rows'
-        );
-        $this->_filterTest(
-            self::$lastVisit,
-            self::$display,
-            self::$clearFilter,
-            "Visit",
-            '413'
         );
         $this->_filterTest(
             self::$edc,
@@ -300,6 +287,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$clearFilter,
             "2003-07-30",
             '1 row'
+        );
+        $this->_filterTest(
+            self::$cohort,
+            self::$display,
+            self::$clearFilter,
+            "High Yeast",
+            '2 rows'
         );
     }
     /**
@@ -310,7 +304,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testDataEntryAndOpenProfile()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
         $btn = self::$openProfile;
@@ -321,27 +315,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
-        $this->webDriver->executeScript(
-            "input = document.querySelector('$dccid');
-                 lastValue = input.value;
-                 input.value = '300001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
-        );
-        $this->webDriver->executeScript(
-            "input = document.querySelector('$pscid');
-                 lastValue = input.value;
-                 input.value = 'MTL001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
-        );
+        $this->safeFindElement(
+            WebDriverBy::cssSelector($dccid)
+        )->sendKeys('300001');
+        $this->safeFindElement(
+            WebDriverBy::cssSelector($pscid)
+        )->sendKeys('MTL001');
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
+        sleep(2);
         $URL =  $this->webDriver->executeScript("return window.location.href;");
-        $this->assertContains("300001", $URL);
+        $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
     }
     /**
@@ -353,14 +338,41 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
+        sleep(1);
         $this->safeClick(WebDriverBy::cssSelector($link));
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Candidate Profile",
             $bodyText
         );
     }
-
+    /**
+     * Tests that, click the scan_done ="y" link,
+     * and it will goto the imaging browser page.
+     *
+     * @return void
+     */
+    function testScanDoneLink()
+    {
+        $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+        )->getText();
+        $this->assertStringContainsString(
+            "Y",
+            $bodyText
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$pscidLink)
+        )->getText();
+        $this->assertStringContainsString(
+            "MTL022",
+            $bodyText
+        );
+    }
 }

@@ -3,8 +3,8 @@
 	.table-instrument>tbody>tr>th{
 		color: black;
 	}
-	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  { 
-	     border-top: none; 
+	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  {
+	     border-top: none;
 	 }
 </style>
 
@@ -41,7 +41,7 @@
         Visit to Site
       </th>
       <th>
-        Subproject
+        Cohort
       </th>
       <th>
         MR Scan Done
@@ -94,7 +94,7 @@
         {$timePoint.PSC}
       </td>
       <td>
-        {$timePoint.SubprojectTitle}
+        {$timePoint.CohortTitle}
       </td>
       <td>
         {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
@@ -193,7 +193,7 @@
 				<div class="row form-group col-xs-12">
 					{$element.html}
 				</div>
-			{elseif $element.label eq $element.html}
+			{elseif $element.label === $element.html}
 				<label class="row form-group col-xs-12">
 					{$element.label}
 				</label>
@@ -251,23 +251,44 @@
 				        <tr>
 				        {/if}
 							<td colspan="2">{$element.label}</td>
-							{foreach key=gkey item=gitem from=$element.elements}
-								{if $gitem.type == 'date'}
-									<td class="element form-inline">{$gitem.html}</td>
-								{elseif $gitem.type == 'checkbox'}
-									<td class="form-inline">{$gitem.html}</td>
-								{else}
-									<td class="element">{$gitem.html}</td>
-								{/if}
-							{/foreach}
+                            {assign var="itemError" value=""}
+                            {assign var="atLeastOneError" value=""}
+                            {foreach key=gkey item=gitem from=$element.elements}
+                                {if $gitem.error}
+                                    {assign var="itemError" value=" has-error"}
+                                    {assign var="atLeastOneError" value="1"}
+                                {else}
+                                    {assign var="itemError" value=""}
+                                {/if}
+                                {if $gitem.type == 'date' || $gitem.type == 'time' }
+                                    <td class="element form-inline{$itemError}">{$gitem.html}</td>
+                                {elseif $gitem.type == 'checkbox'}
+                                    <td class="form-inline{$itemError}">{$gitem.html}</td>
+                                {else}
+                                    <td class="element{$itemError}">{$gitem.html}</td>
+                                {/if}
+                            {/foreach}
 						</tr>
 						{if $element.error}
-							<tr>
-								<td colspan="2"></td>
-			                    <td colspan="{$element.elements|@count}" class="has-error">
-			                    	<font class="form-error">{$element.error}</font>
-			                    </td>
-			                </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="{$element.elements|@count}" class="has-error">
+                                <font class="form-error">{$element.error}</font>
+                            </td>
+                        </tr>
+                        {elseif $atLeastOneError}
+                        <tr>
+                            <td colspan="2"></td>
+                            {foreach key=gkey item=gitem from=$element.elements}
+                                {if $gitem.error}
+                                    <td class="has-error">
+                                        <font class="form-error">{$gitem.error}</font>
+                                    </td>
+                                {else}
+                                    <td/>
+                                {/if}
+                            {/foreach}
+                        </tr>
 						{/if}
 					{/if}
 				{/if}
@@ -396,7 +417,7 @@
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
-							{$element.label}  
+							{$element.label}
 						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">

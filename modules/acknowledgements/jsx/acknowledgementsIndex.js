@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,6 +7,13 @@ import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    DateElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Acknowledgements Module page.
@@ -18,9 +26,12 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class AcknowledgementsIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -51,8 +62,10 @@ class AcknowledgementsIndex extends Component {
         dataEntry: 'Data Entry',
         databaseProgramming: 'Database Programming',
         imagingProcessingAndEvaluation: 'Imaging Processing and Evaluation',
-        geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis and Biochemical Assays',
-        randomizationAndPharmacyAllocation: 'Randomization and Pharmacy Allocation',
+        geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis '
+                                             + 'and Biochemical Assays',
+        randomizationAndPharmacyAllocation: 'Randomization '
+                                            + 'and Pharmacy Allocation',
         consultants: 'Consultants',
         lpCsfCollection: 'LP/CSF Collection',
       },
@@ -71,6 +84,9 @@ class AcknowledgementsIndex extends Component {
     this.parseMultiple = this.parseMultiple.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -93,6 +109,13 @@ class AcknowledgementsIndex extends Component {
       });
   }
 
+  /**
+   * Extract key values from the form element
+   *
+   * @param {string} formElement
+   * @param {string[]} keys
+   * @return {object} - Object of key => value
+   */
   pickElements(formElement, keys) {
     let subset = {};
     keys.forEach((key) => {
@@ -140,7 +163,11 @@ class AcknowledgementsIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal.fire('Success!', 'Acknowledgement added.', 'success').then((result) => {
+        swal.fire(
+          'Success!',
+          'Acknowledgement added.',
+          'success'
+        ).then((result) => {
           if (result.value) {
             this.closeModalForm();
             this.fetchData();
@@ -162,7 +189,6 @@ class AcknowledgementsIndex extends Component {
    *
    * @param {string} data - string with commas
    * @param {string} key - string for state json retrieval.
-   *
    * @return {string} formatted string for table cell
    */
   parseMultiple(data, key) {
@@ -188,7 +214,6 @@ class AcknowledgementsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -209,10 +234,16 @@ class AcknowledgementsIndex extends Component {
     return result;
   }
 
+  /**
+   * Open Modal form
+   */
   openModalForm() {
     this.setState({showModal: true});
   }
 
+  /**
+   * Close Modal form
+   */
   closeModalForm() {
     this.setState({
       formData: {},
@@ -220,6 +251,11 @@ class AcknowledgementsIndex extends Component {
     });
   }
 
+  /**
+   * Renders the 'Citation Policy' React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   renderCitationPolicy() {
     return (
       <Panel
@@ -233,6 +269,11 @@ class AcknowledgementsIndex extends Component {
     );
   }
 
+  /**
+   * Renders the 'Add form' React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   renderAddForm() {
     const requireEndDate = (this.state.formData.addPresent === 'No') || false;
     const disableEndDate = (this.state.formData.addPresent === 'Yes') || false;
@@ -312,7 +353,8 @@ class AcknowledgementsIndex extends Component {
             label='End date'
             value={this.state.formData.addEndDate}
             maxYear={this.state.data.maxYear}
-            minYear={this.state.formData.addStartDate || this.state.data.minYear}
+            minYear={this.state.formData.addStartDate
+                    || this.state.data.minYear}
             disabled={disableEndDate}
             required={requireEndDate}
             onUserInput={this.setFormData}
@@ -339,6 +381,11 @@ class AcknowledgementsIndex extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -416,12 +463,13 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

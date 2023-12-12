@@ -51,7 +51,7 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             LEFT JOIN parameter_type_override pto USING (Name)
             WHERE pt.Queryable=1
             ",
-            array()
+            []
         );
     }
 

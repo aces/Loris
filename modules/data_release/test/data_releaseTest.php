@@ -16,9 +16,20 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithViewPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_view')
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
         );
         $this->resetPermissions();
     }
@@ -30,7 +41,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithEditPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_edit_file_access')
         );
@@ -44,7 +55,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithUploadPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_upload')
         );
@@ -59,7 +70,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageDoesNotLoadWithoutPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             'You do not have access',
             $this->_loadWithPermission('')
         );
@@ -76,7 +87,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function _loadWithPermission(string $permission): string
     {
-        $this->setupPermissions(array($permission));
+        $this->setupPermissions([$permission]);
         $this->safeGet($this->url . "/data_release/");
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")

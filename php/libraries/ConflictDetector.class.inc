@@ -27,29 +27,32 @@ class ConflictDetector
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
-     * @param string $instrumentName The instrument being checked
-     * @param string $commentId1     The first data entry CommentID
-     * @param string $commentId2     The second data entry CommentID
+     * @param \LORIS\LorisInstance $loris          The LORIS instance with the
+     *                                             comment IDs being compared
+     * @param string               $instrumentName The instrument being checked
+     * @param string               $commentId1     The first data entry CommentID
+     * @param string               $commentId2     The second data entry CommentID
      *
      * @return array An array of differences between the 2 data entry
      *               points.
      */
     static function detectConflictsForCommentIds(
+        \LORIS\LorisInstance $loris,
         string $instrumentName,
         string $commentId1,
         string $commentId2
     ): array {
-        $diffResult = array();
+        $diffResult = [];
 
         // Get data entry status for $commentId1
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId1);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
 
         // Get data entry status for $commentId2
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId2);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
@@ -57,6 +60,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId1
         $instance1 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId1,
             ''
@@ -64,6 +68,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId2
         $instance2 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId2,
             ''
@@ -85,8 +90,9 @@ class ConflictDetector
      */
     static function recordUnresolvedConflicts(array $diffResult): void
     {
+        $db = \NDB_Factory::singleton()->database();
         foreach ($diffResult as $diffLine) {
-            \Database::singleton()->replace('conflicts_unresolved', $diffLine);
+            $db->replace('conflicts_unresolved', $diffLine);
         }
 
     }
@@ -103,7 +109,7 @@ class ConflictDetector
      */
     function clearConflictsForField(array $diffLine): void
     {
-        $deleteWhere = array(
+        $deleteWhere = [
             'TableName'      => $diffLine['TableName'],
             'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
             'ExtraKey1'      => $diffLine['ExtraKey1'],
@@ -111,9 +117,10 @@ class ConflictDetector
             'FieldName'      => $diffLine['FieldName'],
             'CommentId1'     => $diffLine['CommentId1'],
             'CommentId2'     => $diffLine['CommentId2'],
-        );
+        ];
 
-        \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
+        \NDB_Factory::singleton()->database()
+            ->delete('conflicts_unresolved', $deleteWhere);
     }
 
     /**
@@ -126,9 +133,9 @@ class ConflictDetector
      */
     static function clearConflictsForInstance(string $commentId): void
     {
-        \Database::singleton()->delete(
+        \NDB_Factory::singleton()->database()->delete(
             'conflicts_unresolved',
-            array('CommentId1' => $commentId)
+            ['CommentId1' => $commentId]
         );
     }
 
@@ -141,9 +148,9 @@ class ConflictDetector
      */
     static function isInstrumentInstanceInConflictState(string $commentId): bool
     {
-        $conflictCount = \Database::singleton()->pselectOne(
+        $conflictCount = \NDB_Factory::singleton()->database()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
-            array('CID' => $commentId)
+            ['CID' => $commentId]
         );
         return ($conflictCount != 0);
     }

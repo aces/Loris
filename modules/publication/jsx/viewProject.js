@@ -1,6 +1,22 @@
 import ProjectFormFields from './projectFields';
+import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  SelectElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
+} from 'jsx/Form';
 
+/**
+ * View project component
+ */
 class ViewProject extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -22,11 +38,16 @@ class ViewProject extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Handle submit
+   *
+   * @param {object} e - Event object
+   */
   handleSubmit(e) {
     e.preventDefault();
 
     if (Object.keys(this.state.formErrors).length > 0) {
-      swal(
+      swal.fire(
         'Please fix any remaining form errors before submission',
         '',
         'error'
@@ -47,91 +68,123 @@ class ViewProject extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        swal('Edit Successful!', '', 'success');
-      },
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = 'Something went wrong!';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
-        }
-        swal('Edit failed!', resp, 'error');
-      },
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || 'Something went wrong!';
+          swal.fire('Edit failed!', message, 'error');
+        });
+        return;
+      }
+
+      swal.fire('Edit Successful!', '', 'success');
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      swal.fire('Edit failed!', 'Something went wrong!', 'error');
     });
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let formData = {
-          title: data.title,
-          description: data.description,
-          leadInvestigator: data.leadInvestigator,
-          leadInvestigatorEmail: data.leadInvestigatorEmail,
-          notifyLead: false,
-          status: data.status,
-          voiFields: data.voi,
-          keywords: data.keywords,
-          collaborators: data.collaborators,
-          usersWithEditPerm: data.usersWithEditPerm,
-          rejectedReason: data.rejectedReason,
-        };
-        // set formdata for file meta data
-        if (data.files) {
-          data.files.forEach(function(f) {
-            let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-            let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-            let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
-            formData[pubType] = f.PublicationUploadTypeID;
-            formData[pubCit] = f.Citation;
-            formData[pubVer] = f.Version;
-          });
-        }
-
-        self.setState({
-          formData: formData,
-          users: data.users,
-          statusOpts: data.statusOpts,
-          userCanEdit: data.userCanEdit,
-          allVOIs: data.allVOIs,
-          allKWs: data.allKWs,
-          allCollabs: data.allCollabs,
-          uploadTypes: data.uploadTypes,
-          files: data.files,
-          isLoaded: true,
-        });
-      },
-      error: function(error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        this.setState({
           error: 'An error occurred when loading the form!',
         });
-      },
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let formData = {
+            title: data.title,
+            description: data.description,
+            project: data.project,
+            publishingStatus: data.publishingStatus,
+            datePublication: data.datePublication,
+            journal: data.journal,
+            link: data.link,
+            leadInvestigator: data.leadInvestigator,
+            leadInvestigatorEmail: data.leadInvestigatorEmail,
+            notifyLead: false,
+            status: data.status,
+            voiFields: data.voi,
+            keywords: data.keywords,
+            collaborators: data.collaborators,
+            usersWithEditPerm: data.usersWithEditPerm,
+            rejectedReason: data.rejectedReason,
+          };
+          // set formdata for file meta data
+          if (data.files) {
+            data.files.forEach(function(f) {
+              let existFileFlag = 'existingUpload_';
+              let pubType = existFileFlag
+                + 'publicationType_'
+                + f.PublicationUploadID;
+              let pubCit = existFileFlag
+                + 'publicationCitation_'
+                + f.PublicationUploadID;
+              let pubVer = existFileFlag
+                + 'publicationVersion_'
+                + f.PublicationUploadID;
+              formData[pubType] = f.PublicationUploadTypeID;
+              formData[pubCit] = f.Citation;
+              formData[pubVer] = f.Version;
+            });
+          }
+
+          this.setState({
+            formData: formData,
+            projectOptions: data.projectOptions,
+            users: data.users,
+            statusOpts: data.statusOpts,
+            userCanEdit: data.userCanEdit,
+            allVOIs: data.allVOIs,
+            allKWs: data.allKWs,
+            allCollabs: data.allCollabs,
+            uploadTypes: data.uploadTypes,
+            files: data.files,
+            isLoaded: true,
+          });
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Create file download links
+   *
+   * @return {JSX} - React markup for the component
+   */
   createFileDownloadLinks() {
     let files = this.state.files;
     let toReturn = [];
     files.forEach(function(f) {
-      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.Filename;
+      let download = loris.BaseURL
+                     + '/publication/ajax/FileDownload.php?File='
+                     + f.Filename;
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
       toReturn.push(
@@ -161,6 +214,13 @@ class ViewProject extends React.Component {
     return toReturn;
   }
 
+  /**
+   * Create menu filter links
+   *
+   * @param {string[]} stringArr
+   * @param {string} filterVar
+   * @return {JSX} - React markup for the component
+   */
   createMenuFilterLinks(stringArr, filterVar) {
     let links = [];
     stringArr.forEach(
@@ -181,6 +241,11 @@ class ViewProject extends React.Component {
     return links;
   }
 
+  /**
+   * Create static components
+   *
+   * @return {JSX} - React markup for the component
+   */
   createStaticComponents() {
     let collaborators;
     let keywords;
@@ -237,6 +302,31 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
         <StaticElement
+          name="project"
+          label="Project"
+          text={this.state.formData.project}
+        />
+        <StaticElement
+          name="publishingStatus"
+          label="Publishing status"
+          text={this.state.formData.publishingStatus}
+        />
+        <StaticElement
+          name="datePublication"
+          label="Date published"
+          text={this.state.formData.datePublication}
+        />
+        <StaticElement
+          name="journal"
+          label="Journal"
+          text={this.state.formData.journal}
+        />
+        <StaticElement
+          name="link"
+          label="Link"
+          text={this.state.formData.link}
+        />
+        <StaticElement
           name="leadInvestigator"
           label="Lead Investigator"
           text={this.state.formData.leadInvestigator}
@@ -254,6 +344,11 @@ class ViewProject extends React.Component {
    );
   }
 
+  /**
+   * Create editable components
+   *
+   * @return {JSX} - React markup for the component
+   */
   createEditableComponents() {
     return (
       <div>
@@ -268,6 +363,7 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           toggleEmailNotify={this.toggleEmailNotify}
           uploadTypes={this.state.uploadTypes}
+          projectOptions={this.state.projectOptions}
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}
@@ -279,6 +375,13 @@ class ViewProject extends React.Component {
     );
   }
 
+  /**
+   * Add list item
+   *
+   * @param {string} formElement
+   * @param {*} value
+   * @param {string} pendingValKey
+   */
   addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
@@ -290,6 +393,12 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Remove list item
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -305,6 +414,12 @@ class ViewProject extends React.Component {
     }
   }
 
+  /**
+   * Set form data
+   *
+   * @param {*} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -313,6 +428,12 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Set file data
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
     if (!this.state.formData[formElement]) {
@@ -322,6 +443,11 @@ class ViewProject extends React.Component {
     this.setFormData(formElement, value);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -363,7 +489,9 @@ class ViewProject extends React.Component {
       }
       // Set review button only if user does not have edit permission
       // to avoid having 2 submit buttons
-      reviewBtn = this.state.userCanEdit ? undefined : <ButtonElement label="Submit" />;
+      reviewBtn = this.state.userCanEdit ?
+        undefined :
+        <ButtonElement label="Submit" />;
     } else {
       const statClassMap = {
         Pending: 'text-warning',
@@ -437,5 +565,9 @@ class ViewProject extends React.Component {
     );
   }
 }
+ViewProject.propTypes = {
+  action: PropTypes.string,
+  DataURL: PropTypes.string,
+};
 
 export default ViewProject;

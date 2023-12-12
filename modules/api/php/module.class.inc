@@ -35,7 +35,7 @@ class Module extends \Module
      *
      * @return bool
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         // The API is "public"  because the login endpoint needs to be public.
         return true;
@@ -53,6 +53,21 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($this->hasPrefix('/static/', $request->getURI())) {
+            /*
+             * Bypass for statically served files. If the request url
+             * is /api/static/... this will call the handle  function
+             * of the superclass \Module.
+             *
+             * It prevents this class handle to reject the request because
+             * of the absence of version in the url.
+             *
+             * Important!! There is no permission check on those files
+             */
+            return  parent::handle($request);
+        }
+
+        // Requests sent to this module must start with /api/$version
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
@@ -84,15 +99,18 @@ class Module extends \Module
 
         $handlername = $pathparts[0];
 
-        switch($handlername) {
+        switch ($handlername) {
         case 'candidates':
-            $handler = new \LORIS\api\Endpoints\Candidates();
+            $handler = new \LORIS\api\Endpoints\Candidates($this->loris);
             break;
         case 'login':
-            $handler = new \LORIS\api\Endpoints\Login();
+            $handler = new \LORIS\api\Endpoints\Login($this->loris);
             break;
         case 'projects':
-            $handler = new \LORIS\api\Endpoints\Projects();
+            $handler = new \LORIS\api\Endpoints\Projects($this->loris);
+            break;
+        case 'sites':
+            $handler = new \LORIS\api\Endpoints\Sites($this->loris);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -113,5 +131,15 @@ class Module extends \Module
     public function getLongName() : string
     {
         return "API";
+    }
+
+    /**
+     * This module have a specification
+     *
+     * @return bool Always true
+     */
+    public function hasAPISpecification() : bool
+    {
+        return true;
     }
 }

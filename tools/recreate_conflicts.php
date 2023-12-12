@@ -12,14 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../php/libraries:");
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
+require_once __DIR__ . '/generic_includes.php';
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
@@ -47,17 +43,17 @@ if (empty($argv[1]) || $argv[1] == 'help') {
  * Get cmd-line arguments
  */
 // get $action argument
-$action         = $argv[1];
+$action = $argv[1];
 
 if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
     $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
-    $allInstruments = array($action => $action);
-    $ddeInstruments = array($action => $action);
+    $allInstruments = [$action => $action];
+    $ddeInstruments = [$action => $action];
 }
 // clear the unresolved conflicts for all the instruments
-foreach ($allInstruments as $instrument=>$Full_name) {
+foreach ($allInstruments as $instrument => $Full_name) {
     $clear_conflicts = $db->pselect(
         "SELECT CommentID, Test_name,
                                             CONCAT('DDE_', CommentID)
@@ -68,7 +64,7 @@ foreach ($allInstruments as $instrument=>$Full_name) {
                                      WHERE Test_name=:testname AND CommentID
                                            NOT LIKE 'DDE%' AND s.Active='Y'
                                            AND c.Active='Y'",
-        array('testname' => $instrument)
+        ['testname' => $instrument]
     );
 
     foreach ($clear_conflicts as $conflict) {
@@ -89,7 +85,7 @@ foreach ($ddeInstruments as $test) {
                                        AND EXISTS (SELECT 'x' FROM flag dde WHERE
                                            dde.CommentID=CONCAT('DDE_',sde.CommentID)
                                        AND Data_entry='Complete')",
-        array('testname' => $test)
+        ['testname' => $test]
     );
 
     foreach ($instruments as $instrument) {
@@ -98,6 +94,7 @@ foreach ($ddeInstruments as $test) {
             print "Recreating conflicts for " . $instrument['Test_name'] .
                 ':'. $instrument['CommentID'] . "\n";
             $diff = ConflictDetector::detectConflictsForCommentIds(
+                $lorisInstance,
                 $instrument['Test_name'],
                 $instrument['CommentID'],
                 $instrument['DDECommentID']

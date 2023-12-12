@@ -54,20 +54,29 @@ class VisitController
         return array_map(
             function ($row) {
                 return new \LORIS\Visit(
-                    $row['name'],
-                    $row['ID']
+                    $row['VisitName'],
+                    $row['VisitLabel']
                 );
             },
             $this->database->pselect(
-                'SELECT
-                 v.VisitID as "ID", v.VisitName as "name"
-                FROM
-                 visit v
-ORDER BY ID
-                ',
-                array()
+                'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
+                []
             )
         );
+    }
+
+    /**
+     * Get an associative array of the type
+     *
+     * @return array
+     */
+    public function getVisitlabels(): array
+    {
+        $visitLabels = [];
+        foreach ($this->getAllVisits() as $visitObj) {
+            $visitLabels[$visitObj->getName()] = $visitObj->getLabel();
+        }
+        return $visitLabels;
     }
 
     /**
@@ -95,43 +104,74 @@ ORDER BY ID
                  v.VisitName = :name
                 ORDER BY ID
                 ',
-                array('name' => $visit)
+                ['name' => $visit]
             )
         );
     }
+
+    /**
+     * Instanciate a visit object using the visit label value
+     *
+     * @param string $visitLabel Label for which the Visit object s requested
+     *
+     * @return Visit Visit associated with the supplied label
+     *
+     * @throws \NotFound
+     */
+    public function getVisitFromVisitLabel(string $visitLabel) : \LORIS\Visit
+    {
+        $visitData = $this->database->pselectRow(
+            'SELECT
+                 v.VisitID, v.VisitName
+                FROM
+                 visit v
+                WHERE
+                 v.VisitLabel = :vl',
+            ['vl' => $visitLabel]
+        );
+
+        if (empty($visitData)) {
+            throw new \NotFound(
+                "No visits found in the database with label: $visitLabel"
+            );
+        }
+
+        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+    }
+
     /**
      * Returns a list of configured Visits and their association with projects
-     * and subprojects
+     * and cohorts
      *
-     * @return array The list of visits, projectID and subprojectID
+     * @return array The list of visits, projectID and cohortID
      */
-    public function getVisitsProjectSubproject(): array
+    public function getVisitsProjectCohort(): array
     {
         return array_map(
             function ($row) {
-                return array(
+                return [
                     new \LORIS\Visit($row['name'], $row['ID']),
                     $row['project'],    // will be modified to object when
-                    $row['subproject'], // available
-                );
+                    $row['cohort'], // available
+                ];
             },
             $this->database->pselect(
                 'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
                   psr.ProjectID as "project",
-                  psr.SubprojectID as "subproject"
+                  psr.CohortID as "cohort"
                  FROM
                   visit v
                  JOIN
-                  visit_project_subproject_rel vps
+                  visit_project_cohort_rel vps
                  ON v.VisitID = vps.VisitID
-                 JOIN 
-                  project_subproject_rel psr 
-                 ON vps.ProjectSubprojectRelID = psr.ProjectSubprojectRelID
-                ORDER BY ID, project, subproject
+                 JOIN
+                  project_cohort_rel psr
+                 ON vps.ProjectCohortRelID = psr.ProjectCohortRelID
+                ORDER BY ID, project, cohort
                 ',
-                array()
+                []
             )
         );
     }

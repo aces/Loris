@@ -1,9 +1,17 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * Imaging browser index component
+ */
 class ImagingBrowserIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -16,6 +24,9 @@ class ImagingBrowserIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -42,7 +53,6 @@ class ImagingBrowserIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -90,6 +100,11 @@ class ImagingBrowserIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -152,6 +167,11 @@ class ImagingBrowserIndex extends Component {
         type: 'multiselect',
         options: options.pendingNew,
       }},
+      {label: 'Entity Type', show: false, filter: {
+       name: 'entityType',
+       type: 'multiselect',
+       option: options.entityType,
+      }},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types
@@ -179,10 +199,11 @@ ImagingBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingBrowserIndex
       dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

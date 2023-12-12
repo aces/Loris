@@ -1,10 +1,18 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * Issue Tracker Index component
+ */
 class IssueTrackerIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -18,6 +26,9 @@ class IssueTrackerIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -46,7 +57,6 @@ class IssueTrackerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -92,10 +102,22 @@ class IssueTrackerIndex extends Component {
         break;
       default:
         result = <td>None</td>;
-      };
+      }
       break;
     case 'Site':
-      result = <td>{this.state.data.fieldOptions.sites[cell]}</td>;
+      // if cell is an array containing all sites values
+      if (
+          JSON.stringify(
+              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+      ) {
+        result = <td>All Sites</td>;
+      } else {
+        result = <td>
+              {cell.map((v) =>
+                  this.state.data.fieldOptions.sites[v]).filter(
+                      (v) => v != undefined).join(', ')}
+        </td>;
+      }
       break;
     case 'PSCID':
       if (row.PSCID !== null) {
@@ -109,7 +131,7 @@ class IssueTrackerIndex extends Component {
       break;
     case 'Visit Label':
       if (row['Visit Label'] !== null) {
-        link =(
+        link = (
           <a href={loris.BaseURL + '/instrument_list/?candID=' +
                   row.CandID + '&sessionID=' + row.SessionID }>
             {cell}
@@ -123,6 +145,11 @@ class IssueTrackerIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -182,7 +209,7 @@ class IssueTrackerIndex extends Component {
         }},
       {label: 'Site', show: true, filter: {
         name: 'site',
-        type: 'select',
+        type: 'multiselect',
         options: options.sites,
         }},
       {label: 'PSCID', show: true, filter: {
@@ -203,14 +230,27 @@ class IssueTrackerIndex extends Component {
       {label: 'Watching', show: false, filter: {
         name: 'watching',
         type: 'checkbox',
-        }},
+      }},
     ];
 
     const filterPresets = [
       {label: 'All Issues', filter: {}},
-      {label: 'Active Issues', filter: {status: {value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved']}}},
-      {label: 'Closed Issues', filter: {status: {value: ['closed'], exactMatch: true}}},
-      {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
+      {label: 'Active Issues', filter: {
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
+      {label: 'Closed Issues', filter: {
+        status: {value: ['closed'], exactMatch: true},
+      }},
+      {label: 'My Issues', filter: {
+        assignee: {
+          value: this.state.data.fieldOptions.userID, exactMatch: true,
+        },
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
     ];
 
     const addIssue = () => {
@@ -241,11 +281,12 @@ IssueTrackerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <IssueTrackerIndex
       dataURL={`${loris.BaseURL}/issue_tracker/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

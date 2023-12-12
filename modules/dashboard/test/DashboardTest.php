@@ -2,7 +2,7 @@
 /**
  * Dashboard automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Dashboard module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -34,57 +34,57 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         //Insert a pending user
         $this->DB->insert(
             "users",
-            array(
-                'UserID'          => 'testUser1',
-                'Email'           => 'test@test.com',
-                'Password'        => 'AA1234567!',
-                'Password_expiry' => '2020-01-06',
-            )
+            [
+                'UserID'                 => 'testUser1',
+                'Email'                  => 'test@test.com',
+                'Password'               => 'AA1234567!',
+                'PasswordChangeRequired' => false
+            ]
         );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",
-            array("test_user_id" => 'testUser1')
+            ["test_user_id" => 'testUser1']
         );
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => $user_id,
                 'CenterID' => '1',
-            )
+            ]
         );
         //Insert two violation scan
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '55',
                 'Name'      => 'TESTinPSC',
                 'Alias'     => 'tst',
                 'MRI_alias' => 'test',
-            )
+            ]
         );
         $this->DB->insert(
-            "subproject",
-            array(
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
-            )
+            "cohort",
+            [
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
+            ]
         );
         $this->DB->insert(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -92,51 +92,52 @@ class DashboardTest extends LorisIntegrationTest
                 'RegistrationProjectID' => '7777',
                 'Entity_type'           => 'Human',
                 'Active'                => 'Y',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
-                'ID'           => '222222',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => '',
-                'SubprojectID' => '55',
-                'Active'       => 'Y',
-            )
+            [
+                'ID'          => '222222',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => '',
+                'CohortID'    => '55',
+                'Active'      => 'Y',
+            ]
         );
         $this->DB->insert(
             "mri_protocol_group",
-            array(
+            [
                 'MriProtocolGroupID' => 11,
                 'Name'               => 'test',
-            )
+            ]
         );
 
         //Insert an incomplete form data
         $this->DB->insert(
             "test_names",
-            array(
+            [
                 'ID'        => '111',
                 'Test_name' => 'TestName11111111111',
-            )
+                'Sub_group' => 1,
+            ]
         );
         $this->DB->insert(
             "flag",
-            array(
+            [
                 'ID'         => '111111',
                 'SessionID'  => '222222',
                 'Test_name'  => 'TestName11111111111',
                 'CommentID'  => 'commentID111',
                 'Data_entry' => 'In Progress',
-            )
+            ]
         );
         //Insert a demo data into conflicts_unresolved
         $this->DB->insert(
             "conflicts_unresolved",
-            array(
+            [
                 'TableName'      => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
@@ -146,27 +147,27 @@ class DashboardTest extends LorisIntegrationTest
                 'Value1'         => 'no',
                 'CommentId2'     => 'DDE_963443000111271151398976899',
                 'Value2'         => 'no',
-            )
+            ]
         );
         $this->DB->insert(
             "files",
-            array(
+            [
                 'FileID'       => '1111112',
                 'SessionID'    => '222222',
                 'SourceFileID' => '1111112',
-            )
+            ]
         );
 
         $this->DB->insert(
             "files_qcstatus",
-            array(
+            [
                 'FileID'   => '1111112',
                 'FileQCID' => '2222221',
-            )
+            ]
         );
         $this->DB->insert(
             "conflicts_resolved",
-            array(
+            [
                 'ResolvedID'          => '999999',
                 'UserID'              => 'demo',
                 'ResolutionTimestamp' => '2015-11-03 16:21:49',
@@ -181,11 +182,11 @@ class DashboardTest extends LorisIntegrationTest
                 'OldValue1'           => 'Mother',
                 'OldValue2'           => 'Father',
                 'NewValue'            => 'NULL',
-            )
+            ]
         );
         $this->DB->insert(
             "conflicts_unresolved",
-            array(
+            [
                 'TableName'      => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
@@ -195,33 +196,33 @@ class DashboardTest extends LorisIntegrationTest
                 'Value1'         => 'no',
                 'CommentId2'     => 'DDE_963443000111271151398976899',
                 'Value2'         => 'no',
-            )
+            ]
         );
         $this->DB->insert(
             "issues",
-            array(
+            [
                 'issueID'  => '999999',
                 'assignee' => 'UnitTester',
                 'status'   => 'new',
                 'priority' => 'low',
                 'reporter' => 'UnitTester',
-            )
+            ]
         );
         $this->DB->insert(
             "users",
-            array(
+            [
                 'ID'     => '9999991',
                 'UserID' => 'Tester1',
-            )
+            ]
         );
         $this->DB->insert(
             "document_repository",
-            array(
+            [
                 'record_id'  => '9999997',
                 'visitLabel' => null,
                 'Date_taken' => '2016-07-27 18:00:10',
                 'File_name'  => 'test.jpg',
-            )
+            ]
         );
     }
     /**
@@ -229,91 +230,91 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->delete(
             "document_repository",
-            array('record_id' => '9999997')
+            ['record_id' => '9999997']
         );
         $this->DB->delete(
             "users",
-            array('ID' => '9999991')
+            ['ID' => '9999991']
         );
         $this->DB->delete(
             "issues",
-            array('issueID' => '999999')
+            ['issueID' => '999999']
         );
         $this->DB->delete(
             "conflicts_resolved",
-            array('ResolvedID' => '999999')
+            ['ResolvedID' => '999999']
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
+            ['TableName' => 'TestTestTest']
         );
         $this->DB->delete(
             "files_qcstatus",
-            array('FileID' => '1111112')
+            ['FileID' => '1111112']
         );
         $this->DB->delete(
             "files",
-            array('FileID' => '1111112')
+            ['FileID' => '1111112']
         );
 
         $this->DB->delete(
             "users",
-            array('UserID' => 'testUser1')
+            ['UserID' => 'testUser1']
         );
         $this->DB->delete(
             "session",
-            array('ID' => '222222')
+            ['ID' => '222222']
         );
         $this->DB->delete(
             "candidate",
-            array(
+            [
                 'CandID'               => '999888',
                 'RegistrationCenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "mri_protocol_group",
-            array('Name' => 'test')
+            ['Name' => 'test']
         );
         $this->DB->delete(
             "psc",
-            array(
+            [
                 'CenterID' => '55',
                 'Name'     => 'TESTinPSC',
-            )
+            ]
         );
         $this->DB->delete(
-            "subproject",
-            array('SubprojectID' => '55')
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         $this->DB->delete(
             "flag",
-            array('CommentID' => 'commentID111')
+            ['CommentID' => 'commentID111']
         );
         $this->DB->delete(
             "test_names",
-            array('ID' => '111')
+            ['ID' => '111']
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
+            ['TableName' => 'TestTestTest']
         );
         $this->DB->update(
             "Config",
-            array("Value" => null),
-            array("ConfigID" => 48)
+            ["Value" => null],
+            ["ConfigID" => 48]
         );
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
@@ -330,9 +331,18 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $welcomeText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Welcome", $welcomeText);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".welcome")
+        )->getText();
+        $this->assertStringContainsString("Welcome", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -346,31 +356,32 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $views = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/button"
-                )
-            );
+        $views = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1) .views button"
+            )
+        );
         $views->click();
 
-        $assertText1 = $this->webDriver
-            ->findElement(
-                WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[1]/a"
-                )
-            )->getText();
-        $assertText2 = $this->webDriver
-            ->findElement(
-                WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[2]/a"
-                )
-            )->getText();
-        $this->assertContains("View overall recruitment", $assertText1);
-        $this->assertContains("View site breakdown", $assertText2);
+        $assertText1 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(1)"
+            )
+        )->getText();
+
+        $assertText2 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(2)"
+            )
+        )->getText();
+
+        $this->assertStringContainsString("Recruitment - overall", $assertText1);
+        $this->assertStringContainsString(
+            "Recruitment - site breakdown",
+            $assertText2
+        );
     }
 
     /**
@@ -387,10 +398,10 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
+            [
                 "imaging_browser_qc",
                 "imaging_browser_view_allsites",
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -415,10 +426,10 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
+            [
                 "conflict_resolver",
                 "access_all_profiles",
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -438,7 +449,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testIssues()
     {
         $this->setupPermissions(
-            array("issue_tracker_developer")
+            ["issue_tracker_developer"]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -466,14 +477,14 @@ class DashboardTest extends LorisIntegrationTest
     public function testIncompleteForm()
     {
         $this->setupPermissions(
-            array(
+            [
                 "data_entry",
                 "access_all_profiles",
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Incomplete forms", $bodyText);
+        $this->assertStringContainsString("Incomplete forms", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -492,15 +503,15 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
+            [
                 "user_accounts_multisite",
                 "user_accounts",
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
-            "1",
+            "2",
             "- User Accounts"
         );
         $this->resetPermissions();
@@ -520,14 +531,14 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
+            [
                 "document_repository_delete",
                 "document_repository_view",
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("test.jpg", $bodyText);
+        $this->assertStringContainsString("test.jpg", $bodyText);
         $this->resetPermissions();
     }
 
@@ -564,9 +575,10 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/main.php?logout=true');
         $this->login("UnitTester", $this->validPassword);
-        $welcomeText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Unit Tester", $welcomeText);
+        $welcomeText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".welcome")
+        )->getText();
+        $this->assertStringContainsString("Unit Tester", $welcomeText);
     }
     /**
      * Make sure there is no recruitment target set in the configuration
@@ -577,13 +589,16 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan2()
     {
+        $this->setupConfigSetting('recruitmentTarget', '');
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Id("overall-recruitment")
+        )->getText();
+        $this->assertStringContainsString(
             "Please add a recruitment target for Overall Recruitment.",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
     /**
      * Put a recruitment target in the configuration module and check that
@@ -594,31 +609,32 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->safeGet($this->url . '/configuration/');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
             )
         )->click();
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->clear();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->sendKeys('888');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )
         )->click();
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Id("overall-recruitment")
+        )->getText();
+        $this->assertStringContainsString(
             "888",
             $testText
         );
@@ -634,13 +650,12 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan5And6()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/div[1]/div[2]"
-                )
-            )->getText();
-        $this->assertNotContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Xpath(
+                "//*[@id='lorisworkspace']/div/div[1]/div[2]"
+            )
+        )->getText();
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );
@@ -656,18 +671,18 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan7And8()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/div[1]/div[3]"
-                )
-            )->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_studyprogression .panel-body div:nth-child(1)"
+            )
+        )->getText();
+
+        $this->assertStringContainsString(
             "Scan sessions per site",
             $testText
         );
 
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );

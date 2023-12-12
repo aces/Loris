@@ -12,7 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverSelect;
 
 require_once __DIR__ .
        "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -37,7 +36,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -46,7 +45,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
@@ -57,16 +56,21 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
       */
     public function testSuperUserPermission()
     {
-         $this->setupPermissions(array("superuser"));
+         $this->setupPermissions(["superuser"]);
          $this->safeGet($this->url . "/document_repository/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
-         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+
     }
 
 
@@ -83,7 +87,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Document Repository", $bodyText);
+        $this->assertStringContainsString("Document Repository", $bodyText);
     }
     /**
      * Tests Upload page.
@@ -92,97 +96,57 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     function testDocumentRepositoryUploadPage()
     {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-        $this->safeGet($this->url . "/document_repository/");
-        $this->webDriver->executescript(
-            "document.querySelector('#tab-upload').click()"
-        );sleep(300);
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#upload > div > div > form > div >".
-            "div:nth-child(1) > h3').textContent"
-        );
-        $this->assertContains("Upload a file", $text);
-
-    }
-    /**
-     * Tests that, upload function in document_repository module
-     *
-     * @return void
-     */
-    function testDocumentRepositoryUploadFile()
-    {
-        //check a upload file under TestTestTest category
-        $this->markTestSkipped("This method isn't working properly on travis.");
-        $this->safeGet($this->url . "/document_repository/");
-        $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span"),
-            3000
-        )->click();
-        $test = $this->safeFindElement(
-            WebDriverBy::linkText("README.md")
-        )->getText();
-        $this->assertContains("README.md", $test);
-
-    }
-    /**
-     * Tests that, upload function in document_repository module
-     *
-     * @return void
-     */
-    function testDocumentRepositoryUploadFileEditDeleteComment()
-    {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-         $this->safeGet($this->url . "/document_repository/");
-        $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")
-        )->click();
-        $this->safeFindElement(
-            WebDriverBy::Id("9999999")
-        )->click();
-
-         // modify comment,search it and check it
-         $select  = $this->safeFindElement(WebDriverBy::Id("categoryEdit"));
-         $element = new WebDriverSelect($select);
-         $element->selectByVisibleText("TESTTESTTESTTEST");
-         $site        = $this->safeFindElement(WebDriverBy::Id("siteEdit"));
-         $elementSite = new WebDriverSelect($site);
-         $elementSite->selectByVisibleText("Any");
-         $this->safeFindElement(WebDriverBy::Id("commentsEdit"))
-             ->sendKeys("This is a test comment!");
-         $this->safeFindElement(WebDriverBy::Id("postEdit"))->click();
-         sleep(3);
-
-        $this->safeFindElement(
-            WebDriverBy::Name("File_name")
-        )->sendKeys("README.md");
-        $this->safeFindElement(
-            WebDriverBy::Name("filter")
-        )->click();
+        $this->safeGet($this->url . "/document_repository/#upload");
         $text = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dir-tree > tr"),
-            3000
-        )
-            ->getText();
-         $this->assertContains("This is a test comment!", $text);
+            WebDriverBy::cssSelector(
+                "#upload > div > div > ".
+                "form > div > div:nth-child(1) > h3"
+            )
+        )->getText();
+        $this->assertStringContainsString("Upload files", $text);
 
-         // delete upload file
+    }
+    /**
+     * Tests Category page.
+     *
+     * @return void
+     */
+    function testDocumentRepositoryAddCategoryPage()
+    {
+        $this->safeGet($this->url . "/document_repository/#category");
+        $text = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#category > div > div > form >".
+                " div > div:nth-child(1) > h3"
+            )
+        )->getText();
+        $this->assertStringContainsString("Add a category", $text);
 
+    }
+    /**
+     * Tests add a Category .
+     *
+     * @return void
+     */
+    function testDocumentRepositoryAddCategory()
+    {
+        $this->safeGet($this->url . "/document_repository/#category");
         $this->safeFindElement(
-            WebDriverBy::linkText("Delete"),
-            3000
-        )->click();
-
-         $this->safeFindElement(WebDriverBy::Id("postDelete"))->click();
-        $this->safeFindElement(
-            WebDriverBy::Name("File_name")
-        )->sendKeys("README.md");
-        $this->safeFindElement(
-            WebDriverBy::Name("filter")
-        )->click();
-         sleep(3);
-         $text = $this->safeFindElement(WebDriverBy::cssSelector("tbody"), 3000)
-             ->getText();
-         $this->assertEquals('', $text);
+            WebDriverBy::Name("categoryName")
+        )->sendKeys("test");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "
+              #category > div > div > ".
+                "form > div > div:nth-child(6) > div > div > button
+            "
+            )
+        );
+        $this->safeGet($this->url . "/document_repository/");
+        $text = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable")
+        )->getText();
+        $this->assertStringContainsString("test", $text);
 
     }
 }

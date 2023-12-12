@@ -21,8 +21,17 @@ namespace LORIS;
  */
 class RecordingEvents
 {
+    private ?string $_onset;
+    private ?string $_duration;
+    private ?string $_eventcode;
+    private ?string $_eventsample;
+    private ?string $_eventtype;
+    private ?string $_trialtype;
+    private ?string $_responsetime;
+    private ?string $_filepath;
+
     /**
-     * Contructor
+     * Constructor
      *
      * @param ?string $onset        Onset
      * @param ?string $duration     Duration

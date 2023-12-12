@@ -41,7 +41,6 @@ class ModuleRouter implements RequestHandlerInterface
      * Constructs a ModuleRouter
      *
      * @param \Module $module    The module being accessed
-     * @param string  $moduledir The base directory of $module.
      */
     public function __construct(\Module $module)
     {

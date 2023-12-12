@@ -12,9 +12,9 @@ The resulting table will display your results, which includes a unique URL for e
 
 The *Status* column tells you whether the survey has been accessed. This column will display one of the following options:
 
-**Created**: Survey was created. This is the default status once a survey is created using the "Add Survey" page.<br>
-**Sent**: Survey was created, and an email with the unique survey URL was sent to the survey respondent. This is the default status once a survey is created and sent by email within LORIS.<br>
-**In Progress**: Survey was opened and accessed by anyone with the link, including study personnel (not just the intended respondent).<br>
+**Created**: Survey was created. This is the default status once a survey is created using the "Add Survey" page.  
+**Sent**: Survey was created, and an email with the unique survey URL was sent to the survey respondent. This is the default status once a survey is created and sent by email within LORIS.  
+**In Progress**: Survey was opened and accessed by anyone with the link, including study personnel (not just the intended respondent).  
 **Complete**: Survey was completed and submitted. After this stage, the respondent will not be able to go back and change any entries. No data will be visible via the URL once a survey is completed: clicking on the URL will display a page with the message *"Data has already been submitted"*
 
 ## Create Surveys

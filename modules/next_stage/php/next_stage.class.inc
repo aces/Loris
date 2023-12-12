@@ -2,9 +2,9 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Test
+ * @category Main
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -14,9 +14,9 @@ namespace LORIS\next_stage;
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Test
+ * @category Main
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -47,14 +47,11 @@ class Next_Stage extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $timePoint =& \TimePoint::singleton($this->identifier);
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
 
         // check user permissions
         if (!$user->hasPermission('data_entry')
-            || !in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
+            || !$user->hasCenter($timePoint->getCenterID())
         ) {
             return false;
         }
@@ -70,7 +67,7 @@ class Next_Stage extends \NDB_Form
      */
     function _process($values)
     {
-        $timePoint =& \TimePoint::singleton($this->identifier);
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
 
         // figure out what the next stage should be
         $newStage = $timePoint->getNextStage();
@@ -80,26 +77,17 @@ class Next_Stage extends \NDB_Form
 
         // set the date for the new stage
         $timePoint->setData(
-            array(
+            [
                 "Date_".$newStage => $values['date1'],
-            )
+            ]
         );
 
-        // set SubprojectID if applicable
-        if (isset($values['SubprojectID'])) {
+        // set CohortID if applicable
+        if (isset($values['CohortID'])) {
             $timePoint->setData(
-                array(
-                    'SubprojectID' => $values['SubprojectID'],
-                )
-            );
-        }
-
-        // set scan done if applicable
-        if (isset($values['scan_done'])) {
-            $timePoint->setData(
-                array(
-                    'Scan_done' => $values['scan_done'],
-                )
+                [
+                    'CohortID' => $values['CohortID'],
+                ]
             );
         }
 
@@ -117,11 +105,12 @@ class Next_Stage extends \NDB_Form
         }
 
          // select a specific time point (sessionID) for the battery
-        $battery->selectBattery($timePoint->getData('SessionID'));
+        $battery->selectBattery($timePoint->getSessionID());
 
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
-            $timePoint->getSubprojectID(),
+            $this->loris,
+            $timePoint->getCohortID(),
             $newStage,
             $timePoint->getVisitLabel(),
             $timePoint->getCenterID(),
@@ -145,39 +134,25 @@ class Next_Stage extends \NDB_Form
     {
         parent::setup();
 
-        $this->timepoint = \TimePoint::singleton($this->identifier);
+        $this->timepoint = \TimePoint::singleton(new \SessionID($this->identifier));
         $this->candidate = \Candidate::singleton($this->timepoint->getCandID());
 
-        $timePoint =& \TimePoint::singleton($this->identifier);
-        $config    =& \NDB_Config::singleton();
+        $timePoint = $this->timepoint;
+        $config    = \NDB_Config::singleton();
 
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $config->getSetting('startYear'),
             'maxYear'        => $config->getSetting('endYear'),
-        );
+        ];
 
-        $this->addHidden('candID', $timePoint->getData('CandID'));
-        $this->addHidden('sessionID', $timePoint->getData('SessionID'));
+        $this->addHidden('candID', $timePoint->getCandID()->__toString());
+        $this->addHidden('sessionID', $timePoint->getSessionID()->__toString());
 
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;
-
-        // add form elements
-        if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
-            $this->addSelect(
-                'scan_done',
-                'Scan Done',
-                array(
-                    null => null,
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
-                )
-            );
-            $this->addRule('scan_done', 'Scan done is required', 'required');
-        }
 
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
@@ -195,22 +170,22 @@ class Next_Stage extends \NDB_Form
             $dateAttributes
         );
 
-        // let user select subproject *only* if subprojectid is not > 0
-        if (!($timePoint->getSubprojectID() > 0)) {
-            $list_of_objectives = \Utility::getSubprojectList();
+        // let user select cohort *only* if cohortid is not > 0
+        if (!($timePoint->getCohortID() > 0)) {
+            $list_of_objectives = \Utility::getCohortList();
             $this->addSelect(
-                'SubprojectID',
+                'CohortID',
                 'Objective',
-                array('' => '') + $list_of_objectives
+                ['' => ''] + $list_of_objectives
             );
-            $this->addRule('SubprojectID', 'Required', 'required');
+            $this->addRule('CohortID', 'Required', 'required');
         }
 
         // add date rules
         $this->addRule('date1', 'Date is required', 'required');
-        $this->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
+        $this->addRule(['date1', 'date2'], 'Date fields must match', 'compare');
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
     /**
      * Validate function
@@ -221,10 +196,11 @@ class Next_Stage extends \NDB_Form
      */
     function _validate($values)
     {
-        $config    = \NDB_Factory::singleton()->config();
-        $timePoint = \NDB_Factory::singleton()->timepoint($this->identifier);
+        $config = \NDB_Factory::singleton()->config();
 
-        $errors = array();
+        $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
+
+        $errors = [];
         /* Check that dates are present. Return early as there is no point
          * doing further processing otherwise.
          */
@@ -244,7 +220,7 @@ class Next_Stage extends \NDB_Form
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
-        // get candidate's DOB or EDC according to SubprojectID
+        // get candidate's DOB or EDC according to CohortID
         $candidateBirthDate = $timePoint->getEffectiveDateOfBirth();
 
         //Determine the next stage, and validate accordingly
@@ -254,11 +230,6 @@ class Next_Stage extends \NDB_Form
             // must be > DOB - ONLY WHEN starting Visit stage
             $date = $values['date1'] ?? '';
 
-            if (empty($values['scan_done'])
-                && $config->getSetting('useScanDone')!='false'
-            ) {
-                $errors['scan_done'] = 'Scan done is required';
-            }
             if ($config->getSetting('useScreening')=="true"
                 && $config->getSetting('screeningAfterVisit')!="true"
                 && strcmp($date, $timePoint->getData('Date_screening')) < 0

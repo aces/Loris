@@ -1,35 +1,33 @@
 # Access Profile Test Plan
 
-1. Access access profile page, ensure that it renders.[Automation Testing]
-2. Verify that either the permission access_all_profiles or data_entry is required for access the page.[Automation Testing]
-3. Verify that if data_entry and not access_all_profiles permissions, can only see subjects from own site.[Automation Testing]
-4. Verify that if data_entry and not access_all_profiles permissions, check that initial filter state is Subproject = All.[Automation Testing]
-5. Verify advanced/basic filter toggle works.[Automation Testing]
-6. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise.[Automation Testing]
-7. Check that each dropdown has the correct options.[Automation Testing]
-8. Test each filter individually
+1. Access "Access Profile" page, ensure that it renders.[Automation Testing]
+2. Verify that either the permission "Access Profile: View Candidates and Timepoints - All Sites" or "Access Profile: View/Create Candidates and Timepoints - Own Sites" is required to access the page.[Automation Testing]
+3. Verify that with the "Access Profile: View/Create Candidates and Timepoints - Own Sites" permission and without the "Access Profile: View Candidates and Timepoints - All Sites" permission, only subjects from the user's own sites can be viewed.[Automation Testing]
+4. Verify that the "Show Advanced Filters"/"Hide Advanced Filters" toggle works.[Automation Testing]
+5. Check that each dropdown has the correct options.[Automation Testing]
+6. Test each filter individually
    [ ] Site
    [ ] DCCID
    [ ] PSCID
-   [ ] Subproject
+   [ ] Visit Label
+   [ ] Cohort
    [ ] Project
-   [ ] Scan done
+   [ ] Scan Done
    [ ] Participant Status
-   [ ] Biological Sex
-   [ ] Number of visits
-   [ ] Date of birth
-   [ ] Latest Visit Status
+   [ ] Sex
+   [ ] Visit Count
+   [ ] DoB
    [ ] Feedback
+   [ ] Entity Type
+   [ ] EDC
    [Automation Testing]
-9. Click "Clear Form" and ensure filters are reset to same state as #2.
-10. Ensure that columns are sortable by clicking on them.
-11. Filter for Scan done. Ensure that "Yes" link points to correct scan in imaging browser.
-12. Ensure PSCID link points to correct timepoint_list page.
-13. Ensure that for candidates with feedback, feedback column is displayed and in the correct colour.
-14. Ensure that the Open Profile panel only appears when not access_all_profiles permissions.
-15. Enter wrong PSCID/DCCID combination and click Open Profile. Ensure that you get an error.
-Incorrect PSCID/DCCID combinations in the filter form should not give such an error.
-It should return that no results were found.
-16. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
-17. Remove access_all_profiles permission and ensure that PSCID links are not clickable.
-18. Change useEDC config variable to _no_ from the Configuration Module and ensure filters are removed from menu.
+7. Click "Clear Filter" and ensure filters are reset to same state as #2.
+8. Ensure that columns are sortable by clicking on the column headers.
+9. Filter for Scan Done "Yes". Ensure that, in the 'Scan Done' column of the data table, the "Y" link for a candidate points to the Imaging Browser, with its 'PSCID' filter set to that of the candidate.
+10. Ensure the 'PSCID' link points to the correct Candidate Profile page.
+11. Ensure that for candidates with feedback, the 'Feedback' column is displayed and in the correct colour: green for "Closed", and red for "Opened".
+12. Ensure that the Open Profile button only appears without "Access Profile: View Candidates and Timepoints - All Sites" permission.
+13. Click 'Open Profile', enter wrong PSCID/DCCID combination and click 'Open Profile' again. Ensure an error is thrown.
+Alternatively, an incorrect PSCID/DCCID combination in the Selection Filter form should not give such an error; it should return that no results were found.
+14. Enter a correct PSCID/DCCID combination in the 'Open Profile' form and ensure that it loads the correct Candidate Profile page
+15. In the Configuration module, set the Study variable 'Use EDC' to _No_. Ensure that the _EDC_ filter and the _EDC_ column are removed from the Selection Filter form and data table, respectively.

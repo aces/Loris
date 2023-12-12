@@ -24,6 +24,7 @@
 class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -48,10 +49,6 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         $this->table     = 'medical_history'; // database table
         $this->commentID = $commentID; // data keyed by commentID
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
-
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
         $this->selectMultipleElements = array('current_concussion_symptoms');
@@ -70,7 +67,6 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
                                                     'Testdate',
                                                     'Window_Difference',
                                                     'Candidate_Age',
-                                                    'Data_entry_completion_status',
                                                     'pulmonary_issues_specific',
                                                     'concussion_1_description',
                                                     'concussion_2_description',
@@ -385,7 +381,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
      */
     function isCandidateFemale($candID)
     {
-        $DB     = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT Sex from candidate WHERE CandID=:candID",
             array('candID' => $candID)

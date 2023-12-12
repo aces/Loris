@@ -43,21 +43,21 @@ class Candidate
      */
     public function toArray(): array
     {
-        $meta = array(
-            'CandID'  => (string) $this->_candidate->getCandID(),
+        $meta = [
+            'CandID'  => $this->_candidate->getCandID(),
             'Project' => $this->_candidate->getProjectTitle(),
             'PSCID'   => $this->_candidate->getPSCID(),
             'Site'    => $this->_candidate->getCandidateSite(),
             'EDC'     => $this->_candidate->getCandidateEDC(),
             'DoB'     => $this->_candidate->getCandidateDoB(),
             'Sex'     => $this->_candidate->getCandidateSex(),
-        );
+        ];
 
         $visits = array_values($this->_candidate->getListOfVisitLabels());
 
-        return array(
+        return [
             'Meta'   => $meta,
             'Visits' => $visits,
-        );
+        ];
     }
 }

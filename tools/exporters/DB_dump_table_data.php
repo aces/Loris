@@ -1,16 +1,17 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
- * This script generates data-only dumps for all tables in the currently active database.
- * Each table in the database gets dumped into a single file in the following location :
- *  BASE_PATH_TO_LORIS/test/RBfiles/RB_TABLE_NAME.sql
+ * This script generates data-only dumps for all tables
+ * in the currently active database.
+ * Each table in the database gets dumped into a single file
+ * in the following location :
+ * BASE_PATH_TO_LORIS/test/RBfiles/RB_TABLE_NAME.sql
  *
- * This script was primarily written to simplify contributions to the raisinbread dataset.
+ * This script was primarily written to simplify contributions
+ * to the raisinbread dataset.
  * Each file contains data TRUNCATION, table LOCKING, and individual INSERTS for each
  * row. This is done by design to allow for an easier review of the changes through
  * a VCS system.
- *
- *
  *
  * note: this script currently depends on the existence of a mysql configuration file
  * allowing to dump data using only the database name. The functionality to input
@@ -22,26 +23,27 @@
  * @package  Loris
  * @author   Rida Abou-Haidar <rida.abou-haidar@mcin.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$config = NDB_Config::singleton();
+$config       = NDB_Config::singleton();
 $databaseInfo = $config->getSetting('database');
 
 $tableNames = [];
 
-$allTables = $DB->pselectCol("
-                      SELECT TABLE_NAME 
-                      FROM INFORMATION_SCHEMA.TABLES
-                      WHERE TABLE_SCHEMA =:dbn",
-        array("dbn"=>$databaseInfo['database'])
-    );
+$allTables = $DB->pselectCol(
+    "SELECT TABLE_NAME 
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA =:dbn",
+    ["dbn"=>$databaseInfo['database']]
+);
+
 if ($argc < 2) {
     $tableNames = $allTables;
 } else {
     $tableNames = array_slice($argv, 1);
-    $hasErr = false;
+    $hasErr     = false;
     foreach ($tableNames as $table) {
         if (!in_array($table, $allTables, true)) {
             fprintf(STDERR, "Invalid table $table\n");
@@ -53,9 +55,9 @@ if ($argc < 2) {
     }
 }
 
-$adminUser = $databaseInfo["adminUser"];
+$adminUser     = $databaseInfo["adminUser"];
 $adminPassword = $databaseInfo["adminPassword"];
-$dbHost = $databaseInfo["host"];
+$dbHost        = $databaseInfo["host"];
 
 if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
     echo "\n\n Some database credentials are missing, please ensure administrator 
@@ -86,9 +88,11 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $paths = \NDB_Config::singleton()->getSetting('paths');
+    $paths    = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
-    exec('mysqldump -u '.escapeshellarg($adminUser).' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
+    exec(
+        'mysqldump -u '.escapeshellarg($adminUser).
+        ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
         '--complete-insert '.
         '--no-create-db '.
@@ -99,7 +103,9 @@ foreach ($tableNames as $tableName) {
         '--verbose '.
         '--skip-tz-utc '.
         $tableName .
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\nTRUNCATE TABLE \1;\nLOCK TABLES \1/g\''.
+        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
+        'TRUNCATE TABLE \1;\n'.
+        'LOCK TABLES \1/g\''.
         ' > '. $filename .
         '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename
     );

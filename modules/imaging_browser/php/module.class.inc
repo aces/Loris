@@ -64,7 +64,7 @@ class Module extends \Module
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
-        switch($type) {
+        switch ($type) {
         case 'usertasks':
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
@@ -121,5 +121,4 @@ class Module extends \Module
         }
         return [];
     }
-
 }

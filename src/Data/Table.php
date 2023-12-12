@@ -81,7 +81,7 @@ class Table
 
         $results = [];
         foreach ($allRows as $row) {
-            $results[] = json_decode($row->toJSON($user), true);
+            $results[] = json_decode(json_encode($row), true);
         }
         return $results;
     }

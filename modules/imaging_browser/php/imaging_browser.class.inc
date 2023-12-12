@@ -43,11 +43,11 @@ class Imaging_Browser extends \DataFrameworkMenu
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-            array(
+            [
                 'imaging_browser_view_allsites',
                 'imaging_browser_phantom_allsites',
                 'imaging_browser_phantom_ownsite',
-            )
+            ]
         )
             || (
                 $user->hasStudySite()
@@ -88,7 +88,7 @@ class Imaging_Browser extends \DataFrameworkMenu
     {
         // create user object
         $user     = \User::singleton();
-        $siteList = array();
+        $siteList = [];
 
         // get list of sites available for the user
         if ($user->hasPermission('imaging_browser_view_allsites')
@@ -102,7 +102,7 @@ class Imaging_Browser extends \DataFrameworkMenu
                 $siteList[$site] = $site;
             }
         } else {
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
@@ -112,7 +112,7 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get list of projects
-        $list_of_projects = array();
+        $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $project) {
             unset($projectList[$key]);
@@ -120,42 +120,37 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get visit QC status options
-        $visitQCStatus = array(
+        $visitQCStatus = [
             'Pass' => 'Pass',
             'Fail' => 'Fail',
-        );
+        ];
 
         // get Pending/New options
-        $pending = array(
+        $pending = [
             'P' => 'Pending',
             'N' => 'New',
-        );
+        ];
 
-        // get list of scan types
-        $all_scan_types = \Utility::getScanTypeList();
+        $all_scan_types = array_values(\Utility::getScanTypeList());
+        $sequenceTypes  = array_combine($all_scan_types, $all_scan_types);
 
-        // get list of scan types that should be present in the data table
-        // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on
-        // array values rather than keys (hence the array_flip), then flip
-        // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type) combination.
         $config = \NDB_Config::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
-        $scan_id_types      = array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
-        );
+
+        // get entity type options
+        $entityType = [
+            'Human'   => 'Human',
+            'Scanner' => 'Scanner',
+        ];
 
         return [
             'sites'         => $siteList,
             'projects'      => $list_of_projects,
             'visitQCStatus' => $visitQCStatus,
-            'sequenceTypes' => $all_scan_types,
+            'sequenceTypes' => $sequenceTypes,
             'pendingNew'    => $pending,
-            'configLabels'  => $scan_id_types,
+            'configLabels'  => $toTable_scan_types,
+            'entityType'    => $entityType,
         ];
 
     }
@@ -219,9 +214,9 @@ class Imaging_Browser extends \DataFrameworkMenu
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array(
+            [
                 $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
-            )
+            ]
         );
     }
 }

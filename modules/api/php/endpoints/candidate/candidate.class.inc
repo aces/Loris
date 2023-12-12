@@ -51,7 +51,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -62,10 +62,10 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -95,7 +95,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $visit_label = array_shift($pathparts);
+        $visit_label = urldecode(array_shift($pathparts));
         $newrequest  = $request
             ->withAttribute('pathparts', $pathparts);
 
@@ -105,12 +105,21 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         try {
-            $visit = \NDB_Factory::singleton()->timepoint((int) $sessionid);
-        } catch (\LorisException | \TypeError $e) {
+            $visit = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionid))
+            );
+        } catch (\LorisException | \TypeError | \DomainException $e) {
             $visit = null;
         }
 
-        $handler = new Visit\Visit(
+        $version     = $request->getAttribute("LORIS-API-Version");
+        $subendpoint = __NAMESPACE__ . '\\' . 'Visit\Visit';
+
+        if ($version == 'v0.0.4-dev') {
+            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4_Dev';
+        }
+
+        $handler = new $subendpoint(
             $this->_candidate,
             $visit
         );
@@ -125,11 +134,9 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Returns an array representation of the requested candiate following
      * the API specifications.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         // TODO :: User permission to acces this and subendpoints
         $array = (new \LORIS\api\Views\Candidate($this->_candidate))

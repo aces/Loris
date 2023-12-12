@@ -58,7 +58,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,9 +68,10 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -112,7 +113,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'metadata':
             $handler = new Metadata($this->_visit, $recording);
             break;
@@ -209,11 +210,11 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $recording->getFileInfo();
 
-        $signature = array(
+        $signature = [
             'filename' => $this->_filename,
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

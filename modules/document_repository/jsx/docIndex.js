@@ -6,8 +6,20 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {CheckboxElement} from 'jsx/Form';
 
+/**
+ * Doc index component
+ */
 class DocIndex extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -30,11 +42,20 @@ class DocIndex extends React.Component {
     this.getContent = this.getContent.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Handle global
+   *
+   * @param {*} formElement
+   * @param {boolean} value
+   */
   handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
@@ -46,6 +67,11 @@ class DocIndex extends React.Component {
     }
   }
 
+  /**
+   * Get all data
+   *
+   * @return {Promise}
+   */
   getAllData() {
     return fetch(loris.BaseURL + '/document_repository/docTree/0')
       .then((response) => response.json())
@@ -69,7 +95,13 @@ class DocIndex extends React.Component {
       });
   }
 
-  // function change tableData;
+  /**
+   * Data by node
+   * Change tableData
+   *
+   * @param {number} id
+   * @return {Promise}
+   */
   dataByNode(id) {
     return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
       .then((response) => response.json())
@@ -86,13 +118,18 @@ class DocIndex extends React.Component {
         });
         this.setState({
           global: false,
-          tableData: id == 0 ? filterData : fillData,
+          tableData: fillData,
           childrenNode: myJson['subcategories'],
           parentNode: myJson['parentcategory'],
         });
       });
   }
 
+  /**
+   * Fetch data
+   *
+   * @return {Promise}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -107,45 +144,71 @@ class DocIndex extends React.Component {
       });
   }
 
+  /**
+   * Get content
+   *
+   * @param {object} obj
+   */
   getContent(obj) {
     this.dataByNode(obj[0]);
   }
 
+  /**
+   * New category state
+   */
   newCategoryState() {
     this.setState({newCategory: true});
   }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
+   *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} row - array of cell contents for a specific row
+   * @param {array} row - array of cell contents for a specific row
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        let downloadURL = loris.BaseURL
+                          + '/document_repository/Files/'
+                          + encodeURIComponent(row['Uploaded By'])
+                          + '/'
+                          + encodeURIComponent(row['File Name']);
+        result = <td>
+          <a
+            href={downloadURL}
+            target="_blank"
+            download={row['File Name']}
+          >
+            {cell}
+          </a>
+        </td>;
         break;
       case 'Edit':
-        let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
+        let editURL = loris.BaseURL
+                      + '/document_repository/edit/' + row['Edit'];
         result = <td><a href={editURL}>Edit</a></td>;
         break;
       case 'Delete File':
         let id = row['Edit'];
+
+        /**
+         * Click
+         */
         function click() {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
-            text: 'Your will not be able to recover this file!',
+            text: 'You won\'t be able to revert this!',
             type: 'warning',
             showCancelButton: true,
-            confirmButtonClass: 'btn-danger',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-            closeOnConfirm: false,
-          },
-          function() {
+           }).then((result) => {
+           if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
               fetch(deleteurl, {
               method: 'DELETE',
@@ -154,17 +217,25 @@ class DocIndex extends React.Component {
               }).then((resp) => resp.json())
                 .then(()=>{
                   location.reload();
-                  swal('delete Successful!', '', 'success');
+                  swal.fire('delete Successful!', '', 'success');
                 });
-          }
-          );
+           }
+          });
         }
-        result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
+
+        result = <td>
+          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+        </td>;
         break;
     }
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -206,8 +277,16 @@ class DocIndex extends React.Component {
         type: 'text',
       }},
       {label: 'Date Uploaded', show: true},
-      {label: 'Edit', show: true},
-      {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
+      {
+        label: 'Edit',
+        show: this.props.hasPermission('superUser')
+        || this.props.hasPermission('document_repository_edit'),
+      },
+      {
+        label: 'Delete File',
+        show: this.props.hasPermission('superUser')
+          || this.props.hasPermission('document_repository_delete'),
+      },
       {label: 'File Category', show: false},
       {label: 'Category', show: false},
       {label: 'Data Dir', show: false},
@@ -215,9 +294,65 @@ class DocIndex extends React.Component {
 
     let tabList = [
       {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
-      {id: 'category', label: 'Category'},
     ];
+    let uploadDoc;
+    let uploadCategory;
+    if (loris.userHasPermission('document_repository_edit')) {
+      tabList.push(
+        {
+          id: 'upload',
+          label: 'Upload',
+        },
+      );
+
+      tabList.push(
+        {
+          id: 'category',
+          label: 'Category',
+        },
+      );
+
+      uploadDoc = (
+        <TabPane TabId={tabList[1].id}>
+          <DocUploadForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/Files`}
+            maxUploadSize={this.state.data.maxUploadSize}
+            refreshPage={this.fetchData}
+            category={this.state.newCategory}
+          />
+        </TabPane>
+      );
+
+      uploadCategory = (
+        <TabPane TabId={tabList[2].id}>
+          <DocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
+          />
+        </TabPane>
+      );
+    } else if (loris.userHasPermission('document_repository_view')) {
+      tabList.push(
+        {
+          id: 'category',
+          label: 'Category',
+        },
+      );
+
+      uploadCategory = (
+        <TabPane TabId={tabList[1].id}>
+          <DocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
+          />
+        </TabPane>
+      );
+    }
     const parentTree = this.state.global ? null : (
       <div>
         <ParentTree
@@ -226,8 +361,10 @@ class DocIndex extends React.Component {
         />
       </div>
     );
-    const treeTable = (Object.keys(this.state.tableData.length).length === 0
-                        && Object.keys(this.state.childrenNode).length === 0) ? (
+    const treeTable = (
+      Object.keys(this.state.tableData.length).length === 0
+      && Object.keys(this.state.childrenNode).length === 0
+    ) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement
@@ -235,6 +372,7 @@ class DocIndex extends React.Component {
             label="Filter globally"
             id="globalSelection"
             value={this.state.global}
+            offset=''
             elementClass='checkbox-inline'
             onUserInput={this.handleGlobal}
           />
@@ -261,6 +399,7 @@ class DocIndex extends React.Component {
           label="Filter globally"
           id="globalSelection"
           value={this.state.global}
+          offset=''
           elementClass='checkbox-inline'
           onUserInput={this.handleGlobal}
         />
@@ -286,36 +425,26 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
           {treeTable}
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <DocUploadForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/Files`}
-            maxUploadSize={this.state.data.maxUploadSize}
-            refreshPage={this.fetchData}
-            category={this.state.newCategory}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[2].id}>
-          <DocCategoryForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadCategory`}
-            refreshPage={this.fetchData}
-            newCategoryState={this.newCategoryState}
-          />
-        </TabPane>
+        {uploadDoc}
+        {uploadCategory}
       </Tabs>
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <div className="page-document">
-    <DocIndex
-      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-    </div>,
+  createRoot(
     document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-document">
+      <DocIndex
+        dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />
+    </div>
   );
 });

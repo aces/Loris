@@ -65,9 +65,17 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         issues_attachments
                     WHERE
                         ID = :ID';
-        $result  = $DB->pselectRow($query, array('ID' => $ID));
+        $result  = $DB->pselectRow($query, ['ID' => $ID]);
+        if ($result === null) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(404)
+                ->withHeader('Content-Type', 'text/plain')
+                ->withBody(new \LORIS\Http\StringStream("Not found"));
 
-        $config = \NDB_Config::singleton();
+        }
+
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $attachment_data_dir = rtrim(
             $config->getSetting('IssueTrackerDataPath'),
             '/'
@@ -84,12 +92,12 @@ class Attachment extends \NDB_Page implements ETagCalculator
         $name = rawurldecode($result['file_name']);
 
         return (new \LORIS\Http\Response())
+            ->withStatus(200)
             ->withHeader('Content-Type', $result['mime_type'])
             ->withHeader(
                 'Content-Disposition',
                 'attachment; filename=' . basename($name)
             )
-            ->withStatus(200)
             ->withBody(new \LORIS\Http\FileStream($fileToDownload));
     }
 
@@ -104,16 +112,19 @@ class Attachment extends \NDB_Page implements ETagCalculator
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values     = $request->getQueryParams();
-        $user       = \NDB_Factory::singleton()->user();
-        $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $response   = $attachment->setupUploading(
+        $values        = $request->getQueryParams();
+        $user          = \NDB_Factory::singleton()->user();
+        $attachment    = new \LORIS\issue_tracker\UploadHelper();
+        $uploadedFiles = $request->getUploadedFiles();
+        $response      = $attachment->setupUploading(
             $user,
-            $_FILES,
+            $uploadedFiles,
             $values
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
+                ? ['success' => 'upload succeeded']
+                : ['error' => $attachment->errorMessage]
         );
     }
 
@@ -137,11 +148,11 @@ class Attachment extends \NDB_Page implements ETagCalculator
             $DB      = $factory->database();
             $DB->update(
                 'issues_attachments',
-                array('deleted' => 1),
-                array('ID' => $ID)
+                ['deleted' => 1],
+                ['ID' => $ID]
             );
             return new \LORIS\Http\Response\JsonResponse(
-                array('success' => true)
+                ['success' => true]
             );
         }
         return new \LORIS\Http\Response\JSON\Forbidden(
@@ -175,7 +186,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         AND USER = :user;';
         $result   = $DB->pselectOne(
             $query,
-            array('ID' => $ID, 'user' => $username)
+            ['ID' => $ID, 'user' => $username]
         );
         // Check if User shouldn't be able to Delete.
         if (empty($result)
@@ -211,11 +222,11 @@ class Attachment extends \NDB_Page implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
+        return [
             'GET',
             'POST',
             'DELETE'
-        );
+        ];
     }
 
     /**
@@ -229,10 +240,10 @@ class Attachment extends \NDB_Page implements ETagCalculator
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'issue_tracker_reporter',
                 'issue_tracker_developer'
-            )
+            ]
         );
     }
 

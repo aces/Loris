@@ -31,6 +31,7 @@ set_include_path(
     __DIR__ . "/../project/libraries:" .
     __DIR__ . "/../php/libraries"
 );
+ini_set('session.use_strict_mode', '1');
 
 require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
@@ -88,10 +89,17 @@ if (is_dir($basePath . "project/modules/$Module")
 
 $public = false;
 try {
-    $m = Module::factory($Module);
+    // GetModule doesn't use the database or ndb_config, so for now
+    // just pass a fake one to the constructor
+    $loris = new \LORIS\LorisInstance(
+        new \Database(),
+        new \NDB_Config(),
+        [__DIR__ . "/../modules", __DIR__ . "/../project/modules"]
+    );
+    $m     = $loris->getModule($Module);
 
     $public = $m->isPublicModule();
-} catch(LorisModuleMissingException $e) {
+} catch (LorisModuleMissingException $e) {
     $public = false;
 }
 if ($anonymous === true && $m->isPublicModule() === false) {

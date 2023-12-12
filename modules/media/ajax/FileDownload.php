@@ -17,14 +17,14 @@
 $user =& User::singleton();
 //NOTE Should this be 'media_read' instead? It seems that downloading files
 //should be a read permission, not write.
-if (!$user->hasPermission('media_write')) {
+if (!$user->hasPermission('media_read')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = basename($_GET['File']);
+$file     = html_entity_decode(basename($_GET['File']));
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
@@ -32,7 +32,7 @@ $filePath = $path . $file;
 $downloadNotifier = new NDB_Notifier(
     "media",
     "download",
-    array("file" => $file)
+    ["file" => $file]
 );
 
 if (!file_exists($filePath)) {

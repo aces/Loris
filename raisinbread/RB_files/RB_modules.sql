@@ -14,7 +14,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (10,'create_timepoint','Y'
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (11,'dashboard','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (12,'data_release','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (13,'datadict','Y');
-INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (14,'dataquery','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (15,'dicom_archive','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (16,'document_repository','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (17,'examiner','Y');
@@ -44,5 +43,10 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (40,'module_manager','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (41,'electrophysiology_browser','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (42,'my_preferences','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (43,'candidate_profile','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (44,'dqt','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'api_docs','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'dictionary','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (47,'electrophysiology_uploader','Y');
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

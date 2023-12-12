@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\candidate_parameters;
-use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Main class for candidate_parameters module
@@ -40,11 +40,16 @@ class Candidate_Parameters extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
+
+        /* User must have one of the candidate_parameter permissions
+        AND have the candidate's site. */
+        return ($user->hasAnyPermission(
+            [
                 'candidate_parameter_view',
                 'candidate_parameter_edit',
-            )
+            ]
+        ) && $user->hasCenter($candidate->getCenterID())
         );
     }
 
@@ -70,9 +75,9 @@ class Candidate_Parameters extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/candidate_parameters/js/CandidateParameters.js",
-            )
+            ]
         );
     }
 

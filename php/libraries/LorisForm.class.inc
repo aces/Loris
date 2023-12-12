@@ -31,16 +31,16 @@
 class LorisForm
 {
 
-    var $form          = array();
-    var $defaultValues = array();
-    var $formRules     = array();
-    var $errors        = array();
-    var $filters       = array();
+    var $form          = [];
+    var $defaultValues = [];
+    var $formRules     = [];
+    var $errors        = [];
+    var $filters       = [];
     var $frozen        = false;
     var $enctype       = '';
-    var $groupMapping  = array();
+    var $groupMapping  = [];
     var $action        = '';
-    var $allowedRules  = array(
+    var $allowedRules  = [
         'compare',
         'requiredIf',
         'required',
@@ -48,7 +48,7 @@ class LorisForm
         'regex',
         'email',
         'maxlength',
-    );
+    ];
     public $validOperators;
     public $encrypt;
 
@@ -66,9 +66,9 @@ class LorisForm
      *
      * @return array describing the form element
      */
-    protected function &createBase($name, $label, $attribs=array())
+    protected function &createBase($name, $label, $attribs=[])
     {
-        $el = array('label' => $label);
+        $el = ['label' => $label];
 
         if (!empty($name)) {
             $el['name'] = $name;
@@ -122,7 +122,7 @@ class LorisForm
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    protected function &addBase($name, $label, $attribs = array())
+    protected function &addBase($name, $label, $attribs = [])
     {
         $el   = $this->createBase($name, $label, $attribs);
         $name = $this->_generateName($name);
@@ -142,7 +142,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addSelect($name, $label, $options, $attribs = array())
+    public function addSelect($name, $label, $options, $attribs = [])
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
@@ -166,7 +166,7 @@ class LorisForm
      */
     public function addStatic($name, $label)
     {
-        $el         =& $this->addBase($name, $label, array());
+        $el         =& $this->addBase($name, $label, []);
         $el['type'] = 'static';
         return $el;
     }
@@ -181,7 +181,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addPassword($name, $label, $attribs=array())
+    public function addPassword($name, $label, $attribs=[])
     {
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'password';
@@ -197,12 +197,12 @@ class LorisForm
      *
      * @return &array
      */
-    public function addHidden($name, $value, $attribs=array())
+    public function addHidden($name, $value, $attribs=[])
     {
         $el         =& $this->addBase(
             $name,
-            null,
-            array_merge(array('value' => $value), $attribs)
+            '',
+            array_merge(['value' => $value], $attribs)
         );
         $el['type'] = 'hidden';
         return $el;
@@ -218,7 +218,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addText($name, $label, $attribs=array())
+    public function addText($name, $label, $attribs=[])
     {
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'text';
@@ -235,7 +235,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addTextArea($elname, $label, $attribs=array())
+    public function addTextArea($elname, $label, $attribs=[])
     {
         $el         =& $this->addBase($elname, $label, $attribs);
         $el['type'] = 'textarea';
@@ -262,7 +262,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addDate($name, $label, $options, $attribs = array())
+    public function addDate($name, $label, $options, $attribs = [])
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
@@ -338,7 +338,7 @@ class LorisForm
      *
      * @return &array
      */
-    function addHeader($name, $label, $attribs = array())
+    function addHeader($name, $label, $attribs = [])
     {
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'header';
@@ -348,10 +348,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param array  $url   The url label to set as href attrib
-     * @param array  $link  The value to display as the link
+     * @param string  $name  The element name.
+     * @param string  $label The label to attach to this element.
+     * @param ?string $url   The url label to set as href attrib
+     * @param ?string $link  The value to display as the link
      *
      * @return &array
      */
@@ -386,18 +386,18 @@ class LorisForm
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
      *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string       $type    The type of element to add.
+     * @param string       $name    The element name.
+     * @param string       $label   The label to attach to this element.
+     * @param array|string $options An array of other options that should
+     *                              be added. This generalls maps to the
+     *                              third option of the addX wrapper.
+     * @param array|string $attribs Other attributes to be added. This is
+     *                              mostly only used for the "select" type,
+     *                              where "options" has a different meaning
+     *                              and attribs takes the place of what "options"
+     *                              is for other types.
+     * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return void (but modifies this->form as a side-effect)
      */
@@ -405,12 +405,12 @@ class LorisForm
         $type,
         $name,
         $label='',
-        $options=array(),
-        $attribs=array(),
-        $customs=array()
+        $options=[],
+        $attribs=[],
+        $customs=[]
     ) {
         $el = null;
-        switch($type)  {
+        switch ($type) {
         case 'select':
             $el = $this->addSelect($name, $label, $options, $attribs);
             break;
@@ -465,6 +465,23 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
+            if (is_array($options)) {
+                if (empty($options)) {
+                    // The default was [], turn it into '' for addLink
+                    $options = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+            if (is_array($attribs)) {
+                if (empty($attribs)) {
+                    // The default was [], turn it into '' for addLink
+                    $attribs = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
@@ -489,7 +506,7 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label, $attribs = array())
+    function createText($elname, $label, $attribs = [])
     {
         $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
@@ -511,10 +528,10 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createSubmit($elname, $value, $attribs = array())
+    function createSubmit($elname, $value, $attribs = [])
     {
         $attribs['value'] = $value;
-        $el         =& $this->createBase($elname, null, $attribs);
+        $el         =& $this->createBase($elname, '', $attribs);
         $el['type'] = 'submit';
         return $el;
     }
@@ -557,7 +574,7 @@ class LorisForm
             // If submitted value in $_REQUEST is an array return the array
             // of filtered values
             if (is_array($_REQUEST[$name])) {
-                $filteredValues = array();
+                $filteredValues = [];
                 foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
@@ -593,7 +610,7 @@ class LorisForm
                     $value = isset($_REQUEST[$fieldName][$fieldIdx])
                         ? $_REQUEST[$fieldName][$fieldIdx] : null;
 
-                    $rawValue = $value == 'on' ? 1 : 0;
+                    $rawValue = $value == 'on' ? '1' : '0';
                     return $this->_getFilteredValue($name, $rawValue);
                 }
 
@@ -669,14 +686,14 @@ class LorisForm
         }
 
         // Apply filters that should be applied on all fields
-        $count = count($this->filters['__ALL__'] ?? array());
+        $count = count($this->filters['__ALL__'] ?? []);
         if (isset($this->filters['__ALL__'])) {
             for ($i = 0; $i < $count; $i++) {
-                if (in_array('trim', $this->filters['__ALL__'] ?? array())) {
+                if (in_array('trim', $this->filters['__ALL__'] ?? [])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
                     if (is_array($value)) {
-                        $newValue = array();
+                        $newValue = [];
                         foreach ($value as $k => $v) {
                             $newValue[$k]
                                 = $this->_getFilteredValue("{$name}[$k]", $v);
@@ -703,7 +720,7 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'] ?? array();
+        $options       = $el['options'] ?? [];
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
@@ -851,7 +868,7 @@ class LorisForm
                 $format = 'month';
                 if ($value) {
                     $value = explode("-", $value);
-                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                    $value = sprintf("%s-%s", $value[0], $value[1]??null);
                 }
                 if (isset($elOptions['minYear'])) {
                     $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
@@ -1000,6 +1017,9 @@ class LorisForm
     {
         $attributes = '';
         foreach ($el as $key=>$value) {
+            if ($key=='label' && $value == '') {
+                continue;
+            }
             if ($key=='type') {
                 $value = $type;
             }
@@ -1025,11 +1045,11 @@ class LorisForm
     {
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_NeuroDB;
-        $value     = array(
+        $value     = [
             'H' => null,
             'i' => null,
-        );
-        $bits      = array();
+        ];
+        $bits      = [];
 
         if (is_array($timeStamp)) {
             $value = $timeStamp;
@@ -1195,7 +1215,7 @@ class LorisForm
             return false;
         }
         $values = $this->getSubmitValues();
-        $errors = array();
+        $errors = [];
         foreach ($this->form as $elName => $el) {
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
@@ -1315,7 +1335,8 @@ class LorisForm
         foreach ($this->formRules as $rule) {
             if (is_callable($rule)) {
                 $violations = call_user_func($rule, $values);
-                if (!empty($violations)) {
+
+                if (is_array($violations) && !empty($violations)) {
                     foreach ($violations as $element => $msg) {
                         $this->setElementError($element, $msg);
                         $errors[$element] = "custom fail";
@@ -1448,7 +1469,7 @@ class LorisForm
     {
         if ($filterType == 'trim') {
             if (!isset($this->filters[$elementName])) {
-                $this->filters[$elementName] = array();
+                $this->filters[$elementName] = [];
             }
 
             $this->filters[$elementName][] = 'trim';
@@ -1491,7 +1512,7 @@ class LorisForm
      */
     function renderElement(&$el)
     {
-        switch($el['type']) {
+        switch ($el['type']) {
         case 'date':
             return $this->dateHTML($el);
         case 'select':
@@ -1580,9 +1601,16 @@ class LorisForm
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+        /// XXX: There seems to be a problem when using &nbsp; to separate the
+        //  checkbox from the label. Both Firefox and Chrome will still put a
+        //  linebreak between the space and the checkbox. Instead, we wrap use
+        //  CSS to wrap the tag which avoids the label from being separated from the
+        //  checkbox. We don't wrap the whole label in it because if it's a long
+        //  label it's still allowed to have linebreaks.
+        return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\""
+            . " type=\"checkbox\" $checked $value "
             . "$disabled/>"
-            . " $el[label]";
+            . " </span>$el[label]";
     }
 
     /**
@@ -1597,7 +1625,6 @@ class LorisForm
     {
         $val      = $this->getValue($el['name']);
         $checked  = '';
-        $value    = '';
         $disabled = '';
         $value    = $el["checkStates"];
         if ($val === $value[1]) {
@@ -1629,7 +1656,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if ($val===$el['value']) {
+        if ($val===($el['value'] ?? null)) {
             $checked = 'checked="checked"';
         }
 
@@ -1677,11 +1704,11 @@ class LorisForm
     function toElementArray()
     {
 
-        $curPage = array(
-            'elements' => array(),
+        $curPage = [
+            'elements' => [],
             'type'     => 'page',
             'errors'   => $this->errors,
-        );
+        ];
         $retVal  = $curPage;
 
         // Hack to populate the HTML elements
@@ -1693,11 +1720,11 @@ class LorisForm
                     $retVal['elements'][] = $curPage;
                 }
 
-                $curPage = array(
-                    'elements'    => array(),
+                $curPage = [
+                    'elements'    => [],
                     'Description' => $el['label'],
                     'type'        => 'page',
-                );
+                ];
             } else {
                 $curPage['elements'][] = $el;
             }
@@ -1737,11 +1764,15 @@ class LorisForm
      * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
-     * @param string $element The element name to add the rule to.
-     *                        If this is a 'compare' rule, it will
-     *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
+     * @param string|array $element The element name to add the
+     *                              rule to.
+     *                              If this is a 'compare' rule,
+     *                              it will be an array of
+     *                              2 element names.
+     * @param string       $message The message to display if
+     *                              the rule is violated
+     * @param string       $type    The rule type.
+     *                              'compare','required' or 'numeric'
      *
      * @return void
      */
@@ -1757,11 +1788,11 @@ class LorisForm
                 $this->form[$element[0]]['compare'] = $element[1];
                 $this->form[$element[1]]['compare'] = $element[0];
             } else if ($type === 'requiredIf') {
-                $this->formRules[]['requiredIf'] = array(
+                $this->formRules[]['requiredIf'] = [
                     "elements" => $element,
                     "format"   => func_get_arg(3),
                     "message"  => $message,
-                );
+                ];
             }
             return;
         }
@@ -1783,10 +1814,10 @@ class LorisForm
         }
 
         if ($type === 'regex') {
-            $this->form[$element]['regex'][] = array(
+            $this->form[$element]['regex'][] = [
                 'regexMsg' => $message,
                 'match'    => func_get_arg(3),
-            );
+            ];
         }
 
         if ($type === 'email') {
@@ -1795,10 +1826,10 @@ class LorisForm
         }
 
         if ($type === 'maxlength') {
-            $this->form[$element]['maxlength'] = array(
+            $this->form[$element]['maxlength'] = [
                 'message'   => $message,
                 'maxlength' => func_get_arg(3),
-            );
+            ];
         }
     }
 
@@ -1820,11 +1851,13 @@ class LorisForm
      *
      * Adds a rule to a group.
      *
-     * @param string $group Form group name
-     * @param array  $arg1  Array for multiple elements or error
-     *                      message string for one element
-     * @param string $type  (optional)Rule type use getRegisteredRules()
-     *                      to get types
+     * @param string       $group Form group name
+     * @param array|string $arg1  Array for multiple elements
+     *                            or error message string for
+     *                            one element
+     * @param string       $type  (optional) Rule type use
+     *                            getRegisteredRules() to
+     *                            get types
      *
      * @return void
      */
@@ -1892,24 +1925,24 @@ class LorisForm
      *
      * @return void
      */
-    function addGroup($array, $name, $label, $delimiter, $options = array())
+    function addGroup($array, $name, $label, $delimiter, $options = [])
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
              $group_key = $value['name'] ?? $this->_generateName('');
-             $this->groupMapping[$group_key] = array(
+             $this->groupMapping[$group_key] = [
                  'groupName' => $name,
                  'index'     => $key,
-             );
+             ];
         }
-        $this->form[$name] = array(
+        $this->form[$name] = [
             'type'      => 'group',
             'name'      => $name,
             'elements'  => $array,
             'label'     => $label,
             'delimiter' => empty($delimiter) ? ' ' : $delimiter,
             'options'   => $options,
-        );
+        ];
 
     }
 
@@ -1919,7 +1952,7 @@ class LorisForm
      *
      * @param string $name    The name to use for the new page (in the URL)
      * @param string $label   The label to show to the user for the new page
-     * @param string $attribs Extra attributes for this page.
+     * @param array  $attribs Extra attributes for this page.
      *
      * @return void
      */
@@ -1933,14 +1966,14 @@ class LorisForm
      *
      * Creates an element without adding it to the form.
      *
-     * @param string $type    The type of element to be created.
-     * @param string $elname  The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Element specific options to pass
-     *                        to create* wrappers
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string       $type    The type of element to be created.
+     * @param string       $elname  The name of the element to be added
+     * @param string       $label   The label to attach to the element
+     * @param array|string $options Element specific options to pass
+     *                              to create* wrappers
+     * @param array        $attribs An array of extra HTML attributes to
+     *                              add to the element.
+     * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return array of the form supported by $this->form
      */
@@ -1948,11 +1981,11 @@ class LorisForm
         $type,
         $elname,
         $label='',
-        $options=array(),
-        $attribs=array(),
-        $customs=array()
+        $options=[],
+        $attribs=[],
+        $customs=[]
     ) {
-        switch($type) {
+        switch ($type) {
         case 'text':
             return $this->createText($elname, $label, $attribs);
         case 'select':
@@ -2031,12 +2064,12 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    public function createSelect($name, $label, $options, $attribs = array())
+    public function createSelect($name, $label, $options, $attribs = [])
     {
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -2068,7 +2101,7 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $value = $_REQUEST[$key];
+                    $value = $_REQUEST[$key] ?? null;
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
@@ -2098,8 +2131,6 @@ class LorisForm
             $bracketIdx = strpos($name, '[');
             if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $this->getValue($fieldName);
                 }
@@ -2113,7 +2144,7 @@ class LorisForm
             }
 
             if ($el['type'] === 'time') {
-                $value = $this->getValue($name);
+                $value = $this->getValue($name) ?? [];
                 if (($value['H'] || $value['H'] === '0')
                     && ($value['i'] || $value['i'] === '0')
                 ) {
@@ -2169,7 +2200,7 @@ class LorisForm
      */
     function getSubmitValues()
     {
-        $retVal     = array();
+        $retVal     = [];
         $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
@@ -2199,17 +2230,33 @@ class LorisForm
      * Sets an error for the given element to be displayed to the
      * user
      *
-     * @param string $el    The name of the element which has an error
-     * @param string $error The error to display with the element.
+     * @param string       $el    The name of the element which has an error.
+     * @param string|array $error The error to display with the element.
+     *                            string: the error message to show;
+     *                            array: an array of element to error message,
+     *                            multiple items in one section supported.
      *
      * @return void
      */
     function setElementError($el, $error)
     {
-        if (isset($this->form[$el]) && $this->form[$el]) {
-            $this->form[$el]["error"] = $error;
+        if (is_array($error)) {
+            $items = $this->form[$el];
+            foreach ($items['elements'] as $idx => $itm) {
+                foreach ($error as $key => $message) {
+                    if ($itm['name'] == $key) {
+                        $this->errors[$key] = $message;
+                        $this->form[$el]['elements'][$idx]["error"] = $message;
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (isset($this->form[$el]) && $this->form[$el]) {
+                $this->form[$el]["error"] = $error;
+            }
+            $this->errors[$el] = $error;
         }
-        $this->errors[$el] = $error;
     }
 
     /**
@@ -2348,4 +2395,3 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-

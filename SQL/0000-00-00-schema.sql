@@ -4,36 +4,38 @@
 
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `Name` VARCHAR(255) NULL,
+    `Name` VARCHAR(255) NOT NULL,
     `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
-    PRIMARY KEY (`ProjectID`)
+    PRIMARY KEY (`ProjectID`),
+    UNIQUE KEY `u_ProjectName` (`Name`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
-CREATE TABLE `subproject` (
-    `SubprojectID` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE `cohort` (
+    `CohortID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
     `useEDC` boolean,
     `WindowDifference` enum('optimal', 'battery'),
     `RecruitmentTarget` int(10) unsigned,
-    PRIMARY KEY (SubprojectID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
+    PRIMARY KEY (CohortID),
+    UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Cohorts used in Loris';
 
 
-INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
+INSERT INTO cohort (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_subproject_rel` (
-  `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `project_cohort_rel` (
+  `ProjectCohortRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(10) unsigned NOT NULL,
-  `SubprojectID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ProjectSubprojectRelID`),
-  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
-  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
-  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
+  `CohortID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ProjectCohortRelID`),
+  CONSTRAINT `UK_project_cohort_rel_ProjectID_CohortID` UNIQUE KEY (ProjectID, CohortID),
+  CONSTRAINT `FK_project_cohort_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_cohort_rel_CohortID` FOREIGN KEY (`CohortID`) REFERENCES `cohort` (`CohortID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -94,12 +96,13 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `Password_expiry` date NOT NULL default '1990-04-01',
+  `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
   `active_from` date default NULL,
   `active_to` date default NULL,
+  `account_request_date` date default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
@@ -108,8 +111,8 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
@@ -150,7 +153,7 @@ CREATE TABLE `candidate` (
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
-  `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
+  `RegistrationProjectID` int(10) unsigned NOT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -181,17 +184,18 @@ CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
-  `ProjectID` int(10) unsigned DEFAULT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(10) unsigned DEFAULT NULL,
+  `CohortID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
-  `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
+  `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') NOT NULL DEFAULT 'Not Started',
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_screening` date DEFAULT NULL,
   `Visit` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_visit` date DEFAULT NULL,
+  `Date_status_change` date DEFAULT NULL,
   `Approval` enum('In Progress','Pass','Failure') DEFAULT NULL,
   `Date_approval` date DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -215,11 +219,11 @@ CREATE TABLE `session` (
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
-  KEY `SessionSubproject` (`SubprojectID`),
+  KEY `SessionCohort` (`CohortID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`CohortID`) REFERENCES `cohort` (`CohortID`),
   CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
@@ -248,7 +252,7 @@ CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
-  `Sub_group` int(11) unsigned default NULL,
+  `Sub_group` int(11) unsigned NOT NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
@@ -274,15 +278,14 @@ CREATE TABLE `flag` (
   `Test_name` varchar(255) NOT NULL default '',
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
+  `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
-  KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
   KEY `flag_Test_name` (`Test_name`),
@@ -316,7 +319,7 @@ CREATE TABLE `test_battery` (
   `AgeMaxDays` int(10) unsigned default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
-  `SubprojectID` int(11) default NULL,
+  `CohortID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
@@ -419,6 +422,42 @@ CREATE TABLE `tarchive_files` (
   CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ********************************
+-- HRRT PET archive tables
+-- ********************************
+CREATE TABLE `hrrt_archive` (
+  `HrrtArchiveID`     INT(11)          NOT NULL AUTO_INCREMENT,
+  `SessionID`         INT(10) unsigned          DEFAULT NULL,
+  `EcatFileCount`     INT(11)          NOT NULL DEFAULT '0',
+  `NonEcatFileCount`  INT(11)          NOT NULL DEFAULT '0',
+  `DateAcquired`      DATE                      DEFAULT NULL,
+  `DateArchived`      DATETIME                  DEFAULT NULL,
+  `PatientName`       VARCHAR(50)      NOT NULL DEFAULT '',
+  `CenterName`        VARCHAR(50)      NOT NULL DEFAULT '',
+  `CreatingUser`      VARCHAR(50)      NOT NULL DEFAULT '',
+  `Blake2bArchive`    VARCHAR(255)              DEFAULT NULL,
+  `ArchiveLocation`   VARCHAR(255)              DEFAULT NULL,
+  PRIMARY KEY (`HrrtArchiveID`),
+  KEY `patNam` (`CenterName`(10),`PatientName`(30)),
+  KEY `FK_hrrt_archive_sessionID` (`SessionID`),
+  CONSTRAINT `FK_hrrt_archive_sessionID`
+    FOREIGN KEY (`SessionID`)
+    REFERENCES `session` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `hrrt_archive_files` (
+  `HrrtArchiveFileID` INT(11)      NOT NULL AUTO_INCREMENT,
+  `HrrtArchiveID`     INT(11)      NOT NULL DEFAULT '0',
+  `Blake2bHash`       VARCHAR(255) NOT NULL,
+  `FileName`          VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`HrrtArchiveFileID`),
+  KEY `HrrtArchiveID` (`HrrtArchiveID`),
+  CONSTRAINT `hrrt_archive_files_ibfk_1`
+    FOREIGN KEY (`HrrtArchiveID`)
+    REFERENCES  `hrrt_archive` (`HrrtArchiveID`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- Imaging tables
@@ -440,7 +479,12 @@ INSERT INTO `ImagingFileTypes` (type, description) VALUES
   ('txt',      'text file'),
   ('nii',      'NIfTI file'),
   ('nrrd',     'NRRD file format (used by DTIPrep)'),
-  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation'),
+  ('json',     'JSON file'),
+  ('readme',   'README file'),
+  ('tsv',      'Tab separated values (TSV) file'),
+  ('bval',     'NIfTI DWI file with b-values'),
+  ('bvec',     'NIfTI DWI file with b-vectors');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -510,6 +554,8 @@ CREATE TABLE `files` (
   `File` varchar(255) NOT NULL default '',
   `SeriesUID` varchar(64) DEFAULT NULL,
   `EchoTime` double DEFAULT NULL,
+  `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+  `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
@@ -522,8 +568,10 @@ CREATE TABLE `files` (
   `ProcessProtocolID` int(11) unsigned,
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
+  `HrrtArchiveID` int(11) default NULL,
   `ScannerID` int(10) unsigned default NULL,
   `AcqOrderPerModality` int(11) default NULL,
+  `AcquisitionDate` date default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -532,13 +580,15 @@ CREATE TABLE `files` (
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
+  KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
   CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
-  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
@@ -558,6 +608,8 @@ CREATE TABLE `files_qcstatus` (
     `FileID` int(10) UNSIGNED UNIQUE NULL,
     `SeriesUID` varchar(64) DEFAULT NULL,
     `EchoTime` double DEFAULT NULL,
+    `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+    `EchoNumber` VARCHAR(20) DEFAULT NULL,
     `QCStatus` enum('Pass', 'Fail'),
     `QCFirstChangeTime` int(10) unsigned,
     `QCLastChangeTime` int(10) unsigned,
@@ -578,8 +630,8 @@ INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
-  `Center_name` varchar(4) NOT NULL default '',
-  `ScannerID` int(10) unsigned NOT NULL default '0',
+  `CenterID` integer unsigned DEFAULT NULL,
+  `ScannerID` int(10) unsigned DEFAULT NULL,
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
@@ -605,34 +657,37 @@ CREATE TABLE `mri_protocol` (
   `time_max` int(4) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
+  `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+  `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `MriProtocolGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
-   ('ZZZZ',48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
+   (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
 
 CREATE TABLE `mri_protocol_group_target` (
      `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
      `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
-     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
+     `CohortID`             INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`              VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY (`MriProtocolGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
      CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
+     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)       REFERENCES `cohort` (`CohortID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
     VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
 
 
@@ -660,6 +715,21 @@ CREATE TABLE `mri_upload` (
     FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_mriupload_TarchiveID`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_upload_rel` (
+  `UploadRelID`   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `UploadID`      INT(10) UNSIGNED NOT NULL,
+  `HrrtArchiveID` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`UploadRelID`),
+  KEY `FK_mriuploadrel_UploadID` (`UploadID`),
+  KEY `FK_mriuploadrel_HrrtArchiveID` (`HrrtArchiveID`),
+  CONSTRAINT `FK_mriuploadrel_UploadID`
+    FOREIGN KEY (`UploadID`)
+    REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mriuploadrel_HrrtArchiveID`
+    FOREIGN KEY (`HrrtArchiveID`)
+    REFERENCES `hrrt_archive` (`HrrtArchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_checks_group` (
@@ -691,15 +761,15 @@ CREATE TABLE `mri_protocol_checks_group_target` (
      `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
      `ProjectID`                      INT(10) UNSIGNED DEFAULT NULL,
-     `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
+     `CohortID`                   INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY(`MriProtocolChecksGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
+     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`CohortID`)             REFERENCES `cohort` (`CohortID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
     VALUES((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
 
 
@@ -741,18 +811,34 @@ INSERT INTO `bids_scan_type` (BIDSScanType) VALUES
   ('T2w'),
   ('dwi');
 
+CREATE TABLE `bids_phase_encoding_direction` (
+  `BIDSPhaseEncodingDirectionID`   int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSPhaseEncodingDirectionName` varchar(3) NOT NULL,
+  PRIMARY KEY (`BIDSPhaseEncodingDirectionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_phase_encoding_direction (BIDSPhaseEncodingDirectionName) VALUES
+  ('i'),
+  ('i-'),
+  ('j'),
+  ('j-'),
+  ('k'),
+  ('k-');
+
 CREATE TABLE `bids_mri_scan_type_rel` (
-  `MRIScanTypeID`             int(10) UNSIGNED NOT NULL,
-  `BIDSCategoryID`            int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSScanTypeSubCategoryID` int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSScanTypeID`            int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSEchoNumber`            int(3)  UNSIGNED DEFAULT NULL,
+  `MRIScanTypeID`                int(10) UNSIGNED NOT NULL,
+  `BIDSCategoryID`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSScanTypeSubCategoryID`    int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSScanTypeID`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSEchoNumber`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSPhaseEncodingDirectionID` int(3)  UNSIGNED DEFAULT NULL,
   PRIMARY KEY  (`MRIScanTypeID`),
   KEY `FK_bids_mri_scan_type_rel` (`MRIScanTypeID`),
-  CONSTRAINT `FK_bids_mri_scan_type_rel`     FOREIGN KEY (`MRIScanTypeID`)             REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bids_category`              FOREIGN KEY (`BIDSCategoryID`)            REFERENCES `bids_category`(`BIDSCategoryID`),
-  CONSTRAINT `FK_bids_scan_type_subcategory` FOREIGN KEY (`BIDSScanTypeSubCategoryID`) REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
-  CONSTRAINT `FK_bids_scan_type`             FOREIGN KEY (`BIDSScanTypeID`)            REFERENCES `bids_scan_type` (`BIDSScanTypeID`)
+  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bids_category`                 FOREIGN KEY (`BIDSCategoryID`)               REFERENCES `bids_category`(`BIDSCategoryID`),
+  CONSTRAINT `FK_bids_scan_type_subcategory`    FOREIGN KEY (`BIDSScanTypeSubCategoryID`)    REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
+  CONSTRAINT `FK_bids_scan_type`                FOREIGN KEY (`BIDSScanTypeID`)               REFERENCES `bids_scan_type` (`BIDSScanTypeID`),
+  CONSTRAINT `FK_bids_phase_encoding_direction` FOREIGN KEY (`BIDSPhaseEncodingDirectionID`) REFERENCES `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -796,6 +882,50 @@ INSERT INTO bids_mri_scan_type_rel
     NULL
   );
 
+
+CREATE TABLE `bids_export_file_level_category` (
+  `BIDSExportFileLevelCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSExportFileLevelCategoryName` varchar(12) NOT NULL,
+  PRIMARY KEY (`BIDSExportFileLevelCategoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_export_file_level_category (BIDSExportFileLevelCategoryName) VALUES
+  ('study'),
+  ('image'),
+  ('session');
+
+CREATE TABLE `bids_export_non_imaging_file_category` (
+  `BIDSNonImagingFileCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSNonImagingFileCategoryName` varchar(40) NOT NULL,
+  PRIMARY KEY (`BIDSNonImagingFileCategoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_export_non_imaging_file_category (BIDSNonImagingFileCategoryName) VALUES
+  ('dataset_description'),
+  ('README'),
+  ('bids-validator-config'),
+  ('participants_list_file'),
+  ('session_list_of_scans');
+
+CREATE TABLE `bids_export_files` (
+  `BIDSExportedFileID`            int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSExportFileLevelCategoryID` int(10) unsigned NOT NULL,
+  `FileID`                        int(10) unsigned DEFAULT NULL,
+  `SessionID`                     int(10) unsigned DEFAULT NULL,
+  `BIDSNonImagingFileCategoryID`  int(10) unsigned DEFAULT NULL,
+  `BIDSCategoryID`                int(3)  unsigned DEFAULT NULL,
+  `FileType`                      varchar(12) NOT NULL,
+  `FilePath`                      varchar(255) NOT NULL,
+  PRIMARY KEY (`BIDSExportedFileID`),
+  CONSTRAINT `FK_bef_BIDSExportFileLevelID`        FOREIGN KEY (`BIDSExportFileLevelCategoryID`) REFERENCES `bids_export_file_level_category` (`BIDSExportFileLevelCategoryID`),
+  CONSTRAINT `FK_bef_FileID`                       FOREIGN KEY (`FileID`)                        REFERENCES `files`   (`FileID`),
+  CONSTRAINT `FK_bef_SessionID`                    FOREIGN KEY (`SessionID`)                     REFERENCES `session` (`ID`),
+  CONSTRAINT `FK_bef_BIDSNonImagingFileCategoryID` FOREIGN KEY (`BIDSNonImagingFileCategoryID`)  REFERENCES `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`),
+  CONSTRAINT `FK_bef_ModalityType`                 FOREIGN KEY (`BIDSCategoryID`)                REFERENCES `bids_category` (`BIDSCategoryID`),
+  CONSTRAINT `FK_bef_FileType`                     FOREIGN KEY (`FileType`)                      REFERENCES `ImagingFileTypes` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ********************************
 -- MRI violations tables
 -- ********************************
@@ -809,6 +939,9 @@ CREATE TABLE `MRICandidateErrors` (
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
+  `EchoTime` double DEFAULT NULL,
+  `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL,
+  `EchoNumber`             VARCHAR(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_tarchive_MRICandidateError_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -830,11 +963,13 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
+  `EchoTime` double DEFAULT NULL,
+  `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+  `EchoNumber` VARCHAR(20) DEFAULT NULL,  `MriProtocolChecksGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_mri_checks_group_1` 
+  CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -846,7 +981,8 @@ CREATE TABLE `violations_resolved` (
   `User` varchar(255) DEFAULT NULL,
   `ChangeDate` datetime DEFAULT NULL,
   `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `i_violations_resolved_extid_type` (`ExtID`,`TypeTable`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_violated_scans` (
@@ -871,6 +1007,8 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
+  `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+  `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
@@ -944,7 +1082,8 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload runner',1,'Validation of DICOMS before uploading'),
     ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader'),
-    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)');
+    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)'),
+    ('hrrt pet new series', 0, 'New HRRT PET studies inserted into the database');
 
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
@@ -1083,7 +1222,8 @@ CREATE TABLE `conflicts_resolved` (
   `OldValue2` text DEFAULT NULL,
   `NewValue` text DEFAULT NULL,
   `ConflictID` int(10) DEFAULT NULL,
-  PRIMARY KEY (`ResolvedID`)
+  PRIMARY KEY (`ResolvedID`),
+  UNIQUE KEY `ConflictID` (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1145,7 +1285,6 @@ CREATE TABLE `participant_accounts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `SessionID` int(6) DEFAULT NULL,
   `Test_name` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL,
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
   `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
@@ -1193,8 +1332,8 @@ CREATE TABLE `examiners` (
   `radiologist` tinyint(1) default 0 NOT NULL,
   `userID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`examinerID`),
-  UNIQUE KEY `full_name` (`full_name`),
-  KEY `FK_examiners_2` (`userID`),
+  UNIQUE KEY `unique_examiner` (`full_name`,`userID`),
+  UNIQUE KEY `FK_examiners_2` (`userID`),
   CONSTRAINT `FK_examiners_2` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1392,7 +1531,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID','watching') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -1453,17 +1592,19 @@ CREATE TABLE `issues_attachments` (
 CREATE TABLE `parameter_type` (
   `ParameterTypeID` int(10) unsigned NOT NULL auto_increment,
   `Name` varchar(255) NOT NULL default '',
+  `Alias` varchar(255) default NULL,
   `Type` text,
   `Description` text,
   `RangeMin` double default NULL,
   `RangeMax` double default NULL,
   `SourceField` text,
-  `SourceFrom` text,
+  `SourceFrom` VARCHAR(255),
   `SourceCondition` text,
   `Queryable` tinyint(1) default '1',
   `IsFile` tinyint(1) default '0',
   PRIMARY KEY  (`ParameterTypeID`),
-  KEY `name` (`Name`)
+  KEY `name` (`Name`),
+  UNIQUE `name_sourceFrom_index` (`Name`, `SourceFrom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
 
@@ -1482,6 +1623,113 @@ INSERT INTO `parameter_type` (Name, Type, Description, RangeMin, RangeMax, Sourc
   ('candidate_label','text','Identifier_of_candidate',NULL,NULL,'PSCID','candidate',1,NULL),
   ('Visit_label','varchar(255)','Visit_label',NULL,NULL,'visit_label','session',1,NULL),
   ('candidate_dob','date','Candidate_Dob',NULL,NULL,'DoB','candidate',1,NULL);
+
+INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
+  ('slice_thickness','SliceThickness','text','Nominal reconstructed slice thickness (for tomographic imaging) or depth of field (for optical non-tomographic imaging), in mm. DICOM:0018_0050','parameter_file'),
+  ('dicom_0x0018:el_0x0015','BodyPartExamined','text','Text description of the part of the body examined. Some IODs support the Anatomic Region Sequence (0008,2218), which can provide a more comprehensive mechanism for specifying the body part being examined. DICOM:0018_0015','parameter_file'),
+  ('acquisition:num_slices','NumberOfSlices','text','The maximum number of Slices that may exist in this Series. DICOM:0054_0081','parameter_file'),
+  ('pixel_bandwidth','PixelBandwidth','text','Reciprocal of the total sampling period, in hertz per pixel. DICOM:0018_0095','parameter_file'),
+  ('acquisition_matrix','AcquisitionMatrixPE','text','Dimensions of the acquired frequency/phase data before reconstruction. Multi-valued: frequency rowsfrequency columnsphase rowsphase columns. DICOM:0018_1310','parameter_file'),
+  ('study_id','StudyID','text','User or equipment generated Study identifier. DICOM:0020_0010','parameter_file'),
+  ('modality','Modality','text','Type of equipment that originally acquired the data used to create images or related objects. DICOM:0008_0060','parameter_file'),
+  ('sequence_variant','SequenceVariant','text','Variant of the Scanning Sequence. DICOM:0018_0021','parameter_file'),
+  ('mr_acquisition_type','MRAcquisitionType','text','Identification of data encoding scheme. DICOM:0018_0023','parameter_file'),
+  ('dicom_0x0028:el_0x0002','SamplesPerPixel','text','Number of samples (planes) in this image. DICOM:0028_0002','parameter_file'),
+  ('patient_name','PatientName','text','Set of identifiers used to determine to which candidate the scan belongs to. DICOM:0010_0010','parameter_file'),
+  ('dicom_0x0028:el_0x0004','PhotometricInterpretation','text','Specifies the intended interpretation of the pixel data. DICOM:0028_0004','parameter_file'),
+  ('acquisition:start_time','PerformedProcedureStepStartTime','text','Time on which the Performed Procedure Step started. DICOM:0040_0245','parameter_file'),
+  ('number_of_phase_encoding_steps','PhaseEncodingSteps','text','Total number of lines in k-space in the \"y\" direction collected during acquisition. DICOM:0018_0089','parameter_file'),
+  ('percent_phase_field_of_view','PercentPhaseFOV','text','Ratio of field of view dimension in phase direction to field of view dimension in frequency direction, expressed as a percent. DICOM:0018_0094','parameter_file'),
+  ('study:field_value','ValueField','text','The field within a Data Element that contains the Value(s) of that Data Element. DICOM:0000_0060','parameter_file'),
+  ('largest_pixel_image_value','LargestPixelImageValue','text','The maximum actual pixel value encountered in this image. DICOM:0028_0107','parameter_file'),
+  ('software_versions','SoftwareVersions','text','Manufacturers designation of software version of the equipment that produced the composite instances. DICOM:0018_1020','parameter_file'),
+  ('spacing_between_slices','SpacingBetweenSlices','text','Spacing between slices, in mm, measured from center-to-center of each slice along the normal to the first image. The sign of the Spacing Between Slices (0018,0088) determines the direction of stacking. The normal is determined by the cross product of the direction cosines of the first row and first column of the first frame, such that a positive spacing indicates slices are stacked behind the first slice and a negative spacing indicates slices are stacked in front of the first slice. DICOM:0018_0088','parameter_file'),
+  ('transmitting_coil','TransmitCoilName','text','Name of transmit coil used. DICOM:0018_1251','parameter_file'),
+  ('cols','Columns','text','Number of columns in the image. DICOM:0028_0011','parameter_file'),
+  ('number_of_averages','NumberOfAverages','text','Number of times a given pulse sequence is repeated before any parameter is changed. DICOM:0018_0083','parameter_file'),
+  ('scanning_sequence','ScanningSequence','text','Description of the type of data taken. DICOM:0018_0020','parameter_file'),
+  ('pixel_representation','PixelRepresentation','text','Data representation of the pixel samples. Each sample shall have the same pixel representation. DICOM:0028_0103','parameter_file'),
+  ('phase_encoding_direction','InPlanePhaseEncodingDirectionDICOM','text','The axes of the in-plane phase encoding with respect to the frame. DICOM:0018_1312','parameter_file'),
+  ('acquisition:dose_units','DoseUnits','text','Dose axis units. DICOM:3004_0002','parameter_file'),
+  ('manufacturer','Manufacturer','text','Manufacturer of the equipment that produced the composite instances. Corresponds to DICOM Tag 0008, 0070 Manufacturer','parameter_file'),
+  ('bits_allocated','BitsAllocated','text','Number of bits allocated for each pixel sample. Each sample shall have the same number of bits allocated. DICOM:0028_0100','parameter_file'),
+  ('imaged_nucleus','ImagedNucleus','text','Nucleus that is resonant at the imaging frequency. Examples: 31P, 1H. DICOM:0018_0085','parameter_file'),
+  ('image_position_patient','ImagePositionPatient','text','The x, y, and z coordinates of the upper left hand corner (center of the first voxel transmitted) of the image, in mm. DICOM:0020_0032','parameter_file'),
+  ('sequence_name','SequenceName','text','Any arbitrary name of a molecular sequence. DICOM:0018_0024','parameter_file'),
+  ('series_number','SeriesNumber','text','A number that identifies this Series. DICOM:0020_0011','parameter_file'),
+  ('slice_location','SliceLocation','text','Relative position of the image plane expressed in mm. DICOM:0020_1041','parameter_file'),
+  ('window_center','WindowCenter','text','Preferred value for Window Center (0028,1050) in the image instances produced by this reconstruction protocol element. DICOM:0028_1050','parameter_file'),
+  ('echo_time','EchoTime','text','Time in ms between the middle of the excitation pulse and the peak of the echo produced (kx=0). In the case of segmented k-space, the TE(eff) is the time between the middle of the excitation pulse to the peak of the echo that is used to cover the center of k-space (i.e.,-kx=0, ky=0). DICOM:0018_0081','parameter_file'),
+  ('manufacturer_model_name','ManufacturersModelName','text',"Manufacturer's model name of the equipment that produced the composite instances. Corresponds to DICOM Tag 0008, 1090 Manufacturers Model Name",'parameter_file'),
+  ('dicominfo:image_type','ImageType','text','Image identification characteristics. DICOM:0008_0008','parameter_file'),
+  ('window_width','WindowWidth','text','Window Width for display. DICOM:0028_1051','parameter_file'),
+  ('repetition_time','RepetitionTime','text','The period of time in msec between the beginning of a pulse sequence and the beginning of the succeeding (essentially identical) pulse sequence. Required except when Scanning Sequence (0018,0020) is EP and Sequence Variant (0018,0021) is not SK.','parameter_file'),
+  ('receiving_coil','ReceiveCoilName','text','Name of receive coil used. DICOM:0018_1250','parameter_file'),
+  ('sar','SAR','text','Calculated whole body Specific Absorption Rate in watts/kilogram. DICOM:0018_1316','parameter_file'),
+  ('patient_position','PatientPosition','text',"Description of imaging subject's position relative to the equipment. DICOM:0018_5100",'parameter_file'),
+  ('window_center_width_explanation','WindowCenterWidthExplanation','text','Explanation of the Window Center and Width. DICOM:0028_1055','parameter_file'),
+  ('high_bit','HighBit','text','Most significant bit for pixel sample data. Each sample shall have the same high bit. DICOM:0028_0102','parameter_file'),
+  ('rows','Rows','text','Number of rows in the image. DICOM:0028_0010','parameter_file'),
+  ('acquisition_number','AcquisitionNumber','text','A number identifying the single continuous gathering of data over a period of time that resulted in this image or instance, which may include multiple bed positions. This number is not required to be unique across SOP Instances in a series. DICOM:0020_0012','parameter_file'),
+  ('echo_numbers','EchoNumber','text','The echo number used in generating this image. In the case of segmented k-space, it is the effective Echo Number. DICOM:0018_0086','parameter_file'),
+  ('percent_sampling','PercentSampling','text','Fraction of acquisition matrix lines acquired, expressed as a percent. DICOM:0018_0093','parameter_file'),
+  ('image_orientation_patient','ImageOrientationPatientDICOM','text','The direction cosines of the first row and the first column with respect to the patient. DICOM:0020_0037','parameter_file'),
+  ('instance_number','InstanceNumber','text','A number that identifies this SOP Instance. DICOM:0020_0013','parameter_file'),
+  ('echo_train_length','EchoTrainLength','text','Number of lines in k-space acquired per excitation of the same volume regardless of the type of echo or the number of frames derived from them. DICOM:0018_0091','parameter_file'),
+  ('bits_stored','BitsStored','text','Number of bits stored for each pixel sample. Each sample shall have the same number of bits stored. See PS 3.5 for further explanation. DICOM:0028_0101','parameter_file'),
+  ('protocol_name','ProtocolName','text','Description of the conditions under which the Series was performed. DICOM:0018_1030','parameter_file'),
+  ('series_description','SeriesDescription','text','User provided description of the Series. DICOM:0008_103E','parameter_file'),
+  ('magnetic_field_strength','MagneticFieldStrength','text','Nominal field strength of MR magnet in Tesla. DICOM:0018_0087','parameter_file'),
+  ('dicom_0x0020:el_0x1002','ImagesInAcquisition','text','Number of images that resulted from this acquisition of data. DICOM:0020_1002','parameter_file'),
+  ('dicom_0x0018:el_0x0025','AngioFlag','text','Angio Image Indicator. Primary image for Angio processing. Enumerated Values: Y Image is Angio N Image is not Angio. DICOM:0018_0025','parameter_file'),
+  ('dicom_0x0018:el_0x9075','DiffusionDirectionality','text','Specifies whether diffusion conditions for the frame are directional, or isotropic with respect to direction. DICOM:0018_9075','parameter_file'),
+  ('study_instance_uid','StudyInstanceUID','text','Unique identifier for the Study. DICOM:0020_000D','parameter_file'),
+  ('pixel_spacing','PixelSpacing','text','Physical distance in the patient between the center of each pixel, specified by a numeric pair - adjacent row spacing (delimiter) adjacent column spacing in mm. DICOM:0028_0030','parameter_file'),
+  ('patient:weight','PatientWeight','text','Weight of the patient in kilograms. DICOM:0010_1030','parameter_file'),
+  ('variable_flip_angle_flag','VariableFlipAngle','text','Flip angle variation applied during image acquisition. DICOM:0018_1315','parameter_file'),
+  ('dicom_0x0010:el_0x1030','PatientWeight','text','Weight of the patient in kilograms. DICOM:0010_1030','parameter_file'),
+  ('imaging_frequency','ImagingFrequency','text','Precession frequency in MHz of the nucleus being imaged. DICOM:0018_0084','parameter_file'),
+  ('acquisition:flip_angle','FlipAngle','text','Steady state angle in degrees to which the magnetic vector is flipped from the magnetic vector of the primary field. DICOM:0018_1314','parameter_file'),
+  ('series_instance_uid','SeriesInstanceUID','text','Unique identifier for the Series that is part of the Study identified in Study Instance UID (0020,000D), if present, and contains the referenced object instance(s). DICOM:0020_000E','parameter_file'),
+  ('smallest_pixel_image_value','SmallestPixelImageValue','text','The minimum actual pixel value encountered in this image. DICOM:0028_0106','parameter_file'),
+  ('inversion_time','InversionTime','text','Time in msec after the middle of inverting RF pulse to middle of excitation pulse to detect the amount of longitudinal magnetization. Required if Scanning Sequence (0018,0020) has values of IR. DICOM:0018_0082','parameter_file'),
+  ('dicom_0x0018:el_0x0022','ScanOptions','text','Parameters of scanning sequence. DICOM:0018_0022','parameter_file'),
+  ('dicom_0x0020:el_0x0100','TemporalPositionIdentifier','text','Temporal order of a dynamic or functional set of Images. DICOM:0020_0100','parameter_file'),
+  ('dicom_0x0008:el_0x9209','AcquisitionContrast','text','Indication of acquisition contrast used with frames in the SOP Instance. DICOM:0008_9209','parameter_file'),
+  ('acquisition_time','AcquisitionTime','text','The time the acquisition of data that resulted in this image started. DICOM:0008_0032','parameter_file'),
+  ('dicom_0x0018:el_0x1090','CardiacNumberOfImages','text','Number of images per cardiac cycle. DICOM:0018_1090','parameter_file'),
+  ('dicom_0x0028:el_0x0006','PlanarConfiguration','text','Indicates whether the pixel data are encoded color-by-plane or color-by-pixel. DICOM:0028_0006','parameter_file'),
+  ('dicom_0x0008:el_0x0064','ConversionType','text','Describes the kind of image conversion. DICOM:0008_0064','parameter_file'),
+  ('dicom_0x0020:el_0x0020','PatientOrientation','text','Patient direction of the rows and columns of the image. DICOM:0020_0020','parameter_file'),
+  ('dicom_0x0008:el_0x1032','ProcedureCodeSequence','text','A Sequence that conveys the type of procedure performed. DICOM:0008_1032','parameter_file'),
+  ('dicom_0x0010:el_0x1020','PatientHeight','text',"Patient's height or length in meters. DICOM:0010_1020",'parameter_file'),
+  ('dicom_0x0032:el_0x1064','StudyInstance','text','A sequence that conveys the requested procedure. One or more Items may be included in this Sequence. DICOM:0032_1064','parameter_file'),
+  ('image_date','ContentDate','text','The date the data creation was started. For instance, this is the date the pixel data is created, not the date the data is acquired. DICOM:0008_0023','parameter_file'),
+  ('acquisition_date','AcquisitionDate','text','The date the acquisition of data that resulted in this image started. DICOM:0008_0022','parameter_file'),
+  ('series_date','SeriesDate','text','Date the Series started. DICOM:0008_0021','parameter_file'),
+  ('image_time','ContentTime','text','The time the data creation was started. For instance, this is the time the pixel data is created, not the time the data is acquired. DICOM:0008_0033','parameter_file'),
+  ('series_time','SeriesTime','text','Time the Series started. DICOM:0008_0031','parameter_file'),
+  ('study_date','StudyDate','text','Date the Study started. DICOM:0008_0020','parameter_file'),
+  ('study_time','StudyTime','text','Time the Study started. DICOM:0008_0030','parameter_file'),
+  ('device_serial_number','DeviceSerialNumber','text',"Manufacturer's serial number of the device. DICOM:0018_1000",'parameter_file'),
+  ('frame_of_reference_uid','FrameOfReferenceUID','text','Uniquely identifies the frame of reference for a Series. shall be used to uniquely identify a frame of reference for a series. Each series shall have a single Frame of Reference UID. However, multiple Series within a Study may share a Frame of Reference. DICOM:0020_0052','parameter_file'),
+  ('image_comments','ImageComments','text','User-defined comments about the image. DICOM:0020_4000','parameter_file'),
+  ('dicom_0x0028:el_0x1053','RescaleSlope','text','m in the equation specified by Rescale Intercept (0028,1052). DICOM:0028_1053','parameter_file'),
+  ('dicom_0x0028:el_0x1054','RescaleType','text','Specifies the output units of Rescale Slope (0028,1053) and Rescale Intercept (0028,1052). DICOM:0028_1054','parameter_file'),
+  ('dicom_0x0028:el_0x1052','RescaleIntercept','text','The value b in relationship between stored values (SV) and pixel value units (U) defined in Units (0054,1001): U = m*SV+b. DICOM:0028_1052','parameter_file'),
+  ('institution_name','InstitutionName','text','Institution or organization to which the identified individual is responsible or accountable May also refer to the institution or organization at which the relevant equipment is located. DICOM:0008_0080','parameter_file'),
+  ('study_description','StudyDescription','text','Institution-generated description or classification of the Study (component) performed. DICOM:0008_1030','parameter_file'),
+  ('operator_name','OperatorName','text','Name(s) of the operator(s) who supporting this Series. DICOM:0008_1070','parameter_file'),
+  ('patient_id','PatientID','text','A primary identifier for the patient. In the case of imaging a group of small animals simultaneously, the single value of this identifier corresponds to the identification of the entire group. DICOM:0010_0020','parameter_file'),
+  ('patient_dob','PatientsBirthDate','text','Birth date of the patient. DICOM:0010_0030','parameter_file'),
+  ('effective_series_duration','EffectiveDuration','text','Total time in seconds that data was actually taken for the entire Multi-frame image. DICOM:0018_0072','parameter_file'),
+  ('spatial_resolution','SpatialResolution','text','The inherent limiting resolution in mm of the acquisition equipment for high contrast objects for the data gathering and reconstruction technique chosen. If variable across the images of the series, the value at the image center. DICOM:0018_1050','parameter_file'),
+  ('fov_dimensions','FieldOfViewDimensions','text','Dimensions of the field of view, in mm. If Field of View Shape (0018,1147) is: RECTANGLE: row dimension followed by column. ROUND: diameter. HEXAGONAL: diameter of a circumscribed circle. DICOM:0018_1149','parameter_file'),
+  ('laterality','Laterality','text','Laterality of (paired) body part examined. Required if the body part examined is a paired structure and Image Laterality (0020,0062) or Frame Laterality (0020,9072) are not sent. DICOM:0020_0060','parameter_file'),
+  ('position_reference_indicator','PositionReferenceIndicator','text','Part of the imaging target used as a reference. DICOM:0020_1040','parameter_file'),
+  ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file'),
+  ('HEDVersion', 'HEDVersion', 'text', 'HED Schema Version','physiological_parameter_file'),
+  ('PhaseEncodingDirection',NULL,'text','BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)','parameter_file');
 
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
@@ -1921,7 +2169,7 @@ INSERT INTO `feedback_mri_comment_types` (CommentName,CommentType,CommentStatusF
   ('Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
   ('Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
   ('Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
-  ('Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
+  ('Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
   ('Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),
   ('Overall','volume',''),
   ('Subject','visit',''),
@@ -1983,6 +2231,8 @@ CREATE TABLE `feedback_mri_comments` (
   `FileID` int(10) unsigned default NULL,
   `SeriesUID` varchar(64) default NULL,
   `EchoTime` double default NULL,
+  `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
+  `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `SessionID` int(10) unsigned default NULL,
   `CommentTypeID` int(11) unsigned NOT NULL default '0',
   `PredefinedCommentID` int(11) unsigned default NULL,
@@ -2003,13 +2253,26 @@ CREATE TABLE `feedback_mri_comments` (
 -- Consent tables
 -- ********************************
 
+CREATE TABLE `consent_group` (
+  `ConsentGroupID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent_group` PRIMARY KEY (`ConsentGroupID`),
+  CONSTRAINT `UK_consent_group_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_group_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `consent_group` (`ConsentGroupID`, `Name`, `Label`) VALUES ('1', 'main_consent', 'Main consent');
+
 CREATE TABLE `consent` (
   `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Label` varchar(255) NOT NULL,
+  `ConsentGroupID` integer unsigned NOT NULL DEFAULT 1,
   CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
   CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
-  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
+  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`),
+  CONSTRAINT `FK_consent_ConsentGroupID` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_rel` (
@@ -2039,20 +2302,21 @@ CREATE TABLE `candidate_consent_history` (
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
+  `VisitLabel` VARCHAR(200) UNIQUE NOT NULL,
   CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `visit_project_subproject_rel` (
-  `VisitProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `visit_project_cohort_rel` (
+  `VisitProjectCohortRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `VisitID` int(10) unsigned NOT NULL,
-  `ProjectSubprojectRelID` int(10) unsigned NOT NULL,
-  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectRelID`),
-  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectRelID UNIQUE KEY (`VisitID`, `ProjectSubprojectRelID`),
-  CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
+  `ProjectCohortRelID` int(10) unsigned NOT NULL,
+  CONSTRAINT PK_visit_project_cohort_rel PRIMARY KEY (`VisitProjectCohortRelID`),
+  CONSTRAINT UK_visit_project_cohort_rel_VisitID_ProjectCohortRelID UNIQUE KEY (`VisitID`, `ProjectCohortRelID`),
+  CONSTRAINT FK_visit_project_cohort_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
-    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_visit_project_cohort_rel_ProjectCohortRelID FOREIGN KEY (`ProjectCohortRelID`)
+    REFERENCES `project_cohort_rel`(`ProjectCohortRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status
@@ -2086,6 +2350,13 @@ CREATE TABLE `publication` (
     `Title` varchar(255) NOT NULL,
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
+    `journal` varchar(255) DEFAULT NULL,
+    `doi` text DEFAULT NULL,
+    `datePublication` date DEFAULT NULL,
+    `link` varchar(255) DEFAULT NULL,
+    `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `project` int(10) unsigned DEFAULT NULL,
+    CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
@@ -2165,7 +2436,72 @@ CREATE TABLE `publication_upload` (
 CREATE TABLE `publication_users_edit_perm_rel` (
   `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
+  CONSTRAINT `PK_publication_users_edit_perm_rel` PRIMARY KEY(`PublicationID`, `UserID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+CREATE TABLE dataquery_queries (
+    QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    Query JSON NOT NULL,
+    PRIMARY KEY (QueryID)
+    -- FOREIGN KEY (Owner) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_query_names (
+    QueryID int(10) unsigned NOT NULL,
+    UserID int(10) unsigned NOT NULL,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY (QueryID, UserID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_run_queries (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    QueryID int(10) unsigned,
+    UserID int(10) unsigned,
+    RunTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (RunID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+CREATE TABLE dataquery_shared_queries_rel (
+    QueryID int(10) unsigned,
+    SharedBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (SharedBy) REFERENCES users(ID),
+    CONSTRAINT unique_share UNIQUE (QueryID, SharedBy)
+);
+
+CREATE TABLE dataquery_starred_queries_rel (
+    QueryID int(10) unsigned,
+    StarredBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (StarredBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, StarredBy)
+);
+
+CREATE TABLE dataquery_run_results (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    CandID int(6) NOT NULL,
+    -- JSON or same format that's streamed in?
+    RowData LONGTEXT DEFAULT NULL,
+
+    PRIMARY KEY (RunID, CandID),
+    FOREIGN KEY (CandID) REFERENCES candidate(CandID),
+    FOREIGN KEY (RunID) REFERENCES dataquery_run_queries(RunID)
+);
+
+CREATE TABLE dataquery_study_queries_rel (
+    QueryID int(10) unsigned,
+    PinnedBy int(10) unsigned,
+    -- A top query shows on the top of the dataquery tool similarly
+    -- to a saved query but is chosen by admins, a dashboard query
+    -- shows the number of matching results on the LORIS dashboard.
+    Name varchar(255) NOT NULL,
+    PinType enum('topquery', 'dashboard'),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (PinnedBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
+);

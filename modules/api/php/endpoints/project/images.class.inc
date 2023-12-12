@@ -55,7 +55,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -66,7 +66,10 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array("v0.0.3");
+        return [
+            "v0.0.3",
+            "v0.0.4-dev",
+        ];
     }
 
     /**
@@ -133,7 +136,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->toArray($request->getAttribute('user'));
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            array('Images' => $images)
+            ['Images' => $images]
         );
 
         return $this->_cache;

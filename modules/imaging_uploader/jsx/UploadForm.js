@@ -1,18 +1,29 @@
 import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    TextboxElement,
+    StaticElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
- *
  * Form component allowing to upload MRI images to LORIS
  *
  * @author Alex Ilea
  * @author Victoria Foing
  * @version 1.0.0
- * @since 2017/04/01
- *
  */
 class UploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -31,14 +42,20 @@ class UploadForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     // Disable fields on initial load
     this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
-  /*
-   Updates values in formData
-   Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
+  /**
+   * Updates values in formData
+   * Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
+   *
+   * @param {string} field
+   * @param {*} value
    */
   onFormChange(field, value) {
     if (!field) return;
@@ -52,11 +69,15 @@ class UploadForm extends Component {
         delete formData.pSCID;
         delete formData.visitLabel;
       } else if (typeof formData.mriFile !== 'undefined') {
-        let patientName = formData.mriFile.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
-        let ids = patientName.split('_', 3);
+        let patientName = formData.mriFile.name
+                          .replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        formData.visitLabel = ids[2];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
@@ -65,10 +86,13 @@ class UploadForm extends Component {
     if (field === 'mriFile') {
       if (value.name && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
-        let ids = patientName.split('_', 3);
+        let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        formData.visitLabel = ids[2];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
@@ -78,6 +102,9 @@ class UploadForm extends Component {
     });
   }
 
+  /**
+   * Submit form
+   */
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
@@ -90,7 +117,7 @@ class UploadForm extends Component {
     // Make sure file is of type .zip|.tgz|.tar.gz format
     const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
     if (!fileName.match(properExt)) {
-      swal({
+      swal.fire({
         title: 'Invalid extension for the uploaded file!',
         text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
         type: 'error',
@@ -98,7 +125,9 @@ class UploadForm extends Component {
       });
 
       let errorMessage = {
-        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
+        mriFile: 'The file '
+                 + fileName
+                 + ' must be of type .tgz, .tar.gz or .zip.',
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
@@ -117,9 +146,10 @@ class UploadForm extends Component {
 
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
-        swal({
+        swal.fire({
           title: 'Incorrect file name!',
-          text: 'Could not determine PSCID, CandID and Visit Label based on the filename!\n',
+          text: 'Could not determine PSCID, CandID and Visit Label '
+                + 'based on the filename!\n',
           type: 'error',
           confirmButtonText: 'OK',
         });
@@ -140,9 +170,10 @@ class UploadForm extends Component {
 
     // File uploaded and completed mri pipeline
     if (mriFile.status === 'Success') {
-      swal({
+      swal.fire({
         title: 'File already exists!',
-        text: 'A file with this name has already successfully passed the MRI pipeline!\n',
+        text: 'A file with this name has already successfully passed '
+              + 'the MRI pipeline!\n',
         type: 'error',
         confirmButtonText: 'OK',
       });
@@ -151,9 +182,10 @@ class UploadForm extends Component {
 
     // File in the middle of insertion pipeline
     if (mriFile.status === 'In Progress...') {
-      swal({
+      swal.fire({
         title: 'File is currently processing!',
-        text: 'A file with this name is currently going through the MRI pipeline!\n',
+        text: 'A file with this name is currently going through '
+              + 'the MRI pipeline!\n',
         type: 'error',
         confirmButtonText: 'OK',
       });
@@ -162,47 +194,51 @@ class UploadForm extends Component {
 
     // File uploaded but failed during mri pipeline
     if (mriFile.status === 'Failure') {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        text: 'A file with this name already exists!\n '
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     // Pipeline has not been triggered yet
     if (mriFile.status === 'Not Started') {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
-        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
-          '\n Would you like to override the existing file?',
+        text: 'A file with this name has been uploaded '
+              + 'but has not yet been processed by the MRI pipeline.\n '
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your upload has been cancelled.', 'error');
+          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     return;
   }
 
-  /*
-   Uploads file to the server, listening to the progress
-   in order to get the percentage uploaded as value for the progress bar
+  /**
+   * Uploads file to the server, listening to the progress
+   * in order to get the percentage uploaded as value for the progress bar
+   *
+   * @param {boolean} overwriteFile
    */
   uploadFile(overwriteFile) {
     const formData = this.state.formData;
@@ -217,30 +253,22 @@ class UploadForm extends Component {
       formObj.append('overwrite', true);
     }
 
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/imaging_uploader/',
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        const xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            const percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      // Upon successful upload:
-      // - Resets errorMessage and hasError so no errors are displayed on form
-      // - Displays pop up window with success message
-      // - Returns to Browse tab
-      success: (data) => {
-        let errorMessage = this.state.errorMessage;
-        let hasError = this.state.hasError;
+    const xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', (evt) => {
+      if (evt.lengthComputable) {
+        const percentage = Math.round((evt.loaded / evt.total) * 100);
+        this.setState({uploadProgress: percentage});
+      }
+    }, false);
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status < 400) {
+        // Upon successful upload:
+        // - Resets errorMessage and hasError so no errors are displayed on form
+        // - Displays pop up window with success message
+        // - Returns to Browse tab
+        const errorMessage = this.state.errorMessage;
+        const hasError = this.state.hasError;
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = '';
@@ -252,61 +280,95 @@ class UploadForm extends Component {
         if (this.props.imagingUploaderAutoLaunch === 'true' ||
             this.props.imagingUploaderAutoLaunch === '1'
         ) {
-          text = 'Processing of this file by the MRI pipeline has started\n' +
-            'Select this upload in the result table to view the processing progress';
+          text = 'Processing of this file by the MRI pipeline has started\n'
+                + 'Select this upload in the result table '
+                + 'to view the processing progress';
         }
-        swal({
+        swal.fire({
           title: 'Upload Successful!',
           text: text,
           type: 'success',
-        }, function() {
-          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
-      },
-      // Upon errors in upload:
-      // - Displays pop up window with submission error message
-      // - Updates errorMessage and hasError so relevant errors are displayed on form
-      // - Returns to Upload tab
-      error: (error, textStatus, errorThrown) => {
-        let errorMessage = Object.assign({}, this.state.errorMessage);
-        let hasError = Object.assign({}, this.state.hasError);
-        let messageToPrint = '';
-        if (error.responseJSON && error.responseJSON.errors) {
-          errorMessage = error.responseJSON.errors;
-        } else if (error.status == 0) {
-          errorMessage = {
-            'mriFile': ['Upload failed: a network error occured'],
-          };
-        } else if (error.status == 413) {
-          errorMessage = {
-            'mriFile': ['Please make sure files are not larger than ' + this.props.maxUploadSize],
-          };
-        } else {
-          errorMessage = {
-            'mriFile': ['Upload failed: received HTTP response code ' + error.status],
-          };
-        }
-        for (let i in errorMessage) {
-          if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = errorMessage[i].toString();
-            if (errorMessage[i].length) {
-              hasError[i] = true;
-              messageToPrint += errorMessage[i] + '\n';
-            } else {
-              hasError[i] = false;
-            }
-          }
-        }
-        swal({
-          title: 'Submission error!',
-          text: messageToPrint,
-          type: 'error',
-        });
-        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
-      },
+        window.location.assign(loris.BaseURL + '/imaging_uploader/');
+      } else {
+        this.processError(xhr);
+      }
+    }, false);
+
+    xhr.addEventListener('error', () => {
+      this.processError(xhr);
+    }, false);
+
+    xhr.open('POST', loris.BaseURL + '/imaging_uploader/');
+    xhr.send(formObj);
+  }
+
+  /**
+   * Process XMLHttpRequest errors
+   *
+   * @param {XMLHttpRequest} xhr - XMLHttpRequest
+   */
+  processError(xhr) {
+    // Upon errors in upload:
+    // - Displays pop up window with submission error message
+    // - Updates errorMessage and hasError so relevant errors are displayed on form
+    // - Returns to Upload tab
+
+    console.error(xhr.status + ': ' + xhr.statusText);
+
+    let errorMessage = Object.assign({}, this.state.errorMessage);
+    const hasError = Object.assign({}, this.state.hasError);
+    let messageToPrint = '';
+    if (xhr.response) {
+      const resp = JSON.parse(xhr.response);
+      if (resp.errors) {
+        errorMessage = resp.errors;
+      }
+    } else if (xhr.status == 0) {
+      errorMessage = {
+        'mriFile': ['Upload failed: a network error occured'],
+      };
+    } else if (xhr.status == 413) {
+      errorMessage = {
+        'mriFile': [
+          'Please make sure files are not larger than '
+          + this.props.maxUploadSize,
+        ],
+      };
+    } else {
+      errorMessage = {
+        'mriFile': [
+          'Upload failed: received HTTP response code '
+          + xhr.status,
+        ],
+      };
+    }
+    for (const [key, error] of Object.entries(errorMessage)) {
+      errorMessage[key] = error.toString();
+      if (error.length) {
+        hasError[key] = true;
+        messageToPrint += error + '\n';
+      } else {
+        hasError[key] = false;
+      }
+    }
+    swal.fire({
+      title: 'Submission error!',
+      text: messageToPrint,
+      type: 'error',
+    });
+    this.setState({
+      uploadProgress: -1,
+      errorMessage: errorMessage,
+      hasError: hasError,
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Bind form elements to formData
     const form = this.state.form;
@@ -412,8 +474,12 @@ class UploadForm extends Component {
     );
   }
 }
-
-UploadForm.propTypes = {};
+UploadForm.propTypes = {
+  form: PropTypes.func,
+  mriList: PropTypes.array,
+  imagingUploaderAutoLaunch: PropTypes.string,
+  maxUploadSize: PropTypes.string,
+};
 UploadForm.defaultProps = {};
 
 export default UploadForm;

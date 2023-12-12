@@ -28,7 +28,7 @@ It does not concern itself with data collection or analysis,
 which are the responsibility of the instruments themselves, nor does
 it concern itself with the creation of instruments which is the
 responsibility of the `instrument_builder` module or PHP programmer. 
-The test battery is also managed separately directly from the database.
+The test battery is also managed separately directly from the database, or using the `battery_manager` module.
 
 ## Permissions
 
@@ -46,9 +46,19 @@ For basic access to the module, no configuration is required.
 In order to enable the ability to upload instruments, PHP must be
 able to write to the `project/instruments` and `project/tables_sql`
 directories (to write the instrument itself, and instrument table
-patch respectively.)
+patch respectively). Depending on your installation, this might 
+require giving your *apache* user write access to these directories.
 
 In order to automatically source the SQL patch and fully configure
-LINST instruments, the LORIS `adminUser` and `adminPassword` configuration
-must be set to a user which has the MySQL `CREATE TABLE` permission.
+LINST instruments, the LORIS `adminUser` and `adminPassword` configurations
+must be set to a user which has the MySQL `CREATE TABLE` permission. These configurations are added under the `<database>` tag in the config file as so:
+
+    ```xml
+    <database>
+        ...
+        <adminUser>%USERNAME%</adminUser>
+        <adminPassword>%PASSWORD%</adminPassword>
+        ...
+    </database>
+    ```
 

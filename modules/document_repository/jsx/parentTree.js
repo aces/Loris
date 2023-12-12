@@ -9,25 +9,41 @@ import PropTypes from 'prop-types';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 const divStyle = {
   marginLeft: '20px',
   fontSize: '110%',
-  fontFamily: 'verdana, sans-serif',
   color: '#034785',
   cursor: 'pointer',
 };
 
-
+/**
+ * Parent tree component
+ */
 class ParentTree extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.action = this.action.bind(this);
   }
+
+  /**
+   * Action
+   *
+   * @param {object} obj
+   */
   action(obj) {
     this.props.action(obj);
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const parentNode = this.props.parentNode;
     parentNode.unshift(['0', 'Root']);

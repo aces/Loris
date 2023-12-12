@@ -82,7 +82,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/help_editor/js/help_editor.js")
+            [$baseURL . "/help_editor/js/help_editor.js"]
         );
     }
 }

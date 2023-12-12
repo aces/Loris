@@ -32,13 +32,17 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case 'candidate':
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
 
             $candidate = $options['candidate'];
             if ($candidate === null) {
+                return [];
+            }
+
+            if (!\NDB_Factory::singleton()->settings()->consentEnabled()) {
                 return [];
             }
 
@@ -180,5 +184,15 @@ class Module extends \Module
             $entries[] = new CandidateInfo($param['Description'], $param['Value']);
         }
         return $entries;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new CandidateQueryEngine($this->loris);
     }
 }

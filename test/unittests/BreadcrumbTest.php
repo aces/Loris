@@ -29,7 +29,7 @@ class BreadcrumbTest extends TestCase
      *
      * @var Breadcrumb object
      */
-    private $breadcrumb;
+    private $_breadcrumb;
 
     /**
      * The label to display to the frontend user
@@ -55,11 +55,11 @@ class BreadcrumbTest extends TestCase
     {
         parent::setUp();
 
-	$this->label = "testLabel";
+        $this->label = "testLabel";
 
-	$this->link = "testLink";
+        $this->link = "testLink";
 
-        $this->breadcrumb = new Breadcrumb($this->label, $this->link);
+        $this->_breadcrumb = new Breadcrumb($this->label, $this->link);
 
     }
 
@@ -67,12 +67,16 @@ class BreadcrumbTest extends TestCase
      * Test __toString() returns correct string
      *
      * TODO: Add potential edge cases (such as white space)
+     *
      * @covers Breadcrumb::__toString
      * @return void
      */
     public function testToString()
     {
-        $this->assertEquals('{"text":"testLabel","query":"testLink"}', $this->breadcrumb->__toString());
+        $this->assertEquals(
+            '{"text":"testLabel","query":"testLink"}',
+            $this->_breadcrumb->__toString()
+        );
     }
 
 }

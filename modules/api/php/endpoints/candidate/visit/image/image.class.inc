@@ -60,7 +60,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -71,10 +71,10 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -113,7 +113,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'format':
             $handler = new Format($image);
             break;
@@ -162,13 +162,17 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             error_log('file in database but not in file system');
             return new \LORIS\Http\Response\JSON\NotFound();
         }
-
         if (!$info->isReadable()) {
             error_log('file exist but is not readable by webserver');
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+        $realpath = $info->getRealPath();
+        if ($realpath === false) {
+            $realpath = $info->getPath() . "/" . $info->getFilename();
+        }
+
+        $body = new \LORIS\Http\FileStream($realpath, 'r');
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)
@@ -198,11 +202,11 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $image->getFileInfo();
 
-        $signature = array(
+        $signature = [
             'filename' => $this->_filename,
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

@@ -33,10 +33,14 @@ class Recording
 
     private $_filetype;
 
-    private $_centerid;
+    private \CenterID $_centerid;
 
     private $_entitytype;
 
+    private ?string $_channel_file_path;
+    private ?string $_electrode_file_path;
+    private ?string $_event_file_path;
+    private ?string $_archive_file_path;
     /**
      * Constructor
      *
@@ -81,14 +85,18 @@ class Recording
                      ) pc
                        ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_electrode
+                       SELECT pcser.PhysiologicalFileID, pe2.FilePath
+                       FROM physiological_electrode pe2
+                        INNER JOIN physiological_coord_system_electrode_rel pcser
+                        USING (PhysiologicalElectrodeID)
                        LIMIT 1
                      ) pe
                        ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_task_event
+                       SELECT pte.PhysiologicalFileID, pef.FilePath
+                       FROM physiological_task_event pte
+                        INNER JOIN physiological_event_file pef
+                        USING (EventFileID)
                        LIMIT 1
                      ) pte
                        ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
@@ -96,7 +104,7 @@ class Recording
                        ON (pa.PhysiologicalFileID = f.PhysiologicalFileID)
                      WHERE f.PhysiologicalFileID = :v_fileid
                     ',
-                    array('v_fileid' => $fileid)
+                    ['v_fileid' => $fileid]
                 );
             if (empty($dbrow)) {
                 throw new \NotFound('There is no file with that FileID');
@@ -107,7 +115,7 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];
@@ -141,10 +149,10 @@ class Recording
                          )
                          AND PhysiologicalFileID = :v_fileid
                       ',
-                array(
+                [
                     'v_fileid'     => $this->_fileid,
                     'v_headername' => $headername,
-                )
+                ]
             );
         return $dbrow['Value'] ?? '';
     }
@@ -171,7 +179,7 @@ class Recording
                        WHERE
                          pf.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
             $dbrows,
@@ -179,7 +187,7 @@ class Recording
                 $carry[$row['name']] = $row['value'];
                 return $carry;
             },
-            array()
+            []
         );
     }
 
@@ -309,7 +317,7 @@ class Recording
                        WHERE
                          pc.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {
@@ -336,9 +344,9 @@ class Recording
                          pe.Name                as electrodename,
                          pet.ElectrodeType      as electrodetype,
                          pem.ElectrodeMaterial  as electrodematerial,
-                         pe.X                   as x,
-                         pe.Y                   as y,
-                         pe.Z                   as z,
+                         po.X                   as x,
+                         po.Y                   as y,
+                         po.Z                   as z,
                          pe.Impedance           as Impedance,
                          pe.FilePath            as filepath
                        FROM
@@ -347,10 +355,14 @@ class Recording
                          USING (PhysiologicalElectrodeTypeID)
                        JOIN physiological_electrode_material pem
                          USING (PhysiologicalElectrodeMaterialID)
+                       JOIN point_3d po
+                         USING (Point3DID)
+                       JOIN physiological_coord_system_electrode_rel pcser
+                         USING (PhysiologicalElectrodeID)
                        WHERE
-                         pe.PhysiologicalFileID = :v_fileid
+                        pcser.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {
@@ -381,13 +393,15 @@ class Recording
                          pte.EventType    as eventtype,
                          pte.TrialType    as trialtype,
                          pte.ResponseTime as responsetime,
-                         pte.FilePath     as filepath
+                         pef.FilePath     as filepath
                        FROM
-                         physiological_task_event pte 
+                         physiological_task_event pte
+                        JOIN physiological_event_file pef
+                         USING (EventFileID)
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {

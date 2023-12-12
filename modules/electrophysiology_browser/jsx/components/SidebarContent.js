@@ -8,12 +8,12 @@ const styles = {
   sidebar: {
     width: 150,
     height: 'calc(100vh)',
-    backgroundColor: '#1a487e',
+    background: '#E4EBF2',
+    border: '1px solid #C3D5DB',
     fontWeight: 200,
-    fontFamily: 'Helvetica, Arial, sans-serif',
   },
   sidebarLink: {
-    color: '#fff',
+    color: '#064785',
     fontSize: '16px',
     display: 'none',
     padding: '10px 0 0 30px',
@@ -36,11 +36,10 @@ const SidebarContent = (props) => {
     <div style={styles.sidebar}>
       <div style={
         {
-          color: '#fff',
+          color: '#064785',
           fontSize: '24px',
           fontWeight: 'bold',
           padding: '80px 0 0 10px',
-          backgroundColor: '#1a487e',
         }
       }>
         Navigation
@@ -48,7 +47,7 @@ const SidebarContent = (props) => {
       <div style={styles.content}>
         <a id={'nav_previous'} href={props.previous} target={'_self'} style={
           {
-            color: '#fff',
+            color: '#064785',
             fontSize: '16px',
             display: 'none',
             padding: '0 0 0 10px',
@@ -57,7 +56,11 @@ const SidebarContent = (props) => {
         }>
           &#171; Previous
         </a>
-        <a id={'nav_next'} href={props.next} target={'_self'} style={styles.sidebarLink}>
+        <a id={'nav_next'}
+           href={props.next}
+           target={'_self'}
+           style={styles.sidebarLink}
+        >
           Next &#187;
         </a>
       </div>

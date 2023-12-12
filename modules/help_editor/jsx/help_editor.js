@@ -1,6 +1,9 @@
 import FilterableDataTable from 'FilterableDataTable';
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+
 /**
  * Help Editor Archive Page.
  *
@@ -12,9 +15,12 @@ import PropTypes from 'prop-types';
  *
  * @author LORIS Team
  * @version 1.0.0
- *
- * */
+ */
 class HelpEditor extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -29,9 +35,12 @@ class HelpEditor extends React.Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true})); ;
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -49,13 +58,12 @@ class HelpEditor extends React.Component {
       });
   }
 
- /**
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -63,19 +71,20 @@ class HelpEditor extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
     case 'Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row['Help ID'] + '&parentID=' + row['Parent ID'];
+      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID='
+            + row['Help ID'];
       result = <td><a href ={url}>{cell}</a></td>;
       break;
-    case 'Parent Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row['Parent ID'] + '&parentID=' + row['Parent Topic ID'];
-      result = <td><a href ={url}>{cell}</a></td>;
     }
 
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -99,9 +108,6 @@ class HelpEditor extends React.Component {
         name: 'topic',
         type: 'text',
       }},
-      {label: 'Parent ID', show: false},
-      {label: 'Parent Topic ID', show: false},
-      {label: 'Parent Topic', show: true},
       {label: 'Content', show: true, filter: {
         name: 'content',
         type: 'text',
@@ -124,11 +130,12 @@ HelpEditor.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <HelpEditor
       Module="help_editor"
       dataURL={loris.BaseURL + '/help_editor/?format=json'}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

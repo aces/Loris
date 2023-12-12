@@ -57,7 +57,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,7 +68,10 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array('v0.0.3');
+        return [
+            'v0.0.3',
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -130,11 +133,20 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $request->getAttribute('user')
         );
 
-        $view = (new \LORIS\api\Views\Visit\Dicoms(
-            $this->_visit,
-            ...$dicomtars
-        ))->toArray();
-
+        $version = $request->getAttribute('LORIS-API-Version');
+        switch ($version) {
+        case "v0.0.3":
+            $view = (new \LORIS\api\Views\Visit\Dicoms(
+                $this->_visit,
+                ...$dicomtars
+            ))->toArray();
+            break;
+        default:
+            $view = (new \LORIS\api\Views\Visit\Dicoms_0_0_4_Dev(
+                $this->_visit,
+                ...$dicomtars
+            ))->toArray();
+        }
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
 
         return $this->_cache;

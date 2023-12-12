@@ -28,21 +28,21 @@ class TimePointImagingQC
     /**
      * The QC value
      *
-     * @var string
+     * @var ?string
      */
     private $_qc;
 
     /**
      * A flag to tell if the QC is still pending
      *
-     * @var string
+     * @var ?string
      */
     private $_qcpending;
 
     /**
      * A flag to indicate if there is a caveat
      *
-     * @var string
+     * @var ?string
      */
     private $_hascaveat;
 

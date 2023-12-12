@@ -24,6 +24,10 @@ namespace LORIS\dashboard;
  */
 class WidgetDisplayProps
 {
+    private string $_size;
+    private int $_order;
+    private array $_menus;
+
     /**
      * Construct a WidgetDisplay object with the specified properties.
      *
@@ -45,9 +49,9 @@ class WidgetDisplayProps
             throw new \DomainException("Invalid value for widget size");
         }
 
-        $this->size  = $size;
-        $this->order = $order;
-        $this->menus = $menus;
+        $this->_size  = $size;
+        $this->_order = $order;
+        $this->_menus = $menus;
     }
 
     /**
@@ -60,7 +64,7 @@ class WidgetDisplayProps
      */
     public function getSize() : string
     {
-        return $this->size;
+        return $this->_size;
     }
 
     /**
@@ -73,7 +77,7 @@ class WidgetDisplayProps
      */
     public function getOrder() : int
     {
-        return $this->order;
+        return $this->_order;
     }
 
     /**
@@ -88,6 +92,6 @@ class WidgetDisplayProps
      */
     public function getMenus() : array
     {
-        return $this->menus;
+        return $this->_menus;
     }
 }

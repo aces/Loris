@@ -22,6 +22,10 @@
  */
 class InstrumentFlags
 {
+    private ?string $_dataentry;
+    private ?string $_administration;
+    private ?string $_validity;
+
     /**
      * Contructor
      *
@@ -46,10 +50,10 @@ class InstrumentFlags
      */
     public function toArray(): array
     {
-        return array(
+        return [
             'Data_entry'     => $this->_dataentry,
             'Administration' => $this->_administration,
             'Validity'       => $this->_validity,
-        );
+        ];
     }
 }

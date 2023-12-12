@@ -60,7 +60,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = NDB_Factory::singleton();
 
@@ -82,12 +82,6 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      */
     protected function createLorisDBConnection()
     {
-        $this->database = Database::singleton(
-            $this->factory->settings()->dbName(),
-            $this->factory->settings()->dbUserName(),
-            $this->factory->settings()->dbPassword(),
-            $this->factory->settings()->dbHost()
-        );
+        $this->database = $this->factory->database();
     }
-
 }

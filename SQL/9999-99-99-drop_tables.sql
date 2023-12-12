@@ -1,5 +1,28 @@
+DROP TABLE IF EXISTS dataquery_study_queries_rel;
+DROP TABLE IF EXISTS dataquery_run_results;
+DROP TABLE IF EXISTS dataquery_starred_queries_rel;
+DROP TABLE IF EXISTS dataquery_shared_queries_rel;
+DROP TABLE IF EXISTS dataquery_run_queries;
+DROP TABLE IF EXISTS dataquery_query_names;
+DROP TABLE IF EXISTS dataquery_queries;
+
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`;
+DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
+DROP TABLE IF EXISTS `point_3d`;
+DROP TABLE IF EXISTS `physiological_coord_system`;
+DROP TABLE IF EXISTS `physiological_coord_system_unit`;
+DROP TABLE IF EXISTS `physiological_coord_system_name`;
+DROP TABLE IF EXISTS `physiological_coord_system_type`;
+DROP TABLE IF EXISTS `physiological_annotation_rel`;
+DROP TABLE IF EXISTS `physiological_annotation_instance`;
+DROP TABLE IF EXISTS `physiological_annotation_parameter`;
+DROP TABLE IF EXISTS `physiological_annotation_archive`;
+DROP TABLE IF EXISTS `physiological_annotation_file`;
+DROP TABLE IF EXISTS `physiological_annotation_file_type`;
+DROP TABLE IF EXISTS `physiological_annotation_label`;
 DROP TABLE IF EXISTS `physiological_archive`;
+DROP TABLE IF EXISTS `physiological_task_event_opt`;
 DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_electrode`;
 DROP TABLE IF EXISTS `physiological_electrode_material`;
@@ -8,6 +31,7 @@ DROP TABLE IF EXISTS `physiological_channel`;
 DROP TABLE IF EXISTS `physiological_channel_type`;
 DROP TABLE IF EXISTS `physiological_status_type`;
 DROP TABLE IF EXISTS `physiological_parameter_file`;
+DROP TABLE IF EXISTS `physiological_split_file`;
 DROP TABLE IF EXISTS `physiological_file`;
 DROP TABLE IF EXISTS `physiological_output_type`;
 DROP TABLE IF EXISTS `physiological_modality`;
@@ -28,14 +52,14 @@ DROP TABLE IF EXISTS `issues_comments`;
 DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
--- 0000-00-02-Modules.sql
-DROP TABLE IF EXISTS `modules`;
-
--- 0000-00-01-Permission.sql
+-- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `permissions_category`;
+
+-- 0000-00-01-Modules.sql
+DROP TABLE IF EXISTS `modules`;
 
 -- 0000-00-00-schema.sql
 DROP TABLE IF EXISTS `candidate_consent_rel`;
@@ -115,7 +139,6 @@ DROP TABLE IF EXISTS `participant_status_options`;
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
 
-
 DROP TABLE IF EXISTS `notification_spool`;
 DROP TABLE IF EXISTS `notification_types`;
 DROP TABLE IF EXISTS `notification_history`;
@@ -128,14 +151,19 @@ DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
 DROP TABLE IF EXISTS `bids_mri_scan_type_rel`;
+DROP TABLE IF EXISTS `bids_export_files`;
 DROP TABLE IF EXISTS `bids_category`;
 DROP TABLE IF EXISTS `bids_scan_type`;
 DROP TABLE IF EXISTS `bids_scan_type_subcategory`;
+DROP TABLE IF EXISTS `bids_phase_encoding_direction`;
+DROP TABLE IF EXISTS `bids_export_non_imaging_file_category`;
+DROP TABLE IF EXISTS `bids_export_file_level_category`;
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group`;
+DROP TABLE IF EXISTS `mri_upload_rel`;
 DROP TABLE IF EXISTS `mri_upload`;
 DROP TABLE IF EXISTS `mri_protocol_group_target`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
@@ -154,6 +182,9 @@ DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
 
+DROP TABLE IF EXISTS `hrrt_archive_files`;
+DROP TABLE IF EXISTS `hrrt_archive`;
+
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
@@ -170,8 +201,9 @@ DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `psc`;
-DROP TABLE IF EXISTS `visit_project_subproject_rel`;
+DROP TABLE IF EXISTS `visit_project_cohort_rel`;
 DROP TABLE IF EXISTS `visit`;
-DROP TABLE IF EXISTS `project_subproject_rel`;
+DROP TABLE IF EXISTS `project_cohort_rel`;
+DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
-DROP TABLE IF EXISTS `subproject`;
+DROP TABLE IF EXISTS `cohort`;

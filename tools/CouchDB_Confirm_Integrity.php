@@ -9,19 +9,16 @@
  * delete both (and then the import script will reimport the correct one if run
  * in that order.)
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * This class compares what's in a CouchDB Loris DQT instance against the
@@ -32,12 +29,11 @@ require_once 'Database.class.inc';
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 class CouchDBIntegrityChecker
 {
-    var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
 
@@ -72,7 +68,7 @@ class CouchDBIntegrityChecker
         $sessions = $this->CouchDB->queryView(
             "DQG-2.0",
             "sessions",
-            array("reduce" => "false")
+            ["reduce" => "false"]
         );
         print "Sessions:\n";
         $activeExists = $this->SQLDB->prepare(
@@ -88,22 +84,29 @@ class CouchDBIntegrityChecker
                 FROM candidate c
                 LEFT JOIN session s USING (CandID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
-                array(
+                [
                     "PID" => $pscid,
-                    "VL" => $vl
-                )
+                    "VL"  => $vl,
+                ]
             );
 
-            if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
+            if (empty($sqlDB)) {
+                print "PSCID $pscid VL $vl does not exist but $row[id] still exists.
+                Deleting Doc. \n";
+
+                $this->CouchDB->deleteDoc($row['id']);
+            } else if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
                 print "PSCID $pscid is inactive but $row[id] still exists. 
                 Deleting Doc.\n";
 
                 $this->CouchDB->deleteDoc($row['id']);
             } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid,
-                    'VL' => $vl)
+                    $activeExists,
+                    [
+                        'PID' => $pscid,
+                        'VL'  => $vl,
+                    ]
                 );
 
                 if (!array_key_exists('count', $numActive[0])
@@ -128,7 +131,6 @@ class CouchDBIntegrityChecker
             } else {
                 print "Nothing wrong with $row[id]!\n";
             }
-
         }
     }
 }
@@ -138,4 +140,3 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBIntegrityChecker();
     $Runner->run();
 }
-?>

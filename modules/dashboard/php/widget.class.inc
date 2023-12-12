@@ -30,6 +30,12 @@ namespace LORIS\dashboard;
  */
 class Widget implements \LORIS\GUI\Widget
 {
+    private WidgetContent $_content;
+    private WidgetDisplayProps $_displayprops;
+    private ?WidgetDependencies $_dependencies;
+    private $_template           = 'panel.tpl';
+    private $_template_variables = [];
+
     /**
      * Construct a dashboard widget with the specified properties.
      *
@@ -45,9 +51,33 @@ class Widget implements \LORIS\GUI\Widget
         WidgetDisplayProps $props,
         ?WidgetDependencies $deps=null
     ) {
-        $this->content      = $content;
-        $this->displayprops = $props;
-        $this->dependencies = $deps;
+        $this->_content      = $content;
+        $this->_displayprops = $props;
+        $this->_dependencies = $deps;
+    }
+
+    /**
+     * The setTemplate - change default smarty template
+     *
+     * @param string $template_file The template file to use.
+     *
+     * @return void
+     */
+    public function setTemplate(string $template_file)
+    {
+        $this->_template = $template_file;
+    }
+
+    /**
+     * The setTemplateVariables - set additional smarty template variables
+     *
+     * @param array $template_variables The template variables to use.
+     *
+     * @return void
+     */
+    public function setTemplateVariables(array $template_variables)
+    {
+        $this->_template_variables = $template_variables;
     }
 
     /**
@@ -57,7 +87,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getSize() : string
     {
-        return $this->displayprops->getSize();
+        return $this->_displayprops->getSize();
     }
 
     /**
@@ -70,7 +100,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getOrder() : int
     {
-        return $this->displayprops->getOrder();
+        return $this->_displayprops->getOrder();
 
     }
 
@@ -81,8 +111,8 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getCSSDependencies() : array
     {
-        if ($this->dependencies !== null) {
-            return $this->dependencies->getCSSDependencies();
+        if ($this->_dependencies !== null) {
+            return $this->_dependencies->getCSSDependencies();
         }
         return [];
     }
@@ -94,8 +124,8 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getJSDependencies() : array
     {
-        if ($this->dependencies !== null) {
-            return $this->dependencies->getJSDependencies();
+        if ($this->_dependencies !== null) {
+            return $this->_dependencies->getJSDependencies();
         }
         return [];
     }
@@ -111,12 +141,13 @@ class Widget implements \LORIS\GUI\Widget
         $renderer = new \Smarty_NeuroDB("dashboard");
         $renderer->assign(
             [
-                'title'  => $this->content->getTitle(),
-                'body'   => $this->content->getBody(),
-                'footer' => $this->content->getFooter(),
-                'menus'  => $this->displayprops->getMenus(),
+                'title'  => $this->_content->getTitle(),
+                'body'   => $this->_content->getBody(),
+                'footer' => $this->_content->getFooter(),
+                'menus'  => $this->_displayprops->getMenus(),
+                ...$this->_template_variables,
             ]
         );
-        return $renderer->fetch("panel.tpl");
+        return $renderer->fetch($this->_template);
     }
 }

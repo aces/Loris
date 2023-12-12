@@ -48,7 +48,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options)
     {
-        switch($type) {
+        switch ($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
@@ -83,11 +83,11 @@ class Module extends \Module
         $dashboard_links = $config->getExternalLinks('dashboard');
         $links           = [];
         foreach ($dashboard_links as $text => $url) {
-            $links[] = array(
+            $links[] = [
                 'url'        => $url,
                 'label'      => $text,
                 'WindowName' => md5($url),
-            );
+            ];
         }
 
         $footer = "";
@@ -100,7 +100,6 @@ class Module extends \Module
             );
         }
 
-        $logindatestring = "";
         if ($last_login === null) {
             $logindatestring = "...never. Welcome!";
         } else {
@@ -109,6 +108,7 @@ class Module extends \Module
             // a \DateTime object.
             $logindatestring = $last_login->format('Y-m-d H:i:s');
         }
+
         return new Widget(
             new WidgetContent(
                 "",
@@ -135,9 +135,9 @@ class Module extends \Module
      */
     private function _getTasksWidget()
     {
-        $DB      = \NDB_Factory::singleton()->database();
-        $modules = \Module::getActiveModules($DB);
-        $user    = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $modules = $this->loris->getActiveModules();
+        $user    = $factory->user();
 
         $widgets = [];
         foreach ($modules as $module) {

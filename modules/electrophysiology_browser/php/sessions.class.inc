@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * This class features the code for the menu portion of the LORIS
  * electrophysiology browser module.
@@ -18,7 +17,8 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
-
+use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
+use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
@@ -37,6 +37,7 @@ class Sessions extends \NDB_Page
     public $skipTemplate = true; // stops from looking for a smarty template
     protected $timepoint;
     protected $sessionID;
+    protected $candidate;
 
     /**
      * Determine whether the user has permission to view this page
@@ -47,11 +48,46 @@ class Sessions extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('electrophysiology_browser_view_allsites')
+        return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site')
-            )
-        );
+                && $user->hasPermission('electrophysiology_browser_view_site'))
+            ) && $user->hasProject($this->timepoint->getProject()->getId()));
+    }
+
+    /**
+     * Load the required variables in order to check that the  user
+     * has access to the session.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @throws \NotFound If the session id is non-numerical
+     * @throws \LorisException  If the session is not found
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+
+        $path    = $request->getUri()->getPath();
+        $matches = [];
+
+        if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
+            throw new \NotFound("Invalid session");
+        }
+        $session_id = intval($matches[1]);
+
+        try {
+            $this->timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($session_id))
+            );
+            $this->sessionID = $session_id;
+        } catch (\LorisException $e) {
+            throw new \NotFound("Session not found");
+        }
+
+        parent::loadResources($user, $request);
     }
 
     /**
@@ -63,34 +99,8 @@ class Sessions extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $path       = $request->getUri()->getPath();
         $parameters = $request->getQueryParams();
         $user       = $request->getAttribute('user');
-
-        $matches = [];
-
-        // check that the session ID is of type integer
-        if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Invalid session")
-                )->withStatus(404);
-        }
-
-        $session_id = intval($matches[1]);
-        try {
-            $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
-            );
-            $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Session not found")
-                )->withStatus(404);
-        }
 
         if (!$this->_hasAccess($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
@@ -111,23 +121,22 @@ class Sessions extends \NDB_Page
 
         if ($request->getMethod() != 'GET') {
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array('GET')
+                ['GET']
             ));
         }
 
         if (!isset($parameters['outputType'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'outputType required'
+                'OutputType required'
             ));
         }
 
         $outputType = $parameters['outputType'];
-        if (!in_array($outputType, ['raw', 'derivatives', 'all_types'])) {
+        if (!in_array($outputType, ['raw', 'derivative', 'all_types'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'invalid output type'
+                'Invalid output type'
             ));
         }
-
         return $this->getSessionData($outputType);
     }
 
@@ -141,24 +150,26 @@ class Sessions extends \NDB_Page
      */
     function getSessionData($outputType)
     {
+
         $db = \NDB_Factory::singleton()->database();
 
-        $query = 'SELECT 
-                DISTINCT(pf.SessionID) 
-              FROM physiological_file pf 
-                LEFT JOIN session s ON (s.ID=pf.SessionID) 
+        $query = 'SELECT
+                DISTINCT(pf.SessionID)
+              FROM physiological_file pf
+                LEFT JOIN session s ON (s.ID=pf.SessionID)
                 LEFT JOIN candidate c USING (CandID)
-                LEFT JOIN psc ON (s.CenterID=psc.CenterID) 
-                LEFT JOIN physiological_output_type pot 
-                  USING (PhysiologicalOutputTypeID) 
-              WHERE 
-                s.Active = "Y" 
-                AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm") 
-              ORDER BY pf.SessionID';
+                LEFT JOIN psc ON (s.CenterID=psc.CenterID)
+                LEFT JOIN physiological_output_type pot
+                  USING (PhysiologicalOutputTypeID)
+              WHERE
+                s.Active = "Y"
+                AND pf.FileType IN ('.
+                '"bdf", "cnt", "edf", "set", "vhdr", "vsm", "archive"'.
+                ') ORDER BY pf.SessionID';
 
-        $response = array();
+        $response = [];
 
-        $sessions            = $db->pselect($query, array());
+        $sessions            = $db->pselect($query, []);
         $sessions            = array_column($sessions, 'SessionID');
         $response['patient'] = $this->getSubjectData($outputType);
         $response['database']    = array_values(
@@ -182,7 +193,7 @@ class Sessions extends \NDB_Page
      */
     function getSubjectData($outputType)
     {
-        $subjectData = array();
+        $subjectData = [];
         $candidate   = \NDB_Factory::singleton()->candidate(
             $this->timepoint->getCandID()
         );
@@ -194,7 +205,7 @@ class Sessions extends \NDB_Page
         $subjectData['site']        = $this->timepoint->getPSC();
         $subjectData['dob']         = $candidate->getCandidateDoB();
         $subjectData['sex']         = $candidate->getCandidateSex();
-        $subjectData['subproject']  = $this->timepoint->getData('SubprojectTitle');
+        $subjectData['cohort']      = $this->timepoint->getData('CohortTitle');
         $subjectData['output_type'] = $outputType;
 
         return $subjectData;
@@ -213,13 +224,12 @@ class Sessions extends \NDB_Page
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $fileCollection = array();
-        $params         = array();
+        $fileCollection = [];
+        $params         = [];
         $params['SID']  = $this->sessionID;
-        $query          = 'SELECT 
-                         pf.PhysiologicalFileID, 
-                         pf.FilePath 
-                       FROM 
+        $query          = 'SELECT
+                         pf.PhysiologicalFileID
+                         FROM
                          physiological_file pf ';
 
         if ($outputType != 'all_types') {
@@ -230,133 +240,13 @@ class Sessions extends \NDB_Page
             $query        .= 'AND pot.OutputTypeName = :OTN ';
             $params['OTN'] = $outputType;
         } else {
-            $query .= "WHERE SessionID=:SID";
+            $query .= "WHERE SessionID=:SID AND pf.ParentID IS NULL";
         }
 
         $physiologicalFiles = $db->pselect($query, $params);
 
         foreach ($physiologicalFiles as $file) {
-            $fileSummary         = array();
-            $physiologicalFileID = $file['PhysiologicalFileID'];
-            $physiologicalFile   = $file['FilePath'];
-            $physioFileObj       = new ElectrophysioFile(
-                intval($physiologicalFileID)
-            );
-            $fileName            = basename(
-                $physioFileObj->getParameter('FilePath')
-            );
-
-            // -----------------------------------------------------
-            // Create a file summary object with file's information
-            // -----------------------------------------------------
-
-            // get the file name
-
-            $fileSummary['name'] = $fileName;
-
-            // get the task frequency information
-
-            $sampling  = $physioFileObj->getParameter('SamplingFrequency');
-            $powerline = $physioFileObj->getParameter('PowerLineFrequency');
-
-            $fileSummary['task']['frequency']['sampling']  = $sampling;
-            $fileSummary['task']['frequency']['powerline'] = $powerline;
-
-            // get the task channel information
-
-            $eegChannelCount = $physioFileObj->getParameter('EEGChannelCount');
-            $eogChannelCount = $physioFileObj->getParameter('EOGChannelCount');
-            $ecgChannelCount = $physioFileObj->getParameter('ECGChannelCount');
-            $emgChannelCount = $physioFileObj->getParameter('EMGChannelCount');
-
-            $fileSummary['task']['channel'][] = array(
-                'name'  => 'EEG Channel Count',
-                'value' => $eegChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
-                'name'  => 'EOG Channel Count',
-                'value' => $eogChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
-                'name'  => 'ECG Channel Count',
-                'value' => $ecgChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
-                'name'  => 'EMG Channel Count',
-                'value' => $emgChannelCount,
-            );
-
-            // get the task reference
-
-            $reference = $physioFileObj->getParameter('EEGReference');
-
-            $fileSummary['task']['reference'] = $reference;
-
-            // get the file's details
-
-            $taskDesc         = $physioFileObj->getParameter('TaskDescription');
-            $instructions     = $physioFileObj->getParameter('Instructions');
-            $placement        = $physioFileObj->getParameter('EEGPlacementScheme');
-            $triggerCount     = $physioFileObj->getParameter('TriggerChannelCount');
-            $recordingType    = $physioFileObj->getParameter('Recording_type');
-            $cogAtlasID       = $physioFileObj->getParameter('CogAtlasID');
-            $cogPoid          = $physioFileObj->getParameter('CogPOID');
-            $instituteName    = $physioFileObj->getParameter('InstitutionName');
-            $intituteAddress  = $physioFileObj->getParameter('InstitutionAddress');
-            $miscChannelCount = $physioFileObj->getParameter('MiscChannelCount');
-            $manufacturer     = $physioFileObj->getParameter('Manufacturer');
-            $modelName        = $physioFileObj->getParameter(
-                'ManufacturerModelName'
-            );
-            $capManufacturer  = $physioFileObj->getParameter(
-                'ManufacturerCapModelName'
-            );
-            $capModelName     = $physioFileObj->getParameter(
-                'ManufacturerCapModelName'
-            );
-            $hardwareFilters  = $physioFileObj->getParameter('HardwareFilters');
-            $duration         = $physioFileObj->getParameter('RecordingDuration');
-            $epochLength      = $physioFileObj->getParameter('EpochLength');
-            $softwareVersion  = $physioFileObj->getParameter(
-                'DeviceSoftwareVersion'
-            );
-            $serialNumber     = $physioFileObj->getParameter('DeviceSerialNumber');
-            $artefactDesc     = $physioFileObj->getParameter(
-                'SubjectArtefactDescription'
-            );
-
-            $fileSummary['details']['task']['description']     = $taskDesc;
-            $fileSummary['details']['instructions']            = $instructions;
-            $fileSummary['details']['eeg']['ground']           = '';
-            $fileSummary['details']['eeg']['placement_scheme'] = $placement;
-            $fileSummary['details']['trigger_count']           = $triggerCount;
-            $fileSummary['details']['record_type']            = $recordingType;
-            $fileSummary['details']['cog']['atlas_id']        = $cogAtlasID;
-            $fileSummary['details']['cog']['poid']            = $cogPoid;
-            $fileSummary['details']['institution']['name']    = $instituteName;
-            $fileSummary['details']['institution']['address'] = $intituteAddress;
-            $fileSummary['details']['misc']['channel_count']  = $miscChannelCount;
-            $fileSummary['details']['manufacturer']['name']   = $manufacturer;
-            $fileSummary['details']['manufacturer']['model_name'] = $modelName;
-            $fileSummary['details']['cap']['manufacturer']        = $capManufacturer;
-            $fileSummary['details']['cap']['model_name']          = $capModelName;
-            $fileSummary['details']['hardware_filters']           = $hardwareFilters;
-            $fileSummary['details']['recording_duration']         = $duration;
-            $fileSummary['details']['epoch_length']            = $epochLength;
-            $fileSummary['details']['device']['version']       = $softwareVersion;
-            $fileSummary['details']['device']['serial_number'] = $serialNumber;
-            $fileSummary['details']['subject_artefact_description'] = $artefactDesc;
-
-            // get the links to the files for downloads
-
-            $links = $this->getDownloadLinks(
-                intval($physiologicalFileID),
-                $physiologicalFile
-            );
-
-            $fileSummary['downloads'] = $links;
-
-            $fileCollection[]['file'] = $fileSummary;
+            $fileCollection[]['file'] = $this->getSummary($file);
         }
 
         return $fileCollection;
@@ -364,77 +254,403 @@ class Sessions extends \NDB_Page
 
 
     /**
-     * Gets the download link for the files associated to the electrophysiology
-     * file (channels.tsv, electrodes.tsv, task events.tsv...)
+     * Get the electrophysiology recording summary metadata.
      *
-     * @param int    $physioFileID FileID of the electrophysiology file
-     * @param string $physioFile   electrophysiology file's relative path
+     * @param array $file electrophysiology file data
+     *
+     * @return array with the file metadata
+     */
+    function getSummary(array $file) : array
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        $fileSummary     = [];
+        $physioFileID    = intval($file['PhysiologicalFileID']);
+        $physioFileObj   = new ElectrophysioFile($physioFileID);
+        $physioFile      = $physioFileObj->getParameter('FilePath');
+        $modality        = $physioFileObj->getParameter('Modality');
+        $modalityPrefix  = $modality === 'ieeg' ? 'iEEG' : 'EEG';
+        $modalityCapName = $modality === 'ieeg' ? 'Electrode' : 'Cap';
+
+        $fileSummary['id']   = $physioFileID;
+        $fileSummary['name'] = basename($physioFile);
+
+        // Summary
+
+        $channels = ['EEG', 'EOG', 'ECG', 'EMG'];
+        if ($modality === 'ieeg') {
+            $channels = array_merge(['ECOG', 'SEEG'], $channels);
+        }
+
+        $fileSummary['summary'] = [
+            [
+                'name'  => 'Sampling Frequency',
+                'value' => $physioFileObj->getParameter('SamplingFrequency'),
+            ],
+        ];
+        $fileSummary['summary'] = array_merge(
+            $fileSummary['summary'],
+            array_map(
+                fn($channel) =>
+                    [
+                        'name'  => $channel.' Channel Count',
+                        'value' => $physioFileObj->getParameter(
+                            $channel.'ChannelCount'
+                        ),
+                    ],
+                $channels
+            )
+        );
+        $fileSummary['summary'] = array_merge(
+            $fileSummary['summary'],
+            [
+                [
+                    'name'  => 'Reference',
+                    'value' => $physioFileObj->getParameter(
+                        $modalityPrefix.'Reference'
+                    ),
+                ],
+                [
+                    'name'  => 'Powerline Frequency',
+                    'value' => $physioFileObj->getParameter('PowerLineFrequency'),
+                ],
+            ]
+        );
+
+        // Details
+
+        $fileSummary['details'] = [
+            [
+                'name'  => 'Task Name',
+                'value' => $physioFileObj->getParameter('TaskName'),
+            ],
+            [
+                'name'  => 'Task Description',
+                'value' => $physioFileObj->getParameter('TaskDescription'),
+            ],
+            [
+                'name'  => 'Instructions',
+                'value' => $physioFileObj->getParameter('Instructions'),
+            ],
+            [
+                'name'  => 'Recording Type',
+                'value' => $physioFileObj->getParameter('RecordingType'),
+            ],
+            [
+                'name'  => 'Recording Split Count',
+                'value' => $physioFileObj->getParameter('SplitCount'),
+            ],
+            [
+                'name'  => 'Recording Duration',
+                'value' => $physioFileObj->getParameter('RecordingDuration'),
+            ],
+            [
+                'name'  => 'Epoch Length',
+                'value' => $physioFileObj->getParameter('EpochLength'),
+            ],
+            [
+                'name'  => 'Subject Artefact Description',
+                'value' => $physioFileObj->getParameter(
+                    'SubjectArtefactDescription'
+                ),
+            ],
+            [
+                'name'  => 'Head Circumference',
+                'value' => $physioFileObj->getParameter('HeadCircumference'),
+            ],
+            [
+                'name'  => 'Placement Scheme',
+                'value' =>  $physioFileObj->getParameter(
+                    $modalityPrefix.'PlacementScheme'
+                ),
+            ],
+            [
+                'name'  => 'Ground',
+                'value' => $physioFileObj->getParameter($modalityPrefix.'Ground'),
+            ],
+            [
+                'name'  => 'Trigger Channel Count',
+                'value' => $physioFileObj->getParameter('TriggerChannelCount'),
+            ],
+            [
+                'name'  => 'Misc Channel Count',
+                'value' => $physioFileObj->getParameter('MiscChannelCount'),
+            ],
+            [
+                'name'  => 'CogAtlas ID',
+                'value' => $physioFileObj->getParameter('CogAtlasID'),
+            ],
+            [
+                'name'  => 'CogPO ID',
+                'value' => $physioFileObj->getParameter('CogPOID'),
+            ],
+            [
+                'name'  => 'Institution Name',
+                'value' => $physioFileObj->getParameter('InstitutionName'),
+            ],
+            [
+                'name'  => 'Institution Address',
+                'value' => $physioFileObj->getParameter('InstitutionAddress'),
+            ],
+            [
+                'name'  => 'Manufacturer',
+                'value' => $physioFileObj->getParameter('Manufacturer'),
+            ],
+            [
+                'name'  => 'Manufacturers Model Name',
+                'value' => $physioFileObj->getParameter(
+                    'ManufacturersModelName'
+                ),
+            ],
+            [
+                'name'  => $modalityCapName.' Manufacturer',
+                'value' => $physioFileObj->getParameter(
+                    $modalityCapName.'Manufacturer'
+                ),
+            ],
+            [
+                'name'  => $modalityCapName.' Manufacturer\'s Model Name',
+                'value' => $physioFileObj->getParameter(
+                    $modalityCapName.'ManufacturersModelName'
+                ),
+            ],
+            [
+                'name'  => 'Device Serial Number',
+                'value' => $physioFileObj->getParameter('DeviceSerialNumber'),
+            ],
+            [
+                'name'  => 'Hardware Filters',
+                'value' => $physioFileObj->getParameter('HardwareFilters'),
+            ],
+            [
+                'name'  => 'Software Versions',
+                'value' => $physioFileObj->getParameter('SoftwareVersions'),
+            ],
+            [
+                'name'  => 'Software Filters',
+                'value' => $physioFileObj->getParameter('SoftwareFilters'),
+            ],
+        ];
+
+        if ($modality == 'ieeg') {
+            $fileSummary['details'][] = [
+                'name'  => 'DC Offset Correction',
+                'value' => $physioFileObj->getParameter('DCOffsetCorrection'),
+            ];
+
+            $fileSummary['details'][] = [
+                'name'  => 'Electrode Groups',
+                'value' => $physioFileObj->getParameter('ElectrodeGroups'),
+            ];
+
+            $fileSummary['details'][] = [
+                'name'  => 'Electrical Stimulation',
+                'value' => $physioFileObj->getParameter('ElectricalStimulation'),
+            ];
+
+            $fileSummary['details'][] = [
+                'name'  => 'Electrical Stimulation Parameters',
+                'value' => $physioFileObj->getParameter(
+                    'ElectricalStimulationParameters'
+                ),
+            ];
+        }
+
+        // get the links to the files for downloads
+
+        $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
+        $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
+
+        $fileOutput = $db->pselectone(
+            'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+            ['PFID' => $physioFileID]
+        );
+
+        // Get the annotation data
+        $annotations = new ElectrophysioAnnotations(
+            intval($physioFileID)
+        );
+        $fileSummary['annotations'] = $annotations->getData();
+
+        // Get the task events data
+        $events = new ElectrophysioEvents(
+            intval($physioFileID)
+        );
+        $fileSummary['events'] = $events->getData();
+
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
+        $fileSummary['output_type'] = $fileOutput;
+        $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
+
+        return $fileSummary;
+    }
+
+    /**
+     * Gets the download link for all the electrophysiology files
+     *
+     * @param ElectrophysioFile $physioFile ElectrophysiologyFile instance
      *
      * @return array array with the path to the different files associated to the
      *               electrophysiology file
      */
-    function getDownloadlinks(int $physioFileID, string $physioFile): array
+    function getDownloadLinks(ElectrophysioFile $physioFile): array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $nSplit        = intval($physioFile->getParameter('SplitCount'));
+        $downloadLinks = [];
 
-        $params          = array();
-        $params['PFID']  = $physioFileID;
-        $downloadLinks   = array();
-        $downloadLinks[] = array(
-            'type' => 'physiological_file',
-            'file' => $physioFile,
-        );
+        if ($nSplit === 0) {
+            $downloadLinks[] = [
+                'groupName' => '',
+                'links'     => $this->getPhysioFileDownloadlinks($physioFile),
+            ];
+        } else {
+            foreach (range(0, $nSplit-1) as $i) {
+                $splitData = $physioFile->getSplitData($i);
+                if (is_null($splitData)) {
+                    continue;
+                }
+
+                $splitPhysioFile = $splitData['splitPhysioFile'];
+
+                $downloadLinks[] = [
+                    'groupName' => 'Split '.($i+1),
+                    'links'     => $this->getPhysioFileDownloadlinks(
+                        $splitPhysioFile
+                    ),
+                ];
+            }
+        }
+        return $downloadLinks;
+    }
+
+    /**
+     * Gets the download link for the files associated to a particular
+     * electrophysiology file (channels.tsv, electrodes.tsv, task events.tsv...)
+     *
+     * @param ElectrophysioFile $physioFileObj ElectrophysiologyFile instance
+     *
+     * @return array array with the path to the different files associated to the
+     *               electrophysiology file
+     */
+    function getPhysioFileDownloadlinks(ElectrophysioFile $physioFileObj): array
+    {
+        $physioFileID  = $physioFileObj->getParameter('PhysiologicalFileID');
+        $physioFile    = $physioFileObj->getParameter('FilePath');
+        $db            = \NDB_Factory::singleton()->database();
+        $downloadLinks = [];
+
+        $downloadLinks[] = [
+            'type'  => 'physiological_file',
+            'file'  => $physioFile,
+            'label' => 'EEG File(s)',
+        ];
+
+        $queryFDT = "SELECT
+            Value AS FilePath,
+            'physiological_fdt_file' AS FileType
+            FROM
+            physiological_parameter_file
+            JOIN parameter_type AS pt USING (ParameterTypeID)
+            WHERE
+            pt.Name='fdt_file'
+            AND PhysiologicalFileID=:PFID";
+        $queryFDT = $db->pselectRow($queryFDT, ['PFID' => $physioFileID]);
+        if (isset($queryFDT['FileType'])) {
+            $downloadLinks[] = [
+                'type'  => $queryFDT['FileType'],
+                'file'  => $queryFDT['FilePath'],
+                'label' => '',
+            ];
+        }
+
+        // Metadata
 
         $queries = [
-            'physiological_electrode'  => 'physiological_electrode_file',
-            'physiological_channel'    => 'physiological_channel_file',
-            'physiological_task_event' => 'physiological_task_event_file',
-            'physiological_archive'    => 'all_files',
+            'physiological_channel'            => 'physiological_channel_file',
+            'physiological_event_archive'      => 'physiological_event_files',
+            'physiological_annotation_archive' => 'physiological_annotation_files',
+            'physiological_archive'            => 'all_files',
+        ];
+
+        $labels = [
+            'physiological_electrode_file'   => 'Electrodes',
+            'physiological_channel_file'     => 'Channels',
+            'physiological_event_files'      => 'Events',
+            'physiological_annotation_files' => 'Annotations',
+            'all_files'                      => 'All Files',
         ];
 
         foreach ($queries as $query_key => $query_value) {
-            $query_statement = "SELECT 
-                              DISTINCT(FilePath), '$query_value' AS FileType
-                            FROM 
-                              $query_key 
-                            WHERE 
-                              PhysiologicalFileID=:PFID";
-            $query_statement = $db->pselectRow($query_statement, $params);
-            if (isset($query_statement['FileType'])) {
-                $downloadLinks[] = array(
-                    'type' => $query_statement['FileType'],
-                    'file' => $query_statement['FilePath'],
-                );
+            if ($query_key == 'physiological_electrode') {
+                // electrode filepath linked to coordinate system
+                $query_statement = "SELECT DISTINCT e.FilePath
+                    FROM physiological_coord_system_electrode_rel AS r,
+                        physiological_electrode AS e
+                    WHERE r.PhysiologicalElectrodeID = e.PhysiologicalElectrodeID
+                        AND r.PhysiologicalFileID=:PFID";
             } else {
-                $downloadLinks[] = array(
-                    'type' => $query_value,
-                    'file' => '',
-                );
+                // others metadata
+                $query_statement = "SELECT DISTINCT FilePath
+                    FROM $query_key
+                    WHERE PhysiologicalFileID=:PFID";
+            }
+            $query_statement = $db->pselectRow(
+                $query_statement,
+                ['PFID' => $physioFileID]
+            );
+
+            if ($query_statement) {
+                $downloadLinks[$query_value] = [
+                    'file'  => $query_statement['FilePath'],
+                    'label' => $labels[$query_value],
+                ];
+            } else {
+                $downloadLinks[$query_value] = [
+                    'file'  => '',
+                    'label' => $labels[$query_value],
+                ];
             }
         }
 
-        $queryFDT = "SELECT 
-                   Value AS FilePath, 
-                   'physiological_fdt_file' AS FileType 
-                 FROM 
-                   physiological_parameter_file 
-                   JOIN parameter_type AS pt USING (ParameterTypeID) 
-                 WHERE 
-                   pt.Name='fdt_file' 
-                   AND PhysiologicalFileID=:PFID";
-        $queryFDT = $db->pselectRow($queryFDT, $params);
-        if (isset($queryFDT['FileType'])) {
-            $downloadLinks[] = array(
-                'type' => $queryFDT['FileType'],
-                'file' => $queryFDT['FilePath'],
-            );
-        } else {
-            $downloadLinks[] = array(
-                'type' => 'physiological_fdt_file',
-                'file' => '',
-            );
-        }
+        // Electrodes
+        $file_name = 'physiological_electrode_file';
+        // TODO: If we plan to support multiple electrode spaces
+        // the LIMIT logic should be revisited
+        $query_statement = "SELECT DISTINCT(FilePath)
+                            FROM physiological_electrode
+                            JOIN physiological_coord_system_electrode_rel
+                                USING (PhysiologicalElectrodeID)
+                            WHERE PhysiologicalFileID=:PFID
+                            LIMIT 1";
+        $query_statement = $db->pselect(
+            $query_statement,
+            ['PFID' => $physioFileID]
+        );
 
+        $downloadLinks[$file_name] = [
+            'file'  => '',
+            'label' => $labels[$file_name],
+        ];
+        if (count($query_statement) > 0) {
+            $downloadLinks[$file_name]['file'] = $query_statement[0]['FilePath'];
+        }
         return $downloadLinks;
     }
 
@@ -450,10 +666,30 @@ class Sessions extends \NDB_Page
         $baseurl = $factory->settings()->getBaseURL();
         $depends = array_merge(
             $depends,
-            array(
+            [
                 $baseurl
                 . '/electrophysiology_browser/js/electrophysiologySessionView.js',
-            )
+            ]
+        );
+        return $depends;
+    }
+
+    /**
+     * Get CSS Dependencies
+     *
+     * @return array
+     */
+    function getCSSDependencies()
+    {
+        $depends = parent::getCSSDependencies();
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            [
+                $baseurl
+                . '/electrophysiology_browser/css/electrophysiology_browser.css',
+            ]
         );
         return $depends;
     }
@@ -476,5 +712,4 @@ class Sessions extends \NDB_Page
             )
         );
     }
-
 }

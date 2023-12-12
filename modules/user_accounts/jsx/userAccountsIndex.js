@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -62,7 +63,6 @@ class UserAccountsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -77,15 +77,25 @@ class UserAccountsIndex extends Component {
             .join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
+        }
         break;
       case 'Project':
-        // If user has multiple projectss, join array of sites into string
+        // If user has multiple projects, join array of sites into string
         result = (
-          <td>{cell
-            .map((projectId) => this.state.data.fieldOptions.projects[projectId])
-            .join(', ')}
+          <td>{cell.map(
+              (projectId) => this.state.data.fieldOptions.projects[projectId]
+            ).join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no project affiliations</td>
+          );
+        }
         break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
@@ -171,6 +181,11 @@ class UserAccountsIndex extends Component {
         type: 'select',
         options: options.pendingApprovals,
       }},
+      {label: 'Account Request Date', show: true, filter: {
+        name: 'accountRequestDate',
+        type: 'date',
+        hide: true,
+      }},
     ];
     const actions = [
       {label: 'Add User', action: this.addUser},
@@ -195,11 +210,12 @@ UserAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <UserAccountsIndex
       dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

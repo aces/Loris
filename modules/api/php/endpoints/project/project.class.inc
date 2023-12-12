@@ -55,7 +55,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -66,10 +66,10 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -82,6 +82,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -100,7 +101,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'candidates':
             $handler = new Candidates($this->_project);
             break;
@@ -142,8 +143,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
+        $version = $request->getAttribute("LORIS-API-Version") ?? "unknown";
 
-        $array = (new \LORIS\api\Views\Project($this->_project))
+        $array = (new \LORIS\api\Views\Project($this->_project, $version))
             ->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);

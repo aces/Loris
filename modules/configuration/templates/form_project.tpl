@@ -1,11 +1,11 @@
-<script language="javascript" src="{$baseurl}/configuration/js/project.js">
+<script language="javascript" src="{$baseurl|default}/configuration/js/project.js">
 </script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
-<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
+<p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.</p>
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
-    <li class="active"><a id="#projectnew{$ProjectID}" href="#projectnew" data-toggle="tab" class="active">New ProjectID</a></li>
+    <li class="active"><a id="#projectnew{$ProjectID|default}" href="#projectnew" data-toggle="tab" class="active">New ProjectID</a></li>
     {foreach from=$projects key=ProjectID item=project name=configContent}
     <li><a id="#project{$ProjectID}" href="#project{$ProjectID}" data-toggle="tab">{$project.Name}</a></li>
     {/foreach}
@@ -46,16 +46,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These subprojects will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
-                            <label class="col-sm-12 control-label">Affiliated Subprojects</label>
+                        <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These cohorts will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
+                            <label class="col-sm-12 control-label">Affiliated Cohorts</label>
                         </div>
                         <div class="col-sm-12 col-md-9">
-                            <select name="SubprojectIDs" class="form-control projectSubprojectIDs" multiple>
-                              {foreach from=$subprojects key=SubprojectID item=subproject}
-                                  {if $subproject|in_array:$project.projectSubprojects}
-                                      <option value="{$SubprojectID}" selected>{$subproject}</option>
+                            <select name="CohortIDs" class="form-control projectCohortIDs" multiple>
+                              {foreach from=$cohorts key=CohortID item=cohort}
+                                  {if $cohort|in_array:$project.projectCohorts}
+                                      <option value="{$CohortID}" selected>{$cohort}</option>
                                   {else}
-                                      <option value="{$SubprojectID}">{$subproject}</option>
+                                      <option value="{$CohortID}">{$cohort}</option>
                                   {/if}
                               {/foreach}
                             </select>
@@ -104,14 +104,14 @@
                     </div>
                 </div>
                 <div>
-                  <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These subprojects will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
-                    <label class="col-sm-12 control-label">Affiliated Subprojects</label>
+                  <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These cohorts will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
+                    <label class="col-sm-12 control-label">Affiliated Cohorts</label>
                   </div>
                   <div class="col-sm-12 col-md-9">
                     <div class="col-sm-12 col-md-9">
-                      <select name="SubprojectIDs" class="form-control projectSubprojectIDs" multiple>
-                        {foreach from=$subprojects key=SubprojectID item=subproject}
-                            <option value="{$SubprojectID}">{$subproject}</option>
+                      <select name="CohortIDs" class="form-control projectCohortIDs" multiple>
+                        {foreach from=$cohorts key=CohortID item=cohort}
+                            <option value="{$CohortID}">{$cohort}</option>
                         {/foreach}
                       </select>
                     </div>

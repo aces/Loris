@@ -37,7 +37,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     public function __construct(
         string $module_name,
         string $operation_type,
-        array $extra_tpl_data = array(),
+        array $extra_tpl_data = [],
         bool $asAdmin = false
     ) {
         parent::__construct(
@@ -58,7 +58,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      * @return void
      */
     public function notify(
-        array $extra_tpl_data=array(),
+        array $extra_tpl_data=[],
         ?string $custom_message=null
     ): void {
         $this->tpl_data = $this->tpl_data + $extra_tpl_data;
@@ -85,8 +85,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     private function _sendEmails(): void
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
-            $notifierID  = $this->notifier->getData('ID');
-            $senderEmail = $this->notifier->getData('Email');
+            $notifierID  = $this->notifier->getId();
+            $senderEmail = $this->notifier->getEmail();
             $this->tpl_data['notified_user'] = $name;
             $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
             $recipientEmail = $this->getEmail((int)$uid);

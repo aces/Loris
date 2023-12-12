@@ -39,8 +39,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                     );
 
-        // I don't think anyone uses this. It's not really supported
-        $tpl_data['css'] = $this->Config->getSetting('css');
+        $tpl_data['css'] = 'main.css';
 
         //Display the footer links, as specified in the config file
         $links =$this->Config->getExternalLinks('FooterLink');
@@ -75,7 +74,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
                       'workspace' => $undecorated->getBody(),
                      );
 
-        $smarty = new \Smarty_neurodb;
+        $smarty = new \Smarty_NeuroDB;
         $smarty->assign($tpl_data);
 
         return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("public_layout.tpl")));

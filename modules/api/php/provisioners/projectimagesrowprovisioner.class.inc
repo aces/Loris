@@ -49,6 +49,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
                s.CenterID as CenterID,
                p.Name as Site,
                f.InsertTime as InsertTime,
+               f.File as File,
                mst.Scan_type as ScanType,
                qc.QCStatus as QC_status,
                qc.Selected as Selected
@@ -73,10 +74,10 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
                f.InsertTime > :v_time
              ORDER BY f.InsertTime ASC
             ',
-            array(
+            [
                 'v_projectname' => $project->getName(),
                 'v_time'        => $since->getTimestamp(),
-            )
+            ]
         );
     }
 

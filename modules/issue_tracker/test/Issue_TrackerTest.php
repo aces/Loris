@@ -34,35 +34,38 @@ class Issue_TrackerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '55',
                 'Name'      => 'TESTinPSC',
                 'Alias'     => 'tst',
                 'MRI_alias' => 'test',
-            )
+            ]
         );
         $this->DB->insert(
             "users",
-            array(
-                'ID'     => '999998',
-                'UserID' => 'TestUser',
-            )
+            [
+                'ID'         => '999998',
+                'UserID'     => 'TestUser',
+                'First_name' => 'Test',
+                'Last_name'  => 'User',
+            ]
         );
         $this->DB->insert(
             "issues",
-            array(
+            [
                 'issueID'  => '999999',
                 'title'    => 'Test Issue',
                 'status'   => 'new',
                 'priority' => 'low',
                 'reporter' => 'TestUser',
+                'assignee' => 'TestUser',
                 'centerID' => '55',
-            )
+            ]
         );
     }
 
@@ -71,12 +74,12 @@ class Issue_TrackerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("issues", array('issueID' => '999999'));
-        $this->DB->delete("users", array('ID' => '999998'));
-        $this->DB->delete("psc", array('CenterID' => '55'));
+        $this->DB->delete("issues", ['issueID' => '999999']);
+        $this->DB->delete("users", ['ID' => '999998']);
+        $this->DB->delete("psc", ['CenterID' => '55']);
     }
 
     /**
@@ -91,7 +94,15 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issue Tracker", $bodyText);
+        $this->assertStringContainsString("Issue Tracker", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -101,12 +112,12 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("issue_tracker_reporter"));
+        $this->setupPermissions(["issue_tracker_reporter"]);
         $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issue Tracker", $bodyText);
+        $this->assertStringContainsString("Issue Tracker", $bodyText);
         $this->resetPermissions();
     }
 
@@ -117,24 +128,26 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerFilter()
     {
-        $this->_testFilter('issueID', '999999');
-        $this->_testFilter('status', 'new');
-        $this->_testFilter('priority', 'low');
-        $this->_testFilter('reporter', 'TestUser');
+        $this->_testFilter('999999');
+        $this->_testFilter('new');
+        $this->_testFilter('low');
+        $this->_testFilter('Test User');
     }
     /**
      * Tests that Issue Tracker filter
      *
-     * @param string $name  input the element name which we need test
+     * FIXME This test seems to just check the page source for a string and not
+     * actually use the menu filters.
+     *
      * @param string $value input the value that we expect
      *
      * @return void
      */
-    private function _testFilter($name,$value)
+    private function _testFilter(string $value)
     {
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
 
     }
     /**
@@ -144,17 +157,17 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testClearFormIssueTracker()
     {
-         //$this->safeGet($this->url . "/issue_tracker/");
-         //$keywordElement = $this->webDriver->findElement(
-         //    WebDriverBy::Name("keyword")
-         //);
-         //$keywordElement->sendkeys('TestTestTest');
+         $this->safeGet($this->url . "/issue_tracker/");
+        $titleElement = $this->safeFindElement(
+            WebDriverBy::Name("title")
+        );
+         $titleElement->sendkeys('TestTestTest');
          ////click clear form button
-         //$this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-         //$bodyText =$this->webDriver->findElement(
-         //    WebDriverBy::Name("keyword")
-         //)->getText();
-         //$this->assertNotContains("TestTestTest", $bodyText);
+         $this->safeClick(WebDriverBy::Name("reset"));
+        $bodyText =$this->safeFindElement(
+            WebDriverBy::Name("title")
+        )->getText();
+         $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 }
 

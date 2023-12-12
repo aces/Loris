@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -16,6 +17,10 @@ import OpenProfileForm from './openProfileForm';
  * @author Cécile Madjar *
  */
 class CandidateListIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -32,18 +37,31 @@ class CandidateListIndex extends Component {
     this.toggleFilters = this.toggleFilters.bind(this);
   }
 
+  /**
+   * Show
+   *
+   * @param {string} state
+   */
   show(state) {
     let show = this.state.show;
     show[state] = true;
     this.setState({show});
   }
 
+  /**
+   * Hide
+   *
+   * @param {string} state
+   */
   hide(state) {
     let show = this.state.show;
     show[state] = false;
     this.setState({show});
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -65,11 +83,11 @@ class CandidateListIndex extends Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-        // Convert concatenated string of subproject and visit labels to array
+        // Convert concatenated string of cohort and visit labels to array
         data.Data = data.Data.map((row) => {
           // Visit label
           row[2] = (row[2]) ? row[2].split(',') : null;
-          // Subproject
+          // Cohort
           row[4] = (row[4]) ? row[4].split(',') : null;
           return row;
         });
@@ -81,7 +99,9 @@ class CandidateListIndex extends Component {
       });
   }
 
-  // Basic/Advanced toggle
+  /**
+   * Basic/Advanced toggle
+   */
   toggleFilters() {
     const hideFilter = !this.state.hideFilter;
     this.setState({hideFilter});
@@ -90,7 +110,7 @@ class CandidateListIndex extends Component {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('hide', hideFilter);
     history.replaceState(history.state, '', `?${searchParams.toString()}`);
-  };
+  }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -98,7 +118,6 @@ class CandidateListIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -114,10 +133,10 @@ class CandidateListIndex extends Component {
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>comment</td>;
+        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
         default: return <td>None</td>;
       }
     }
@@ -129,8 +148,8 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === 'Subproject') {
-      // If user has multiple subprojects, join array into string
+    if (column === 'Cohort') {
+      // If user has multiple cohorts, join array into string
       let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
       return result;
     }
@@ -138,6 +157,11 @@ class CandidateListIndex extends Component {
     return <td>{cell}</td>;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -177,7 +201,7 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'select',
+          type: 'multiselect',
           options: options.visitlabel,
         },
       },
@@ -186,17 +210,17 @@ class CandidateListIndex extends Component {
         show: true,
         filter: {
           name: 'site',
-          type: 'select',
+          type: 'multiselect',
           options: options.site,
         },
       },
       {
-        'label': 'Subproject',
+        'label': 'Cohort',
         'show': true,
         'filter': {
-          name: 'subproject',
-          type: 'select',
-          options: options.subproject,
+          name: 'cohort',
+          type: 'multiselect',
+          options: options.cohort,
         },
       },
       {
@@ -244,6 +268,14 @@ class CandidateListIndex extends Component {
         },
       },
       {
+        'label': 'Date of registration',
+        'show': true,
+        'filter': {
+          name: 'Date_registered',
+          type: 'date',
+        },
+      },
+      {
         label: 'Sex',
         show: true,
         filter: {
@@ -258,7 +290,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'VisitCount',
+        'label': 'Visit Count',
         'show': true,
         'filter': {
           name: 'visitCount',
@@ -275,42 +307,23 @@ class CandidateListIndex extends Component {
           hide: this.state.hideFilter,
           options: {
             '0': 'None',
-            '1': 'opened',
-            '2': 'answered',
-            '3': 'closed',
-            '4': 'comment',
+            '1': 'Opened',
+            '2': 'Answered',
+            '3': 'Closed',
+            '4': 'Comment',
           },
         },
       },
       {
-        'label': 'Latest Visit Status',
+        'label': 'Project',
         'show': true,
         'filter': {
-          name: 'latestVisitStatus',
+          name: 'project',
           type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            'Not Started': 'Not Started',
-            'Screening': 'Screening',
-            'Visit': 'Visit',
-            'Approval': 'Approval',
-            'Recycling Bin': 'Recycling Bin',
-          },
+          options: options.project,
         },
       },
-
     ];
-     fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
-          },
-        },
-      );
 
     if (options.useedc === 'true') {
       fields.push(
@@ -344,7 +357,9 @@ class CandidateListIndex extends Component {
     // FIXME: move toggle button in the filter component next to the clear button
     const actions = [
       {
-        label: this.state.hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters',
+        label: this.state.hideFilter ?
+          'Show Advanced Filters' :
+          'Hide Advanced Filters',
         action: this.toggleFilters,
         name: 'advanced',
       },
@@ -373,17 +388,20 @@ class CandidateListIndex extends Component {
 CandidateListIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  betaProfileLink: PropTypes.string,
+  baseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
       betaProfileLink={args['betaprofile']}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

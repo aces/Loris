@@ -11,7 +11,9 @@ namespace LORIS\issue_tracker;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class IssueRow implements \LORIS\Data\DataInstance
+class IssueRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
     protected $CenterIDs;
@@ -20,10 +22,10 @@ class IssueRow implements \LORIS\Data\DataInstance
     /**
      * Create a new IssueRow
      *
-     * @param array   $row    The row (in the same format as \Database::pselectRow
-     *                        returns.
-     * @param array   $cids   The centerIDs affiliated with this row.
-     * @param \Module $module The module that this issue is for.
+     * @param array       $row    The row (in the same format
+                                  as \Database::pselectRow returns.)
+     * @param \CenterID[] $cids   The centerIDs affiliated with this row.
+     * @param \Module     $module The module that this issue is for.
      */
     public function __construct(array $row, array $cids, \Module $module)
     {
@@ -37,20 +39,20 @@ class IssueRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return array The CenterIDs
+     * @return \CenterID[] The CenterIDs
      */
-    public function getCenterIDs()
+    public function getCenterIDs() : iterable
     {
         return $this->CenterIDs;
     }

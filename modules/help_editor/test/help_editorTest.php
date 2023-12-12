@@ -31,20 +31,19 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
         $this->DB->insert(
             "help",
-            array(
-                'helpID'   => '999999',
-                'parentID' => '-1',
-                'hash'     => $md5String,
-                'topic'    => 'Test Topic',
-                'content'  => 'This is a test content.',
-                'created'  => '2013-04-05 00:00:00',
-            )
+            [
+                'helpID'  => '999999',
+                'hash'    => $md5String,
+                'topic'   => 'Test Topic',
+                'content' => 'This is a test content.',
+                'created' => '2013-04-05 00:00:00',
+            ]
         );
     }
     /**
@@ -52,10 +51,10 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("help", array('helpID' => '999999'));
+        $this->DB->delete("help", ['helpID' => '999999']);
     }
 
     /**
@@ -73,9 +72,17 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function testHelpPageLoad()
     {
         $this->safeGet($this->url . "/help_editor/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
-        $this->assertContains("Help Editor", $bodyText);
+        $this->assertStringContainsString("Help Editor", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }//end test_help_pageload()
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some
@@ -91,7 +98,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         )
             ->getText();
 
-        $this->assertContains("Edit Help Content", $assertText);
+        $this->assertStringContainsString("Edit Help Content", $assertText);
 
     }//end test_page_load()
 
@@ -102,12 +109,15 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorPermission()
     {
-         $this->setupPermissions(array("context_help"));
+         $this->setupPermissions(["context_help"]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -117,12 +127,15 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -132,20 +145,21 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByTopic()
     {
-        $this->markTestSkipped(
-            'Modifications needed to adapt to layout changes'
-        );
-         $this->safeGet($this->url . "/help_editor/");
+        $this->safeGet($this->url . "/help_editor/");
         $this->safeFindElement(
             WebDriverBy::Name("topic")
         )->sendKeys("Test Topic");
          //click the [show data] button
-        $this->safeFindElement(
-            WebDriverBy::Name("topic")
-        )->click();
-         $this->safeGet($this->url . "/help_editor/?format=json");
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("Test Topic", $bodyText);
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable>tbody:nth-child(2)>".
+                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector('.panel-body')
+        )->getText();
+        $this->assertStringContainsString("test", $bodyText);
     }
     /**
      * Tests that help editor does not load with the permission
@@ -154,20 +168,20 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByKeyword()
     {
-        $this->markTestSkipped(
-            'Modifications needed to adapt to layout changes'
+        $this->safeGet($this->url . "/help_editor/");
+        $this->safeFindElement(
+            WebDriverBy::Name("content")
+        )->sendKeys("test");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable>tbody:nth-child(2)>".
+                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
+            )
         );
-         $this->safeGet($this->url . "/help_editor/");
-        $this->safeFindElement(
-            WebDriverBy::Name("keyword")
-        )->sendKeys("test content");
-         //click the [show data] button
-        $this->safeFindElement(
-            WebDriverBy::Name("keyword")
-        )->click();
-         $this->safeGet($this->url . "/help_editor/?format=json");
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("test content", $bodyText);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector('.panel-body')
+        )->getText();
+        $this->assertStringContainsString("test", $bodyText);
     }
 
 }

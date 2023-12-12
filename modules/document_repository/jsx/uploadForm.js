@@ -3,18 +3,30 @@ import PropTypes from 'prop-types';
 
 import swal from 'sweetalert2';
 import Loader from 'Loader';
+import {
+    SearchableDropdown,
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Media Upload Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to upload a document file
+ * to upload document files
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 class DocUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -25,25 +37,39 @@ class DocUploadForm extends Component {
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
+      uploadInProgress: false,
     };
 
     this.setFormData = this.setFormData.bind(this);
-    this.uploadFile = this.uploadFile.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Called by React when props are passed to the Component instance
+   *
+   * @param {object} nextProps
+   */
   componentWillReceiveProps(nextProps) {
     // Any time props.category changes, update state.
     if (nextProps.category) {
-        this.fetchData();
-      }
-   }
+      this.fetchData();
+    }
+  }
 
+  /**
+   * Fetch data
+   *
+   * @return {Promise}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -54,6 +80,11 @@ class DocUploadForm extends Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error) {
@@ -69,10 +100,10 @@ class DocUploadForm extends Component {
           <FormElement
             name="docUpload"
             fileUpload={true}
-            onSubmit={this.uploadFile}
+            onSubmit={this.uploadFiles}
             method="POST"
           >
-            <h3>Upload a file</h3><br/>
+            <h3>Upload files</h3><br/>
             <SelectElement
               name="category"
               label="Category"
@@ -124,56 +155,104 @@ class DocUploadForm extends Component {
               value={this.state.formData.comments}
             />
             <FileElement
-              name="file"
+              name="files"
               id="docUploadEl"
               onUserInput={this.setFormData}
-              label="File to upload"
+              label="File(s) to upload"
               required={true}
-              value={this.state.formData.file}
+              value={this.state.formData.files}
+              allowMultiple={true}
             />
-            <ButtonElement label="Upload File"/>
+            <ButtonElement
+              label="Upload File(s)"
+              disabled={this.state.uploadInProgress}
+            />
           </FormElement>
         </div>
       </div>
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
+  /**
+   * *******************************************************************************
+   *                      ******     Helper methods     *******
+   ********************************************************************************
+   */
 
-  uploadFile() {
+  /**
+   * Upload file(s)
+   */
+  uploadFiles() {
     // Set form data and upload the media file
-    let formData = this.state.formData;
-    let formObject = new FormData();
-    for (let key in formData) {
-      if (formData[key] !== '') {
-        formObject.append(key, formData[key]);
-      }
-    }
-
-    fetch(this.props.action, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: formObject,
-    })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data == 'uploaded successfully') {
-        swal.fire('Upload Successful!', '', 'success').then((result) => {
-          if (result.value) {
-            this.setState({formData: {}});
-            this.props.refreshPage();
+    try {
+      this.setState({uploadInProgress: true});
+      let formData = this.state.formData;
+      let formObject = new FormData();
+      for (let key in formData) {
+        if (formData[key] !== '') {
+          if (key === 'files' &&
+            document.querySelector('.fileUpload').multiple) {
+              Array.from(formData[key]).forEach((file) => {
+                formObject.append('files[]', file);
+              });
+          } else {
+            formObject.append(key, formData[key]);
           }
-        });
-      } else {
-        swal.fire('Duplicate File Name!', '', 'error');
+        }
       }
-    })
-    .catch((error) => {
+
+      fetch(this.props.action, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject,
+      })
+        .then((resp) => {
+          if (resp.ok) {
+            resp.json().then((data) => {
+              if (data.error_count === 0) {
+                swal.fire('Upload Successful!', '', 'success')
+                  .then((result) => {
+                    if (result.value) {
+                      this.setState({formData: {}});
+                      this.props.refreshPage();
+                    }
+                });
+              } else {
+                console.error(resp);
+                swal.fire('Upload Incomplete', data.message, 'warning');
+              }
+            }).catch((error) => {
+              console.error(error);
+              swal.fire(
+                'Error reading response',
+                'Please report the issue or contact your administrator',
+                'error'
+              );
+            });
+          } else {
+              if (resp.status == 413) {
+                swal.fire('File too large', 'Could not upload file', 'error');
+              }
+              if (resp.status == 403) {
+                swal.fire('Permission denied',
+                    'Could not upload file',
+                    'error'
+                );
+              }
+          }
+        }).catch((error) => {
+          console.error(error);
+          swal.fire(
+            'Something went wrong',
+            'Please report the issue or contact your administrator',
+            'error'
+          );
+        }).finally(() => this.setState({uploadInProgress: false}));
+    } catch (error) {
       console.error(error);
-    });
+      this.setState({uploadInProgress: false});
+    }
   }
 
   /**
@@ -194,6 +273,7 @@ DocUploadForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   refreshPage: PropTypes.func.isRequired,
+  category: PropTypes.string,
 };
 
 export default DocUploadForm;

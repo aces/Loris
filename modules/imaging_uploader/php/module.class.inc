@@ -57,4 +57,14 @@ class Module extends \Module
     {
         return "Imaging Uploader";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool Whether an api schema is available fro this module.
+     */
+    public function hasAPISpecification(): bool
+    {
+        return true;
+    }
 }

@@ -22,9 +22,7 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 // path to config file
 $configFile = "../project/config.xml";
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-
+require_once __DIR__ . "/generic_includes.php";
 
 $confirm = false;
 if (isset($argv[1]) && $argv[1] === "confirm") {
@@ -35,7 +33,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$DB =& Database::singleton();
+$DB = $lorisInstance->getDatabaseConnection();
 
 // Query as it is in the mri violation module
 // It is complete as it apears in the module for two reasons:
@@ -43,13 +41,13 @@ $DB =& Database::singleton();
 //      in LORIS front end first.
 //   2. for future feature improvements that will use currently unused part of this
 //      query.
-$query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
+$query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
           v.MincFile, v.Series_Description as Series_Description_Or_Scan_Type,
           v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 s.ProjectID as Project,
-                s.SubprojectID as Subproject,
+                s.CohortID as Cohort,
                 minc_location as MincFile,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
@@ -71,7 +69,7 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             WHERE Resolved is NULL UNION SELECT PatientName,
                 TimeRun,
                 s.ProjectID as Project,
-                s.SubprojectID as Subproject,
+                s.CohortID as Cohort,
                 MincFile,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
@@ -95,7 +93,7 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             WHERE Resolved is NULL UNION SELECT PatientName,
                 TimeRun,
                 s.ProjectID as Project,
-                s.SubprojectID as Subproject,
+                s.CohortID as Cohort,
                 MincFile,
                 null,
                 Reason,
@@ -121,15 +119,14 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             ORDER BY v.TimeRun DESC";
 
 // Filter values to modify
-$where   = array(
-            'pr' => 'Protocol Violation',
-            'sd' => '%t1%',
-           );
+$where   = [
+    'pr' => 'Protocol Violation',
+    'sd' => '%t1%',
+];
 $results = $DB->pselect($query, $where);
 
-foreach ($results AS $result) {
-
-    $newlyResolved         = array();
+foreach ($results as $result) {
+    $newlyResolved         = [];
     $newlyResolved['hash'] = $result['hash'];
     $newlyResolved['Resolved']   = 'inserted_flag';
     $newlyResolved['User']       = get_current_user();
@@ -141,10 +138,7 @@ foreach ($results AS $result) {
     $row = $DB->pselectRow(
         "SELECT * FROM violations_resolved
         WHERE hash = :ha and ExtID = :ex ",
-        array(
-         'ha' => $result['hash'],
-         'ex' => $result['join_id'],
-        )
+        ['ha' => $result['hash'], 'ex' => $result['join_id']]
     );
 
     // Insert if new
@@ -157,5 +151,4 @@ foreach ($results AS $result) {
     } else {
         print "skip\n";
     }
-
 }

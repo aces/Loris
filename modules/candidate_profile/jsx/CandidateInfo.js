@@ -15,7 +15,7 @@ export class CandidateInfo extends Component {
         super(props);
 
         this.calcAge = this.calcAge.bind(this);
-        this.getSubprojects = this.getSubprojects.bind(this);
+        this.getCohorts = this.getCohorts.bind(this);
         this.getVisitList = this.getVisitList.bind(this);
     }
 
@@ -26,7 +26,6 @@ export class CandidateInfo extends Component {
      * months. Otherwise, it will return an age in years.
      *
      * @param {string} dob - The date of birth in format YYYY-MM-DD
-     *
      * @return {string} - A human readable string of the age.
      */
     calcAge(dob) {
@@ -42,15 +41,14 @@ export class CandidateInfo extends Component {
     }
 
     /**
-     * Return a list of the unique subprojects contained in the
+     * Return a list of the unique cohorts contained in the
      * visits passed.
      *
      * @param {array} visits - An array of visits in the format of
      *                         the LORIS API
-     *
-     * @return {array} - The unique list of subprojects as a string.
+     * @return {array} - The unique list of cohorts as a string.
      */
-    getSubprojects(visits) {
+    getCohorts(visits) {
         let mapped = [...new Set(visits.map( (visit) => {
             return visit.Meta.Battery;
         }))];
@@ -68,7 +66,6 @@ export class CandidateInfo extends Component {
      * similar to the candidate dashboard.
      *
      * @param {array} visits - List of visits in the format returned by the LORIS API.
-     *
      * @return {object} - A React element containing a comma separated list of links.
      */
     getVisitList(visits) {
@@ -107,9 +104,9 @@ export class CandidateInfo extends Component {
      * @return {object} - The rendered react component
      */
     render() {
-        const subprojects = this.getSubprojects(this.props.Visits);
-        const subprojlabel = subprojects.length == 1 ? 'Subproject'
-            : 'Subprojects';
+        const cohorts = this.getCohorts(this.props.Visits);
+        const subprojlabel = cohorts.length == 1 ? 'Cohort'
+            : 'Cohorts';
 
         const data = [
             {
@@ -139,7 +136,7 @@ export class CandidateInfo extends Component {
             },
             {
                 label: subprojlabel,
-                value: subprojects,
+                value: cohorts,
             },
             {
                 label: 'Site',
@@ -166,7 +163,7 @@ export class CandidateInfo extends Component {
 
             return (
                 <div style={cardStyle} key={label}>
-                    <dt style={{whiteSpace: 'nowrap'}}>{label}</dt>
+                    <dt>{label}</dt>
                     <dd style={valueStyle}>{value}</dd>
                 </div>
             );
@@ -212,4 +209,5 @@ CandidateInfo.propTypes = {
   Candidate: PropTypes.object.isRequired,
   Visits: PropTypes.array.isRequired,
   VisitMap: PropTypes.object.isRequired,
+  ExtraCandidateInfo: PropTypes.array,
 };

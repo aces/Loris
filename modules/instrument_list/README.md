@@ -21,11 +21,10 @@ entered.
 
 ## Permissions
 
-One of three conditions must be met to have access to the module:
+One of the following conditions must be met to have access to the module:
 
 1. The user has the permission `access_all_profiles`
-2. The user is at the same site as the visit.
-3. The user is at the same site as one of the candidate's other visits.
+2. The user shares a project and site with the visit
 
 The `send_to_dcc` permission is required in order to send the
 timepoint to DCC (finalize the visit).

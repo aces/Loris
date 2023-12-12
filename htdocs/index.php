@@ -22,6 +22,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // to be done before NDB_Client starts the PHP session.)
 session_cache_limiter("");
 
+// PHP documentation says this should always be enabled for session security.
+// PHP documentation says this is disabled by default.
+// Explicitly enable it.
+// phpcs:ignore
+// See: https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
+ini_set('session.use_strict_mode', '1');
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();
@@ -35,7 +42,8 @@ $middlewarechain = (new \LORIS\Middleware\ContentLength())
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Now that we've created the ServerRequest, handle it.
-$user = \User::singleton();
+$factory = \NDB_Factory::singleton();
+$user    = $factory->user();
 
 $entrypoint = new \LORIS\Router\BaseRouter(
     $user,
@@ -60,4 +68,17 @@ foreach ($headers as $name => $values) {
 }
 
 // Include the body.
-print $response->getBody();
+$bodystream = $response->getBody();
+
+// First we need to disable any output buffering so that
+// it streams to the output instead of into the buffer
+// and uses up all the memory for large chunks of data.
+for ($i = ob_get_level(); $i != 0; $i = ob_get_level()) {
+    ob_end_clean();
+}
+ob_implicit_flush();
+
+while ($bodystream->eof() == false) {
+    // 64k oughta be enough for anybody.
+    print $bodystream->read(1024*64);
+}

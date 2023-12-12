@@ -1,8 +1,22 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  DateElement,
+} from 'jsx/Form';
 
+/**
+ * Candidate date of birth component
+ */
 class CandidateDOB extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -20,11 +34,19 @@ class CandidateDOB extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
     .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Fetch data
+   *
+   * @return {Promise}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -35,6 +57,12 @@ class CandidateDOB extends Component {
       });
   }
 
+  /**
+   * Set form data
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -43,6 +71,11 @@ class CandidateDOB extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (this.state.error) {
         return <h3>An error occured while loading the page.</h3>;
@@ -76,7 +109,8 @@ class CandidateDOB extends Component {
           />
           <StaticElement
             label='Disclaimer:'
-            text='Any changes to the date of birth requires an administrator to run the fix_candidate_age script.'
+            text={'Any changes to the date of birth requires an administrator '
+                 + 'to run the fix_candidate_age script.'}
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
@@ -110,7 +144,7 @@ class CandidateDOB extends Component {
     let dob = this.state.formData.dob ?
       this.state.formData.dob : null;
     if (dob > today) {
-      swal({
+      swal.fire({
         title: 'Error!',
         text: 'Date of birth cannot be later than today!',
         type: 'error',
@@ -139,17 +173,17 @@ class CandidateDOB extends Component {
     })
     .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal({
+          swal.fire({
             title: 'Success!',
             text: 'Date of birth updated!',
             type: 'success',
             confrimButtonText: 'OK',
           });
-          if (result.value) {
+          if (resp.value) {
               this.fetchData();
           }
         } else {
-          swal({
+          swal.fire({
             title: 'Error!',
             text: 'Something went wrong.',
             type: 'error',

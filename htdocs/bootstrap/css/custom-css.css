@@ -83,8 +83,7 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 /* Menu items */
 .navbar-default .navbar-nav > li > a {
     margin-top: 4px;
-    padding-top: 13px;
-    padding-bottom: 15px;
+    padding: 15px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -160,13 +159,23 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-default .navbar-right > li > a:active {
   background-color: transparent;
 }
+
 /* Styling for clicking on Question mark - order matters */
-.navbar-default .navbar-right > li > a.help-open,
-.navbar-default .navbar-right > li > a.help-open:focus,
-.navbar-default .navbar-right > li > a.help-open:active {
+.help-button {
     color: white;
     background-color: #246EB6;
+    border: none;
+    margin-top: 4px;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
+
+.help-container.navbar-toggle {
+    padding: 0;
+    margin: 0;
+}
+
 /* Styling for hovering over menu items - order matters */
 .navbar-default .navbar-right > li:hover > a,
 .navbar-default .navbar-right > li > a:hover {
@@ -496,7 +505,7 @@ div.navbar div.container div.navbar-brand {
     margin-right: 5px;
 }
 
-.btn-default {
+.btn-default:not(.disabled) {
     border-color: #246EB6;
     color: #246EB6;
     background-color: white;
@@ -533,7 +542,7 @@ div.navbar div.container div.navbar-brand {
     border-color: #246EB6;
 }
 
-a.btn.btn-primary {
+a.btn.btn-primary:not(.download, .split-nav) {
     color: #064785;
     border-color: transparent;
     background-color: white;
@@ -541,7 +550,7 @@ a.btn.btn-primary {
     transition: background-color 0.2s ease-in;
 }
 
-a.btn.btn-primary:hover {
+a.btn.btn-primary:hover:not(.download, .split-nav) {
   color: #E89A0C;
   border-color: transparent;
   background-color: white;
@@ -760,6 +769,16 @@ a.btn.btn-primary:hover {
     box-shadow: 2px 3px 4px 1px rgba(0,0,0,0.175);
 }
 
+.panel-heading {
+    display: flex;
+    align-items: center;
+}
+
+.panel-title {
+    width: 100%;
+    padding-right: 10px;
+}
+
 .panel-default {
     border-color: #C3D5DB;
 }
@@ -808,7 +827,7 @@ a:hover {
 .list-group-item.active,
 .list-group-item.active:hover {
     z-index: 2;
-    color: white;
+    color: black;
     background-color: #E4EBF2;
     border-color: #E4EBF2;
 }
@@ -845,7 +864,7 @@ a.list-group-item:focus {
 }
 
 /* Necessary formatting for swal2 while still with bootstrap v3 */
-.swal2-popup {
+.swal2-container .swal2-popup {
   font-size: 1.6rem
 }
 
@@ -892,4 +911,20 @@ legend {
     border-bottom: 0px;
     font-size: 14px;
     color: #064785;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: #FEF2CA;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlighted {
+    animation: highlight ease 3s;
 }

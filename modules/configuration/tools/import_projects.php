@@ -1,17 +1,17 @@
 <?php
 /**
  * This script should be used to migrate existing ProjectIDs and
- * SubprojectIDs from the config.xml to the subprojects table, so that
+ * CohortIDs from the config.xml to the cohorts table, so that
  * they can be managed from the frontend.
  *
  * Usage: php import_project.php [-option]
  *
  * It has three options:
- *     -s -> Imports only the subprojects from the XML.
+ *     -s -> Imports only the cohorts from the XML.
  *
  *     -p -> Imports only the projects from the XML.
  *
- *     -a -> Imports both the subprojects and the projects
+ *     -a -> Imports both the cohorts and the projects
  *           from the XML.
  * PHP Version 5
  *
@@ -27,7 +27,7 @@ $client->makeCommandLine();
 $client->initialize();
 $factory  = NDB_Factory::singleton();
 $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
-$subprojs = $config->getSettingFromXML("subprojects");
+$subprojs = $config->getSettingFromXML("cohorts");
 if (!is_array($subprojs)) {
     throw new \ConfigurationException(
         'Config setting "Projects" must be an array'
@@ -36,29 +36,27 @@ if (!is_array($subprojs)) {
 $db        = $factory->database();
 $optionpos = 1; //The position of the option in the command line.
 
-if (is_null($argv[$optionpos])
+if (empty($argv[$optionpos])
 ) {
     echo ("The script needs an argument. The arguments are -s,-p or -a.\r\n");
-    echo ("-s -> Imports only the subprojects from the XML.\r\n");
+    echo ("-s -> Imports only the cohorts from the XML.\r\n");
     echo ("-p -> Imports only the projects from the XML.\r\n");
-    echo ("-a -> Imports both the subprojects and the projects \r\n");
+    echo ("-a -> Imports both the cohorts and the projects \r\n");
     echo ("      from the XML.\r\n");
     exit(2);
 }
-if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
-    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
-) {
-    foreach ($subprojs['subproject'] as $row) {
+if ($argv[$optionpos] === "-s" || $argv[$optionpos] === "-a") {
+    foreach ($subprojs['cohort'] as $row) {
         $windowDiff = "optimal";
         if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
             $windowDiff = $row['options']['WindowDifference'];
         }
-        $ins = array(
-            'SubprojectID'     => $row['id'],
+        $ins = [
+            'CohortID'         => $row['id'],
             'title'            => $row['title'],
             'useEDC'           => 0,
             'WindowDifference' => $windowDiff,
-        );
+        ];
         if ($row['options']['useEDC'] === '1'
             || $row['options']['useEDC'] === 'true'
         ) {
@@ -66,12 +64,10 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
         }
         $ins = Utility::nullifyEmpty($ins, 'WindowDifference');
         $ins = Utility::nullifyEmpty($ins, 'useEDC');
-        $db->insert('subproject', $ins);
+        $db->insert('cohort', $ins);
     }
 }
-if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
-    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
-) {
+if ($argv[$optionpos] === "-p" || $argv[$optionpos] === "-a") {
     $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
     $projects = $config->getSettingFromXML("Projects");
     if (!is_array($projects)) {
@@ -81,11 +77,11 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
     }
     $db = $factory->database();
     foreach ($projects['project'] as $row) {
-        $insert = array(
+        $insert = [
             'ProjectID'         => $row['id'],
             'Name'              => $row['title'],
             'recruitmentTarget' => $row['recruitmentTarget'],
-        );
+        ];
         $insert = Utility::nullifyEmpty($insert, 'recruitmentTarget');
         $db->insert('Project', $insert);
     }

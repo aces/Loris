@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{$baseurl}/css/panel.css" type="text/css"/>
+<link rel="stylesheet" href="{$baseurl|default}/css/panel.css" type="text/css"/>
 <meta itemprop="candID" context="{$candID}">
 <meta itemprop="sessionID" context="{$sessionID}">
 <meta itemprop="commentID" context="{$commentID}">
@@ -9,8 +9,8 @@
   </div><!-- /panel -->
 </body>
 
-<script type="text/javascript" src ="{$baseurl}/bvl_feedback/js/bvl_feedback_panel_jquery.js"></script>
-<script type="text/javascript" src="{$baseurl}/bvl_feedback/js/react.behavioural_feedback_panel.js"></script>
+<script type="text/javascript" src ="{$baseurl|default}/bvl_feedback/js/bvl_feedback_panel_jquery.js"></script>
+<script type="text/javascript" src="{$baseurl|default}/bvl_feedback/js/react.behavioural_feedback_panel.js"></script>
 <script type="text/javascript">
   var feedback_level = {$feedback_level|@json_encode};
   var candID = {$candID|@json_encode};
@@ -29,6 +29,8 @@
     selectOptions: select_option,
     feedbackTypes: feedback_types
   });
-  ReactDOM.render(bvl_panel, document.getElementById("panel_content"));
+  ReactDOM.createRoot(
+    document.getElementById("panel_content")
+  ).render(bvl_panel);
 </script>
 

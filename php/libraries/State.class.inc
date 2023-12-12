@@ -106,11 +106,11 @@ class State
      */
     function getLastURL(): ?string
     {
-        $timepointSubMenus = array(
+        $timepointSubMenus = [
             'instrument_list',
             'create_timepoint',
             'demographics',
-        );
+        ];
 
         $caller =& NDB_Caller::singleton();
         if (isset($_REQUEST['test_name'])

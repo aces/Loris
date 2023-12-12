@@ -37,10 +37,18 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentManagerDoespageLoad()
     {
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the instrument_manager module with permission,
@@ -51,21 +59,21 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentManagerDoespageLoadWithpermission()
     {
         // Check read permission, 'instrument_manager_read'
-        $this->setupPermissions(array('instrument_manager_read'));
+        $this->setupPermissions(['instrument_manager_read']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
         $this->resetPermissions();
 
         // Check write permission, 'instrument_manager_write'
-        $this->setupPermissions(array('instrument_manager_write'));
+        $this->setupPermissions(['instrument_manager_write']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -76,12 +84,12 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentManagerDoespageLoadWithoutpermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );

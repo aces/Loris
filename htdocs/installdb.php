@@ -84,7 +84,7 @@ ini_set('default_charset', 'utf-8');
 // gzip handler.
 //ob_start('ob_gzhandler');
 ob_start();
-$tpl_data = array();
+$tpl_data = [];
 
 // Page 1: Help, prompt server, root username, root password
 // Page 2: 1. Connect with username/password
@@ -93,7 +93,7 @@ $tpl_data = array();
 // Page 3: Help, prompt for new username/password (include defaults)
 // Page 4: 1. Check if user exists -- if so, error, if not create
 //     2. Update config.xml if write access, otherwise download copy
-switch(isset($_POST['formname']) ? $_POST['formname'] : '') {
+switch (isset($_POST['formname']) ? $_POST['formname'] : '') {
 case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already

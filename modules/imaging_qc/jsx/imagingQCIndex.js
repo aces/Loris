@@ -1,9 +1,17 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
 
+/**
+ * Imaging Quality Control React Component
+ */
 class ImagingQCIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -20,26 +28,31 @@ class ImagingQCIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
-
   formatColumn(column, cell, row) {
       let result = <td>{cell}</td>;
       switch (column) {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
-          let mpfURL = loris.BaseURL + '/instruments/mri_parameter_form/?commentID=' +
-              row.CommentID + '&sessionID=' + row['Session ID'] +
-              '&candID=' + row.DCCID;
+          let mpfURL = loris.BaseURL
+                       + '/instruments/mri_parameter_form/?commentID='
+                       + row.CommentID
+                       + '&sessionID='
+                       + row['Session ID']
+                       + '&candID='
+                       + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
+        break;
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
-          let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-              row['Session ID'];
+          let imgURL = loris.BaseURL
+                       + '/imaging_browser/viewSession/?sessionID='
+                       + row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
+        break;
       case 'Tarchive':
         if (cell == 'In DICOM') {
           let tarchiveURL = loris.BaseURL +
@@ -50,11 +63,21 @@ class ImagingQCIndex extends Component {
       return result;
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData(this.props.ImgDataURL, 'ImgData')
         .then(() => this.setState({isLoadedImg: true}));
   }
 
+  /**
+   * Retrive data from the provided URL and save it in state
+   *
+   * @param {string} url
+   * @param {object} state - The React state object
+   * @return {object}
+   */
   fetchData(url, state) {
     return fetch(url, {credentials: 'same-origin'})
         .then((resp) => resp.json())
@@ -64,6 +87,11 @@ class ImagingQCIndex extends Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoadedImg) {
       return <Loader/>;
@@ -100,10 +128,10 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: 'Subproject', show: true, filter: {
-            name: 'subproject',
+          label: 'Cohort', show: true, filter: {
+            name: 'cohort',
             type: 'select',
-            options: ImgOptions.subproject,
+            options: ImgOptions.cohort,
           },
         },
         {
@@ -202,12 +230,13 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 

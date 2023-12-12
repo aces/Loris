@@ -1,7 +1,22 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  DateElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
+/**
+ * Candiate info component
+ */
 class CandidateInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +37,9 @@ class CandidateInfo extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let that = this;
     $.ajax(
@@ -53,6 +71,12 @@ class CandidateInfo extends Component {
     );
   }
 
+  /**
+   * Set form data
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
@@ -74,10 +98,20 @@ class CandidateInfo extends Component {
     });
   }
 
+  /**
+   * On Submit
+   *
+   * @param {object} e - event object
+   */
   onSubmit(e) {
     e.preventDefault();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -89,7 +123,7 @@ class CandidateInfo extends Component {
           </div>
         );
       }
-    };
+    }
 
     let disabled = true;
     let updateButton = null;
@@ -99,7 +133,9 @@ class CandidateInfo extends Component {
     }
     let reasonDisabled = true;
     let reasonRequired = false;
-    if (this.state.formData.flaggedCaveatemptor === 'true') {
+    if (this.state.formData.flaggedCaveatemptor === 'true'
+      && loris.userHasPermission('candidate_parameter_edit')
+    ) {
       reasonDisabled = false;
       reasonRequired = true;
     }
@@ -117,7 +153,9 @@ class CandidateInfo extends Component {
       }
     }
 
-    if (this.state.formData.flaggedReason === reasonKey) {
+    if (this.state.formData.flaggedReason === reasonKey
+      && loris.userHasPermission('candidate_parameter_edit')
+    ) {
       otherRequired = true;
       otherDisabled = false;
     }

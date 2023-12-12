@@ -1,11 +1,24 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {ButtonElement} from 'jsx/Form';
 
+/**
+ * Publication index component
+ */
 class PublicationIndex extends React.Component {
+  /**
+   * @constructor
+   */
   constructor() {
     super();
-    loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest', 'Publication ID', 'Collaborators'];
+    loris.hiddenHeaders = [
+      'Description',
+      'Publication ID',
+    ];
     this.state = {
       isLoaded: false,
       filter: {},
@@ -17,34 +30,56 @@ class PublicationIndex extends React.Component {
     this.resetFilters = this.resetFilters.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      },
-    });
+    }).then(
+      (response) => {
+        if (!response.ok) {
+          console.error(response.status);
+          return;
+        }
+
+        response.json().then(
+          (data) => this.setState({
+            Data: data,
+            isLoaded: true,
+          })
+        );
+    }).catch((error) => console.error(error));
   }
 
+  /**
+   * Update filter
+   *
+   * @param {*} filter
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Reset filters
+   */
   resetFilters() {
     this.publicationsFilter.clearFilter();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -72,8 +107,10 @@ class PublicationIndex extends React.Component {
       proposalTab = (
         <TabPane TabId={tabList[1].id}>
           <PublicationUploadForm
-            DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
-            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
+            DataURL={loris.BaseURL
+                    +'/publication/ajax/getData.php?action=getData'}
+            action={loris.BaseURL
+                   + '/publication/ajax/FileUpload.php?action=upload'}
             editMode={false}
           />
         </TabPane>
@@ -116,6 +153,15 @@ class PublicationIndex extends React.Component {
     );
   }
 
+  /**
+   * Format column
+   *
+   * @param {string} column
+   * @param {*} cell
+   * @param {object} rowData
+   * @param {string[]} rowHeaders
+   * @return {JSX} - React markup for the component
+   */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
@@ -142,13 +188,16 @@ class PublicationIndex extends React.Component {
     return <td className={classes}>{cell}</td>;
   }
 }
+PublicationIndex.propTypes = {
+  DataURL: PropTypes.string,
+};
 
-$(function() {
-  const publicationIndex = (
+document.addEventListener('DOMContentLoaded', () => {
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>
   );
-
-  ReactDOM.render(publicationIndex, document.getElementById('lorisworkspace'));
 });

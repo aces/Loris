@@ -67,10 +67,10 @@ class Full
         unset($data['physiological_json_file_blake2b_hash']);
         unset($data['physiological_file_blake2b_hash']);
 
-        return  array(
+        return  [
             'Meta' => $this->_formatMeta(),
             'Data' => $data,
-        );
+        ];
     }
 
     /**
@@ -80,15 +80,15 @@ class Full
      */
     private function _formatMeta(): array
     {
-        $candid     = (string) $this->_visit->getCandID();
+        $candid     = $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_recording->getFileInfo()->getFilename();
 
-        return array(
+        return [
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
-        );
+        ];
     }
 }
 

@@ -105,9 +105,9 @@ class Dicom_Archive extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/dicom_archive/js/dicom_archive.js",
-            )
+            ]
         );
     }
 }

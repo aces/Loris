@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\help_editor;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * A class for holding a set of functions to add/update content
@@ -25,123 +27,113 @@ namespace LORIS\help_editor;
 
 class Edit_Help_Content extends \NDB_Form
 {
-     /**
-      * Determine if user has permission to access this page
-      *
-      * @param \User $user The user whose access is being checked
-      *
-      * @return bool true if access is permitted
-      */
+    /**
+     * Determine if user has permission to access this page
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if access is permitted
+     */
     function _hasAccess(\User $user) : bool
     {
         return $user->hasPermission('context_help');
     }
 
-     /**
-      * Returns default help content of the page
-      *
-      * @return array An associative array containing the title and content
-      *         for the default help information.
-      */
-    function _getDefaults()
-    {
-        //Get the default values
-        $defaults = array();
-
-        // Sanitize user input
-        $safeSection    = $_REQUEST['section'] ?
-            htmlspecialchars($_REQUEST['section']) : '';
-        $safeSubsection = $_REQUEST['subsection'] ?
-            htmlspecialchars($_REQUEST['subsection']) : '';
-
-        $defaults = array();
-
-        if (isset($_REQUEST['helpID'])) {
-            $helpID = htmlspecialchars($_REQUEST['helpID']);
-        }
-        if (isset($_GET['parentID'])) {
-            $parentID = htmlspecialchars($_GET['parentID']);
-        }
-        if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
-        }
-        if (!empty($_REQUEST['section'])
-            && $_REQUEST['subsection'] != 'undefined'
-        ) {
-            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-            $parentID = HelpFile::hashToID(md5($_GET['section']));
-        }
-        $this->tpl_data['section']    = $safeSection;
-        $this->tpl_data['subsection'] = $safeSubsection;
-        $this->tpl_data['helpID']     = $helpID ? $helpID : '';
-        $this->tpl_data['parentID']   = $parentID ? $parentID : '';
-
-        if (!empty($helpID)) {
-            $help_file = HelpFile::factory($helpID);
-            $data      = $help_file->toArray();
-            $defaults['title']   = $data['topic'];
-            $defaults['content'] = utf8_encode(trim($data['content']));
-            if (isset($_REQUEST['helpID'])) {
-                $this->tpl_data['module_name'] = "Help Editor";
-            } else {
-                $this->tpl_data['module_name'] = $defaults['title'];
-            }
-
-        }
-        // let escaped html display as intended in form
-        $defaults['content'] = htmlspecialchars_decode($defaults['content']);
-        // case where no help content exists
-        if (empty($defaults['title'])) {
-            if (!empty($_REQUEST['section'])) {
-                $defaults['title'] = str_replace("_", " ", $safeSection);
-            }
-            // if not module and not instrument, should be a subtest
-            if (!empty($_REQUEST['subsection'])
-                && $_REQUEST['subsection'] != 'undefined'
-            ) {
-                $defaults['title'] = str_replace("_", " ", $safeSubsection);
-            }
-            $this->tpl_data['module_name'] = $defaults['title'];
-        }
-        if (empty($defaults['content'])) {
-            $defaults['content'] = 'Under Construction';
-        }
-
-        if (isset($_SERVER['HTTP_REFERER']) ) {
-            $this->tpl_data['url'] = $_SERVER['HTTP_REFERER'];
-        }
-        return $defaults;
-    }
-
     /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
+     * Handle the incoming request. This extracts URLs of the form
+     * /issue_tracker/issue/3 and extracts the issueID so that it's accessible
+     * from the rest of the code as a class variable.
      *
-     * @return void
+     * @param ServerRequestInterface $request The incoming client request
+     *
+     * @return ResponseInterface The PSR15 response.
      */
-    function setup()
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        parent::setup();
+        $user = $request->getAttribute("user");
+        if ($user === null && !($user instanceof \User)) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "No valid user"
+            );
+        }
+        if (!($this->_hasAccess($user))) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
 
-        $this->addBasicText('title', 'Title');
-        $this->addBasicTextArea(
-            'content',
-            'Content',
-            [],
-            array(
-                'cols' => 140,
-                'rows' => 30,
-            )
-        );
-
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGet($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ['GET']
+            );
+        }
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Handle GET requests for attachment.
      *
-     * @return array of javascript to be inserted
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    {
+        $gets = $request->getQueryParams();
+        $data = [
+            'title'      => null,
+            'content'    => 'Under Construction',
+            'section'    => isset($gets['section']) ?
+                htmlspecialchars($gets['section']) : null,
+            'subsection' => isset($gets['subsection']) ?
+                htmlspecialchars($gets['subsection']) : null,
+            'helpid'     => isset($gets['helpID']) ?
+                htmlspecialchars($gets['helpID']) : null,
+        ];
+
+        if (!empty($data['section'])) {
+            try {
+                $data['helpid'] = HelpFile::hashToID(md5($data['section']));
+            } catch (\NotFound $e) {
+            }
+        }
+
+        if (!empty($safeSection) && $data['subsection'] != 'undefined') {
+            try {
+                $data['helpid'] = HelpFile::hashToID(md5($data['subsection']));
+            } catch (\NotFound $e) {
+            }
+        }
+
+        if ($data['helpid']) {
+            $help_data       = HelpFile::factory($data['helpid'])->toArray();
+            $data['title']   = $help_data['topic'];
+            $data['content'] = htmlspecialchars_decode(trim($help_data['content']));
+        }
+
+        // case where no help content exists
+        if (empty($data['title'])) {
+            if (!empty($data['section'])) {
+                $data['title'] = str_replace("_", " ", $data['section']);
+            }
+
+            // if not module and not instrument, should be a subtest
+            if (!empty($data['subsection'])
+                && $data['subsection'] != 'undefined'
+            ) {
+                $data['title'] = str_replace("_", " ", $data['subsection']);
+            }
+        }
+
+        $this->tpl_data = $data;
+        return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+    /**
+     * GetJSDependencies
+     *
+     * @return array of javascript files to be inserted
      */
     function getJSDependencies()
     {
@@ -150,9 +142,9 @@ class Edit_Help_Content extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/help_editor/js/help_editor_helper.js",
-            )
+            [
+                $baseURL . "/help_editor/js/helpEditorForm.js",
+            ]
         );
     }
 }

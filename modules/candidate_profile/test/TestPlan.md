@@ -5,7 +5,7 @@
    a CandID that the logged in user has access to. The page should load
    with (at a minimum) a "Candidate Info" card. Ensure that the links
    in the "Visits" work.
-2. Access the module the using same URL while logged out. Ensure there is a permission
+2. Access the module using the same URL while logged out. Ensure there is a permission
    denied page with an appropriate HTTP response code and no cards are
    displayed.
 3. Log back in, and access a URL for a candidate that the user should
@@ -16,7 +16,7 @@
 
 ## Widget Permissions
 For a module that adds a widget and a candidate which has data for
-that widget (ie. the media module for CandID 491446 in Raisinbread):
+that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (MTL001) in Raisinbread):
 1. Ensure that the card appears when accessing that candidate as a
    user who has appropriate permission and access to the module
    itself.
@@ -36,7 +36,7 @@ that widget (ie. the media module for CandID 491446 in Raisinbread):
     - Age
     - Sex
     - Project
-    - Subproject
+    - Cohort
     - Site
     - Visits
 2. Ensure that any visits under "Visits" are links that go to the
@@ -50,6 +50,7 @@ that widget (ie. the media module for CandID 491446 in Raisinbread):
 4. Ensure that, when the module which added the extra `CandidateInfo` terms
    is disabled, the terms from that module no longer show up in the
    `Candidate Info` card.
+5. Ensure that you can always only see visits from projects that you are affiliated with.
 
 All other widgets are part of other modules, and should be tested as
 part of that module's testing.

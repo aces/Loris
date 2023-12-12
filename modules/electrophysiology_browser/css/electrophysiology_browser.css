@@ -1,0 +1,228 @@
+.react-series-data-viewer-scoped .dropdown-menu {
+  width: calc(100% - 5px);
+}
+
+.react-series-data-viewer-scoped .dropdown-menu li {
+  margin-top: 0;
+  padding: 0 10px;
+}
+
+.react-series-data-viewer-scoped .dropdown-menu li:hover {
+  background: #eee;
+  cursor: pointer;
+  margin-top: 0;
+  width: 100%;
+}
+
+.btn.btn-xs {
+  font-size: 12px;
+}
+
+.btn-group .btn {
+  margin: 0;
+}
+
+.btn-group {
+  margin-right: 10px;
+}
+
+.btn-primary:focus:not(.active),
+.btn-primary:active:not(.active) {
+  color: #246EB6;
+  background-color: white;
+  border-color: #246EB6;
+  outline: 0;
+}
+
+.no-gutters > div {
+  padding:0;
+}
+
+svg {
+  user-select: none;
+}
+
+svg:not(:root) {
+  overflow: clip;
+}
+
+.list-group-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.annotation {
+  background: #fffae6;
+  border-left: 5px solid #ff6600;
+}
+
+.epoch-details {
+  padding-right: 100px;
+}
+
+.epoch-action {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 10px;
+}
+
+.epoch-tag {
+  padding: 5px;
+  background: #e7e4e4;
+  border-left: 5px solid #797878;
+  width: 100%;
+}
+
+.epoch-tag p {
+  word-wrap: break-word;
+  width: 95%;
+}
+
+.event-list .btn.btn-primary {
+  color: #555;
+  border: 1px solid #555;
+}
+
+.event-list .btn.btn-primary.active {
+  color: #000;
+  background-color: #ddd;
+  border: 1px solid #000;
+}
+
+.event-list .btn.btn-primary:hover {
+  color: #333;
+  background-color: #eee;
+  border: 1px solid #333;
+}
+
+.input-interval-bound {
+  width: 60px;
+  height: 22px;
+  font-size: 10px;
+  float: left;
+  text-align: center;
+}
+
+.btn-zoom {
+  margin: 0 auto 3px auto;
+  width: 50px;
+  text-align: center;
+}
+
+.col-xs-title {
+  color: #064785;
+  font-weight: bold;
+  text-align: center;
+}
+
+#electrode-montage .list-group {
+  border: 1px solid #ddd;
+}
+
+#electrode-montage .list-group-item:first-child {
+  border-top: none;
+}
+
+#electrode-montage .list-group-item {
+  margin-bottom: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.electrode:hover circle {
+  stroke: #064785;
+  cursor: pointer;
+  fill: #E4EBF2
+}
+
+.electrode:hover text {
+  fill: #064785;
+  cursor: pointer;
+}
+
+#eegSessionView .table-scroll {
+  padding-bottom: 0;
+}
+
+#eegSessionView #lorisworkspace > .panel {
+  border: none;
+}
+
+#eegSessionView .panel-heading {
+  height: auto !important;
+}
+
+#eegSessionView .panel-heading > div > i {
+  cursor: pointer;
+}
+
+#eegSessionView .panel-heading > div > i:hover {
+  scale: 1.05;
+}
+
+#eegSidebar {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(100%);
+  position: fixed;
+}
+
+#page.eegBrowser {
+  vertical-align: top;
+  position: relative;
+  width: auto;
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+  .pagination-nav {
+    padding-top: 8px;
+  }
+
+  #eegSidebar {
+    display: none;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+  #eegSidebar {
+    display: block;
+  }
+
+  #page.eegBrowser {
+    margin-left: 150px;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+  .event-list {
+    margin-top: 40px;
+    margin-bottom: 0;
+  }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+  .pull-right-lg {
+    text-align: right;
+  }
+
+  .pagination-nav {
+    padding-top: 0;
+  }
+}

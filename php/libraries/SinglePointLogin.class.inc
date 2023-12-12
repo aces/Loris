@@ -48,6 +48,11 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
+     * Defines whether a user's password needs to be changed
+     */
+    var $_passwordChangeRequired = false;
+
+    /**
      * Dumps the password expiry form
      *
      * @return void
@@ -71,6 +76,17 @@ class SinglePointLogin
         header("HTTP/1.1 303 See Other");
         header("Location: /login/password-expiry/");
         exit(0);
+    }
+
+    /**
+     * Checks whether password change is required
+     *
+     * @return bool
+     * @access public
+     */
+    function passwordChangeRequired(): bool
+    {
+        return $this->_passwordChangeRequired;
     }
 
 
@@ -162,8 +178,9 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = isset($headers['Authorization'])
-                         ? $headers['Authorization']
+        $headers    = array_change_key_case($headers, CASE_LOWER);
+        $authHeader = isset($headers['authorization'])
+                         ? $headers['authorization']
                          : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
@@ -198,9 +215,11 @@ class SinglePointLogin
 
         $sharedKey = $config->getSetting("JWTKey");
 
-        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
+            $decoded = \Firebase\JWT\JWT::decode(
+                $token,
+                new \Firebase\JWT\Key($sharedKey, "HS256")
+            );
         } catch (Exception $e) {
             return false;
         }
@@ -234,12 +253,22 @@ class SinglePointLogin
 
         $this->_lastError = '';
 
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $maxDaysInactive = $config->getSetting("UserMaximumDaysInactive");
+        if (!empty($maxDaysInactive) && is_numeric($maxDaysInactive)) {
+            $maxDaysInactive = intval($maxDaysInactive);
+        } else {
+            $maxDaysInactive = null;
+        }
+
          ///////////////////////////
          ///initialization/////
          //////////////////////////
         $this->_username = isset($username) ? $username : 'Unknown';
 
-        $setArray = array(
+        $setArray = [
             'userID'          => $this->_username,
             'Success'         => 'Y',
             'Failcode'        => null,
@@ -250,7 +279,7 @@ class SinglePointLogin
             'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
-        );
+        ];
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -278,7 +307,7 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        Password_expiry < NOW() as Expired,
+                        PasswordChangeRequired as Expired,
                         Active,
                         Pending_approval,
                         Password_hash,
@@ -288,7 +317,7 @@ class SinglePointLogin
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
-        $row   = $DB->pselectRow($query, array('username' => $username));
+        $row   = $DB->pselectRow($query, ['username' => $username]);
 
         if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
@@ -329,15 +358,16 @@ class SinglePointLogin
                     );
                     \NDB_Factory::singleton()->database()->update(
                         'users',
-                        array('Password_hash' => $newHash),
-                        array('UserID' => $username)
+                        ['Password_hash' => $newHash],
+                        ['UserID' => $username]
                     );
                 }
 
             }
 
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -382,7 +412,7 @@ class SinglePointLogin
                 && ($currentDay < strtotime($row['active_from']))
             ) {
                 $this->_lastError = "Your account is not active yet."
-                    ." According to our records it will be active from 
+                    ." According to our records it will be active from
             {$row['active_from']}"
                 . " Please contact your project administrator";
                 return false;
@@ -397,7 +427,8 @@ class SinglePointLogin
                 return false;
             }
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -412,6 +443,8 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
+                $this->_passwordChangeRequired      = true;
+                $_SESSION['PasswordExpiredForUser'] = $username;
                 if ($redirect) {
                     $this->showPasswordExpiryScreen();
                 }
@@ -480,11 +513,11 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        $params = array(
+        $params = [
             'username'            => $username,
             'timeWindowInMinutes' => $shortWindowInMinutes,
             'ip'                  => $_SERVER['REMOTE_ADDR'],
-        );
+        ];
 
         // Query DB for login attempts.
         $database  = \NDB_Factory::singleton()->database();
@@ -553,7 +586,7 @@ class SinglePointLogin
     function insertFailedDetail(string $description, array $setArray): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $setArray['Success']     = 'N';
         $setArray['Fail_detail'] = $description;
@@ -577,12 +610,12 @@ class SinglePointLogin
         int $maximumDaysInactive
     ): bool {
 
-        $DB    =& Database::singleton();
+        $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
-                  FROM user_login_history 
+                  FROM user_login_history
                   WHERE UserID = :username";
 
-        $row = $DB->pselectRow($query, array('username' => $username));
+        $row = $DB->pselectRow($query, ['username' => $username]);
 
         /* If the login timestamp is null then this is the user's first time
          * logging in. This will always be the case in our CI environment.
@@ -598,11 +631,26 @@ class SinglePointLogin
         if ($interval->days > $maximumDaysInactive) {
             $DB->update(
                 'users',
-                array('Active' => 'N'),
-                array('UserID' => $username)
+                ['Active' => 'N'],
+                ['UserID' => $username]
             );
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set the User to be the currently logged
+     * in user for this session.
+     *
+     * @param \User $user The user to login.
+     *
+     * @return void
+     */
+    function setLoggedInUser(\User $user) : void
+    {
+        $this->_username = $user->getUsername();
+        $this->setState();
+        $_SESSION['State']->setProperty('login', $this);
     }
 }

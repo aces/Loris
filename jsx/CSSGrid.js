@@ -1,5 +1,6 @@
 import Card from 'Card';
 import React, {useState, useEffect, useRef} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Create a three column grid of cards using a CSS grid.
@@ -13,7 +14,6 @@ import React, {useState, useEffect, useRef} from 'react';
  * may also be optionally specified for each card.
  *
  * @param {array} props - Cards to add to the grid.
- *
  * @return {object} - A React component for a CSS grid of cards
  */
 function CSSGrid(props) {
@@ -110,7 +110,7 @@ function CSSGrid(props) {
         style.alignSelf = 'stretch';
         return (
             <Card title={value.Title} id={cardID} key={cardID} style={style}
-                cardSize={pSize}>
+                cardSize={pSize} collapsing={value.collapsing}>
             {value.Content}
             </Card>
         );
@@ -120,5 +120,8 @@ function CSSGrid(props) {
         <div ref={cardsRef} style={grid}>{cards}</div>
     );
 }
+CSSGrid.propTypes = {
+    Cards: PropTypes.array,
+};
 
 export default CSSGrid;

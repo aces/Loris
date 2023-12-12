@@ -24,11 +24,15 @@ class FeedbackMRI
 {
     /**
      * FileID from files table
+     *
+     * @var ?int
      */
     var $fileID;
 
     /**
      * ID from session table
+     *
+     * @var ?\SessionID
      */
     var $sessionID;
 
@@ -40,10 +44,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param string $fileID    The fileID that this feedback is for
-     * @param string $sessionID The SessionID that this feedback is for
+     * @param ?int        $fileID    The fileID that this feedback is for
+     * @param ?\SessionID $sessionID The SessionID that this feedback is for
      */
-    function __construct(string $fileID='', string $sessionID='')
+    function __construct(?int $fileID=null, ?\SessionID $sessionID=null)
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -66,7 +70,7 @@ class FeedbackMRI
     function clearAllComments(): bool
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
@@ -91,7 +95,7 @@ class FeedbackMRI
 
         // add a new db entry for each comment
         foreach ($predefinedCommentIDs AS $predefinedCommentID) {
-            $success = $this->_addComment('', '', $predefinedCommentID);
+            $success = $this->_addComment('', null, $predefinedCommentID);
 
             // choke if it failed
             if ($success != 'true') {
@@ -137,16 +141,16 @@ class FeedbackMRI
     function getComments(): ?array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // start building the query
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
                       FROM feedback_mri_comments
                   WHERE ".$this->_buildWhere();
 
-        $result = $DB->pselect($query, array());
+        $result = $DB->pselect($query, []);
 
-        $comments = array();
+        $comments = [];
         // build the output array
         if (is_array($result)) {
             foreach ($result as $row) {
@@ -177,21 +181,21 @@ class FeedbackMRI
     function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the query
         $query = "SELECT PredefinedCommentID, Comment
                     FROM feedback_mri_predefined_comments
                   WHERE CommentTypeID=:CTID";
 
-        $result = $DB->pselect($query, array('CTID' => $commentTypeID));
+        $result = $DB->pselect($query, ['CTID' => $commentTypeID]);
 
         // build the output array
-        $comments = array();
+        $comments = [];
         if (is_array($result)) {
             foreach ($result as $row) {
                 $PredefinedID       = $row['PredefinedCommentID'];
-                $preDefinedComments = array();
+                $preDefinedComments = [];
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
                 $comments[$PredefinedID]       = $preDefinedComments;
             }
@@ -217,12 +221,13 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $database = \NDB_Factory::singleton()->database();
+        $DB       =& $database;
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
-        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
+        $parameterTypeID = $DB->pselectOne($query, ['FName' => $fieldName]);
         if (empty($parameterTypeID)) {
             return false;
         }
@@ -234,10 +239,10 @@ class FeedbackMRI
 
         $value = $DB->pselectOne(
             $query,
-            array(
+            [
                 'PTID' => $parameterTypeID,
                 'FID'  => $this->fileID,
-            )
+            ]
         );
         if (empty($value)) {
             return false;
@@ -263,12 +268,12 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
-        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
+        $parameterTypeID = $DB->pselectOne($query, ['FName' => $fieldName]);
         if (empty($parameterTypeID)) {
             return false;
         }
@@ -280,31 +285,31 @@ class FeedbackMRI
 
         $updateNeeded = $DB->pselectOne(
             $query,
-            array(
+            [
                 'PTID' => $parameterTypeID,
                 'FID'  => $this->fileID,
-            )
+            ]
         );
 
         // build the query
         if ($updateNeeded) {
             $DB->update(
                 'parameter_file',
-                array('Value' => $value),
-                array(
+                ['Value' => $value],
+                [
                     'ParameterTypeID' => $parameterTypeID,
                     'FileID'          => $this->fileID,
-                )
+                ]
             );
         } else {
             $DB->insert(
                 'parameter_file',
-                array(
+                [
                     'Value'           => $value,
                     'ParameterTypeID' => $parameterTypeID,
                     'FileID'          => $this->fileID,
                     'InsertTime'      => time(),
-                )
+                ]
             );
         }
 
@@ -322,24 +327,24 @@ class FeedbackMRI
     function getAllCommentTypes(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the array
         $query = "SELECT CommentTypeID, CommentName, CommentStatusField
                     FROM feedback_mri_comment_types
                   WHERE CommentType=:CT";
 
-        $result = $DB->pselect($query, array('CT' => $this->objectType));
+        $result = $DB->pselect($query, ['CT' => $this->objectType]);
 
         // build the output array and keep overall section at the end of the array
-        $commentNames = array();
-        $overallName  = array();
-        $overallType  = array();
+        $commentNames = [];
+        $overallName  = [];
+        $overallType  = [];
         if (is_array($result)) {
             foreach ($result as $row) {
                 $CommentName = $row['CommentName'];
                 $CTID        = $row['CommentTypeID'];
-                $statusField = array();
+                $statusField = [];
                 // deal with CommentStatusField
                 if (!empty($row['CommentStatusField'])) {
                     $statusField = unserialize($row['CommentStatusField']);
@@ -349,18 +354,18 @@ class FeedbackMRI
                 // commentNames array we want them only at the end
                 if ($CommentName == "Overall") {
                     $overallType = $CTID;
-                    $overallName = array(
+                    $overallName = [
                         'name'   => stripslashes($CommentName),
                         'field'  => $statusField['field'] ?? 'overall',
                         'values' => $statusField['values'] ?? '',
-                    );
+                    ];
                 } else {
                     // add a row to the output array
-                    $commentNames[$CTID] = array(
+                    $commentNames[$CTID] = [
                         'name'   => stripslashes($CommentName) ?? '',
                         'field'  => $statusField['field'] ?? '',
                         'values' => $statusField['values'] ?? '',
-                    );
+                    ];
                 }
 
                 unset($statusField);
@@ -379,12 +384,12 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param string $commentTypeID       CommentTypeID from
+     * @param ?int   $commentTypeID       CommentTypeID from
      *                                    feedback_mri_comment_types
      *                                    table (optional if
      *                                    using
      *                                    predefinedCommentID)
-     * @param string $predefinedCommentID PredefinedCommentID
+     * @param ?int   $predefinedCommentID PredefinedCommentID
      *                                    from
      *                                    feedback_mri_predefined_comments
      *                                    table
@@ -393,8 +398,8 @@ class FeedbackMRI
      */
     function _addComment(
         string $comment='',
-        string $commentTypeID='',
-        string $predefinedCommentID=''
+        ?int    $commentTypeID=null,
+        ?int $predefinedCommentID=null
     ): bool {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)
@@ -405,16 +410,20 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // object identifier
-        $set = array();
+        $set = [];
         if ($this->objectType == 'volume') {
             // per-volume
             $set['FileID'] = $this->fileID;
             $file          = new MRIFile($this->fileID);
             $set['SeriesUID'] = $file->getParameter('series_instance_uid');
             $set['EchoTime']  = $file->getParameter('echo_time');
+            $set['PhaseEncodingDirection'] = $file->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $set['EchoNumber'] = $file->getParameter('echo_numbers');
         } else {
             // per-visit
             $set['SessionID'] = $this->sessionID;
@@ -429,7 +438,7 @@ class FeedbackMRI
 
             $commentTypeID = $DB->pselectOne(
                 $subquery,
-                array('PCID' => $predefinedCommentID)
+                ['PCID' => $predefinedCommentID]
             );
 
             if (empty($commentTypeID)) {
@@ -482,10 +491,10 @@ class FeedbackMRI
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            $where = array('FileID' => $this->fileID);
+            $where = ['FileID' => $this->fileID];
         } else {
             // per-visit
-            $where = array('SessionID' => $this->sessionID);
+            $where = ['SessionID' => $this->sessionID];
         }
         return $where;
     }

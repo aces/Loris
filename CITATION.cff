@@ -1,0 +1,316 @@
+authors: 
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: MacFarlane
+    given-names: David
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Rogers
+    given-names: Christine
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Abou-Haidar
+    given-names: Rida
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Das
+    given-names: Samir
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Lecours
+    given-names: Xavier
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Livadas
+    given-names: Alexandra
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Henri-Bellemare
+    given-names: Charlie
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Madjar
+    given-names: Cécile
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Casimir
+    given-names: Jefferson
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Callegaro
+    given-names: Jessica
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Beaudoin
+    given-names: Camille
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Stirling
+    given-names: Jordan
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Wang
+    given-names: Shen
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Fesselier
+    given-names: Laetitia
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: MacIntyre
+    given-names: Leigh
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Wickenheiser
+    given-names: Alizée
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Heshmati
+    given-names: Milad
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Mohades
+    given-names: Zia
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Brossard
+    given-names: Nicolas
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Rioux
+    given-names: Pierre
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Acosta
+    given-names: Rolando
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Torres Gomez
+    given-names: Santiago
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Mathew
+    given-names: Sruthy
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Lee
+    given-names: Suzanne
+  -
+    affiliation: "Concordia PERFORM Centre"
+    family-names: Beaudry
+    given-names: Thomas
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Rosli
+    given-names: Zaliqa
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Pac-Soo
+    given-names: Pierre
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Evans
+    given-names: Leigh
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Fri-Tunteng
+    given-names: Jingla
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Rabalais
+    given-names: Henri
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Saigle
+    given-names: John
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Kat
+    given-names: Justin
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Abiola
+    given-names: Moshood
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Safi-Harab
+    given-names: Mouna
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Beck
+    given-names: Natacha
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Adalat
+    given-names: Reza
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Ongaro-Carcy
+    given-names: Regis
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Teng
+    given-names: Andy
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Caron
+    given-names: Bryan
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Makowski
+    given-names: Carolina
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Lo
+    given-names: Derek
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Qiu
+    given-names: Haowei
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Bhinder
+    given-names: Harpreet
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Raoult
+    given-names: Jean-Michel
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Le
+    given-names: John
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Remz
+    given-names: Jordana
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Hasbini
+    given-names: Karim
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Mirgholami
+    given-names: Mahsa
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Mazaheri
+    given-names: Mandana
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Kang
+    given-names: Mo
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Djellouli
+    given-names: Mourad
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Khalili-Mahani
+    given-names: Najmeh
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Diallo
+    given-names: Ousmane
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Kostopoulos
+    given-names: Penelope
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Morin
+    given-names: Pierre-Emmanuel
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Toussaint
+    given-names: PJ
+  -
+    affiliation: "McConnell Brain Imaging Centre - McGill University"
+    family-names: Paiva
+    given-names: Santiago
+  -
+    affiliation: "Concordia University"
+    family-names: Glatard
+    given-names: Tristan
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Gaba
+    given-names: Vidhu
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Hoang
+    given-names: Viet
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Bhembe
+    given-names: Vuyo
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Pham
+    given-names: Xuan Mai
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Chen
+    given-names: Yalin Corey
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Ding
+    given-names: Yang
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Lee
+    given-names: Stella
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Ilea
+    given-names: Alex
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: McKinney
+    given-names: James
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Muehlboeck
+    given-names: Sebastian
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Corderey
+    given-names: Andrew
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Charlet
+    given-names: Matt
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Harlap
+    given-names: Jonathan
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Zijdenbos
+    given-names: Alex
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Vins
+    given-names: Dario
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Legault
+    given-names: Mélanie
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Khan
+    given-nameS: Muhammed
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Evans
+    given-names: Alan C.
+
+cff-version: "1.1.0"
+identifiers:
+  -
+    type: url
+    value: "https://www.loris.ca"
+doi: 10.5281/zenodo.5177111
+license: "GPL-3.0"
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/aces/Loris"
+title: "LORIS (Longitudinal Online Research and Imaging System)"

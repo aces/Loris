@@ -1,6 +1,7 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -8,7 +9,6 @@ import React, {useEffect} from 'react';
  * on the candidate profile.
  *
  * @param {object} props - React props
- *
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
@@ -69,12 +69,16 @@ function CandidateScanQCSummaryWidget(props) {
             </p>
         </div>;
 }
+CandidateScanQCSummaryWidget.propTypes = {
+  Files: PropTypes.array,
+  BaseURL: PropTypes.string,
+  VisitMap: PropTypes.array,
+};
 
 /**
  * Get a list of unique modalities in the files passed.
  *
  * @param {object} files - The files table summary data
- *
  * @return {array}
  */
 function getModalities(files) {
@@ -89,7 +93,6 @@ function getModalities(files) {
  * Get a list of unique visits in the data passed.
  *
  * @param {object} files - The files table summary data
- *
  * @return {array}
  */
 function getVisits(files) {
@@ -115,7 +118,6 @@ function getVisits(files) {
  * @param {object} data - The unprocessed data
  * @param {array} modalities - A list of modality strings
  * @param {array} visits - A list of visit strings
- *
  * @return {array}
  */
 function getDataBreakdown(data, modalities, visits) {
@@ -155,7 +157,6 @@ function getDataBreakdown(data, modalities, visits) {
  * @param {array} modalities - a list of modalities
  * @param {array} files - the raw results of the DB
  *                        query
- *
  * @return {object}
  */
 function getDataObject(modalities, files) {
@@ -180,7 +181,6 @@ function getDataObject(modalities, files) {
  * the C3 library.
  *
  * @param {array} modalities - the list of modalities
- *
  * @return {array}
  */
 function getDataGroups(modalities) {
@@ -206,7 +206,6 @@ function getDataGroups(modalities) {
  * range to avoid overpoweringly strong colours.
  *
  * @param {array} modalities - list of modalities in data
- *
  * @return {object}
  */
 function getColorFuncs(modalities) {
@@ -221,7 +220,13 @@ function getColorFuncs(modalities) {
         obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', 20, 60)';
 
         mlabel = modalities[i] + ' - Other';
-        obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ')';
+        obj[mlabel] = 'rgb('
+                      + (200 - (step*i))
+                      + ', '
+                      + (200 - (step*i))
+                      + ', '
+                      + (200 - (step*i))
+                      + ')';
     }
     return obj;
 }

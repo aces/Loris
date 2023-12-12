@@ -43,19 +43,19 @@ class Email
      * @param string $bcc      optional email header
      * @param string $type     optional defaults to plain text
      *
-     * @return void
+     * @return bool The result of PHP mail().
      * @access public
      */
-    static function send(
+    public static function send(
         string $to,
         string $template,
-        array $tpl_data = array(),
+        array $tpl_data = [],
         string $reply_to = '',
         string $from = '',
         string $cc = '',
         string $bcc = '',
         string $type="text/plain"
-    ): void {
+    ): bool {
         $config   =& NDB_Config::singleton();
         $defaults = $config->getSetting('mail');
 
@@ -105,7 +105,7 @@ class Email
         $message = preg_replace('/^Subject: .*/', '', $message);
 
         // send the email
-        mail(
+        return mail(
             $to,
             $match[1],
             preg_replace("/(?<!\r)\n/s", "\n", $message),

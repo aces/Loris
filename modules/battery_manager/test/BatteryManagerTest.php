@@ -28,6 +28,28 @@ require_once __DIR__ .
  */
 class BatteryManagerTest extends LorisIntegrationTest
 {
+    /**
+     * Tests that, when loading the BatteryManager module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testBatteryManagerDoespageLoad()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Battery Manager", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
 
     /**
      * Tests that the page does not load if the user does not have correct
@@ -37,12 +59,15 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("battery_manager_view"));
+        $this->setupPermissions(["battery_manager_view"]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -53,12 +78,15 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 

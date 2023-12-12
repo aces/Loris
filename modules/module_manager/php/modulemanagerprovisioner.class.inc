@@ -33,12 +33,14 @@ class ModuleManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a ModuleManagerProvisioner, which gets modules for the
      * module manager menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
             "SELECT name, active FROM modules",
-            array()
+            []
         );
     }
 
@@ -51,6 +53,6 @@ class ModuleManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new ModuleRow($row);
+            return new ModuleRow($this->loris, $row);
     }
 }

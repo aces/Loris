@@ -7,11 +7,11 @@
  *
  * @author Alex Ilea
  * @version 0.0.2
- * @since 2016-11-22
- *
+ */
+
+/**
  * @constructor
  * @return {{}} - QueryString helper object
- *
  */
 let QueryString = {
   /**
@@ -51,7 +51,8 @@ let QueryString = {
     let queryStringObj = JSON.parse(JSON.stringify(currentQuery));
 
     // Make sure that key is of string type and value is of string or object type
-    if (typeof fieldName !== 'string' || (typeof fieldValue !== 'string' && typeof fieldValue !== 'object')) {
+    if (typeof fieldName !== 'string'
+       || (typeof fieldValue !== 'string' && typeof fieldValue !== 'object')) {
       console.error(
         'Error in QueryString.set(): \n' +
         '\tfieldName must be of type string and' +

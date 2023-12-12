@@ -50,13 +50,15 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             psc.Name AS site,
             t.TarchiveID AS TarchiveID,
             s.ID AS SessionID,
-            s.CenterID AS CenterID
+            s.CenterID AS CenterID,
+            m.IsPhantom AS IsPhantom
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
                   LEFT JOIN psc ON (psc.CenterID=s.CenterID)
+                  LEFT JOIN mri_upload m ON (m.TarchiveID=t.TarchiveID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
-            array()
+            []
         );
     }
 
@@ -70,8 +72,12 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = (int) $row['CenterID'];
+        if ($row['CenterID'] !== null) {
+            $cid = new \CenterID($row['CenterID']);
             unset($row['CenterID']);
-            return new DICOMArchiveRow($row, $cid);
+            return new DICOMArchiveRowWithSession($row, $cid);
+        }
+        unset($row['CenterID']);
+        return new DICOMArchiveRowWithoutSession($row);
     }
 }

@@ -1,32 +1,21 @@
 <?php
+namespace LORIS\mri_violations;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * This page implements a front end which is used to unify all
  * of the different MRI violation types (could not identify scan,
  * header violation in the scan after identifying scan type, mislabeled
- * scan, etc) and link to the appropriate module to further investigate
- * why a scan was excluded by the imaging pipeline scripts.
+ * scan, etc) to investigate why a scan was excluded by the imaging
+ * pipeline scripts.
  *
- * PHP Version 7
- *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-namespace LORIS\mri_violations;
-/**
- * Implement the menu filter for searching through all violated scans
- *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-class Mri_Violations extends \NDB_Menu_Filter_Form
+class Mri_Violations extends \DataFrameworkMenu
 {
-    var $AjaxModule = true;
+    private string $seriesUID;
+    private string $violationType = 'default';
 
     /**
      * Check if user should be allowed to see this page.
@@ -38,377 +27,172 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
                 'violated_scans_view_ownsite'
-            )
-        );
-    }
-    /**
-     * Process function
-     *
-     * @param array $values the values being processed
-     *
-     * @return bool true if the user is permitted to see violated scans
-     */
-    function _process($values)
-    {
-        if (!is_array($values) || count($values) ==0) {
-            return true;
-        }
-        $DB   = \Database::singleton();
-        $user = \User::singleton();
-        foreach ($values['resolvable'] AS $key=>$val) {
-            $hash = $key;
-            $row  = $DB->pselectRow(
-                "SELECT * FROM violations_resolved
-                    WHERE hash = :hash",
-                array('hash' => $hash)
-            );
-
-            //if row is found it means that resolve status was previously assigned,
-            // check the value and update if needed, else break.
-            if (!empty($row)) {
-                foreach ($row as $key2 => $val2) {
-                    //found matching
-                    if ($key2 == 'Resolved') {
-                        // user input matches DB content, so do nothing.
-                        if ($val==$val2) {
-                            break;
-                        } else {
-                            // user input doesn't match DB, so we update the DB
-                            $setArray   = array(
-                                'Resolved'   => (string)$val,
-                                'ChangeDate' => date("Y-m-d H:i:s"),
-                            );
-                            $whereArray = array('hash' => $hash);
-                            $DB->update(
-                                'violations_resolved',
-                                $setArray,
-                                $whereArray
-                            );
-                        }
-                    }
-                }
-            } else {
-                //if row is not found no resolve status was assigned,
-                // if selection<>0, then insert new row.
-                // no need to insert to DB for Unresolved value.
-                if ($val=='unresolved') {
-                    continue;
-                }
-                $newlyResolved         = array();
-                $newlyResolved['hash'] = $key;
-                $newlyResolved['Resolved']   = (string)$val;
-                $newlyResolved['User']       = $user->getUsername();
-                $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
-
-                // Table 1: mri_protocol_violated_scans
-                $ID_mri_protocol_violated_scans = $DB->pselectOne(
-                    "SELECT ID
-                    FROM mri_protocol_violated_scans 
-                    WHERE (:hash = md5(concat_WS(
-                              ':',minc_location,PatientName,SeriesUID,time_run)
-                                   )
-                    )",
-                    array('hash' => $key)
-                );
-                if (!empty($ID_mri_protocol_violated_scans)) {
-                    $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
-                    $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
-                }
-                // Table 2: mri_violations_log
-                $ID_mri_violations_log = $DB->pselectOne(
-                    "SELECT LogID
-                    FROM mri_violations_log
-                    WHERE (:hash = md5(concat_WS(
-                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
-                                   )
-                    )",
-                    array('hash' => $key)
-                );
-
-                if (!empty($ID_mri_violations_log)) {
-                    $newlyResolved['TypeTable'] = 'mri_violations_log';
-                    $newlyResolved['ExtID']     = $ID_mri_violations_log;
-                }
-
-                // Table 3: MRICandidateErrors
-                $ID_MRICandidateErrors = $DB->pselectOne(
-                    "SELECT ID
-                    FROM MRICandidateErrors
-                    WHERE (:hash = md5(concat_WS(
-                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
-                                   )
-                    )",
-                    array('hash' => $key)
-                );
-
-                if (!empty($ID_MRICandidateErrors)) {
-                    $newlyResolved['TypeTable'] = 'MRICandidateErrors';
-                    $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
-                }
-                $DB->insert('violations_resolved', $newlyResolved);
-            }
-        }
-
-        $this->tpl_data['success'] = true;
-    }
-    /**
-     * Set up the class and smarty variables to use for the menu filter to
-     * generate the proper query for the menu filter
-     *
-     * @return void
-     */
-    function _setupVariables()
-    {
-        // set the class variables
-        $this->columns = array(
-            'v.PatientName',
-            'pjct.Name as Project',
-            'subpjct.title as Subproject',
-            'site.Name as Site',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem',
-            'v.SeriesUID',
-            'v.hash',
-            'v.join_id',
-            'v.Resolved',
-            'v.TarchiveID',
-            'v.CandID',
-            'v.PSCID'
-        );
-
-        $this->headers = array(
-            'PatientName',
-            'Project',
-            'Subproject',
-            'Site',
-            'TimeRun',
-            'MincFile',
-            'Series_Description_Or_Scan_Type',
-            'Problem',
-            'SeriesUID',
-            'Hash',
-            'JoinID',
-            'Resolution_status',
-            'TarchiveID',
-            'CandID',
-            'PSCID'
-        );
-
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-                'SeriesUID',
-                'Hash',
-                'JoinID',
-                'TarchiveID',
-                'CandID',
-                'PSCID'
             ]
         );
-
-        $this->query = \LORIS\mri_violations\Module::getMriViolatedScanQuery();
-
-        $this->order_by = 'v.TimeRun DESC';
-
-        $this->formToFilter = array(
-            'PatientName' => 'v.PatientName',
-            'Project'     => 'v.Project',
-            'Subproject'  => 'v.Subproject',
-            'TimeRun'     => 'v.TimeRun',
-            'ProblemType' => 'v.Problem',
-            'Filename'    => 'v.MincFile',
-            'Description' => 'v.Series_Description',
-            'SeriesUID'   => 'v.SeriesUID',
-            'Site'        => 'v.Site',
-        );
-
-        $this->validFilters = array(
-            'v.PatientName',
-            'v.Project',
-            'v.Subproject',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.Problem',
-            'v.Series_Description',
-            'v.SeriesUID',
-            'v.Site',
-        );
-
-        $this->EqualityFilters[] = 'v.Site';
     }
 
     /**
-     * Updates the array of query parameters (if needed) for a given field.
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @param array  $qparams      array of query parameters.
-     * @param string $field        field that appears in the query.
-     * @param string $prepared_key string to use as a placeholder in the query
-     *                             for the field.
-     * @param string $val          field value.
-     *
-     * @return void
-     *
-     * @override
+     * @return ?array of site permissions or null
      */
-    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    public function allSitePermissionNames() : ?array
     {
-        // No parameter should be added for the prepared statement if
-        // 'Unknown' or 'AllKnown' were selected in the site drop-down
-        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
-            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
-        }
+        return ['violated_scans_view_allsites'];
     }
 
     /**
-     * Adds filters
+     * We do not use the base project filter because since it's a violated
+     * scan, it's possible that the project will be null. Instead we add
+     * our own UserProjectMatchOrNull filter.
      *
-     * @param string $prepared_key filter key
-     * @param string $field        filter field
-     * @param string $val          filter value
-     *
-     * @return string ($query)
-     *
-     * @override
+     * @return bool false
      */
-    function _addValidFilters($prepared_key, $field, $val)
+    public function useProjectFilter() : bool
     {
-        // The added AND clause differs from the one returned by
-        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
-        // selected in the sites drop-down
-        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
-            return $val == 'Unknown'
-                ? ' AND v.Site IS NULL'
-                : ' AND v.Site IS NOT NULL';
-        }
-
-        // Standard behaviour for cases other than the above
-        return parent::_addValidFilters($prepared_key, $field, $val);
+        return false;
     }
 
     /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
+     * {@inheritDoc}
      *
-     * @return void
+     * @return array
      */
-    function setup()
+    protected function getFieldOptions() : array
     {
-        parent::setup();
-        // create user object
-        $user    =& \User::singleton();
-        $config  =& \NDB_Config::singleton();
-        $db      =& \Database::singleton();
-        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
-        $maxYear = $config->getSetting('endYear');
-
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => true,
-            'minYear'        => $minYear,
-            'maxYear'        => $maxYear,
-        );
-
-        $problemOptions = ['' => 'Any'];
-
         // Build a list of existing problem types based on data in db
-        $problemTypes = $db->pselect(
-            "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-            UNION 
-            SELECT DISTINCT 'Could not identify scan type' 
-            FROM mri_protocol_violated_scans
-            UNION
-            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-            array()
+        $db           = $this->loris->getDatabaseConnection();
+        $problemTypes = array_column(
+            $db->pselect(
+                "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+                    UNION
+                 SELECT DISTINCT 'Could not identify scan type'
+                      FROM mri_protocol_violated_scans
+                    UNION
+                 SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+                []
+            ),
+            'Reason'
         );
 
-        // Searches for reasons containing newlines will fail so we strip
-        // those characters from all the entries in list
-        foreach ($problemTypes as $problem) {
-            $problemOptions[trim($problem['Reason'])] = trim($problem['Reason']);
-        }
-
-        $this->addBasicText('PatientName', 'Patient Name');
-        $this->addBasicText('Description', 'Series Description or Scan Type');
-        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
-        $this->addBasicText('Filename', 'MincFile');
-        $this->addBasicText('SeriesUID', 'Series UID');
-        $this->addSelect("ProblemType", "Type of problem", $problemOptions);
-
-        // project
-        $list_of_projects = array('' => 'Any') + \Utility::getProjectList();
-        $this->addSelect(
-            'Project',
-            'Project',
-            $list_of_projects
+        $protocols = $db->pselect(
+            "SELECT p.ID, mpg.Name as 'Protocol Group',
+                    site.Name as Center_name, ScannerID,
+                    s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+                    TI_max, slice_thickness_min, slice_thickness_max,
+                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+                    zstep_min, zstep_max, time_min, time_max,
+                    series_description_regex,
+                    image_type, PhaseEncodingDirection, EchoNumber
+             FROM mri_protocol as p
+             LEFT JOIN mri_protocol_group mpg
+                 ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
+             LEFT JOIN mri_scan_type as s
+                 ON p.Scan_type=s.ID
+             LEFT JOIN psc site ON (p.CenterID=site.CenterID)
+             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+            []
         );
-
-        // Subproject
-        $list_of_subprojects = array('' => 'Any') +
-            \Utility::getSubprojectList();
-        $this->addSelect(
-            'Subproject',
-            'Subproject',
-            $list_of_subprojects
-        );
-
-        // Get sites
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites  = array(
-                ''         => 'All (including unknown)',
-                'AllKnown' => 'All (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            );
-            $sites += \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites  = array(
-                ''         => 'All user sites (including unknown)',
-                'AllKnown' => 'All user sites (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            );
-            $sites +=  $user->getStudySites();
-        }
-        $this->addSelect('Site', 'Site', $sites);
+        return [
+            'projects'     => \Utility::getProjectList(),
+            'cohorts'      => \Utility::getCohortList(),
+            'sites'        => \Utility::getSiteList(),
+            'problemtypes' => $problemTypes,
+            'protocols'    => $protocols,
+        ];
     }
 
     /**
-     * Gathers JS dependecies and merge them with the parent
+     * Extract the appropriate provisioner to use for the JSON format
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        if (isset($params['seriesUID'])) {
+            $this->seriesUID = $params['seriesUID'];
+        }
+
+        $this->violationType = $params['violationtype'] ?? 'default';
+        return parent::handle($request);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        switch ($this->violationType) {
+        case 'protocolviolation':
+            return (new ProtocolViolationProvisioner($this->seriesUID));
+        case 'protocolcheck':
+            return (new ProtocolCheckViolationProvisioner($this->seriesUID))
+            ->filter(
+                new UserCenterMatchOrNullOrAnyPermission(
+                    $this->allSitePermissionNames(),
+                )
+            );
+        default:
+            return (new Provisioner())
+                ->filter(new UserCenterMatchOrNull())
+                ->filter(new UserProjectMatchOrNull());
+        }
+    }
+
+    /**
+     * Overload filters to allow posssibility of a null CenterID. Filters are
+     * added in getBaseDataProvisioner depending on the type
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
+    {
+        return $this->getBaseDataProvisioner();
+    }
+
+    /**
+     * Include additional JS files
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-            )
+            [
+                $baseURL . "/mri_violations/js/mriViolationsIndex.js",
+            ]
         );
     }
 
     /**
-     * Include additional CSS files
+     * Include additional CSS files:
      *
-     * @return array of CSS to be inserted
+     * @return array of css to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/mri_violations/css/mri_violations.css")
+            [
+                $baseURL . "/mri_violations/css/mri_violations.css",
+            ]
         );
     }
 }

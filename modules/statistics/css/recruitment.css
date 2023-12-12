@@ -11,3 +11,6 @@
     background-color: #2FA4E7;
 }
 
+.c3-chart-line.c3-target.c3-target-Total{
+    display: none !important;
+}

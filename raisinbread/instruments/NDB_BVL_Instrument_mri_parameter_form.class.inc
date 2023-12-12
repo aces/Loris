@@ -23,6 +23,7 @@
 class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -32,7 +33,6 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         'Testdate',
         'Window_Difference',
         'Candidate_Age',
-        'Data_entry_completion_status',
     );
 
     /**
@@ -54,13 +54,6 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $this->testName  = 'mri_parameter_form'; // test_names.Test_name
         $this->table     = 'mri_parameter_form';
         $this->commentID = $commentID; // data keyed by commentID
-
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array(
-            "Date_taken",
-            "scan_date",
-        );
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
@@ -153,7 +146,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         // Get Name and MRI Alias from sites table for select options
 
         $query    = "SELECT Name, CenterID FROM psc";
-        $db       = Database::singleton();
+        $db       = \NDB_Factory::singleton()->database();
         $sitesRaw = $db->pselect($query, array());
         $sites    = array(null => '');
         foreach ($sitesRaw as $i) {

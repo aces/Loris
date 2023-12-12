@@ -15,6 +15,15 @@ namespace LORIS\candidate_profile;
  */
 class CandidateWidget implements \LORIS\GUI\Widget
 {
+    private string $_title;
+    private string $_url;
+    private string $_componentname;
+    private array $_props;
+
+    private ?int $_width;
+    private ?int $_height;
+    private ?int $_order;
+
     /**
      * Construct a dashboard widget with the specified properties.
      *
@@ -36,13 +45,13 @@ class CandidateWidget implements \LORIS\GUI\Widget
         ?int $height = null,
         ?int $order = null
     ) {
-        $this->title         = $title;
-        $this->url           = $jsurl;
-        $this->width         = $width;
-        $this->height        = $height;
-        $this->componentname = $componentname;
-        $this->props         = $props;
-        $this->order         = $order;
+        $this->_title         = $title;
+        $this->_url           = $jsurl;
+        $this->_width         = $width;
+        $this->_height        = $height;
+        $this->_componentname = $componentname;
+        $this->_props         = $props;
+        $this->_order         = $order;
     }
 
     /**
@@ -53,7 +62,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function __toString()
     {
-        return $this->url;
+        return $this->_url;
     }
 
     /**
@@ -63,7 +72,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getTitle() : string
     {
-        return $this->title;
+        return $this->_title;
     }
 
     /**
@@ -73,7 +82,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getWidth() : ?int
     {
-        return $this->width;
+        return $this->_width;
     }
 
     /**
@@ -83,7 +92,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getHeight() : ?int
     {
-        return $this->height;
+        return $this->_height;
     }
 
     /**
@@ -93,7 +102,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getOrder() : ?int
     {
-        return $this->order;
+        return $this->_order;
     }
 
     /**
@@ -104,7 +113,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getJSURL() : string
     {
-        return $this->url;
+        return $this->_url;
     }
 
     /**
@@ -115,7 +124,7 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getComponentName() : string
     {
-        return $this->componentname;
+        return $this->_componentname;
     }
 
     /**
@@ -126,6 +135,6 @@ class CandidateWidget implements \LORIS\GUI\Widget
      */
     public function getComponentProps() : array
     {
-        return $this->props;
+        return $this->_props;
     }
 }

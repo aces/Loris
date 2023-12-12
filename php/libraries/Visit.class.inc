@@ -25,31 +25,31 @@ namespace LORIS;
 class Visit
 {
     /**
-     * The visit ID
-     *
-     * @var int
-     */
-    protected $id;
-
-    /**
      * The visit name (formely known as visit_label)
      *
-     * @var string
+     * @var ?string
      */
     protected $name;
 
     /**
+     * The visit label displayed in the browser
+     *
+     * @var ?string
+     */
+    protected $label;
+
+    /**
      * The contructor
      *
-     * @param string|null $name The visit name
-     * @param string|null $id   The ID of the visit
+     * @param ?string $name  The visit name
+     * @param ?string $label The visit label (Front-end)
      */
     public function __construct(
         ?string $name = null,
-        ?string $id   = null
+        ?string $label = null
     ) {
-        $this->name = $name;
-        $this->id   = $id;
+        $this->name  = $name;
+        $this->label = $label;
     }
 
     /**
@@ -59,6 +59,22 @@ class Visit
      */
     public function getName(): string
     {
+        if ($this->name === null) {
+            throw new \LorisException("No name defined for Visit");
+        }
         return $this->name;
+    }
+
+    /**
+     * Getter for visit label
+     *
+     * @return string The visit's label
+     */
+    public function getLabel(): string
+    {
+        if ($this->label === null) {
+            throw new \LorisException("No label defined for Visit");
+        }
+        return $this->label;
     }
 }

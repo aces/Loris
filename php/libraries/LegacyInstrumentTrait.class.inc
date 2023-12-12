@@ -29,20 +29,32 @@
 trait LegacyInstrumentTrait
 {
     /**
+     * The LorisInstance that this page was created to serve.
+     *
+     * @var \LORIS\LorisInstance
+     */
+    protected \LORIS\LorisInstance $loris;
+
+    /**
+     * The testName being accessed. Not that this is set in
+     * NDB_BVL_Instrument but needs to be redeclared here so
+     * that static analysis tools know that it exists within
+     * the scope of this trait.
+     */
+    public $testName;
+
+    /**
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    public function getFullName(): string
+    public function getFullName(): ?string
     {
-        $db = \Database::singleton();
-
-        $success = $db->pselectOne(
+        return $this->loris->getDatabaseConnection()->pselectOne(
             "SELECT Full_name FROM test_names WHERE Test_name=:TN",
-            array('TN' => $this->testName)
+            ['TN' => $this->testName]
         );
-        return $success;
     }
 
     /**
@@ -56,14 +68,14 @@ trait LegacyInstrumentTrait
     function getSubtestList(): array
     {
         // get a database connection
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $query = "SELECT Subtest_name AS Name, Description
             FROM instrument_subtests
             WHERE Test_name=:TN
                 ORDER BY Order_number";
 
-        $results = $db->pselect($query, array('TN' => $this->testName));
+        $results = $db->pselect($query, ['TN' => $this->testName]);
 
         return $results;
     }

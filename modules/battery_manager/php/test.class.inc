@@ -25,40 +25,60 @@ namespace LORIS\battery_manager;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class Test implements \LORIS\Data\DataInstance
+class Test implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     public $row;
+    private ?\CenterID $center;
+    private \LORIS\LorisInstance $loris;
 
     /**
      * Create a new Test Instance.
      *
-     * @param array $row The row (in the same format as \Database::pselectRow returns
-     *                   returns
+     * @param \LORIS\LorisInstance $loris  The LORIS instance with the test
+     * @param ?\CenterID           $center The site this test is
+                                           applied at, if applicable
+     * @param array                $row    The row (in the same format as
+                                           \Database::pselectRow returns
      */
-    public function __construct(array $row)
-    {
-        $this->row = $row;
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        ?\CenterID $center,
+        array $row
+    ) {
+        $this->row    = $row;
+        $this->center = $center;
+        $this->loris  = $loris;
     }
 
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->row);
+        return $this->row;
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID[] array The CenterIDs
      */
-    public function getCenterID() : int
+    public function getCenterIDs() : array
     {
-        return $this->row['centerId'];
+        if ($this->center !== null) {
+            return [$this->center];
+        }
+        return array_map(
+            function ($site) {
+                return $site->getCenterID();
+            },
+            $this->loris->getAllSites()
+        );
     }
 
     /**
@@ -68,18 +88,18 @@ class Test implements \LORIS\Data\DataInstance
      */
     public function toSQL() : array
     {
-        return array(
-            'ID'           => $this->row['id']              ?? null,
-            'Test_name'    => $this->row['testName']        ?? null,
-            'AgeMinDays'   => $this->row['ageMinDays']      ?? null,
-            'AgeMaxDays'   => $this->row['ageMaxDays']      ?? null,
-            'Stage'        => $this->row['stage']           ?? null,
-            'SubprojectID' => $this->row['subproject']      ?? null,
-            'Visit_label'  => $this->row['visitLabel']      ?? null,
-            'CenterID'     => $this->row['centerId']        ?? null,
-            'firstVisit'   => $this->row['firstVisit']      ?? null,
-            'instr_order'  => $this->row['instrumentOrder'] ?? null,
-            'Active'       => $this->row['active']          ?? null,
-        );
+        return [
+            'ID'          => $this->row['id']              ?? null,
+            'Test_name'   => $this->row['testName']        ?? null,
+            'AgeMinDays'  => $this->row['ageMinDays']      ?? null,
+            'AgeMaxDays'  => $this->row['ageMaxDays']      ?? null,
+            'Stage'       => $this->row['stage']           ?? null,
+            'CohortID'    => $this->row['cohort']      ?? null,
+            'Visit_label' => $this->row['visitLabel']      ?? null,
+            'CenterID'    => $this->row['centerId']        ?? null,
+            'firstVisit'  => $this->row['firstVisit']      ?? null,
+            'instr_order' => $this->row['instrumentOrder'] ?? null,
+            'Active'      => $this->row['active']          ?? null,
+        ];
     }
 }

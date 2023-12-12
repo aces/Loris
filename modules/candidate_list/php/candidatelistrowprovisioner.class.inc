@@ -36,7 +36,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct()
     {
-        $config   = \NDB_Config::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $config   = $factory->config();
         $maybeEDC = '';
 
         if ($config->getSetting("useEDC") === "true") {
@@ -48,15 +49,15 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.CandID AS DCCID,
                 GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
                 psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Subproject,
+                GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
                 DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                max(s.Current_stage) AS LatestVisitStatus,
                 p.Name AS RegistrationProject,
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
@@ -70,12 +71,13 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
-                    LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+                    LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                 WHERE c.Active = 'Y'
+                AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",
-            array()
+            []
         );
     }
 
@@ -94,8 +96,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int) $row['RegistrationCenterID'];
-        $pid = (int) $row['RegistrationProjectID'];
+        $cid = new \CenterID($row['RegistrationCenterID']);
+        $pid = new \ProjectID($row['RegistrationProjectID']);
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);

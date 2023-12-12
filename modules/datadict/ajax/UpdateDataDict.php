@@ -40,7 +40,7 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
 
     $native_description = $DB->pselectOne(
         "SELECT Description FROM parameter_type WHERE Name = :v_name",
-        array("v_name" => $name)
+        ["v_name" => $name]
     );
 
     if ($description != $native_description) {
@@ -49,15 +49,15 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
         }
         $DB->replace(
             'parameter_type_override',
-            array(
+            [
                 'Description' => $description,
                 'Name'        => $name,
-            )
+            ]
         );
     } else {
         $DB->delete(
             'parameter_type_override',
-            array('Name' => $name)
+            ['Name' => $name]
         );
     }
 }

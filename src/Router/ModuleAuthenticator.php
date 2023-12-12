@@ -31,6 +31,8 @@ use \Psr\Http\Message\ServerRequestInterface;
  */
 class ModuleAuthenticator implements \LORIS\Middleware\Authenticator
 {
+    protected \User $user;
+    protected \Module $Module;
 
     /**
      * The constructor for a ModuleAuthenticator takes the user accessing

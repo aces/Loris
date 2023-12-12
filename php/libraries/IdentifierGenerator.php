@@ -40,7 +40,7 @@ abstract class IdentifierGenerator
      * @var array<int,float|int|string> This is derived from the return type of PHP's
      *                              range() which is used to generate the alphabet.
      */
-    protected $alphabet = array();
+    protected $alphabet = [];
     /**
      * The length of the "suffix" portion of the ID.
      * e.g. for an ID `MON1234` with prefix `MON`, the suffix is length 4.
@@ -191,6 +191,7 @@ abstract class IdentifierGenerator
         $this->checkIDRangeFull();
 
         $id = '';
+        assert(count($this->alphabet) >= 1);
         while (strlen($id) < $this->length) {
             $id .= $this->alphabet[random_int(0, count($this->alphabet) - 1)];
         }

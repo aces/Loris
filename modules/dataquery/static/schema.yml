@@ -1,0 +1,385 @@
+openapi: 3.0.1
+info:
+  title: LORIS Data Query Tool API endpoints
+  description: |-
+    This is the API for the parts of the Loris data query module which are intended to be used as an API.
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/Loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: "3.0"
+servers:
+  - url: /dataquery/
+security:
+  - ApiKeyAuth: []
+paths:
+  /queries:
+    get:
+      summary: Get a list of a recent, shared, and study (top) queries for the current user.
+      responses:
+        '200':
+          description: Successfully operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllQueries'
+        '403':
+          description: Permission denied
+    post:
+      description: Create a new query and return the QueryID. If the same query (fields and criteria) already exists, the same QueryID will be returned instead of a new one being created.
+      requestBody:
+        description: A Query object (without the QueryID)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryObject'
+      responses:
+        '200':
+          description: Query successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  QueryID:
+                    type: integer
+        '400':
+          description: An invalid body was supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /queries/runs:
+    get:
+      summary: Get a list of a recent, query runs for the current user.
+      responses:
+        '200':
+          description: Successfully operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRunList'
+  /queries/{QueryID}:
+    parameters:
+      - name: QueryID
+        in: path
+        description: the QueryID returned by posting to /queries
+        required: true
+        style: simple
+        schema:
+          type: integer
+    get:
+      responses:
+        '200':
+          description: The Query was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+        '403':
+          description: Permission denied
+    patch:
+      parameters:
+        - name: share
+          in: query
+          style: spaceDelimited
+          schema:
+            type: boolean
+          description: if true, the query will be shared. If false, it will be unshared
+        - name: star
+          in: query
+          style: spaceDelimited
+          description: if true, the query will be shared. If false, it will be unshared
+          schema:
+            type: boolean
+        - name: adminname
+          in: query
+          style: pipeDelimited
+          description: The admin name to pin the query as. If the empty string, will be unpinned.
+          schema:
+            type: string
+        - name: dashboardname
+          in: query
+          style: pipeDelimited
+          description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
+          schema:
+            type: string
+        - name: name
+          in: query
+          style: pipeDelimited
+          description: The name to set for the query for this user.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The access was performed
+        '403':
+          description: The access was not performed because of permissions being denied.
+  /queries/{QueryID}/run:
+    parameters:
+      - name: QueryID
+        in: path
+        description: the QueryID returned by posting to /queries
+        required: true
+        style: simple
+        schema:
+          type: integer  
+    post:
+      description: |- 
+        Run the query QueryID and returns the results. 
+        
+        This endpoint will result in a new query run being generated, which will be returned in the queries of the user on the /queries endpoint.
+      responses:
+        '200':
+          description: The query was able to be successfully run
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/QueryResults'              
+        '500':
+          description: Something went wrong on the server running the query
+  /queries/{QueryID}/count:      
+    parameters:
+    - name: QueryID
+      in: path
+      description: the QueryID returned by posting to /queries
+      required: true
+      style: simple
+      schema:
+        type: integer  
+    get:
+      responses:
+        '200':
+          description: |-
+           A count of the number of candidate matches that would be returned if the query were to be run by the current user right now.
+           
+           This endpoint does *not* result in a new query run being generated or run the query, it only returns the count of how many candidates would match if the query *were* to be run.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: The number of candidates that match the filters 
+                    example: 34
+  /queries/{QueryID}/run/{QueryRunID}: 
+    description: |-
+      Returns the cached results of a previously run query
+      
+      Note: This endpoint is aspirational.
+    parameters:
+    - name: QueryID
+      in: path
+      description: the QueryID returned by posting to /queries
+      required: true
+      style: simple
+      schema:
+        type: integer
+    - name: QueryRunID
+      in: path
+      description: the identifier of a previous run for this QueryID.
+      required: true
+      style: simple
+      schema:
+        type: integer 
+    get:
+      responses:
+        '500':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                type: object
+            
+components:
+  schemas:
+    AllQueries:
+      type: object
+      properties:
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Query'
+    QueryRunList:
+      type: object
+      properties:
+        queryruns:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryRun'
+    Query:
+      type: object
+      properties:
+        self:
+          type: string
+          description: |-
+             A URL that this query can be accessed at.
+
+             Accessing the query directly through the URL is sure to have the same fields
+             and criteria, but other details of the object returned may not be identical.
+
+             For instance, the starred and name properties may vary based on the user
+             accessing the URI.
+          example: "https://example.com/dataquery/queries/4"
+        Query:
+          $ref: '#/components/schemas/QueryObject'
+        AdminName:
+          type: string
+          description: The name given by the admin for a pinned query
+          example: "Important Study Query Of Missing T1s"
+        Name:
+          type: string
+          description: The name given by the current user for this query
+          example: "My Query"
+        SharedBy:
+          type: array
+          items:
+            type: string
+            example: "admin"
+        Starred:
+          type: boolean
+          description: The query has been starred by the user
+        Public:
+          type: boolean
+          description: The query has been shared (made public to all users)
+        Pinned:
+          type: boolean
+          description: The query has been pinned by an administrator
+        QueryID:
+          type: integer
+          example: 3
+    QueryRun:
+      type: object
+      properties:
+        self:
+          type: string
+          description: A URL to access this query run
+          example: "https://example.com/dataquery/queries/3/run/34"
+        QueryURI:
+          type: string
+          description: A URL to access the query that was run
+          example: "https://example.com/dataquery/queries/3"
+        RunTime:
+          type: string
+          example: "2022-11-02 15:34:38"
+        QueryID:
+          type: integer
+          description: A reference to an object in the queries property identified by QueryID
+          example: 3
+        QueryRunID:
+          type: integer
+          description: A reference to the run number of this query
+          example: 4
+    QueryField:
+      type: object
+      properties:
+        module:
+          type: string
+          example: "candidate_parameters"
+        category:
+          type: string
+          example: "Identifiers"
+        field:
+          type: string
+          example: "CandID"
+        visits:
+          description: The visit labels for this field for session-level data
+          type: array
+          items:
+            type: string
+      required:
+        - module
+        - category
+        - field
+    QueryObject:
+      type: object
+      description: A set of filters and fields used to determine what is being queried.
+      properties:
+        type:
+          type: string
+          enum: ['candidates']
+          example: "candidates"
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryField'
+        criteria:
+          $ref: '#/components/schemas/QueryCriteriaGroup'
+      required:
+        - type
+        - fields
+    QueryCriteriaGroup:
+      type: object
+      description: An and/or group used for filtering, all items in the group must be the same operator (but an item in the group may be a query criteria subgroup using a different operator)
+      properties:
+        operator:
+          type: string
+          enum: ['and', 'or']
+          description: The operator to connect the items in group
+        group:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryGroupField'
+    QueryGroupField:
+      type: object
+      properties:
+        module:
+          type: string
+          example: "candidate_parameters"
+        category:
+          type: string
+          example: "Identifiers"
+        fieldname:
+          type: string
+          example: "CandID"
+        op:
+          type: string
+          enum: 
+            # Standard operators
+            - 'lt'
+            - 'lte'
+            - 'eq'
+            - 'neq'
+            - 'gte'
+            - 'gt'
+            # Enum operator
+            - 'in'
+            # String operators
+            - 'startsWith'
+            - 'endsWith'
+            - 'contains'
+            # Optional cardinality operators
+            - 'isnotnull'
+            - 'isnull'
+            # Many cardinality operators
+            - 'exists'
+            - 'notexists'
+            - 'numberof'
+        value:
+          type: string
+      required:
+        - module
+        - category
+        - fieldname
+        - op
+        - value
+    QueryResults:
+      description: |- 
+        The result of running a query.
+        
+        The result is a stream of data for each CandID that matched by the query. Candidates are separated by an ASCII unit separator (0x1f). Each cell within the candidate is separated by an ASCII record separator (0x1e). Each row should have the exact number of fields that were in the query fields attribute.
+        
+        Within each cell, the data is returned as a JSON value, the exact format varies based on the cell's dictionary type. If the data is candidate scoped, a value is directly returned as a JSON primitive. If it is session scoped variable or has cardinality many:one, a JSON object is returned. Session scoped variables contain a JSON object with the key being the SessionID for each session where this row's candidate has data and the value of which is an object of the format `{ SessionID: number, VisitLabel: string, value: value }`
+  
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+

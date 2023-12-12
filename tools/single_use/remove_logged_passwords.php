@@ -19,11 +19,11 @@ echo $info;
 
 echo "Checking for exposed passwords...\n";
 
-// Query DB for burned passwords. The bug caused passwords to be stored on 
+// Query DB for burned passwords. The bug caused passwords to be stored on
 // update so we'll limit the query to that. Additionally we will filter out
 // results from the `new` data that are password hashes i.e. those that begin
 // with the $ character.
-$sql = "select h.userID,
+$sql    = "select h.userID,
     h.changeDate,
     u.Email,
     u.Active 
@@ -32,16 +32,16 @@ $sql = "select h.userID,
     where h.col = 'Password_hash' 
     AND h.type='U' 
     AND h.new NOT LIKE '\$%';";
-$result = $DB->pselect($sql, array());
+$result = $DB->pselect($sql, []);
 
 // Reduce the result to one entry per user with the most recent date changed.
-$compromised = array();
-foreach($result as $row) {
-    $compromised[$row['userID']] = array(
-        'date' => $row['changeDate'],
-        'email' => $row['Email'],
+$compromised = [];
+foreach ($result as $row) {
+    $compromised[$row['userID']] = [
+        'date'   => $row['changeDate'],
+        'email'  => $row['Email'],
         'active' => $row['Active']
-    );
+    ];
 }
 
 if (count($compromised) === 0) {
@@ -50,9 +50,9 @@ if (count($compromised) === 0) {
 }
 
 // Set up output
-$report = array();
+$report   = [];
 $report[] = "The following users' passwords may have been exposed: ";
-$entry = <<<REPORT
+$entry    = <<<REPORT
 \tUsername: %s
 \tEmail: %s
 \tDate of Password Change: %s
@@ -62,7 +62,7 @@ REPORT;
 
 // Add the user's details to the report for output to the user.
 // Also, trigger a password reset for that user.
-foreach($compromised as $username => $details) {
+foreach ($compromised as $username => $details) {
     $report[] = sprintf(
         $entry,
         $username,
@@ -73,9 +73,9 @@ foreach($compromised as $username => $details) {
 
     // password reset
     $DB->update(
-        'users', 
-        array('Password_expiry' => '1990-01-01'), 
-        array('UserID' => $username)
+        'users',
+        ['PasswordChangeRequired' => '1'],
+        ['UserID' => $username]
     );
 }
 
@@ -86,14 +86,16 @@ echo "These users should be contacted and informed of the potential password "
 
 // Delete all passwords from history table.
 $DB->delete(
-    'history', array(
+    'history',
+    [
         'col' => 'Password_hash',
         'tbl' => 'users'
-    )
+    ]
 );
 $DB->delete(
-    'history', array(
+    'history',
+    [
         'col' => 'Password_md5',
         'tbl' => 'users'
-    )
+    ]
 );

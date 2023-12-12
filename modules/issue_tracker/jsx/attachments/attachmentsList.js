@@ -3,19 +3,25 @@
  *  for the issue being viewed in issue_tracker.
  *
  *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/aces/Loris
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
+import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * React component used to display
  * issue_tracker attachments list.
  */
 class AttachmentsList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +35,8 @@ class AttachmentsList extends Component {
     };
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
-    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete.bind(this);
+    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete
+                                      .bind(this);
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
@@ -55,7 +62,7 @@ class AttachmentsList extends Component {
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else {
-          swal('Permission denied', '', 'error');
+          swal.fire('Permission denied', '', 'error');
         }
       }).catch((error) => {
         console.error(error);
@@ -65,6 +72,7 @@ class AttachmentsList extends Component {
 
   /**
    * Confirm with the user about deleting the file.
+   *
    * @param {object} event - name of the form element
    */
   openModalAttachmentDelete(event) {
@@ -88,13 +96,14 @@ class AttachmentsList extends Component {
 
   /**
    * Populates the attachment options.
+   *
    * @param {string} deleteData - name of the element if deleted.
    * @param {object} item - info of attachment.
    * @return {DOMRect} row - to display.
    */
   displayAttachmentOptions(deleteData, item) {
     if (this.props.userHasPermission
-      || this.state.attachments.whoami === item.user) {
+      || this.props.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
@@ -143,6 +152,20 @@ class AttachmentsList extends Component {
     );
   }
 
+  /**
+   * Sets event target src to null
+   *
+   * @param {object} event
+   */
+  displayNone(event) {
+    event.target.src = null;
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const footerCSS = {
       float: 'right',
@@ -174,6 +197,7 @@ class AttachmentsList extends Component {
     );
 
     let attachmentsRows = [];
+    let regexImg = /image/;
     for (const key in this.state.attachments) {
       if (this.state.attachments.hasOwnProperty(key)) {
         const item = this.state.attachments[key];
@@ -192,7 +216,26 @@ class AttachmentsList extends Component {
               </div>
               <div className='col-md-8'>
                 <div className='col-md-1'><b>File: </b></div>
-                <div className='col-md-11'><i>{item.file_name}</i></div>
+                <div className='col-md-11'>
+                  <i>{item.file_name}</i>
+                  {regexImg.test(item.mime_type) ?
+                    (<img
+                      src={this.props.baseURL +
+                      '/issue_tracker/Attachment' +
+                      '?ID=' + item.ID +
+                      '&file_hash=' + item.file_hash +
+                      '&issue=' + this.props.issue +
+                      '&filename=' + item.file_name +
+                      '&mime_type=' + item.mime_type
+                      }
+                      width='100%'
+                      height='100%'
+                      onError={this.displayNone}
+                    >
+                    </img>) :
+                    null
+                  }
+                </div>
               </div>
             </div>
             <div className='row'>
@@ -233,6 +276,8 @@ AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
+  userHasPermission: PropTypes.bool,
+  whoami: PropTypes.string.isRequired,
 };
 AttachmentsList.defaultProps = {
   attachments: [],

@@ -1,12 +1,12 @@
 # Document Repository Test Plan
 
-1. User has access to document repository if they have the "View and upload files in Document Repository” or "Delete files in Document Repository" permission.
-   [Manual Testing]
+1. User has access to document repository if they have one of the `document_repository_*` permissions or `superuser`.
+   [Automation Testing (superuser permissions only)]
 2. Create a category and a sub category.
-   [Automation Testing]
+   [Manual Testing]
 3. Check that the comments for a category are displayed properly as a tooltip.
-   [Automation Testing]
-4. Upload a file.
+   [Manual Testing]
+4. Upload one file. Upload multiple files at once.
    [Manual Testing]
 5. User is able to delete a file if they have the "Delete files in Document Repository" permission or is the super user.
    [Manual Testing]
@@ -29,11 +29,22 @@
    [Manual Testing]
 14. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-15. Visit the My Preferences module and enable notifications for the document_repository.
+15. Visit the "My Preferences" module and enable notifications for the document_repository.
     Make sure that you are notified for the follow changes:
        - Addition, deletion or modification of a file (by a user other than yourself)
        - Addition of a category (by a user other than yourself)
     [Manual Testing]
 16. Try uploading a file that exceeds the max upload limit. Ensure that an error message occurs
-    when the server has detected that the file is too large.
+    when the server has detected that the file is too large. Do this again, with multiple files at once, to ensure proper individual error reporting for all files.
     [Manual Testing]
+
+### Widget registration on the dashboard page
+
+17. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository' 
+    permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
+    in the Document Repository panel. Clicking on a document will download it. Clicking on the Document
+    Repository button takes you to the Document Repository page.
+    [Manual Test]
+18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Manual Test]
+19. Check that a 'New' notification is not labeled 'New' anymore after login in again. [Manual Test]
+

@@ -1,7 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  TextareaElement,
+  ButtonElement,
+} from 'jsx/Form';
 
+/**
+ * Participant status component
+ */
 class ParticipantStatus extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -19,10 +33,16 @@ class ParticipantStatus extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     let that = this;
     $.ajax(
@@ -68,6 +88,12 @@ class ParticipantStatus extends Component {
     );
   }
 
+  /**
+   * Set form data
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     let required = this.state.Data.required;
@@ -82,10 +108,20 @@ class ParticipantStatus extends Component {
     );
   }
 
+  /**
+   * On submit
+   *
+   * @param {object} e - Event object
+   */
   onSubmit(e) {
     e.preventDefault();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -95,7 +131,7 @@ class ParticipantStatus extends Component {
           </div>
         );
       }
-    };
+    }
 
     let disabled = true;
     let updateButton = null;
@@ -118,12 +154,24 @@ class ParticipantStatus extends Component {
             suboptionsRequired = true;
         }
 
+        let commentsRequired = false;
+        let statusOpts = this.state.Data.statusOptions;
+        if (
+          statusOpts &&
+          statusOpts[participantStatus] !== 'Active' &&
+          statusOpts[participantStatus] !== 'Complete'
+        ) {
+          commentsRequired = true;
+        }
+
         let formattedHistory = [];
         for (let statusKey in this.state.Data.history) {
             if (this.state.Data.history.hasOwnProperty(statusKey)) {
                 let line = '';
                 for (let field in this.state.Data.history[statusKey]) {
-                    if (this.state.Data.history[statusKey].hasOwnProperty(field)) {
+                    if (this.state.Data.history[statusKey]
+                      .hasOwnProperty(field)
+                    ) {
                         let current = this.state.Data.history[statusKey][field];
                         if (current !== null) {
                             switch (field) {
@@ -169,7 +217,9 @@ class ParticipantStatus extends Component {
             } else if (this.state.updateResult === 'error') {
                 let errorMessage = this.state.errorMessage;
                 alertClass = 'alert alert-danger text-center';
-                alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+                alertMessage = errorMessage ?
+                  errorMessage :
+                  'Failed to update!';
             }
         }
 
@@ -213,7 +263,7 @@ class ParticipantStatus extends Component {
             onUserInput={this.setFormData}
             ref="reasonSpecify"
             disabled={disabled}
-            required={false}
+            required={commentsRequired}
             />
             {updateButton}
             {formattedHistory}

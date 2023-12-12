@@ -39,28 +39,27 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Create a new ModuleRow Instance.
      *
-     * @param array $row The ModuleRow Instance
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the module
+     * @param array                $row   The ModuleRow Instance
      */
-    public function __construct(array $row)
+    public function __construct(protected \LORIS\LorisInstance $loris, array $row)
     {
-        $this->Module = \Module::factory($row['name']);
+        $this->Module = $loris->getModule($row['name']);
         $this->Active = $row['active'];
     }
 
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the instance data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            [
-                'Name'     => $this->Module->getName(),
-                'LongName' => $this->Module->getLongName(),
-                'Active'   => $this->Active,
-            ]
-        );
+        return [
+            'Name'     => $this->Module->getName(),
+            'LongName' => $this->Module->getLongName(),
+            'Active'   => $this->Active,
+        ];
     }
 
 }

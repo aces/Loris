@@ -175,8 +175,8 @@ class DicomSeriesDTO
     {
         return array(
                 'id'             => $this->seriesid,
-                'description'    => $this->description,
-                'number'         => $this->number,
+                'description'    => $this->seriesdescription,
+                'number'         => $this->seriesnumber,
                 'echotime'       => $this->echotime,
                 'repetitiontime' => $this->repetitiontime,
                 'inversiontime'  => $this->inversiontime,

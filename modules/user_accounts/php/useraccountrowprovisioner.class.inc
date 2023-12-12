@@ -24,13 +24,14 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
                     u.Real_name as real_name,
                     u.Email as email,
                     u.Active as active,
-                    u.Pending_approval as pending
+                    u.Pending_approval as pending,
+                    u.account_request_date as account_request_date
              FROM users u
              LEFT JOIN user_psc_rel upsr ON (upsr.UserID=u.ID)
              LEFT JOIN user_project_rel uprr ON (uprr.UserID=u.ID)
              GROUP BY u.ID
              ORDER BY u.UserID",
-            array()
+            []
         );
     }
 
@@ -43,9 +44,26 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cids = explode(',', $row['centerIds']);
-        $row['centerIds'] = $cids;
-        $pids = explode(',', $row['projectIds']);
+        $cids = [];
+        $pids = [];
+        if (isset($row['centerIds'])) {
+            $cids = array_map(
+                function (string $cid) : \CenterID {
+                    return new \CenterID($cid);
+                },
+                explode(',', $row['centerIds'])
+            );
+        }
+        if (isset($row['projectIds'])) {
+            $pids = array_map(
+                function (string $pid) : \ProjectID {
+                    return new \ProjectID($pid);
+                },
+                explode(',', $row['projectIds'])
+            );
+        }
+
+        $row['centerIds']  = $cids;
         $row['projectIds'] = $pids;
         return new UserAccountRow($row, $cids, $pids);
     }

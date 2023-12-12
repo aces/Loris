@@ -48,18 +48,20 @@ class Project extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $factory        = \NDB_Factory::singleton();
-        $config         = $factory->config();
-        $projectList    = \Utility::getProjectList();
-        $subprojectList = \Utility::getSubprojectList();
-        $projects       = array();
+        $factory     = \NDB_Factory::singleton();
+        $config      = $factory->config();
+        $projectList = \Utility::getProjectList();
+        $cohortList  = \Utility::getCohortList();
+        $projects    = [];
         foreach (array_keys($projectList) as $ProjectID) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-            $projects[$ProjectID]['projectSubprojects']
-                = \Utility::getSubprojectsForProject($ProjectID);
+            $projects[$ProjectID]['projectCohorts']
+                = \Utility::getCohortsForProject(
+                    new \ProjectID(strval($ProjectID))
+                );
         }
-        $this->tpl_data['projects']    = $projects;
-        $this->tpl_data['subprojects'] = $subprojectList;
+        $this->tpl_data['projects'] = $projects;
+        $this->tpl_data['cohorts']  = $cohortList;
     }
 
     /**

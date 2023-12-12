@@ -13,9 +13,7 @@ return [
     // suppressed rules, we should consider reducing this value to detect more
     // suspicious code.
     "minimum_severity" => 1,
-    // FIXME: allow_missing_properties should be false, but there's
-    // too many other things to fix first.
-    "allow_missing_properties" => true,
+    "allow_missing_properties" => false,
     "null_casts_as_any_type" => false,
     "scalar_implicit_cast" => false,
     // The line below is required to prevent PhanUndeclaredVariable problems in
@@ -29,15 +27,11 @@ return [
     "ignore_undeclared_variables_in_global_scope" => true,
     // FIXME: We should add this.
     "dead_code_detection" => false,
-    // FIXME: We should add this. Note that dead_code_detection also covers
-    // unused_variable_detection. It might be a good idea to enable this first.
-    "unused_variable_detection" => false,
+    "unused_variable_detection" => true,
     "suppress_issue_types" => [
-        "PhanTypePossiblyInvalidDimOffset",
-        "PhanUndeclaredMethod",
-        "PhanTypeMismatchArgument",
-        "PhanTypeMismatchProperty",
-        "PhanTypeArraySuspiciousNullable",
+        "PhanUnusedPublicNoOverrideMethodParameter",
+        // Until phan/phan#4746 is fixed
+        "PhanTypeMismatchArgumentInternal"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
@@ -47,6 +41,9 @@ return [
         "src",
         "vendor",
         "test"
+    ],
+    'exclude_file_list' => [
+        'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizer/DoubleQuotedStringTest.inc'
     ],
     "exclude_analysis_directory_list" => [
         "vendor"

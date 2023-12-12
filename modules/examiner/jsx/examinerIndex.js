@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +6,13 @@ import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    ButtonElement,
+    CheckboxElement,
+    SelectElement,
+    FormElement,
+    TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Examiner Module Page.
@@ -16,9 +24,12 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Victoria Foing, Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class ExaminerIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -43,6 +54,9 @@ class ExaminerIndex extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -125,7 +139,6 @@ class ExaminerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -133,9 +146,13 @@ class ExaminerIndex extends Component {
 
     switch (column) {
       case 'Examiner':
-        const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                  row.ID;
-        result = <td><a href={url}>{cell}</a></td>;
+        if (this.state.data.useCertification) {
+          const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
+                    row.ID;
+          result = <td><a href={url}>{cell}</a></td>;
+        } else {
+          result = <td>{cell}</td>;
+        }
         break;
       case 'Radiologist':
         if (row.Radiologist === '1') {
@@ -149,14 +166,34 @@ class ExaminerIndex extends Component {
           result = <td>None</td>;
         }
         break;
+      case 'Site':
+        // If user has multiple sites, join array of sites into string
+        result = (
+          <td>{cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+          </td>
+        );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
+        }
+        break;
     }
     return result;
   }
 
+  /**
+   * Executed when modal is opened.
+   */
   openModal() {
     this.setState({showModal: true});
   }
 
+  /**
+   * Executed when modal is closed.
+   */
   closeModal() {
     this.setState({
       formData: {},
@@ -164,6 +201,11 @@ class ExaminerIndex extends Component {
     });
   }
 
+  /**
+   * Render the AddExaminer form.
+   *
+   * @return {JSX} - React markup for the component
+   */
   renderAddExaminerForm() {
     return (
       <Modal
@@ -215,6 +257,11 @@ class ExaminerIndex extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -237,18 +284,20 @@ class ExaminerIndex extends Component {
         name: 'examiner',
         type: 'text',
       }},
-      {label: 'ID', show: false},
+      {label: 'Email', show: true},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
+      {label: 'ID', show: false},
       {label: 'Radiologist', show: true, filter: {
         name: 'radiologist',
         type: 'select',
         options: options.radiologists,
       }},
-      {label: 'Certification', show: this.state.data.useCertification},
+      {label: 'Certification',
+        show: this.state.data.fieldOptions.useCertification},
     ];
     const actions = [
       {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
@@ -273,15 +322,17 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  submitURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
-      submitURL={`${loris.BaseURL}/examiner/`}
+      submitURL={`${loris.BaseURL}/examiner/addExaminer`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

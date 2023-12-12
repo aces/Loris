@@ -50,24 +50,22 @@ class Instrument
     public function toArray(): array
     {
         $instrumentname = $this->_instrument->testName;
+        $instrumentdata = $this->_instrument->getInstanceData();
+        $commentid      = $this->_instrument->getCommentID() ?? '';
 
-        $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
-            $this->_instrument
-        );
+        $isDDE = strpos($commentid, 'DDE_') === 0;
 
-        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
-
-        $meta = array(
-            'Candidate'  => (string) $this->_timepoint->getCandID(),
+        $meta = [
+            'Candidate'  => $this->_timepoint->getCandID(),
             'Visit'      => $this->_timepoint->getVisitLabel(),
             'DDE'        => $isDDE,
             'Instrument' => $instrumentname,
-        );
+        ];
 
-        $instrument = array($instrumentname => $instrumentdata);
+        $instrument = [$instrumentname => $instrumentdata];
 
         return array_merge(
-            array('Meta' => $meta),
+            ['Meta' => $meta],
             $instrument
         );
     }

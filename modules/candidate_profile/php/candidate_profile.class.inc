@@ -72,10 +72,9 @@ class Candidate_Profile extends \NDB_Page
         }
 
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
         $user    = $factory->user();
 
-        $modules = \Module::getActiveModules($DB);
+        $modules = $this->loris->getActiveModules();
 
         $widgets = [];
         foreach ($modules as $module) {
@@ -115,7 +114,7 @@ class Candidate_Profile extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/js/components/CSSGrid.js')
+            [$baseURL . '/js/components/CSSGrid.js']
         );
     }
 

@@ -2,7 +2,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -15,7 +15,7 @@ namespace LORIS\user_accounts;
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -26,6 +26,12 @@ namespace LORIS\user_accounts;
 
 class User_Accounts extends \DataFrameworkMenu
 {
+    const PERMISSIONS    = [
+        'user_accounts',
+        'user_accounts_multisite',
+    ];
+    public $skipTemplate = true;
+
     /**
      * Overloading this method to allow access to users account
      *
@@ -35,7 +41,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('user_accounts');
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**
@@ -46,7 +52,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-        return ['user_account_multisite'];
+        return ['user_accounts_multisite'];
     }
 
     /**
@@ -67,17 +73,17 @@ class User_Accounts extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $yesNoOptions = array(
+        $yesNoOptions = [
             'Y' => 'Yes',
             'N' => 'No',
-        );
+        ];
 
-        return array(
+        return [
             'sites'            => \Utility::getSiteList(false),
             'projects'         => \Utility::getProjectList(),
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
-        );
+        ];
     }
 
     /**
@@ -102,7 +108,7 @@ class User_Accounts extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/userAccountsIndex.js")
+            [$baseURL . "/user_accounts/js/userAccountsIndex.js"]
         );
     }
 }

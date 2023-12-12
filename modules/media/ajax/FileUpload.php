@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& Database::singleton();
+    $db   = \NDB_Factory::singleton()->database();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
@@ -41,8 +41,11 @@ function editFile()
     }
 
     // Read JSON from STDIN
-    $stdin       = file_get_contents('php://input');
-    $req         = json_decode($stdin, true);
+    $stdin = file_get_contents('php://input');
+    $req   = json_decode($stdin, true);
+    if (!is_array($req)) {
+        throw new Exception("Invalid JSON");
+    }
     $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
@@ -82,7 +85,7 @@ function uploadFile()
         "upload"
     );
 
-    $db     =& Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
@@ -114,23 +117,38 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES, $pscid, $visit)) {
-        showMediaError("Please fill in all required fields!", 400);
+    if (empty($_FILES)) {
+        echo showMediaError(
+            "File could not be uploaded successfully.
+            Please contact the administrator.",
+            400
+        );
+    }
+
+    if (!isset($pscid, $visit)) {
+        echo showMediaError("Please fill in all required fields!", 400);
         return;
     }
 
     checkDateTaken($dateTaken);
 
-    $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    // urldecode() necessary to decode double quotes encoded automatically
+    // by chrome browsers to avoid XSS attacks
+    $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
-    $extension = pathinfo($fileName)['extension'];
+    $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-    if (!isset($extension)) {
-        showMediaError("Please make sure your file has a valid extension!", 400);
+    if (empty($extension)) {
+        $response = showMediaError(
+            "Please make sure your file has a valid extension!",
+            400,
+        );
+        print $response;
         return;
     }
 
-    $userID = $user->getData('UserID');
+    $userID = $user->getUsername();
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
@@ -143,7 +161,7 @@ function uploadFile()
     );
 
     if (!isset($sessionID) || strlen($sessionID) < 1) {
-        showMediaError(
+        echo showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'.",
             404
@@ -170,13 +188,39 @@ function uploadFile()
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
-            $db->insertOnDuplicateUpdate('media', $query);
-            $uploadNotifier->notify(array("file" => $fileName));
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
+            $uploadNotifier->notify(["file" => $fileName]);
+            $qparam = ['ID' => $sessionID];
+            $result = $db->pselect(
+                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+                            from session
+                        where ID=:ID',
+                $qparam
+            )[0];
+            echo json_encode(
+                [
+                    'full_name'      => $fileName,
+                    'pscid'          => $pscid,
+                    'visit_label'    => $result['ProjectID'],
+                    'language'       => $language,
+                    'instrument'     => $instrument,
+                    'site'           => $result['CenterID'],
+                    'project'        => $result['ProjectID'],
+                    'uploaded_by'    => $userID,
+                    'date_taken'     => $dateTaken,
+                    'comments'       => $comments,
+                    'last_modified'  => date("Y-m-d H:i:s"),
+                    'file_type'      => $fileType,
+                    'CandID'         => $result['CandID'],
+                    'SessionID'      => $sessionID,
+                    'fileVisibility' => 0,
+                ]
+            );
         } catch (DatabaseException $e) {
-            showMediaError("Could not upload the file. Please try again!", 500);
+            echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("Could not upload the file. Please try again!", 500);
     }
 }
 
@@ -189,8 +233,8 @@ function viewData()
 {
     $user =& User::singleton();
     if (!$user->hasPermission('media_read')) {
-        showMediaError("Permission denied", 403);
-        exit;
+        echo showMediaError("Permission denied", 403);
+        return;
     }
     echo json_encode(getUploadFields());
 }
@@ -208,12 +252,23 @@ function getUploadFields()
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
+    $lorisinstance = new \LORIS\LorisInstance(
+        $db,
+        $config,
+        [
+            __DIR__ . "/../../../project/modules",
+            __DIR__ . "/../../",
+        ],
+    );
+
     // Select only candidates that have had visit at user's sites
-    $qparam       = array();
-    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
-                      FROM candidate c
+    $qparam       = [];
+    $sessionQuery = "SELECT
+                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                     FROM candidate c
                       LEFT JOIN session s USING (CandID)
-                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)
+                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -232,11 +287,11 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
-    $visit           = '';
-    $pscid           = '';
+
+    $allInstruments = \NDB_BVL_Instrument::getInstrumentNamesList($lorisinstance);
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData = array();
+    $sessionData = [];
     foreach ($sessionRecords as $record) {
         // Populate visits
         if (!isset($sessionData[$record["PSCID"]]['visits'])) {
@@ -263,14 +318,18 @@ function getUploadFields()
             $sessionData[$pscid]['instruments']['all'] = [];
         }
 
-        if ($record["Test_name"] !== null && !in_array(
-            $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit],
-            true
-        )
+        if ($record["Test_name"] !== null
+            && !in_array(
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments'][$visit] ?? [],
+                true
+            )
         ) {
-            $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
-                = $record["Test_name"];
+            $testname       = $record["Test_name"];
+            $instrumentName = $allInstruments[$testname] ?: $testname;
+
+            $sessionData[$pscid]['instruments'][$visit][$testname]
+                = $instrumentName;
             if (!in_array(
                 $record["Test_name"],
                 $sessionData[$pscid]['instruments']['all'],
@@ -278,11 +337,9 @@ function getUploadFields()
             )
             ) {
                 $sessionData[$pscid]['instruments']['all'][$record["Test_name"]]
-                    = $record["Test_name"];
+                    = $instrumentName;
             }
-
         }
-
     }
 
     // Build media data to be displayed when editing a media file
@@ -329,31 +386,31 @@ function getUploadFields()
  * @param int    $code    The HTTP response code to
  *                        use with the message
  *
- * @return void
+ * @return string
  */
-function showMediaError($message, $code)
+function showMediaError($message, $code) : string
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
+    return json_encode(['message' => $message]);
 }
 
 /**
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
- * @param array  $options array of options
- * @param string $item    key
- * @param string $item2   value
+ * @param array   $options array of options
+ * @param string  $item    key
+ * @param ?string $item2   value
  *
  * @return array
  */
 function toSelect($options, $item, $item2)
 {
-    $selectOptions = array();
+    $selectOptions = [];
 
     $optionsValue = $item;
     if (isset($item2)) {
@@ -375,10 +432,10 @@ function toSelect($options, $item, $item2)
  */
 function getFilesList()
 {
-    $db       =& Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
-    $mediaFiles = array();
+    $mediaFiles = [];
     foreach ($fileList as $row) {
         $mediaFiles[$row['id']] = $row['file_name'];
     }
@@ -399,13 +456,17 @@ function checkDateTaken($dateTaken)
     if (!empty($dateTaken)) {
         $date = date_create_from_format("Y-m-d", $dateTaken);
         if ($date === false) {
-            showMediaError("Invalid date: $dateTaken", 400);
+            echo showMediaError("Invalid date: $dateTaken", 400);
+            return;
         }
 
         $now  = new DateTime();
         $diff = intval(date_diff($date, $now)->format("%R%a"));
         if ($diff < 0) {
-            showMediaError("Date of administration cannot be in the future", 400);
+            echo showMediaError(
+                "Date of administration cannot be in the future",
+                400,
+            );
         }
     }
 }
