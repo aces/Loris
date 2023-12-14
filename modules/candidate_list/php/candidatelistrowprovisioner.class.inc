@@ -39,9 +39,12 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $factory  = \NDB_Factory::singleton();
         $config   = $factory->config();
         $maybeEDC = '';
-
+        $maybeDoB = '';
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
+        }
+        if ($config->getSetting("useDoB") === "true") {
+            $maybeDoB = ", DATE_FORMAT((c.DoB),'%Y-%m-%d') AS DoB2";
         }
         parent::__construct(
             "SELECT
@@ -53,7 +56,15 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
-                DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                CONCAT(
+                       (CASE
+			    WHEN YEAR(CURDATE()) < YEAR(c.DoB) THEN 0#or some such validation
+			    ELSE  YEAR(CURDATE()) - YEAR(c.DoB) 
+			    END),' y / ',
+                        (CASE
+			    WHEN MONTH(CURDATE()) < MONTH(c.DoB) THEN MONTH(c.DoB) - MONTH(CURDATE())
+			    ELSE MONTH(CURDATE()) - MONTH(c.DoB)
+			    END),' m') as DoB,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
@@ -62,6 +73,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
                 $maybeEDC
+                $maybeDoB
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
                     LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
