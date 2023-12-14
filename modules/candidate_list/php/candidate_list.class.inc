@@ -165,4 +165,3 @@ class Candidate_List extends \DataFrameworkMenu
         return new CandidateListRowProvisioner($this->loris);
     }
 }
-
