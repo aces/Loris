@@ -45,7 +45,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $factory  = \NDB_Factory::singleton();
         $config   = $factory->config();
         $maybeEDC = '';
-
+        $maybeDoB = '';
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
