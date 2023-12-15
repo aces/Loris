@@ -2,6 +2,8 @@
 namespace LORIS\schedule_module;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * Create the form for schedule_module/add page
  * It includes three functions.
@@ -138,23 +140,9 @@ class Appointment extends \NDB_Page
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
-        // Check if candidate is valid
-        // (CandID/DCCID and PSCID must belong to same candidate)
-        if ($type == "DCCID" ) {
-            $candidate = $DB->pselectRow(
-                "
-    	SELECT 
-    	 	* 
-        FROM 
-    	  	candidate 
-    	WHERE 
-    		CandID = :candId
-       ",
-                [
-                    "candId" => $id,
-                ]
-            );
-            $res       = ['PSCID'=>$candidate['PSCID'] ?? ''];
+	if ($type == "DCCID" ) {
+		$c = \Candidate::singleton(new CandID($id));	
+	        $res       = ['PSCID'=>$c->getPSCID() ?? ''];
         } else {
             $candidate = $DB->pselectRow(
                 "
