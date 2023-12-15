@@ -65,10 +65,10 @@ class Appointment extends \NDB_Page
                 "startsAt"  => $startAt,
             ]
         );
-	if (!empty($duplicate_check)) {
-           return true;
-	}
-	return false;
+        if (!empty($duplicate_check)) {
+                  return true;
+        }
+        return false;
     }
     /**
      * Handles the appointment adding process
@@ -79,10 +79,9 @@ class Appointment extends \NDB_Page
      */
     public function addAppointment(array $data): bool
     {
-        if ($this->duplicateCheck($data))
-	{
-	   return false;
-	}
+        if ($this->duplicateCheck($data)) {
+            return false;
+        }
         $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
@@ -107,9 +106,9 @@ class Appointment extends \NDB_Page
      */
     public function editAppointment(array $data): bool
     {
-	    if ($this->duplicateCheck($data)){
-	    return false;
-	    }
+        if ($this->duplicateCheck($data)) {
+            return false;
+        }
         $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
@@ -140,9 +139,9 @@ class Appointment extends \NDB_Page
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
-	if ($type == "DCCID" ) {
-		$c = \Candidate::singleton(new CandID($id));	
-	        $res       = ['PSCID'=>$c->getPSCID() ?? ''];
+        if ($type == "DCCID" ) {
+            $c       = \Candidate::singleton(new CandID($id));
+                $res = ['PSCID'=>$c->getPSCID() ?? ''];
         } else {
             $candidate = $DB->pselectRow(
                 "
@@ -211,21 +210,25 @@ class Appointment extends \NDB_Page
     {
         switch ($request->getMethod()) {
         case "POST":
-            $data = $request->getParsedBody();
-	    $editMode = isset($data["edit"]) && $data["edit"] === "true";
+            $data     = $request->getParsedBody();
+            $editMode = isset($data["edit"]) && $data["edit"] === "true";
 
-           if ($editMode) {
-              $success = $this->editAppointment($data);
-              $response = $success
-            ? new \LORIS\Http\Response\JSON\OK(['appointment modified'])
-            : new \LORIS\Http\Response\JSON\BadRequest('Appointment modification failed');
-           } else {
-              $success = $this->addAppointment($data);
-              $response = $success
-            ? new \LORIS\Http\Response\JSON\OK(['appointment added'])
-            : new \LORIS\Http\Response\JSON\BadRequest('Appointment addition failed');
-           }
-            return $response;	  
+            if ($editMode) {
+                $success  = $this->editAppointment($data);
+                $response = $success
+                ? new \LORIS\Http\Response\JSON\OK(['appointment modified'])
+                : new \LORIS\Http\Response\JSON\BadRequest(
+                    'Appointment modification failed'
+                );
+            } else {
+                $success  = $this->addAppointment($data);
+                $response = $success
+                ? new \LORIS\Http\Response\JSON\OK(['appointment added'])
+                : new \LORIS\Http\Response\JSON\BadRequest(
+                    'Appointment addition failed'
+                );
+            }
+            return $response;
         case "GET":
             // todo get session or pscid or dcciid
             $url  = $request->getUri()->getPath();

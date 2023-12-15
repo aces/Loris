@@ -103,17 +103,15 @@ ON
         $query =str_replace("\n", " ", $subquery);
             return $query;
 
-
-
     }
         /**
-     * Returns an instance of a CandidateListRow object for a given
-     * table row.
-     *
-     * @param array $row The database row from the LORIS Database class.
-     *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
-     */
+         * Returns an instance of a CandidateListRow object for a given
+         * table row.
+         *
+         * @param array $row The database row from the LORIS Database class.
+         *
+         * @return \LORIS\Data\DataInstance An instance representing this row.
+         */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
         // XXX This should probably be updated to allow users

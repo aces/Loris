@@ -29,7 +29,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
     \LORIS\StudyEntities\SiteHaver
 {
     protected $DBRow;
- protected $AppointmentID;
+    protected $AppointmentID;
     protected $SessionID;
     protected $AppointmentTypeID;
     protected $StartsAt;
@@ -57,7 +57,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(array $row, \CenterID $cid, \ProjectID $pid)
     {
-	    $this->AppointmentID     = $row['AppointmentID'];
+        $this->AppointmentID     = $row['AppointmentID'];
         $this->SessionID         = $row['SessionID'];
         $this->AppointmentTypeID = $row['AppointmentTypeID'];
         $this->Day          = $row['day'];
@@ -71,7 +71,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
         $this->Subproject   = $row['title'];
         $this->StartsAt     = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
-        $this->site = $row['Name'];
+        $this->site      = $row['Name'];
         $this->CenterID  = $cid;
         $this->ProjectID = $pid;
     }
@@ -83,7 +83,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
      */
     public function jsonSerialize() : array
     {
-	     return
+        return
             [
                 'DCCID'               => $this->DCCID,
                 'PSCID'               => $this->PSCID,

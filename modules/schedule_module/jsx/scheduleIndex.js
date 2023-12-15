@@ -508,55 +508,47 @@ class ScheduleIndex extends Component {
       {this.renderScheduleForm()}
       <div className="panel-body">
       <Tabs tabs={tabList} defaultTab="all">
-         <TabPane TabId={tabList[0].id}>
-	    <>
-             <FilterableDataTable
-               name="schedule_module"
-               data={this.state.data.Data}
-               fields={fields}
-               getFormattedCell={this.formatColumn}
-               actions={actions}
-               filters={this.state.filters}
-              />
-	    </>
-         </TabPane>
-         <TabPane TabId={tabList[1].id}>
-	   <>
-             <FilterableDataTable
-                name="schedule_module"
-                data={this.state.tabledatapast}
-                fields={fields}
-                getFormattedCell={this.formatColumn}
-                actions={actions}
-                filters={this.state.filters}
-              />
-            </>	    
-          </TabPane>
-         <TabPane TabId={tabList[2].id}>
-	    <> 
-             <FilterableDataTable
-                name="schedule_module"
-                data={this.state.tabledatanext}
-                fields={fields}
-                getFormattedCell={this.formatColumn}
-                actions={actions}
-                filters={this.state.filters}
-              />
-            </>	    
-          </TabPane>
-          <TabPane TabId={tabList[3].id}>
-	    <>
-             <FilterableDataTable
-                name="schedule_module"
-                data={this.state.tabledatatoday}
-                fields={fields}
-                getFormattedCell={this.formatColumn}
-                actions={actions}
-                filters={this.state.filters}
-              />
-            </>	    
-          </TabPane>
-       </Tabs>
+        <TabPane TabId={tabList[0].id}>
+          <FilterableDataTable
+            name="schedule_module"
+            data={this.state.data.Data}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+            actions={actions}
+            filters={this.state.filters}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <FilterableDataTable
+            name="schedule_module"
+            data={this.state.tabledatapast}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+            actions={actions}
+            filters={this.state.filters}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[2].id}>
+          <FilterableDataTable
+            name="schedule_module"
+            data={this.state.tabledatanext}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+            actions={actions}
+            filters={this.state.filters}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[3].id}>
+          <FilterableDataTable
+            name="schedule_module"
+            data={this.state.tabledatatoday}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+            actions={actions}
+            filters={this.state.filters}
+          />
+        </TabPane>
+      </Tabs>	    
        </div>
     </div>
     );
