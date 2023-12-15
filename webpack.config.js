@@ -266,6 +266,7 @@ const lorisModules = {
     'candidateListIndex',
   ],
   datadict: ['dataDictIndex'],
+  dataquery: ['index'],
   data_release: [
     'dataReleaseIndex',
   ],
