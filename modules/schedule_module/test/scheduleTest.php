@@ -28,8 +28,8 @@ class ScheduleTest extends LorisIntegrationTest
                       " div > div.swal2-actions > button.swal2-confirm.swal2-styled";
     static $addBtn  = "#default-panel > div > div > div.table-header".
                       " > div > div > div:nth-child(2) > button:nth-child(1)";
-    static $edit    = "#dynamictable > tbody > tr > td:nth-child(9) > button";
-    static $delete  = "#dynamictable > tbody > tr > td:nth-child(10) > button";
+    static $edit    = "#dynamictable >tbody>tr:nth-child(1)>td:nth-child(10)>button";
+    static $delete  = "#dynamictable >tbody>tr:nth-child(1)>td:nth-child(11)>button";
     static $msg     = "body > div.swal2-container.swal2-center.swal2-shown > ".
                       "div > div.swal2-actions > button.swal2-confirm.swal2-styled";
     static $create  = "#addScheduleForm > div > div:nth-child(7) ".
