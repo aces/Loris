@@ -101,13 +101,13 @@ foreach ($instruments as $instrument => $full_name) {
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
             $pscid  = $candidate['PSCID'];
-            foreach ($subprojectids as $subprojectid) {
-                $session_info = $DB->pselectRow(
+            foreach ($cohortids as $cohortid) {
+                $session_info = $DB->pselect(
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
-                    s.subprojectid = :subid",
+                    s.cohortid = :subid",
                     [
                         'cid'   => $candid,
                         'fname' => $instrument,
@@ -115,8 +115,8 @@ foreach ($instruments as $instrument => $full_name) {
                     ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
-                    $sessionid   = $session_info['ID'];
-                    $visit_label = $session_info['Visit_label'];
+                    $sessionid   = $session_info[0]['ID'];
+                    $visit_label = $session_info[0]['Visit_label'];
                     if ($sessionid !=null) {
                         $commentid = getCommentIDs(
                             $instrument,
