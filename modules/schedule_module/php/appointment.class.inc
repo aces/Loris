@@ -134,7 +134,7 @@ class Appointment extends \NDB_Page
      */
     public function getMetaForm(string $type,string $id): array
     {
-        $DB      = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getDatabaseConnection();
         if ($type == "DCCID" ) {
             $c       = \Candidate::singleton(new CandID($id));
                 $res = ['PSCID'=>$c->getPSCID() ?? ''];
@@ -188,7 +188,7 @@ class Appointment extends \NDB_Page
     public function deleteAppointment(string $id): void
     {
 
-        $DB      = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getDatabaseConnection();
         $DB->delete("appointment", ["AppointmentID" => $id]);
     }
     /**
