@@ -34,8 +34,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex'                   => 'Female'
-            ]
+                'Sex'                   => 'Female',
+                'DoB'                   => '2003-12-12',
+                'EDC'                   => '2003-12-12'
+            ]                  
         );
         $this->DB->insert(
             'session',
