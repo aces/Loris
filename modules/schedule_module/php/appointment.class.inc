@@ -44,7 +44,6 @@ class Appointment extends \NDB_Page
     {
 
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
-        $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $duplicate_check = $DB->pselectRow(
             "
@@ -82,7 +81,6 @@ class Appointment extends \NDB_Page
         if ($this->duplicateCheck($data)) {
             return false;
         }
-        $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
         // Insert appointment information
@@ -109,7 +107,6 @@ class Appointment extends \NDB_Page
         if ($this->duplicateCheck($data)) {
             return false;
         }
-        $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
 
@@ -137,7 +134,6 @@ class Appointment extends \NDB_Page
      */
     public function getMetaForm(string $type,string $id): array
     {
-        $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         if ($type == "DCCID" ) {
             $c       = \Candidate::singleton(new CandID($id));
@@ -192,7 +188,6 @@ class Appointment extends \NDB_Page
     public function deleteAppointment(string $id): void
     {
 
-        $factory = \NDB_Factory::singleton();
         $DB      = $this->loris->getDatabaseConnection();
         $DB->delete("appointment", ["AppointmentID" => $id]);
     }
