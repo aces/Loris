@@ -6,7 +6,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (3,'title','Full descriptive title of the study',1,0,'text',1,'Study title',1);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (4,'studylogo','Filename containing logo of the study. File should be located under the htdocs/images/ folder',1,0,'text',1,'Study logo',2);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (5,'useEDC','Use EDC (Expected Date of Confinement) for birthdate estimations if the study involves neonatals',1,0,'boolean',1,'Use EDC',12);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (5,'useDoB','Use DoB (Date of Birth)',1,0,'boolean',1,'Use DoB',12);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (6,'ageMin','Minimum candidate age in years (0+)',1,0,'text',1,'Minimum candidate age',7);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (7,'ageMax','Maximum candidate age in years',1,0,'text',1,'Maximum candidate age',8);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (9,'useFamilyID','Enable if family members are recruited for the study',1,0,'boolean',1,'Use family',11);
@@ -120,5 +119,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (129,'UserMaximumDaysInactive','The maximum number of days since last login before making a user inactive.',1,0,'text',1,'Maximum Days Before Making User Inactive',30);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (130,'DownloadPath','Where files are downloaded',1,0,'text',26,'Downloads',4);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (131,'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', 26, 'EEG Incoming Directory', 15);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (132,'useDoB','Use DoB (Date of Birth)',1,0,'boolean',1,'Use DoB',12);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
