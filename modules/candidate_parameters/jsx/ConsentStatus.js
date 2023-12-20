@@ -460,12 +460,19 @@ class ConsentStatus extends Component {
                   id: consentID,
                   label: this.state.Data.consentGroups[consentID].Label,
               });
+
+              // Set display if coming from consent module
+              let className='col-md-9';
+              if (this.props.adjustCol) {
+                    className='col-md-15';
+              }
+
               return (
                   <TabPane key={consentID} TabId={consentID}>
                       <FormElement
                           name="consentStatus"
                           onSubmit={this.handleSubmit}
-                          class="col-md-9"
+                          class={className}
                       >
                           <StaticElement
                             label="PSCID"

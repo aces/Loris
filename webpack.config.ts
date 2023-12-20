@@ -19,6 +19,7 @@ let lorisModules: { [x: string]: string[] } = {
     'DiagnosisEvolution',
   ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
+  consent: ['consentIndex', 'consentEntry'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],

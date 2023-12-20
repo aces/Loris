@@ -1,0 +1,129 @@
+.flex-row-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+.flex-row-container > .flex-row-item {
+    flex: 1 1 30%;
+    height: 300px;
+}
+.flex-row-item {
+    color: #094580;
+    background-color: #e6f4ff;
+    border: 1px solid #fff;
+    font-size: 24px;
+    text-align: center;
+    padding: 40px 0 0 0;
+    position: relative;
+}
+.flex-row-item:hover {
+    cursor: pointer;
+}
+
+.disabled {
+    background-color:  #cdd1d4;
+}
+
+#door-icon {
+    width:  6vw;
+}
+
+.checkmark {
+    font-size: 6vw;
+    text-align: center;
+    color: transparent;
+    text-shadow: 0 0 0 green;
+    font-family: Segoe UI Symbol, serif;
+    z-index: 1;
+    left:0;
+    right:0;
+    margin-left:auto;
+    margin-right:auto;
+}
+.checkmark:hover {
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.question-container {
+  margin-bottom: 80px;
+  text-align: center;
+}
+.field_question {
+  margin-bottom: 25px;
+      text-align: left;
+      color: #064785;
+}
+.field_input {
+  text-align: left;
+  font-size:  large;
+}
+.field_input > * {
+  margin-bottom: 5px;
+}
+.btn-circle {
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      padding: 6px 0;
+      font-size: 12px;
+      line-height: 1.428571429;
+      border-radius: 15px;
+      margin-right: 10px;
+      background: white;
+
+}
+.btn.btn-primary[disabled] {
+    background-color: #cfcfcf;
+}
+.submit-button, .checkboxText, .linkElement {
+    font-size:  large;
+    font-weight: normal;
+}
+.select-option:hover {
+    background: #eee;
+}
+.select-option {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-radius: 3px;
+    font-size:  large;
+}
+.has-error, .form-error {
+    color: #b94a48;
+}
+
+.selectOption {
+    padding-top: 5px;
+    font-size:  large;
+}
+.selectBox {
+    width: 50px;
+    float: left;
+}
+.selectBox > label {
+    outline: 0;
+    background-image: none;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+}
+
+.labelText {
+    text-align: left;
+    font-size:  large;
+}
+
+.downloadText {
+    text-align: center;
+    font-size:  large;
+}
+
+.action-cell {
+    vertical-align: middle;
+}
+
+.modal-image {
+    max-width: 100%;
+}

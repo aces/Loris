@@ -437,6 +437,17 @@ function getConsentStatusFields()
     // Get list of consents for candidate
     $candidateConsent = $candidate->getConsents();
 
+    // Set only specified consentID if coming from consent module
+    if (!is_null($_GET['consent'])) {
+        $id = $_GET['consent'];
+        $consentDetails = [
+            $id => $consentDetails[$id]
+        ];
+        $candidateConsent = [
+            $id => $candidateConsent[$id]
+        ];
+    }
+
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
         $consentList[$consentName] = $consent['Label'];
@@ -448,8 +459,20 @@ function getConsentStatusFields()
         if (isset($candidateConsent[$consentID])) {
             $candidateConsentID           = $candidateConsent[$consentID];
             $status[$consentName]         = $candidateConsentID['Status'];
-            $date[$consentName]           = $candidateConsentID['DateGiven'];
-            $withdrawalDate[$consentName] = $candidateConsentID['DateWithdrawn'];
+
+            // Process dates from datetime to date
+            $dateGiven = '';
+            if (!empty($candidateConsentID['DateWithdrawn'])) {
+                $dateGiven = strtotime($candidateConsentID['DateGiven']);
+                $dateGiven = date('Y-m-d', $dateGiven);
+            }
+            $dateWithdrawn = '';
+            if (!empty($candidateConsentID['DateWithdrawn'])) {
+                $dateWithdrawn = strtotime($candidateConsentID['DateWithdrawn']);
+                $dateWithdrawn = date('Y-m-d', $dateWithdrawn);
+            }
+            $date[$consentName]           = $dateGiven;
+            $withdrawalDate[$consentName] = $dateWithdrawn;
         } else {
             $status[$consentName]         = null;
             $date[$consentName]           = null;
@@ -485,13 +508,32 @@ function getConsentStatusHistory($pscid)
 {
     $db = (\NDB_Factory::singleton())->database();
 
-    $historyData = $db->pselect(
-        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
+    // Set only specified consentID if coming from consent module
+    if (!is_null($_GET['consent'])) {
+        $id = $_GET['consent'];
+        $query = "SELECT cch.EntryDate, cch.DateGiven, cch.DateWithdrawn, cch.PSCID, 
+         cch.ConsentName, cch.ConsentLabel, cch.Status, cch.EntryStaff 
+         FROM candidate_consent_history cch
+         JOIN consent c ON c.Name=cch.ConsentName 
+         WHERE cch.PSCID=:pscid 
+         AND c.ConsentID=:cid
+         ORDER BY EntryDate ASC";
+        $params = [
+            'pscid' => $pscid,
+            'cid' => $id
+        ];
+    } else {
+        $query = "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
          ConsentName, ConsentLabel, Status, EntryStaff 
          FROM candidate_consent_history 
          WHERE PSCID=:pscid 
-         ORDER BY EntryDate ASC",
-        ['pscid' => $pscid]
+         ORDER BY EntryDate ASC";
+        $params = ['pscid' => $pscid];
+    }
+
+    $historyData = $db->pselect(
+        $query,
+        $params
     );
 
     $formattedHistory = [];
