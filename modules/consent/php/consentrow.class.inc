@@ -32,9 +32,7 @@ class ConsentRow implements \LORIS\Data\DataInstance
     /**
      * Create a new ConsentRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
-     *                     returns
-     * @param integer $cid The centerID affiliated with this row.
+     * @param array $row The row (in the same format as \Database::pselectRow)
      */
     public function __construct(array $row)
     {

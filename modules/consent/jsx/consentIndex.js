@@ -80,7 +80,7 @@ class ConsentIndex extends Component {
   formatColumn(column, cell, row) {
     if (column === 'PSCID') {
       // Link to candidate
-      let url = this.props.BaseURL + '/' + row['DCCID'] + '/';
+      let url = this.props.BaseURL + '/' + row['CandID'] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     } else if (
       column === 'Consent Form' &&
@@ -109,7 +109,7 @@ class ConsentIndex extends Component {
         + '/candidate_parameters/ajax/formHandler.php';
       let editDataURL = this.props.BaseURL
         + '/candidate_parameters/ajax/getData.php?candID='
-        + row['DCCID']+'&data=consentStatus&consent='+row['consentID'];
+        + row['CandID']+'&data=consentStatus&consent='+row['consentID'];
 
       // Add edit button for all rows
       const editButton = (
@@ -173,7 +173,7 @@ class ConsentIndex extends Component {
           );
         }
       } else if (
-        this.eConsentCompatible(row['consent_group_name'], row['DCCID']) &&
+        this.eConsentCompatible(row['consent_group_name'], row['CandID']) &&
         row['OneTimeKey'] === 'NA'
       ) {
         // Button to add as eConsent if eConsent compatible & not yet added
@@ -339,8 +339,8 @@ class ConsentIndex extends Component {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'DCCID', show: true, filter: {
-        name: 'DCCID',
+      {label: 'CandID', show: true, filter: {
+        name: 'CandID',
         type: 'text',
       }},
       {label: 'Consent Form', show: true, filter: {

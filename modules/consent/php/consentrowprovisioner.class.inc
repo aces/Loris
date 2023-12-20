@@ -36,7 +36,7 @@ class ConsentRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     {
         parent::__construct(
             "SELECT ca.PSCID AS PSCID,
-	            ca.CandID AS DCCID,
+	            ca.CandID AS CandID,
 	            cg.Label AS Consent_group,
 	            c.Label AS Consent_code,
 	            COALESCE(REPLACE(dc.Request_status,'_',' '), 'NA') AS Request_status,
@@ -58,7 +58,7 @@ class ConsentRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             WHERE (dc.CandidateID=ccr.CandidateID OR dc.CandidateID IS NULL)
             	AND ca.Active='Y'
             ORDER BY ca.PSCID, cg.Label, c.Label",
-            array()
+            []
         );
     }
 

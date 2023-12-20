@@ -45,7 +45,7 @@ class ExpireConsentForm extends Component {
       isLoaded: true,
       formData: {
         pscid: this.props.data['PSCID'],
-        candID: this.props.data['DCCID'],
+        candID: this.props.data['CandID'],
         consent_group: this.props.data['Consent Form'],
       },
     });

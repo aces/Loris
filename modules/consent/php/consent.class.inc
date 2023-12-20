@@ -166,9 +166,9 @@ class Consent extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/consent/js/consentIndex.js",
-            )
+            ]
         );
     }
 }

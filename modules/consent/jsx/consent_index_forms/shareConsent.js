@@ -57,7 +57,7 @@ class ShareConsentForm extends Component {
         email1: null,
         email2: null,
         pscid: this.props.data['PSCID'],
-        candID: this.props.data['DCCID'],
+        candID: this.props.data['CandID'],
         consent_group: this.props.data['Consent Form'],
       },
     });

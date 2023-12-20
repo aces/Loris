@@ -32,6 +32,8 @@ class Consent_Page extends \NDB_Page
      * Determine whether the user has permission to view this page
      * This module is public so all users have access
      *
+     * @param \User $user The user whose access is being checked.
+     *
      * @return bool whether the user has access
      */
     function _hasAccess(\User $user): bool
@@ -51,7 +53,7 @@ class Consent_Page extends \NDB_Page
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/consent/css/consent.css")
+            [$baseURL . "/consent/css/consent.css"]
         );
     }
 
@@ -68,9 +70,9 @@ class Consent_Page extends \NDB_Page
 
         return array_merge(
             $depends,
-            array(
+            [
                 $baseurl . "/consent/js/consentEntry.js"
-            )
+            ]
         );
     }
 }

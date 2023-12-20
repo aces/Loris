@@ -440,7 +440,7 @@ function getConsentStatusFields()
     // Set only specified consentID if coming from consent module
     if (!is_null($_GET['consent'])) {
         $id = $_GET['consent'];
-        $consentDetails = [
+        $consentDetails   = [
             $id => $consentDetails[$id]
         ];
         $candidateConsent = [
@@ -457,8 +457,8 @@ function getConsentStatusFields()
         $consentGroups[$groupID]['Children'][] = $consentName;
 
         if (isset($candidateConsent[$consentID])) {
-            $candidateConsentID           = $candidateConsent[$consentID];
-            $status[$consentName]         = $candidateConsentID['Status'];
+            $candidateConsentID   = $candidateConsent[$consentID];
+            $status[$consentName] = $candidateConsentID['Status'];
 
             // Process dates from datetime to date
             $dateGiven = '';
@@ -510,9 +510,9 @@ function getConsentStatusHistory($pscid)
 
     // Set only specified consentID if coming from consent module
     if (!is_null($_GET['consent'])) {
-        $id = $_GET['consent'];
-        $query = "SELECT cch.EntryDate, cch.DateGiven, cch.DateWithdrawn, cch.PSCID, 
-         cch.ConsentName, cch.ConsentLabel, cch.Status, cch.EntryStaff 
+        $id     = $_GET['consent'];
+        $query  = "SELECT cch.EntryDate, cch.DateGiven, cch.DateWithdrawn,
+         cch.PSCID, cch.ConsentName, cch.ConsentLabel, cch.Status, cch.EntryStaff
          FROM candidate_consent_history cch
          JOIN consent c ON c.Name=cch.ConsentName 
          WHERE cch.PSCID=:pscid 
@@ -520,10 +520,10 @@ function getConsentStatusHistory($pscid)
          ORDER BY EntryDate ASC";
         $params = [
             'pscid' => $pscid,
-            'cid' => $id
+            'cid'   => $id
         ];
     } else {
-        $query = "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
+        $query  = "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
          ConsentName, ConsentLabel, Status, EntryStaff 
          FROM candidate_consent_history 
          WHERE PSCID=:pscid 

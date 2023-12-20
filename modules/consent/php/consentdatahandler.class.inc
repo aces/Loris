@@ -51,6 +51,8 @@ class ConsentDataHandler extends \NDB_Form
     /**
      * Handle a POST request
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return none
      */
     function _handlePost(ServerRequestInterface $request) : ResponseInterface
@@ -94,6 +96,8 @@ class ConsentDataHandler extends \NDB_Form
      * Creates row(s) in candidate_consent_rel table
      *
      * @param array $values consent form values
+     *
+     * @return void
      */
     function createConsent($values)
     {
@@ -184,6 +188,8 @@ class ConsentDataHandler extends \NDB_Form
      * direct_consent
      *
      * @param array $values consent form values
+     *
+     * @return void
      */
     function createEConsent($values)
     {
@@ -255,7 +261,7 @@ class ConsentDataHandler extends \NDB_Form
                     'ConsentGroupID' => $consentGroupID
                 ]
             );
-            // If expired and adding as eConsent again, reset 
+            // If expired and adding as eConsent again, reset
             // consent status to null
             $consentIDs = $db->pselectCol(
                 "SELECT ConsentID 
@@ -268,7 +274,7 @@ class ConsentDataHandler extends \NDB_Form
                     'candidate_consent_rel',
                     ['Status' => null],
                     [
-                        'ConsentID' => $consentID,
+                        'ConsentID'   => $consentID,
                         'CandidateID' => $values['candID']
                     ]
                 );
@@ -291,6 +297,8 @@ class ConsentDataHandler extends \NDB_Form
      * Sends consent to participant
      *
      * @param array $values consent form values
+     *
+     * @return void
      */
     function sendConsent($values)
     {
@@ -312,7 +320,8 @@ class ConsentDataHandler extends \NDB_Form
         // update date sent & request status (if applicable)
         $updateData['Date_sent'] = date('Y-m-d');
 
-        // only update status if current status is "created" and consent is being sent
+        // only update status if current status is "created"
+        // and consent is being sent
         if ($requestStatus === 'created') {
             $updateData['Request_status'] = 'sent';
         }
@@ -330,14 +339,14 @@ class ConsentDataHandler extends \NDB_Form
         $config  = \NDB_Config::singleton();
         $baseURL = \NDB_Factory::settings()->getBaseURL();
 
-        $key       = $db->pselectOne(
+        $key = $db->pselectOne(
             "SELECT OneTimeKey FROM direct_consent
             WHERE candidateID=:candID
             AND ConsentGroupID=:cgID",
-            array(
+            [
                 'candID' => $values['candID'],
                 'cgID'   => $consentGroupID
-            )
+            ]
         );
 
         // set email values
@@ -345,13 +354,19 @@ class ConsentDataHandler extends \NDB_Form
         $url   = $baseURL.'/consent/consent_page/?key=' . $key."\n";
         unset($values['email1']);
 
-        $msg_data = array(
+        $msg_data = [
             'study' => $config->getSetting("title"),
             'url'   => $url
-        );
+        ];
 
         // Send email
-        \Email::send($email, 'send_consent.tpl', $msg_data, "", "CCNA Team <noreply@loris.ca>");
+        \Email::send(
+            $email,
+            'send_consent.tpl',
+            $msg_data,
+            "",
+            "CCNA Team <noreply@loris.ca>"
+        );
     }
 
     /**
@@ -359,6 +374,8 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values              consent form values
      * @param bool  $inactivateCandidate Whether candidate should be inactivated
+     *
+     * @return void
      */
     function expireConsent($values, $inactivateCandidate = false)
     {
@@ -426,6 +443,10 @@ class ConsentDataHandler extends \NDB_Form
 
     /**
      * Get ConsentGroupID from name / label
+     *
+     * @param String $consentGroup - name / label of consent group
+     *
+     * @return String
      */
     function getConsentGroupID($consentGroup)
     {
@@ -440,6 +461,11 @@ class ConsentDataHandler extends \NDB_Form
 
     /**
      * Get Request_status
+     *
+     * @param String $candID         - CandidateID
+     * @param String $consentGroupID - ConsentGroupID
+     *
+     * @return String
      */
     function getRequestStatus($candID, $consentGroupID)
     {
@@ -457,7 +483,11 @@ class ConsentDataHandler extends \NDB_Form
     }
 
     /**
-     * Return true if value is null
+     * True if value is null
+     *
+     * @param String $value - value to check
+     *
+     * @return bool
      */
     function valueIsNull($value)
     {
@@ -476,7 +506,7 @@ class ConsentDataHandler extends \NDB_Form
         $db = \Database::singleton();
         if ($this->valueIsNull($values['candID'])) {
             http_response_code(400);
-            die("CandID required.");
+            die("DCC required.");
         }
         if ($this->valueIsNull($values['pscid'])) {
             http_response_code(400);
@@ -501,7 +531,9 @@ class ConsentDataHandler extends \NDB_Form
 
         if (empty($validCand)) {
             http_response_code(400);
-            die("Make sure PSCID and CandID are valid and reflect the same candidate");
+            die(
+                "Make sure PSCID and CandID are valid and reflect the same candidate"
+            );
         }
     }
 

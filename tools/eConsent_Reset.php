@@ -2,7 +2,7 @@
 
 /**
  * This script parses through each eConsent form to check whether
- * it needs to be reset or not. 
+ * it needs to be reset or not.
  * If the form needs to be reset, the progress is wiped clean
  * and the OneTimeKey is regenerated
  * Set up this script to be automatically run nightly.
@@ -50,14 +50,13 @@ $eConsents = $DB->pselectWithIndexKey(
     'OneTimeKey'
 );
 
-$consentForms = $DB->pselectCol(
+$consentForms       = $DB->pselectCol(
     "SELECT ConsentGroupID FROM consent_group",
     []
 );
 $individualConsents = [];
 
-foreach ($consentForms as $consentGroupID)
-{
+foreach ($consentForms as $consentGroupID) {
     $consentCodes = $DB->pselectCol(
         "SELECT ConsentID FROM consent WHERE ConsentGroupID=:cg",
         ["cg" => $consentGroupID]
@@ -69,47 +68,47 @@ foreach ($eConsents AS $key => $consentData) {
     // Check if there is an expiry period
     if (!is_null($consentData['Reset_period_days'])) {
         // if there is an expiry period, get date sent & expiry period
-        $sendDate = $consentData['Date_sent'];
+        $sendDate     = $consentData['Date_sent'];
         $expiryPeriod = '-' . $consentData['Reset_period_days'] . ' days';
 
-        // only wipe data if: 
+        // only wipe data if:
         // the form has already been sent,
         // the form has not been completed,
         // the form has not yet had it's data cleared
         // (should only be the first time after accessing expiry period),
         // the expiry period has passed
-        if (
-            !empty($sendDate) && 
-            $consentData['Request_status'] !== 'complete' &&
-            !$consentData['Data_cleared'] &&
-            strtotime($expiryPeriod) > strtotime($sendDate)
+        if (!empty($sendDate)
+            && $consentData['Request_status'] !== 'complete'
+            && !$consentData['Data_cleared']
+            && strtotime($expiryPeriod) > strtotime($sendDate)
         ) {
             $db = \Database::singleton();
             // Clear trainingProgress, set data cleared to true, reset link
-            $bytes = openssl_random_pseudo_bytes(8);
+            $bytes  = openssl_random_pseudo_bytes(8);
             $newKey = bin2hex($bytes);
 
             $db->update(
                 'direct_consent',
                 [
                     'trainingProgress' => null,
-                    'Data_cleared' => true,
-                    'OneTimeKey' => $newKey
+                    'Data_cleared'     => true,
+                    'OneTimeKey'       => $newKey
                 ],
                 ['OneTimeKey' => $key]
             );
 
+            $consentIDs = $individualConsents[$consentData['ConsentGroupID']];
             // Wipe responses for each consent code
-            foreach ($individualConsents[$consentData['ConsentGroupID']] as $consentID) {
+            foreach ($consentIDs as $consentID) {
                 $db->update(
                     'candidate_consent_rel',
                     [
-                        'Status' => null,
+                        'Status'    => null,
                         'DateGiven' => null
                     ],
                     [
                         'CandidateID' => $consentData['CandID'],
-                        'ConsentID' => $consentID
+                        'ConsentID'   => $consentID
                     ]
                 );
             }

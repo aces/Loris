@@ -89,7 +89,7 @@ class AddEConsentForm extends Component {
   addEConsent() {
     let sendData = [];
     sendData['pscid'] = this.props.data['PSCID'];
-    sendData['candID'] = this.props.data['DCCID'];
+    sendData['candID'] = this.props.data['CandID'];
     sendData['consent_group'] = this.props.data['Consent Form'];
 
     this.props.submitData(

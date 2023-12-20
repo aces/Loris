@@ -55,6 +55,8 @@ class Direct_Consent extends \NDB_Page
     /**
      * Handle a GET request. This will render and display the page.
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface
      */
     function _handleGet(ServerRequestInterface $request) : ResponseInterface
@@ -76,8 +78,10 @@ class Direct_Consent extends \NDB_Page
                 dc.Data_cleared
             FROM direct_consent dc
             INNER JOIN candidate ca ON ca.CandID=dc.CandidateID
-            INNER JOIN consent_display_rel cdr ON cdr.ConsentGroupID=dc.ConsentGroupID
-            INNER JOIN consent_display cd ON cd.ConsentDisplayID=cdr.ConsentDisplayID
+            INNER JOIN consent_display_rel cdr 
+                ON cdr.ConsentGroupID=dc.ConsentGroupID
+            INNER JOIN consent_display cd 
+                ON cd.ConsentDisplayID=cdr.ConsentDisplayID
             WHERE dc.OneTimeKey=:key
             AND COALESCE(cdr.CenterID, 'X') IN (
                 CASE 
@@ -91,7 +95,7 @@ class Direct_Consent extends \NDB_Page
                 ELSE ('X')
                 END
             )",
-            array('key' => $this->key),
+            ['key' => $this->key],
             'CenterID'
         );
 
@@ -120,11 +124,11 @@ class Direct_Consent extends \NDB_Page
         );
 
         $this->consentData['consents'] = $individualConsents;
-
         // Validate training JSON if present
-        if ($this->consentData['training'] !== null) {
+        $file = $this->consentData['training'];
+        if ($file !== null) {
             $training = file_get_contents(
-                __DIR__."/../../../project/eConsents/{$this->consentData['training']}.json"
+                __DIR__."/../../../project/eConsents/{$file}.json"
             );
 
             // Check for errors in JSON format
@@ -163,6 +167,8 @@ class Direct_Consent extends \NDB_Page
     /**
      * Handle a POST request
      *
+     * @param ServerRequestInterface $request The incoming request
+     *
      * @return none
      */
     function _handlePost(ServerRequestInterface $request) : ResponseInterface
@@ -186,6 +192,8 @@ class Direct_Consent extends \NDB_Page
     /**
      * Update training progress
      * This keeps the participant's place in the eConsent form
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return none
      */
@@ -229,6 +237,8 @@ class Direct_Consent extends \NDB_Page
 
     /**
      * Submit consent value
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return none
      */
@@ -326,6 +336,9 @@ class Direct_Consent extends \NDB_Page
     /**
      * Validates the format of the eConsent form
      *
+     * @param Array $consents - List of consent codes
+     * @param Array $training - eConsent form
+     *
      * @return Array errors
      */
     function validateTraining($consents, $training) : array
@@ -339,7 +352,9 @@ class Direct_Consent extends \NDB_Page
             || !array_key_exists('elements', $training['schema'])
             || !array_key_exists('setup', $training['schema'])
         ) {
-            $errors[] = "Problem with JSON structure detected. The JSON must contain a 'ui' object and a 'schema' object. In the 'schema' object, there must be an 'elements' object and a 'setup' object.";
+            $errors[] = "Problem with JSON structure detected. The JSON must 
+                contain a 'ui' object and a 'schema' object. In the 'schema' 
+                object, there must be an 'elements' object and a 'setup' object.";
             return $errors;
         }
 
@@ -352,9 +367,9 @@ class Direct_Consent extends \NDB_Page
         foreach ($ui as $el => $info) {
             // Give error if no correct response in element or in options
             if ($info['type'] === 'select') {
-
-                $isConsent = array_key_exists('isSavable', $elements[$el]['options']) &&
-                    $elements[$el]['options']['isSavable'];
+                $opts      = $elements[$el]['options'];
+                $isConsent = array_key_exists('isSavable', $opts)
+                    && $opts['isSavable'];
 
                 if ($isConsent
                     && !array_key_exists($el, $consents)
@@ -362,30 +377,32 @@ class Direct_Consent extends \NDB_Page
                     $errors[$el] = "Consent code $el from JSON not recognized";
                 }
 
-                if (!$isConsent && !array_key_exists('correctResponse', $elements[$el]['options'])
+                if (!$isConsent
+                    && !array_key_exists('correctResponse', $opts)
                 ) {
                     $errors[$el] = "No correct response given for quiz question $el";
                 } else if (!$isConsent) {
-                    $JSONVals        = $elements[$el]['options']['values'];
+                    $JSONVals        = $opts['values'];
                     $options         = array_column($JSONVals, 'value');
-                    $correctResponse = $elements[$el]['options']['correctResponse'];
+                    $correctResponse = $opts['correctResponse'];
                     if (!in_array($correctResponse, $options)) {
-                        $errors[$el] = "Correct response does not exist in options for $el";
+                        $errors[$el]
+                            = "Correct response does not exist in options for $el";
                     }
                 }
             }
         }
-        error_log(print_r($errors, true));
         // Give error if element does not exist for consent code,
         // or if element type is not 'consent'
         foreach ($consents as $name => $consentInfo) {
-            $isConsent = array_key_exists('isSavable', $elements[$name]['options']) &&
-                $elements[$name]['options']['isSavable'] ;
+            $isConsent = array_key_exists('isSavable', $elements[$name]['options'])
+                && $elements[$name]['options']['isSavable'] ;
 
             if (!array_key_exists($name, $elements)
                 || !$isConsent
             ) {
-                $errors[$name] = "Missing consent code {$consentInfo['Label']} in JSON";
+                $errors[$name]
+                    = "Missing consent code {$consentInfo['Label']} in JSON";
             }
         }
 
