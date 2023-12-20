@@ -151,7 +151,7 @@ class ConsentDataHandler extends \NDB_Form
         }
 
         // Add each consent code as row
-        foreach ($consentIDs as $key => $id) {
+        foreach ($consentIDs as $id) {
 
             $existsInCandConsent = $db->pselectOne(
                 "SELECT CandidateID

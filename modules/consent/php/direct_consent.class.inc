@@ -271,6 +271,9 @@ class Direct_Consent extends \NDB_Page
                 "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
                 ['cnst' => $consent]
             );
+            $consentID   = $consentInfo['ConsentID'];
+            $label       = $consentInfo['Label'];
+
             // Update consent status
             $db->update(
                 "candidate_consent_rel",
@@ -280,7 +283,7 @@ class Direct_Consent extends \NDB_Page
                 ],
                 [
                     'CandidateID' => $candID,
-                    'ConsentID'   => $consentInfo['ConsentID']
+                    'ConsentID'   => $consentID
                 ]
             );
 
@@ -288,7 +291,7 @@ class Direct_Consent extends \NDB_Page
             $updateHistory = [
                 'PSCID'        => $pscid,
                 'ConsentName'  => $consent,
-                'ConsentLabel' => $consentInfo['Label'],
+                'ConsentLabel' => $label,
                 'Status'       => $value,
                 'DateGiven'    => date('Y-m-d H-i-s'),
                 'EntryStaff'   => 'Candidate',
@@ -314,7 +317,7 @@ class Direct_Consent extends \NDB_Page
 
         // Check that consent answer exists for each consent code
         $complete = true;
-        foreach ($consents as $key => $consent) {
+        foreach ($consents as $consent) {
             if (empty($consent)) {
                 $complete = false;
             }
@@ -393,11 +396,11 @@ class Direct_Consent extends \NDB_Page
                 }
             }
         }
-        // Give error if element does not exist for consent code,
-        // or if element type is not 'consent'
+
         foreach ($consents as $name => $consentInfo) {
-            $isConsent = array_key_exists('isSavable', $elements[$name]['options'])
-                && $elements[$name]['options']['isSavable'] ;
+            // Give error if element does not exist for consent code,
+            // or if element type is not 'consent'
+            $isConsent = $elements[$name]['options']['isSavable'];
 
             if (!array_key_exists($name, $elements)
                 || !$isConsent
@@ -405,13 +408,10 @@ class Direct_Consent extends \NDB_Page
                 $errors[$name]
                     = "Missing consent code {$consentInfo['Label']} in JSON";
             }
-        }
 
-        // Check that only "yes" and "no", and potentially 'not_applicable'
-        // exist as keys in the consent options
-        foreach ($consents as $name => $consentInfo) {
-            $JSONVals       = $elements[$name]['options']['values'];
-            $options        = array_column($JSONVals, 'value');
+            // Check that only "yes" and "no" exist as keys in the consent options
+            $optionVals     = $elements[$name]['options']['values'];
+            $options        = array_column($optionVals, 'value');
             $allowedOptions = ['yes','no'];
             if (!array_diff($options, $allowedOptions)
                 && (!in_array('yes', $options) || !in_array('no', $options))
