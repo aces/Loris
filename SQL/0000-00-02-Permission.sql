@@ -135,8 +135,8 @@ INSERT INTO `permissions` VALUES
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
     (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
-    (66,'consent_view', 'Consent module', (SELECT ID FROM modules WHERE Name='consent'),'View','2'),
-    (67,'consent_edit', 'Consent module', (SELECT ID FROM modules WHERE Name='consent'),'Edit','2');
+    (66,'consent_view','Consent module',(SELECT ID FROM modules WHERE Name='consent'),'View','2'),
+    (67,'consent_edit','Consent module',(SELECT ID FROM modules WHERE Name='consent'),'Edit','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

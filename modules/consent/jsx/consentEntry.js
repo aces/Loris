@@ -159,6 +159,7 @@ class ConsentEntry extends React.Component {
           consentData={this.state.consentData}
           requestStatus={this.state.requestStatus}
           submit={this.submit}
+          data_url={this.state.data_url}
         />
       );
     }

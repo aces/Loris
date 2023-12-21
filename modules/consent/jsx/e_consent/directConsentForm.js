@@ -6,6 +6,9 @@
  */
 import DOMPurify from 'dompurify';
 import Modal from 'Modal';
+import {
+  CheckboxElement,
+} from 'jsx/Form';
 
 /**
  *  THIS ELEMENT IS FOR DEVELOPMENT PURPOSES ONLY

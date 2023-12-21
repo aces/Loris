@@ -104,28 +104,36 @@ class ConsentIndex extends Component {
       let text = cell.charAt(0).toUpperCase() + cell.slice(1);
       return <td>{text}</td>;
     } else if (column === 'Actions') {
-      // Set up action buttons in action column
-      let editActionURL = this.props.BaseURL
-        + '/candidate_parameters/ajax/formHandler.php';
-      let editDataURL = this.props.BaseURL
-        + '/candidate_parameters/ajax/getData.php?candID='
-        + row['CandID']+'&data=consentStatus&consent='+row['consentID'];
+      let editButton = '';
+      if (
+        this.props.hasPermission('consent_edit') && (
+          this.props.hasPermission('candidate_parameter_edit') ||
+          this.props.hasPermission('access_all_profiles') ||
+          this.props.hasPermission('candidate_parameter_view')
+        )
+      ) {
+        // Set up action buttons in action column
+        let editActionURL = this.props.BaseURL
+          + '/candidate_parameters/ajax/formHandler.php';
+        let editDataURL = this.props.BaseURL
+          + '/candidate_parameters/ajax/getData.php?candID='
+          + row['CandID']+'&data=consentStatus&consent='+row['consentID'];
 
-      // Add edit button for all rows
-      const editButton = (
-        <TriggerableModal
-          title="Edit Consent"
-          label=<span className="glyphicon glyphicon-edit"/>
-        >
-          <ConsentStatus
-            action={editActionURL}
-            dataURL={editDataURL}
-            tabName='consentStatus'
-            adjustCol={true}
-          />
-        </TriggerableModal>
-      );
-
+        // Add edit button for all rows
+        editButton = (
+          <TriggerableModal
+            title="Edit Consent"
+            label=<span className="glyphicon glyphicon-edit"/>
+          >
+            <ConsentStatus
+              action={editActionURL}
+              dataURL={editDataURL}
+              tabName='consentStatus'
+              adjustCol={true}
+            />
+          </TriggerableModal>
+        );
+      }
       // Add Send button if eConsent created
       if (row['OneTimeKey'] !== 'NA') {
         const shareButton = (
@@ -168,7 +176,6 @@ class ConsentIndex extends Component {
             <div class="action-cell">
               <td>{editButton}</td>
               <td>{shareButton}</td>
-              <td>{expireButton}</td>
             </div>
           );
         }
@@ -375,6 +382,7 @@ class ConsentIndex extends Component {
         name: 'Date_sent',
         type: 'date',
       }},
+      {label: 'Version', show: true},
       {label: 'Actions', show: this.props.hasPermission('consent_edit')},
       {label: 'consent_group_name', show: false},
       {label: 'OneTimeKey', show: false},

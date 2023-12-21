@@ -76,7 +76,7 @@ class Consent extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Options used for filtering consent codes
         $consentOptions = $db->pselectColWithIndexKey(

@@ -457,8 +457,9 @@ function getConsentStatusFields()
         $consentGroups[$groupID]['Children'][] = $consentName;
 
         if (isset($candidateConsent[$consentID])) {
-            $candidateConsentID   = $candidateConsent[$consentID];
-            $status[$consentName] = $candidateConsentID['Status'];
+            $candidateConsentID     = $candidateConsent[$consentID];
+            $status[$consentName]   = $candidateConsentID['Status'];
+            $comments[$consentName] = $candidateConsentID['Comment'];
 
             // Process dates from datetime to date
             $dateGiven = '';
@@ -477,6 +478,7 @@ function getConsentStatusFields()
             $status[$consentName]         = null;
             $date[$consentName]           = null;
             $withdrawalDate[$consentName] = null;
+            $comments[$consentName]       = null;
         }
     }
     $history = getConsentStatusHistory($pscid);
@@ -490,6 +492,7 @@ function getConsentStatusFields()
         'consents'        => $consentList,
         'history'         => $history,
         'consentGroups'   => $consentGroups,
+        'comments'        => $comments,
     ];
 
     return $result;
@@ -511,10 +514,22 @@ function getConsentStatusHistory($pscid)
     // Set only specified consentID if coming from consent module
     if (array_key_exists('consent', $_GET) && !is_null($_GET['consent'])) {
         $id     = $_GET['consent'];
-        $query  = "SELECT cch.EntryDate, cch.DateGiven, cch.DateWithdrawn,
-         cch.PSCID, cch.ConsentName, cch.ConsentLabel, cch.Status, cch.EntryStaff
+        $query  = "SELECT
+            cch.EntryDate,
+            cch.DateGiven,
+            cch.DateWithdrawn,
+            cch.PSCID,
+            cch.ConsentName,
+            cch.ConsentLabel,
+            cch.Status,
+            cch.EntryStaff,
+            cch.Comment,
+            dch.Request_status AS requestStatus,
+            dch.version
          FROM candidate_consent_history cch
          JOIN consent c ON c.Name=cch.ConsentName 
+         LEFT JOIN direct_consent_history dch
+            ON dch.DirectConsentHistoryID=cch.DirectConsentHistoryID
          WHERE cch.PSCID=:pscid 
          AND c.ConsentID=:cid
          ORDER BY EntryDate ASC";
@@ -522,30 +537,91 @@ function getConsentStatusHistory($pscid)
             'pscid' => $pscid,
             'cid'   => $id
         ];
+
+        $directQuery = "SELECT 
+            dch.UserID AS EntryStaff, 
+            dch.EntryDate, 
+            dch.PSCID, 
+            cg.Label AS ConsentLabel, 
+            dch.Request_status AS requestStatus, 
+            dch.version
+        FROM direct_consent_history dch 
+        JOIN consent_group cg ON dch.ConsentGroupID=cg.ConsentGroupID
+        WHERE dch.PSCID=:pscid
+        AND dch.ConsentGroupID=(
+            SELECT ConsentGroupID
+            FROM consent
+            WHERE ConsentID=:cid
+        )";
     } else {
-        $query  = "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
-         ConsentName, ConsentLabel, Status, EntryStaff 
-         FROM candidate_consent_history 
-         WHERE PSCID=:pscid 
-         ORDER BY EntryDate ASC";
+        $query  = "SELECT
+            cch.EntryDate,
+            cch.DateGiven,
+            cch.DateWithdrawn,
+            cch.PSCID,
+            cch.ConsentName,
+            cch.ConsentLabel,
+            cch.Status,
+            cch.EntryStaff,
+            cch.Comment,
+            dch.Request_status,
+            dch.version
+         FROM candidate_consent_history cch
+         LEFT JOIN direct_consent_history dch
+            ON dch.DirectConsentHistoryID=cch.DirectConsentHistoryID
+         WHERE cch.PSCID=:pscid 
+         ORDER BY cch.EntryDate ASC";
         $params = ['pscid' => $pscid];
+
+        $directQuery = "SELECT
+            dch.UserID AS EntryStaff,
+            dch.EntryDate,
+            dch.PSCID,
+            cg.Label AS ConsentLabel,
+            dch.Request_status AS requestStatus,
+            dch.version
+        FROM direct_consent_history dch 
+        JOIN consent_group cg ON dch.ConsentGroupID=cg.ConsentGroupID
+        WHERE dch.PSCID=:pscid";
     }
 
+    // Get regular consent history data
+    // as well as direct consent history data
     $historyData = $db->pselect(
         $query,
         $params
     );
 
+    $directHistoryData = $db->pselect(
+        $directQuery,
+        $params
+    );
+
+    $allHistory = array_merge($historyData, $directHistoryData);
+
     $formattedHistory = [];
-    foreach ($historyData as $entry) {
+    foreach ($allHistory as $entry) {
           $formattedHistory[] = [
-              'data_entry_date' => $entry['EntryDate'],
-              'entry_staff'     => $entry['EntryStaff'],
-              'consentStatus'   => $entry['Status'],
-              'date'            => $entry['DateGiven'],
-              'withdrawal'      => $entry['DateWithdrawn'],
-              'label'           => $entry['ConsentLabel'],
-              'consentType'     => $entry['ConsentName'],
+              'data_entry_date' => array_key_exists('EntryDate', $entry) ?
+                    $entry['EntryDate'] : null,
+              'entry_staff'     => array_key_exists('EntryStaff', $entry) ?
+                    $entry['EntryStaff'] : null,
+              'consentStatus'   => array_key_exists('Status', $entry) ?
+                    $entry['Status'] : null,
+              'date'            => array_key_exists('DateGiven', $entry) ?
+                    $entry['DateGiven'] : null,
+              'withdrawal'      => array_key_exists('DateWithdrawn', $entry) ?
+                    $entry['DateWithdrawn'] : null,
+              'label'           => array_key_exists('ConsentLabel', $entry) ?
+                    $entry['ConsentLabel'] : null,
+              'consentType'     => array_key_exists('ConsentName', $entry) ?
+                    $entry['ConsentName'] : null,
+              'requestStatus'   => array_key_exists('requestStatus', $entry) ?
+                    $entry['requestStatus'] : null,
+              'version'         => array_key_exists('version', $entry) ?
+                    $entry['version'] : null,
+              'Comment'         => array_key_exists('Comment', $entry) ?
+                    $entry['Comment'] : null,
           ];
     }
     return $formattedHistory;

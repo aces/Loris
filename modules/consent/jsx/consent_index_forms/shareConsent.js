@@ -8,6 +8,11 @@
  * */
 import React, {Component} from 'react';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  ButtonElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Share Consent Form

@@ -8,6 +8,10 @@
  *
  * */
 import React, {Component} from 'react';
+import {
+  FormElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Expire Consent Form

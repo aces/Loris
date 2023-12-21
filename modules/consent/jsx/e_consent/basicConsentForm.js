@@ -6,6 +6,8 @@
  */
 import Page from './directConsentForm';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
+import SendConfirmation from './sendConfirmation';
 
 /**
  * Basic Page
@@ -22,13 +24,16 @@ class BasicPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoaded: false,
       formData: [],
       errors: [],
-      isLoaded: false,
+      openSendConfirmation: false,
     };
 
     this.submitConsent = this.submitConsent.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.renderSendConfirmation = this.renderSendConfirmation.bind(this);
+    this.openSendConfirmation = this.openSendConfirmation.bind(this);
   }
 
   /**
@@ -199,19 +204,36 @@ class BasicPage extends React.Component {
         page='consentPage'
       />
     );
-
-    return (
-      <div>
-        <div id='consent'>
-          <div className={'container'}>
-          {elements}
+    if (this.state.openSendConfirmation) {
+      return (
+        <div>
+          {this.renderSendConfirmation()}
+          <div id='consent'>
+            <div className={'container'}>
+            {elements}
+            </div>
+            <div className={'container'}>
+            {button}
+            </div>
           </div>
-          <div className={'container'}>
-          {button}
+
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <div id='consent'>
+            {this.renderSendConfirmation()}
+            <div className={'container'}>
+            {elements}
+            </div>
+            <div className={'container'}>
+            {button}
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   /**
@@ -228,9 +250,27 @@ class BasicPage extends React.Component {
       }
     }
 
+    let customSwal = function(pageFn) {
+      return function() {
+        swal.fire({
+          type: 'success',
+          title: 'Success!',
+          text: 'Thank you for completing the eConsent Form! ' +
+            'Please click "Send Confirmation" below to receive ' +
+            'a confirmation email',
+          showCancelButton: true,
+          confirmButtonText: 'Send Confirmation',
+        }).then((result) => {
+          if (result['value']) {
+            pageFn();
+          }
+        });
+      };
+    }(() => this.openSendConfirmation());
+
     // Submit if no errors
     if (Object.keys(errors).length == 0) {
-      this.props.submit(this.state.formData);
+      this.props.submit(this.state.formData, customSwal);
     }
     this.setState({
       errors: errors,
@@ -249,6 +289,27 @@ class BasicPage extends React.Component {
     this.setState({
       formData: formData,
     });
+  }
+
+  /**
+   * open send confirmation page
+   */
+  openSendConfirmation() {
+    this.setState({openSendConfirmation: true});
+    this.forceUpdate();
+  }
+
+  /**
+   * Render form to send consent confirmation
+   * @return {JSX} - React markup for the component
+   */
+  renderSendConfirmation() {
+    return (
+      <SendConfirmation
+        data_url={this.props.data_url}
+        openSendConfirmation={this.state.openSendConfirmation}
+      />
+    );
   }
 }
 

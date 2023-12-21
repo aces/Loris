@@ -23,7 +23,9 @@ namespace LORIS\consent;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ConsentRow implements \LORIS\Data\DataInstance
+class ConsentRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     protected $DBRow;
     protected $CenterID;
@@ -37,7 +39,7 @@ class ConsentRow implements \LORIS\Data\DataInstance
     public function __construct(array $row)
     {
         $this->DBRow     = $row;
-        $this->CenterID  = $row['RegistrationCenterID'];
+        $this->CenterID  = new \CenterID($row['RegistrationCenterID']);
         $this->ProjectID = $row['RegistrationProjectID'];
     }
 

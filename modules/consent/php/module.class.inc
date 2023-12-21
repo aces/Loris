@@ -35,7 +35,10 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return true;
+        return ($user->hasPermission('access_all_profiles')
+            || $user->hasPermission('consent_view')
+            || $user->hasPermission('consent_edit')
+        );
     }
 
     /**
@@ -44,7 +47,7 @@ class Module extends \Module
      *
      * @return true
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         return true;
     }

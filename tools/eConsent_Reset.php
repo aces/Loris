@@ -19,8 +19,6 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
-$DB =& Database::singleton();
-
 $eConsents = $DB->pselectWithIndexKey(
     "SELECT 
         dc.OneTimeKey,
@@ -36,7 +34,7 @@ $eConsents = $DB->pselectWithIndexKey(
     INNER JOIN consent_display cd ON cd.ConsentDisplayID=cdr.ConsentDisplayID
     WHERE COALESCE(cdr.CenterID, 'X') IN (
         CASE 
-        WHEN (SELECT CenterID 
+        WHEN (SELECT DISTINCT CenterID
             FROM consent_display_rel 
             WHERE ConsentGroupID=dc.ConsentGroupID 
             AND CenterID=ca.RegistrationCenterID 
@@ -45,7 +43,9 @@ $eConsents = $DB->pselectWithIndexKey(
         THEN (ca.RegistrationCenterID)
         ELSE ('X')
         END
-    )",
+    )
+    AND cdr.version=dc.version
+    AND dc.Request_status IN ('in_progress','sent')",
     [],
     'OneTimeKey'
 );
@@ -66,52 +66,53 @@ foreach ($consentForms as $consentGroupID) {
 
 foreach ($eConsents AS $key => $consentData) {
     // Check if there is an expiry period
-    if (!is_null($consentData['Reset_period_days'])) {
-        // if there is an expiry period, get date sent & expiry period
-        $sendDate     = $consentData['Date_sent'];
-        $expiryPeriod = '-' . $consentData['Reset_period_days'] . ' days';
+    if (is_null($consentData['Reset_period_days'])) {
+        continue;
+    }
 
-        // only wipe data if:
-        // the form has already been sent to participant from coordinator,
-        // the form has not been completed,
-        // the form has not yet had it's data cleared
-        // (should only be the first time after accessing expiry period),
-        // the expiry period has passed
-        if (!empty($sendDate)
-            && $consentData['Request_status'] !== 'complete'
-            && !$consentData['Data_cleared']
-            && strtotime($expiryPeriod) > strtotime($sendDate)
-        ) {
-            $db = \Database::singleton();
-            // Clear trainingProgress, set data cleared to true, reset link
-            $bytes  = openssl_random_pseudo_bytes(8);
-            $newKey = bin2hex($bytes);
+    // if there is an expiry period, get date sent & expiry period
+    $sendDate     = $consentData['Date_sent'];
+    $expiryPeriod = '-' . $consentData['Reset_period_days'] . ' days';
 
-            $db->update(
-                'direct_consent',
+    // only wipe data if:
+    // the form has already been sent to participant from coordinator,
+    // the form has not been completed,
+    // the form has not yet had it's data cleared
+    // (should only be the first time after accessing expiry period),
+    // the expiry period has passed
+    if (!empty($sendDate)
+        && $consentData['Request_status'] !== 'complete'
+        && !$consentData['Data_cleared']
+        && strtotime($expiryPeriod) > strtotime($sendDate)
+    ) {
+        // Clear trainingProgress, set data cleared to true, reset link
+        $bytes  = openssl_random_pseudo_bytes(8);
+        $newKey = bin2hex($bytes);
+
+        $DB->update(
+            'direct_consent',
+            [
+                'trainingProgress' => null,
+                'Data_cleared'     => true,
+                'OneTimeKey'       => $newKey
+            ],
+            ['OneTimeKey' => $key]
+        );
+
+        $consentIDs = $individualConsents[$consentData['ConsentGroupID']];
+        // Wipe responses for each consent code
+        foreach ($consentIDs as $consentID) {
+            $DB->update(
+                'candidate_consent_rel',
                 [
-                    'trainingProgress' => null,
-                    'Data_cleared'     => true,
-                    'OneTimeKey'       => $newKey
+                    'Status'    => null,
+                    'DateGiven' => null
                 ],
-                ['OneTimeKey' => $key]
+                [
+                    'CandidateID' => $consentData['CandID'],
+                    'ConsentID'   => $consentID
+                ]
             );
-
-            $consentIDs = $individualConsents[$consentData['ConsentGroupID']];
-            // Wipe responses for each consent code
-            foreach ($consentIDs as $consentID) {
-                $db->update(
-                    'candidate_consent_rel',
-                    [
-                        'Status'    => null,
-                        'DateGiven' => null
-                    ],
-                    [
-                        'CandidateID' => $consentData['CandID'],
-                        'ConsentID'   => $consentID
-                    ]
-                );
-            }
         }
     }
 }

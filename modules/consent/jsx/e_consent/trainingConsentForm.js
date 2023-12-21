@@ -7,6 +7,7 @@
 import Page from './directConsentForm';
 import swal from 'sweetalert2';
 import Loader from 'Loader';
+import SendConfirmation from './sendConfirmation';
 
 /**
  * Basic Page
@@ -31,12 +32,12 @@ class TrainingPage extends React.Component {
       errors: [],
       trainingProgress: [],
       consentVals: [],
+      openSendConfirmation: false,
     };
 
     this.acknowledgementNeeded = this.acknowledgementNeeded.bind(this);
     this.sectionHasConsent = this.sectionHasConsent.bind(this);
     this.pageHasConsent = this.pageHasConsent.bind(this);
-    this.nextPageAccessible = this.nextPageAccessible.bind(this);
     this.trainingComplete = this.trainingComplete.bind(this);
     this.sectionDone = this.sectionDone.bind(this);
     this.pageDone = this.pageDone.bind(this);
@@ -51,6 +52,8 @@ class TrainingPage extends React.Component {
     this.getPrevPage = this.getPrevPage.bind(this);
     this.submitConsent = this.submitConsent.bind(this);
     this.submitPageAnswer = this.submitPageAnswer.bind(this);
+    this.renderSendConfirmation = this.renderSendConfirmation.bind(this);
+    this.openSendConfirmation = this.openSendConfirmation.bind(this);
   }
 
   /**
@@ -133,6 +136,7 @@ class TrainingPage extends React.Component {
       // Add title, description, training boxes
       return (
         <div>
+          {this.renderSendConfirmation()}
           <div className={'container'}>
             <div
                 id='title'
@@ -264,34 +268,6 @@ class TrainingPage extends React.Component {
       }
     }
     return false;
-  }
-
-  /**
-   * Determines whether participant can navigate to the next page
-   *
-   * @return {boolean}
-   */
-  nextPageAccessible() {
-    let page = this.state.currentPage;
-    let nextPage = this.getNextPage();
-    // Return false if last page of section
-    if (!nextPage) {
-      return false;
-    }
-    let consentSection = false;
-    let setup = this.state.pageVals.schema.setup;
-    for (let i = 0; i<setup.length; i++) {
-      let order = setup[i].order;
-      if (order.includes(page)) {
-        consentSection = this.sectionHasConsent(i);
-      }
-    }
-
-    // If consent section, make sure acknowledgement is complete
-    // if the next page is a consent page
-    return !consentSection ||
-      !this.pageHasConsent(nextPage) ||
-      (this.pageHasConsent(nextPage) && !this.acknowledgementNeeded());
   }
 
   /**
@@ -534,7 +510,7 @@ class TrainingPage extends React.Component {
         disableNextPage = true;
       }
       // Add "Next" page if next page accessible
-      if (this.nextPageAccessible(page)) {
+      if (this.getNextPage()) {
         buttons.push(
           <div>
             <button
@@ -676,7 +652,7 @@ class TrainingPage extends React.Component {
       ) {
       // Anonymous function for a custom swal including "next page" button
       let customSwal = null;
-      if (this.nextPageAccessible()) {
+      if (this.getNextPage()) {
         customSwal = function(pageFn) {
           return function() {
             swal.fire({
@@ -685,7 +661,7 @@ class TrainingPage extends React.Component {
               text: 'Thank you for completing this step!',
               showCancelButton: true,
               cancelButtonText: 'OK',
-              confirmButtonText: 'Next page',
+              confirmButtonText: 'Next Page',
             }).then((result) => {
               if (result['value']) {
                 pageFn();
@@ -699,17 +675,16 @@ class TrainingPage extends React.Component {
             swal.fire({
               type: 'success',
               title: 'Success!',
-              text: 'Thank you for completing this step!',
+              text: 'Thank you for completing the eConsent Form! Please click "Send Confirmation" below to receive a confirmation email.',
               showCancelButton: true,
-              cancelButtonText: 'OK',
-              confirmButtonText: 'Return to Main Page',
+              confirmButtonText: 'Send Confirmation',
             }).then((result) => {
               if (result['value']) {
                 pageFn();
               }
             });
           };
-        }(() => this.changePage('index'));
+        }(() => this.openSendConfirmation());
       }
       // submit consent through props function
       this.props.submit(this.state.consentPageAnswers, customSwal);
@@ -722,6 +697,27 @@ class TrainingPage extends React.Component {
     this.setState({
       errors: errors,
     });
+  }
+
+  /**
+   * open send confirmation page
+   */
+  openSendConfirmation() {
+    this.setState({openSendConfirmation: true});
+    this.changePage('index');
+  }
+
+  /**
+   * Render form to send consent confirmation
+   * @return {JSX} - React markup for the component
+   */
+  renderSendConfirmation() {
+    return (
+      <SendConfirmation
+        data_url={this.props.data_url}
+        openSendConfirmation={this.state.openSendConfirmation}
+      />
+    );
   }
 
   /**
@@ -775,7 +771,7 @@ class TrainingPage extends React.Component {
           });
           this.setDisabled();
           // Give swal with next page option if relevant
-          if (this.nextPageAccessible()) {
+          if (this.getNextPage()) {
             swal.fire({
               type: 'success',
               title: 'Success!',

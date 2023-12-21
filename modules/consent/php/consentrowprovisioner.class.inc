@@ -44,6 +44,7 @@ class ConsentRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 	            ccr.DateGiven,
 	            ccr.DateWithdrawn,
 	            dc.Date_sent,
+                dc.Version,
 	            'Action',
 	            cg.Name AS consent_group_name,
 	            COALESCE(dc.OneTimeKey, 'NA') AS OneTimeKey,

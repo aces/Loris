@@ -52,6 +52,10 @@
     font-weight: normal;
 }
 
+.checkbox-inline label {
+    text-align: left;
+}
+
 .question-container {
   margin-bottom: 80px;
   text-align: center;

@@ -63,20 +63,23 @@ class Direct_Consent extends \NDB_Page
     function _handleGet(ServerRequestInterface $request) : ResponseInterface
     {
         $this->key = $request->getQueryParams()['key'] ?? null;
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
 
         $this->consentData = $db->pselectWithIndexKey(
             "SELECT 
             	dc.CandidateID AS CandID,
                 dc.ConsentGroupID, 
-            	cd.Title, 
-            	cd.Description, 
+            	cd.Title,
+                cd.Media,
+            	cd.Description,
             	cd.training, 
             	dc.Request_status AS requestStatus, 
             	dc.trainingProgress, 
             	cdr.CenterID,
                 dc.Date_sent,
-                dc.Data_cleared
+                dc.Data_cleared,
+                cdr.version,
+                ca.PSCID
             FROM direct_consent dc
             INNER JOIN candidate ca ON ca.CandID=dc.CandidateID
             INNER JOIN consent_display_rel cdr 
@@ -86,16 +89,24 @@ class Direct_Consent extends \NDB_Page
             WHERE dc.OneTimeKey=:key
             AND COALESCE(cdr.CenterID, 'X') IN (
                 CASE 
-                WHEN (SELECT CenterID 
+                WHEN (SELECT DISTINCT CenterID 
                     FROM consent_display_rel 
                     WHERE ConsentGroupID=dc.ConsentGroupID 
                     AND CenterID=ca.RegistrationCenterID 
                     AND CenterID IS NOT NULL) 
                     IS NOT NULL 
                 THEN (ca.RegistrationCenterID)
-                ELSE ('X')
+                WHEN (SELECT ConsentDisplayID 
+                    FROM consent_display_rel 
+                    WHERE ConsentGroupID=dc.ConsentGroupID 
+                    AND CenterID IS NULL) 
+                    IS NOT NULL
+                THEN ('X')
+                ELSE ('Y')
                 END
-            )",
+            )
+            AND (cdr.CenterID=ca.RegistrationCenterID OR cdr.CenterID IS NULL)
+            AND (cdr.version=dc.version OR cdr.version LIKE dc.version)",
             ['key' => $this->key],
             'CenterID'
         );
@@ -151,11 +162,25 @@ class Direct_Consent extends \NDB_Page
 
         // Update Request status if this is the first time accessing after being sent
         if ($this->consentData['requestStatus'] === 'sent') {
+            // Update history to indicate form being in progress
+            $directUpdateHistory = [
+                'PSCID'          => $this->consentData['PSCID'],
+                'ConsentGroupID' => $this->consentData['ConsentGroupID'],
+                'Request_status' => 'in_progress',
+                'UserID'         => 'Candidate',
+                'version'        => $this->consentData['version']
+            ];
+            $db->insert(
+                "direct_consent_history",
+                $directUpdateHistory
+            );
+
             $db->update(
                 'direct_consent',
                 ['Request_status' => 'in_progress'],
                 ['OneTimeKey' => $this->key]
             );
+            $this->consentData['requestStatus'] = 'in_progress';
         }
 
         $this->result['requestStatus'] = $this->consentData['requestStatus'];
@@ -185,6 +210,8 @@ class Direct_Consent extends \NDB_Page
             return $this->_updateProgress($request);
         case 'submit':
             return $this->_submitConsent($request);
+        case 'send':
+            return $this->_sendConfirmation($request);
         default:
             return new \LORIS\Http\Response\JSON\BadRequest("Invalid action");
         }
@@ -209,7 +236,7 @@ class Direct_Consent extends \NDB_Page
         }
 
         $oneTimeKey = $request->getQueryParams()['key'];
-        $db         = \Database::singleton();
+        $db         = $this->loris->getDatabaseConnection();
 
         $requestStatus = $db->pselectOne(
             "SELECT Request_status 
@@ -220,6 +247,26 @@ class Direct_Consent extends \NDB_Page
 
         // Update request status if not yet "in progress"
         if ($requestStatus === 'created' || $requestStatus === 'sent') {
+            // Update history to indicate form being in progress
+            $valsForHistory      = $db->pselectRow(
+                "SELECT ca.PSCID, dc.ConsentGroupID, dc.version 
+                FROM direct_consent dc
+                JOIN candidate ca ON dc.CandidateID=ca.CandID
+                 WHERE OneTimeKey=:key",
+                ['key' => $oneTimeKey]
+            );
+            $directUpdateHistory = [
+                'PSCID'          => $valsForHistory['PSCID'],
+                'ConsentGroupID' => $valsForHistory['ConsentGroupID'],
+                'Request_status' => 'in_progress',
+                'UserID'         => 'Candidate',
+                'version'        => $valsForHistory['version']
+            ];
+            $db->insert(
+                "direct_consent_history",
+                $directUpdateHistory
+            );
+
             $updateData['Request_status'] = 'in_progress';
         }
 
@@ -254,7 +301,7 @@ class Direct_Consent extends \NDB_Page
         }
         $oneTimeKey = $request->getQueryParams()['key'];
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Get Identifiers
         $candID    = $db->pselectOne(
@@ -288,19 +335,6 @@ class Direct_Consent extends \NDB_Page
                         'ConsentID'   => $consentID
                     ]
                 );
-                // Update history
-                $updateHistory = [
-                    'PSCID'        => $pscid,
-                    'ConsentName'  => $consent,
-                    'ConsentLabel' => $consentInfo['Label'],
-                    'Status'       => $value,
-                    'DateGiven'    => date('Y-m-d H-i-s'),
-                    'EntryStaff'   => 'Candidate',
-                ];
-                $db->insert(
-                    "candidate_consent_history",
-                    $updateHistory,
-                );
             }
         }
 
@@ -326,6 +360,12 @@ class Direct_Consent extends \NDB_Page
             }
         }
 
+        $valsForHistory = $db->pselectRow(
+            "SELECT ConsentGroupID, version 
+            FROM direct_consent WHERE OneTimeKey=:otk",
+            ["otk" => $oneTimeKey]
+        );
+
         // Update request status if form complete
         if ($complete) {
             $db->update(
@@ -335,8 +375,156 @@ class Direct_Consent extends \NDB_Page
                     'OneTimeKey' => $oneTimeKey
                 ]
             );
+
+            // Update history to indicate form being completed
+            $directUpdateHistory = [
+                'PSCID'          => $pscid,
+                'ConsentGroupID' => $valsForHistory['ConsentGroupID'],
+                'Request_status' => 'complete',
+                'UserID'         => 'Candidate',
+                'version'        => $valsForHistory['version']
+            ];
+
+            $db->insert(
+                "direct_consent_history",
+                $directUpdateHistory
+            );
+            $directConsentHistoryID = $db->getLastInsertId();
+
+            // Send notification to users
+            $notifData = $db->pselectRow(
+                "SELECT u.Email, cg.Label, c.PSCID
+                FROM direct_consent dc
+                JOIN users u ON dc.UserID=u.ID
+                JOIN consent_group cg ON cg.ConsentGroupID=dc.ConsentGroupID
+                JOIN candidate c ON c.CandID=dc.CandidateID
+                WHERE dc.OneTimeKey=:otk",
+                ['otk' => $oneTimeKey]
+            );
+            if (!empty($notifData['Email'])) {
+                $msg_data = [
+                    'title'       => $notifData['Label'],
+                    'participant' => $notifData['PSCID']
+                ];
+                // Send email
+                \Email::send(
+                    $notifData['Email'],
+                    'completed_econsent_notification.tpl',
+                    $msg_data,
+                    "",
+                    "LORIS Team <noreply@loris.ca>"
+                );
+            }
         }
 
+        foreach ($body AS $consent => $value) {
+            // Get consent info
+            $consentInfo = $db->pselectRow(
+                "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
+                ['cnst' => $consent]
+            );
+            $consentID   = $consentInfo['ConsentID'];
+            $label       = $consentInfo['Label'];
+
+            // Update history
+            $updateHistory = [
+                'PSCID'                  => $pscid,
+                'ConsentName'            => $consent,
+                'ConsentLabel'           => $label,
+                'Status'                 => $value,
+                'DateGiven'              => date('Y-m-d H-i-s'),
+                'EntryStaff'             => 'Candidate',
+                'version'                => $valsForHistory['version'],
+                'DirectConsentHistoryID' => $directConsentHistoryID ?? null
+            ];
+            $db->insert(
+                "candidate_consent_history",
+                $updateHistory
+            );
+        }
+
+        return new \LORIS\Http\Response\JSON\OK();
+    }
+
+    /**
+     * Send Confirmation Email
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    function _sendConfirmation(ServerRequestInterface $request) : ResponseInterface
+    {
+        $body = $request->getParsedBody();
+        if ($body === null || !is_array($body)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "No valid data was sent in the request"
+            );
+        }
+        $validEmail = $this->validateEmail($body);
+        if ($validEmail->getStatusCode() !== 200) {
+            return $validEmail;
+        }
+
+        $email = $body['email1'];
+        $key   = $request->getQueryParams()['key'];
+        unset($body['email1']);
+        unset($body['email2']);
+
+        // Reset email in direct_consent
+        $db = $this->loris->getDatabaseConnection();
+
+        $hash = password_hash($email, PASSWORD_DEFAULT);
+        $db->update(
+            'direct_consent',
+            ['Email_hash' => $hash],
+            ['OneTimeKey' => $key]
+        );
+
+        // Set email message data
+        $config  = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        // set email values
+        $url = $baseURL.'/consent/consent_page/?key=' . $key."\n";
+
+        $msg_data = [
+            'study' => $config->getSetting("title"),
+            'url'   => $url,
+        ];
+
+        // Send email
+        \Email::send(
+            $email,
+            'send_confirmation.tpl',
+            $msg_data,
+            "",
+            "<noreply@loris.ca>"
+        );
+        return new \LORIS\Http\Response\JSON\OK();
+    }
+
+    /**
+     * Validates the consent form values.
+     *
+     * @param array $values send consent form values
+     *
+     * @return ResponseInterface
+     */
+    function validateEmail($values)
+    {
+        if ($values['email1'] !== $values['email2']) {
+            // check that emails match
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Emails must match."
+            );
+        } else if (!filter_var($values['email1'], FILTER_VALIDATE_EMAIL)) {
+            // check that email is valid
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Email format not valid."
+            );
+        }
         return new \LORIS\Http\Response\JSON\OK();
     }
 
@@ -403,7 +591,8 @@ class Direct_Consent extends \NDB_Page
         foreach ($consents as $name => $consentInfo) {
             // Give error if element does not exist for consent code,
             // or if element type is not 'consent'
-            $isConsent = $elements[$name]['options']['isSavable'];
+            $isConsent = array_key_exists('isSavable', $elements[$name]['options'])
+                && $elements[$name]['options']['isSavable'] ;
 
             if (!array_key_exists($name, $elements)
                 || !$isConsent
@@ -422,7 +611,6 @@ class Direct_Consent extends \NDB_Page
                 $errors[$name] = "Consent options in JSON must be 'yes' and 'no'";
             }
         }
-        error_log(print_r($errors, true));
         return $errors;
     }
 }

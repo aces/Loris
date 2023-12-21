@@ -7,6 +7,13 @@
  * */
 import React, {Component} from 'react';
 import Modal from 'Modal';
+import {
+  FormElement,
+  ButtonElement,
+  SelectElement,
+  CheckboxElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Add Consent Form

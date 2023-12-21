@@ -109,7 +109,7 @@ class ConsentDataHandler extends \NDB_Form
             return $validEmail;
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Get consent codes
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
@@ -195,13 +195,20 @@ class ConsentDataHandler extends \NDB_Form
             return $validConsent;
         }
 
-        $db = \Database::singleton();
+        $validEmail = $this->validateEmail($values);
+        if ($validEmail->getStatusCode() !== 200) {
+            return $validEmail;
+        }
+
+        $db = $this->loris->getDatabaseConnection();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
 
         $registrationCenterID = $db->pselectOne(
             "SELECT RegistrationCenterID FROM candidate WHERE CandID=:candid",
             ['candid' => $values['candID']]
         );
+
+        $version = $this->getVersion($consentGroupID, $registrationCenterID);
 
         // Make sure that the form is eConsent compatible
         // (exists in consent_display)
@@ -212,19 +219,28 @@ class ConsentDataHandler extends \NDB_Form
             WHERE cdr.ConsentGroupID=:cnst
             AND COALESCE(cdr.CenterID, 'X') IN (
                 CASE 
-                WHEN (SELECT CenterID 
+                WHEN (SELECT DISTINCT CenterID 
                     FROM consent_display_rel 
                     WHERE ConsentGroupID=:cnst
                     AND CenterID=:rcID
                     AND CenterID IS NOT NULL) 
                     IS NOT NULL 
                 THEN (:rcID)
-                ELSE ('X')
+                WHEN (SELECT ConsentDisplayID 
+                    FROM consent_display_rel 
+                    WHERE ConsentGroupID=:cnst 
+                    AND CenterID IS NULL) 
+                    IS NOT NULL
+                THEN ('X')
+                ELSE ('Y')
                 END
-            )",
+            )
+            AND (cdr.CenterID=:rcID OR cdr.CenterID IS NULL)
+            AND (cdr.version=:v OR cdr.version LIKE :v)",
             [
                 'cnst' => $consentGroupID,
-                'rcID' => $registrationCenterID
+                'rcID' => $registrationCenterID,
+                'v'    => $version
             ]
         );
 
@@ -247,10 +263,22 @@ class ConsentDataHandler extends \NDB_Form
         $bytes = openssl_random_pseudo_bytes(8);
         $key   = bin2hex($bytes);
 
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+
         $data = [
             'OneTimeKey'     => $key,
-            'Request_status' => 'created'
+            'Request_status' => 'created',
+            'UserID'         => $user->getId(),
+            'version'        => $version
         ];
+
+        // create new hash / salt for email if not null
+        if (array_key_exists('email1', $values)
+            && !$this->valueIsNull($values['email1'])
+        ) {
+            $data['Email_hash'] = password_hash($values['email1'], PASSWORD_DEFAULT);
+        }
 
         if ($requestStatus === 'expired') {
             $db->update(
@@ -272,7 +300,7 @@ class ConsentDataHandler extends \NDB_Form
             foreach ($consentIDs AS $consentID) {
                 $db->update(
                     'candidate_consent_rel',
-                    ['Status' => null],
+                    ['Status' => null, 'DateGiven' => null, 'DateWithdrawn' => null],
                     [
                         'ConsentID'   => $consentID,
                         'CandidateID' => $values['candID']
@@ -291,6 +319,26 @@ class ConsentDataHandler extends \NDB_Form
                 $data
             );
         }
+
+        // Update direct consent history to indicate creation
+        $pscid = $db->pselectOne(
+            "SELECT PSCID FROM candidate WHERE CandID=:cid",
+            ['cid' => $values['candID']]
+        );
+
+        $directUpdateHistory = [
+            'PSCID'          => $pscid,
+            'ConsentGroupID' => $consentGroupID,
+            'Request_status' => 'created',
+            'UserID'         => $user->getUsername(),
+            'version'        => $version
+        ];
+
+        $db->insert(
+            "direct_consent_history",
+            $directUpdateHistory
+        );
+
         return new \LORIS\Http\Response\JSON\OK();
     }
 
@@ -312,8 +360,18 @@ class ConsentDataHandler extends \NDB_Form
             return $validEmail;
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
+
+        $registrationCenterID = $db->pselectOne(
+            "SELECT RegistrationCenterID FROM candidate WHERE CandID=:candid",
+            ['candid' => $values['candID']]
+        );
+
+        $updateData['version'] = $this->getVersion(
+            $consentGroupID,
+            $registrationCenterID
+        );
 
         // Get request status
         $requestStatus = $this->getRequestStatus($values['candID'], $consentGroupID);
@@ -330,6 +388,27 @@ class ConsentDataHandler extends \NDB_Form
         // only update status if current status is "created"
         // and consent is being sent
         if ($requestStatus === 'created') {
+            // Update history to record form being sent
+            $pscid = $db->pselectOne(
+                "SELECT PSCID FROM candidate WHERE CandID=:cid",
+                ['cid' => $values['candID']]
+            );
+
+            $user = \User::singleton();
+
+            $directUpdateHistory = [
+                'PSCID'          => $pscid,
+                'ConsentGroupID' => $consentGroupID,
+                'Request_status' => 'sent',
+                'UserID'         => $user->getUsername(),
+                'version'        => $updateData['version']
+            ];
+
+            $db->insert(
+                "direct_consent_history",
+                $directUpdateHistory
+            );
+
             $updateData['Request_status'] = 'sent';
         }
 
@@ -388,13 +467,22 @@ class ConsentDataHandler extends \NDB_Form
      */
     function expireConsent($values, $inactivateCandidate = false)
     {
-        $validConsent = $this->validateConsent($values);
+        $values['eConsent'] = 'false';
+        $validConsent       = $this->validateConsent($values);
         if ($validConsent->getStatusCode() !== 200) {
             return $validConsent;
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
+
+        $version = $db->pselectOne(
+            "SELECT version
+            FROM direct_consent
+            WHERE ConsentGroupID=:cgid
+            AND CandidateID=:cid",
+            ["cgid" => $consentGroupID, "cid" => $values['candID']]
+        );
 
         // Reset key training progress, and set Request status to expired
         $updateData = [
@@ -410,6 +498,27 @@ class ConsentDataHandler extends \NDB_Form
                 'CandidateID'    => $values['candID'],
                 'ConsentGroupID' => $consentGroupID
             ]
+        );
+
+        // Update history to indicate form being expired
+        $pscid = $db->pselectOne(
+            "SELECT PSCID FROM candidate WHERE CandID=:cid",
+            ['cid' => $values['candID']]
+        );
+
+        $user = \User::singleton();
+
+        $directUpdateHistory = [
+            'PSCID'          => $pscid,
+            'ConsentGroupID' => $consentGroupID,
+            'Request_status' => 'expired',
+            'UserID'         => $user->getUsername(),
+            'version'        => $version
+        ];
+
+        $db->insert(
+            "direct_consent_history",
+            $directUpdateHistory
         );
 
         // If requested, set candidate to inactive
@@ -464,7 +573,7 @@ class ConsentDataHandler extends \NDB_Form
      */
     function getConsentGroupID($consentGroup)
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         return $db->pselectOne(
             "SELECT ConsentGroupID
             FROM consent_group
@@ -483,7 +592,7 @@ class ConsentDataHandler extends \NDB_Form
      */
     function getRequestStatus($candID, $consentGroupID)
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         return $db->pselectOne(
             "SELECT Request_status 
             FROM direct_consent
@@ -564,7 +673,7 @@ class ConsentDataHandler extends \NDB_Form
         $action = $values['action'];
 
         // Check email validation if sending
-        if ($values['eConsent']
+        if (array_key_exists('eConsent', $values)
             || $action === 'Send'
         ) {
             // Email required when sending
@@ -589,5 +698,41 @@ class ConsentDataHandler extends \NDB_Form
             }
         }
         return new \LORIS\Http\Response\JSON\OK();
+    }
+
+    /**
+     * Gets the latest consent version for given group / centerID.
+     *
+     * @param int $consentGroupID Consent Group ID
+     * @param int $centerID       Registration CenterID for candidate
+     *
+     * @return int
+     */
+    function getVersion($consentGroupID, $centerID)
+    {
+        $db = $this->loris->getDatabaseConnection();
+        return $db->pselectOne(
+            "SELECT MAX(version) FROM consent_display_rel
+                WHERE ConsentGroupID=:cgid 
+                AND COALESCE(CenterID, 'X') IN (
+                    CASE 
+                    WHEN (SELECT DISTINCT CenterID 
+                        FROM consent_display_rel 
+                        WHERE ConsentGroupID=:cgid 
+                        AND CenterID=:cid
+                        AND CenterID IS NOT NULL) 
+                        IS NOT NULL 
+                    THEN (CenterID)
+                    WHEN (SELECT ConsentDisplayID 
+                        FROM consent_display_rel 
+                        WHERE ConsentGroupID=:cgid 
+                        AND CenterID IS NULL) 
+                        IS NOT NULL
+                    THEN ('X')
+                    ELSE ('Y')
+                    END)
+                AND (CenterID=:cid OR CenterID IS NULL)",
+            ["cgid" => $consentGroupID, "cid" => $centerID]
+        );
     }
 }
