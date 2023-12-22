@@ -56,6 +56,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     const ACTIVITY_ITEM_AUDIO_PLAYER      = "audioPlayer";
     const ACTIVITY_ITEM_MESSAGE           = "message";
 
+    protected $jsonData = true;
+
     protected array $dictionary = [];
     protected Scope $scope;
 
@@ -89,6 +91,7 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
      */
     public function loadInstrumentFile(string $appletID, bool $_ = true): void
     {
+        $this->testName = $appletID;
         try {
             $this->scope = new Scope(Scope::SESSION);
             $db          = $this->loris->getDatabaseConnection();
@@ -124,7 +127,6 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
 
         switch ($activityItem["responseType"]) {
         case self::ACTIVITY_ITEM_TEXT:
-        case self::ACTIVITY_ITEM_GEOLOCATION:
             $this->dictionary[] = new DictionaryItem(
                 $fieldName,
                 $activityItem["question"],
@@ -134,24 +136,41 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
                 $activityItem["name"],
             );
             break;
+        case self::ACTIVITY_ITEM_GEOLOCATION:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName . "__latitude",
+                $activityItem["question"],
+                $this->scope,
+                new StringType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName . "__longitude",
+                $activityItem["question"],
+                $this->scope,
+                new StringType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
         case self::ACTIVITY_ITEM_SINGLE_SELECT:
         case self::ACTIVITY_ITEM_MULTI_SELECT:
-            $cardType           = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT
-                ? Cardinality::SINGLE
-                : Cardinality::MANY;
             $this->dictionary[] = new DictionaryItem(
                 $fieldName,
                 $activityItem["question"],
                 $this->scope,
                 new Enumeration(
                     ...\array_map(
-                        function ($option) {
-                            return (string)$option["value"];
-                        },
-                        $activityItem["responseValues"]["options"]
+                        'strval',
+                        \array_column($activityItem["responseValues"]["options"], "value")
                     ),
                 ),
-                new Cardinality($cardType),
+                new Cardinality(
+                    $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT
+                    ? Cardinality::SINGLE
+                    : Cardinality::MANY
+                ),
                 $activityItem["name"],
             );
             break;
@@ -201,32 +220,31 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
             break;
         case self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS:
         case self::ACTIVITY_ITEM_MULTI_SELECT_ROWS:
-            $cardType = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS
-                ? Cardinality::SINGLE
-                : Cardinality::MANY;
-            foreach ($activityItem["responseValues"]["rows"] as $row) {
+            foreach ($activityItem["responseValues"]["rows"] ?? [] as $rowNum => $row) {
                 $this->dictionary[] = new DictionaryItem(
-                    $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
-                    $activityItem["question"],
+                    $fieldName . "__" . $rowNum,
+                    $activityItem["question"] . " - " . $row["row_name"],
                     $this->scope,
                     new Enumeration(
                         ...\array_map(
-                            function ($option) {
-                                return (string)$option["id"];
-                            },
-                            $activityItem["responseValues"]["options"]
+                            'strval',
+                            \array_column($activityItem["responseValues"]["options"], "text")
                         ),
                     ),
-                    new Cardinality($cardType),
+                    new Cardinality(
+                        $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS
+                        ? Cardinality::SINGLE
+                        : Cardinality::MANY
+                    ),
                     $activityItem["name"],
                 );
             }
             break;
         case self::ACTIVITY_ITEM_SLIDER_ROWS:
-            foreach ($activityItem["responseValues"]["rows"] as $row) {
+            foreach ($activityItem["responseValues"]["rows"] ?? [] as $rowNum => $row) {
                 $this->dictionary[] = new DictionaryItem(
-                    $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
-                    $activityItem["question"],
+                    $fieldName . "__" . $rowNum,
+                    $activityItem["question"] . " - " . $row["label"],
                     $this->scope,
                     new IntegerType(),
                     new Cardinality(Cardinality::SINGLE),
@@ -274,5 +292,10 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     public function getDataDictionary(): iterable
     {
         return $this->dictionary;
+    }
+
+    public function usesJSONdata(): bool
+    {
+        return $this->jsonData;
     }
 }
