@@ -119,73 +119,6 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
     $patch[$issueID] = $modulesTableID;
 }
 
-// Use mapping arrays to replace old `LorisMenu` ID values in issues_history
-// `newValue` column with new `modules` table ID values
-// where fieldChanged = 'module'.
-$result_history = $DB->pselect(
-    'SELECT issueHistoryID, newValue as module FROM issues_history 
-        WHERE fieldChanged=\'module\'',
-    []
-);
-
-$issueHistoryMapping = [];
-foreach ($result_history as $row) {
-    $issueHistoryMapping[$row['issueHistoryID']] = $row['module'];
-}
-unset($result_history);
-
-$correctHistoryMapping   = [];
-$incorrectHistoryMapping = [];
-foreach ($issueHistoryMapping as $issueHistoryID => $menuTableID) {
-    // Using the menuTableID, look up the corresponding module name from the
-    // `LorisMenu` table.
-    // Using the module name, look up the new ID in the `modules` table.
-    if (!array_key_exists($menuTableID, $menuTableMapping)) {
-        echo "[!] Issue History ID: $issueHistoryID. Could not find key ".
-            "`$menuTableID` in LorisMenu mapping array\n";
-        $incorrectHistoryMapping[] = $issueHistoryID;
-        continue;
-    }
-    if (!array_key_exists($menuTableMapping[$menuTableID], $modulesTableMapping)) {
-        echo "[!] Issue History ID: $issueHistoryID. Could not find key ".
-            "`$menuTableMapping[$menuTableID]` in modules mapping array\n";
-        $incorrectHistoryMapping[] = $issueHistoryID;
-        continue;
-    }
-    $correctHistoryMapping[$issueHistoryID]
-        = $modulesTableMapping[$menuTableMapping[$menuTableID]];
-}
-
-// Now we have an array of issue history IDs mapped to the IDs in the `module` table
-// matched based on the name of modules. This should fix the problem.
-
-$patch_history = [];
-foreach ($correctHistoryMapping as $issueHistoryID => $modulesTableID) {
-    $result       = $DB->pselect(
-        "SELECT ih.issueHistoryID,lm.Link as module FROM LorisMenu lm 
-        INNER JOIN issues_history ih
-        ON (ih.newValue=lm.ID AND ih.issueHistoryID=:ihd) 
-        WHERE ih.fieldChanged='module'",
-        ['ihd' => $issueHistoryID]
-    );
-    $idBefore     = $result[0]['issueHistoryID'];
-    $moduleBefore = $result[0]['module'];
-
-    $moduleAfter = $DB->pselectOne(
-        'SELECT name FROM modules WHERE ID=:id',
-        ['id' => $modulesTableID]
-    );
-    echo sprintf(
-        "Issue History ID: %s. Module before (`LorisMenu`): `%s`. Module after "
-        . "(`modules`): `%s`\n",
-        $idBefore,
-        $moduleBefore,
-        $moduleAfter
-    );
-
-    $patch_history[$issueHistoryID] = $modulesTableID;
-}
-
 if ($confirm) {
     foreach ($patch as $issueID=>$modulesTableID) {
         $DB->update('issues', ['module'=>$modulesTableID], ['issueID'=>$issueID]);
@@ -193,18 +126,6 @@ if ($confirm) {
     foreach ($incorrectMapping as $issueID) {
         $DB->update('issues', ['module'=>null], ['issueID'=>$issueID]);
     }
-
-    foreach ($patch_history as $issueHistoryID=>$modulesTableID) {
-        $DB->update(
-            'issues_history',
-            ['newValue'=>$modulesTableID],
-            ['issueHistoryID'=>$issueHistoryID]
-        );
-    }
-    foreach ($incorrectHistoryMapping as $issueID) {
-        $DB->delete('issues_history', ['issueHistoryID'=>$issueHistoryID]);
-    }
-
     echo "Done. Make sure to run the clean-up patch $cleanupPatch to complete ".
         "the process\n";
 } else {
@@ -216,22 +137,12 @@ if ($confirm) {
         echo "UPDATE `issues` SET module=NULL WHERE issueID=$issueID;\n";
     }
 
-    foreach ($patch_history as $issueHistoryID=>$modulesTableID) {
-        echo "UPDATE `issues_history` SET newValue=$modulesTableID ".
-            "WHERE issueHistoryID=$issueHistoryID;\n";
-    }
-    foreach ($incorrectHistoryMapping as $issueHistoryID) {
-        echo "DELETE FROM `issues_history` WHERE issueHistoryID=$issueHistoryID;\n";
-    }
-
     echo "ALTER TABLE `issues` ADD FOREIGN KEY (module) REFERENCES modules(ID);\n\n";
 
     echo "Run this tool again with the argument 'confirm' to ".
         "perform the changes.\n".
         "Note: The module field for issues for which a mapping between LorisMenu and 
-        modules can not be found will be nullified.\n".
-        "Note: The row of issues_history for which a mapping between LorisMenu and 
-        modules can not be found will be deleted.\n\n";
+        modules can not be found will be nullified.\n\n";
 }
 
 /**
