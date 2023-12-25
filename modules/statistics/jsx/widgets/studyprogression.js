@@ -1,88 +1,122 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import Panel from 'jsx/Panel';
+import Panel from 'Panel';
+import {QueryChartForm} from './helpers/queryChartForm';
+import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
- *
  * @param {object} props
+ *
  * @return {JSX.Element}
  */
 const StudyProgression = (props) => {
   const [loading, setLoading] = useState(true);
-  const [siteScans, setSiteScans] = useState({});
-  const [siteRecruitments, setSiteRecruitments] = useState({});
+
+  let json = props.data;
+
+  const [chartDetails, setChartDetails] = useState({
+    'total_scans': {
+      'scans_bymonth': {
+        sizing: 12,
+        title: 'Scan sessions per site',
+        filters: '',
+        chartType: 'line',
+        dataType: 'line',
+        label: 'Scans',
+        legend: 'under',
+        options: {line: 'line'},
+      },
+    },
+    'total_recruitment': {
+      'siterecruitment_line': {
+        sizing: 12,
+        title: 'Recruitment per site',
+        filters: '',
+        chartType: 'line',
+        dataType: 'line',
+        legend: '',
+        options: {line: 'line'},
+      },
+    },
+  });
+
+  const showChart = ((section, chartID) => {
+    return props.showChart(section, chartID,
+      chartDetails, setChartDetails);
+  });
 
   /**
    * useEffect - modified to run when props.data updates.
    */
   useEffect(() => {
-    const json = props.data;
     if (json && Object.keys(json).length !== 0) {
-      setSiteScans(
-        json['studyprogression']['total_scans'] > 0
-          ? <div className='row'>
-            <h5 className="chart-title col-xs-12">Scan sessions per site</h5>
-            <div id='scanChart' className='col-xs-10'/>
-            <div className='scanChartLegend legend-container col-xs-2'/>
-            <small className='col-xs-12'>
-              <i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
-          </div>
-          : <p>There have been no scans yet.</p>
-      );
-      setSiteRecruitments(
-        json['studyprogression']['recruitment']['overall']
-          ['total_recruitment'] > 0
-          ? <div className='row'>
-            <h5 className='chart-title col-xs-12'>Recruitment per site</h5>
-            <div id='recruitmentChart' className='col-xs-10'/>
-            <div className={
-              'recruitmentChartLegend legend-container col-xs-2'
-            }/>
-            <small>
-              <i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
-          </div>
-          : <p>There have been no candidates registered yet.</p>
-      );
+      setupCharts(false, chartDetails).then((data) => {
+        setChartDetails(data);
+      });
+      json = props.data;
       setLoading(false);
     }
   }, [props.data]);
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX.Element} - React markup for component.
-   */
+  const updateFilters = (formDataObj, section) => {
+    props.updateFilters(formDataObj, section,
+      chartDetails, setChartDetails);
+  };
+
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
-    <Panel
-      title='Study Progression'
-      id='statistics_studyprogression'
-      views={[
-        {
-          content: <>
-            {siteScans}
-          </>,
-          title: 'Study Progression - site scans',
-        },
-        {
-          content: <>
-            {siteRecruitments}
-          </>,
-          title: 'Study Progression - site recruitment',
-        },
-      ]}
-    />
+    <>
+      <Panel
+        title='Study Progression'
+        id='statistics_studyprogression'
+        onChangeView={() => {
+          setupCharts(false, chartDetails);
+        }}
+        views={[
+          {
+            content: json['studyprogression']['total_scans'] > 0 ?
+            <>
+              <QueryChartForm
+                Module={'statistics'}
+                name={'studyprogression'}
+                id={'studyprogressionSiteScansForm'}
+                data={props.data}
+                callback={(formDataObj) => {
+                  updateFilters(formDataObj, 'total_scans');
+                }}
+              />
+              {showChart('total_scans', 'scans_bymonth')}
+            </> :
+            <p>There have been no scans yet.</p>,
+            title: 'Study Progression - site scans',
+          },
+          {
+            content:
+            json['studyprogression']['recruitment']['overall']['total_recruitment'] > 0 ?
+            <>
+              <QueryChartForm
+                Module={'statistics'}
+                name={'studyprogression'}
+                id={'studyprogressionSiteRecruitmentForm'}
+                data={props.data}
+                callback={(formDataObj) => {
+                  updateFilters(formDataObj, 'total_recruitment');
+                }}
+              />
+              {showChart('total_recruitment', 'siterecruitment_line')}
+            </> :
+            <p>There have been no candidates registered yet.</p>,
+            title: 'Study Progression - site recruitment',
+          },
+        ]}
+      />
+    </>
   );
 };
 StudyProgression.propTypes = {
   data: PropTypes.object,
+  baseURL: PropTypes.string,
 };
 StudyProgression.defaultProps = {
   data: {},
