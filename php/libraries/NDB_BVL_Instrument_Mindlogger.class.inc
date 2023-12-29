@@ -22,6 +22,7 @@ use LORIS\Data\Types\DateType;
 use LORIS\Data\Types\TimeType;
 use LORIS\Data\Types\URI;
 use \LORIS\instruments\DictionaryItem;
+use \LORIS\Data\Dictionary\DictionaryItem as DictionaryField;
 
 /**
  * Base class for all Mindlogger instruments in Loris
@@ -168,8 +169,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
                 ),
                 new Cardinality(
                     $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT
-                    ? Cardinality::SINGLE
-                    : Cardinality::MANY
+                        ? Cardinality::SINGLE
+                        : Cardinality::MANY
                 ),
                 $activityItem["name"],
             );
@@ -233,8 +234,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
                     ),
                     new Cardinality(
                         $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS
-                        ? Cardinality::SINGLE
-                        : Cardinality::MANY
+                            ? Cardinality::SINGLE
+                            : Cardinality::MANY
                     ),
                     $activityItem["name"],
                 );
@@ -297,5 +298,12 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     public function usesJSONdata(): bool
     {
         return $this->jsonData;
+    }
+
+    function getDictionaryValue(DictionaryField $field)
+    {
+        $allValues = $this->getInstanceData();
+
+        return $allValues[$field->getName()] ?? '';
     }
 }
