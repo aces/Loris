@@ -206,7 +206,9 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     return new \LORIS\Http\Response\JSON\Forbidden();
                 }
             } catch (\NotFound $e) {
-                return new \LORIS\Http\Response\JSON\NotFound("Instrument does not exist");
+                return new \LORIS\Http\Response\JSON\NotFound(
+                    "Instrument does not exist"
+                );
             } catch (\Exception $e) {
                 return new \LORIS\Http\Response\JSON\InternalServerError();
             }
