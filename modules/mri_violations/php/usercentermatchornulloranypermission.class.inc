@@ -12,12 +12,20 @@ namespace LORIS\mri_violations;
 class UserCenterMatchOrNullOrAnyPermission implements \LORIS\Data\Filter
 {
     /**
+     * User permissions
+     *
+     * @var string[]
+     */
+    private $permissions;
+
+    /**
      * {@constructor}
      *
      * @param string[] $permissions - List of possible permissions
      */
-    public function __construct(protected array $permissions)
+    public function __construct(array $permissions)
     {
+        $this->permissions = $permissions;
     }
 
     /**
