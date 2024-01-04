@@ -215,7 +215,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $battery->selectBattery($this->_visit->getSessionID());
         $existingBattery = $battery->getBattery();
         foreach ($requestdata['Instruments'] as $instrument) {
-            if (in_array($instrument, $existingBattery)) {
+            if (in_array($instrument, $existingBattery, true)) {
                 continue;
             }
             $battery->addInstrument($loris, $instrument);
