@@ -89,7 +89,10 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $projectID,
                 $projectInfo['Name'],
                 $projectInfo['recruitmentTarget'],
-                $this->getTotalRecruitmentByProject($db, new \ProjectID(strval($projectID))),
+                $this->getTotalRecruitmentByProject(
+                    $db,
+                    new \ProjectID(strval($projectID))
+                ),
                 $db
             );
         }
@@ -118,13 +121,14 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     'project ID ' . intval(strval($projectID))
                 );
             }
-            $recruitment[intval(strval($projectID))] = $this->_createProjectProgressBar(
-                $projectID,
-                $projectInfo['Name'],
-                $projectInfo['recruitmentTarget'],
-                $this->getTotalRecruitmentByProject($db, $projectID),
-                $db
-            );
+            $recruitment[intval(strval($projectID))]
+                = $this->_createProjectProgressBar(
+                    $projectID,
+                    $projectInfo['Name'],
+                    $projectInfo['recruitmentTarget'],
+                    $this->getTotalRecruitmentByProject($db, $projectID),
+                    $db
+                );
 
             // Set cohort recruitment data
             $project = \Project::getProjectFromID($projectID);
@@ -133,13 +137,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
             $projectOptions[strval($projectID)] = $project->getName();
             foreach ($cohorts AS $sp) {
                 $cohortOptions[$sp["cohortId"]]      = $sp["title"];
-                $recruitmentCohorts[$sp["cohortId"]] = $this->_createCohortProgressBar(
+                $recruitmentCohorts[$sp["cohortId"]]
+                    = $this->_createCohortProgressBar(
                     $sp["cohortId"],
                     $sp["title"],
                     $sp["recruitmentTarget"],
                     $db
                 );
-                $cohortVisits = \Utility::getVisitsForCohort(intval($sp["cohortId"]));
+                $cohortVisits = \Utility::getVisitsForCohort(
+                    intval($sp["cohortId"])
+                );
                 foreach ($cohortVisits as $visit) {
                     $visitOptions[$visit] = $cohortVisits[$visit];
                 }
@@ -150,7 +157,10 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $userCenters = $user->getCenterIDs();
 
         $siteOptions = array_intersect_key($sites, $userCenters);
-        $participantStatusOptions = \Candidate::getParticipantStatusOptions();
+
+        $participantStatusOptions
+            = \Candidate::getParticipantStatusOptions();
+
         $options           = [
             'projects'          => $projectOptions,
             'cohorts'           => $cohortOptions,
@@ -210,12 +220,20 @@ class Widgets extends \NDB_Page implements ETagCalculator
         }
 
         $rv['recruitment_target'] = $recruitmentTarget;
-        $totalFemales         = $this->getTotalSexByCohort($db, "Female", intval($ID));
+        $totalFemales         = $this->getTotalSexByCohort(
+            $db,
+            "Female",
+            intval($ID)
+        );
         $rv['female_total']   = $totalFemales;
         $rv['female_percent'] = $recruitmentTarget ?
             round($totalFemales / $recruitmentTarget * 100) :
             null;
-        $totalMales           = $this->getTotalSexByCohort($db, "Male", intval($ID));
+        $totalMales           = $this->getTotalSexByCohort(
+            $db,
+            "Male",
+            intval($ID)
+        );
         $rv['male_total']     = $totalMales;
         $rv['male_percent']   = $recruitmentTarget ?
             round($totalMales / $recruitmentTarget * 100) :
@@ -255,7 +273,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
         return $DB->pselectOne(
-            "SELECT COUNT(DISTINCT s.CandID) FROM session s JOIN candidate c ON c.CandID=s.CandID
+            "SELECT COUNT(DISTINCT s.CandID)
+            FROM session s
+            JOIN candidate c ON c.CandID=s.CandID
             WHERE CohortID=:sid
             AND CenterID IN ({$centerList})
             AND ProjectID IN ({$projectList})
@@ -318,7 +338,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if ($ID == 'overall') {
             $totalFemales = $this->_getTotalSex($db, "Female");
         } else {
-            $totalFemales = $this->getTotalSexByProject($db, "Female", intval(strval($ID)));
+            $totalFemales = $this->getTotalSexByProject(
+                $db,
+                "Female",
+                intval(strval($ID))
+            );
         }
         $rv['female_total']   = $totalFemales;
         $rv['female_percent']
@@ -326,7 +350,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if ($ID == 'overall') {
             $totalMales = $this->_getTotalSex($db, "Male");
         } else {
-            $totalMales = $this->getTotalSexByProject($db, "Male", intval(strval($ID)));
+            $totalMales = $this->getTotalSexByProject(
+                $db,
+                "Male",
+                intval(strval($ID))
+            );
         }
         $rv['male_total']   = $totalMales;
         $rv['male_percent']
@@ -379,7 +407,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         return $DB->pselectOneInt(
             "SELECT COUNT(c.CandID)
             FROM candidate c
-            WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
+            WHERE c.Sex=:sex
+            AND c.Active='Y'
+            AND c.RegistrationProjectID=:PID
             AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             [
                 'sex' => $sex,

@@ -358,7 +358,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1) .views button"
+                "#statistics_widgets .panel:nth-child(0) .views button"
             )
         );
         $views->click();
