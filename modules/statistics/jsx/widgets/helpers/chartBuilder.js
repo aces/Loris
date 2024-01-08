@@ -110,8 +110,8 @@ const createPieChart = (columns, id, targetModal, colours) => {
       type: 'pie',
     },
     size: {
-      height: targetModal ? 700 : 300,
-      width: targetModal ? 700 : 300,
+      height: targetModal ? 700 : 350,
+      width: targetModal ? 700 : 350,
     },
     color: {
       pattern: colours,
@@ -146,7 +146,8 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
         }
     },
     size: {
-      width: targetModal ? 1000 : 600,
+      width: targetModal ? 1000 : 350,
+      height: targetModal ? 700 : 350,
     },
     axis: {
       x: {

@@ -36,13 +36,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
-            case 'GET':
-                $this->_cache = $this->_handleGET($request);
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            $this->_cache = $this->_handleGET($request);
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
         return $this->_cache;
     }
@@ -107,8 +107,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $projects = $user->getProjectIDs();
 
         $projectOptions = [];
-        $cohortOptions = [];
-        $visitOptions = [];
+        $cohortOptions  = [];
+        $visitOptions   = [];
         foreach ($projects as $projectID) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
@@ -132,7 +132,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
             $projectOptions[strval($projectID)] = $project->getName();
             foreach ($cohorts AS $sp) {
-                $cohortOptions[$sp["cohortId"]] = $sp["title"];
+                $cohortOptions[$sp["cohortId"]]      = $sp["title"];
                 $recruitmentCohorts[$sp["cohortId"]] = $this->_createCohortProgressBar(
                     $sp["cohortId"],
                     $sp["title"],
@@ -145,17 +145,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 }
             }
         }
-        
-        $sites = \Utility::getSiteList();
+
+        $sites       = \Utility::getSiteList();
         $userCenters = $user->getCenterIDs();
 
         $siteOptions = array_intersect_key($sites, $userCenters);
         $participantStatusOptions = \Candidate::getParticipantStatusOptions();
-        $options = [
-            'projects' => $projectOptions,
-            'cohorts' => $cohortOptions,
-            'sites' => $siteOptions,
-            'visits' => $visitOptions,
+        $options           = [
+            'projects'          => $projectOptions,
+            'cohorts'           => $cohortOptions,
+            'sites'             => $siteOptions,
+            'visits'            => $visitOptions,
             'participantStatus' => $participantStatusOptions
         ];
         $values['options'] = $options;
@@ -184,11 +184,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
         \Database $db
     ) {
 
-        $user = \User::singleton();
-        $projectIDs = $user->getProjectIDs();
+        $user        = \User::singleton();
+        $projectIDs  = $user->getProjectIDs();
         $projectList = "'" . implode("','", $projectIDs) . "'";
-        $centerIDs = $user->getCenterIDs();
-        $centerList = "'" . implode("','", $centerIDs) . "'";
+        $centerIDs   = $user->getCenterIDs();
+        $centerList  = "'" . implode("','", $centerIDs) . "'";
 
         $totalRecruitment = $db->pselectOne(
             "SELECT COUNT(DISTINCT s.CandID)
@@ -210,24 +210,24 @@ class Widgets extends \NDB_Page implements ETagCalculator
         }
 
         $rv['recruitment_target'] = $recruitmentTarget;
-        $totalFemales = $this->getTotalSexByCohort($db, "Female", intval($ID));
+        $totalFemales         = $this->getTotalSexByCohort($db, "Female", intval($ID));
         $rv['female_total']   = $totalFemales;
-        $rv['female_percent'] = $recruitmentTarget ? 
+        $rv['female_percent'] = $recruitmentTarget ?
             round($totalFemales / $recruitmentTarget * 100) :
             null;
-        $totalMales = $this->getTotalSexByCohort($db, "Male", intval($ID));
-        $rv['male_total']   = $totalMales;
-        $rv['male_percent'] = $recruitmentTarget ? 
+        $totalMales           = $this->getTotalSexByCohort($db, "Male", intval($ID));
+        $rv['male_total']     = $totalMales;
+        $rv['male_percent']   = $recruitmentTarget ?
             round($totalMales / $recruitmentTarget * 100) :
             null;
         if ($totalRecruitment > $recruitmentTarget) {
             $rv['surpassed_recruitment'] = "true";
 
-            $rv['female_full_percent'] = $totalRecruitment ? 
+            $rv['female_full_percent'] = $totalRecruitment ?
                 round($totalFemales / $totalRecruitment * 100) :
                 null;
 
-            $rv['male_full_percent'] = $totalRecruitment ? 
+            $rv['male_full_percent'] = $totalRecruitment ?
                 round($totalMales / $totalRecruitment * 100) :
                 null;
         }
@@ -238,9 +238,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
      * Gets the total count of candidates of a specific sex,
      * associated with a specific project
      *
-     * @param \Database $DB        A database connection to retrieve information
-     *                             from.
-     * @param string    $sex       A biological sex (male or female)
+     * @param \Database $DB       A database connection to retrieve information
+     *                            from.
+     * @param string    $sex      A biological sex (male or female)
      * @param int       $cohortID Cohort ID
      *
      * @return int|string
@@ -248,11 +248,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
     function getTotalSexByCohort(\Database $DB, string $sex, int $cohortID)
     {
 
-        $user = \User::singleton();
-        $projectIDs = $user->getProjectIDs();
+        $user        = \User::singleton();
+        $projectIDs  = $user->getProjectIDs();
         $projectList = "'" . implode("','", $projectIDs) . "'";
-        $centerIDs = $user->getCenterIDs();
-        $centerList = "'" . implode("','", $centerIDs) . "'";
+        $centerIDs   = $user->getCenterIDs();
+        $centerList  = "'" . implode("','", $centerIDs) . "'";
 
         return $DB->pselectOne(
             "SELECT COUNT(DISTINCT s.CandID) FROM session s JOIN candidate c ON c.CandID=s.CandID

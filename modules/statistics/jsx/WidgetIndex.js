@@ -222,7 +222,7 @@ const WidgetIndex = (props) => {
       <Modal
         show={modalChart}
         onClose={() => setModalChart(null)}
-        width={'1000px'}
+        width={'1200px'}
         title={modalChart && modalChart.title}
         throwWarning={false}
       >

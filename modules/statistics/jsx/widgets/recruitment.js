@@ -19,8 +19,28 @@ const Recruitment = (props) => {
 
   const [chartDetails, setChartDetails] = useState({
     'siteBreakdown': {
+      'agerecruitment_pie': {
+        sizing: 5,
+        title: 'Total recruitment by Age',
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: 'Age (Years)',
+        options: {pie: 'pie', bar: 'bar'},
+        legend: 'under',
+      },
+      'ethnicity_pie': {
+        sizing: 5,
+        title: 'Ethnicity at Screening',
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: 'Ethnicity',
+        options: {pie: 'pie', bar: 'bar'},
+        legend: 'under',
+      },
       'siterecruitment_pie': {
-        sizing: 11,
+        sizing: 5,
         title: 'Total Recruitment per Site',
         filters: '',
         chartType: 'pie',
@@ -30,13 +50,13 @@ const Recruitment = (props) => {
         options: {pie: 'pie', bar: 'bar'},
       },
       'siterecruitment_bysex': {
-        sizing: 11,
+        sizing: 5,
         title: 'Biological sex breakdown by site',
         filters: '',
         chartType: 'bar',
         dataType: 'bar',
         legend: 'under',
-        options: {bar: 'bar'},
+        options: {bar: 'bar', pie: 'pie'},
       },
     },
   });
