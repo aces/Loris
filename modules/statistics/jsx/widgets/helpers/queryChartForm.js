@@ -150,16 +150,23 @@ const QueryChartForm = (props) => {
           <br/>
         </>
         : null}
-      <ButtonElement
-        label='Submit Query'
-        type='submit'
-        buttonClass='btn btn-sm btn-primary'
-      />
-      <ButtonElement
-        label='Clear Filters'
-        onUserInput={resetFilters}
-        buttonClass='btn btn-sm btn-primary'
-      />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}
+      >
+        <ButtonElement
+          label='Submit Query'
+          type='submit'
+          buttonClass='btn btn-sm btn-primary'
+        />
+        <ButtonElement
+          label='Clear Filters'
+          onUserInput={resetFilters}
+          buttonClass='btn btn-sm btn-primary'
+        />
+      </div>
     </FormElement>
   );
 };
