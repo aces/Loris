@@ -19,7 +19,7 @@ const StudyProgression = (props) => {
   const [chartDetails, setChartDetails] = useState({
     'total_scans': {
       'scans_bymonth': {
-        sizing: 12,
+        sizing: 11,
         title: 'Scan sessions per site',
         filters: '',
         chartType: 'line',
@@ -31,7 +31,7 @@ const StudyProgression = (props) => {
     },
     'total_recruitment': {
       'siterecruitment_line': {
-        sizing: 12,
+        sizing: 11,
         title: 'Recruitment per site',
         filters: '',
         chartType: 'line',

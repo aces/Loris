@@ -20,7 +20,7 @@ const Recruitment = (props) => {
   const [chartDetails, setChartDetails] = useState({
     'siteBreakdown': {
       'siterecruitment_pie': {
-        sizing: 12,
+        sizing: 11,
         title: 'Total Recruitment per Site',
         filters: '',
         chartType: 'pie',
@@ -30,7 +30,7 @@ const Recruitment = (props) => {
         options: {pie: 'pie', bar: 'bar'},
       },
       'siterecruitment_bysex': {
-        sizing: 12,
+        sizing: 11,
         title: 'Biological sex breakdown by site',
         filters: '',
         chartType: 'bar',
