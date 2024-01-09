@@ -466,6 +466,8 @@ class Charts extends \NDB_Page
                 new \DateTimeImmutable($recruitmentStartDate),
                 new \DateTimeImmutable($recruitmentEndDate)
             );
+        } else {
+            $recruitmentData['labels'] = [];
         }
 
         foreach ($list_of_sites as $siteID => $siteName) {
