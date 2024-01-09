@@ -134,8 +134,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
             $project = \Project::getProjectFromID($projectID);
             $cohorts = $project->getCohorts();
 
-            $recruitmentCohorts = [];
-
             $projectOptions[strval($projectID)] = $project->getName();
             foreach ($cohorts AS $sp) {
                 $cohortOptions[$sp["cohortId"]]      = $sp["title"];
