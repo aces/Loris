@@ -329,8 +329,6 @@ class Imaging_QC extends \NDB_Menu_Filter
             'qc_status',
             'uploaded_by',
             'selected',
-            'CommentID',
-            'TarchiveID',
         ];
 
         $this->group_by = 'PSCID,
@@ -347,9 +345,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             scan_location,
             qc_status,
             selected,
-            uploaded_by,
-            CommentID,
-            TarchiveID ';
+            uploaded_by ';
 
         $this->order_by = 'PSCID';
     }

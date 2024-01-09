@@ -197,8 +197,6 @@ class ImagingQCIndex extends Component {
             options: ImgOptions.selected,
           },
         },
-        {label: 'CommentID', show: false},
-        {label: 'TarchiveID', show: false},
       ];
 
       const datatable = (
