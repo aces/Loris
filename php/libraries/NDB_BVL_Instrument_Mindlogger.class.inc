@@ -163,8 +163,10 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
                 $this->scope,
                 new Enumeration(
                     ...\array_map(
-                        'strval',
-                        \array_column($activityItem["responseValues"]["options"], "value")
+                        function ($option) {
+                            return strval($option["value"] + 1);
+                        },
+                        $activityItem["responseValues"]["options"]
                     ),
                 ),
                 new Cardinality(
