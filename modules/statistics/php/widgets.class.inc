@@ -123,7 +123,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
             $recruitment[intval(strval($projectID))]
                 = $this->_createProjectProgressBar(
-                    $projectID,
+                    strval($projectID),
                     $projectInfo['Name'],
                     $projectInfo['recruitmentTarget'],
                     $this->getTotalRecruitmentByProject($db, $projectID),
@@ -133,6 +133,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
             // Set cohort recruitment data
             $project = \Project::getProjectFromID($projectID);
             $cohorts = $project->getCohorts();
+
+            $recruitmentCohorts = [];
 
             $projectOptions[strval($projectID)] = $project->getName();
             foreach ($cohorts AS $sp) {
@@ -200,7 +202,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs   = $user->getCenterIDs();
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
-        $totalRecruitment = $db->pselectOne(
+        $totalRecruitment = intval($db->pselectOne(
             "SELECT COUNT(DISTINCT s.CandID)
             FROM session s JOIN candidate c
             WHERE s.CohortID=:sid
@@ -208,7 +210,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             AND s.ProjectID IN ({$projectList})
             AND c.RegistrationCenterID <> 1",
             ['sid' => $ID]
-        );
+        ));
 
         $rv = [
             'total_recruitment' => $totalRecruitment,
@@ -272,7 +274,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs   = $user->getCenterIDs();
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
-        return $DB->pselectOne(
+        return intval($DB->pselectOne(
             "SELECT COUNT(DISTINCT s.CandID)
             FROM session s
             JOIN candidate c ON c.CandID=s.CandID
@@ -285,7 +287,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 'sex' => $sex,
                 'sid' => $cohortID
             ]
-        );
+        ));
     }
 
     /**
@@ -421,9 +423,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
     /**
      * Gets the total count of candidates associated with a specific project.
      *
-     * @param \Database $db        A database connection to retrieve information
-     *                             from.
-     * @param int       $projectID The Project ID to get recruitment for.
+     * @param \Database  $db        A database connection to retrieve information
+     *                              from.
+     * @param \ProjectID $projectID The Project ID to get recruitment for.
      *
      * @return int
      */

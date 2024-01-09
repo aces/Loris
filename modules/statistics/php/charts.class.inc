@@ -245,7 +245,7 @@ class Charts extends \NDB_Page
             $age   = $ageOb['year'];
 
             // Determine the starting point of the age split (a multiple of 5)
-            $startOfSplit = floor($age / 5) * 5;
+            $startOfSplit = intval(floor($age / 5) * 5);
 
             // Check if the age split already exists in the array
             if (!isset($ageSplits[$startOfSplit])) {
@@ -552,7 +552,6 @@ class Charts extends \NDB_Page
         $cohortQuery  = '';
         $cohortJoin   = '';
         $visitQuery   = '';
-        $siteQuery    = '';
         $PSJoin       = '';
         $participantStatusQuery = '';
 
@@ -584,11 +583,6 @@ class Charts extends \NDB_Page
             if ($scansbymonth === true) {
                 $siteQuery = " AND s.CenterID IN ({$siteString}) ";
             }
-            // Alter site list if selected
-            $list_of_sites = array_intersect_key(
-                $list_of_sites,
-                array_flip($params['selectedSites'])
-            );
         } else {
             // If not selected, only take user sites
             $centerIDs  = $user->getCenterIDs();
