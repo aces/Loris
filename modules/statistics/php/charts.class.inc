@@ -236,7 +236,7 @@ class Charts extends \NDB_Page
         // Initialize an array to store the dynamic age splits
         $ageSplits = [];
 
-        foreach ($dates as $key => $value) {
+        foreach ($dates as $_ => $value) {
             // Note that age is calculated from date registered, not today
             $ageOb = \Utility::calculateAge(
                 $value['DoB'],
@@ -301,7 +301,7 @@ class Charts extends \NDB_Page
         // Initialize an array to store the ethnicities
         $ethnicities = [];
 
-        foreach ($candidates as $key => $value) {
+        foreach ($candidates as $_ => $value) {
             // Check if the ethnicity already exists in the array
             if (!isset($ethnicities[$value["Ethnicity"]])) {
                 // If not, create a new entry with the ethnicity as the key
@@ -477,7 +477,7 @@ class Charts extends \NDB_Page
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
-                    $recruitmentData['labels'],
+                    $recruitmentData['labels'] ? : [],
                     $conditions['cohortJoin'],
                     $conditions['participantStatusJoin'],
                     $conditions['cohortQuery'],
@@ -564,10 +564,6 @@ class Charts extends \NDB_Page
                     WHERE RegistrationProjectID
                     IN ({$projectString})",
                 []
-            );
-            $list_of_sites = array_intersect_key(
-                $list_of_sites,
-                array_flip($projectSites)
             );
         }
 
