@@ -112,6 +112,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $projectOptions = [];
         $cohortOptions  = [];
         $visitOptions   = [];
+        $recruitmentCohorts = [];
         foreach ($projects as $projectID) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
@@ -133,8 +134,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
             // Set cohort recruitment data
             $project = \Project::getProjectFromID($projectID);
             $cohorts = $project->getCohorts();
-
-            $recruitmentCohorts;
 
             $projectOptions[strval($projectID)] = $project->getName();
             foreach ($cohorts AS $sp) {
