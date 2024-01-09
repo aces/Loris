@@ -76,36 +76,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
             )
         ];
 
-        $projects = \Utility::getProjectList();
-        foreach (array_keys($projects) as $projectID) {
-            $projectInfo = $config->getProjectSettings(intval($projectID));
-            if (is_null($projectInfo)) {
-                throw new \LorisException(
-                    'No project settings exist in the Database for ' .
-                    'project ID ' . intval($projectID)
-                );
-            }
-            $recruitment[$projectID] = $this->_createProjectProgressBar(
-                $projectID,
-                $projectInfo['Name'],
-                $projectInfo['recruitmentTarget'],
-                $this->getTotalRecruitmentByProject(
-                    $db,
-                    new \ProjectID(strval($projectID))
-                ),
-                $db
-            );
-        }
-
-        $values = [];
-        // Used for the react widget recruitment.js
-        $values['recruitment'] = $recruitment;
-        // Used for the react widget studyprogression.js
-        $values['studyprogression'] = [
-            'total_scans' => $totalScans,
-            'recruitment' => $recruitment
-        ];
-
         $user     = $factory->user();
         $projects = $user->getProjectIDs();
 
@@ -162,14 +132,22 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
 
-        $options           = [
+        $options = [
             'projects'          => $projectOptions,
             'cohorts'           => $cohortOptions,
             'sites'             => $siteOptions,
             'visits'            => $visitOptions,
             'participantStatus' => $participantStatusOptions
         ];
-        $values['options'] = $options;
+        $values  = [];
+        // Used for the react widget recruitment.js
+        $values['recruitment'] = $recruitment;
+        // Used for the react widget studyprogression.js
+        $values['studyprogression']   = [
+            'total_scans' => $totalScans,
+            'recruitment' => $recruitment
+        ];
+        $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
