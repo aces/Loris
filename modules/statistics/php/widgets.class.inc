@@ -109,9 +109,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $user     = $factory->user();
         $projects = $user->getProjectIDs();
 
-        $projectOptions = [];
-        $cohortOptions  = [];
-        $visitOptions   = [];
+        $projectOptions     = [];
+        $cohortOptions      = [];
+        $visitOptions       = [];
         $recruitmentCohorts = [];
         foreach ($projects as $projectID) {
             // Set project recruitment data
