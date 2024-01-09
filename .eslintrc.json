@@ -202,7 +202,6 @@
       "files": [
         "modules/candidate_parameters/**",
         "modules/dqt/**",
-        "modules/configuration/jsx/configuration_helper.js",
         "modules/brainbrowser/js/brainbrowser.loris.js"
       ],
       "rules": {

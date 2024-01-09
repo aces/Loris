@@ -59,6 +59,9 @@ testdata:
 data_release:
 	target=data_release npm run compile
 
+configuration:
+	target=configuration npm run compile
+
 instrument_manager:
 	target=instrument_manager npm run compile
 
