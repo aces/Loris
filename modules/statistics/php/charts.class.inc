@@ -114,7 +114,7 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites);
+        $conditions = $this->_buildQueryConditions($params);
 
         $DB = \NDB_Factory::singleton()->database();
         $recruitmentBySiteData = [];
@@ -155,7 +155,7 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites);
+        $conditions = $this->_buildQueryConditions($params);
 
         $DB      = \NDB_Factory::singleton()->database();
         $sexData = [];
@@ -208,11 +208,10 @@ class Charts extends \NDB_Page
      */
     private function _handleAgePieData()
     {
-        $params        = $this->_parseGetParameters();
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = $user->getStudySites();
+        $params = $this->_parseGetParameters();
+        $user   = \NDB_Factory::singleton()->user();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites);
+        $conditions = $this->_buildQueryConditions($params);
 
         $DB = \NDB_Factory::singleton()->database();
 
@@ -275,11 +274,10 @@ class Charts extends \NDB_Page
      */
     private function _handleEthnicityPieData()
     {
-        $params        = $this->_parseGetParameters();
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = $user->getStudySites();
+        $params = $this->_parseGetParameters();
+        $user   = \NDB_Factory::singleton()->user();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites);
+        $conditions = $this->_buildQueryConditions($params);
 
         $DB = \NDB_Factory::singleton()->database();
 
@@ -340,7 +338,7 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites, true);
+        $conditions = $this->_buildQueryConditions($params, true);
 
         $DB       = \NDB_Factory::singleton()->database();
         $scanData = [];
@@ -443,7 +441,7 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        $conditions = $this->_buildQueryConditions($params, $list_of_sites);
+        $conditions = $this->_buildQueryConditions($params);
 
         $DB = \NDB_Factory::singleton()->database();
 
@@ -534,15 +532,13 @@ class Charts extends \NDB_Page
     /**
      * Helper to generate query conditions for for incoming requests.
      *
-     * @param array $params        The parameters from the incoming request.
-     * @param $list_of_sites The list of sites to filter by.
-     * @param bool  $scansbymonth  Whether or not the request is for scans by month.
+     * @param array $params       The parameters from the incoming request.
+     * @param bool  $scansbymonth Whether or not the request is for scans by month.
      *
      * @return array
      */
     private function _buildQueryConditions(
         $params,
-        $list_of_sites,
         $scansbymonth = false
     ) {
         $DB   = \NDB_Factory::singleton()->database();
@@ -558,13 +554,6 @@ class Charts extends \NDB_Page
         if (!is_null($params['selectedProjects'])) {
             $projectString = "'" . implode("','", $params['selectedProjects']) . "'";
             $projectQuery  = " AND c.RegistrationProjectID IN ({$projectString}) ";
-            $projectSites  = $DB->pselectCol(
-                "SELECT RegistrationCenterID
-                    FROM candidate
-                    WHERE RegistrationProjectID
-                    IN ({$projectString})",
-                []
-            );
         }
 
         if (!is_null($params['selectedCohorts'])) {
