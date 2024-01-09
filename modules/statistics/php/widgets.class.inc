@@ -202,15 +202,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs   = $user->getCenterIDs();
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
-        $totalRecruitment = intval($db->pselectOne(
-            "SELECT COUNT(DISTINCT s.CandID)
-            FROM session s JOIN candidate c
-            WHERE s.CohortID=:sid
-            AND s.CenterID IN ({$centerList})
-            AND s.ProjectID IN ({$projectList})
-            AND c.RegistrationCenterID <> 1",
-            ['sid' => $ID]
-        ));
+        $totalRecruitment = intval(
+            $db->pselectOne(
+                "SELECT COUNT(DISTINCT s.CandID)
+                FROM session s JOIN candidate c
+                WHERE s.CohortID=:sid
+                AND s.CenterID IN ({$centerList})
+                AND s.ProjectID IN ({$projectList})
+                AND c.RegistrationCenterID <> 1",
+                ['sid' => $ID]
+            )
+        );
 
         $rv = [
             'total_recruitment' => $totalRecruitment,
@@ -274,20 +276,22 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs   = $user->getCenterIDs();
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
-        return intval($DB->pselectOne(
-            "SELECT COUNT(DISTINCT s.CandID)
-            FROM session s
-            JOIN candidate c ON c.CandID=s.CandID
-            WHERE CohortID=:sid
-            AND CenterID IN ({$centerList})
-            AND ProjectID IN ({$projectList})
-            AND c.Sex=:sex
-            AND c.RegistrationCenterID <> 1",
-            [
-                'sex' => $sex,
-                'sid' => $cohortID
-            ]
-        ));
+        return intval(
+            $DB->pselectOne(
+                "SELECT COUNT(DISTINCT s.CandID)
+                FROM session s
+                JOIN candidate c ON c.CandID=s.CandID
+                WHERE CohortID=:sid
+                AND CenterID IN ({$centerList})
+                AND ProjectID IN ({$projectList})
+                AND c.Sex=:sex
+                AND c.RegistrationCenterID <> 1",
+                [
+                    'sex' => $sex,
+                    'sid' => $cohortID
+                ]
+            )
+        );
     }
 
     /**
