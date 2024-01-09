@@ -209,7 +209,6 @@ class Charts extends \NDB_Page
     private function _handleAgePieData()
     {
         $params = $this->_parseGetParameters();
-        $user   = \NDB_Factory::singleton()->user();
 
         $conditions = $this->_buildQueryConditions($params);
 
@@ -275,7 +274,6 @@ class Charts extends \NDB_Page
     private function _handleEthnicityPieData()
     {
         $params = $this->_parseGetParameters();
-        $user   = \NDB_Factory::singleton()->user();
 
         $conditions = $this->_buildQueryConditions($params);
 
@@ -475,7 +473,7 @@ class Charts extends \NDB_Page
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
-                    $recruitmentData['labels'] ? : [],
+                    $recruitmentData['labels'],
                     $conditions['cohortJoin'],
                     $conditions['participantStatusJoin'],
                     $conditions['cohortQuery'],
@@ -541,7 +539,6 @@ class Charts extends \NDB_Page
         $params,
         $scansbymonth = false
     ) {
-        $DB   = \NDB_Factory::singleton()->database();
         $user = \NDB_Factory::singleton()->user();
 
         $projectQuery = '';
