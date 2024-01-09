@@ -139,11 +139,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $cohortOptions[$sp["cohortId"]]      = $sp["title"];
                 $recruitmentCohorts[$sp["cohortId"]]
                     = $this->_createCohortProgressBar(
-                    $sp["cohortId"],
-                    $sp["title"],
-                    $sp["recruitmentTarget"],
-                    $db
-                );
+                        $sp["cohortId"],
+                        $sp["title"],
+                        $sp["recruitmentTarget"],
+                        $db
+                    );
                 $cohortVisits = \Utility::getVisitsForCohort(
                     intval($sp["cohortId"])
                 );
