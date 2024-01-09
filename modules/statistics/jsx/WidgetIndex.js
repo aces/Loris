@@ -190,7 +190,7 @@ const WidgetIndex = (props) => {
     });
     setChartDetails(newChartDetails);
   };
-  
+
   /**
    * Similar to componentDidMount and componentDidUpdate.
    */
@@ -316,7 +316,8 @@ window.addEventListener('load', () => {
 
 /**
  * Helper function to export a chart as an image
- * @param String chartId
+ *
+ * @param {string} chartId
  */
 const exportChartAsImage = (chartId) => {
   const chartContainer = document.getElementById(chartId);

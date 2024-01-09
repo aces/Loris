@@ -5,6 +5,7 @@ import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
 
 /**
  * QueryChartForm - a form used for statistics query to modify graphs/charts.
+ *
  * @param {object} props
  * @return {JSX.Element}
  */
@@ -45,7 +46,9 @@ const QueryChartForm = (props) => {
       }
       setOptionsVisits(visitOptions);
       let participantStatusOptions = {};
-      for (const [key, value] of Object.entries(json['options']['participantStatus'])) {
+      for (const [key, value] of Object.entries(
+          json['options']['participantStatus']
+        )) {
         participantStatusOptions[key] = value;
       }
       setOptionsStatus(participantStatusOptions);
@@ -71,6 +74,7 @@ const QueryChartForm = (props) => {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX.Element} - React markup for component.
    */
   return (
@@ -153,7 +157,7 @@ const QueryChartForm = (props) => {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row'
+          flexDirection: 'row',
         }}
       >
         <ButtonElement

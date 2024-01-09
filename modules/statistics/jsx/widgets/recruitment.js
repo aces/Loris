@@ -9,8 +9,8 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
- * @param {object} props
  *
+ * @param {object} props
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
@@ -132,7 +132,8 @@ const Recruitment = (props) => {
           {
             content:
               <>
-                {Object.entries(json['recruitmentcohorts']).map(([key, value]) => {
+                {Object.entries(json['recruitmentcohorts'])
+                .map(([key, value]) => {
                   return <div key={`cohortBreakdown_${key}`}>
                     {progressBarBuilder(value)}
                   </div>;
@@ -150,6 +151,8 @@ const Recruitment = (props) => {
 Recruitment.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
+  updateFilters: PropTypes.function,
+  showChart: PropTypes.function,
 };
 Recruitment.defaultProps = {
   data: {},

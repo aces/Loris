@@ -7,8 +7,8 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
- * @param {object} props
  *
+ * @param {object} props
  * @return {JSX.Element}
  */
 const StudyProgression = (props) => {
@@ -93,7 +93,9 @@ const StudyProgression = (props) => {
           },
           {
             content:
-            json['studyprogression']['recruitment']['overall']['total_recruitment'] > 0 ?
+            json['studyprogression']['recruitment']
+            ['overall']['total_recruitment']
+            > 0 ?
             <>
               <QueryChartForm
                 Module={'statistics'}
@@ -117,6 +119,8 @@ const StudyProgression = (props) => {
 StudyProgression.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
+  updateFilters: PropTypes.function,
+  showChart: PropTypes.function,
 };
 StudyProgression.defaultProps = {
   data: {},
