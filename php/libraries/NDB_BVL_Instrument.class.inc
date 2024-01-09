@@ -4,7 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
-use \LORIS\instruments\DictionaryItem;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -1407,7 +1407,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $allValues = $this->getInstanceData();
         $fieldName = substr($field->getName(), strlen($this->testName)+1);
 
-        return $allValues[$fieldName];
+        return $allValues[$fieldName] ?? '';
     }
 
     private ?SessionID $sessionID;
