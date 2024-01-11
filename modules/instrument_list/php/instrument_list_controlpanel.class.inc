@@ -143,10 +143,17 @@ class Instrument_List_ControlPanel extends \TimePoint
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
                 $nextStage = 'Approval';
+                $isPassed  = true;
             } else {
                 $nextStage = 'Recycling Bin';
+                $isPassed  = false;
             }
             $this->startStage($nextStage);
+            // update candidate_diagnosis_evolution_rel
+            \Utility::updateDiagnosisConfirmationStatus(
+                $this->getSessionID(),
+                $isPassed
+            );
 
             if ($nextStage == 'Recycling Bin') {
 
@@ -208,6 +215,12 @@ class Instrument_List_ControlPanel extends \TimePoint
                         'Approval'      => null,
                         'Date_approval' => null,
                     ]
+                );
+
+                // update candidate_diagnosis_evolution_rel
+                \Utility::updateDiagnosisConfirmationStatus(
+                    $this->getSessionID(),
+                    false
                 );
             }
                 $previousStage = $this->_determinePreviousStage();
