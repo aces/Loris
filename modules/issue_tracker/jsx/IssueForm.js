@@ -26,7 +26,7 @@ class IssueForm extends Component {
     super(props);
 
     this.state = {
-      Data: [],
+      Data: {},
       formData: {},
       submissionResult: null,
       errorMessage: null,
