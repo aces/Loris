@@ -703,10 +703,10 @@ class ConsentDataHandler extends \NDB_Form
     /**
      * Gets the latest consent version for given group / centerID.
      *
-     * @param int $consentGroupID Consent Group ID
-     * @param int $centerID       Registration CenterID for candidate
+     * @param ?string $consentGroupID Consent Group ID
+     * @param ?string $centerID       Registration CenterID for candidate
      *
-     * @return int
+     * @return ?string
      */
     function getVersion($consentGroupID, $centerID)
     {

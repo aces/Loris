@@ -248,26 +248,31 @@ class Direct_Consent extends \NDB_Page
         // Update request status if not yet "in progress"
         if ($requestStatus === 'created' || $requestStatus === 'sent') {
             // Update history to indicate form being in progress
-            $valsForHistory      = $db->pselectRow(
+            $valsForHistory = $db->pselectRow(
                 "SELECT ca.PSCID, dc.ConsentGroupID, dc.version 
                 FROM direct_consent dc
                 JOIN candidate ca ON dc.CandidateID=ca.CandID
                  WHERE OneTimeKey=:key",
                 ['key' => $oneTimeKey]
             );
-            $directUpdateHistory = [
-                'PSCID'          => $valsForHistory['PSCID'],
-                'ConsentGroupID' => $valsForHistory['ConsentGroupID'],
-                'Request_status' => 'in_progress',
-                'UserID'         => 'Candidate',
-                'version'        => $valsForHistory['version']
-            ];
-            $db->insert(
-                "direct_consent_history",
-                $directUpdateHistory
-            );
+            if (isset($valsForHistory['PSCID'])
+                && isset($valsForHistory['ConsentGroupID'])
+                && isset($valsForHistory['version'])
+            ) {
+                $directUpdateHistory = [
+                    'PSCID'          => $valsForHistory['PSCID'],
+                    'ConsentGroupID' => $valsForHistory['ConsentGroupID'],
+                    'Request_status' => 'in_progress',
+                    'UserID'         => 'Candidate',
+                    'version'        => $valsForHistory['version']
+                ];
+                $db->insert(
+                    "direct_consent_history",
+                    $directUpdateHistory
+                );
 
-            $updateData['Request_status'] = 'in_progress';
+                $updateData['Request_status'] = 'in_progress';
+            }
         }
 
         $updateData['trainingProgress'] = $body['progress'];
@@ -367,7 +372,10 @@ class Direct_Consent extends \NDB_Page
         );
 
         // Update request status if form complete
-        if ($complete) {
+        if ($complete
+            && isset($valsForHistory['ConsentGroupID'])
+            && isset($valsForHistory['version'])
+        ) {
             $db->update(
                 "direct_consent",
                 ['Request_status' => 'complete'],
@@ -419,28 +427,28 @@ class Direct_Consent extends \NDB_Page
 
         foreach ($body AS $consent => $value) {
             // Get consent info
-            $consentInfo = $db->pselectRow(
-                "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
+            $label = $db->pselectOne(
+                "SELECT Label FROM consent WHERE Name=:cnst",
                 ['cnst' => $consent]
             );
-            $consentID   = $consentInfo['ConsentID'];
-            $label       = $consentInfo['Label'];
+            if (isset($label) && isset($valsForHistory['version'])) {
 
-            // Update history
-            $updateHistory = [
-                'PSCID'                  => $pscid,
-                'ConsentName'            => $consent,
-                'ConsentLabel'           => $label,
-                'Status'                 => $value,
-                'DateGiven'              => date('Y-m-d H-i-s'),
-                'EntryStaff'             => 'Candidate',
-                'version'                => $valsForHistory['version'],
-                'DirectConsentHistoryID' => $directConsentHistoryID ?? null
-            ];
-            $db->insert(
-                "candidate_consent_history",
-                $updateHistory
-            );
+                // Update history
+                $updateHistory = [
+                    'PSCID'                  => $pscid,
+                    'ConsentName'            => $consent,
+                    'ConsentLabel'           => $label,
+                    'Status'                 => $value,
+                    'DateGiven'              => date('Y-m-d H-i-s'),
+                    'EntryStaff'             => 'Candidate',
+                    'version'                => $valsForHistory['version'],
+                    'DirectConsentHistoryID' => $directConsentHistoryID ?? null
+                ];
+                $db->insert(
+                    "candidate_consent_history",
+                    $updateHistory
+                );
+            }
         }
 
         return new \LORIS\Http\Response\JSON\OK();
@@ -591,7 +599,10 @@ class Direct_Consent extends \NDB_Page
         foreach ($consents as $name => $consentInfo) {
             // Give error if element does not exist for consent code,
             // or if element type is not 'consent'
-            $isConsent = array_key_exists('isSavable', $elements[$name]['options'])
+            $isConsent = array_key_exists(
+                'isSavable',
+                $elements[$name]['options'] ?? []
+            )
                 && $elements[$name]['options']['isSavable'] ;
 
             if (!array_key_exists($name, $elements)
@@ -602,8 +613,8 @@ class Direct_Consent extends \NDB_Page
             }
 
             // Check that only "yes" and "no" exist as keys in the consent options
-            $optionVals     = $elements[$name]['options']['values'];
-            $options        = array_column($optionVals, 'value');
+            $optionVals     = $elements[$name]['options']['values'] ?? [];
+            $options        = array_column($optionVals, 'value') ?? [];
             $allowedOptions = ['yes','no'];
             if (!array_diff($options, $allowedOptions)
                 && (!in_array('yes', $options) || !in_array('no', $options))

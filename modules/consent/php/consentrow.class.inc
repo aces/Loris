@@ -61,7 +61,7 @@ class ConsentRow implements
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->CenterID);
+        return $this->CenterID;
     }
 
     /**

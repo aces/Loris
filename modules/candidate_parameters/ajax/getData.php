@@ -455,6 +455,7 @@ function getConsentStatusFields()
 
         // Append consent as a child to its group
         $consentGroups[$groupID]['Children'][] = $consentName;
+        $comments = [];
 
         if (isset($candidateConsent[$consentID])) {
             $candidateConsentID     = $candidateConsent[$consentID];
