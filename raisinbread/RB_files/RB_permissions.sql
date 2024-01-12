@@ -64,6 +64,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'api_docs','API Documentation: View LORIS API Manual',NULL,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'electrophysiology_browser_edit_annotations','Annotations',41,'Create/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (72,'monitor_eeg_uploads','Monitor EEG uploads',47,'Create/Edit',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (73,'document_repository_categories','Categories',16,'Edit/Upload/Delete',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (74,'document_repository_hidden','Restricted files',16,'View',2);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -4,7 +4,7 @@ INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
         'document_repository_categories', 
         'Categories', 
         (SELECT ID FROM modules WHERE Name='document_repository'),
-        'Edit/Upload/Delete'
+        'Edit/Upload/Delete',
         2
     ),
     (
