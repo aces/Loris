@@ -16,7 +16,7 @@ This module is used primarily by study coordinators/administrators who share stu
 ## Permissions
 
  A user that has "document_repository_view" permission can view files in Document Repository.
- A user that has "document_repository_edit" permission can upload and edit files in Document Repository.
+ A user that has "document_repository_upload_edit" permission can upload and edit files in Document Repository.
  A user that has "document_repository_delete" permission can delete files in Document Repository.
 
 ## Configurations

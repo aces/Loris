@@ -46,7 +46,8 @@ class DocTree extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
-                'document_repository_edit'
+                'document_repository_categories',
+                'document_repository_upload_edit'
             ]
         );
     }

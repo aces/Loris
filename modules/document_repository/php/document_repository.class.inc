@@ -26,8 +26,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
 {
     private const PERMISSIONS = [
         'document_repository_view',
-        'document_repository_edit',
         'document_repository_delete',
+        'document_repository_categories',
+        'document_repository_upload_edit'
     ];
     public $AjaxModule        = true;
     public $skipTemplate      = true;
@@ -105,6 +106,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
+            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
         ];
         return;
     }
@@ -153,8 +155,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         // the base query
         $query  = " FROM document_repository v";
         $query .= " WHERE COALESCE(v.hide_video, false)=false";
+        if (!$user->hasPermission('document_repository_hidden')) {
+            $query .= " AND (hidden_file='no' OR hidden_file IS NULL)";
+        }
         // set the class variables
-        $this->columns =[
+        $this->columns  = [
             'v.File_name',
             'v.version',
             'v.File_type',
@@ -168,11 +173,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'v.File_category as category',
             'v.Data_dir',
         ];
-        $this->query   = $query;
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND v.For_site IN (" . $site_arr . ")";
-        }
+        $this->query    = $query;
         $this->group_by = '';
         $this->order_by = 'v.File_name';
     }
