@@ -104,4 +104,9 @@ class AddEConsentForm extends Component {
   }
 }
 
+AddEConsentForm.propTypes = {
+  submitData: PropTypes.string.isRequired,
+  data: PropTypes.object,
+};
+
 export default AddEConsentForm;

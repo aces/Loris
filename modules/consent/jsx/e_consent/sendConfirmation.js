@@ -173,7 +173,9 @@ class sendConfirmation extends Component {
             name="fire_away"
             label={
               <div>
-                <span className="glyphicon glyphicon-envelope"/> Send Confirmation
+                <span
+                  className="glyphicon glyphicon-envelope"
+                /> Send Confirmation
               </div>
             }
             type="submit"
@@ -185,5 +187,10 @@ class sendConfirmation extends Component {
     );
   }
 }
+
+sendConfirmation.propTypes = {
+  dataURL: PropTypes.string.isRequired,
+  openSendConfirmation: PropTypes.func.isRequired,
+};
 
 export default sendConfirmation;

@@ -242,4 +242,13 @@ class AddConsentForm extends Component {
   }
 }
 
+
+AddConsentForm.propTypes = {
+  submitData: PropTypes.string.isRequired,
+  closeAddForm: PropTypes.func,
+  eConsentCompatible: PropTypes.func,
+  openAddConsent: PropTypes.func,
+  data: PropTypes.object,
+};
+
 export default AddConsentForm;

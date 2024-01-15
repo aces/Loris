@@ -125,4 +125,9 @@ class ExpireConsentForm extends Component {
   }
 }
 
+ExpireConsentForm.propTypes = {
+  submitData: PropTypes.string.isRequired,
+  data: PropTypes.object,
+};
+
 export default ExpireConsentForm;

@@ -215,4 +215,10 @@ class ShareConsentForm extends Component {
   }
 }
 
+ShareConsentForm.propTypes = {
+  submitData: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+  data: PropTypes.object,
+};
+
 export default ShareConsentForm;

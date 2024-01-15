@@ -313,4 +313,11 @@ class BasicPage extends React.Component {
   }
 }
 
+BasicPage.propTypes = {
+  data_url: PropTypes.string.isRequired,
+  submit: PropTypes.func.isRequired,
+  requestStatus: PropTypes.string,
+  consentData: PropTypes.object,
+};
+
 export default BasicPage;

@@ -165,7 +165,7 @@ class ConsentIndex extends Component {
             </TriggerableModal>
           );
           return (
-            <div class="action-cell">
+            <div className="action-cell">
               <td>{editButton}</td>
               <td>{shareButton}</td>
               <td>{expireButton}</td>
@@ -173,7 +173,7 @@ class ConsentIndex extends Component {
           );
         } else {
           return (
-            <div class="action-cell">
+            <div className="action-cell">
               <td>{editButton}</td>
               <td>{shareButton}</td>
             </div>
@@ -197,7 +197,7 @@ class ConsentIndex extends Component {
           </TriggerableModal>
         );
         return (
-          <div class="action-cell">
+          <div className="action-cell">
             <td>{editButton}</td>
             <td>{addEConsentButton}</td>
           </div>
@@ -205,7 +205,7 @@ class ConsentIndex extends Component {
       } else {
         // Add only editButton if not eConsent compatible
         return (
-          <div class="action-cell">
+          <div className="action-cell">
             <td>{editButton}</td>
           </div>
         );
@@ -304,7 +304,7 @@ class ConsentIndex extends Component {
    * @param {array} consentGroupName
    * @param {string} CandID
    *
-   * @return {bool} - true if compatible
+   * @return {boolean} - true if compatible
    */
   eConsentCompatible(consentGroupName, CandID) {
     // Get Candidate CenterID
@@ -412,6 +412,8 @@ class ConsentIndex extends Component {
 
 ConsentIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+  submitURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 

@@ -237,7 +237,7 @@ class TrainingPage extends React.Component {
   /**
    * Determines whether given section has consent questions
    *
-   * @param {int} sectionIndex
+   * @param {number} sectionIndex
    * @return {boolean}
    */
   sectionHasConsent(sectionIndex) {
@@ -290,7 +290,7 @@ class TrainingPage extends React.Component {
   /**
    * Determines whether a section has all pages complete
    *
-   * @param {int} sectionIndex
+   * @param {number} sectionIndex
    * @return {boolean}
    */
   sectionDone(sectionIndex) {
@@ -671,11 +671,14 @@ class TrainingPage extends React.Component {
         }(() => this.changePage(this.getNextPage()));
       } else {
         customSwal = function(pageFn) {
+          let thankYouText = 'Thank you for completing the eConsent Form! ' +
+            'Please click "Send Confirmation" below to receive a ' +
+            'confirmation email.';
           return function() {
             swal.fire({
               type: 'success',
               title: 'Success!',
-              text: 'Thank you for completing the eConsent Form! Please click "Send Confirmation" below to receive a confirmation email.',
+              text: thankYouText,
               showCancelButton: true,
               confirmButtonText: 'Send Confirmation',
             }).then((result) => {
@@ -815,5 +818,11 @@ class TrainingPage extends React.Component {
     });
   }
 }
+
+TrainingPage.propTypes = {
+  consentData: PropTypes.object,
+  data_url: PropTypes.string.isRequired,
+  submit: PropTypes.func.isRequired,
+};
 
 export default TrainingPage;
