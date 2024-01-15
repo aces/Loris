@@ -57,7 +57,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (63,'module_manager_edit','Installed Modules',40,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (64,'candidate_dod_edit','Dates of Death',7,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (65,'violated_scans_view_ownsite','Violated Scans - Own Sites',30,'View',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (66,'document_repository_edit','Documents',16,'Edit/Upload',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (66,'document_repository_upload_edit','Documents',16,'Edit/Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (67,'survey_accounts_view','Candidate Surveys',36,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (68,'imaging_quality_control_view','Flagged Imaging Entries',21,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Flagged Behavioural Entries',3,'View',2);
