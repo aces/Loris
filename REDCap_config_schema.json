@@ -159,48 +159,38 @@
       }
     },
     "consentMapping": {
-      "description": "An array of consent objects with field names for consent status, date, consenter, ",
-      "type": "array",
-      "items": {
-        "description": "An object mapping the candidate-level and visit-level LORIS metadata field names to their REDCap variable / field name. If there are multiple REDCap fields for a given LORIS field, the list is ordered to define default ranking",
-        "type": "object",
-        "properties": { 
-          "pscid": {
-            "type": ["string", "array"]
-          },
-          "visit": {
-            "type": ["string", "array"]
-          },
-          "site": {
-            "type": ["string", "array"]
-          },
-          "dob": {
-            "type": ["string", "array"]
-          },
-          "sex": {
-            "type": ["string", "array"]
-          },
-          "cohort": {
-            "type": ["string", "array"]
-          },
-          "dateOfVisit": {
-            "type": ["string", "array"]
-          }
-        }
-      }
-    },
-    "consentStatusMapping": {
-      "description": "An object mapping the REDCap consent status values e.g. Yes, No to their LORIS equivalent",
+      "description": "An array of consent objects with accompanying field names for consent date and consenter for a given consent field name, as well as the consent status value options mapping",
       "type": "array",
       "items": {
         "type": "object",
         "properties": { 
-          "redcapValue": {
-            "description": "A REDCap consent status string value",
+          "consentId": {
+            "description": "The consent name in both REDCap and LORIS (they must match)",
             "type": "string"
           },
-          "lorisValue": {
-            "description": "A LORIS consent status string value equivalent",
+          "statusMapping": {
+            "description": "An object mapping the REDCap consent status values e.g. Yes, No to their LORIS equivalent",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": { 
+                "redcapValue": {
+                  "description": "A REDCap consent status string value",
+                  "type": "string"
+                },
+                "lorisValue": {
+                  "description": "A LORIS consent status string value equivalent",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "consentDateField": {
+            "description": "The name of the REDCap variable storing the given consent's date of consent",
+            "type": "string"
+          },
+          "consenterField": {
+            "description": "The name of the REDCap variable storing the given consent's consenter",
             "type": "string"
           }
         }
@@ -275,10 +265,6 @@
         }
       }
     }
-
-
-
-    
   },
   "required": [ "lorisProject" ],
 
