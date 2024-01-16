@@ -1,0 +1,96 @@
+{
+  "title": "REDCap Config",
+  "description": "Congurations for a REDCap to LORIS import",
+  "type": "object",
+  "properties": {
+    "reportId": {
+      "description": "The report ID of the REDCap report to import records from",
+      "type": "integer"
+    },
+    "toIgnore": {
+      "description": "A list of REDCap variables / field names that are to be ignored i.e. excluded from being imported",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "datesToScrub": {
+      "description": "A list of REDCap date variables / field names requiring scrubbing and/or formatting",
+      "type": "array",
+      "items": {
+        "description": "Object with REDCap variable / field name, the DateTime format, and the DateTime component(s) to scrub with value to replace with",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The REDCap date variable / field name",
+            "type": "string"
+          },
+          "format": {
+            "description": "The DateTime format of the outputted date string, see https://www.php.net/manual/en/datetime.format.php",
+            "type": "string":
+          },
+          "component": {
+            "description": "Array of object with DateTime component to scrub (year, month, day) with value to scrub the date component string with",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "The DateTime component, one of day, month, or year",
+                  "type": "string",
+                  "enum": ["year", "month", "day"] 
+                },
+                "value": {
+                  "description": "The value to replace the date component string with",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        } 
+      }
+    },
+    "siteSpecific": {
+      "description": "A list of REDCap variables / field names to be imported only for specific sites",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "lorisProject": {
+      "description": "The LORIS Project name",
+      "type": "string"
+    },
+    "metadataMapping": {
+      "description": "An object mapping the REDCap variable / field name to its LORIS field name for candidate-level and visit-level metadata fields. If there are multiple LORIS fields, the list is ordered to define default ranking",
+      "type": "object",
+      "properties": { 
+        "pscid": {
+          "type": ["string", "array"]
+        },
+        "visit": {
+          "type": ["string", "array"]
+        },
+        "site": {
+          "type": ["string", "array"]
+        },
+        "dob": {
+          "type": ["string", "array"]
+        },
+        "sex": {
+          "type": ["string", "array"]
+        },
+        "cohort": {
+          "type": ["string", "array"]
+        },
+        "dateOfVisit": {
+          "type": ["string", "array"]
+        }
+      }
+    }
+  },
+  "required": [ "lorisProject" ],
+
+
