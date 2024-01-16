@@ -1060,7 +1060,9 @@ class CandidateTest extends TestCase
                 'Name'          => 'name1',
                 'Status'        => 'done',
                 'DateGiven'     => 'today',
-                'DateWithdrawn' => 'tomorrow'
+                'DateWithdrawn' => 'tomorrow',
+                'Comment'       => 'test comment',
+                'Label'         => 'Name 1',
             ]
         ];
 
@@ -1068,7 +1070,8 @@ class CandidateTest extends TestCase
             ->method('pselectWithIndexKey')
             ->with(
                 $this->stringContains(
-                    "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label, Comment"
+                    "SELECT ConsentID, Name, Status, DateGiven, " .
+                    "DateWithdrawn, Comment, Label"
                 )
             )
             ->willReturn($result);
