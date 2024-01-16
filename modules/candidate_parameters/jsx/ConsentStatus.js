@@ -341,7 +341,7 @@ class ConsentStatus extends Component {
                 </button>
                 <div id='consent-history'
                     className={
-                        `collapse ${this.state.showHistory 
+                        `collapse ${this.state.showHistory
                         ? 'show' : ''}`
                     }
                 >

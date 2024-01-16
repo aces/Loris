@@ -37,7 +37,7 @@ class NotImplement extends React.Component {
 }
 
 NotImplement.propTypes = {
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
 };
 
 /**
@@ -438,7 +438,7 @@ class HeaderElement extends React.Component {
   }
 }
 
-LinkElement.propTypes = {
+HeaderElement.propTypes = {
   element: PropTypes.object.isRequired,
   level: PropTypes.string,
 };
