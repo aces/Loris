@@ -18,6 +18,7 @@ class ImagingQCIndex extends Component {
       ImgData: {},
       isLoadedImg: false,
       imgFilter: {},
+      error: '',
     };
     this.fetchData = this.fetchData.bind(this);
   }
@@ -80,10 +81,19 @@ class ImagingQCIndex extends Component {
    */
   fetchData(url, state) {
     return fetch(url, {credentials: 'same-origin'})
-        .then((resp) => resp.json())
-        .then((data) => this.setState({[state]: data}))
-        .catch((error) => {
-            this.setState({error: true});
+      .then((resp) => {
+        return resp.text();
+      })
+      .then((data) => {
+        if (data === 'MRI Parameter Form table does not exist') {
+          this.setState({error: data});
+        } else {
+          this.setState({[state]: JSON.parse(data)});
+        }
+      })
+      .catch((error) => {
+          this.setState({error: error});
+          console.log(error);
       });
   }
 
@@ -217,7 +227,21 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          <h3>An error occurred while loading the page.</h3>
+            {this.state.error === 'MRI Parameter Form table does not exist' ?
+              <>
+                <h3>
+                  The MRI parameter form instrument must be
+                  installed in-order to use this module.
+                </h3>
+                <p>
+                  Please contact your administrator
+                  if you require this functionality.
+                </p>
+              </> :
+              <h3>
+                An error occurred while loading the page.
+              </h3>
+            }
         </div>
       );
     }
