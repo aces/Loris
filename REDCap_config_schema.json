@@ -64,7 +64,7 @@
       "type": "string"
     },
     "metadataMapping": {
-      "description": "An object mapping the REDCap variable / field name to its LORIS field name for candidate-level and visit-level metadata fields. If there are multiple LORIS fields, the list is ordered to define default ranking",
+      "description": "An object mapping the candidate-level and visit-level LORIS metadata field names to their REDCap variable / field name. If there are multiple REDCap fields for a given LORIS field, the list is ordered to define default ranking",
       "type": "object",
       "properties": { 
         "pscid": {
@@ -89,7 +89,196 @@
           "type": ["string", "array"]
         }
       }
+    },
+    "visitMapping": {
+      "description": "An object mapping the REDCap visit values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap visit string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS cohort visit value equivalent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cohortMapping": {
+      "description": "An object mapping the REDCap cohort values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap cohort string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS cohort string value equivalent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "siteMapping": {
+      "description": "An object mapping the REDCap site values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap site string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS site string value equivalent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sexMapping": {
+      "description": "An object mapping the REDCap sex values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap sex string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS sex string value equivalent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "consentMapping": {
+      "description": "An array of consent objects with field names for consent status, date, consenter, ",
+      "type": "array",
+      "items": {
+        "description": "An object mapping the candidate-level and visit-level LORIS metadata field names to their REDCap variable / field name. If there are multiple REDCap fields for a given LORIS field, the list is ordered to define default ranking",
+        "type": "object",
+        "properties": { 
+          "pscid": {
+            "type": ["string", "array"]
+          },
+          "visit": {
+            "type": ["string", "array"]
+          },
+          "site": {
+            "type": ["string", "array"]
+          },
+          "dob": {
+            "type": ["string", "array"]
+          },
+          "sex": {
+            "type": ["string", "array"]
+          },
+          "cohort": {
+            "type": ["string", "array"]
+          },
+          "dateOfVisit": {
+            "type": ["string", "array"]
+          }
+        }
+      }
+    },
+    "consentStatusMapping": {
+      "description": "An object mapping the REDCap consent status values e.g. Yes, No to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap consent status string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS consent status string value equivalent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dateTakenMapping": {
+      "description": "An array of objects with the REDCap field name equivalent of the LORIS 'Date_taken' field for a given instrument",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "instrument": {
+            "description": "The LORIS instrument test name",
+            "type": "string"
+          },
+          "dateTaken": {
+            "description": "A REDCap 'Date_taken' equivalent variable / field name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examinerMapping": {
+      "description": "An array of objects with the REDCap field name equivalent of the LORIS 'Examiner' field for a given instrument",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "instrument": {
+            "description": "The LORIS instrument test name",
+            "type": "string"
+          },
+          "dateTaken": {
+            "description": "A REDCap 'Examiner' equivalent variable / field name for the given instrument",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "statusFieldsMapping": {
+      "description": "An array of REDCap variables with the string '_status' in its field name. '_status' is a reserved string in LORIS for its behavioural data workflow. The array of objects provide the LORIS field equivalent without '_status' in its name",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapField": {
+            "description": "The REDCap variable / field name",
+            "type": "string"
+          },
+          "lorisField": {
+            "description": "The LORIS equivalent of the given REDCap variable, without '_status' in the field name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "instrumentFlagsMapping": {
+      "description": "",
+      "type": "object",
+      "properties": {
+        "administration": {
+          "description": "The REDCap equivalent field name for LORIS's instrument flag 'Administration'",
+          "type": "string"
+        },
+        "validity": {
+          "description": "The REDCap equivalent field name for LORIS's instrument flag 'Validity'",
+          "type": "string"
+        },
+        "dataEntry": {
+          "description": "The REDCap equivalent field name for LORIS's instrument flag 'Data_entry'",
+          "type": "string"
+        }
+      }
     }
+
+
+
+    
   },
   "required": [ "lorisProject" ],
 
