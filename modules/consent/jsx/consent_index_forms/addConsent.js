@@ -7,6 +7,7 @@
  * */
 import React, {Component} from 'react';
 import Modal from 'Modal';
+import PropTypes from 'prop-types';
 import {
   FormElement,
   ButtonElement,

@@ -8,6 +8,7 @@
 import React, {Component} from 'react';
 import Modal from 'Modal';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 import {
   FormElement,
   ButtonElement,

@@ -6,6 +6,7 @@
  */
 import DOMPurify from 'dompurify';
 import Modal from 'Modal';
+import PropTypes from 'prop-types';
 import {
   CheckboxElement,
 } from 'jsx/Form';
