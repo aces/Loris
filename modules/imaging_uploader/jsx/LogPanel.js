@@ -1,6 +1,11 @@
 /* global UploadProgress */
 import React, {Component} from 'react';
 import Panel from 'Panel';
+import {
+    FormElement,
+    SelectElement,
+    TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Log Panel Component

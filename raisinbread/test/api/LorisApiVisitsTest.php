@@ -66,7 +66,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Battery']),
+            gettype($candidatesVisitArray['Meta']['Cohort']),
             'string'
         );
         $this->assertSame(
@@ -90,7 +90,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Cohort', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Stages', $candidatesVisitArray);
         $this->assertArrayHasKey(
@@ -119,7 +119,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "High Yeast",
+            'Cohort' => "High Yeast",
             'Project' => "Rye",
         ];
         $response = $this->client->request(
@@ -172,7 +172,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => "115788",
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
@@ -196,7 +196,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Montreal",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(

@@ -45,6 +45,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $GroupElements = [];
 
     /**
+     * Do not require rules by default.
+     */
+    private $skipRules = false;
+
+    /**
      * Sets up the variables required for a LINST instrument to load
      *
      * @param string|null $commentID The CommentID being loaded
@@ -58,59 +63,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->page      = $page;
 
         $this->form = new \LorisForm();
-    }
-    /**
-     * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
-     *
-     * @return void
-     * @access private
-     */
-    function _addMetadataFields(): void
-    {
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $dateOptions = [
-            'language'         => 'en',
-            'format'           => 'YMd',
-            'minYear'          => $config->getSetting('startYear'),
-            'maxYear'          => $config->getSetting('endYear'),
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => null,
-        ];
-
-        $this->dateOptions = $dateOptions;
-
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
-
-        if (strrpos($this->testName ?? '', '_proband') === false) {
-            if (!$this->postMortem) {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age (Months)'
-                );
-            } else {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age at Death (Months)'
-                );
-            }
-            $this->addScoreColumn(
-                'Window_Difference',
-                'Window Difference (+/- Days)'
-            );
-        }
-        $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
-
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is required',
-            'required'
-        );
-
-        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
 
     /**
@@ -413,7 +365,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             $this->formType = 'XIN';
 
-            $this->form->addFormRule([&$this, 'XINValidate']);
+            if (!$this->skipRules) {
+                $this->form->addFormRule([&$this, 'XINValidate']);
+            }
             $fp = fopen($filename, "r");
 
             // Add elements is only true if we're parsing the current page,
@@ -482,7 +436,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->table    = $this->table ?? trim($pieces[1]);
                     break;
                 case 'title':
-                    $this->fullName = $pieces[1];
+                    $this->fullName = trim($pieces[1]);
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
@@ -672,14 +626,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             ];
                         }
 
-                        $this->dictionary[] = new DictionaryItem(
-                            $this->testName."_".$pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new DateType(),
-                            new Cardinality(Cardinality::SINGLE),
-                            $pieces[1],
-                        );
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
@@ -740,6 +686,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         }
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                        $this->testName."_".$pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new DateType(),
+                        new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -942,6 +896,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 break;
             case 'postmortem':
                 $this->postMortem = trim($pieces[1]) === 'true';
+                break;
+            case 'norules':
+                $this->skipRules = trim($pieces[1]) === 'true';
                 break;
             default:
                 break;

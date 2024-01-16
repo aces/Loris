@@ -252,7 +252,7 @@ CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
-  `Sub_group` int(11) unsigned default NULL,
+  `Sub_group` int(11) unsigned NOT NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
@@ -1531,7 +1531,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID','watching') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -2319,6 +2319,32 @@ CREATE TABLE `visit_project_cohort_rel` (
     REFERENCES `project_cohort_rel`(`ProjectCohortRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Diagnosis Evolution
+CREATE TABLE `diagnosis_evolution` (
+  `DxEvolutionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) DEFAULT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `visitLabel` varchar(255) DEFAULT NULL,
+  `instrumentName` varchar(255) DEFAULT NULL,
+  `sourceField` varchar(255) DEFAULT NULL,
+  `orderNumber` int(10) unsigned DEFAULT NULL,
+  CONSTRAINT `PK_diagnosis_evolution` PRIMARY KEY (`DxEvolutionID`),
+  CONSTRAINT `UK_diagnosis_evolution_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `FK_diagnosis_evolution_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_diagnosis_evolution_instrumentName` FOREIGN KEY (`instrumentName`) REFERENCES `test_names` (`Test_name`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_diagnosis_evolution_rel` (
+  `CandID` int(6) NOT NULL,
+  `DxEvolutionID` int(10) unsigned NOT NULL,
+  `Diagnosis` text DEFAULT NULL,
+  `Confirmed` enum('Y', 'N') DEFAULT NULL,
+  `LastUpdate` datetime NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+  CONSTRAINT `PK_candidate_diagnosis_evolution_rel` PRIMARY KEY (`CandID`, `DxEvolutionID`),
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_DxEvolutionID` FOREIGN KEY (`DxEvolutionID`) REFERENCES `diagnosis_evolution` (`DxEvolutionID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Publication Status
 CREATE TABLE `publication_status` (
   `PublicationStatusID` int(2) unsigned NOT NULL AUTO_INCREMENT,
@@ -2440,3 +2466,68 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE dataquery_queries (
+    QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    Query JSON NOT NULL,
+    PRIMARY KEY (QueryID)
+    -- FOREIGN KEY (Owner) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_query_names (
+    QueryID int(10) unsigned NOT NULL,
+    UserID int(10) unsigned NOT NULL,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY (QueryID, UserID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_run_queries (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    QueryID int(10) unsigned,
+    UserID int(10) unsigned,
+    RunTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (RunID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+CREATE TABLE dataquery_shared_queries_rel (
+    QueryID int(10) unsigned,
+    SharedBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (SharedBy) REFERENCES users(ID),
+    CONSTRAINT unique_share UNIQUE (QueryID, SharedBy)
+);
+
+CREATE TABLE dataquery_starred_queries_rel (
+    QueryID int(10) unsigned,
+    StarredBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (StarredBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, StarredBy)
+);
+
+CREATE TABLE dataquery_run_results (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    CandID int(6) NOT NULL,
+    -- JSON or same format that's streamed in?
+    RowData LONGTEXT DEFAULT NULL,
+
+    PRIMARY KEY (RunID, CandID),
+    FOREIGN KEY (CandID) REFERENCES candidate(CandID),
+    FOREIGN KEY (RunID) REFERENCES dataquery_run_queries(RunID)
+);
+
+CREATE TABLE dataquery_study_queries_rel (
+    QueryID int(10) unsigned,
+    PinnedBy int(10) unsigned,
+    -- A top query shows on the top of the dataquery tool similarly
+    -- to a saved query but is chosen by admins, a dashboard query
+    -- shows the number of matching results on the LORIS dashboard.
+    Name varchar(255) NOT NULL,
+    PinType enum('topquery', 'dashboard'),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (PinnedBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
+);

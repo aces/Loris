@@ -4,6 +4,7 @@ import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Publication index component

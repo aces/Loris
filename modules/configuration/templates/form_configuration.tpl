@@ -13,12 +13,16 @@
 {/function}
 
 {function name=createInstrument}
+<div>
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$instruments key=name item=label}
             <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
         {/foreach}
     </select>
+    </div>
 {/function}
+
+
 
 {function name=createScanType}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
@@ -161,6 +165,7 @@
 <p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.
     To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
 </p>
+<p>To configure the diagnosis trajectory of the study <a href="{$baseurl}/configuration/diagnosis_evolution/">click here</a>.
 <br>
 
 <div class="col-md-3">

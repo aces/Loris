@@ -33,7 +33,6 @@ const resolve = {
     Filter: path.resolve(__dirname, './jsx/Filter'),
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
-    Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
@@ -151,7 +150,7 @@ function lorisModule(mname, entries) {
 
   for (let i = 0; i < entries.length; i++) {
     entObj[entries[i]] =
-      base + '/' + mname + '/jsx/' + entries[i] + '.js';
+      base + '/' + mname + '/jsx/' + entries[i];
   }
   return {
     entry: entObj,
@@ -219,7 +218,6 @@ let config = [
       StaticDataTable: './jsx/StaticDataTable.js',
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
-      Form: './jsx/Form.js',
       CSSGrid: './jsx/CSSGrid.js',
       Help: './jsx/Help.js',
     },
@@ -256,7 +254,11 @@ const lorisModules = {
     'CandidateParameters',
     'ConsentWidget',
   ],
-  configuration: ['CohortRelations', 'configuration_helper'],
+  configuration: [
+    'CohortRelations',
+    'configuration_helper',
+    'DiagnosisEvolution',
+  ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
@@ -268,6 +270,7 @@ const lorisModules = {
     'candidateListIndex',
   ],
   datadict: ['dataDictIndex'],
+  dataquery: ['index'],
   data_release: [
     'dataReleaseIndex',
   ],

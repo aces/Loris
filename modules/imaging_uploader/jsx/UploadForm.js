@@ -2,6 +2,14 @@ import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    TextboxElement,
+    StaticElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
