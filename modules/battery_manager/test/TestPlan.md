@@ -68,7 +68,7 @@ Click the "New Test" button in the upper right corner of the data table.
 
 **Testing Change Status column**
   1. Press the `Deactivate` button in the `Change Status` column on an entry in the data table.
-     - Ensure that when you press "Yes", a success message appears and the table data refreshes.
+     - Ensure that when you press "Deactivate", a success message appears and the table data refreshes.
      - Ensure the entry has the new Active status in the data table.
   2. Repeat step 1 using the `Activate` button.
 
@@ -79,7 +79,7 @@ Click the "New Test" button in the upper right corner of the data table.
 **Test filters**
   1. A selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
-     - Instrument, Stage, Cohort, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
+     - Instrument, Stage, Cohort, Visit Label, Site, First Visit, and Active (as dropdown fields with blank default option).
   2. Type text in the Minimum age and verify that the table gets filtered as you type.
   3. Type text in the Maximum age and verify that the table gets filtered as you type.
   4. Select values from the dropdown filters (independently and combined) to filter table further.
@@ -93,9 +93,9 @@ Click the "New Test" button in the upper right corner of the data table.
   3. Check that you can only enter positive numbers (including 0) in Instrument order.
   4. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
   5. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
-     - Ensure that a warning message appears giving the option to activate the other entry and deactivate the original entry.
+     - Ensure that a warning message appears giving the option to activate the other entry and deactivate the current entry.
      - Ensure that when you press "Yes", a success message appears and the modal window is closed.
-     - Ensure the original entry was deactivated and the other duplicate entry has been activated in the data table.
+     - Ensure the other entry was activated and the duplicate entry was not modified in the data table.
   6. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
      - Ensure that a success message appears and the modal window is closed.
      - Ensure the original entry was modified.
