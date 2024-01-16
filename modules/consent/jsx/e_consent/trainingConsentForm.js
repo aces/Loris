@@ -8,6 +8,7 @@ import Page from './directConsentForm';
 import swal from 'sweetalert2';
 import Loader from 'Loader';
 import SendConfirmation from './sendConfirmation';
+import PropTypes from 'prop-types';
 
 /**
  * Basic Page

@@ -36,6 +36,10 @@ class NotImplement extends React.Component {
   }
 }
 
+NotImplement.propTypes = {
+  type: PropTypes.string.isRequired
+};
+
 /**
  * Set up Page
  */
@@ -78,6 +82,16 @@ class Page extends React.Component {
     );
   }
 }
+
+Page.propTypes = {
+  elements: PropTypes.object.isRequired,
+  page: PropTypes.string.isRequired,
+  values: PropTypes.object.isRequired,
+  consentAnswers: PropTypes.object,
+  updateAnswer: PropTypes.func.isRequired,
+  updateConsentAnswer: PropTypes.func.isRequired,
+  errors: PropTypes.object,
+};
 
 /**
  * Render form element
@@ -172,9 +186,12 @@ class DirectEntryFormElement extends React.Component {
         break;
       default:
         element = (
-          <NotImplement element={this.props.element} />
+          <NotImplement
+            element={this.props.element}
+            type={this.props.ui.type}
+          />
         );
-    };
+    }
 
     // Set error display if needed
     if (this.props.errors[this.props.name]) {
@@ -197,6 +214,16 @@ class DirectEntryFormElement extends React.Component {
     );
   }
 }
+
+DirectEntryFormElement.propTypes = {
+  ui: PropTypes.object.isRequired,
+  name: PropTypes.string,
+  element: PropTypes.object.isRequired,
+  values: PropTypes.object.isRequired,
+  updateAnswer: PropTypes.func.isRequired,
+  updateConsentAnswer: PropTypes.func.isRequired,
+  errors: PropTypes.object,
+};
 
 /**
  * Render select element
@@ -325,6 +352,15 @@ class SelectElement extends React.Component {
   }
 }
 
+SelectElement.propTypes = {
+  element: PropTypes.object.isRequired,
+  error: PropTypes.string,
+  value: PropTypes.string,
+  name: PropTypes.string,
+  updateAnswer: PropTypes.func.isRequired,
+  updateConsentAnswer: PropTypes.func.isRequired,
+};
+
 /**
  * Render label element
  */
@@ -353,6 +389,10 @@ class LabelElement extends React.Component {
     );
   }
 }
+
+LabelElement.propTypes = {
+  element: PropTypes.object.isRequired,
+};
 
 /**
  * Render header element
@@ -398,6 +438,11 @@ class HeaderElement extends React.Component {
   }
 }
 
+LinkElement.propTypes = {
+  element: PropTypes.object.isRequired,
+  level: PropTypes.string,
+};
+
 /**
  * Render link element
  */
@@ -438,6 +483,12 @@ class LinkElement extends React.Component {
   }
 }
 
+LinkElement.propTypes = {
+  downloadable: PropTypes.string,
+  href: PropTypes.string,
+  element: PropTypes.object.isRequired,
+};
+
 /**
  * Image element
  */
@@ -465,6 +516,11 @@ class ImageElement extends React.Component {
     );
   }
 }
+
+ImageElement.propTypes = {
+  percentage: PropTypes.string,
+  element: PropTypes.object.isRequired,
+};
 
 /**
  * Image element in modal window
@@ -533,7 +589,7 @@ class ModalImageElement extends React.Component {
       >
         <div>
           <img
-            class='modal-image'
+            className='modal-image'
             src={this.props.element.src.EN}
             width={width}
           />
@@ -542,5 +598,10 @@ class ModalImageElement extends React.Component {
     );
   }
 }
+
+ModalImageElement.propTypes = {
+  percentage: PropTypes.string,
+  element: PropTypes.object.isRequired,
+};
 
 export default Page;

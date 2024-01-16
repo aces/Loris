@@ -339,7 +339,12 @@ class ConsentStatus extends Component {
                 >
                     {historyBtnLabel}
                 </button>
-                <div id='consent-history' className={`collapse ${this.state.showHistory ? 'show' : ''}`}>
+                <div id='consent-history'
+                    className={
+                        `collapse ${this.state.showHistory 
+                        ? 'show' : ''}`
+                    }
+                >
                     {formattedHistory}
                 </div>
             </div>
@@ -544,6 +549,7 @@ ConsentStatus.propTypes = {
     dataURL: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
     tabName: PropTypes.string,
+    adjustCol: PropTypes.bool,
 };
 
 export default ConsentStatus;

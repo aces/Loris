@@ -190,7 +190,7 @@ class sendConfirmation extends Component {
 }
 
 sendConfirmation.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  data_url: PropTypes.string.isRequired,
   openSendConfirmation: PropTypes.func.isRequired,
 };
 
