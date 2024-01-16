@@ -299,6 +299,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $base . "project/instruments/$instrument.meta"
             );
         }
+        // Set DataEntryType to normal or DirectEntry
+        if (isset($_REQUEST['key'])) {
+            $obj->DataEntryType = 'DirectEntry';
+        } else {
+            $obj->DataEntryType = 'normal';
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -439,10 +445,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
-        if (isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal';
+        if ($this->DataEntryType === 'normal') {
             // These are required for Save Data to work properly, but not when it's
             // a direct data entry page
             $this->addHidden(
