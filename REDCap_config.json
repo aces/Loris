@@ -1,0 +1,970 @@
+{
+  "reportId": {
+    "type": "3393"
+  },
+  "toIgnore": [
+    "hoehn_yahr_t2_t3",
+    "h_y_date_t2_t3",
+    "hoehn_yahr_method_t2",
+    "brain_bank_consent",
+    "copn_consent_date",
+    "import",
+    "test_participant",
+    "promotion_date",
+    "duration_disease_4",
+    "eq1_1",
+    "eq1_2",
+    "eq1_3",
+    "eq1_4",
+    "eq1_5",
+    "eq1_6",
+    "eq3_1",
+    "eq3_2",
+    "eq3_3_neck",
+    "eq3_3_rue",
+    "eq3_3_lue",
+    "eq3_3_rle",
+    "eq3_3_lle",
+    "eq3_4_r",
+    "eq3_4_l",
+    "eq3_5_r",
+    "eq3_5_l",
+    "eq3_6_r",
+    "eq3_6_l",
+    "eq3_7_r",
+    "eq3_7_l",
+    "eq3_8_r",
+    "eq3_8_l",
+    "eq3_9",
+    "eq3_10",
+    "eq3_11",
+    "eq3_12",
+    "eq3_13",
+    "eq3_14",
+    "eq3_15_r",
+    "eq3_15_l",
+    "eq3_16_r",
+    "eq3_16_l",
+    "eq3_17_rue",
+    "eq3_17_lue",
+    "eq3_17_rle",
+    "eq3_17_lle",
+    "eq3_17_lipjaw",
+    "eq3_18",
+    "eq4_1",
+    "eq4_2",
+    "eq4_3",
+    "eq4_4",
+    "eq4_5",
+    "eq4_6",
+    "qpn_language_choice"
+  ],
+  "datesToScrub": [
+    {
+      "id": "study_blood_draw",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": "1"
+        }  
+      ]
+    }
+  ],
+  "siteSpecific": [
+    {
+      "id": "diagnosis_date",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "dementia_date",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "dbs_surgery_date",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "diagnosis_date_t2",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "dementia_date_t2_t3",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "dbs_surgery_date_t2",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    },
+    {
+      "id": "symptom_date",
+      "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
+    }
+  ],
+  "lorisProject": "COPN",
+  "metadataMapping": {
+    "pscid": "record_id",
+    "visit": "redcap_event_name",
+    "site": ["site", "site_2"],
+    "dob": "dob",
+    "sex": "gender",
+    "cohort": "enrolment_group_v2",
+    "dateOfVisit": ["study_visit_date","date","date21"]
+  },
+  "visitMapping": [
+    {
+      "redcapValue": "Baseline (Arm 1: C-OPN)",
+      "lorisValue":  "InitialVisit"
+    },
+    {
+      "redcapValue": "12 Months Follow-Up/Suivi (Arm 1: C-OPN)",
+      "lorisValue": "FollowUpVisit01"
+    },
+    {
+      "redcapValue": "18 Months Follow-Up/Suivi (Arm 1: C-OPN)",
+      "lorisValue": "FollowUpVisit02"
+    },
+    {
+      "redcapValue": "24 Months Follow-Up/Suivi (Arm 1: C-OPN)",
+      "lorisValue": "FollowUpVisit03"
+    }
+  ],
+  "cohortMapping": [
+    {
+      "redcapValue": "Healthy control/Contrôle",
+      "lorisValue": "Control"
+    },
+    {
+     "redcapValue": "PD   (Parkinson\'s Disease)/Maladie de Parkinson",
+     "lorisValue": "Disease"
+    },
+    {
+      "redcapValue": "PPS (Parkinson Plus Syndrome)/PPS (Syndrome Parkinson Plus)",
+      "lorisValue": "Disease"
+    }
+  ],
+  "siteMapping": [
+    {
+      "redcapValue": "University of British Columbia",
+      "lorisValue": "University of British Columbia"
+    },
+    {
+      "redcapValue": "University of Calgary",
+      "lorisValue": "University of Calgary"
+    },
+    {
+      "redcapValue": "The Ottawa Hospital",
+      "lorisValue": "The Ottawa Hospital"
+    },
+    {
+      "redcapValue": "University of Alberta",
+      "lorisValue": "University of Alberta"
+    },
+    {
+      "redcapValue": "University of Toronto",
+      "lorisValue": "University of Toronto"
+    },
+    {
+      "redcapValue": "Western University",
+      "lorisValue": "Western University"
+    },
+    {
+      "redcapValue": "Toronto Western Hospital",
+      "lorisValue": "Toronto Western Hospital"
+    },
+    {
+      "redcapValue": "MNI",
+      "lorisValue": "Montreal Neurological Institute"
+    },
+    {
+      "redcapValue": "CHUM",
+      "lorisValue": "CHU Montreal"
+    },
+    {
+      "redcapValue": "CHUQ",
+      "lorisValue": "CHU Quebec"
+    },
+    {
+      "redcapValue": "Clinique Neuro-Lévis",
+      "lorisValue": "Clinique Neuro-Lévis"
+    }
+  ],
+  "sexMapping": [
+    {
+      "redcapValue": "Male/Masculin",
+      "lorisValue": "Male"
+    },
+    {
+      "redcapValue": "Female/Féminin",
+      "lorisValue": "Female"
+    },
+    {
+      "redcapValue": "Transgender/Transsexuel",
+      "lorisValue": "Other"
+    },
+    {
+      "redcapValue": "Other/Autre",
+      "lorisValue": "Other"
+    }
+  ],
+  "consentMapping": [
+    {
+      "consentId": "future_research_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "blood_research_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "blood_future_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "loris_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "loris_consent_date"
+    },
+    {
+      "consentId": "covid_cosent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "consent_covid_date",
+      "consenterField": "covid_consent_name"
+    }
+  ],
+  "instrumentMapping": [
+    {
+      "redcapValue": "covid19_questionnaire",
+      "lorisValue": "covid19_questionnaire_redcap"
+    }
+  ],
+  "dateTakenMapping": [
+    {
+        "instrument": "apathy_scale",
+        "dateTaken": "date12"
+    },
+    {
+        "instrument": "bai",
+        "dateTaken": "date25"
+    },
+    {
+        "instrument": "clinical_medications_questionnaire",
+        "dateTaken": "date5"
+    },
+    {
+        "instrument": "clinical_questionnaire",
+        "dateTaken": "date4"
+    },
+    {
+        "instrument": "demographic_questionnaire",
+        "dateTaken": "date3"
+    },
+    {
+        "instrument": "ehi",
+        "dateTaken": "date24"
+    },
+    {
+        "instrument": "ehibaibdi_ii_tests",
+        "dateTaken": "date10"
+    },
+    {
+        "instrument": "enrollment",
+        "dateTaken": "date01"
+    },
+    {
+        "instrument": "epidemiological_questionnaire",
+        "dateTaken": "date6"
+    },
+    {
+        "instrument": "fatigue_severity_scale",
+        "dateTaken": "date13"
+    },
+    {
+        "instrument": "follow_upsuivi_filled_out_by_coordinatorresearch_n",
+        "dateTaken": "date"
+    },
+    {
+        "instrument": "follow_upsuivi_filled_out_by_participant",
+        "dateTaken": "date21"
+    },
+    {
+        "instrument": "frsbe_formulaire_dautovaluation",
+        "dateTaken": "date23"
+    },
+    {
+        "instrument": "mbic_qpn",
+        "dateTaken": "date9_v2"
+    },
+    {
+        "instrument": "mdsupdrs",
+        "dateTaken": "date8"
+    },
+    {
+        "instrument": "mild_behavioral_impairment_checklist_mibc",
+        "dateTaken": "date9"
+    },
+    {
+        "instrument": "moca",
+        "dateTaken": "moca_date"
+    },
+    {
+        "instrument": "multidimensional_caregiver_strain_index_mcsi",
+        "dateTaken": "date20"
+    },
+    {
+        "instrument": "multidimensional_caregiver_strain_index_mcsi_en",
+        "dateTaken": "date20_en"
+    },
+    {
+        "instrument": "multidimensional_caregiver_strain_index_mcsi_fr_2",
+        "dateTaken": "date20_v2"
+    },
+    {
+        "instrument": "neuropsychological_test_capri",
+        "dateTaken": "neuropsych_date"
+    },
+    {
+        "instrument": "parkinson_anxiety_scale",
+        "dateTaken": "date14"
+    },
+    {
+        "instrument": "pdq39",
+        "dateTaken": "date16"
+    },
+    {
+        "instrument": "pdq8",
+        "dateTaken": "date15"
+    },
+    {
+        "instrument": "questionnaire_for_olfactory_disorders",
+        "dateTaken": "date22"
+    },
+    {
+        "instrument": "schwab_and_england_activities_of_daily_living",
+        "dateTaken": "date17"
+    },
+    {
+        "instrument": "scopaauten",
+        "dateTaken": "date18"
+    },
+    {
+        "instrument": "timed_up_go_test_tug",
+        "dateTaken": "date_21"
+    },
+    {
+        "instrument": "updrs",
+        "dateTaken": "date11"
+    },
+    {
+        "instrument": "u_of_a_additional_questions",
+        "dateTaken": "date19"
+    },
+    {
+        "instrument": "covid19_questionnaire_redcap",
+        "dateTaken": "date7"
+    }
+  ],
+  "examinerMapping": [
+    {
+        "instrument": "clinical_medications_questionnaire",
+        "examiner": "name_medication"
+    },
+    {
+        "instrument": "clinical_questionnaire",
+        "examiner": "staff_name"
+    },
+    {
+        "instrument": "enrollment",
+        "examiner": "research_staff_v2"
+    },
+    {
+        "instrument": "follow_upsuivi_filled_out_by_coordinatorresearch_n",
+        "examiner": "name_followup"
+    },
+    {
+        "instrument": "mdsupdrs",
+        "examiner": "mds_updrs_staff"
+    },
+    {
+        "instrument": "moca",
+        "examiner": "administer_moca"
+    }
+  ],
+  "statusFieldsMapping": [
+    {
+      "redcapValue": "employment_status_t2",
+      "lorisValue": "employment__t2"
+    },
+    {
+      "redcapValue": "study_status_v2",
+      "lorisValue": "study_v2"
+    },
+    {
+      "redcapValue": "registry_status_v2",
+      "lorisValue": "registry_v2"
+    },
+    {
+      "redcapValue": "marital_status",
+      "lorisValue": "marital"
+    },
+    {
+      "redcapValue": "employment_status",
+      "lorisValue": "employment"
+    },
+    {
+      "redcapValue": "employment_status_t2",
+      "lorisValue": "employment__t2"
+    },
+    {
+      "redcapValue": "cognitive_status",
+      "lorisValue": "cognitive"
+    }
+  ],
+  "instrumentFlagsMapping": [
+    {
+      "instrument": "apathy_scale",
+      "administration": {
+        "id": "apathy_scale_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "bai",
+      "administration": {
+        "id": "bai_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "clinical_medications_questionnaire",
+      "administration": {
+        "id": "clinical_medications_questionnaire_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "clinical_questionnaire",
+      "administration": {
+        "id": "clinical_questionnaire_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "demographic_questionnaire",
+      "administration": {
+        "id": "demographic_questionnaire_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "ehi",
+      "administration": {
+        "id": "ehi_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "ehibaibdi_ii_tests",
+      "administration": {
+        "id": "ehibaibdi_ii_tests_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "enrollment",
+      "administration": {
+        "id": "enrollment_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "epidemiological_questionnaire",
+      "administration": {
+        "id": "epidemiological_questionnaire_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "fatigue_severity_scale",
+      "administration": {
+        "id": "fatigue_severity_scale_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "follow_upsuivi_filled_out_by_coordinatorresearch_n",
+      "administration": {
+        "id": "follow_upsuivi_filled_out_by_coordinatorresearch_n_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "follow_upsuivi_filled_out_by_participant",
+      "administration": {
+        "id": "follow_upsuivi_filled_out_by_participant_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "frsbe_formulaire_dautovaluation",
+      "administration": {
+        "id": "frsbe_formulaire_dautovaluation_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "mbic_qpn",
+      "administration": {
+        "id": "mbic_qpn_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "mdsupdrs",
+      "administration": {
+        "id": "mdsupdrs_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "mild_behavioral_impairment_checklist_mibc",
+      "administration": {
+        "id": "mild_behavioral_impairment_checklist_mibc_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "moca",
+      "administration": {
+        "id": "moca_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "multidimensional_caregiver_strain_index_mcsi",
+      "administration": {
+        "id": "multidimensional_caregiver_strain_index_mcsi_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "multidimensional_caregiver_strain_index_mcsi_en",
+      "administration": {
+        "id": "multidimensional_caregiver_strain_index_mcsi_en_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "multidimensional_caregiver_strain_index_mcsi_fr_2",
+      "administration": {
+        "id": "multidimensional_caregiver_strain_index_mcsi_fr_2_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "neuropsychological_test_capri",
+      "administration": {
+        "id": "neuropsychological_test_capri_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "parkinson_anxiety_scale",
+      "administration": {
+        "id": "parkinson_anxiety_scale_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "pdq39",
+      "administration": {
+        "id": "pdq39_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "pdq8",
+      "administration": {
+        "id": "pdq8_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "questionnaire_for_olfactory_disorders",
+      "administration": {
+        "id": "questionnaire_for_olfactory_disorders_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "schwab_and_england_activities_of_daily_living",
+      "administration": {
+        "id": "schwab_and_england_activities_of_daily_living_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "scopaauten",
+      "administration": {
+        "id": "scopaauten_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "timed_up_go_test_tug",
+      "administration": {
+        "id": "timed_up_go_test_tug_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "updrs",
+      "administration": {
+        "id": "updrs_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "u_of_a_additional_questions",
+      "administration": {
+        "id": "u_of_a_additional_questions_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    },
+    {
+      "instrument": "covid19_questionnaire_redcap",
+      "administration": {
+        "id": "covid19_questionnaire_complete_field",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      },
+      "validity": {
+        "id": "copn_internal_monitoring_complete",
+        "statusMapping": {
+          "Valid": "Complete"
+        }
+      }
+    }
+  ]
+}
