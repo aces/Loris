@@ -1,6 +1,7 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "REDCap Config",
-  "description": "Congurations for a REDCap to LORIS import",
+  "description": "Configurations for a REDCap to LORIS import",
   "type": "object",
   "properties": {
     "reportId": {
@@ -28,7 +29,7 @@
           },
           "format": {
             "description": "The DateTime format of the outputted date string, see https://www.php.net/manual/en/datetime.format.php. This property is required if the data needs to be re-formatted to anything other than 'Y-m-d' (the LORIS DB default), even if the 'component' property below need not be defined.",
-            "type": "string":
+            "type": "string"
           },
           "component": {
             "description": "Array of object with DateTime component to scrub (year, month, day) with value to scrub the date component string with",
