@@ -423,6 +423,9 @@ class Installer
         // that the current user is connect from to be the host of the
         // new user, since the new user is also going to be used from
         // the same web server so should have the same address.
+        // The 'Host' field name returned by the PDO seems to be capitalized
+        // in the response sent by MariaDB, so we always capitaliaze it to
+        // be compatible with both MySQL and MariaDB.
         $connectHost = $DB->PDO->query(
             "SELECT Host FROM `mysql`.`user`
 		WHERE CONCAT(user, '@', Host)=CURRENT_USER"
