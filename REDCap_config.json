@@ -1,7 +1,5 @@
 {
-  "reportId": {
-    "type": "3393"
-  },
+  "reportId": 3393,
   "toIgnore": [
     "hoehn_yahr_t2_t3",
     "h_y_date_t2_t3",
@@ -66,7 +64,7 @@
       "component": [
         {
           "id": "day",
-          "value": "1"
+          "value": 1
         }  
       ]
     }
@@ -135,7 +133,7 @@
       "lorisValue": "Control"
     },
     {
-     "redcapValue": "PD   (Parkinson\'s Disease)/Maladie de Parkinson",
+     "redcapValue": "PD   (Parkinson's Disease)/Maladie de Parkinson",
      "lorisValue": "Disease"
     },
     {
