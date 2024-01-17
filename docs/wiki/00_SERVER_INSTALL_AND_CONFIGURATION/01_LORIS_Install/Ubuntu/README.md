@@ -1,12 +1,10 @@
 # Installing LORIS In-Depth
 
-This guide assumes an installation on an Ubuntu server. 
+This guide describes LORIS installation on an Ubuntu (or Debian based) server.
 
-If you are using CentOS, please visit the CentOS installation guide for 
-instructions on installation.
+If you are using CentOS, please visit the [CentOS installation guide](../CentOS/README.md) to get the appropriate instructions.
 
-When you've completed this guide, you should be able to load and log into LORIS in your browser. Further setup to customize LORIS for your project will be required after that. Please visit
-[the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to complete the setup for LORIS.
+Once you have finished this guide, you should be able to log into LORIS in a web browser. Further setup to customize LORIS for your project will be required after that. To do so, please visit the [setup page](https://github.com/aces/Loris/wiki/Setup).
 
 ## Prequisities
 
@@ -15,80 +13,55 @@ When you've completed this guide, you should be able to load and log into LORIS 
 LORIS requires a LAMP stack in order to run, specifically:
 
 * Apache 2.4
-
 * MySQL 5.7 (or MariaDB 10.3) (or higher)
-
 * PHP 8.1 (or higher)
 
-Additionally, the following package manager are required to build LORIS:  
+Additionally, the following package managers are required to build LORIS:
 
 * NodeJS 16.10.0 (or higher)
-
 * NPM 8.19.2 (or higher)
+* Composer
 
-* composer
-
-This guide does not cover installation of these requirements.
+This guide does not cover the installation of these requirements.
 
 ### Apt Packages
-The following Ubuntu packages are required and should be installed using 
-`sudo apt install ...`.
 
-* curl  
+The following Ubuntu packages are required and should be installed using `sudo apt install ...`.
 
+* curl
 * zip
-
 * unzip
-
 * php-json
-
 * make
-
 * software-properties-common
-
 * php8.2-mysql
-
 * php8.2-xml
-
 * php8.2-mbstring
-
 * php8.2-gd
-
 * php8.2-zip
-
 * php8.2-curl (for development instances only)
-
 * libapache2-mod-php8.2
 
 ## Creating the lorisadmin user
-Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 
-This is required for the install process in order to automatically generate
-Apache configuration files. Sudo priviledges can be revoked once the install
-is completed. 
 
-## Creating the lorisadmin user
+Create the _lorisadmin_ user and group. lorisadmin needs `sudo` privileges to automatically generate Apache configuration files during the installation. These privileges can be revoked once the installation is complete.
 
 ```bash
-# Create lorisadmin user and group
-# Give lorisadmin `sudo` permission. This is required for the install process
-# in order to automatically generate Apache configuration files.
-# 
-# Sudo privileges should be revoked once the install is completed.
+# Create the lorisadmin user and group
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
 # Add apache to the lorisadmin group
 sudo usermod -a -G lorisadmin www-data
-# Set the password for the lorisadmin account
+# Set the password for lorisadmin
 sudo passwd lorisadmin
 sudo mkdir -m 755 -p /var/www/loris
 sudo chown lorisadmin:lorisadmin /var/www/loris
+# Log in as lorisadmin
 su - lorisadmin
 ```
 
 ## Getting the source code
 
-Visit the [releases](https://github.com/aces/loris/releases) page and download the zipped file of the latest LORIS
-release. The below command will download the latest LORIS release and save 
-it to a file named `loris-src.tar.gz`.
+Visit the [releases page](https://github.com/aces/loris/releases) and download the zipped file of the latest LORIS release. This can also be achieved with the following command, saving the release to the file `loris-src.tar.gz`.
 
 ```bash
 curl -s https://api.github.com/repos/aces/loris/releases/latest \
@@ -99,73 +72,55 @@ curl -s https://api.github.com/repos/aces/loris/releases/latest \
 | xargs -n 1 curl -L -s -o loris-src.tar.gz
 ```
 
-When this is complete, expand the compressed file and move its contents to the
-_loris root directory_ from which LORIS will be served: 
+Once the download is complete, extract the content of the file and move it to the _LORIS root directory_, located inside web root (e.g. `/var/www/`).
 
 ```bash
 tar -zxf loris-src.tar.gz
+# Adjust the identifier after 'aces-Loris-' to your case
+mv aces-Loris-9e30cf0/* /var/www/loris/
 ```
 
-This will create a folder called something like `aces-Loris-9e30cf0`. (The
-part after `aces-Loris` is not important).
-
-Rename this folder to `loris`, e.g.
+Go to the LORIS root directory and run `make` to build the project.
 
 ```bash
-mv aces-Loris-9e30cf0 loris
+cd /var/www/loris/
+# Then either
+make      # For a production environment
+make dev  # For a development environment
 ```
-
-Then move this folder to the web root (e.g. `/var/www/`) and go to this 
-directory.
-
-```bash
-mv ./loris /var/www/
-cd /var/www/loris
-```
-
-Once in the correct directory, run one of the following commands given your environment:
-
-```bash
-make      # For production environments
-make dev  # For development environments
-```
-
 
 ## Running the install script
 
-The next step in setting up LORIS is running the script `install.sh` in the 
-`tools/` directory. The script must be run from that directory, and must _not_ be
-run using sudo.
+The next step in setting up LORIS is to run the install script `install.sh`, located in the `tools/` directory. The script must be run from this directory, and must _not_ be run using `sudo`.
 
-This will begin an interactive setup process that will configure files and
-permissions required to get LORIS up and running.
+This will begin the interactive setup process that will configure files and permissions required to get LORIS up and running.
 
 ```bash
 cd /var/www/loris/tools/
 ./install.sh
 ```
 
+Once the Apache server has been configured by the script, reload it.
+
+```bash
+sudo systemctl reload apache2
+```
+
 ## Configuring the database
 
-Open your browser and go to: `<loris-url>/installdb.php`.
+Open a web browser and go to `http(s)://LORIS_URL/installdb.php`, where `LORIS_URL` is the address of your LORIS server.
 
-MySQL (or MariaDB) must be installed and a root or admin-level MySQL user must
-be created before continuing. (This is not the same as a unix root credential.)
+MySQL (or MariaDB) must be installed and a root or admin-level MySQL user must be created before continuing (this is not the same as a unix root credential).
 
 This web page will prompt you for the following information:
 
- * `Server Hostname`. Use `localhost` if your database is hosted on the same machine as your web server. Use the IP address of your database server otherwise.
+* `Server Hostname`: Use `localhost` if your database is hosted on the same machine as your web server. Use the IP address of your database server otherwise.
+* `Database Name`: The desired LORIS database name, defaults to "LORIS".
+* `Admin Username`: An existing database user with permission to create databases and tables.
+* `Admin Password`: The password of the above user.
 
- * `Admin Username` A database user with permission to create databases and tables.
+After submitting, register a LORIS user and a LORIS front-end administrator on the next page.
 
- * `Admin Password` The password for the above database user.
+If you encounter issues creating or generating your configuration file, you may have to manually paste the XML output that appears on your screen into the file `/var/www/loris/project/config.xml`.
 
- * `Database Name` Defaults to "LORIS".
-
-Click submit, and on the next screen that is presented, follow instructions to enter the username and password of your LORIS database user and front-end `admin` user.
-
-If you encounter issues creating/generating your config file, you may have to manually paste the xml output that appears on the screen into the file `/var/www/loris/project/config.xml`
-
-Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`.
-
-Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
+Your LORIS instance should now be accessible in your web browser at the `http(s)://LORIS_URL` address. If so, congratulations! You have finished the installation of LORIS, and can now go to the [setup page](https://github.com/aces/Loris/wiki/Setup) for more information on how to customize your project.
