@@ -111,7 +111,7 @@ class IssueForm extends Component {
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
-
+    let assignneeSelectElement = null;
     const siteOptions = this.state.Data.sites;
     // Add an 'All Sites' options in the Site dropdown
     // to allow NULL value
@@ -133,6 +133,19 @@ class IssueForm extends Component {
           value={this.state.formData.file}
         />
       );
+       assignneeSelectElement = (
+          <SelectElement
+            name='assignee'
+            label='Assignee'
+            emptyOption={true}
+            options={this.state.Data.assignees}
+            disabledOptions={this.state.Data.inactiveUsers}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.assignee}
+            required={false}
+          />
+       );
     } else {
       headerText = 'Edit Issue #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
@@ -146,6 +159,19 @@ class IssueForm extends Component {
           label={'Add Attachment'}
         />
       );
+       assignneeSelectElement = (
+          <SelectElement
+            name='assignee'
+            label='Assignee'
+            emptyOption={true}
+            options={this.state.Data.assignees}
+            disabledOptions={this.state.Data.inactiveUsers}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.assigneekey}
+            required={false}
+          />
+       );	    
     }
 
     const fileCollection = this.state.isNewIssue || (
@@ -239,17 +265,7 @@ class IssueForm extends Component {
             required={true}
           />
           {description}
-          <SelectElement
-            name='assignee'
-            label='Assignee'
-            emptyOption={true}
-            options={this.state.Data.assignees}
-            disabledOptions={this.state.Data.inactiveUsers}
-            onUserInput={this.setFormData}
-            disabled={!hasEditPermission}
-            value={this.state.formData.assignee}
-            required={false}
-          />
+	    {assignneeSelectElement}
           <SelectElement
             name='centerID'
             label='Site'
@@ -367,6 +383,7 @@ class IssueForm extends Component {
         (data) => {
           let newIssue = !data.issueData.issueID;
           let formData = data.issueData;
+
           // ensure that if the user is at multiple sites and
           // its a new issue, the centerID (which is a dropdown)
           // is set to the empty option instead of an array of
@@ -383,6 +400,8 @@ class IssueForm extends Component {
             if (formData.centerID == null) {
               formData.centerID = 'all';
             }
+          data.issueData.assigneekey = Object.keys(data.assignees).find(key => data.assignees[key] === data.issueData.assignee);
+          formData = data.issueData;		  
           }
 
           this.setState({
