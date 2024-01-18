@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * Module Manager React Component
