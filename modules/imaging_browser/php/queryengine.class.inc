@@ -34,7 +34,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $items  = [
             new DictionaryItem(
                 "ScanDone",
-                "Does the candidate have any imaging scan done?",
+                "Does the session have any imaging scan done?",
                 $scope,
                 new \LORIS\Data\Types\BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
@@ -107,20 +107,24 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $modality = $item->getModality();
 
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("LEFT JOIN files `$modality` ON (s.ID=`$modality`.SessionID)");
-            $this->addTable("LEFT JOIN mri_scan_type `{$modality}_mst` ON (`$modality`.AcquisitionProtocolID=`{$modality}_mst`.ID)");
-            $this->addWhereClause("(`{$modality}_mst`.Scan_type=\"{$modality}\" OR `{$modality}_mst`.Scan_type IS NULL)");
-            return "`$modality`.File";
+            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+
+            // Because of complex interactions between joins that get out of hand when a scan type
+            // that doesn't exist is selected alongside one that does, we use a subselect here.
+            return "(SELECT File FROM files as files2
+                                JOIN mri_scan_type ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                        WHERE files2.FileID=files.FileID AND mri_scan_type.Scan_type='${modality}')"; //`$modality`.File";
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
 
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("LEFT JOIN files `$modality` ON (s.ID=`$modality`.SessionID)");
-            $this->addTable("LEFT JOIN mri_scan_type `{$modality}_mst` ON (`$modality`.AcquisitionProtocolID=`{$modality}_mst`.ID)");
-            $this->addTable("LEFT JOIN files_qcstatus `{$modality}_qc` ON (`$modality`.FileID=`{$modality}_qc`.FileID)");
-            $this->addWhereClause("(`{$modality}_mst`.Scan_type=\"{$modality}\" OR `{$modality}_mst`.Scan_type IS NULL)");
-            return "`{$modality}_qc`.QCStatus";
+            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            return "(SELECT QCStatus FROM files_qcstatus 
+                        JOIN files as files2
+                        JOIN mri_scan_type ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                        WHERE files_qcstatus.FileID=files.FileID
+                            AND files2.FileID=files.FileID AND mri_scan_type.Scan_type='${modality}')"; 
         }
 
         throw new \DomainException("Invalid field " . $item->getName());
@@ -134,16 +138,14 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item instanceof LocationDictionaryItem) {
             $modality = $item->getModality();
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("LEFT JOIN files `$modality` ON (s.ID=`$modality`.SessionID)");
-            $this->addTable("LEFT JOIN mri_scan_type `{$modality}_mst` ON (`$modality`.AcquisitionProtocolID=`{$modality}_mst`.ID)");
-            return "`" . $item->getModality() ."`.File";
+            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            return "files.File";
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("LEFT JOIN files `$modality` ON (s.ID=`$modality`.SessionID)");
-            $this->addTable("LEFT JOIN mri_scan_type `{$modality}_mst` ON (`$modality`.AcquisitionProtocolID=`{$modality}_mst`.ID)");
-            return "`" . $item->getModality() ."`.File";
+            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            return "files.File";
         }
         throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
     }

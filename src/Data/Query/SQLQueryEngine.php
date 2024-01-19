@@ -477,8 +477,8 @@ abstract class SQLQueryEngine implements QueryEngine
                                             'value' => $this->displayValue($field, $row[$fname]),
                                            ];
                                        $val = $this->displayValue($field, $row[$fname]);
-                                    if (isset($candval[$fname][$SID]['values'][$key])) {
-                                        assert($candval[$fname][$SID]['values'][$key] == $val);
+                                    if (isset($candval[$fname][$SID]['values']['key'])) {
+                                        assert($candval[$fname][$SID]['values']['key'] == $val);
                                     } else {
                                         $candval[$fname][$SID]['values'][$key] = $val;
                                     }
