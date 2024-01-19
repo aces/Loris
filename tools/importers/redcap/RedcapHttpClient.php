@@ -1,0 +1,124 @@
+<?php declare(strict_types=1);
+
+namespace LORIS\redcap;
+
+use \LORIS\LorisInstance;
+use \GuzzleHttp\Client;
+use \LORIS\Http\Request;
+
+class RedcapHttpClient
+{
+    private Client $_client;
+    private string $_token;
+
+    public function __construct(LorisInstance $loris)
+    {
+        $settings = $loris->getConfiguration()->getSetting('REDCap');
+
+        $this->_token  = $settings['token'];
+        $this->_client = new Client(
+            ['base_uri' => $settings['url'] ?? '']
+        );
+    }
+
+    /**
+     * Returns a list of records from REDCap.
+     *
+     * @param string $pscid The participant id
+     * @param string $visit_label The visit label
+     * @param string $instrument The instrument name
+     */
+    private function _exportRecords(
+        string $pscid,
+        string $visit_label,
+        string $instrument
+    ): array {
+        $data = [
+            'token'                  => $this->_token,
+            'content'                => 'record',
+            'action'                 => 'export',
+            'format'                 => 'json',
+            'type'                   => 'flat',
+            'csvDelimiter'           => '',
+            'records'                => [$pscid],
+            'fields'                 => [],
+            'forms'                  => [$instrument],
+            'events'                 => [$visit_label],
+            'rawOrLabel'             => 'raw',
+            'rawOrLabelHeaders'      => 'raw',
+            'exportCheckboxLabel'    => 'true',
+            'exportSurveyFields'     => 'true',
+            'exportDataAccessGroups' => 'true',
+            'returnFormat'           => 'json'
+        ];
+
+        $response = $this->_client->request(
+            'POST',
+            '/api/',
+            [
+                'form_params' => $data,
+                'debug'       => false
+            ]
+        );
+
+        $record = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() != 200) {
+            throw new \LorisException('Cannot export record');
+        }
+
+        if (count($record) < 1) {
+            throw new \LorisException('No record found');
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns a report from REDCap.
+     *
+     * @param int $reportId  The report id
+     * @param bool $label    Indicates labels should be exported for options of
+     *                       multiple choice fields, instead of raw coded values
+     */
+    private function _exportReport(
+        int  $reportId,
+        bool $label = false,
+    ): array {
+
+        $rawOrLabel = $label ? 'label' : 'raw';
+
+        $data = [
+            'token'                  => $this->_token,
+            'content'                => 'report',
+            'format'                 => 'json',
+            'report_id'              => $reportId,
+            'csvDelimiter'           => '',
+            'rawOrLabel'             => $rawOrLabel,
+            'rawOrLabelHeaders'      => 'raw',
+            'exportCheckboxLabel'    => 'false',
+            'returnFormat'           => 'json'
+        ];
+
+        $response = $this->_client->request(
+            'POST',
+            '/api/',
+            [
+                'form_params' => $data,
+                'debug'       => false
+            ]
+        );
+
+        $report = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() != 200) {
+            throw new \LorisException('Cannot export report');
+        }
+
+        if (count($report) < 1) {
+            throw new \LorisException('No report found');
+        }
+
+        return $report;
+    }
+}
