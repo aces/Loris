@@ -55,7 +55,8 @@ class RolesIndex extends Component {
             .then((resp) => resp.json())
             .then((data) => this.setState({data}))
             .catch(
-                (error) => {
+                (error) => 
+                {
                     this.setState({error: true});
                     console.error(error);
                 }
@@ -65,9 +66,10 @@ class RolesIndex extends Component {
     /**
      * Modify behaviour of specified column cells in the Data Table component
      *
-     * @param  {string} column - column name
-     * @param  {string} cell - cell content
-     * @param  {object} row - row content indexed by column
+     * @param {string} column - column name
+     * @param {string} cell - cell content
+     * @param {object} row - row content indexed by column
+     * 
      * @return {*} a formated table cell for a given column
      */
     formatColumn(column, cell, row)
@@ -75,9 +77,9 @@ class RolesIndex extends Component {
         let url;
         let result = <td>{cell}</td>;
         switch (column) {
-            case 'Code':
-                url = loris.BaseURL + '/roles/edit_role/' + row.Code;
-                result = <td><a href ={url}>{cell}</a></td>;
+        case 'Code':
+            url = loris.BaseURL + '/roles/edit_role/' + row.Code;
+            result = <td><a href ={url}>{cell}</a></td>;
                 break;
         }
         return result;
@@ -121,7 +123,7 @@ class RolesIndex extends Component {
                     name: 'code',
                     type: 'text',
                 },
-            },
+        },
             {
                 label: 'Name',
                 show: true,
@@ -129,7 +131,7 @@ class RolesIndex extends Component {
                     name: 'name',
                     type: 'text',
                 },
-            },
+        },
             {
                 label: 'Description',
                 show: true,
@@ -137,11 +139,11 @@ class RolesIndex extends Component {
                     name: 'description',
                     type: 'text',
                 },
-            },
+        },
             {
                 label: 'Attached permissions',
                 show: true
-            },
+        },
         ];
 
         const actions = [
@@ -167,9 +169,10 @@ RolesIndex.propTypes = {
 };
 
 window.addEventListener(
-    'load', () => {
+    'load', () => 
+    {
         const root = createRoot(document.getElementById('lorisworkspace'));
-    root.render(
+        root.render(
             <RolesIndex
             dataURL={`${loris.BaseURL}/roles/?format=json`}
             hasPermission={loris.userHasPermission}

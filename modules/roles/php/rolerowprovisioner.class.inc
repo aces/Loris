@@ -1,4 +1,16 @@
 <?php declare(strict_types=1);
+/**
+ * This class implements a data Instance which represents a single
+ * role in the roles menu table.
+ *
+ * PHP Version 8
+ *
+ * @category Roles
+ * @package  Loris
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
  namespace LORIS\roles;
 
  /**
@@ -7,7 +19,11 @@
   *
   * PHP Version 8
   *
-  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+  * @category Roles
+  * @package  Loris
+  * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+  * @link     https://www.github.com/aces/Loris/
   */
 class RoleRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
