@@ -53,7 +53,7 @@ INSERT INTO `permissions` VALUES
     (1,'superuser','Superuser - supersedes all permissions',NULL,NULL),
     (2,'user_accounts','User Accounts - Own Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit'),
     (3,'user_accounts_multisite','User Accounts - All Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit'),
-    (4,'context_help','Help documentation',(SELECT ID FROM modules WHERE Name='help_editor'),'Edit','2'),
+    (4,'context_help','Help documentation',(SELECT ID FROM modules WHERE Name='help_editor'),'Edit'),
     (5,'bvl_feedback','Feedback Threads',(SELECT ID FROM modules WHERE Name='bvl_feedback'),'Create/Edit'),
     (6,'imaging_browser_qc','Status',(SELECT ID FROM modules WHERE Name='imaging_browser'),'Edit'),
     (7,'send_to_dcc','Send to DCC',(SELECT ID FROM modules WHERE Name='instrument_list'),NULL),
