@@ -55,8 +55,7 @@ class RolesIndex extends Component {
             .then((resp) => resp.json())
             .then((data) => this.setState({data}))
             .catch(
-                (error) => 
-                {
+                (error) => {
                     this.setState({error: true});
                     console.error(error);
                 }
