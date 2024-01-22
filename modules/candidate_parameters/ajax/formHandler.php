@@ -469,32 +469,24 @@ function editConsentStatusFields(\Database $db)
             // Giving 'no' status requires consent date and empty withdrawal date if
             // record does not already exist
             if (!$recordExists) {
-                // ****************** CCNA OVERRIDE START **************** //
                 if (empty($withdrawal)) {
-                // ****************** CCNA OVERRIDE END ***************** //
                     $validated = true;
                 } else {
                     http_response_code(400);
-                    // ****************** CCNA OVERRIDE START ***************** //
                     echo('Answering no to a consent type for the first time
                           does not require a date of withdrawal.');
-                    // ****************** CCNA OVERRIDE END ***************** //
                     return;
                 }
             } else { // If no status stays no or record existed as NULL
                     // consent date required and withdrawal date unchanged
-                    // ****************** CCNA OVERRIDE START ***************** //
                     if (($oldStatus === null || $oldStatus === 'no')
-                    // ****************** CCNA OVERRIDE END ***************** //
                         && ((empty($oldWithdrawal) && empty($withdrawal))
                         || (!empty($oldWithdrawal) && !empty($withdrawal)))
                     ) {
                     $validated = true;
-                    // ****************** CCNA OVERRIDE START ***************** //
                     } else if ($oldStatus === 'yes' && !empty($withdrawal)
 			   || $oldStatus === 'not_applicable' && empty($withdrawal)) {
                     // Withdrawing from 'yes' status required consent date
-                    // ****************** CCNA OVERRIDE END ***************** //
                     // and withdrawal date
                     $validated = true;
                     } else {
