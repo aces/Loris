@@ -483,21 +483,21 @@ function editConsentStatusFields(\Database $db)
                 }
             } else { // If no status stays no or record existed as NULL
                     // consent date required and withdrawal date unchanged
-                // ****************** CCNA OVERRIDE START ***************** //
-                if (($oldStatus === null || $oldStatus === 'no')
-                // ****************** CCNA OVERRIDE END ***************** //
-                    && ((empty($oldWithdrawal) && empty($withdrawal))
-                    || (!empty($oldWithdrawal) && !empty($withdrawal)))
-                ) {
+                    // ****************** CCNA OVERRIDE START ***************** //
+                    if (($oldStatus === null || $oldStatus === 'no')
+                    // ****************** CCNA OVERRIDE END ***************** //
+                        && ((empty($oldWithdrawal) && empty($withdrawal))
+                        || (!empty($oldWithdrawal) && !empty($withdrawal)))
+                    ) {
                     $validated = true;
-                // ****************** CCNA OVERRIDE START ***************** //
-                } else if ($oldStatus === 'yes' && !empty($withdrawal)
+                    // ****************** CCNA OVERRIDE START ***************** //
+                    } else if ($oldStatus === 'yes' && !empty($withdrawal)
 			   || $oldStatus === 'not_applicable' && empty($withdrawal)) {
                     // Withdrawing from 'yes' status required consent date
-                // ****************** CCNA OVERRIDE END ***************** //
+                    // ****************** CCNA OVERRIDE END ***************** //
                     // and withdrawal date
                     $validated = true;
-                } else {
+                    } else {
                     http_response_code(400);
                     echo('Data failed validation. Resolve errors and try again.');
                     return;
