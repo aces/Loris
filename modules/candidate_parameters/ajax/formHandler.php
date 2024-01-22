@@ -479,17 +479,18 @@ function editConsentStatusFields(\Database $db)
                 }
             } else { // If no status stays no or record existed as NULL
                     // consent date required and withdrawal date unchanged
-                    if (($oldStatus === null || $oldStatus === 'no')
-                        && ((empty($oldWithdrawal) && empty($withdrawal))
-                        || (!empty($oldWithdrawal) && !empty($withdrawal)))
-                    ) {
+                if (($oldStatus === null || $oldStatus === 'no')
+                    && ((empty($oldWithdrawal) && empty($withdrawal))
+                    || (!empty($oldWithdrawal) && !empty($withdrawal)))
+                ) {
                     $validated = true;
-                    } else if ($oldStatus === 'yes' && !empty($withdrawal)
-			   || $oldStatus === 'not_applicable' && empty($withdrawal)) {
+                } else if ($oldStatus === 'yes' && !empty($withdrawal)
+                    || $oldStatus === 'not_applicable' && empty($withdrawal)
+                ) {
                     // Withdrawing from 'yes' status required consent date
                     // and withdrawal date
                     $validated = true;
-                    } else {
+                } else {
                     http_response_code(400);
                     echo('Data failed validation. Resolve errors and try again.');
                     return;
