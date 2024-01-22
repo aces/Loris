@@ -16,8 +16,9 @@ require_once __DIR__ . '/../libraries/SwaggerClient-php/vendor/autoload.php';
 
 use LORIS\StudyEntities\Candidate\CandID;
 
+$project     = 'COPN';
 $exportLabel = true;
-$Runner      = new COPNRedcapReportImporter($lorisInstance, $exportLabel);
+$Runner      = new RedcapReportImporter_COPN($lorisInstance, $exportLabel, $project);
 $Runner->run();
 
 /**
@@ -31,7 +32,7 @@ $Runner->run();
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class COPNRedcapReportImporter extends RedcapReportImporter 
+class RedcapReportImporter_COPN extends RedcapReportImporter 
 {
     var $consent_method_field;
 
@@ -42,9 +43,9 @@ class COPNRedcapReportImporter extends RedcapReportImporter
      *                                          imported from.
      * @param bool                 $exportLabel The export label boolean
      */
-    function __construct(\LORIS\LorisInstance $loris, bool $exportLabel = false)
+    function __construct(\LORIS\LorisInstance $loris, bool $exportLabel = false, string $project)
     {
-        parent::__construct($loris);
+        parent::__construct($loris, $exportLabel, $project);
 
         $this->consent_method_field = 'method_consent';
     }

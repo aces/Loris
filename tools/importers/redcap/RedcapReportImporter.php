@@ -18,9 +18,9 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
      *                                          imported from.
      * @param bool                 $exportLabel The export label boolean
      */
-    function __construct(\LORIS\LorisInstance $loris, bool $exportLabel = false)
+    function __construct(\LORIS\LorisInstance $loris, bool $exportLabel = false, string $project)
     {
-        parent::__construct($loris);
+        parent::__construct($loris, $project);
 
         $this->redcapReportId = getReportId();
         $this->exportLabel    = $exportLabel;

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../libraries/SwaggerClient-php/vendor/autoload.php';
 
 use LORIS\redcap\RedcapHttpClient;
+use LORIS\redcap\RedcapConfig;
 
 /**
  * This represents a REDCap importer
@@ -15,6 +16,7 @@ abstract class RedcapImporter implements IRedcapImporter
     var $DB;                   // reference to the database handler
 
     var $redcapClient;         // reference to the RedcapHttpClient object
+    var $redcapConfig;         // reference to the RedcapConfig object
 
     var $lorisApiConfig;       // Swagger client configuration, use LORIS api where possible
     var $httpClient;
@@ -34,7 +36,7 @@ abstract class RedcapImporter implements IRedcapImporter
      * @param \LORIS\LorisInstance $loris The LORIS instance that data is being
      *                                    imported from.
      */
-    function __construct(\LORIS\LorisInstance $loris)
+    function __construct(\LORIS\LorisInstance $loris, string $project)
     {
         $this->loris = $loris;
         $this->DB    = $this->loris->getDatabaseConnection();
@@ -42,8 +44,10 @@ abstract class RedcapImporter implements IRedcapImporter
         $config    = $this->loris->getConfiguration();
         $apiConfig = $config->getSetting('REDCap');
 
-        $sslVerify = true;
         $this->redcapClient = new RedcapHttpClient($loris);
+        $this->redcapConfig = new RedcapConfig(
+            __DIR__ . "redcap_config_$project.json"
+        );
 
         $this->lorisApiConfig = new Swagger\Client\Configuration();
         $this->lorisApiConfig = Swagger\Client\Configuration::getDefaultConfiguration()->setHost(
@@ -63,7 +67,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $this->dates_to_scrub   = $this->getDateFieldsToScrub();
         $this->fields_to_ignore = $this->getFieldsToIgnore();
 
-        $this->project = $this->getLorisProject();
+        $this->project = $project;
     }
 
     /**
@@ -200,7 +204,7 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getImporterConfig() : array
     {
-        // Read 'REDCap_config_'.$this->project.'.json';
+       return $this->redcapConfig->getImportConfig();
     }
 
     /**
