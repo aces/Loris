@@ -2,6 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
+import {
+    FormElement,
+    CheckboxElement,
+    FileElement,
+    TextareaElement,
+    SelectElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Genomic Upload Form

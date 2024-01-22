@@ -4,6 +4,12 @@ import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    StaticElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Create Timepoint.
@@ -454,8 +460,9 @@ CreateTimepoint.propTypes = {
  * Render create_timepoint on page load.
  */
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CreateTimepoint
       baseURL={loris.BaseURL}
     />

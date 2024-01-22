@@ -2142,7 +2142,7 @@ components:
     inline_response_200_2:
       type: object
       properties:
-        Candidate:
+        Meta:
           $ref: '#/components/schemas/Candidate'
         Visits:
           type: array

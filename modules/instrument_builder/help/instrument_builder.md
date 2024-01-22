@@ -30,15 +30,17 @@ _Data entry fields_ :
 - Textarea : for long-answer questions, e.g. comment fields.
 
 - Dropdown : for selecting one option from a list. To create the list of options, type in the "Dropdown option" row and then click "add option". In the "preview" dropdown underneath you'll see your new option.  Type again in the boxes to begin defining your second option, and when all options are added, click "add row".
-
-Note: _"not_answered"_ will be automatically added as the last option for any dropdown. 
-The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.  
 	
 - Multiselect : for selecting one or more options from a list. see _Dropdown_ for information on creating/re-using Options.
 
 - Date : for dates such as _Date of first reported incident_
 
 - Numeric : for numbers - e.g. height, weight, etc. Ranges can be specified to enforce valid data entry.
+
+Note: _"not_answered"_ will be automatically added as the last option for any dropdown.
+The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.
+
+Note: An accompanying dropdown field with a _"not_answered"_ option will be automatically added to all other data entry fields that are not dropdown nor multiselect. The accompanying dropdown will appear next to the data entry field.
 
 _Formatting fields_ for cosmetic/visual form features:
 

@@ -14,15 +14,28 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$user = \User::singleton();
-if (!$user->hasPermission('candidate_parameter_edit')) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-}
-
 $tab = $_POST['tab'] ?? '';
 if ($tab === '') {
     header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
+$user = \User::singleton();
+if (($tab == 'candidateDOB')
+    && (!$user->hasPermission('candidate_dob_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab == 'candidateDOD')
+    && (!$user->hasPermission('candidate_dod_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab != 'candidateDOB')
+    && ($tab != 'candidateDOD')
+    && !$user->hasPermission('candidate_parameter_edit')
+) {
+    header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
@@ -52,7 +65,6 @@ case 'participantStatus':
 case 'consentStatus':
     editConsentStatusFields($db);
     break;
-
 
 case 'candidateDOB':
     editCandidateDOB($db);

@@ -2,6 +2,14 @@ import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    TextboxElement,
+    StaticElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
@@ -66,10 +74,22 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
+        // visitLabel can contain underscores, filename can have suffix appended to PSCID_CandID_VisitLabel
+        // join the remaining elements of patientName and pattern match
+        // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        const suffix = ids.join('_');
+        const visitLabels = Object.keys(form.visitLabel.options);
+        let bestMatch = '';
+        visitLabels.map((visitLabel) => {
+          if (suffix.match(visitLabel) !== null) {
+            // consider the first match only
+            if (suffix.match(visitLabel)[0].length > bestMatch.length) {
+              bestMatch = suffix.match(visitLabel)[0];
+            }
+          }
+        });
+        formData.visitLabel = bestMatch;
       }
     }
 
@@ -81,10 +101,22 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
+        // visitLabel can contain underscores,  filename can have suffix appended to PSCID_CandID_VisitLabel
+        // join the remaining elements of patientName and pattern match
+        // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        const suffix = ids.join('_');
+        const visitLabels = Object.keys(form.visitLabel.options);
+        let bestMatch = '';
+        visitLabels.map((visitLabel) => {
+          if (suffix.match(visitLabel) !== null) {
+            // consider the first match only
+            if (suffix.match(visitLabel)[0].length > bestMatch.length) {
+              bestMatch = suffix.match(visitLabel)[0];
+            }
+          }
+        });
+        formData.visitLabel = bestMatch;
       }
     }
 

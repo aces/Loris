@@ -386,7 +386,6 @@ class BatteryManagerIndex extends Component {
           title={modalTitle}
           show={add || edit}
           onClose={this.closeForm}
-          onSubmit={handleSubmit}
           throwWarning={Object.keys(test).length !== 0}
         >
           <BatteryManagerForm
@@ -395,6 +394,7 @@ class BatteryManagerIndex extends Component {
             options={options}
             add={add}
             errors={errors}
+            handleSubmit={handleSubmit}
           />
         </Modal>
       </div>
@@ -480,7 +480,7 @@ class BatteryManagerIndex extends Component {
       } else if (test.ageMaxDays < 0) {
         errors.ageMaxDays = 'This field must be 0 or greater';
       }
-      if (test.ageMinDays > test.ageMaxDays) {
+      if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
         errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
         errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
       }
@@ -504,8 +504,9 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}

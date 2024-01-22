@@ -6,7 +6,7 @@ import {createEpicMiddleware} from 'redux-observable';
 import thunk from 'redux-thunk';
 import {fetchJSON, fetchText} from '../ajax';
 import {rootReducer, rootEpic} from '../series/store';
-import {MAX_CHANNELS} from '../vector';
+import {DEFAULT_MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
 import {
   setChannels,
   emptyChannels,
@@ -15,9 +15,9 @@ import {
   setEpochs,
   setDatasetMetadata,
   setPhysioFileID,
+  setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 
@@ -107,11 +107,11 @@ class EEGLabSeriesProvider extends Component<CProps> {
             })
           );
           this.store.dispatch(setChannels(emptyChannels(
-              Math.min(limit, channelMetadata.length),
+              Math.min(this.props.limit, channelMetadata.length),
               1
           )));
           this.store.dispatch(setDomain(timeInterval));
-          this.store.dispatch(setInterval(timeInterval));
+          this.store.dispatch(setInterval(DEFAULT_TIME_INTERVAL));
         }
       }).then(() => {
         return events.instances.map((instance) => {
@@ -160,7 +160,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             })
           )
         );
-        this.store.dispatch(updateFilteredEpochs());
+        this.store.dispatch(setFilteredEpochs(epochs.map((_, index) => index)));
       })
     ;
 
@@ -199,7 +199,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   }
 
   static defaultProps = {
-    limit: MAX_CHANNELS,
+    limit: DEFAULT_MAX_CHANNELS,
   };
 }
 

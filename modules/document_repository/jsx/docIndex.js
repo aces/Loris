@@ -10,6 +10,7 @@ import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+import {CheckboxElement} from 'jsx/Form';
 
 /**
  * Doc index component
@@ -436,8 +437,9 @@ DocIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-document">
       <DocIndex
         dataURL={`${loris.BaseURL}/document_repository/?format=json`}

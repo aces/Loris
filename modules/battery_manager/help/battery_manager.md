@@ -3,7 +3,7 @@ The Battery Manager module serves as a front-end for manipulating the Test Batte
 This includes browsing, adding, editing, activating, and deactivating entries.
 
 ## Searching for an entry in the Test Battery
-Under the `Browse` tab, use the `Selection Filters` to search for entries by fields such as:
+Use the `Selection Filters` to search for entries by fields such as:
 `Instrument`,
 `Minimum age (days)`,
 `Maximum age (days)`,
@@ -21,7 +21,7 @@ Within the data table, results can be sorted in ascending or descending order by
 clicking on any column header.
 
 ## Adding an entry to the Test Battery
-Under the `Add` tab, you can add a new entry to the Test Battery.
+Clicking the `New Test` button, you can add a new entry to the Test Battery.
 You can specify information about the entry by using the searchable dropdowns, dropdown menus, and numeric text fields.
 You will have to fill out the required fields `Instrument`, `Minimum age (days)`, `Maximum age (days)`, and `Stage`.
 Finally, press the **Add entry** button to add the entry to the Test Battery.
@@ -30,7 +30,7 @@ You cannot add an entry if it has a duplicate entry in the Test Battery.
 *For more information on the behaviour of each parameter refer to the [Behaviour of Parameters](#behaviour-of-parameters) section of this document*
 
 ## Editing an entry in the Test Battery
-Under the `Browse` tab, you can edit an entry by clicking on the `Edit` link in the `Edit Metadata` column of the Menu Table.
+You can edit an entry by clicking on the `Edit` link in the `Edit Metadata` column of the Menu Table.
 The link will display a form that is populated with the values of the entry.
 You can update information in the form by selecting from the dropdown menus and filling in the numeric text fields.
 You will have to fill out the required fields `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`, and `Active`.
@@ -43,21 +43,21 @@ You cannot edit an entry if it becomes the same as another active entry in the T
 
 ## Activating/Deactivating an entry in the Test Battery
 
-### Browse tab (activate/deactivate)
-In the `Change Status` column of the Menu Table, you press the **Activate** or
-**Deactivate** button to directly change the status of an entry.
+### Change status (Activate/Deactivate)
+You can change the status of an entry by clicking on the **Activate** or
+**Deactivate** button on the `Change Status` column of the Menu Table, to directly change the status of an entry.
 
 ### Add tab (activate)
-Under the `Add` tab, you can add an entry that already exists in the Test
-Battery but has been deactivated. A pop up will appear that will give you
+Clicking the `Add` tab, you can add an entry that already exists in the Test
+Battery but has been deactivated. A pop-up will appear that will give you
 the option to activate the existing entry.
 
-### Edit window (activate/deactivate)
-Select an entry in the Menu table and click on `Edit`.
+### Edit window (Activate/Deactivate)
+For a given entry in the Menu table and click on `Edit`.
 In the `Edit` window, edit an entry and make sure the new entry has no duplicate in the Test Battery.
 This will add the new entry to the table and deactivate the original one.
-Alternatively, edit an entry so that it becomes the same as another deactivated entry in the Test Battery.
-A pop up will appear that will give you the option to activate the other entry and deactivate the original one.
+Alternatively, if you edit an entry so that it becomes the same as another deactivated entry in the Test Battery,
+a pop-up will appear that will give you the option to activate the other entry and deactivate the original one.
 
 ## Behaviour of Parameters
 
@@ -79,9 +79,9 @@ A pop up will appear that will give you the option to activate the other entry a
    the one of the timepoint, the instrument is administered at that CenterID.
 
 ### AgeMinDays/AgeMaxDays:
-   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set and they 
+   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set, and they
    are both set to `0`, the instrument gets administered at ALL ages;
-   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set and they 
+   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set, and they
    are set to any value other than `0`, the instrument gets administered IF AND
    ONLY IF the age of the candidate at the timepoint is between `AgeMinDays` 
    and `AgeMaxDays`;

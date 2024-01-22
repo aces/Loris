@@ -201,7 +201,7 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'select',
+          type: 'multiselect',
           options: options.visitlabel,
         },
       },
@@ -210,7 +210,7 @@ class CandidateListIndex extends Component {
         show: true,
         filter: {
           name: 'site',
-          type: 'select',
+          type: 'multiselect',
           options: options.site,
         },
       },
@@ -219,7 +219,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'cohort',
-          type: 'select',
+          type: 'multiselect',
           options: options.cohort,
         },
       },
@@ -265,6 +265,14 @@ class CandidateListIndex extends Component {
           name: 'DoB',
           type: 'date',
           hide: this.state.hideFilter,
+        },
+      },
+      {
+        'label': 'Date of registration',
+        'show': true,
+        'filter': {
+          name: 'Date_registered',
+          type: 'date',
         },
       },
       {
@@ -386,8 +394,9 @@ CandidateListIndex.propTypes = {
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}

@@ -37,7 +37,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
 
 **Testing with read-only permission** [Automation Testing]
   1. Add read permission to the aforementioned user
-  2. Media module should be accessible and only present with **one** tab (Browse) with an empty datatable
+  2. Media module should be accessible and only present with **one** tab (Browse), containing a data table for the uploaded media files.
 
 **Testing with write-permission** [Automation Testing]
   1. Add write permission
@@ -46,18 +46,18 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
 
 **Testing file upload**
   1. Click on the 👉 **Upload File** button
-    - A popup should prompt you to select a **PSCID** as it is a required field ❌
+    - An error dialog should appear to notify that you must select a **PSCID** as it is a required field ❌
   2. Select PSCID and click on the 👉  **Upload file** button
-    - A popup should prompt you to select a **Visit Label** as it is a required field ❌
+    - An error dialog should appear to notify that you must select a **Visit Label** as it is a required field ❌
   3. Select Visit Label and click on the 👉  **Upload file**
-    - A popup should prompt you to select a **File** as it is a required field ❌
+    - An error dialog should appear to notify that you must select a **File** as it is a required field ❌
   4. Click on the 👉 **Browse** button and a select a file from your file system
     - Note: it is suggested to try different file types and sizes (e.g pdf, mp4, mov, jpg, doc, etc)
   5. After you selected the file click on **Upload File**
-    - A popup should appear prompting to name the file according to the requested format (unless already done so)
+    - An error dialog should appear to notify that you must name the file according to the requested format (unless already done so)
     - Once file is named properly clicking on **Upload File** button should trigger file upload and display a progress bar.
-  6. Once the file finished uploading a success message should appear on top of the page and fade away in a couple of seconds
-  7. Click on browse tab and make sure the file you just uploaded is shown in data table
+  6. Once the file finished uploading, a modal containing a success message should appear with an 'OK' button.
+  7. Click on the 👉 **OK** button and the page should refresh to the browse tab. Make sure the file you just uploaded is shown in the data table.
 
 **Test file browsing** 
   1. After a couple of files are uploaded, make sure they are properly displayed in the data table

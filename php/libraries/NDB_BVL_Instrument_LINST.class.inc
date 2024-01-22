@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
 
@@ -63,126 +63,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->page      = $page;
 
         $this->form = new \LorisForm();
-    }
-    /**
-     * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
-     *
-     * @return void
-     * @access private
-     */
-    function _addMetadataFields(): void
-    {
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $scope = new Scope(Scope::SESSION);
-
-        $dateOptions = [
-            'language'         => 'en',
-            'format'           => 'YMd',
-            'minYear'          => $config->getSetting('startYear'),
-            'maxYear'          => $config->getSetting('endYear'),
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => null,
-        ];
-
-        $this->dateOptions = $dateOptions;
-
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
-        $this->dictionary = array_merge(
-            $this->dictionary,
-            [
-                new DictionaryItem(
-                    $this->testName.'_Date_taken',
-                    'Date of Administration',
-                    $scope,
-                    new \LORIS\Data\Types\DateType(),
-                    new Cardinality(Cardinality::SINGLE),
-                ),
-            ]
-        );
-
-        if (strrpos($this->testName ?? '', '_proband') === false) {
-            if (!$this->postMortem) {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age (Months)'
-                );
-                $this->dictionary = array_merge(
-                    $this->dictionary,
-                    [
-                        new DictionaryItem(
-                            $this->testName.'_Candidate_Age',
-                            'Candidate Age (Months)',
-                            $scope,
-                            new \LORIS\Data\Types\Duration(),
-                            new Cardinality(Cardinality::SINGLE),
-                        ),
-                    ]
-                );
-
-            } else {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age at Death (Months)'
-                );
-                $this->dictionary = array_merge(
-                    $this->dictionary,
-                    [
-                        new DictionaryItem(
-                            $this->testName.'_Candidate_Age',
-                            'Candidate Age at Death (Months)',
-                            $scope,
-                            new \LORIS\Data\Types\Duration(),
-                            new Cardinality(Cardinality::SINGLE),
-                        ),
-                    ]
-                );
-            }
-            $this->addScoreColumn(
-                'Window_Difference',
-                'Window Difference (+/- Days)'
-            );
-            $this->dictionary = array_merge(
-                $this->dictionary,
-                [
-                    new DictionaryItem(
-                        $this->testName.'_Window_Difference',
-                        'Window difference from test battery (days)',
-                        $scope,
-                        new \LORIS\Data\Types\Duration(),
-                        new Cardinality(Cardinality::SINGLE),
-                    ),
-                ]
-            );
-        }
-        $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
-
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is required',
-            'required'
-        );
-
-        $this->addRule('Examiner', 'Examiner is required', 'required');
-
-        $this->dictionary = array_merge(
-            $this->dictionary,
-            [
-                new DictionaryItem(
-                    $this->testName.'_Examiner',
-                    'Examiner',
-                    $scope,
-                    // This should be an enum of examiners, but
-                    // getExaminerNames currently returns an empty
-                    // array if CommentID is not set.
-                    new StringType(255),
-                    new Cardinality(Cardinality::SINGLE),
-                ),
-            ]
-        );
     }
 
     /**
@@ -556,15 +436,90 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->table    = $this->table ?? trim($pieces[1]);
                     break;
                 case 'title':
-                    $this->fullName = $pieces[1];
+                    $this->fullName = trim($pieces[1]);
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
                             'instrument_title',
                             $pieces[1]
                         );
-                        $this->_addMetadataFields();
+                        if ($this->DataEntryType!=="DirectEntry") {
+                            $this->_addMetadataFields();
+                        }
                     }
+                    $this->dictionary = array_merge(
+                        $this->dictionary,
+                        [
+                            new DictionaryItem(
+                                $this->testName.'_Date_taken',
+                                'Date of Administration',
+                                $scope,
+                                new \LORIS\Data\Types\DateType(),
+                                new Cardinality(Cardinality::SINGLE),
+                                'Date_taken',
+                            ),
+                        ]
+                    );
+                    if (strrpos($this->testName ?? '', '_proband') === false) {
+                        if (!$this->postMortem) {
+                            $this->dictionary = array_merge(
+                                $this->dictionary,
+                                [
+                                    new DictionaryItem(
+                                        $this->testName.'_Candidate_Age',
+                                        'Candidate Age (Months)',
+                                        $scope,
+                                        new \LORIS\Data\Types\Duration(),
+                                        new Cardinality(Cardinality::SINGLE),
+                                        'Candidate_Age',
+                                    ),
+                                ]
+                            );
+                        } else {
+                            $this->dictionary = array_merge(
+                                $this->dictionary,
+                                [
+                                    new DictionaryItem(
+                                        $this->testName.'_Candidate_Age',
+                                        'Candidate Age at Death (Months)',
+                                        $scope,
+                                        new \LORIS\Data\Types\Duration(),
+                                        new Cardinality(Cardinality::SINGLE),
+                                        'Candidate_Age',
+                                    ),
+                                ]
+                            );
+                        }
+                        $this->dictionary = array_merge(
+                            $this->dictionary,
+                            [
+                                new DictionaryItem(
+                                    $this->testName.'_Window_Difference',
+                                    'Window difference from test battery (days)',
+                                    $scope,
+                                    new \LORIS\Data\Types\Duration(),
+                                    new Cardinality(Cardinality::SINGLE),
+                                    'Window_Difference',
+                                ),
+                            ]
+                        );
+                    }
+                    $this->dictionary = array_merge(
+                        $this->dictionary,
+                        [
+                            new DictionaryItem(
+                                $this->testName.'_Examiner',
+                                'Examiner',
+                                $scope,
+                                // This should be an enum of examiners, but
+                                // getExaminerNames currently returns an empty
+                                // array if CommentID is not set.
+                                new StringType(255),
+                                new Cardinality(Cardinality::SINGLE),
+                                'Examiner',
+                            ),
+                        ]
+                    );
                     break;
                 case 'begingroup':
                     if ($addElements) {
@@ -622,6 +577,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         new StringType(255),
                         new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
                     );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
@@ -647,6 +603,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         new StringType(),
                         new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
                     );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
@@ -669,20 +626,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             ];
                         }
 
-                        $this->dictionary[] = new DictionaryItem(
-                            $this->testName."_".$pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new DateType(),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
                         // The question should be added to the LinstQuestions in this
                         // order, before the _date is stripped below for standard
                         // dates to allow XINValidation to recognize the field name
-                        $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
+                        $this->LinstQuestions[$pieces[1]] = [
+                            'type'       => 'date',
+                            'dateFormat' => $dateFormat,
+                        ];
 
                         if ($dateFormat === 'MonthYear') {
                             // Shows date without day of month
@@ -733,6 +686,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         }
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                        $this->testName."_".$pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new DateType(),
+                        new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -741,14 +702,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'numeric':
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
-                        $this->dictionary[] = new DictionaryItem(
-                            $this->testName."_".$pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new IntegerType(),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                        $this->testName."_".$pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new IntegerType(),
+                        new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -850,6 +812,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         $t,
                         $cardinality,
+                        $pieces[1],
                     );
                     $this->dictionary[] = $it;
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'select'];
@@ -887,7 +850,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[2],
                             $scope,
                             new StringType(255),
-                            new Cardinality(Cardinality::SINGLE)
+                            new Cardinality(Cardinality::SINGLE),
+                            $pieces[1],
                         );
                     }
                     break;
@@ -991,15 +955,27 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $q['UserRules'] = true;
 
                     switch ($q['type']) {
+                    // Selects (including multiselects), Basic Dates and MonthYears
+                    // are the only type of rules that aren't part of a group
+                    // the rest include a _status element
                     case 'select':
-                        // Selects are the only type of rules that aren't part
-                        // of a group, the rest include a _status element
                         $this->XINRegisterRule($question, $rules, $message);
                         break;
+                    case 'date':
+                        if ($q['dateFormat'] === 'BasicDate'
+                            || $q['dateFormat'] === 'MonthYear'
+                        ) {
+                            $this->XINRegisterRule($question, $rules, $message);
+                            break;
+                        }
                     default:
+                        $rules_array = array_merge(
+                            $rules,
+                            [$question.'_status{@}=={@}']
+                        );
                         $this->XINRegisterRule(
                             $question,
-                            $rules,
+                            $rules_array,
                             $message,
                             $question . "_group"
                         );

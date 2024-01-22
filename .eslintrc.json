@@ -87,7 +87,10 @@
     "jsdoc/require-param-description": "off",
     "jsdoc/require-returns": "off",
     "jsdoc/require-returns-description": "off",
-    "jsdoc/check-tag-names": "error"
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error",
+    "jsdoc/valid-types": "error",
+    "jsdoc/no-undefined-types": "error"
   },
   "overrides": [
     {
@@ -199,7 +202,8 @@
       "files": [
         "modules/candidate_parameters/**",
         "modules/dqt/**",
-        "modules/configuration/jsx/configuration_helper.js"
+        "modules/configuration/jsx/configuration_helper.js",
+        "modules/brainbrowser/js/brainbrowser.loris.js"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",

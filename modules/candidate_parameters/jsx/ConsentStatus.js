@@ -4,6 +4,14 @@ import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  HeaderElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Consent Status Component.
