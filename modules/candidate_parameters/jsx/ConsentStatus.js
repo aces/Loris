@@ -332,10 +332,7 @@ class ConsentStatus extends Component {
         }
         // If answer to consent is 'no', require date of consent
         if (newConsent === 'no') {
-	    responseDateDisabled = false;
-            // ***************** CCNA OVERRIDE START ****************** //
-            // dateRequired[i] = true;
-            // ***************** CCNA OVERRIDE END ****************** //
+            responseDateDisabled = false;
             // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
             // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
             if (oldConsent === 'yes' ||
