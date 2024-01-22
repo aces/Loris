@@ -469,7 +469,7 @@ function editConsentStatusFields(\Database $db)
             // Giving 'no' status requires consent date and empty withdrawal date if
             // record does not already exist
             if (!$recordExists) {
-                // ****************** CCNA OVERRIDE START ***************** //
+                // ****************** CCNA OVERRIDE START **************** //
                 if (empty($withdrawal)) {
                 // ****************** CCNA OVERRIDE END ***************** //
                     $validated = true;
