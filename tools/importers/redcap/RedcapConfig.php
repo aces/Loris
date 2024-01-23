@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\redcap\;
+namespace LORIS\redcap;
 
 /**
  * This represents a REDCap importer

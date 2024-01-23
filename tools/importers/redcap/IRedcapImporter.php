@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-require_once __DIR__ . '/../../libraries/SwaggerClient-php/vendor/autoload.php';
+require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
-// namespace LORIS\redcap\Models;
+namespace LORIS\redcap\Importers;
 
 /**
  * This interface allows for type abstraction of REDCap importers

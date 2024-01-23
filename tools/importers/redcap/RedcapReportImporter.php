@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace \LORIS\redcap\Importers;
+
 /**
  * This represents a REDCap Report importer
  *

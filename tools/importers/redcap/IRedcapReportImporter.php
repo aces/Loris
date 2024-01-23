@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace LORIS\redcap\Importers;
+
 /**
  * This interface allows for type abstraction of REDCap Report importers
  * quering the REDCap data from a Report

@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-require_once __DIR__ . '/../../libraries/SwaggerClient-php/vendor/autoload.php';
+require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
+
+namespace LORIS\redcap\Importers;
 
 use LORIS\redcap\RedcapHttpClient;
 use LORIS\redcap\RedcapConfig;

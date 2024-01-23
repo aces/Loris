@@ -10,9 +10,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once __DIR__ . '/../../tools/generic_includes.php';
-require_once __DIR__ . '/../vendor/autoload.php'; // php-cap autoloader
-require_once __DIR__ . '/../libraries/SwaggerClient-php/vendor/autoload.php';
+require_once __DIR__ . '/../../generic_includes.php';
+require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
+
+namespace \LORIS\redcap\Importers;
 
 use LORIS\StudyEntities\Candidate\CandID;
 
@@ -74,6 +75,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
                     continue;
                 }
 
+                ////////// COPN specific workflow //////////
                 // Consolidate site fields into 1
                 $isQPN   = false;
                 $site    = $row[$mapping['site'][0]];
@@ -82,6 +84,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
                     $site = $this->getLorisSiteMapping()[$site_2];
                     $isQPN = true;
                 } 
+                ////////// COPN specific workflow //////////
 
                 // Check that site is a valid site
                 if (!in_array($site, array_values($this->getLorisSiteMapping()))) {
@@ -171,6 +174,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
                 if (!$this->validateVisitCreate($row)) {
                     $error_message = "Cannot create visit $visit for candidate $pscid: subproject missing or invalid.";
 
+                    ////////// COPN specific workflow //////////
                     if ($visit === 'InitialVisit') {
                         print "\t$error_message\n";
                         $this->errors[$pscid][] = $error_message;
@@ -179,6 +183,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
                     // Follow-up visits don't have subproject data in row
                     // Get candidate subproject from candidate's most recent visit's subproject
                     $subproject = \Candidate::singleton(new CandID($dccid))->getSubprojectForMostRecentVisit()['title'] ?? null;
+                    ////////// COPN specific workflow //////////
                     if ($subproject === null) {
                         print "\t$error_message\n";
                         $this->errors[$pscid][] = $error_message;
@@ -232,6 +237,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
         // Get consent list
         $consent_list = $this->getConsentListByGroup($this->project);
 
+        ////////// COPN specific workflow //////////
         // Get consent method ids
         $consent_methods = \Utility::getConsentMethods();
         // Get consent methods by name
@@ -242,6 +248,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
         $consent_method_id      = $consent_methods_by_name[$this->consent_method_field]['ConsentMethodID'];
         $consent_method_options = $consent_methods_by_name[$this->consent_method_field]['options'];
         $consent_group_id       = $consent_methods_by_name[$this->consent_method_field]['ConsentGroupID'];
+        ////////// COPN specific workflow //////////
  
         print "\nProcessing consent data...\n\n";
 

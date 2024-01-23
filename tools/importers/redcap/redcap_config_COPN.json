@@ -112,19 +112,19 @@
   "visitMapping": [
     {
       "redcapValue": "Baseline (Arm 1: C-OPN)",
-      "lorisValue":  "InitialVisit"
+      "lorisValue":  "V1"
     },
     {
       "redcapValue": "12 Months Follow-Up/Suivi (Arm 1: C-OPN)",
-      "lorisValue": "FollowUpVisit01"
+      "lorisValue": "V2"
     },
     {
       "redcapValue": "18 Months Follow-Up/Suivi (Arm 1: C-OPN)",
-      "lorisValue": "FollowUpVisit02"
+      "lorisValue": "V3"
     },
     {
       "redcapValue": "24 Months Follow-Up/Suivi (Arm 1: C-OPN)",
-      "lorisValue": "FollowUpVisit03"
+      "lorisValue": "V4"
     }
   ],
   "cohortMapping": [
