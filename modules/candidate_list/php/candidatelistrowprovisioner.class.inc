@@ -103,7 +103,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $pid = new \ProjectID($row['RegistrationProjectID']);
         if ($row['DoB'] !== null) {
             $dob = new \DateTimeImmutable($row['DoB']);
-            switch($this->dobFormat) {
+            switch ($this->dobFormat) {
             case 'Ym':
                 $row['DoB'] = $dob->format('Y-m');
                 break;
