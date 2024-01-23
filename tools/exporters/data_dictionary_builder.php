@@ -98,16 +98,18 @@ $parameterCount = 0;
 $parameterNames = [];
 
 foreach ($instruments AS $instrument) {
-    $catId    = "";
-    $table    = "";
-    $testname = "";
-    $items    = explode("\n", trim($instrument));
+    $catId       = "";
+    $table       = "";
+    $testname    = "";
+    $hasTestname = false;
+    $items       = explode("\n", trim($instrument));
     foreach ($items AS $item) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
         switch ($bits[0]) {
         case "testname":
-            $testname = $bits[1];
+            $testname    = $bits[1];
+            $hasTestname = true;
             print "Instrument: $testname\n";
             break;
         case "table":
@@ -117,9 +119,10 @@ foreach ($instruments AS $instrument) {
             //should assume the testname from the `table` name (to maintain
             //status quo) although it might be incorrect since instrument names
             //and table names could be different by design.
-            if (empty($testname)) {
+            if (!$hasTestname) {
                 $testname = $table;
                 print "Instrument: $testname\n";
+                $hasTestname = false;
             }
             break;
 
