@@ -931,11 +931,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $candID = $this->getCandID();
 
-        $query = "SELECT 
-            ConsentID,
-            Name,
-            Status,
-            DateGiven,
+        $query = "SELECT ConsentID, Name, Status, DateGiven,
             DateWithdrawn,
             Label,
             Comment
