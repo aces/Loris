@@ -5,17 +5,17 @@
  * @param variable
  */
 function getQueryVariable(variable) {
-    'use strict';
-    let query = window.location.search.substring(1);
-        let vars = query.split('&');
-        let i;
-        let pair;
-    for (i = 0; i < vars.length; i += 1) {
-        pair = vars[i].split('=');
-        if (pair[0] === variable) {
-            return unescape(pair[1]);
-        }
+  'use strict';
+  let query = window.location.search.substring(1);
+  let vars = query.split('&');
+  let i;
+  let pair;
+  for (i = 0; i < vars.length; i += 1) {
+    pair = vars[i].split('=');
+    if (pair[0] === variable) {
+        return unescape(pair[1]);
     }
+  }
 }
 
 
@@ -34,6 +34,7 @@ $(function() {
   BrainBrowser.VolumeViewer.start('brainbrowser', function(viewer) {
     let loadingDiv = $('#loading');
     let mincIDs;
+    let fileUrls;
     let mincVolumes = [];
     let mincFilenames = [];
     let bboptions = {};
@@ -773,12 +774,8 @@ $(function() {
       }
     }); // Should cursors in all panels be synchronized?
 
-    mincIDs = getQueryVariable('minc_id');
-    if (mincIDs[0] === '[') {
-      // An array was passed. Get rid of the brackets
-      mincIDs = mincIDs.substring(1, mincIDs.length - 1);
-    }
-
+    mincIDs = getQueryVariable('minc_id') || [];
+    fileUrls = getQueryVariable('file_url') || [];
     if (getQueryVariable('overlay') === 'true') {
       bboptions.overlay = {
         template: {
@@ -812,7 +809,7 @@ $(function() {
     viewer.setDefaultPanelSize(panelSize, panelSize);
 
     fetch(
-      'imageinfo?files=' + mincIDs,
+      'imageinfo?fileids=' + mincIDs + '&fileurls=' + fileUrls,
       {credentials: 'same-origin', method: 'GET'}
     )
     .then((resp) => resp.json())

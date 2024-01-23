@@ -32,40 +32,84 @@ class ImageInfo extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $files = $this->_parseFileIDs($request->getQueryParams()['files'] ?? "");
-        if (count($files) < 1) {
-                return new \LORIS\Http\Response\JSON\OK([]);
-        }
-
-        $db = $this->loris->getDatabaseConnection();
-
-        $queryparams = [];
-
-        $query   = $this->_buildQuery($files, $queryparams);
-        $dbfiles = $db->pselect(
-            $query,
-            $queryparams
+        $fileids  = $this->_parseFileIDs(
+            $request->getQueryParams()['fileids'] ?? ""
         );
+        $fileurls = $this->_parseParams(
+            $request->getQueryParams()['fileurls'] ?? ""
+        );
+        $response = [];
 
-        if (count($files) != count($dbfiles)) {
-            $missing = count($files) - count($dbfiles);
-            if ($missing == 1) {
+        if (count($fileids) > 0) {
+            $db = $this->loris->getDatabaseConnection();
+
+            $queryparams = [];
+            $query       = $this->_buildQuery($fileids, $queryparams);
+            $dbfiles     = $db->pselect(
+                $query,
+                $queryparams
+            );
+
+            if (count($fileids) != count($dbfiles)) {
+                $missing = count($fileids) - count($dbfiles);
                 return new \LORIS\Http\Response\JSON\NotFound(
-                    "File not found"
+                    "$missing file(s) not found"
                 );
             }
-            return new \LORIS\Http\Response\JSON\NotFound(
-                "$missing files not found"
-            );
+
+            $response = $this->_generateResults($dbfiles);
         }
 
-        return $this->_generateResults($dbfiles);
+        if (count($fileurls) > 0) {
+            foreach ($fileurls as $fileurl) {
+                if (preg_match('/nii(\.gz)?/i', $fileurl)) {
+                    $type = 'nifti1';
+                } else if (preg_match('/mnc/', $fileurl)) {
+                    $type = 'minc';
+                } else {
+                    $type = 'unknown';
+                }
+
+                $file = [
+                    'type'     => $type,
+                    'URL'      => $fileurl,
+                    'Filename' => basename($fileurl),
+                    'FileID'   => null,
+                ];
+                if ($type == 'nifti1' && strpos($fileurl, '.gz') !== false) {
+                    $file['compressed'] = true;
+                }
+                $response[] = $file;
+            }
+        }
+
+        return new \LORIS\Http\Response\JSON\OK($response);
     }
 
     /**
      * The incoming request sends the list of files ID in the files
-     * query parameter, as a string that looks like an array bounded
-     * by '[]'. The IDs have an unusual encoding where FileIDs from
+     * query parameter, as a comma-separated string.
+     *
+     * This converts it from a string into an array.
+     *
+     * @param string $files_str The raw value of the query param
+     *
+     * @return array
+     */
+    private function _parseParams(string $files_str) : array
+    {
+        if ($files_str === "") {
+            return [];
+        }
+
+        // Split on ',' if case an array was passed.
+        return explode(',', $files_str);
+    }
+
+    /**
+     * The incoming request sends the list of files ID in the files
+     * query parameter, as a comma-separated string.
+     * The IDs have an unusual encoding where FileIDs from
      * the imaging browser are normal ideas, while IDs from the
      * mri violations module are encoded as a number followed by "l"
      * followed by the id. The number indicates the source within
@@ -87,26 +131,13 @@ class ImageInfo extends \NDB_Page
      */
     private function _parseFileIDs(string $files_str) : array
     {
-        if (strlen($files_str) >= 1 && $files_str[0] == '[') {
-            // An array was passed. Get rid of the brackets
-            $files_str = substr($files_str, 1, strlen($files_str)-2);
-        }
-
-        if ($files_str === "") {
-            return [];
-        }
-
-        // Split on ',' if case an array was passed.
-        $files = explode(',', $files_str);
-
+        $files     = $this->_parseParams($files_str);
         $parsedIDs = [];
         foreach ($files as $file) {
             if (strpos($file, 'l') == 1) {
-                // MRI Violation lookup, 3 cases come from
-                // old ajax script.
+                // MRI Violation lookup, 3 cases come from old ajax script.
                 $type = $file[0];
                 $id   = substr($file, 2);
-                // list($l, $id) = explode('l', $file);
                 switch ($type) {
                 case 1:
                     $parsedIDs[] = ['Type' => 'ProtocolViolation', 'FileID' => $id];
@@ -212,9 +243,9 @@ class ImageInfo extends \NDB_Page
      *
      * @param iterable $dbfiles The results of the database query
      *
-     * @return ResponseInterface
+     * @return Array
      */
-    private function _generateResults(iterable $dbfiles) : ResponseInterface
+    private function _generateResults(iterable $dbfiles) : Array
     {
         $baseurl  = \NDB_Factory::singleton()->settings()->getBaseURL();
         $response = [];
@@ -259,7 +290,7 @@ class ImageInfo extends \NDB_Page
             }
             $response[] = $file;
         }
-        return new \LORIS\Http\Response\JSON\OK($response);
+        return $response;
     }
 }
 

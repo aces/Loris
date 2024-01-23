@@ -2278,7 +2278,7 @@ CREATE TABLE `consent` (
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no','not_applicable') DEFAULT NULL,
   `DateGiven` datetime DEFAULT NULL,
   `DateWithdrawn` datetime DEFAULT NULL,
   `Comment` varchar(255) DEFAULT NULL,
@@ -2348,7 +2348,7 @@ CREATE TABLE `candidate_consent_history` (
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   `version` DECIMAL(5,2) DEFAULT NULL,
   `Comment` varchar(255) DEFAULT NULL,

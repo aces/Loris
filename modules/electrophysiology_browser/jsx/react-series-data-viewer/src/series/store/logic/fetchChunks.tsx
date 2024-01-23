@@ -110,7 +110,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
     Rx.map(([, state]) => fromState(state)),
     Rx.debounceTime(UPDATE_DEBOUNCE_TIME),
     Rx.concatMap(({bounds, dataset, channels}) => {
-      const {chunksURL, shapes, timeInterval} = dataset;
+      const {chunksURL, shapes, validSamples, timeInterval} = dataset;
       if (!chunksURL) {
         return of();
       }
@@ -123,19 +123,25 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
               const shapeChunks =
                 shapes.map((shape) => shape[shape.length - 2]);
 
-              const chunkIntervals : chunkIntervals[] = shapeChunks
+              const valuesPerChunk =
+                shapes.map((shape) => shape[shape.length - 1]);
+
+              const chunkIntervals = shapeChunks
                 .map((numChunks, downsampling) => {
                   const recordingDuration = Math.abs(
                     timeInterval[1] - timeInterval[0]
                   );
 
+                  const filledChunks = (numChunks - 1) +
+                    (validSamples[downsampling] / valuesPerChunk[downsampling]);
+
                   const i0 =
-                    (numChunks *
+                    (filledChunks *
                       Math.floor(bounds.interval[0] - bounds.domain[0])
                     ) / recordingDuration;
 
                   const i1 =
-                    (numChunks *
+                    (filledChunks *
                       Math.ceil(bounds.interval[1] - bounds.domain[0])
                     ) / recordingDuration;
 
@@ -145,7 +151,11 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                   ];
 
                   return {
-                    interval: interval,
+                    interval:
+                      [
+                        Math.floor(i0),
+                        Math.min(Math.ceil(i1), filledChunks),
+                      ],
                     numChunks: numChunks,
                     downsampling,
                   };
@@ -164,12 +174,18 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
               const chunkPromises = R.range(...finestChunks.interval).flatMap(
                 (chunkIndex) => {
                   const numChunks = finestChunks.numChunks;
+
+                  const filledChunks = (numChunks - 1) + (
+                    validSamples[finestChunks.downsampling] /
+                    valuesPerChunk[finestChunks.downsampling]
+                  );
+
                   const chunkInterval = [
                     timeInterval[0] +
-                    (chunkIndex / numChunks) *
+                    (chunkIndex / filledChunks) *
                     (timeInterval[1] - timeInterval[0]),
                     timeInterval[0] +
-                    ((chunkIndex + 1) / numChunks) *
+                    ((chunkIndex + 1) / filledChunks) *
                     (timeInterval[1] - timeInterval[0]),
                   ];
                   if (chunkInterval[0] <= bounds.interval[1]) {

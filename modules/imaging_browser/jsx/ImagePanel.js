@@ -751,8 +751,8 @@ class LongitudinalViewButton extends Component {
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
-      this.props.BaseURL + '/brainbrowser/?minc_id=[' +
-      this.props.OtherTimepoints + ']',
+      this.props.BaseURL + '/brainbrowser/?minc_id=' +
+      this.props.OtherTimepoints,
       'BrainBrowser Volume Viewer',
       'location = 0,width = auto, height = auto, scrollbars=yes'
     );
@@ -894,8 +894,8 @@ class ImagePanelBody extends Component {
    */
   openWindowHandler(e) {
     e.preventDefault();
-    window.open(this.props.BaseURL + '/brainbrowser/?minc_id=[' +
-      this.props.FileID + ']', 'BrainBrowser Volume Viewer',
+    window.open(this.props.BaseURL + '/brainbrowser/?minc_id=' +
+      this.props.FileID, 'BrainBrowser Volume Viewer',
       'location = 0,width = auto, height = auto, scrollbars=yes');
   }
 

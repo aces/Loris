@@ -27,10 +27,6 @@ class ConsentStatus extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            consentOptions: {
-                yes: 'Yes',
-                no: 'No',
-            },
             Data: [],
             formData: {},
             error: false,
@@ -69,6 +65,7 @@ class ConsentStatus extends Component {
                 let consents = data.consents;
                 for (let cStatus in consents) {
                     if (consents.hasOwnProperty(cStatus)) {
+                        let cOptions = cStatus + '_options';
                         let cDate = cStatus + '_date';
                         let cDate2 = cStatus + '_date2';
                         let cWithdrawal = cStatus + '_withdrawal';
@@ -80,6 +77,21 @@ class ConsentStatus extends Component {
                         formData[cWithdrawal] = data.withdrawals[cStatus];
                         formData[cWithdrawal2] = data.withdrawals[cStatus];
                         formData[cComment] = data.comments[cStatus];
+
+                        if (data.consentStatuses[cStatus] === 'yes' ||
+                            data.consentStatuses[cStatus] === 'no'
+                        ) {
+                            formData[cOptions] = {
+                                yes: 'Yes',
+                                no: 'No',
+                            };
+                        } else {
+                            formData[cOptions] = {
+                                yes: 'Yes',
+                                no: 'No',
+                                not_applicable: 'Not applicable',
+                            };
+                        }
                     }
                 }
                 this.setState({
@@ -306,7 +318,7 @@ class ConsentStatus extends Component {
                         {dataEntry} - {user}
                       </b> updated for <i>{label}</i>:
                       <b> Status</b> to {' '}
-                      {this.state.consentOptions[consentStatus]}
+                      {consentStatus}
                       {dateHistory}
                       {withdrawalHistory}
                       {requestStatusHistory}
@@ -383,6 +395,7 @@ class ConsentStatus extends Component {
 
         // Set up elements
         const label = this.state.Data.consents[consentName];
+        const consentOptions = consentName + '_options';
         const statusLabel = 'Response';
         const consentDate = consentName + '_date';
         const consentDate2 = consentName + '_date2';
@@ -407,7 +420,7 @@ class ConsentStatus extends Component {
                 <SelectElement
                     label={statusLabel}
                     name={consentName}
-                    options={this.state.consentOptions}
+                    options={this.state.formData[consentOptions]}
                     value={this.state.formData[consentName]}
                     onUserInput={this.setFormData}
                     disabled={disabled}
