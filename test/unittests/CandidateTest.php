@@ -1064,8 +1064,7 @@ class CandidateTest extends TestCase
             ->method('pselectWithIndexKey')
             ->with(
                 $this->stringContains(
-                    "SELECT ConsentID, Name, Status, DateGiven, " .
-                    "DateWithdrawn, Label, Comment"
+                    "SELECT ConsentID, Name, Status, DateGiven"
                 )
             )
             ->willReturn($result);
