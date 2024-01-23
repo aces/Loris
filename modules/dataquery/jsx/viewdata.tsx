@@ -4,7 +4,7 @@ import {useState, useEffect, ReactNode} from 'react';
 import fetchDataStream from 'jslib/fetchDataStream';
 
 import DataTable from 'jsx/DataTable';
-import {SelectElement} from 'jsx/Form';
+import {SelectElement, CheckboxElement} from 'jsx/Form';
 import {APIQueryField, APIQueryObject} from './types';
 import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
@@ -18,8 +18,9 @@ type JSONString = string;
 type SessionRowCell = {
     VisitLabel: string;
     value?: string
-    values?: string[]
+    values?: {[keyid: string]: string}
 };
+
 
 type KeyedValue = {
     value: string;
@@ -278,6 +279,7 @@ function ViewData(props: {
         props.fields,
         props.fulldictionary
     );
+    const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
 
     let queryTable;
     if (queryData.loading) {
@@ -324,6 +326,7 @@ function ViewData(props: {
                             visitOrganization,
                             props.fields,
                             props.fulldictionary,
+                            emptyVisits,
                         )
                     }
                     hide={
@@ -381,6 +384,15 @@ function ViewData(props: {
             }
             sortByValue={false}
           />
+          <CheckboxElement
+             name="emptyvisits"
+             value={emptyVisits}
+             label="Display empty visits?"
+             onUserInput={
+                 (name: string, value: boolean) => 
+                     setEmptyVisits(value)
+             }
+         />
          {queryTable}
     </div>;
 }
@@ -650,7 +662,8 @@ function organizedFormatter(
     resultData: string[][],
     visitOrganization: VisitOrgType,
     fields: APIQueryField[],
-    dict: FullDictionary
+    dict: FullDictionary,
+    displayEmptyVisits: boolean
 ) {
     let callback;
     switch (visitOrganization) {
@@ -693,15 +706,23 @@ function organizedFormatter(
             if (fielddict === null) {
                 return null;
             }
-            if (fielddict.scope == 'candidate'
-                    && fielddict.cardinality != 'many') {
+            if (fielddict.scope == 'candidate') {
                 if (cell === '') {
                     return <td><i>(No data)</i></td>;
                 }
+                switch(fielddict.cardinality) {
+                case 'many':
+                    return <td><i>(Not implemented)</i></td>;
+                case 'single':
+                case 'unique':
+                case 'optional':
+                    return <TableCell data={cell} />;
+                default:
+                    return <td><i>(Internal Error. Unhandled cardinality: {fielddict.cardinality})</i></td>;
+                }
 
-                return <TableCell data={cell} />;
             }
-            let val;
+            let val: React.ReactNode;
             if (fielddict.scope == 'session') {
                 let displayedVisits: string[];
                 if (fields[fieldNo] && fields[fieldNo].visits) {
@@ -711,13 +732,83 @@ function organizedFormatter(
                 } else {
                     // All visits
                     if (fielddict.visits) {
-                        displayedVisits = fielddict.visits;
+                       displayedVisits = fielddict.visits;
                     } else {
-                        displayedVisits = [];
+                       displayedVisits = [];
                     }
                 }
+                switch(fielddict.cardinality) {
+                case 'many':
+                    val = displayedVisits.map((visit): React.ReactNode => {
+                        let hasdata = false;
+                        const visitval = (visit: string, cell: string) => {
+                            if (cell === '') {
+                                return null;
+                            }
 
-                val = displayedVisits.map((visit) => {
+                            try {
+                                const json = JSON.parse(cell);
+                                for (const sessionid in json) {
+                                    if (json[sessionid].VisitLabel == visit) {
+                                        return (<dl>{
+                                            Object.keys(json[sessionid].values).map( (keyid: string): React.ReactNode => {
+                                                if (json[sessionid].values[keyid] === null) {
+                                                    return;
+                                                }
+                                                hasdata = true;
+                                                return (<div style={{margin: '1ex'}}>
+                                                    <dt>{keyid}</dt>
+                                                    <dd>{json[sessionid].values[keyid]}</dd>
+                                                    </div>);
+                                            })
+                                        }
+                                        </dl>);
+                                    }
+                                }
+                                return null;
+                            } catch (e) {
+                                console.error(e);
+                                return <i>(Internal error)</i>;
+                            }
+
+                        }
+                        let theval = visitval(visit, cell);
+                        if (!displayEmptyVisits && !hasdata) {
+                            return <div key={visit} />;
+                        }
+                        if (theval === null) {
+                            theval = <i>(No data)</i>;
+                        }
+                        return (<div key={visit} style={
+                                        {
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'start',
+                                            flexGrow: 1,
+                                            flexShrink: 1,
+                                            flexBasis: 0,
+                                            borderBottom: 'thin dotted black',
+                                        }
+                                }>
+                                   <div style={
+                                            {
+                                                fontWeight: 'bold',
+                                                padding: '1em',
+                                            }
+                                        }
+                                    >{visit}
+                                    </div>
+                                   <div style={
+                                        {padding: '1em'}
+                                    }>
+                                        {theval}
+                                    </div>
+                        </div>);
+                    });
+                    break;
+                default:
+                    val = displayedVisits.map((visit) => {
+                    let hasdata = false;
                     /**
                      * Maps the JSON value from the session to a list of
                      * values to display to the user
@@ -729,26 +820,33 @@ function organizedFormatter(
                      */
                     const visitval = (visit: string, cell: string) => {
                         if (cell === '') {
-                            return <i>(No data)</i>;
+                            return null;
                         }
                         try {
                             const json = JSON.parse(cell);
                             for (const sessionid in json) {
                                 if (json[sessionid].VisitLabel == visit) {
-                                    if (fielddict.cardinality === 'many') {
-                                        return valuesList(
-                                            json[sessionid].values
-                                        );
-                                    } else {
-                                        return json[sessionid].value;
+                                    hasdata = true;
+                                    if (json[sessionid].value === true) {
+                                        return 'True'
+                                    } else if (json[sessionid].value === false) {
+                                        return 'False'
                                     }
+                                    return json[sessionid].value;
                                 }
                             }
                         } catch (e) {
                             return <i>(Internal error)</i>;
                         }
-                        return <i>(No data)</i>;
+                        return null;
                     };
+                    let theval = visitval(visit, cell);
+                    if (!displayEmptyVisits && !hasdata) {
+                        return <div key={visit} />;
+                    }
+                    if (theval === null) {
+                        theval = <i>(No data)</i>;
+                    }
                     return (<div key={visit} style={
                                     {
                                         display: 'flex',
@@ -771,12 +869,11 @@ function organizedFormatter(
                                <div style={
                                     {padding: '1em'}
                                 }>
-                                    {visitval(visit, cell)}
+                                    {theval}
                                 </div>
                             </div>);
                 });
-            } else {
-                return <td>FIXME: {cell}</td>;
+                }
             }
             const value = (<div style={
                 {

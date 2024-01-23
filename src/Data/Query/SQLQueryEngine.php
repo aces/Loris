@@ -459,7 +459,6 @@ abstract class SQLQueryEngine implements QueryEngine
                             // Assert that the VisitLabel and SessionID are the same.
                             assert($candval[$fname][$SID]['VisitLabel'] == $row['VisitLabel']);
                             assert($candval[$fname][$SID]['SessionID'] == $row['SessionID']);
-
                             if ($field->getCardinality()->__toString() !== "many") {
                                 // It's not cardinality many, so ensure it's the same value. The
                                 // Query may have returned multiple rows with the same value as
@@ -497,16 +496,12 @@ abstract class SQLQueryEngine implements QueryEngine
                                 // It is many, so use an array
                                 $key = $row[$field->getName() . ':key'];
                                 if ($key !== null) {
-                                $val = [
-                                        'key'   => $key,
-                                        'keytype' => $this->getCorrespondingKeyFieldtype($field),
-                                        'value' => $this->displayValue($field, $row[$fname]),
-                                       ];
-                                $candval[$fname][$SID] = [
-                                                          'VisitLabel' => $row['VisitLabel'],
-                                                          'SessionID'  => $row['SessionID'],
-                                                          'values'     => [$key => $val],
-                                                         ];
+                                    $candval[$fname]['keytype'] = $this->getCorrespondingKeyFieldtype($field);
+                                    $candval[$fname][$SID] = [
+                                                              'VisitLabel' => $row['VisitLabel'],
+                                                              'SessionID'  => $row['SessionID'],
+                                                              'values'     => [$key => $this->displayValue($field, $row[$fname])],
+                                                             ];
                                 }
                             }
                         }
