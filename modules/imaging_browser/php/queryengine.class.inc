@@ -18,10 +18,6 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * {@inheritDoc}
      *
-     * @param \LORIS\LorisInstance $loris The Loris instance from which the
-     *                                    data dictionary for this module
-     *                                    should be retrieved.
-     *
      * @return \LORIS\Data\Dictionary\Category[]
      */
     public function getDataDictionary() : iterable
@@ -67,8 +63,18 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         return [$images];
     }
 
-    public function getVisitList(\LORIS\Data\Dictionary\Category $inst, \LORIS\Data\Dictionary\DictionaryItem $item) : iterable
-    {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\Category       $inst The item category
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item The item itself
+     *
+     * @return string[]
+     */
+    public function getVisitList(
+        \LORIS\Data\Dictionary\Category $inst,
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : iterable {
         if ($item->getScope()->__toString() !== 'session') {
             return null;
         }
@@ -97,11 +103,21 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         return array_keys(\Utility::getVisitList());
     }
 
-    protected function getFieldNameFromDict(\LORIS\Data\Dictionary\DictionaryItem $item) : string
-    {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - the field
+     *
+     * @return string
+     */
+    protected function getFieldNameFromDict(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ): string {
         if ($item->getName() == 'ScanDone') {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            return "CASE WHEN s.Scan_Done='Y' THEN true WHEN s.Scan_Done='N' THEN false ELSE NULL END";
+                return "CASE WHEN s.Scan_Done='Y' THEN true
+                             WHEN s.Scan_Done='N' THEN false
+                             ELSE NULL END";
         }
         if ($item instanceof LocationDictionaryItem) {
             $modality = $item->getModality();
@@ -109,11 +125,14 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("JOIN files ON (s.ID=files.SessionID)");
 
-            // Because of complex interactions between joins that get out of hand when a scan type
-            // that doesn't exist is selected alongside one that does, we use a subselect here.
+            // Because of complex interactions between joins that get
+            // out of hand when a scan type that doesn't exist is selected
+            // alongside one that does, we use a subselect here.
             return "(SELECT File FROM files as files2
-                                JOIN mri_scan_type ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
-                        WHERE files2.FileID=files.FileID AND mri_scan_type.Scan_type='${modality}')"; //`$modality`.File";
+                        JOIN mri_scan_type
+                            ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                        WHERE files2.FileID=files.FileID
+                            AND mri_scan_type.Scan_type='${modality}')";
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
@@ -122,19 +141,39 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $this->addTable("JOIN files ON (s.ID=files.SessionID)");
             return "(SELECT QCStatus FROM files_qcstatus 
                         JOIN files as files2
-                        JOIN mri_scan_type ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                        JOIN mri_scan_type
+                            ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
                         WHERE files_qcstatus.FileID=files.FileID
-                            AND files2.FileID=files.FileID AND mri_scan_type.Scan_type='${modality}')"; 
+                            AND files2.FileID=files.FileID
+                            AND mri_scan_type.Scan_type='${modality}')";
         }
 
         throw new \DomainException("Invalid field " . $item->getName());
     }
 
-    public function getCorrespondingKeyFieldType(\LORIS\Data\Dictionary\DictionaryItem $item) : string{
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - The field
+     *
+     * @return string
+     */
+    public function getCorrespondingKeyFieldType(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : string {
         return "Imaging Filename";
     }
-    public function getCorrespondingKeyField(\LORIS\Data\Dictionary\DictionaryItem $item)
-    {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - The field
+     *
+     * @return string
+     */
+    public function getCorrespondingKeyField(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) {
         if ($item instanceof LocationDictionaryItem) {
             $modality = $item->getModality();
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');

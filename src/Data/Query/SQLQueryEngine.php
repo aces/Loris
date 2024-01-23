@@ -189,7 +189,7 @@ abstract class SQLQueryEngine implements QueryEngine
         }
 
         $sessionVariables = false;
-        $keyFields = [];
+        $keyFields        = [];
         foreach ($items as $dict) {
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
@@ -235,7 +235,7 @@ abstract class SQLQueryEngine implements QueryEngine
             $query .= ' AND ' . $this->getWhereConditions();
         }
         $query .= ' ORDER BY c.CandID';
-        $rows = $DB->prepare($query);
+        $rows   = $DB->prepare($query);
 
         $result = $rows->execute($prepbindings);
 
@@ -383,7 +383,7 @@ abstract class SQLQueryEngine implements QueryEngine
     protected function addWhereCriteria(DictionaryItem $dict, Criteria $criteria, array &$prepbindings)
     {
 
-        $fieldname = $this->getFieldNameFromDict($dict);
+        $fieldname     = $this->getFieldNameFromDict($dict);
         $this->where[] = $fieldname . ' '
             . $this->sqlOperator($criteria) . ' '
             . $this->sqlValue($dict, $criteria, $prepbindings);
@@ -470,11 +470,11 @@ abstract class SQLQueryEngine implements QueryEngine
                                 // $key = $row[$this->getCorrespondingKeyField($field)];
                                 $key = $row[$field->getName() . ':key'];
                                 if ($key !== null) {
-                                    $val = [
-                                            'key'   => $key,
-                                            'keytype' => $this->getCorrespondingKeyFieldtype($field),
-                                            'value' => $this->displayValue($field, $row[$fname]),
-                                           ];
+                                    $val    = [
+                                               'key'     => $key,
+                                               'keytype' => $this->getCorrespondingKeyFieldtype($field),
+                                               'value'   => $this->displayValue($field, $row[$fname]),
+                                              ];
                                        $val = $this->displayValue($field, $row[$fname]);
                                     if (isset($candval[$fname][$SID]['values']['key'])) {
                                         assert($candval[$fname][$SID]['values']['key'] == $val);
@@ -497,11 +497,15 @@ abstract class SQLQueryEngine implements QueryEngine
                                 $key = $row[$field->getName() . ':key'];
                                 if ($key !== null) {
                                     $candval[$fname]['keytype'] = $this->getCorrespondingKeyFieldtype($field);
-                                    $candval[$fname][$SID] = [
-                                                              'VisitLabel' => $row['VisitLabel'],
-                                                              'SessionID'  => $row['SessionID'],
-                                                              'values'     => [$key => $this->displayValue($field, $row[$fname])],
-                                                             ];
+
+                                    // This is just to get around PHPCS complaining about line
+                                    // length.
+                                    $sarray = [
+                                               'VisitLabel' => $row['VisitLabel'],
+                                               'SessionID'  => $row['SessionID'],
+                                               'values'     => [$key => $this->displayValue($field, $row[$fname])],
+                                              ];
+                                    $candval[$fname][$SID] = $sarray;
                                 }
                             }
                         }
@@ -521,7 +525,8 @@ abstract class SQLQueryEngine implements QueryEngine
         }
     }
 
-    private function displayValue(DictionaryItem $field, mixed $value) : mixed {
+    private function displayValue(DictionaryItem $field, mixed $value) : mixed
+    {
         // MySQL queries turn boolean columns into 0/1, so if it's a boolean dictionary
         // item we need to convert it back to true/false
         if ($field->getDataType() instanceof \LORIS\Data\Types\BooleanType) {

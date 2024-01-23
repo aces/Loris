@@ -268,7 +268,17 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         // should never get called
         throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
     }
-    public function getCorrespondingKeyFieldType(\LORIS\Data\Dictionary\DictionaryItem $item) : string {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - The LORIS dictionary item
+     *
+     * @return string
+     */
+    public function getCorrespondingKeyFieldType(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : string {
         throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
     }
 }
