@@ -630,13 +630,18 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @return array{label:string,value:string}
      */
-    function getDisplayDoB(): array
+    function getDisplayDoB(): ?array
     {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
         $dobFormat = $config->getSetting('dobFormat');
-        $dobDate   = new DateTimeImmutable($this->getCandidateDoB());
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
         switch ($dobFormat) {
         case 'Ym':
             return [
