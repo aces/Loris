@@ -24,14 +24,14 @@ class RedcapHttpClient
     /**
      * Returns a list of records from REDCap.
      *
-     * @param string $pscid The participant id
-     * @param string $visit_label The visit label
-     * @param string $instrument The instrument name
+     * @param ?string $pscid The participant id
+     * @param ?string $visit_label The visit label
+     * @param ?string $instrument The instrument name
      */
     private function _exportRecords(
-        string $pscid,
-        string $visit_label,
-        string $instrument
+        ?string $pscid = null,
+        ?string $visit_label = null,
+        ?string $instrument = null
     ): array {
         $data = [
             'token'                  => $this->_token,
@@ -40,10 +40,10 @@ class RedcapHttpClient
             'format'                 => 'json',
             'type'                   => 'flat',
             'csvDelimiter'           => '',
-            'records'                => [$pscid],
+            'records'                => [],
             'fields'                 => [],
-            'forms'                  => [$instrument],
-            'events'                 => [$visit_label],
+            'forms'                  => [],
+            'events'                 => [],
             'rawOrLabel'             => 'raw',
             'rawOrLabelHeaders'      => 'raw',
             'exportCheckboxLabel'    => 'true',
@@ -51,6 +51,18 @@ class RedcapHttpClient
             'exportDataAccessGroups' => 'true',
             'returnFormat'           => 'json'
         ];
+
+        if ($pscid !== null) {
+            $data['records'] = [$pscid];
+        }
+
+        if ($visit_label !== null) {
+            $data['events'] = [$visit_label];
+        }
+
+        if ($instrument !== null) {
+            $data['forms'] = [$instrument];
+        }
 
         $response = $this->_client->request(
             'POST',

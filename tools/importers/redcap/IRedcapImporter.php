@@ -38,7 +38,7 @@ interface IRedcapImporter
      *
      * @return array $records The array of records in the REDCap report
      */
-    abstract private function _fetchRecords() : array;
+    private function _fetchRecords() : array;
 
     /**
      * Create new candidates

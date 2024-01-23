@@ -125,11 +125,14 @@ abstract class RedcapImporter implements IRedcapImporter
     }
 
     /**
-     * Fetches the records from REDCap
+     * Fetches all records from REDCap
      *
-     * @return array $records The array of records in the REDCap report
+     * @return ?array $records The array of records in the REDCap report
      */
-    abstract private function _fetchRecords() : array;
+    private function _fetchRecords() : ?array
+    {
+        return $this->redcapClient->_exportRecords() ?: null;
+    }
 
     /**
      * Create new candidates
