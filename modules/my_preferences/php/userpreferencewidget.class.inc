@@ -20,22 +20,20 @@ class UserPreferenceWidget implements \LORIS\GUI\Widget
      * @param string $componentname The React component name for this widget.
      * @param array  $props         Additional React props to pass to the React
      *                              component.
-     * @param ?int   $width         The width in the CSS grid.
-     * @param ?int   $height        The height in the CSS grid.
-     * @param ?int   $order         The order in the CSS grid.
      */
     public function __construct(
         public string $title,
         public string $jsurl,
         public string $componentname,
         public array $props,
-    ) { }
+    ) {
+    }
 
     /**
      * Renders the widget within a preference panel and implements
      * the \LORIS\GUI\Widget interface.
      *
-     * @return string the HTML content of the widget to be rendered
+     * @return string the URL to the javascript which contains the React component
      */
     public function __toString()
     {
