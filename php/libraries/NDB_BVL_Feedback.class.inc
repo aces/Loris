@@ -645,14 +645,14 @@ class NDB_BVL_Feedback
                   fe.FeedbackID,
                   fe.Comment,
                   fe.UserID as UserID,
-                  DATE_FORMAT(fe.Testdate, '%Y-%m-%d') as Date
+                  DATE_FORMAT(fe.Testdate, '%Y-%m-%d %H:%i:%s') as Date
              FROM feedback_bvl_thread as ft,
                   feedback_bvl_entry as fe,
                   feedback_bvl_type as ftp
              WHERE ft.FeedbackID = :FID
                    AND ft.FeedbackID = fe.FeedbackID
                    AND ft.Feedback_type = ftp.Feedback_type
-             ORDER BY ft.FeedbackID, fe.Testdate DESC";
+             ORDER BY ft.FeedbackID, fe.Testdate ASC";
 
         $result = $db->pselect($query, ['FID' => $feedbackID]);
 

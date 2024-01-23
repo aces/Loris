@@ -485,7 +485,7 @@ CREATE TABLE `physiological_annotation_rel` (
 CREATE TABLE `electrophysiology_uploader` (
     `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `UploadedBy` varchar(255) NOT NULL,
-    `UploadDate` DateTime NOT NULL,
+    `UploadDate` DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `UploadLocation` varchar(255) NOT NULL,
     `Status` enum('Not Started', 'Extracted', 'Failed Extraction', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
     `SessionID` int(10) unsigned,

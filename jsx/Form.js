@@ -233,7 +233,10 @@ export class FieldsetElement extends Component {
 FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
-  legend: PropTypes.string,
+  legend: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]),
   children: PropTypes.node,
 };
 
@@ -594,7 +597,7 @@ export class SelectElement extends Component {
     }
 
     if (this.props.placeholder !== '') {
-      optionList.unshift(<option value={''} selected={true}>
+      optionList.unshift(<option value={''}>
         {this.props.placeholder}
       </option>);
     }
