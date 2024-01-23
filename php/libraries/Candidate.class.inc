@@ -636,7 +636,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $config  = $factory->config();
 
         $dobFormat = $config->getSetting('dobFormat');
-        $dobStr    = $this->getCAndidateDoB();
+        $dobStr    = $this->getCandidateDoB();
         $dobDate   = new DateTimeImmutable($this->getCandidateDoB());
         switch ($dobFormat) {
         case 'Ym':
