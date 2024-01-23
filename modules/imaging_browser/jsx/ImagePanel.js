@@ -91,9 +91,9 @@ class ImagePanelHeader extends Component {
 
 ImagePanelHeader.propTypes = {
   QCStatus: PropTypes.string,
-  onToggleBody: PropTypes.string,
-  onToggleHeaders: PropTypes.string,
-  HeadersExpanded: PropTypes.string,
+  onToggleBody: PropTypes.func,
+  onToggleHeaders: PropTypes.func,
+  HeadersExpanded: PropTypes.bool,
   FileID: PropTypes.string,
   Filename: PropTypes.string,
   Expanded: PropTypes.bool,
@@ -320,7 +320,7 @@ class ImageQCDropdown extends Component {
     } else {
       dropdown = (
         <div className="col-xs-12">
-          {this.props.defaultValue}
+          {this.props.options[this.props.defaultValue]}
         </div>
       );
     }
@@ -335,7 +335,7 @@ class ImageQCDropdown extends Component {
 ImageQCDropdown.propTypes = {
   Label: PropTypes.string,
   url: PropTypes.string,
-  editable: PropTypes.string,
+  editable: PropTypes.bool,
   options: PropTypes.object,
   FileID: PropTypes.string,
   FormName: PropTypes.string,
@@ -425,8 +425,8 @@ class ImagePanelQCStatusSelector extends Component {
   }
 }
 ImagePanelQCStatusSelector.propTypes = {
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   FileID: PropTypes.string,
 };
@@ -465,7 +465,7 @@ class ImagePanelQCSelectedSelector extends Component {
 }
 ImagePanelQCSelectedSelector.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   Selected: PropTypes.string,
 };
 
@@ -491,16 +491,10 @@ class ImagePanelQCCaveatSelector extends Component {
   render() {
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
-    if (this.props.SeriesUID && this.props.Caveat === '1') {
-        // If there is a manual caveat that was set, the link
-        // will take you to it, even though there might also
-        // be a caveat that was set by the MRI piepline (i.e
-        // not manual). Note that manual caveat are always
-        // resolved
-        if (this.props.CaveatViolationsResolvedID) {
-            mriViolationsLink = '/mri_violations/resolved_violations/?' +
-              'SeriesUID=' + this.props.SeriesUID + '&filter=true';
-        }
+    if (this.props.FullName && this.props.Caveat === '1') {
+        mriViolationsLink = '/mri_violations/?' +
+          'mincFile=' + this.props.FullName +
+          '&seriesUID=' + this.props.SeriesUID;
     }
 
     return (
@@ -508,7 +502,7 @@ class ImagePanelQCCaveatSelector extends Component {
         Label="Caveat"
         FormName="caveat"
         FileID={this.props.FileID}
-        editable={this.props.HasQCPerm}
+        editable={this.props.HasQCPerm && this.props.EditableCaveat}
         options={
           {
             '': '',
@@ -524,10 +518,11 @@ class ImagePanelQCCaveatSelector extends Component {
 }
 ImagePanelQCCaveatSelector.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
-  CaveatViolationsResolvedID: PropTypes.string,
+  EditableCaveat: PropTypes.bool,
+  FullName: PropTypes.string,
 };
 
 
@@ -605,7 +600,8 @@ class ImagePanelQCPanel extends Component {
           HasQCPerm={this.props.HasQCPerm}
           Caveat={this.props.Caveat}
           SeriesUID={this.props.SeriesUID}
-          CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
+          EditableCaveat={this.props.EditableCaveat}
+          FullName={this.props.FullName}
         />
         <ImagePanelQCSNRValue
           FileID={this.props.FileID}
@@ -617,14 +613,15 @@ class ImagePanelQCPanel extends Component {
 }
 ImagePanelQCPanel.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
-  FileNew: PropTypes.string,
+  FileNew: PropTypes.bool,
   Selected: PropTypes.string,
   Caveat: PropTypes.string,
   SeriesUID: PropTypes.string,
   SNR: PropTypes.string,
-  CaveatViolationsResolvedID: PropTypes.string,
+  EditableCaveat: PropTypes.bool,
+  FullName: PropTypes.string,
 };
 
 
@@ -924,10 +921,11 @@ class ImagePanelBody extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
-              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
               SeriesUID={this.props.SeriesUID}
+              EditableCaveat={this.props.EditableCaveat}
+              FullName={this.props.Fullname}
             />
           </div>
         </div>
@@ -952,8 +950,8 @@ class ImagePanelBody extends Component {
 }
 ImagePanelBody.propTypes = {
   FileID: PropTypes.string,
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   Caveat: PropTypes.string,
   Selected: PropTypes.string,
@@ -970,9 +968,9 @@ ImagePanelBody.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeadersExpanded: PropTypes.string,
-  CaveatViolationsResolvedID: PropTypes.string,
+  HeadersExpanded: PropTypes.bool,
   HeaderInfo: PropTypes.object,
+  EditableCaveat: PropTypes.bool,
 };
 
 
@@ -1049,7 +1047,7 @@ class ImagePanel extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
-              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
+              EditableCaveat={this.props.EditableCaveat}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
 
@@ -1072,8 +1070,8 @@ class ImagePanel extends Component {
 ImagePanel.propTypes = {
   FileID: PropTypes.string,
   Filename: PropTypes.string,
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   Caveat: PropTypes.string,
   Selected: PropTypes.string,
@@ -1089,10 +1087,10 @@ ImagePanel.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeaderInfo: PropTypes.string,
+  HeaderInfo: PropTypes.object,
   HeadersExpanded: PropTypes.string,
   APIFile: PropTypes.string,
-  CaveatViolationsResolvedID: PropTypes.string,
+  EditableCaveat: PropTypes.bool,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);
