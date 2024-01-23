@@ -628,7 +628,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * Returns the way that the DoB should be displayed for this
      * candidate to a user on the frontend.
      *
-     * @return array{label:string,value:string}
+     * @return ?array{label:string,value:string}
      */
     function getDisplayDoB(): ?array
     {
