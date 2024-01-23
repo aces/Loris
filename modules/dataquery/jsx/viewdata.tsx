@@ -348,6 +348,17 @@ function ViewData(props: {
         }
     }
 
+    const emptyCheckbox = (visitOrganization === 'inline' ?
+          <CheckboxElement
+             name="emptyvisits"
+             value={emptyVisits}
+             label="Display empty visits?"
+             onUserInput={
+                 (name: string, value: boolean) => 
+                     setEmptyVisits(value)
+             }
+         />
+         : <div />);
     return <div>
         <SelectElement
             name='headerdisplay'
@@ -384,15 +395,7 @@ function ViewData(props: {
             }
             sortByValue={false}
           />
-          <CheckboxElement
-             name="emptyvisits"
-             value={emptyVisits}
-             label="Display empty visits?"
-             onUserInput={
-                 (name: string, value: boolean) => 
-                     setEmptyVisits(value)
-             }
-         />
+          {emptyCheckbox}
          {queryTable}
     </div>;
 }
@@ -450,7 +453,7 @@ function organizeData(
                             }
                             const cellobj: any = JSON.parse(candidaterow[i]);
                             for (const session in cellobj) {
-                                if (!cellobj.hasOwnProperty(session)) {
+                                if (!cellobj.hasOwnProperty(session) || session === 'keytype') {
                                     continue;
                                 }
                                 const vl: string = cellobj[session].VisitLabel;
@@ -486,10 +489,32 @@ function organizeData(
                               dataRow.push(null);
                               break;
                             case 1:
-                              if (typeof values[0].value === 'undefined') {
+                              switch(dictionary.cardinality){
+                              case 'many':
+                                if (typeof values[0].values === 'undefined') {
                                   dataRow.push(null);
-                              } else {
+                                } else {
+                                    const thevalues = values[0].values;
+                                    // I don't think this if statement should be required because of the
+                                    // above if statement, but without it typescript gives an error
+                                    // about Object.keys on possible type undefined.
+                                    if (!thevalues) {
+                                        dataRow.push(null);
+                                    } else {
+                                      const mappedValues = Object.keys(thevalues) 
+                                        .filter( (key) => thevalues && thevalues[key] !== null)
+                                        .map( (key) => key + '=' + thevalues[key])
+                                        .join(';');
+                                      dataRow.push(mappedValues);
+                                    }
+                                }
+                              default:
+                                if (typeof values[0].value === 'undefined') {
+                                  dataRow.push(null);
+                                } else {
                                   dataRow.push(values[0].value);
+                                }
+                                break;
                               }
                               break;
                             default:
@@ -637,7 +662,17 @@ function expandLongitudinalCells(
                 const data = JSON.parse(value);
                 for (const session in data) {
                     if (data[session].VisitLabel == visit) {
-                        return data[session].value;
+                        switch(fielddict.cardinality){
+                            case 'many':
+                                // Imaging Query Engine returns more null keys than it should.
+                                // We need to filter them out.
+                                return Object.keys(data[session].values)
+                                    .filter( (key) => data[session].values[key] !== null)
+                                    .map( (key) => key + '=' + data[session].values[key])
+                                    .join(';');
+                            default:
+                                return data[session].value;
+                        }
                     }
                 }
                 return null;
