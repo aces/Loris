@@ -258,15 +258,17 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * {@inheritDoc}
      *
-     * @param string $fieldname A field name
+     * @param string $fieldname the field whose key we want
      *
      * @return string
      */
-    protected function getCorrespondingKeyField($fieldname)
-    {
+
+    protected function getCorrespondingKeyField(
+        \LORIS\Data\Dictionary\DictionaryItem $field
+    ) {
         // There are no cardinality::many fields in this query engine, so this
         // should never get called
-        throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
+        throw new \Exception("Unhandled Cardinality::MANY field " . $field->getName());
     }
 
     /**
@@ -279,6 +281,6 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     public function getCorrespondingKeyFieldType(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : string {
-        throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
+        throw new \Exception("Unhandled Cardinality::MANY field " . $item->getName());
     }
 }

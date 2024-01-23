@@ -1,12 +1,9 @@
 <?php
 namespace LORIS\imaging_browser;
 
-use LORIS\StudyEntities\Candidate\CandID;
-
 use \LORIS\Data\Dictionary\DictionaryItem;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
-use \LORIS\Data\Query\QueryTerm;
 
 /**
  * {@inheritDoc}
@@ -76,7 +73,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : iterable {
         if ($item->getScope()->__toString() !== 'session') {
-            return null;
+            return [];
         }
 
         if ($item instanceof ImagingDictionaryItem) {
@@ -132,7 +129,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         JOIN mri_scan_type
                             ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
                         WHERE files2.FileID=files.FileID
-                            AND mri_scan_type.Scan_type='${modality}')";
+                            AND mri_scan_type.Scan_type='{$modality}')";
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
@@ -145,7 +142,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                             ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
                         WHERE files_qcstatus.FileID=files.FileID
                             AND files2.FileID=files.FileID
-                            AND mri_scan_type.Scan_type='${modality}')";
+                            AND mri_scan_type.Scan_type='{$modality}')";
         }
 
         throw new \DomainException("Invalid field " . $item->getName());
@@ -175,17 +172,15 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) {
         if ($item instanceof LocationDictionaryItem) {
-            $modality = $item->getModality();
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
         if ($item instanceof QCDictionaryItem) {
-            $modality = $item->getModality();
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
-        throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
+        throw new \Exception("Unhandled Cardinality::MANY field " . $item->getName());
     }
 }

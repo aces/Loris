@@ -470,11 +470,6 @@ abstract class SQLQueryEngine implements QueryEngine
                                 // $key = $row[$this->getCorrespondingKeyField($field)];
                                 $key = $row[$field->getName() . ':key'];
                                 if ($key !== null) {
-                                    $val    = [
-                                               'key'     => $key,
-                                               'keytype' => $this->getCorrespondingKeyFieldtype($field),
-                                               'value'   => $this->displayValue($field, $row[$fname]),
-                                              ];
                                        $val = $this->displayValue($field, $row[$fname]);
                                     if (isset($candval[$fname][$SID]['values']['key'])) {
                                         assert($candval[$fname][$SID]['values']['key'] == $val);
