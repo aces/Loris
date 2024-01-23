@@ -71,10 +71,6 @@
       },
       "uniqueItems": true
     },
-    "lorisProject": {
-      "description": "The LORIS Project name",
-      "type": "string"
-    },
     "metadataMapping": {
       "description": "An object mapping the candidate-level and visit-level LORIS metadata field names to their REDCap variable / field name. If there are multiple REDCap fields for a given LORIS field, the list is ordered to define default ranking",
       "type": "object",
@@ -373,6 +369,5 @@
         "required": [ "instrument" ]
       }
     }
-  },
-  "required": [ "lorisProject" ]
+  }
 }

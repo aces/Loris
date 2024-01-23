@@ -13,10 +13,13 @@ apt install default-jdk
 
 - [Swagger Codegen 3.X](https://github.com/swagger-api/swagger-codegen/tree/3.0.0)
 
-To download current stable 3.x.x branch (OpenAPI version 3), run:
+To download the current stable 3.x.x branch (OpenAPI version 3), run:
 ```
 wget https://repo1.maven.org/maven2/io/swagger/codegen/v3/swagger-codegen-cli/3.0.52/swagger-codegen-cli-3.0.52.jar -O swagger-codegen-cli.jar
+```
 
+To generate the PHP client code for the LORIS API YAML schema i.e. schema-v0.0.4-dev.yml, and store it in the LORIS php/libraries directory, run:
+```
 java -jar swagger-codegen-cli.jar generate \
    -i ./../../../modules/api/static/schema-v0.0.4-dev.yml \
    -l php \
@@ -38,3 +41,11 @@ A custom importer class requires the following:
 - And custom variables
 - Any custom methods
 - A redcap config file named 'redcap_config_$project.json' that meets the redcap_config_schema.json schema
+
+## Maintaining REDCap instrument schema
+
+The importer does not manage the maintenance of the instrument schemas. Any changes in the REDCap Data Dictionary will need to be replicated in the LORIS LINST instruments schema and database.
+
+There are two ways to create LINST instruments from the REDCap Data Dictionary:
+- Running the back-end PHP tool, tools/redcap2linst.php (https://github.com/aces/Loris/pull/8181)
+- Using the front-end Instrument Builder module feature (https://github.com/aces/Loris/pull/8282)

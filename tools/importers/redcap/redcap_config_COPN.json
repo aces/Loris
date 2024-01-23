@@ -99,7 +99,6 @@
       "site": ["Montreal Neurological Institute","CHU Quebec","CHU Montreal","Clinique Neuro-Lévis"]
     }
   ],
-  "lorisProject": "COPN",
   "metadataMapping": {
     "pscid": "record_id",
     "visit": "redcap_event_name",

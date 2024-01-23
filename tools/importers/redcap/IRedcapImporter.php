@@ -177,8 +177,6 @@ interface IRedcapImporter
 
     function getFieldsToIgnore(): array;
 
-    function getLorisProject(): string;
-
     /**
      * Get candidate instrument REDCap record
      *

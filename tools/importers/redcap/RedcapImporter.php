@@ -47,9 +47,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $apiConfig = $config->getSetting('REDCap');
 
         $this->redcapClient = new RedcapHttpClient($loris);
-        $this->redcapConfig = new RedcapConfig(
-            __DIR__ . "redcap_config_$project.json"
-        );
+        $this->redcapConfig = new RedcapConfig($project);
 
         $this->lorisApiConfig = new Swagger\Client\Configuration();
         $this->lorisApiConfig = Swagger\Client\Configuration::getDefaultConfiguration()->setHost(
@@ -327,11 +325,6 @@ abstract class RedcapImporter implements IRedcapImporter
     function getFieldsToIgnore(): array
     {
         return getImporterConfig()['toIgnore'];
-    }
-
-    function getLorisProject(): string
-    {
-        return getImporterConfig()['lorisProject'];
     }
 
     /**

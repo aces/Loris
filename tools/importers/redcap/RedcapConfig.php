@@ -9,12 +9,13 @@ namespace LORIS\redcap;
  */
 class RedcapConfig
 {
+    private string $project;
     private string $configFilePath;
-    private array $import_config;
+    private array  $import_config;
 
-    function __construct($configFilePath)
+    function __construct($project)
     {
-        $this->configFilePath = $configFilePath;
+        $this->configFilePath = __DIR__ . "redcap_config_$project.json";
         $this->import_config = $this->_load();
     }
 
