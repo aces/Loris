@@ -22,11 +22,6 @@ type SessionRowCell = {
 };
 
 
-type KeyedValue = {
-    value: string;
-    key: string;
-}
-
 /**
  * Convert a piece of data from JSON to the format to be displayed
  * in the cell. Used for either CSV or frontend display.
@@ -354,7 +349,7 @@ function ViewData(props: {
              value={emptyVisits}
              label="Display empty visits?"
              onUserInput={
-                 (name: string, value: boolean) => 
+                 (name: string, value: boolean) =>
                      setEmptyVisits(value)
              }
          />
@@ -453,7 +448,8 @@ function organizeData(
                             }
                             const cellobj: any = JSON.parse(candidaterow[i]);
                             for (const session in cellobj) {
-                                if (!cellobj.hasOwnProperty(session) || session === 'keytype') {
+                                if (!cellobj.hasOwnProperty(session)
+                                   || session === 'keytype') {
                                     continue;
                                 }
                                 const vl: string = cellobj[session].VisitLabel;
@@ -489,7 +485,7 @@ function organizeData(
                               dataRow.push(null);
                               break;
                             case 1:
-                              switch(dictionary.cardinality){
+                              switch (dictionary.cardinality) {
                               case 'many':
                                 if (typeof values[0].values === 'undefined') {
                                   dataRow.push(null);
@@ -501,13 +497,18 @@ function organizeData(
                                     if (!thevalues) {
                                         dataRow.push(null);
                                     } else {
-                                      const mappedValues = Object.keys(thevalues) 
-                                        .filter( (key) => thevalues && thevalues[key] !== null)
-                                        .map( (key) => key + '=' + thevalues[key])
+                                      const mappedVals = Object.keys(thevalues)
+                                        .filter(
+                                            (key) => thevalues[key] !== null
+                                        )
+                                        .map(
+                                            (key) => key + '=' + thevalues[key]
+                                        )
                                         .join(';');
-                                      dataRow.push(mappedValues);
+                                      dataRow.push(mappedVals);
                                     }
                                 }
+                                break;
                               default:
                                 if (typeof values[0].value === 'undefined') {
                                   dataRow.push(null);
@@ -654,35 +655,50 @@ function expandLongitudinalCells(
         if (!displayedVisits) {
             displayedVisits = [];
         }
-        const values = displayedVisits.map((visit) => {
+        let celldata: {[sessionid: string]: SessionRowCell};
+        try {
+            celldata = JSON.parse(value || '{}');
+        } catch (e) {
+            // This can sometimes happen when we go between Cross-Sectional
+            // and Longitudinal and the data is in an inconsistent state
+            // between renders, so instead of throwing an error (which crashes
+            // the whole app), we just log to the console and return null.
+            console.error('Internal error parsing: "' + value + '"');
+            return null;
+        }
+        const values = displayedVisits.map((visit): string|null => {
             if (!value) {
                 return null;
             }
-            try {
-                const data = JSON.parse(value);
-                for (const session in data) {
-                    if (data[session].VisitLabel == visit) {
-                        switch(fielddict.cardinality){
-                            case 'many':
-                                // Imaging Query Engine returns more null keys than it should.
-                                // We need to filter them out.
-                                return Object.keys(data[session].values)
-                                    .filter( (key) => data[session].values[key] !== null)
-                                    .map( (key) => key + '=' + data[session].values[key])
-                                    .join(';');
-                            default:
-                                return data[session].value;
+            for (const session in celldata) {
+                if (celldata[session].VisitLabel == visit) {
+                    const thissession: SessionRowCell = celldata[session];
+                    switch (fielddict.cardinality) {
+                    case 'many':
+                        // Imaging Query Engine returns more null keys than it should.
+                        // We need to filter them out.
+                        if (thissession.values === undefined) {
+                            return null;
                         }
+                        const thevalues = thissession.values;
+                        return Object.keys(thevalues)
+                           .filter( (key) => thevalues[key] !== null)
+                           .map( (key) => key + '=' + thevalues[key])
+                           .join(';');
+                    default:
+                       if (thissession.value !== undefined) {
+                           return thissession.value;
+                       }
+                       throw new Error('Value was undefined');
                     }
                 }
-                return null;
-            } catch (e) {
-                throw new Error('Internal error');
             }
+            return null;
         });
         return values;
     }
 }
+
 /**
  * Return a cell formatter specific to the options chosen
  *
@@ -691,7 +707,10 @@ function expandLongitudinalCells(
  *                                     option selected
  * @param {array} fields - The fields selected
  * @param {array} dict - The full dictionary
- * @returns {function} - the appropriate column formatter for this data organization
+ * @param {boolean} displayEmptyVisits - Whether visits with
+                                 no data should be displayed
+ * @returns {function} - the appropriate column formatter for
+                         this data organization
  */
 function organizedFormatter(
     resultData: string[][],
@@ -745,7 +764,7 @@ function organizedFormatter(
                 if (cell === '') {
                     return <td><i>(No data)</i></td>;
                 }
-                switch(fielddict.cardinality) {
+                switch (fielddict.cardinality) {
                 case 'many':
                     return <td><i>(Not implemented)</i></td>;
                 case 'single':
@@ -753,9 +772,12 @@ function organizedFormatter(
                 case 'optional':
                     return <TableCell data={cell} />;
                 default:
-                    return <td><i>(Internal Error. Unhandled cardinality: {fielddict.cardinality})</i></td>;
+                    return (<td>
+                        <i>(Internal Error. Unhandled cardinality:
+                            {fielddict.cardinality})
+                        </i>
+                    </td>);
                 }
-
             }
             let val: React.ReactNode;
             if (fielddict.scope == 'session') {
@@ -772,10 +794,19 @@ function organizedFormatter(
                        displayedVisits = [];
                     }
                 }
-                switch(fielddict.cardinality) {
+                switch (fielddict.cardinality) {
                 case 'many':
                     val = displayedVisits.map((visit): React.ReactNode => {
                         let hasdata = false;
+                        /**
+                         * Map the JSON string from the cell returned by the
+                         * API to a string to display to the user in the
+                         * frontend for this visit.
+                         *
+                         * @param {string} visit - The visit being displayed
+                         * @param {string} cell - The raw cell value
+                         * @returns {string|null} - the display string
+                         */
                         const visitval = (visit: string, cell: string) => {
                             if (cell === '') {
                                 return null;
@@ -785,17 +816,25 @@ function organizedFormatter(
                                 const json = JSON.parse(cell);
                                 for (const sessionid in json) {
                                     if (json[sessionid].VisitLabel == visit) {
+                                        const values = json[sessionid].values;
                                         return (<dl>{
-                                            Object.keys(json[sessionid].values).map( (keyid: string): React.ReactNode => {
-                                                if (json[sessionid].values[keyid] === null) {
-                                                    return;
-                                                }
-                                                hasdata = true;
-                                                return (<div style={{margin: '1ex'}}>
-                                                    <dt>{keyid}</dt>
-                                                    <dd>{json[sessionid].values[keyid]}</dd>
-                                                    </div>);
-                                            })
+                                            Object.keys(values).map(
+                                                (keyid: string):
+                                                  React.ReactNode => {
+                                                    const val = values[keyid];
+                                                    if (val === null) {
+                                                        return;
+                                                    }
+                                                    hasdata = true;
+                                                    return (
+                                                        <div style={{
+                                                            margin: '1ex',
+                                                          }}>
+                                                            <dt>{keyid}</dt>
+                                                            <dd>{val}</dd>
+                                                        </div>
+                                                    );
+                                                })
                                         }
                                         </dl>);
                                     }
@@ -805,8 +844,7 @@ function organizedFormatter(
                                 console.error(e);
                                 return <i>(Internal error)</i>;
                             }
-
-                        }
+                        };
                         let theval = visitval(visit, cell);
                         if (!displayEmptyVisits && !hasdata) {
                             return <div key={visit} />;
@@ -863,9 +901,11 @@ function organizedFormatter(
                                 if (json[sessionid].VisitLabel == visit) {
                                     hasdata = true;
                                     if (json[sessionid].value === true) {
-                                        return 'True'
-                                    } else if (json[sessionid].value === false) {
-                                        return 'False'
+                                        return 'True';
+                                    } else if (
+                                        json[sessionid].value === false
+                                    ) {
+                                        return 'False';
                                     }
                                     return json[sessionid].value;
                                 }
@@ -988,21 +1028,6 @@ function getDictionary(
         return null;
     }
     return dict[fieldobj.module][fieldobj.category][fieldobj.field];
-}
-
-/**
- * Return a cardinality many values field as a list
- *
- * @param {object} values - values object with keys as id
- * @returns {React.ReactElement} - The values in an HTML list
- */
-function valuesList(values: KeyedValue[]) {
-    const items = Object.values(values).map((val) => {
-        return <li key={val.key}>{val.value}</li>;
-    });
-    return (<ul>
-        {items}
-    </ul>);
 }
 
 type VisitOrgType = 'raw' | 'inline' | 'longitudinal' | 'crosssection';

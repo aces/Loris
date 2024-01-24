@@ -181,6 +181,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $this->addTable("JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
-        throw new \Exception("Unhandled Cardinality::MANY field " . $item->getName());
+        throw new \Exception(
+            "Unhandled Cardinality::MANY field " . $item->getName()
+        );
     }
 }
