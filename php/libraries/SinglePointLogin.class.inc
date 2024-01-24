@@ -215,7 +215,6 @@ class SinglePointLogin
 
         $sharedKey = $config->getSetting("JWTKey");
 
-        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode(
                 $token,
@@ -638,5 +637,20 @@ class SinglePointLogin
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set the User to be the currently logged
+     * in user for this session.
+     *
+     * @param \User $user The user to login.
+     *
+     * @return void
+     */
+    function setLoggedInUser(\User $user) : void
+    {
+        $this->_username = $user->getUsername();
+        $this->setState();
+        $_SESSION['State']->setProperty('login', $this);
     }
 }

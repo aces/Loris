@@ -112,7 +112,11 @@ class SurveyAccountsIndex extends Component {
         options: options.instruments,
       }},
       {label: 'URL', show: true},
-      {label: 'Status', show: true},
+      {label: 'Status', show: true, filter: {
+        name: 'Status',
+        type: 'select',
+        options: options.statusOptions,
+      }},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';

@@ -121,6 +121,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'        => '111',
                 'Test_name' => 'TestName11111111111',
+                'Sub_group' => 1,
             ]
         );
         $this->DB->insert(
