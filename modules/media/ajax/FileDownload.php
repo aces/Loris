@@ -25,8 +25,8 @@ if (!$user->hasPermission('media_read')) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = html_entity_decode($_GET['File']);
-$config   =& NDB_Config::singleton();
+$file   = html_entity_decode($_GET['File']);
+$config =& NDB_Config::singleton();
 $downloadNotifier = new NDB_Notifier(
     "media",
     "download",
@@ -53,7 +53,7 @@ if (substr($file, 0, 3) !== "s3:") {
 } else {
     // download from AWS s3
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-        $s3part = explode("/", str_replace("s3://", "", $file));
+        $s3part           = explode("/", str_replace("s3://", "", $file));
         $s3ClientInstance = S3ClientSingleton::getInstance();
         // it will pass bucketname folder and filename to download
         $s3ClientInstance->s3download($s3part[0], null, end($s3part));

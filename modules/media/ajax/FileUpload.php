@@ -182,21 +182,21 @@ function uploadFile()
         'last_modified' => date("Y-m-d H:i:s"),
         'language_id'   => $language,
     ];
-    
+
     // upload to aws s3
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-        $s3_upload_status=false;
-        $config      = \NDB_Config::singleton();
-        $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Media');
+        $s3_upload_status =false;
+        $config           = \NDB_Config::singleton();
+        $bucketName       = $config->getSetting('AWS_S3_Default_Bucket_Media');
 
-        $s3_file = $_FILES['file'];
-        $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
+        $s3_file        = $_FILES['file'];
+        $s3_fileName    = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
         $s3_fileTmpName = $s3_file['tmp_name'];
 
         $s3ClientInstance = S3ClientSingleton::getInstance();
         $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $s3_fileName, $s3_fileTmpName);
         if ($s3_upload_status) {
-            $query['file_name']     = "s3://".$bucketName."/".$s3_fileName;
+            $query['file_name'] = "s3://".$bucketName."/".$s3_fileName;
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $s3_fileName]);

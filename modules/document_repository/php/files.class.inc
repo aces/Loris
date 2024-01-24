@@ -79,8 +79,8 @@ class Files extends \NDB_Page
 
         case "GET":
             if (isset($_GET['s3file'])) {
-              return $this->downloadS3File($request);
-        }    
+                return $this->downloadS3File($request);
+            }
             $route = explode('/', $request->getUri()->getPath());
             if ($route[2] == 'meta') {
                 $id = urldecode(basename($request->getUri()->getPath()));
@@ -169,7 +169,6 @@ class Files extends \NDB_Page
      * @param string $rid the file id
      *
      * @throws \DatabaseException
-     *
      */
     function deleteFile($rid)
     {
@@ -209,24 +208,24 @@ class Files extends \NDB_Page
 
         if (strpos($dataDir, "s3://") === 0) {
             $s3ClientInstance = \S3ClientSingleton::getInstance();
-            $config      = \NDB_Config::singleton();
-            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
-            $delete_status = $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
-           if ($delete_status) {
-            return (new \LORIS\Http\Response\JSON\OK(
+            $config           = \NDB_Config::singleton();
+            $bucketName       = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+            $delete_status    = $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
+            if ($delete_status) {
+                return (new \LORIS\Http\Response\JSON\OK(
                     ['message' => 'File deleted.']
-            ));
-           } else {
+                ));
+            } else {
                 return (new \LORIS\Http\Response())
-                ->withStatus(403)
-                ->withHeader('Content-Type', 'text/json')
-                ->withBody(new \LORIS\Http\StringStream(json_encode(['error'=>"Access Denied by the AWS S3 Server. The record will be deleted"])));
-           }
+                    ->withStatus(403)
+                    ->withHeader('Content-Type', 'text/json')
+                    ->withBody(new \LORIS\Http\StringStream(json_encode(['error'=>"Access Denied by the AWS S3 Server. The record will be deleted"])));
+            }
         }
 
         if (file_exists($path)) {
             unlink($path);
-         return (new \LORIS\Http\Response\JSON\OK(
+            return (new \LORIS\Http\Response\JSON\OK(
                 ['message' => 'File deleted.']
             ));
         }
@@ -466,7 +465,7 @@ class Files extends \NDB_Page
                 'newDocument' => 'Document Repository',
                 'documents'   => $addedFiles,
             ];
-           $uploadNotifier->notify($msg_data);
+            $uploadNotifier->notify($msg_data);
         }
 
         $uploadResponse  = '<div class="upload-response">';
@@ -506,10 +505,10 @@ class Files extends \NDB_Page
         $DB       = $instance->getDatabaseConnection();
         $config   = $instance->getConfiguration();
         $user     = $request->getAttribute('user');
-        $name     = $user->getUsername();        
-        
+        $name     = $user->getUsername();
+
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
-        $body = $request->getParsedBody();
+        $body          = $request->getParsedBody();
 
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger($category)) {
@@ -523,25 +522,25 @@ class Files extends \NDB_Page
         $errorCounter     = 0;
         $addedFiles       = [];
 
-            $config      = \NDB_Config::singleton();
+            $config     = \NDB_Config::singleton();
             $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
 
-        // handle files    
+        // handle files
             $i = 0;
-            foreach ($uploadedFiles as $uploadedFile) {
-                // Get the filename, and adjust it if needed
-                $filename = urldecode($uploadedFile->getClientFilename());
-       
-                if ($this->existFilename($filename)) {
-                    // If a record of this a file with the same name already exists
-                    // in the database, don't proceed with upload.
-                    $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
-                    $errorCounter      += 1;
-                    continue;
-                }
+        foreach ($uploadedFiles as $uploadedFile) {
+            // Get the filename, and adjust it if needed
+            $filename = urldecode($uploadedFile->getClientFilename());
 
-                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename,$_FILES['files']['tmp_name'][$i]);
-                 $i++;
+            if ($this->existFilename($filename)) {
+                // If a record of this a file with the same name already exists
+                // in the database, don't proceed with upload.
+                $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
+                $errorCounter      += 1;
+                continue;
+            }
+
+             $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename, $_FILES['files']['tmp_name'][$i]);
+             $i++;
             if ($s3_upload_status) {
                 // Prepare fields for database entry once upload has completed.
                 $site = $body['forSite']       !== '' ? $body['forSite'] : null;
@@ -578,27 +577,27 @@ class Files extends \NDB_Page
                         'File_type'     => $fileType,
                     ]
                 );
-              
+
                 $addedFiles[]       = $filename;
                 $responseMessages[] = "$filename: Success";
-                } else {
-                        $responseMessages[] = "$filename: {$e->getMessage()}";
-                        $errorCounter      += 1;
-                        continue;
-                }
+            } else {
+                    $responseMessages[] = "$filename: {$e->getMessage()}";
+                    $errorCounter      += 1;
+                    continue;
             }
-                            
-                if (count($addedFiles) > 0) {
-                    $uploadNotifier = new \NDB_Notifier(
-                        "document_repository",
-                        "upload"
-                    );
-                    $msg_data       = [
-                        'newDocument' => 'Document Repository',
-                        'documents'   => $addedFiles,
-                    ];
-                    $uploadNotifier->notify($msg_data);
-                }
+        }
+
+        if (count($addedFiles) > 0) {
+            $uploadNotifier = new \NDB_Notifier(
+                "document_repository",
+                "upload"
+            );
+            $msg_data       = [
+                'newDocument' => 'Document Repository',
+                'documents'   => $addedFiles,
+            ];
+            $uploadNotifier->notify($msg_data);
+        }
 
                 $uploadResponse  = '<div class="upload-response">';
                 $uploadResponse .= join("<br/><br/>", $responseMessages);
@@ -612,26 +611,29 @@ class Files extends \NDB_Page
                 ));
     }
 
-        function downloadS3File(ServerRequestInterface $request): ResponseInterface {
-            $file = html_entity_decode($request->getQueryParams()['s3file']);
-            $s3part = explode("/", str_replace("s3://", "", $file));
-            try {
-                $s3ClientInstance = \S3ClientSingleton::getInstance();
-                $s3Object = $s3ClientInstance->getS3Client()->getObject([
+    function downloadS3File(ServerRequestInterface $request): ResponseInterface
+    {
+        $file   = html_entity_decode($request->getQueryParams()['s3file']);
+        $s3part = explode("/", str_replace("s3://", "", $file));
+        try {
+            $s3ClientInstance = \S3ClientSingleton::getInstance();
+            $s3Object         = $s3ClientInstance->getS3Client()->getObject(
+                [
                     'Bucket' => $s3part[0],
                     'Key'    => end($s3part)
-                ]);
+                ]
+            );
 
-                $headers = [
-                    'Content-Type'        => $s3Object['ContentType'],
-                    'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
-                    'Content-Length'      => $s3Object['ContentLength'],
-                ];
-                return new \GuzzleHttp\Psr7\Response(200, $headers, $s3Object['Body']);
-            } catch (\Exception $e) {
-                error_log('Error: ' . $e->getMessage());
-                return new \GuzzleHttp\Psr7\Response(404, [], 'File not found');
-            }
+            $headers = [
+                'Content-Type'        => $s3Object['ContentType'],
+                'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
+                'Content-Length'      => $s3Object['ContentLength'],
+            ];
+            return new \GuzzleHttp\Psr7\Response(200, $headers, $s3Object['Body']);
+        } catch (\Exception $e) {
+            error_log('Error: ' . $e->getMessage());
+            return new \GuzzleHttp\Psr7\Response(404, [], 'File not found');
         }
+    }
 
 }

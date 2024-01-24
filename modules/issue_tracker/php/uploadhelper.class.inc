@@ -165,21 +165,21 @@ class UploadHelper
             'mime_type'   => $fileToUpload->mime_type
         ];
             $s3_upload_status = false;
-// handle upload to AWS S3 
-            if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-            $config      = \NDB_Config::singleton();
-            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');                
-               $s3ClientInstance = \S3ClientSingleton::getInstance();
-               $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $fileToUpload->file, $tmpFilePath);
-               if ($s3_upload_status) {
-                  // set a s3 file name 
+        // handle upload to AWS S3
+        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+            $config           = \NDB_Config::singleton();
+            $bucketName       = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
+            $s3ClientInstance = \S3ClientSingleton::getInstance();
+            $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $fileToUpload->file, $tmpFilePath);
+            if ($s3_upload_status) {
+                  // set a s3 file name
                  $values['file_name'] =  "s3://".$bucketName."/".$fileToUpload->file;
                  $DB->insert('issues_attachments', $values);
                    return;
-               } 
             }
+        }
 
-// handle upload to local
+        // handle upload to local
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.

@@ -32,13 +32,13 @@ class S3ClientSingleton
         $secretKey = null,
         $region = null
     ) {
-        $config = \NDB_Config::singleton();
-        $region = $config->getSetting('AWS_S3_Region');
+        $config   = \NDB_Config::singleton();
+        $region   = $config->getSetting('AWS_S3_Region');
         $s3Config = [
-            'version' => 'latest',
-            'region' => $region ?? 'us-east-1',
+            'version'     => 'latest',
+            'region'      => $region ?? 'us-east-1',
             'credentials' => [
-                'key' => $accessKey ?? getenv('AWS_ACCESS_KEY_ID'),
+                'key'    => $accessKey ?? getenv('AWS_ACCESS_KEY_ID'),
                 'secret' => $secretKey ?? getenv('AWS_SECRET_ACCESS_KEY'),
             ],
         ];
@@ -70,10 +70,12 @@ class S3ClientSingleton
             $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
             // Get the S3 object
-            $s3Object = $this->s3Client->getObject([
-                'Bucket' => $bucketName,
-                'Key' => $objectKey,
-            ]);
+            $s3Object = $this->s3Client->getObject(
+                [
+                    'Bucket' => $bucketName,
+                    'Key'    => $objectKey,
+                ]
+            );
             // Set headers to indicate a file download
             header('Content-Type: ' . $s3Object['ContentType']);
             header('Content-Disposition: attachment; filename="' . $fileName . '"');
@@ -93,11 +95,13 @@ class S3ClientSingleton
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
             $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
-            $this->s3Client->putObject([
-                'Bucket' => $bucketName,
-                'Key' => $objectKey,
-                'SourceFile' => $localFilePath,
-            ]);
+            $this->s3Client->putObject(
+                [
+                    'Bucket'     => $bucketName,
+                    'Key'        => $objectKey,
+                    'SourceFile' => $localFilePath,
+                ]
+            );
 
             return true;
         } catch (Exception $e) {
@@ -121,7 +125,7 @@ class S3ClientSingleton
 
             return false;
         }
-    } 
+    }
     public function s3DeleteFile($bucketName, $folderName, $fileName)
     {
         try {
@@ -129,10 +133,12 @@ class S3ClientSingleton
             $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
             // Delete the file from the S3 bucket
-            $this->s3Client->deleteObject([
-                'Bucket' => $bucketName,
-                'Key' => $objectKey,
-            ]);
+            $this->s3Client->deleteObject(
+                [
+                    'Bucket' => $bucketName,
+                    'Key'    => $objectKey,
+                ]
+            );
 
             return true;
         } catch (Exception $e) {
@@ -140,6 +146,6 @@ class S3ClientSingleton
 
             return false;
         }
-    }       
+    }
 }
 

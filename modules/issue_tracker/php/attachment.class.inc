@@ -75,58 +75,60 @@ class Attachment extends \NDB_Page implements ETagCalculator
                 exit;
 
         }
-if (strpos($result['file_name'], "s3://") === 0) {
-    // Get the S3 object metadata
-    try {
-            $s3part = explode("/", str_replace("s3://", "", $result['file_name']));
-            $s3Client = \S3ClientSingleton::getInstance()->getS3Client();
-            $config      = \NDB_Config::singleton();
-            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker'); 
-            $s3result = $s3Client->getObject([
-                'Bucket' => $bucketName,
-                'Key'    => end($s3part),
-            ]);
-            $headers = [
-                    'Content-Type'        => $s3result['ContentType'],
-                    'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
-                    'Content-Length'      => $s3result['ContentLength'],
-                ];
+        if (strpos($result['file_name'], "s3://") === 0) {
+            // Get the S3 object metadata
+            try {
+                    $s3part     = explode("/", str_replace("s3://", "", $result['file_name']));
+                    $s3Client   = \S3ClientSingleton::getInstance()->getS3Client();
+                    $config     = \NDB_Config::singleton();
+                    $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
+                    $s3result   = $s3Client->getObject(
+                        [
+                            'Bucket' => $bucketName,
+                            'Key'    => end($s3part),
+                        ]
+                    );
+                    $headers    = [
+                        'Content-Type'        => $s3result['ContentType'],
+                        'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
+                        'Content-Length'      => $s3result['ContentLength'],
+                    ];
 
-                return new \GuzzleHttp\Psr7\Response(200, $headers, $s3result['Body']);
-    } catch (Exception $e) {
-        return (new \LORIS\Http\Response())
-            ->withStatus(404)
-            ->withHeader('Content-Type', 'text/plain')
-            ->withBody(new \LORIS\Http\StringStream("Not found"));
-    }
-} else {
+                    return new \GuzzleHttp\Psr7\Response(200, $headers, $s3result['Body']);
+            } catch (Exception $e) {
+                return (new \LORIS\Http\Response())
+                    ->withStatus(404)
+                    ->withHeader('Content-Type', 'text/plain')
+                    ->withBody(new \LORIS\Http\StringStream("Not found"));
+            }
+        } else {
 
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-        $attachment_data_dir = rtrim(
-            $config->getSetting('IssueTrackerDataPath'),
-            '/'
-        );
+                $factory = \NDB_Factory::singleton();
+                $config  = $factory->config();
+                $attachment_data_dir = rtrim(
+                    $config->getSetting('IssueTrackerDataPath'),
+                    '/'
+                );
 
-        $fileToDownload = trim($attachment_data_dir) .
+                $fileToDownload = trim($attachment_data_dir) .
             '/attachments/' .
             $result['file_hash'];
 
-        if (!is_readable($fileToDownload)) {
-            throw new \LorisException('Forbidden Access');
+            if (!is_readable($fileToDownload)) {
+                throw new \LorisException('Forbidden Access');
+            }
+
+            $name = rawurldecode($result['file_name']);
+
+            return (new \LORIS\Http\Response())
+                ->withStatus(200)
+                ->withHeader('Content-Type', $result['mime_type'])
+                ->withHeader(
+                    'Content-Disposition',
+                    'attachment; filename=' . basename($name)
+                )
+                ->withBody(new \LORIS\Http\FileStream($fileToDownload));
         }
-
-        $name = rawurldecode($result['file_name']);
-
-        return (new \LORIS\Http\Response())
-            ->withStatus(200)
-            ->withHeader('Content-Type', $result['mime_type'])
-            ->withHeader(
-                'Content-Disposition',
-                'attachment; filename=' . basename($name)
-            )
-            ->withBody(new \LORIS\Http\FileStream($fileToDownload));
-        }  
     }
 
     /**
