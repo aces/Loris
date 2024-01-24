@@ -160,33 +160,11 @@ abstract class SQLQueryEngine implements QueryEngine
         // Always required for candidateCombine
         $fields = ['c.CandID'];
 
-        $DBSettings = $this->loris->getConfiguration()->getSetting("database");
+        $DB = $this->loris->getDatabaseConnection();
 
-        if (!$this->useBufferedQuery) {
-            $DB = new \PDO(
-                "mysql:host=$DBSettings[host];"
-                ."dbname=$DBSettings[database];"
-                ."charset=UTF8",
-                $DBSettings['username'],
-                $DBSettings['password'],
-            );
-            if ($DB->setAttribute(
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
-                false
-            ) == false
-            ) {
-                throw new \DatabaseException("Could not use unbuffered queries");
-            };
+        $DB->setBuffering($this->useBufferedQuery);
 
-            $this->createTemporaryCandIDTablePDO(
-                $DB,
-                "searchcandidates",
-                $candidates,
-            );
-        } else {
-            $DB = $this->loris->getDatabaseConnection();
-            $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
-        }
+        $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
 
         $sessionVariables = false;
         $keyFields        = [];
@@ -243,7 +221,14 @@ abstract class SQLQueryEngine implements QueryEngine
             throw new \Exception("Invalid query $query");
         }
 
-        return $this->candidateCombine($items, $rows);
+        // Yield the generator ourself, so that when it's done we can restore the
+        // buffered query attribute
+        foreach($this->candidateCombine($items, $rows) as $candid => $val) {
+            yield $candid => $val;
+        };
+
+        // Restore the default now that the generator has finished yielding.
+        $DB->setBuffering($this->useBufferedQuery, true);
     }
 
     /**
@@ -426,7 +411,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return <string,DataInstance>
      */
-    protected function candidateCombine(iterable $dict, iterable $rows)
+    protected function candidateCombine(iterable $dict, iterable &$rows)
     {
         $lastcandid = null;
         $candval    = [];
@@ -534,7 +519,7 @@ abstract class SQLQueryEngine implements QueryEngine
      * Create a temporary table containing the candIDs from $candidates using the
      * LORIS database connection $DB.
      */
-    protected function createTemporaryCandIDTable(\Database $DB, string $tablename, array $candidates)
+    protected function createTemporaryCandIDTable(\Database $DB, string $tablename, array &$candidates)
     {
         // Put candidates into a temporary table so that it can be used in a join
         // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
@@ -545,42 +530,12 @@ abstract class SQLQueryEngine implements QueryEngine
             CandID int(6)
         );"
         );
-        $insertstmt = "INSERT INTO $tablename VALUES (" . join('),(', $candidates) . ')';
-        $q          = $DB->prepare($insertstmt);
-        $q->execute([]);
-    }
 
-    /**
-     * Create a temporary table containing the candIDs from $candidates on the PDO connection
-     * $PDO.
-     *
-     * Note:LORIS Database connections and PDO connections do not share temporary tables.
-     */
-    protected function createTemporaryCandIDTablePDO($PDO, string $tablename, array $candidates)
-    {
-        $query  = "DROP TEMPORARY TABLE IF EXISTS $tablename";
-        $result = $PDO->exec($query);
-
-        if ($result === false) {
-            throw new \DatabaseException(
-                "Could not run query $query"
-            );
+        $insertstmt = "INSERT INTO $tablename VALUES (:CandID)";
+        $q = $DB->prepare($insertstmt);
+        foreach($candidates as $candidate) {
+            $q->execute(['CandID' => $candidate]);
         }
-
-        $query  = "CREATE TEMPORARY TABLE $tablename (
-            CandID int(6)
-        );";
-        $result = $PDO->exec($query);
-
-        if ($result === false) {
-            throw new \DatabaseException(
-                "Could not run query $query"
-            );
-        }
-
-        $insertstmt = "INSERT INTO $tablename VALUES (" . join('),(', $candidates) . ')';
-        $q          = $PDO->prepare($insertstmt);
-        $q->execute([]);
     }
 
     protected $useBufferedQuery = false;
@@ -620,8 +575,7 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addWhereClause("s.Active='Y'");
+            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {
