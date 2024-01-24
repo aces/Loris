@@ -162,9 +162,10 @@ abstract class SQLQueryEngine implements QueryEngine
 
         $DB = $this->loris->getDatabaseConnection();
 
+        $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
+
         $DB->setBuffering($this->useBufferedQuery);
 
-        $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
 
         $sessionVariables = false;
         $keyFields        = [];
@@ -538,7 +539,7 @@ abstract class SQLQueryEngine implements QueryEngine
         }
     }
 
-    protected $useBufferedQuery = false;
+    protected $useBufferedQuery = true;
 
     /**
      * Enable or disable MySQL query buffering by PHP. Disabling query
