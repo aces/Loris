@@ -249,7 +249,7 @@ class IssueForm extends Component {
             value={this.state.formData.assignee}
             required={false}
           />
-	    <SelectElement
+          <SelectElement
             name='centerID'
             label='Site'
             emptyOption={true}
@@ -383,9 +383,11 @@ class IssueForm extends Component {
             if (formData.centerID == null) {
               formData.centerID = 'all';
             }
-             formData.assignee = Object.keys(data.assignees).find(key => data.assignees[key] === data.issueData.assignee);
+             formData.assignee = 
+               Object.keys(data.assignees).find(
+                 key => data.assignees[key] === data.issueData.assignee
+               );
           }
-
           this.setState({
             Data: data,
             isLoaded: true,
