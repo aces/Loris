@@ -128,7 +128,7 @@ $(document).ready(function () {
 
                 // Open a new window
                 var w = window.open(
-                    loris.BaseURL + "/brainbrowser/?minc_id=[" + FileIDs + "]" + extraparam
+                    loris.BaseURL + "/brainbrowser/?minc_id=" + FileIDs + extraparam
                 );
                 w.focus();
 

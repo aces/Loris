@@ -29,7 +29,6 @@ const resolve = {
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
     DataTable: path.resolve(__dirname, './jsx/DataTable'),
-    DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
     Filter: path.resolve(__dirname, './jsx/Filter'),
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
@@ -213,7 +212,6 @@ let config = [
   // Core components
   {
     entry: {
-      DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',
       StaticDataTable: './jsx/StaticDataTable.js',
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
@@ -254,7 +252,11 @@ const lorisModules = {
     'CandidateParameters',
     'ConsentWidget',
   ],
-  configuration: ['CohortRelations', 'configuration_helper'],
+  configuration: [
+    'CohortRelations',
+    'configuration_helper',
+    'DiagnosisEvolution',
+  ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
@@ -262,7 +264,6 @@ const lorisModules = {
   create_timepoint: ['createTimepointIndex'],
   candidate_list: [
     'openProfileForm',
-    'onLoad',
     'candidateListIndex',
   ],
   datadict: ['dataDictIndex'],
