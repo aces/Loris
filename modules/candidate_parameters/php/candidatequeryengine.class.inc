@@ -193,7 +193,9 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         case 'PSCID':
             return 'c.PSCID';
         case 'Site':
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable('LEFT JOIN psc site ON (s.CenterID=site.CenterID)');
             return 'site.Name';
         case 'RegistrationSite':
@@ -211,7 +213,9 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         case 'EDC':
             return 'c.EDC';
         case 'Project':
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable(
                 'LEFT JOIN Project proj ON (s.ProjectID=proj.ProjectID)'
             );
@@ -224,14 +228,18 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
             return 'rproj.Name';
         case 'Cohort':
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable(
                 'LEFT JOIN cohort cohort'
                 .' ON (s.CohortID=cohort.CohortID)'
             );
             return 'cohort.title';
         case 'VisitLabel':
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             return 's.Visit_label';
         case 'EntityType':
             return 'c.Entity_type';

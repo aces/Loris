@@ -1597,12 +1597,21 @@ class Database implements LoggerAwareInterface
 
     }
 
+    /**
+     * Enable or disables query buffering on the underlying PDO
+     * connection.
+     *
+     * @param bool $buffered - true if query buffering should be enabled
+     *
+     * @return void
+     */
     public function setBuffering(bool $buffered): void
     {
         if ($this->_PDO->setAttribute(
-                    \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
-                    $buffered
-        ) == false) {
+            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            $buffered
+        ) == false
+        ) {
             throw new \DatabaseException("Could not use unbuffered queries");
         };
     }

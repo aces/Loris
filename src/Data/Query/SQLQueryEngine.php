@@ -224,7 +224,7 @@ abstract class SQLQueryEngine implements QueryEngine
 
         // Yield the generator ourself, so that when it's done we can restore the
         // buffered query attribute
-        foreach($this->candidateCombine($items, $rows) as $candid => $val) {
+        foreach ($this->candidateCombine($items, $rows) as $candid => $val) {
             yield $candid => $val;
         };
 
@@ -533,8 +533,9 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         $insertstmt = "INSERT INTO $tablename VALUES (:CandID)";
+
         $q = $DB->prepare($insertstmt);
-        foreach($candidates as $candidate) {
+        foreach ($candidates as $candidate) {
             $q->execute(['CandID' => $candidate]);
         }
     }
