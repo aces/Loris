@@ -383,9 +383,9 @@ class IssueForm extends Component {
             if (formData.centerID == null) {
               formData.centerID = 'all';
             }
-             formData.assignee = 
+             formData.assignee =
                Object.keys(data.assignees).find(
-                 key => data.assignees[key] === data.issueData.assignee
+                 (key) => data.assignees[key] === data.issueData.assignee
                );
           }
           this.setState({
