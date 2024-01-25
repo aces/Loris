@@ -8,7 +8,7 @@
  * @category   Module
  * @package    Main
  * @subpackage Participant Portal - View Surveys
- * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @author     Sruthy Mathew <sruthy.mathewu@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
