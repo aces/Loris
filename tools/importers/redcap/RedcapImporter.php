@@ -142,11 +142,12 @@ abstract class RedcapImporter implements IRedcapImporter
     function createNewCandidates(array $records) : array
     {
         $new_candidates = [];
+        $project        = $this->project;
+        $mapping        = $this->getMetadataMapping();
 
         print "\nCreating candidates..\n\n";
         // record is at the visit level i.e. redcap_event_name
         foreach ($records as $row) {
-            $mapping = $this->getMetadataMapping();
             $pscid   = $row[$mapping['pscid']];
 
             // If candidate already exists in LORIS, skip
@@ -157,7 +158,6 @@ abstract class RedcapImporter implements IRedcapImporter
             $site    = '';
             $dob     = '';
             $sex     = '';
-            $project = $this->project;
             foreach ($mapping as $loris_field => $redcap_field) {o
 
                 $val = ''; // The redcap data point
@@ -251,8 +251,117 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_consents Array of consent data imported
      */
-    abstract function updateCandidateConsents(array $records) : array;
-}
+    function updateCandidateConsents(array $records) : array
+    {
+        $new_consents    = [];
+        $mapping         = $this->getMetadataMapping();
+        $consent_mapping = $this->getConsentMapping();
+        $consent_list    = $this->getConsentListByGroup($this->project);
+
+        print "\nProcessing consent data...\n\n";
+        foreach ($records as $row) {
+            $pscid = $row[$mapping['pscid']];
+
+            // Check if candidate exists
+            if (!$this->candidateExists($pscid)) {
+                continue;
+            }
+
+            $cand_id = $this->getCandidateID($pscid);
+            if ($cand_id === null) {
+                $error_message = "Getting candidate ID for $pscid failed.";
+                print "\t$error_message\n";
+                $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            $candidate         = \Candidate::singleton(new CandID($cand_id));
+            $candidate_consent = $candidate->getConsents();
+
+            foreach ($consent_list as $consent_id => $consent) {
+                $consent_name   = $consent['Name'];
+                $consent_label  = $consent['Label'];
+
+                // Check if consent data is empty but not '0'
+                if (empty($row[$consent_name]) && strlen($row[$consent_name]) == 0) {
+                    // No consent information
+                    continue;
+                }
+
+                // Redcap consent data, set consent values
+                $consent_status  = array_search(
+                    $row[$consent_name],
+                    $consent_mapping[$consent_name]['statusMapping']
+                );
+                $consent_date    = $row[$consent_mapping[$consent_name]['consentDateField']] ?? '';
+
+                $consenter_field = $consent_mapping[$consent_name]['consenterField'] ?? null;
+                $consenter_name  = ($consenter_field !== null  && !empty($row[$consenter_field]))
+                                   ? $row[$consenter_field] . ' (REDCap)'
+                                   : '(REDCap)';
+
+                // Validate
+                if ($consent_status  === false
+                    || $consent_date === ''
+                    || strtotime($consent_date) === false
+                ) {
+                    $error_message = "Consent $consent_name status and/or date is missing or invalid for candidate $pscid. ";
+                    print "\t$error_message\n";
+                    $this->errors[$pscid][] = $error_message;
+                    continue;
+                }
+
+                // Format dob, and scrub if required
+                $consent_date       = new \DateTime($consent_date);
+                $consent_date_field = $consent_mapping[$consent_name]['consentDateField'];
+                if (array_key_exists(
+                    $consent_date_field,
+                    $this->dates_to_scrub)
+                ) {
+                    $consent_date = $this->scrubDate(
+                        $consent_date,
+                        $this->dates_to_scrub[$consent_date_field]['component']
+                    )->format($this->dates_to_scrub[$consent_date_field]['format']);
+                }
+
+                // LORIS candidate consent data
+                $candidate_consent_status = $candidate_consent[$consent_id]['Status'] ?? '';
+                $candidate_consent_date   = $candidate_consent[$consent_id]['DateGiven'] ?? '';
+
+                // only update consent data if data is different in REDCap and LORIS
+                if (($consent_status == $candidate_consent_status)
+                    && ($consent_date == $candidate_consent_date)
+                ) {
+                    continue;
+                }
+
+                $consent_exists = array_key_exists($consent_id, $candidate_consent);
+                $consent_update = $this->updateConsent(
+                    $cand_id,
+                    $pscid,
+                    $consent_id,
+                    $consent_name,
+                    $consent_label,
+                    $consent_status,
+                    $consent_date,
+                    $consenter_name,
+                    $consent_exists
+                );
+
+                if ($consent_update) {
+                    print "\tConsent $consent_name updated for candidate $pscid.\n";
+                    $new_consents[$pscid][$consent_name] = $consent_update;
+                } else {
+                    $error_message = "Consent $consent_name failed to be updated for candidate $pscid.";
+                    print "\t$error_message\n";
+                    $this->errors[$pscid][] = $error_message;
+                }
+            }
+        }
+
+        return $new_consents;
+    }
+
     /**
      * Update candidate instrument data
      *
@@ -449,6 +558,16 @@ abstract class RedcapImporter implements IRedcapImporter
     function getFieldsToIgnore(): array
     {
         return getImporterConfig()['toIgnore'];
+    }
+
+    function getConsentMapping(): array
+    {
+        $config  = getImporterConfig()['consentMapping'];
+        $mapping = [];
+
+        foreach ($config as $consent) {
+            $mapping[$consent['consentId']] = $consent;
+        }
     }
 
     /**
@@ -669,6 +788,20 @@ abstract class RedcapImporter implements IRedcapImporter
     }
 
     /**
+     * Gets a candidate's dccid
+     *
+     * @param $pscid The candidate pscid
+     *
+     * @return ?string The candidate dccid
+     */
+    function getCandidateID(string $pscid) : ?string
+    {
+        $candidate = $this->getCandidate($pscid);
+
+        return $candidate['meta']['cand_id'] ?? null;
+    }
+
+    /**
      * Gets candidate object
      *
      * @param $id The candidate id, DCCID or PSCID
@@ -764,6 +897,102 @@ abstract class RedcapImporter implements IRedcapImporter
         }
 
        return $datetime->setDate($year, $month, $day);
+    }
+
+    /**
+     * Get Consent List by Consent Group Name
+     *
+     * @param string $group Consent group name
+     *
+     * @return array An associative array of consents, with their names,
+     *               labels, and consent ID, for the given consent group.
+     *               The keys of the arrays are the IDs of the consents.
+     */
+    function getConsentListByGroup(string $group) : array {
+        $query        = "SELECT c.ConsentID AS ConsentID, c.Name AS Name, c.Label AS Label FROM consent c
+            LEFT JOIN consent_group cg USING (ConsentGroupID)
+            WHERE cg.Name=:consent_group";
+        $where        = array('consent_group' => $group);
+        $key          = 'ConsentID';
+
+        $result = $this->DB->pselectWithIndexKey($query, $where, $key);
+
+        return $result;
+    }
+
+    /**
+     * Update specific candidate's consent data
+     *
+     * @param string    $cand_id           The candidate id, the DCCID
+     * @param string    $pscid             The candidate id, the PSCID
+     * @param string    $consent_id        The consent id
+     * @param string    $consent_name      The consent name
+     * @param string    $consent_label     The consent label
+     * @param string    $consent_status    The REDCap consent status
+     * @param \DateTime $consent_date      The REDCap consent date
+     * @param string    $consenter_name    The REDCap consenter's name
+     * @param bool      $update            True if candidate consent already exists in LORIS,
+     *                                     and needs to be updated. False if consent is new,
+     *                                     and needs saving.
+     *
+     * return ?array The update_consent_rel array, or null if consent didn't update
+     */
+    function updateConsent(
+        string $cand_id,
+        string $pscid,
+        string $consent_id,
+        string $consent_name,
+        string $consent_label,
+        string $consent_status,
+        string $consent_date,
+        string $consenter_name,
+        bool   $update
+    ) : ?array {
+        // Prepare data array
+        $update_consent_rel = [
+            'CandidateID'   => $cand_id,
+            'ConsentID'     => $consent_id,
+            'Status'        => $consent_status,
+            'DateGiven'     => $consent_date,
+            'DateWithdrawn' => null,
+        ];
+
+        // Prepare history array
+        $update_consent_history = [
+            'PSCID'         => $pscid,
+            'ConsentName'   => $consent_name,
+            'ConsentLabel'  => $consent_label,
+            'Status'        => $consent_status,
+            'DateGiven'     => $consent_date,
+            'DateWithdrawn' => null,
+            'EntryStaff'    => $consenter_name,
+        ];
+
+        if ($update) {
+            try {
+                $this->DB->update(
+                    'candidate_consent_rel',
+                    $update_consent_rel,
+                    [
+                        'CandidateID' => $cand_id,
+                        'ConsentID'   => $consent_id,
+                    ]
+                );
+                $this->DB->insert('candidate_consent_history', $update_consent_history);
+            } catch (Exception $e) {
+                return null;
+            }
+        } else {
+            // then, insert
+            try {
+                $this->DB->insert('candidate_consent_rel', $update_consent_rel);
+                $this->DB->insert('candidate_consent_history', $update_consent_history);
+            } catch (Exception $e) {
+                return null;
+            }
+        }
+
+        return $update_consent_rel;
     }
 }
 

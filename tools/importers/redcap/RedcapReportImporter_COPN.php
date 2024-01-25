@@ -52,83 +52,6 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
     }
 
     /**
-     * Create new candidates
-     *
-     * @param array $records Array of REDCap records
-     *
-     * @return array $new_candidates Array of new candidates created
-     */
-    function createNewCandidates(array $records) : array
-    {
-        $new_candidates = [];
-
-        print "\nCreating candidates..\n\n";
-        // record is at the visit level i.e. redcap_event_name
-        foreach ($records as $row) {
-            $mapping = $this->getRedcapReportFieldMapping();
-            $pscid = $row[$mapping['pscid']];
-
-            if (!$this->candidateExists($pscid)) {
-                if (!$this->validateCandidateCreate($row)) {
-                    print "\tCreating candidate $pscid failed.\n";
-                    $this->errors[$pscid][] = "Cannot create candidate $pscid: dob, project, pscid, site, or sex missing or invalid.";
-                    continue;
-                }
-
-                ////////// COPN specific workflow //////////
-                // Consolidate site fields into 1
-                $isQPN   = false;
-                $site    = $row[$mapping['site'][0]];
-                $site_2  = $row[$mapping['site'][1]];
-                if ($site === 'QPN/RPQ') {
-                    $site = $this->getLorisSiteMapping()[$site_2];
-                    $isQPN = true;
-                } 
-                ////////// COPN specific workflow //////////
-
-                // Check that site is a valid site
-                if (!in_array($site, array_values($this->getLorisSiteMapping()))) {
-                    $error_message = "Cannot create candidate $pscid: site $site is not a valid site.";
-                    print "\t$error_message\n";
-                    $this->errors[$pscid][] = $error_message;
-                    fwrite(STDERR, $error_message . PHP_EOL);
-                    continue;
-                }
-
-                // Format DOB
-                // QPN sites: don't scrub day from dob, but make sure dob is properly formatted for DB
-                $dob = new \DateTime($row[$mapping['dob']]);
-                $dob = $isQPN ? $dob->format('Y-m-d') : $this->scrubDayinDate($dob)->format('Y-m-d');
-
-                // Map gender/sex
-                $sex = $this->getLorisSexMapping()[$row[$mapping['sex']]];
-
-                print "\tCreating candidate $pscid:\n";
-                // creating candidate with invalid PSCID format should return error
-                // creating candidate that already exists should also return error
-                $newCand = $this->createCandidate(
-                    $this->project,
-                    $pscid,
-                    $site,
-                    $dob,
-                    $sex
-                );
-
-                if (is_null($newCand)) {
-                    print "\t\tCandidate $pscid NOT created.";
-                    $this->errors[$pscid][] = "Creating candidate $pscid failed.";
-                    continue;
-                }
-
-                print "\t\t201 Created candidate: $pscid\n";
-                $new_candidates[$pscid] = $newCand;
-            }
-        }
-
-        return $new_candidates;
-    }
-
-    /**
      * Create new visits
      *
      * @param array $records Array of REDCap records
@@ -237,19 +160,6 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
         // Get consent list
         $consent_list = $this->getConsentListByGroup($this->project);
 
-        ////////// COPN specific workflow //////////
-        // Get consent method ids
-        $consent_methods = \Utility::getConsentMethods();
-        // Get consent methods by name
-        $consent_methods_by_name = [];
-        foreach ($consent_methods as $key => $method) {
-            $consent_methods_by_name[$method['Name']] = $method;
-        }
-        $consent_method_id      = $consent_methods_by_name[$this->consent_method_field]['ConsentMethodID'];
-        $consent_method_options = $consent_methods_by_name[$this->consent_method_field]['options'];
-        $consent_group_id       = $consent_methods_by_name[$this->consent_method_field]['ConsentGroupID'];
-        ////////// COPN specific workflow //////////
- 
         print "\nProcessing consent data...\n\n";
 
         foreach ($records as $row) {
@@ -261,7 +171,6 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
             }
 
             $cand_id = $this->getCandidateID($pscid);
-
             if ($cand_id === null) {
                 $error_message = "Getting candidate ID for $pscid failed.";
                 print "\t$error_message\n";
@@ -269,120 +178,72 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
                 continue;
             }
 
-            $candidate   = \Candidate::singleton(new CandID($cand_id));
-            $visit_label = $this->getLorisVisitMapping($row[$mapping['visit']]);
+            $candidate         = \Candidate::singleton(new CandID($cand_id));
+            $candidate_consent = $candidate->getConsents();
 
-            // Only update consent when the REDCap record row is for InitialVisit as
-            // consent is at the candidate level, and consent instrument is only administered
-            // at REDCap baseline visit
-            if ($visit_label === 'InitialVisit') {
-                // Update consent method
-                $redcap_consent_method = $row[$this->consent_method_field] ?? '';
+            foreach ($consent_list as $consent_id => $consent) {
+                $consent_name   = $consent['Name'];
+                $consent_label  = $consent['Label'];
 
-                // redcap_consent_method is the label as value, check if empty
-                if ($redcap_consent_method !== '') {
-                    // Search for the consent method option raw value
-                    $redcap_consent_method_options_id = array_search($redcap_consent_method, $consent_method_options);
-                    if (!$redcap_consent_method_options_id) {
-                        $error_message = "Unable to find in LORIS method option ID for $redcap_consent_method for candidate $pscid.";
-                        print "\t$error_message\n";
-                        $this->errors[$pscid][] = $error_message;
-                    } else {
-                        $candidate_consent_methods       = $candidate->getConsentMethods();
-                        $loris_consent_method_options_id = $candidate_consent_methods[$consent_group_id]['ConsentMethodOptionsID'] ?? '';
-                        $consent_method_exists           = !empty($loris_consent_method_options_id);
-
-                        // PROCESS consent information
-                        // Get current consent data in LORIS
-                        // If data exists and is different, update
-                        // If data exists and is the same, do nothing
-                        // If data does not exist, insert
-                        if ($redcap_consent_method_options_id == $loris_consent_method_options_id) {
-                            // print "\nNo consent method to update for candidate $pscid.\n";
-                        } else {
-                            if ($this->updateConsentMethod(
-                                    $cand_id,
-                                    $redcap_consent_method_options_id,
-                                    $consent_method_id,
-                                    $consent_method_exists
-                                )
-                            ) {
-                                print "\tConsent method updated for candidate $pscid.\n";
-                                $new_consents[$pscid][$this->consent_method_field] = $redcap_consent_method;
-                            } else {
-                                $error_message = "Updating consent method $this->consent_method_field for candidate $pscid failed.";
-                                print "\t$error_message: " . $e->getMessage() . PHP_EOL;
-                                $this->errors[$pscid][] = $error_message;
-                            }
-                        }
-                    }
+                // Check if consent data is empty but not '0' 
+                if (empty($row[$consent_name]) && strlen($row[$consent_name]) == 0) {
+                    // No consent information
+                    continue;
                 }
 
-                // Update Consent data
-                $candidate_consent = $candidate->getConsents();
-                foreach ($consent_list as $consent_id => $consent) {
-                    $consent_name   = $consent['Name'];
-                    $consent_label  = $consent['Label'];
+                // Redcap consent data
+                // Set consent values, $redcap_consent_status is the label as value
+                $redcap_consent_status = $row[$consent_name];
+                $consent_status        = $this->getConsentMapping()[$redcap_consent_status] ?? '';
+                $consent_date          = $row[$this->getConsentDateFieldByConsent($consent_name)] ?:
+                                         $row[$this->getConsentDateFieldByConsent()] ?? '';
+                $consenter_field       = $this->getConsenterFieldByConsent($consent_name);
+                $consenter_name        = ($consenter_field && $row[$consenter_field]) ? $row[$consenter_field] . ' (REDCap)' : '(REDCap)';
+                // Validate
+                if ($consent_status === '' ||
+                    $consent_date   === '' ||
+                    strtotime($consent_date) === false
+                ) {
+                    $error_message = "Consent $consent_name status and/or date is missing or invalid for candidate $pscid. ";
+                    print "\t$error_message\n";
+                    $this->errors[$pscid][] = $error_message;
+                    continue;
+                }
 
-                    // Set consent values
-                    // $redcap_consent_status is the label as value, check if empty
-                    if (!empty($redcap_consent_status = $row[$consent_name])) {
-                        // REDCap Consent data
-                        // Consent status
-                        $consent_status = $this->getConsentStatusMapping()[$redcap_consent_status] ?? '';
-                        // Consent date field + consenter field
-                        $consent_date    = $row[$this->getConsentDateFieldByConsent($consent_name)] ?:
-                                           $row[$this->getConsentDateFieldByConsent()] ?? '';
-                        $consenter_field = $this->getConsenterFieldByConsent($consent_name);
-                        // Consenter name
-                        $consenter_name  = ($consenter_field && $row[$consenter_field]) ? $row[$consenter_field] . ' (REDCap)' : '(REDCap)';
+                // Scrub day in date
+                $consent_date = $this->scrubDayinDate(new \DateTime($consent_date))->format('Y-m-d');
 
-                        // Candidate current consent in LORIS
-                        $consent_exists           = array_key_exists($consent_id, $candidate_consent);
-                        $candidate_consent_status = $candidate_consent[$consent_id]['Status'] ?? '';
-                        $candidate_consent_date   = $candidate_consent[$consent_id]['DateGiven'] ?? '';
+                // LORIS candidate consent data 
+                $candidate_consent_status = $candidate_consent[$consent_id]['Status'] ?? '';
+                $candidate_consent_date   = $candidate_consent[$consent_id]['DateGiven'] ?? '';
 
-                        // NOTE: These consent fields would never be
-                        // withdrawn from 'yes' to 'no' on REDCap
-                        // i.e. values are given consent responses that don't change
-                        if ($consent_status !== '' && $consent_date !== '' && strtotime($consent_date) !== false) {
-                            // Scrub day in date
-                            $consent_date = $this->scrubDayinDate(new \DateTime($consent_date))->format('Y-m-d');
+                // only update consent data if data is different in REDCap and LORIS
+                if (($consent_status == $candidate_consent_status) && 
+                    ($consent_date == $candidate_consent_date)
+                ) {
+                    continue;
+                }
 
-                            // only update consent data if data is different in REDCap and LORIS
-                            if (($consent_status == $candidate_consent_status) && 
-                                ($consent_date == $candidate_consent_date)
-                            ) {
-                                // print "\nNo $consent_name to update for candidate $pscid.\n";
-                                continue;
-                            }
+                $consent_exists = array_key_exists($consent_id, $candidate_consent);
+                $consent_update = $this->updateConsent(
+                    $cand_id,
+                    $pscid,
+                    $consent_id,
+                    $consent_name,
+                    $consent_label,
+                    $consent_status,
+                    $consent_date,
+                    $consenter_name,
+                    $consent_exists
+                );
 
-                            $consent_update = $this->updateConsent(
-                                $cand_id,
-                                $pscid,
-                                $consent_id,
-                                $consent_name,
-                                $consent_label,
-                                $consent_status,
-                                $consent_date,
-                                $consenter_name,
-                                $consent_exists
-                            );
-
-                            if ($consent_update) {
-                                print "\tConsent $consent_name updated for candidate $pscid.\n";
-                                $new_consents[$pscid][$consent_name] = $consent_update;
-                            } else {
-                                $error_message = "Consent $consent_name failed to be updated for candidate $pscid.";
-                                print "\t$error_message\n";
-                                $this->errors[$pscid][] = $error_message;
-                            }
-                        } else {
-                            $error_message = "Consent $consent_name status and/or date is missing or invalid for candidate $pscid. ";
-                            print "\t$error_message\n";
-                            $this->errors[$pscid][] = $error_message;
-                        }
-                    }
+                if ($consent_update) {
+                    print "\tConsent $consent_name updated for candidate $pscid.\n";
+                    $new_consents[$pscid][$consent_name] = $consent_update;
+                } else {
+                    $error_message = "Consent $consent_name failed to be updated for candidate $pscid.";
+                    print "\t$error_message\n";
+                    $this->errors[$pscid][] = $error_message;
                 }
             }
         }
