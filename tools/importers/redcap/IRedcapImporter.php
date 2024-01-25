@@ -47,7 +47,7 @@ interface IRedcapImporter
      *
      * @return array $new_candidates Array of new candidates created
      */
-   abstract function createNewCandidates(array $records) : array;
+   function createNewCandidates(array $records) : array;
 
     /**
      * Create new visits

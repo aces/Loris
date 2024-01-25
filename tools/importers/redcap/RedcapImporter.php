@@ -64,7 +64,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
         // Set up data field restrictions, specifications
         $this->site_specific_fields = $this->getSiteSpecificFields();
-        $this->dates_to_scrub   = $this->getDateFieldsToScrub();
+        $this->dates_to_scrub   = $this->getDatesToScrub();
         $this->fields_to_ignore = $this->getFieldsToIgnore();
 
         $this->project = $project;
@@ -139,7 +139,101 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_candidates Array of new candidates created
      */
-   abstract function createNewCandidates(array $records) : array;
+    function createNewCandidates(array $records) : array
+    {
+        $new_candidates = [];
+
+        print "\nCreating candidates..\n\n";
+        // record is at the visit level i.e. redcap_event_name
+        foreach ($records as $row) {
+            $mapping = $this->getMetadataMapping();
+            $pscid   = $row[$mapping['pscid']];
+
+            // If candidate already exists in LORIS, skip
+            if ($this->candidateExists($pscid)) {
+                continue;
+            }
+
+            $site    = '';
+            $dob     = '';
+            $sex     = '';
+            $project = $this->project;
+            foreach ($mapping as $loris_field => $redcap_field) {o
+
+                $val = ''; // The redcap data point
+                $var = ''; // The redcap variable name
+
+                // If there are multiple REDCap fields for a given LORIS field,
+                // use the first field in list with a non empty value
+                if (is_array($redcap_field)) {
+                    $var = current(array_filter($redcap_field, function ($i) use ($row) {
+                        return isset($row[$i]) && strlen($row[$i]) != 0;
+                    }));
+                } else {
+                    $var = $redcap_field;
+                }
+
+                $val = $row[$var] ?? '';
+
+                switch ($loris_field) {
+                    case 'site':
+                        $site = $this->getSiteMapping()[$val] ?? '';
+                        break;
+                    case 'dob':
+                        $dob = $val;
+                        // Format dob, and scrub if required
+                        if (strtotime($dob) !== false) {
+                            $dob = new \DateTime($dob);
+                            if (array_key_exists($var, $this->dates_to_scrub)) {
+                                $dob = $this->scrubDate(
+                                    $dob,
+                                    $this->dates_to_scrub[$var]['component']
+                                )->format($this->dates_to_scrub[$var]['format']);
+                            }
+                        }
+                        break;
+                    case 'sex':
+                        $sex = $this->getSexMapping()[$val] ?? '';
+                        break;
+                }
+            }
+
+            // Validate create candidate values
+            if ($pscid   === '' ||
+                $site    === '' ||
+                $sex     === '' ||
+                $project === '' ||
+                $dob     === '' ||
+                strtotime($dob) === false
+            ) {
+                print "\tCreating candidate $pscid failed.\n";
+                $this->errors[$pscid][] = "Cannot create candidate $pscid: dob, project, pscid, site, or sex missing or invalid.";
+                continue;
+            }
+
+            print "\tCreating candidate $pscid:\n";
+            // creating candidate with invalid PSCID format should return error
+            // creating candidate that already exists should also return error
+            $new_cand = $this->createCandidate(
+                $project,
+                $pscid,
+                $site,
+                $dob,
+                $sex
+            );
+
+            if (is_null($new_cand)) {
+                print "\t\tCandidate $pscid NOT created.";
+                $this->errors[$pscid][] = "Creating candidate $pscid failed.";
+                continue;
+            }
+
+            print "\t\t201 Created candidate: $pscid\n";
+            $new_candidates[$pscid] = $new_cand;
+        }
+
+        return $new_candidates;
+    }
 
     /**
      * Create new visits
@@ -217,9 +311,9 @@ abstract class RedcapImporter implements IRedcapImporter
      * @return array the mapping with loris field as key,
      *               and redcap field as value(s)
      */
-    function getMetadataFieldMapping() : array
+    function getMetadataMapping() : array
     {
-        return getImporterConfig()['metadataFieldMapping'];
+        return getImporterConfig()['metadataMapping'];
     }
 
     /**
@@ -241,7 +335,14 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getSiteMapping() : array
     {
-        return getImporterConfig()['siteMapping'];
+        $config  = getImporterConfig()['siteMapping'];
+        $mapping = [];
+
+        foreach($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     /**
@@ -252,7 +353,14 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getSexMapping() : array
     {
-        return getImporterConfig()['sexMapping'];
+        $config  = getImporterConfig()['sexMapping'];
+        $mapping = [];
+
+        foreach($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     /**
@@ -317,9 +425,25 @@ abstract class RedcapImporter implements IRedcapImporter
         return getImporterConfig()['siteSpecific'];
     }
 
-    function getDateFieldsToScrub(): array
+    function getDatesToScrub(): array
     {
-        return getImporterConfig()['datesToScrub'];
+        $config = getImporterConfig()['datesToScrub'];
+        $dates  = [];
+
+        foreach ($config as $date_field) {
+            // Handle components to scrub
+            $components = [];
+            foreach ($date_field['component'] as $component) {
+                $components[$component['id']] = $component['value'];
+            }
+
+            $dates[$date_field['id']] = [
+                'format'    = $date_field['format'],
+                'component' = $components
+            ];
+        }
+
+        return $dates;
     }
 
     function getFieldsToIgnore(): array
@@ -530,6 +654,116 @@ abstract class RedcapImporter implements IRedcapImporter
         }
     
         return true;
+    }
+
+    /**
+     * Checks if candidate exists by its id
+     *
+     * @param $id The candidate id, the PSCID or DCCID
+     *
+     * return bool True if candidate exists
+     */
+    function candidateExists(string $id) : bool
+    {
+        return $this->getCandidate($id) ? true : false;
+    }
+
+    /**
+     * Gets candidate object
+     *
+     * @param $id The candidate id, DCCID or PSCID
+     *
+     * @return ?\Swagger\Client\Model\InlineResponse2002
+     */
+    function getCandidate(string $id) : ?\Swagger\Client\Model\InlineResponse2002
+    {
+        try {
+            $api = new Swagger\Client\Api\CandidatesApi(
+                $this->httpClient,
+                $this->lorisApiConfig
+            );
+            $result = $api->candidatesIdGet($id);
+        } catch (Exception $e) {
+            // Case if candidate is inactive but in DB, return null
+            return null;
+        }
+
+        return empty($result) ? null : $result;
+    }
+
+    /**
+     * Create new candidate
+     *
+     * @param string $project Project
+     * @param string $pscid   PSCID
+     * @param string $site    Site
+     * @param string $do_b    Date of birth
+     * @param string $sex     Sex
+     *
+     * @return ?\Swagger\Client\Model\Candidate $result The created candidate object
+     */
+    function createCandidate(
+        string                       $project,
+        string                       $pscid,
+        string                       $site,
+        string                       $do_b,
+        string                       $sex
+    ) : ?\Swagger\Client\Model\Candidate
+    {
+        $apiInstance = new Swagger\Client\Api\CandidatesApi(
+            $this->httpClient,
+            $this->lorisApiConfig
+        );
+
+        $candidate = new \Swagger\Client\Model\NewCandidateCandidate([
+            'project' => $project,
+            'pscid'   => $pscid,
+            'site'    => $site,
+            'do_b'    => $do_b,
+            'sex'     => $sex,
+        ]);
+
+        $body = new \Swagger\Client\Model\NewCandidate([
+            'candidate' => $candidate
+        ]);
+
+        $result = null;
+        try {
+            $result = $apiInstance->candidatesPost($body);
+        } catch (Exception $e) {
+            print "\nException when calling CandidatesApi->candidatesPost on $pscid: " . $e->getMessage() . PHP_EOL;
+            return null;
+        }
+
+        if (empty($result) || is_null($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    function scrubDate(\DateTime $datetime, array $components) : \DateTime
+    {
+        // Grab each component wtihout leading zeros
+        $day   = $datetime->format('j');
+        $month = $datetime->format('n');
+        $year  = $datetime->format('Y');
+
+        foreach ($components as $component => $value) {
+            switch ($component) {
+                case 'day':
+                    $day = strval($value);
+                    break;
+                case 'month';
+                    $month = strval($value);
+                    break;
+                case 'year';
+                    $year = strval($value);
+                    break;
+            }
+        }
+
+       return $datetime->setDate($year, $month, $day);
     }
 }
 

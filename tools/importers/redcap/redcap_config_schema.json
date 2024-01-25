@@ -43,7 +43,7 @@
                   "enum": ["year", "month", "day"] 
                 },
                 "value": {
-                  "description": "The value to replace the date component string with",
+                  "description": "The value to replace the date component string with, without leading zeros",
                   "type": "integer"
                 }
               }
@@ -76,10 +76,10 @@
       "type": "object",
       "properties": { 
         "pscid": {
-          "type": ["string", "array"]
+          "type": "string"
         },
         "visit": {
-          "type": ["string", "array"]
+          "type": "string"
         },
         "site": {
           "type": ["string", "array"]
