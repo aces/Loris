@@ -38,7 +38,7 @@ class SurveyAccountsProvisioner
     function __construct()
     {
 
-        participant::__construct(
+        parent::__construct(
             "SELECT
                 c.PSCID AS PSCID,
                 s.Visit_label AS Visit,

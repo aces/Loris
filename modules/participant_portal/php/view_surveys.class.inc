@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Parent Portal module.
+ * Participant Portal module.
  *
  * PHP Version 7
  *
@@ -78,7 +78,7 @@ class View_Surveys extends \NDB_Form
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps    = participant::getCSSDependencies();
+        $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
             [$baseURL . "/participant_portal/css/participant_portal.css"]
