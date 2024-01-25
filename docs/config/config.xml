@@ -47,7 +47,7 @@
         <ParticipantID>
             <generation>random</generation>
             <structure>
-                <seq type="static">PARENT</seq>
+                <seq type="static">PARTICIPANT</seq>
                 <seq type="numeric" length="6" min='100000' max='999999'/>
             </structure>
         </ParticipantID>

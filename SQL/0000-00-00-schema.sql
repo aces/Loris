@@ -168,7 +168,7 @@ CREATE TABLE `candidate` (
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
   `ProbandSex` enum('Male','Female','Other') DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
-  `ParentID` varchar(15) DEFAULT NULL,
+  `ParticipantID` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
