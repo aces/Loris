@@ -409,12 +409,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             // Generate candid and insert into setArray
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
-            $parentIDgenerator  = new \ParentIDGenerator(
+            $participantIDgenerator  = new \ParticipantIDGenerator(
                 $site->getSiteAlias(),
                 $project->getAlias()
             );
-            $parentID           = $parentIDgenerator->generate();
-            $setArray['ParentID'] = $parentID;
+            $participantID           = $participantIDgenerator->generate();
+            $setArray['ParticipantID'] = $participantID;
             try {
                 $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {

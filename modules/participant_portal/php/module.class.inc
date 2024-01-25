@@ -7,19 +7,19 @@
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal
+ * @subpackage Participant Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\parent_portal;
+namespace LORIS\participant_portal;
 
 /**
  * Class module implements the basic LORIS module functionality
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent_Portal
+ * @subpackage Participant_Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
@@ -28,7 +28,7 @@ class Module extends \Module
 {
 
     /**
-     * The parent portal module must be accessible publicly, so that non-logged in
+     * The participant portal module must be accessible publicly, so that non-logged in
      * users can access.
      *
      * @return true
@@ -44,6 +44,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Parent Portal";
+        return "Participant Portal";
     }
 }

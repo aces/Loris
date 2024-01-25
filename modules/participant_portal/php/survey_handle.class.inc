@@ -7,12 +7,12 @@
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal
+ * @subpackage Participant Portal
  * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\parent_portal;
+namespace LORIS\participant_portal;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 /**
@@ -20,7 +20,7 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent_Portal
+ * @subpackage Participant_Portal
  * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
@@ -29,7 +29,7 @@ class Survey_Handle extends \NDB_Form
 {
     public $skipTemplate = true;
     /**
-     * GET method gets a list of parent's categroies and
+     * GET method gets a list of Participant's categories and
      * the children's categories.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -60,7 +60,7 @@ class Survey_Handle extends \NDB_Form
         }
     }
     /**
-     * GET method gets a list of parent's categroies and
+     * GET method gets a list of participant's categroies and
      * the children's categories.
      *
      * @param Array $values The values need to be validated
@@ -76,10 +76,10 @@ class Survey_Handle extends \NDB_Form
                  FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE p.Email=:surv_email AND c.ParentID=:pid",
+                 WHERE p.Email=:surv_email AND c.ParticipantID=:pid",
                 [
                     'surv_email' => $values['email'],
-                    'pid'        => $values['parentID'],
+                    'pid'        => $values['participantID'],
                 ]
             );
         if (empty($surveys)) {

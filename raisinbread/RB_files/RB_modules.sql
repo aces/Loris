@@ -47,6 +47,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (44,'dqt','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'api_docs','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'dictionary','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (47,'electrophysiology_uploader','Y');
-INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'parent_portal','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'participant_portal','Y');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

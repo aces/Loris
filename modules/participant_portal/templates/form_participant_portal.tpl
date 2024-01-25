@@ -7,13 +7,13 @@
         <div class="panel-body">
                 <form method="POST">
                     <p class="text-center">
-                        Please enter your ParentID
+                        Please enter your ParticipantID
                     </p>
                     <div class="form-group">
-                        {$form.parentID.html}
-                        {if $form.parentID.error}
+                        {$form.participantID.html}
+                        {if $form.participantID.error}
                             <span id="helpBlock" class="help-block">
-                   <b class="text-danger">{$form.parentID.error}</b>
+                   <b class="text-danger">{$form.participantID.error}</b>
                  </span>
                         {/if}
                     </div>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="form-group">
                         <input type="submit" name="submit" class="btn btn-primary btn-block"
-                               value="Go To Parent Portal"/>
+                               value="Go To Participant Portal"/>
                     </div>
                 </form>
         </div>

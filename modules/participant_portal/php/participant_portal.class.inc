@@ -7,23 +7,23 @@
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal
+ * @subpackage Participant Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\parent_portal;
+namespace LORIS\Participant_portal;
 /**
  * PHP Version 7
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent_Portal
+ * @subpackage Participant_Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class Parent_Portal extends \NDB_Form
+class Participant_Portal extends \NDB_Form
 {
     /**
      * Determine whether the user has permission to view this page
@@ -40,10 +40,10 @@ class Parent_Portal extends \NDB_Form
      */
     function setup(): void
     {
-        $this->tpl_data['page_title'] = 'Parent Portal';
+        $this->tpl_data['page_title'] = 'Participant Portal';
         $this->addBasicText(
-            "parentID",
-            "ParentID",
+            "ParticipantID",
+            "ParticipantID",
             ["placeholder" => ""]
         );
 
@@ -71,8 +71,8 @@ class Parent_Portal extends \NDB_Form
     {
         $errors = [];
 
-        if (empty($values['parentID'])) {
-            $errors['parentID'] = " ParentID is required!";
+        if (empty($values['ParticipantID'])) {
+            $errors['ParticipantID'] = " ParticipantID is required!";
         } else if (empty($values['email'])  ) {
             $errors['email'] = " Email is required!";
         } else {
@@ -82,10 +82,10 @@ class Parent_Portal extends \NDB_Form
                 "SELECT COUNT(*) FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE p.Email=:surv_email AND c.ParentID=:pid",
+                 WHERE p.Email=:surv_email AND c.ParticipantID=:pid",
                 [
                     'surv_email' => $values['email'],
-                    'pid'        => $values['parentID'],
+                    'pid'        => $values['ParticipantID'],
                 ]
             );
             if ($numSurveys == 0) {
@@ -111,7 +111,7 @@ class Parent_Portal extends \NDB_Form
         $sanitize = array_map('htmlentities', $_GET);
         $id       = $sanitize['id'] ?? null;
 
-        $defaults['parentID'] =$id;
+        $defaults['ParticipantID'] =$id;
         return $defaults;
     }
     /**
@@ -125,9 +125,9 @@ class Parent_Portal extends \NDB_Form
     {
         $factory           = \NDB_Factory::singleton();
         $baseURL           = $factory->settings()->getBaseURL();
-        $_SESSION['pid']   = $_REQUEST['parentID'];
+        $_SESSION['pid']   = $_REQUEST['ParticipantID'];
         $_SESSION['email'] = $_REQUEST['email'];
-        header("Location: $baseURL/parent_portal/View_Surveys");
+        header("Location: $baseURL/Participant_portal/View_Surveys");
         exit;
     }
 }

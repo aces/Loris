@@ -7,15 +7,15 @@
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal - View Surveys
+ * @subpackage Participant Portal - View Surveys
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\parent_portal;
+namespace LORIS\participant_portal;
 
 /**
- * Parent Portal class
+ * Participant Portal class
  *
  * PHP Version 7
  *
@@ -41,10 +41,10 @@ class View_Surveys extends \NDB_Form
         $email =$_SESSION['email'];
         $pid   =$_SESSION['pid'];
         if ((!isset($email)) && (!isset($pid)) ) {
-            header("Location: $baseURL/parent_portal");
+            header("Location: $baseURL/participant_portal");
             exit;
         }
-        $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.$pid.')';
+        $this->tpl_data['page_title'] = 'Welcome To Participant Portal! (ID:'.$pid.')';
         $survey_url = $baseURL. "/survey.php?key=";
         $this->tpl_data['survey_url'] =$survey_url;
         $DB    =& \Database::singleton();
@@ -58,7 +58,7 @@ class View_Surveys extends \NDB_Form
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
             LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
             WHERE p.Email=:surv_email
-            AND c.ParentID=:pid
+            AND c.ParticipantID=:pid
             ORDER BY p.Status",
             [
                 'surv_email' => $email,
@@ -78,10 +78,10 @@ class View_Surveys extends \NDB_Form
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
+        $deps    = participant::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/parent_portal/css/parent_portal.css"]
+            [$baseURL . "/participant_portal/css/participant_portal.css"]
         );
     }
 
