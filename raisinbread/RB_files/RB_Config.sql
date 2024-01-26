@@ -105,12 +105,12 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (118,118,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (119,119,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (120,120,'database_config.py');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (121,125,'false');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (123,127,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (124,128,'');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,132,'365');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,133,'/var/www/loris/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,134,'/data/EEGUploadIncomingPath/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
