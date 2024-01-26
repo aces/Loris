@@ -120,7 +120,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $modality = $item->getModality();
 
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
 
             // Because of complex interactions between joins that get
             // out of hand when a scan type that doesn't exist is selected
@@ -135,7 +135,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $modality = $item->getModality();
 
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "(SELECT QCStatus FROM files_qcstatus 
                         JOIN files as files2
                         JOIN mri_scan_type
@@ -173,12 +173,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     ) {
         if ($item instanceof LocationDictionaryItem) {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
         if ($item instanceof QCDictionaryItem) {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("JOIN files ON (s.ID=files.SessionID)");
+            $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
         throw new \Exception(
