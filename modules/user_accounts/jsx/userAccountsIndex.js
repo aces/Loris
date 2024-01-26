@@ -151,7 +151,7 @@ class UserAccountsIndex extends Component {
     const fields = [
       {label: 'Site', show: true, filter: {
         name: 'site',
-        type: 'select',
+        type: 'multiselect',
         options: options.sites,
       }},
       {label: 'Project', show: true, filter: {
