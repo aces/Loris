@@ -676,7 +676,7 @@ class Files extends \NDB_Page
 
             $headers = [
                 'Content-Type'        => $s3Object['ContentType'],
-            'Content-Disposition' => 'attachment; filename="' . 
+            'Content-Disposition' => 'attachment; filename="' .
             end($s3part) . '"',
                 'Content-Length'      => $s3Object['ContentLength'],
             ];
