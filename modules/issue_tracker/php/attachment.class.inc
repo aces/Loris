@@ -1,5 +1,15 @@
 <?php declare(strict_types=1);
-
+/**
+ * The Attachment class for requests from issue_trackers.
+ *
+ * PHP Version 8
+ *
+ * @category Loris
+ * @package  Issue_Tracker
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\issue_tracker;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -78,10 +88,12 @@ class Attachment extends \NDB_Page implements ETagCalculator
         if (strpos($result['file_name'], "s3://") === 0) {
             // Get the S3 object metadata
             try {
-                    $s3part     = explode("/", str_replace("s3://", "", $result['file_name']));
+                $s3part    
+                    = explode("/", str_replace("s3://", "", $result['file_name']));
                     $s3Client   = \S3ClientSingleton::getInstance()->getS3Client();
                     $config     = \NDB_Config::singleton();
-                    $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
+                $bucketName 
+                    = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
                     $s3result   = $s3Client->getObject(
                         [
                             'Bucket' => $bucketName,
@@ -90,11 +102,15 @@ class Attachment extends \NDB_Page implements ETagCalculator
                     );
                     $headers    = [
                         'Content-Type'        => $s3result['ContentType'],
-                        'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
+                'Content-Disposition' => 'attachment; filename="' 
+                                   . end($s3part) . '"',
                         'Content-Length'      => $s3result['ContentLength'],
                     ];
 
-                    return new \GuzzleHttp\Psr7\Response(200, $headers, $s3result['Body']);
+                    return 
+                    new \GuzzleHttp\Psr7\Response(
+                        200, $headers, $s3result['Body']
+                    );
             } catch (Exception $e) {
                 return (new \LORIS\Http\Response())
                     ->withStatus(404)

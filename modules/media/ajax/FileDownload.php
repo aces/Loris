@@ -48,7 +48,10 @@ if (substr($file, 0, 3) !== "s3:") {
     header('Content-Description: File Transfer');
     header('Content-Type: application/force-download');
     header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
+    header(
+        "Content-disposition: attachment; filename=\"" .
+        basename($filePath) . "\""
+    );
     readfile($filePath);
 } else {
     // download from AWS s3
