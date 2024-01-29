@@ -74,7 +74,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "Sex",
                     "Candidate's biological sex",
                     $candscope,
-                    new \LORIS\Data\Types\Enumeration('Male', 'Female', 'Other'),
+                    new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
