@@ -221,10 +221,12 @@ class Files extends \NDB_Page
         if (strpos($dataDir, "s3://") === 0) {
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $config           = \NDB_Config::singleton();
-            $bucketName       
+            $bucketName     
                 = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
             $delete_status    = $s3ClientInstance->s3DeleteFile(
-                $bucketName, null, $dataDir
+                $bucketName,
+                null,
+                $dataDir
             );
             if ($delete_status) {
                 return (new \LORIS\Http\Response\JSON\OK(
@@ -528,7 +530,7 @@ class Files extends \NDB_Page
      * @param ServerRequestInterface $request The PSR7 request.
      *
      * @return ResponseInterface The outgoing PSR7 response.
-     */    
+     */ 
     function uploadDocFileToS3($request): ResponseInterface
     {
         $instance = $request->getAttribute('loris');
@@ -552,8 +554,8 @@ class Files extends \NDB_Page
         $errorCounter     = 0;
         $addedFiles       = [];
 
-            $config     = \NDB_Config::singleton();
-        $bucketName     = $config->getSetting(
+            $config = \NDB_Config::singleton();
+        $bucketName = $config->getSetting(
             'AWS_S3_Default_Bucket_Document_Repository'
         );
 
@@ -572,7 +574,10 @@ class Files extends \NDB_Page
             }
 
             $s3_upload_status = $s3ClientInstance->s3uploadfile(
-                $bucketName, null, $filename, $_FILES['files']['tmp_name'][$i]
+                $bucketName,
+                null,
+                $filename,
+                $_FILES['files']['tmp_name'][$i]
             );
              $i++;
             if ($s3_upload_status) {
@@ -676,7 +681,7 @@ class Files extends \NDB_Page
 
             $headers = [
                 'Content-Type'        => $s3Object['ContentType'],
-            'Content-Disposition' => 'attachment; filename="' . 
+                'Content-Disposition' => 'attachment; filename="' .
             end($s3part) . '"',
                 'Content-Length'      => $s3Object['ContentLength'],
             ];
@@ -688,3 +693,4 @@ class Files extends \NDB_Page
     }
 
 }
+
