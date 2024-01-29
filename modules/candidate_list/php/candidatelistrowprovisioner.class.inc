@@ -30,7 +30,6 @@ namespace LORIS\candidate_list;
  */
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-    private string $dobFormat;
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
@@ -44,7 +43,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
-        $this->dobFormat = $config->getSetting("dobFormat");
 
         parent::__construct(
             "SELECT
@@ -101,19 +99,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // one of the user's sites.
         $cid = new \CenterID($row['RegistrationCenterID']);
         $pid = new \ProjectID($row['RegistrationProjectID']);
-        if ($row['DoB'] !== null) {
-            $dob = new \DateTimeImmutable($row['DoB']);
-            switch ($this->dobFormat) {
-            case 'Ym':
-                $row['DoB'] = $dob->format('Y-m');
-                break;
-            case 'Ymd':
-                $row['DoB'] = $dob->format('Y-m-d');
-                break;
-            default:
-                throw new \Exception("Unhandled DoB format: $this->dobFormat");
-            }
-        }
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);
