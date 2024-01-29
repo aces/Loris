@@ -14,7 +14,7 @@ changes in the following format: PR #1234***
 - Add OpenID Connect authorization support to LORIS (PR #8255)
 
 #### Updates and Improvements
-- Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by this table (PR #9025)
+- Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
 
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
