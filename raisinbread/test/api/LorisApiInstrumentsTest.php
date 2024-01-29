@@ -75,7 +75,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPostCandidatesCandidVisitInstruments(): void
     {
-	    $this->setUpConfigSetting("dobFormat", "Y-m");
         // Remove all instruments from this CandID.
         $SessionID = $this->DB->pselectOne(
             "SELECT ID FROM session WHERE Visit_label=:VL AND CandID=:Candidate",
