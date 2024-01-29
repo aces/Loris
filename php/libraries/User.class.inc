@@ -605,4 +605,25 @@ class User extends UserPermissions implements
     {
         return $this->userInfo['Pending_approval'] == 'Y';
     }
+
+    /**
+     * Get the roles this user has access to.
+     * 
+     * @return array an array with role values.
+     */
+    public function getRoles(): array
+    {
+        $db = \NDB_Factory::singleton()->database();
+        return $db->pselect(
+            "SELECT
+                r.RoleID,
+                r.Code,
+                r.Name,
+                r.Description
+            FROM role_user_rel rur
+                JOIN roles r ON (rur.RoleID = r.RoleID)
+            WHERE rur.userID = :userid",
+            ['userid' => $this->getId()]
+        );
+    }
 }
