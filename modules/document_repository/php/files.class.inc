@@ -1,20 +1,31 @@
 <?php declare(strict_types=1);
-
+/**
+ * Document_repository File function
+ *
+ * PHP Version 8
+ *
+ * @category Main
+ * @package  Document_Repository
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-
 /**
- * Post method handles updating a file.
- * Delete method handles deleting a file.
- * Get method handles getting a file.
- * Put method handles editing a file.
- * This class contains functions providing upload and edit functionality for
- * files in the document_repository.
+ * Document_repository File function
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * PHP Version 8
+ *
+ * @category Main
+ * @package  Document_Repository
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
+
 class Files extends \NDB_Page
 {
     const FILE_EXISTS_IN_DB = 'A file with this name already exists in the ' .
@@ -169,6 +180,7 @@ class Files extends \NDB_Page
      * @param string $rid the file id
      *
      * @throws \DatabaseException
+     * @return string
      */
     function deleteFile($rid)
     {
@@ -209,17 +221,28 @@ class Files extends \NDB_Page
         if (strpos($dataDir, "s3://") === 0) {
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $config           = \NDB_Config::singleton();
-            $bucketName       = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
-            $delete_status    = $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
+            $bucketName       
+                = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+            $delete_status    = $s3ClientInstance->s3DeleteFile(
+                $bucketName, null, $dataDir
+            );
             if ($delete_status) {
                 return (new \LORIS\Http\Response\JSON\OK(
                     ['message' => 'File deleted.']
                 ));
             } else {
+                $emsg = "Access Denied by the AWS S3 Server.".
+                " The record will be deleted";
                 return (new \LORIS\Http\Response())
                     ->withStatus(403)
                     ->withHeader('Content-Type', 'text/json')
-                    ->withBody(new \LORIS\Http\StringStream(json_encode(['error'=>"Access Denied by the AWS S3 Server. The record will be deleted"])));
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(
+                                ['error'=>$emsg]
+                            )
+                        )
+                    );
             }
         }
 
@@ -499,6 +522,13 @@ class Files extends \NDB_Page
         }
         return false;
     }
+    /**
+     * Process the uploadDocFileToS3
+     *
+     * @param ServerRequestInterface $request The PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */    
     function uploadDocFileToS3($request): ResponseInterface
     {
         $instance = $request->getAttribute('loris');
@@ -523,7 +553,9 @@ class Files extends \NDB_Page
         $addedFiles       = [];
 
             $config     = \NDB_Config::singleton();
-            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+        $bucketName     = $config->getSetting(
+            'AWS_S3_Default_Bucket_Document_Repository'
+        );
 
         // handle files
             $i = 0;
@@ -539,7 +571,9 @@ class Files extends \NDB_Page
                 continue;
             }
 
-             $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename, $_FILES['files']['tmp_name'][$i]);
+            $s3_upload_status = $s3ClientInstance->s3uploadfile(
+                $bucketName, null, $filename, $_FILES['files']['tmp_name'][$i]
+            );
              $i++;
             if ($s3_upload_status) {
                 // Prepare fields for database entry once upload has completed.
@@ -550,11 +584,21 @@ class Files extends \NDB_Page
                 );
 
                 // Set empty values equal to NULL for insertion into the database.
-                $instrument = !empty($body['instrument']) ? $body['instrument'] : null;
-                $pscid      = !empty($body['pscid'])      ? $body['pscid']      : null;
-                $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
-                $comments   = !empty($body['comments'])   ? $body['comments']   : null;
-                $version    = !empty($body['version'])    ? $body['version']    : null;
+                $instrument = !empty(
+                    $body['instrument']
+                ) ? $body['instrument'] : null;
+                $pscid      = !empty(
+                    $body['pscid']
+                )      ? $body['pscid']      : null;
+                $visit      = !empty(
+                    $body['visitLabel']
+                ) ? $body['visitLabel'] : null;
+                $comments   = !empty(
+                    $body['comments']
+                )   ? $body['comments']   : null;
+                $version    = !empty(
+                    $body['version']
+                )    ? $body['version']    : null;
 
                 $fileSize = $uploadedFile->getSize();
                 $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -610,7 +654,13 @@ class Files extends \NDB_Page
                     ]
                 ));
     }
-
+    /**
+     * Process the downloadS3File
+     *
+     * @param ServerRequestInterface $request The PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
     function downloadS3File(ServerRequestInterface $request): ResponseInterface
     {
         $file   = html_entity_decode($request->getQueryParams()['s3file']);
@@ -626,7 +676,8 @@ class Files extends \NDB_Page
 
             $headers = [
                 'Content-Type'        => $s3Object['ContentType'],
-                'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
+            'Content-Disposition' => 'attachment; filename="' . 
+            end($s3part) . '"',
                 'Content-Length'      => $s3Object['ContentLength'],
             ];
             return new \GuzzleHttp\Psr7\Response(200, $headers, $s3Object['Body']);
