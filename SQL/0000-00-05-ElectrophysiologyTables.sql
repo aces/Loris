@@ -535,39 +535,3 @@ INSERT INTO ImagingFileTypes
   ('edf',  'European data format (EEG)'),
   ('cnt',  'Neuroscan CNT data format (EEG)'),
   ('archive', 'Archive file');
-
--- Insert into annotation_file_type
-INSERT INTO physiological_annotation_file_type
-    (FileType, Description)
-    VALUES
-    ('tsv',  'TSV File Type, contains information about each annotation'),
-    ('json', 'JSON File Type, metadata for annotations');
-
--- Insert into annotation_label_type
-INSERT INTO physiological_annotation_label
-    (AnnotationLabelID, LabelName, LabelDescription)
-    VALUES
-    (1,  'artifact',            'artifactual data'),
-    (2,  'motion',              'motion related artifact'),
-    (3,  'flux_jump',           'artifactual data due to flux jump'),
-    (4,  'line_noise',          'artifactual data due to line noise (e.g., 50Hz)'),
-    (5,  'muscle',              'artifactual data due to muscle activity'),
-    (6,  'epilepsy_interictal', 'period deemed interictal'),
-    (7,  'epilepsy_preictal',   'onset of preictal state prior to onset of epilepsy'),
-    (8,  'epilepsy_seizure',    'onset of epilepsy'),
-    (9,  'epilepsy_postictal',  'postictal seizure period'),
-    (10, 'epileptiform',        'unspecified epileptiform activity'),
-    (11, 'epileptiform_single', 'a single epileptiform graphoelement (including possible slow wave)'),
-    (12, 'epileptiform_run',    'a run of one or more epileptiform graphoelements'),
-    (13, 'eye_blink',           'Eye blink'),
-    (14, 'eye_movement',        'Smooth Pursuit / Saccadic eye movement'),
-    (15, 'eye_fixation',        'Fixation onset'),
-    (16, 'sleep_N1',            'sleep stage N1'),
-    (17, 'sleep_N2',            'sleep stage N2'),
-    (18, 'sleep_N3',            'sleep stage N3'),
-    (19, 'sleep_REM',           'REM sleep'),
-    (20, 'sleep_wake',          'sleep stage awake'),
-    (21, 'sleep_spindle',       'sleep spindle'),
-    (22, 'sleep_k-complex',     'sleep K-complex'),
-    (23, 'scorelabeled',        'a global label indicating that the EEG has been annotated with SCORE.');
-
