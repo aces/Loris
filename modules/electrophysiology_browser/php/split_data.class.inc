@@ -5,7 +5,7 @@ use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 
 /**
- * Contains the Annotations class used for electrophysiological browser
+ * Contains the Split_Data class used for electrophysiological browser
  *
  * PHP Version 7
  *

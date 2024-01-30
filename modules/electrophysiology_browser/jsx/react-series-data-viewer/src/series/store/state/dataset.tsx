@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
-import {ChannelMetadata, Epoch} from '../types';
+import {ChannelMetadata, Epoch, EpochFilter} from '../types';
 import {DEFAULT_MAX_CHANNELS} from '../../../vector';
 
 export const SET_EPOCHS = 'SET_EPOCHS';
@@ -43,7 +43,7 @@ export type State = {
   offsetIndex: number,
   limit: number,
   epochs: Epoch[],
-  filteredEpochs: number[],
+  filteredEpochs: EpochFilter,
   activeEpoch: number | null,
   physioFileID: number | null,
   shapes: number[][],
@@ -64,7 +64,10 @@ export const datasetReducer = (
     chunksURL: '',
     channelMetadata: [],
     epochs: [],
-    filteredEpochs: [],
+    filteredEpochs: {
+      plotVisibility: [],
+      columnVisibility: [],
+    },
     activeEpoch: null,
     physioFileID: null,
     offsetIndex: 1,
