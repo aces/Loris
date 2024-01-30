@@ -107,23 +107,32 @@ class BehaviouralFeedback extends Component {
         );
         break;
       case 'Feedback Level':
-        rowData['Instrument'] ? reactElement = (
+        let bvlLink = '';
+        let bvlLevel = '';
+        if (rowData['Instrument']) {
+          bvlLink = this.props.baseURL +
+                     '/instruments/' +
+                     rowData['Test Name'] +
+                     '/?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'] +
+                     '&commentID=' +
+                     rowData['commentID'];
+          bvlLevel ='Instrument : ' + rowData['Instrument'];
+        } else if (rowData['Visit']) {
+          bvlLink = this.props.baseURL +
+                     '/instrument_list/' +
+                     '?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'];
+          bvlLevel ='Visit : ' + rowData['Visit'];
+        }
+        reactElement = (
           <td>
-            <a href={this.props.baseURL +
-              '/instruments/' +
-              rowData['Test Name'] +
-              '/?candID=' +
-              rowData['DCCID'] +
-              '&sessionID=' +
-              rowData['sessionID'] +
-              '&commentID=' +
-              rowData['commentID']
-              }>
-                {'Instrument : ' + rowData['Instrument']}
-            </a>
+            <a href={bvlLink}>{bvlLevel}</a>
           </td>
-        ) : reactElement = (
-          <td>{''}</td>
         );
         break;
       default:

@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    HeaderElement,
+    StaticElement,
+    SelectElement,
+    DateElement,
+    TextareaElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Media Upload Form

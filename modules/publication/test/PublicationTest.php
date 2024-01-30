@@ -2,7 +2,7 @@
 /**
  * Publication automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Publication automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -28,6 +28,25 @@ require_once __DIR__ .
 
 class PublicaitonTest extends LorisIntegrationTest
 {
+    private $_loadingBrowseUI  = [
+        [
+            "label"    => "Title",
+            "selector" => "#publications_filter_form>div>div:nth-child(1)>div>label",
+        ],
+    ];
+    private $_loadingproposeUI = [
+        [
+            "label"    => "Title*",
+            "selector" => "#propose>div>div>form>div>div:nth-child(1)>div>div>label",
+        ],
+    ];
+    private $_loadingViewUI    = [
+        [
+            "label"    => "Lead Investigator Email",
+            "selector" =>
+        "#lorisworkspace > div > div > div > div > div > form",
+        ],
+    ];
 
     /**
      * Insert testing data into the database
@@ -141,6 +160,35 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+    /**
+     * This function could test UI elements in each Tabs.
+     *
+     * @return void
+     */
+    function testLoadingUIS()
+    {
+        $this->_testPageUIs("/publication", $this->_loadingBrowseUI);
+        $this->_testPageUIs("/publication/#propose", $this->_loadingproposeUI);
+        $this->_testPageUIs("/publication/view_project?id=1", $this->_loadingViewUI);
 
+    }
+    /**
+     * This function could test UI elements in each Tabs.
+     *
+     * @param string $url this is for the url which needs to be tested.
+     * @param array  $uis UI elements in each Tabs.
+     *
+     * @return void
+     */
+    function _testPageUIs($url,$uis)
+    {
+        $this->safeGet($this->url . $url);
+        foreach ($uis as $ui ) {
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($ui['selector'])
+            )->getText();
+            $this->assertStringContainsString($ui['label'], $text);
+        }
+    }
 }
 

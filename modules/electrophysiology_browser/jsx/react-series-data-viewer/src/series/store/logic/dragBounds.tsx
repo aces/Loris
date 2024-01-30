@@ -29,7 +29,7 @@ export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 export const createDragBoundsEpic = () => (
   action$: Observable<any>,
   state$: Observable<any>,
-): Observable<Action> => {
+): Observable<any> => {
   const startDrag$ = action$.pipe(
     ofType(START_DRAG_INTERVAL),
     Rx.map(R.prop('payload'))

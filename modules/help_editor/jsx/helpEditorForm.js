@@ -4,6 +4,7 @@ import {createPortal} from 'react-dom';
 import Markdown from 'jsx/Markdown';
 import Help from 'jsx/Help';
 import swal from 'sweetalert2';
+import {TextboxElement, TextareaElement} from 'jsx/Form';
 
 /**
  * Help Editor Form Page.

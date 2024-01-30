@@ -29,6 +29,7 @@ export type Action =
         chunksURL: string,
         channelNames: string[],
         shapes: number[][],
+        validSamples: number[],
         timeInterval: [number, number],
         seriesRange: [number, number],
         limit: number,
@@ -46,6 +47,7 @@ export type State = {
   activeEpoch: number | null,
   physioFileID: number | null,
   shapes: number[][],
+  validSamples: number[],
   timeInterval: [number, number],
   seriesRange: [number, number],
 };
@@ -68,6 +70,7 @@ export const datasetReducer = (
     offsetIndex: 1,
     limit: DEFAULT_MAX_CHANNELS,
     shapes: [],
+    validSamples: [],
     timeInterval: [0, 1],
     seriesRange: [-1, 2],
   },
@@ -90,7 +93,7 @@ export const datasetReducer = (
       return R.assoc('physioFileID', action.payload, state);
     }
     case SET_DATASET_METADATA: {
-      return R.merge(state, action.payload);
+      return R.mergeAll([state, action.payload]);
     }
     default: {
       return state;
