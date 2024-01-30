@@ -34,7 +34,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
     var $project;
 
-    private bool $exportLabel; // True or false export the Redcap records as label
+    public bool $exportLabel; // True or false export the Redcap records as label
                                // for multiple choice fields. If false, export raw values
 
     var $redcapDateRangeBegin; // Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records
@@ -135,7 +135,7 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function run() : void
     {
-        $records = $this->_fetchRecords();
+        $records = $this->fetchRecords();
 
         if ($records === null) {
             print "\nNo records to import.\n";

@@ -50,7 +50,7 @@ abstract class RedcapReportImporter extends RedcapImporter
 
         do {
             try {
-                $records = $this->redcapClient->_exportReport(
+                $records = $this->redcapClient->exportReport(
                     intval($this->redcapReportId),
                     $this->exportLabel
                 );

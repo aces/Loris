@@ -115,7 +115,7 @@ class RedcapHttpClient
      *
      * @return array
      */
-    private function _exportReport(
+    public function exportReport(
         int  $reportId,
         bool $label = false,
     ): array {
