@@ -24,11 +24,15 @@ class RedcapHttpClient
     /**
      * Returns a list of records from REDCap.
      *
-     * @param ?string $pscid       The participant id
-     * @param ?string $visit_label The visit label
-     * @param ?string $instrument  The instrument name
-     * @param bool    $label       Indicates labels should be exported for options of
-     *                             multiple choice fields, instead of raw coded values
+     * @param ?string $pscid          The participant id
+     * @param ?string $visit_label    The visit label
+     * @param ?string $instrument     The instrument name
+     * @param bool    $label          Indicates labels should be exported for options of
+     *                                multiple choice fields, instead of raw coded values
+     * @param ?string $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     *                                created or modified
+     * @param ?string $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     *                                              created or modified
      *
      * @return array
      */
@@ -37,6 +41,8 @@ class RedcapHttpClient
         ?string $visit_label = null,
         ?string $instrument = null
         bool    $label = false,
+        ?string $dateRangeBegin = null,
+        ?string $dateRangeEnd = null
     ): array {
 
         $rawOrLabel = $label ? 'label' : 'raw';
@@ -70,6 +76,14 @@ class RedcapHttpClient
 
         if ($instrument !== null) {
             $data['forms'] = [$instrument];
+        }
+
+        if ($dateRangeBegin !== null) {
+            $data['dateRangeBegin'] = $dateRangeBegin;
+        }
+
+        if ($dateRangeEnd !== null) {
+            $data['dateRangeEnd'] = $dateRangeEnd;
         }
 
         $response = $this->_client->request(

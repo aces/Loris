@@ -34,16 +34,30 @@ abstract class RedcapImporter implements IRedcapImporter
 
     private bool $exportLabel; // True or false export the Redcap records as label
                                // for multiple choice fields. If false, export raw values
+
+    var $redcapDateRangeBegin; // Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records
+                               // were created/modified
+    var $redcapDateRangeEnd;   // Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records
+                               // were created/modified
     /**
      * Create new instance.
      *
-     * @param \LORIS\LorisInstance $loris       The LORIS instance that data is being
-     *                                          imported from.
-     * @param string               $project     The LORIS project to import for
-     * @param bool                 $exportLabel The export label boolean
+     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
+     *                                             imported from.
+     * @param string               $project        The LORIS project to import for
+     * @param bool                 $exportLabel    The export label boolean
+     * @param ?string              $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     *                                             created or modified
+     * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     *                                             created or modified
      */
-    function __construct(\LORIS\LorisInstance $loris, string $project, bool $exportLabel = false)
-    {
+    function __construct(
+        \LORIS\LorisInstance $loris,
+        string               $project,
+        bool                 $exportLabel = false,
+        ?string              $dateRangeBegin = null,
+        ?string              $dateRangeEnd = null
+    ) {
         $this->loris = $loris;
         $this->DB    = $this->loris->getDatabaseConnection();
 
@@ -73,6 +87,9 @@ abstract class RedcapImporter implements IRedcapImporter
 
         $this->project     = $project;
         $this->exportLabel = $exportLabel;
+
+        $this->redcapDateRangeBegin = $dateRangeBegin;
+        $this->redcapDateRangeEnd   = $dateRangeEnd;
     }
 
     /**
@@ -149,7 +166,9 @@ abstract class RedcapImporter implements IRedcapImporter
                     null,
                     null,
                     null,
-                    $this->exportLabel
+                    $this->exportLabel,
+                    $this->redcapDateRangeBegin,
+                    $this->redcapDateRangeEnd
                 );
             } catch (Exception $e) {
                 $attempts++;
@@ -1059,7 +1078,9 @@ abstract class RedcapImporter implements IRedcapImporter
                     $record_id,
                     $event,
                     $form,
-                    $this->exportLabel
+                    $this->exportLabel,
+                    $this->redcapDateRangeBegin,
+                    $this->redcapDateRangeEnd
                 );
             } catch (Exception $e) {
                 $attempts++;

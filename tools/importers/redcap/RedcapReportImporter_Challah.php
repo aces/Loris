@@ -1,6 +1,18 @@
 <?php
 /**
- * This file contains code to import REDCap data into LORIS
+ * This file contains code to import REDCap data into LORIS.
+ * The script first sends an API request to export a REDCap
+ * report of filtered record_ids, and then exports each record's
+ * instrument data. Each record in the REDCap report represents
+ * a visit (a REDCap event).
+ *
+ * This script can either be run to import all instrument data
+ * from REDCap, or only query REDCap data that has been created
+ * or modified within the last given number of days. The tag --since
+ * can be appended to the calling of the script to provide the
+ * number of days from which to fetch data.
+ *
+ * Usage: php RedcapReportImporter_Challah.php [--since 14]
  *
  * PHP 8
  *
@@ -11,7 +23,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../generic_includes.php';
-require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
 namespace \LORIS\redcap\Importers;
 
@@ -19,7 +30,30 @@ use LORIS\StudyEntities\Candidate\CandID;
 
 $project     = 'Challah';
 $exportLabel = true;
-$Runner      = new RedcapReportImporter_Challah($lorisInstance, $exportLabel, $project);
+
+$dateRangeBegin = null;
+$dateRangeEnd   = null;
+
+// Get days since to query REDCap data
+$opts = getopt("", ["since:"]);
+if (array_key_exists('since', $opts) && $opts['since'] != null) {
+    $days_since = $opts['since'];
+    // Set timezone
+    date_default_timezone_set("America/New_York");
+    $dateRangeEnd = date("Y-m-d H:i:s");
+    $dateRangeBegin = new DateTime($dateRangeEnd);
+    $dateRangeBegin->sub(new DateInterval("P{$days_since}D"));
+    $dateRangeBegin = $dateRangeBegin->format("Y-m-d H:i:s");
+}
+
+$Runner = new RedcapReportImporter_Challah(
+    $lorisInstance,
+    $project
+    $exportLabel,
+    $dateRangeBegin,
+    $dateRangeEnd
+);
+
 $Runner->run();
 
 /**
@@ -38,16 +72,25 @@ class RedcapReportImporter_Challah extends RedcapReportImporter
     /**
      * Create new instance.
      *
-     * @param \LORIS\LorisInstance $loris       The LORIS instance that data is being
-     *                                          imported from.
-     * @param string               $project     The LORIS project to import for
-     * @param bool                 $exportLabel The export label boolean
+     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
+     *                                             imported from.
+     * @param string               $project        The LORIS project to import for
+     * @param bool                 $exportLabel    The export label boolean
+     * @param ?string              $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     *                                             created or modified
+     * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     *                                             created or modified
      *
      * @return array
      */
-    function __construct(\LORIS\LorisInstance $loris, string $project, bool $exportLabel = false)
-    {
-        parent::__construct($loris, $project, $exportLabel);
+    function __construct(
+        \LORIS\LorisInstance $loris,
+        string               $project,
+        bool                 $exportLabel = false,
+        ?string              $dateRangeBegin = null,
+        ?string              $dateRangeEnd = null
+    ){
+        parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
     }
 }
 ?>

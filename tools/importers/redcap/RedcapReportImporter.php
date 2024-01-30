@@ -14,14 +14,25 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
     /**
      * Create new instance.
      *
-     * @param \LORIS\LorisInstance $loris       The LORIS instance that data is being
-     *                                          imported from.
-     * @param string               $project     The LORIS project to import for
-     * @param bool                 $exportLabel The export label boolean
+     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
+     *                                             imported from.
+     * @param string               $project        The LORIS project to import for
+     * @param bool                 $exportLabel    The export label boolean
+     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
+     *                                             imported from.
+     * @param ?string              $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     *                                             created or modified
+     * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     *                                             created or modified
      */
-    function __construct(\LORIS\LorisInstance $loris, string $project, bool $exportLabel = false)
-    {
-        parent::__construct($loris, $project, $exportLabel);
+    function __construct(
+        \LORIS\LorisInstance $loris,
+        string               $project,
+        bool                 $exportLabel = false,
+        ?string              $dateRangeBegin = null,
+        ?string              $dateRangeEnd = null
+    ) {
+        parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
 
         $this->redcapReportId = getReportId();
     }
@@ -61,42 +72,7 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
      */
     function getReportId() : int
     {
-        return $this->getImporterConfig('reportId');
+        return $this->redcapConfig->getImporterConfig('reportId');
     }
-
-    /**
-     * Create new candidates
-     *
-     * @param array $records Array of REDCap records
-     *
-     * @return array $new_candidates Array of new candidates created
-     */
-   abstract function createNewCandidates(array $records) : array;
-
-    /**
-     * Create new visits
-     *
-     * @param array $records Array of REDCap records
-     *
-     * @return array $new_visits Array of new visits created
-     */
-    abstract function createNewVisits(array $records) : array;
-
-    /**
-     * Update candidate consent
-     *
-     * @param array $records Array of REDCap records
-     *
-     * @return array $new_consents Array of consent data imported
-     */
-    abstract function updateCandidateConsents(array $records) : array;
-    /**
-     * Update candidate instrument data
-     *
-     * @param array $records Array of REDCap records
-     *
-     * @return array $new_data Array of instrument data imported
-     */
-    abstract function updateCandidateData(array $records) : array;
 }
 
