@@ -52,9 +52,6 @@
 5. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
 6. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
 7. Enter the following combinations:
-    * Consent to Study = Not Applicable 
-        * No error 
-        * Make sure they update properly in the front-end and backend
     * Consent to Study = No  (error: must enter Date of 'No' Consent)
     * Consent to Study = Yes (error: must enter Date of 'Yes' Consent)
     * Consent to Study = Yes/No; Date of Consent = random date
@@ -69,7 +66,6 @@
     * Consent to Study = No (changing/updating an already existing 'Yes' consent); Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
         * No error
         * Make sure they update properly in the front-end and backend
-    * Check that Consent to Study = Not Applicable is not an option when changing/updating an already existing 'Yes' or 'No' consent
 
 ### Date of Birth Tab
 1. Check that date of birth can only be amended if user has candidate_dob_edit permission.
