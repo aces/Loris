@@ -171,7 +171,7 @@ class Role implements \LORIS\Data\DataInstance
      * 
      * @return array an array of permissions values.
      */
-    private static function getAllPermissions(LorisInstance $loris): array
+    public static function getAllPermissions(LorisInstance $loris): array
     {
         $db = $loris->getDatabaseConnection();
         return $db->pselect(
