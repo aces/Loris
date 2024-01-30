@@ -15,7 +15,14 @@ class RolesManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {role, setRole, add, errors, handleSubmit, hasPermission} = this.props;
+    const {
+      role,
+      setRole,
+      add,
+      errors,
+      handleSubmit,
+      hasPermission,
+    } = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -41,7 +48,7 @@ class RolesManagerForm extends Component {
       return (<span>
         Check permissions applicable to this role.<br/>
       </span>);
-    }
+    };
 
     // --------------------------------------
     // permissions checkboxes
@@ -50,13 +57,12 @@ class RolesManagerForm extends Component {
     let p;
     let permissionLabel;
     for (let i = 0; i < role.permissions.length; i++) {
-
       // current permission
       p = role.permissions[i];
 
       // label
-      permissionLabel = (p.moduleName == null ? '' : p.moduleName + ": ")
-        + (p.permissionAction == null ? '' : p.permissionAction + " - ")
+      permissionLabel = (p.moduleName == null ? '' : p.moduleName + ': ')
+        + (p.permissionAction == null ? '' : p.permissionAction + ' - ')
         + p.permissionDescription;
 
       // note: adding a "key" prop here to allow react to uniquely identify
@@ -64,7 +70,7 @@ class RolesManagerForm extends Component {
       permissionCheckboxes.push(
         <CheckboxElement
           key={i}
-          name={"permission-" + p.permissionCode}
+          name={'permission-' + p.permissionCode}
           label={permissionLabel}
           onUserInput={setRole}
           required={false}
@@ -79,38 +85,36 @@ class RolesManagerForm extends Component {
     // --------------------------------------
     // Render
 
-    console.log('Rendering...');
-
     return (
       <FormElement
-        name="roles_form"
+        name='roles_form'
         onSubmit={handleSubmit}
       >
         <StaticElement
-          label="Note"
+          label='Note'
           text={renderHelpText()}
         />
-        
+
         <StaticElement
-          name="Code"
-          label="Code"
+          name='Code'
+          label='Code'
           text={role.Code}
           value={role.Code}
         />
         <TextboxElement
-          name="Name"
-          label="Name"
-          placeHolder="Role name"
+          name='Name'
+          label='Name'
+          placeHolder='Role name'
           onUserInput={setRole}
           required={true}
           value={role.Name}
           errorMessage={errors.Name}
-          hasError={errors.Name} 
+          hasError={errors.Name}
         />
         <TextareaElement
-          name="Description"
-          label="Description"
-          placeHolder="Role description"
+          name='Description'
+          label='Description'
+          placeHolder='Role description'
           onUserInput={setRole}
           required={true}
           value={role.Description}
@@ -120,23 +124,21 @@ class RolesManagerForm extends Component {
 
         {/* permissions checkboxes */}
         <StaticElement
-          label="Permissions"
+          label='Permissions'
           text={renderPermissionsText()}
-        />        
+        />
         {
           role.permissions.map(function(p) {
-            
-            console.log(p);
-
             // label
-            let permissionLabel = (p.moduleName == null ? '' : p.moduleName + ": ")
-              + (p.permissionAction == null ? '' : p.permissionAction + " - ")
+            let permissionLabel = ''
+              + (p.moduleName == null ? '' : p.moduleName + ': ')
+              + (p.permissionAction == null ? '' : p.permissionAction + ' - ')
               + p.permissionDescription;
 
             return (
               <CheckboxElement
                 key={p.permissionCode}
-                name={"permission-" + p.permissionCode}
+                name={'permission-' + p.permissionCode}
                 label={permissionLabel}
                 onUserInput={setRole}
                 required={false}
@@ -152,7 +154,7 @@ class RolesManagerForm extends Component {
 
         {/* submit */}
         <ButtonElement
-          label="Submit"
+          label='Submit'
         />
       </FormElement>
     );

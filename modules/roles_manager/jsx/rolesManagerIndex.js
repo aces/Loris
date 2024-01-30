@@ -52,7 +52,12 @@ class RolesManagerIndex extends Component {
     // get roles data
     this.fetchData(this.props.roleEndpoint, 'GET', 'roles')
     // get permissions list
-    .then(() => this.fetchData(this.props.permissionEndpoint, 'GET', 'permissions'))
+    .then(() => this.fetchData(
+      this.props.permissionEndpoint,
+      'GET',
+      'permissions'
+      )
+    )
     // loaded state
     .then(() => this.setState({isLoaded: true}));
   }
@@ -69,12 +74,7 @@ class RolesManagerIndex extends Component {
     return new Promise((resolve, reject) => {
       return fetch(url, {credentials: 'same-origin', method: method})
       .then((resp) => resp.json())
-      // TODO remove for next line
-      .then((data) => {
-        console.log(data);
-        this.setState({[state]: data}, resolve);
-      })
-      // .then((data) => this.setState({[state]: data}, resolve))
+      .then((data) => this.setState({[state]: data}, resolve))
       .catch((error) => {
         this.setState({error: true}, reject);
         console.error(error);
@@ -151,18 +151,19 @@ class RolesManagerIndex extends Component {
   setRole(name, value) {
     const role = this.state.role;
     // in case the value is a permission (nested object)
-    let permissionPrefix = "permission-";
+    let permissionPrefix = 'permission-';
     if (name.startsWith(permissionPrefix)) {
-
       // search the permission key in the list
       let pkey = Object.keys(role['permissions'])
-        .find(k => role['permissions'][k]['permissionCode'] === name.substring(permissionPrefix.length));
+        .find((k) => {
+          let pCode = role['permissions'][k]['permissionCode'];
+          let nCode = name.substring(permissionPrefix.length);
+          return pCode === nCode;
+        });
 
       // change permission flag
       role['permissions'][pkey]['hasPermission'] = value;
-
     } else {
-      
       // change other values
       role[name] = value;
     }
@@ -188,7 +189,7 @@ class RolesManagerIndex extends Component {
       add: false,
       edit: false,
       role: {},
-      errors: {}
+      errors: {},
     });
   }
 
@@ -200,7 +201,6 @@ class RolesManagerIndex extends Component {
    * @return {object} promise
    */
   saveRole(role, request) {
-    console.log("Saving role...");
     return new Promise((resolve, reject) => {
       Object.keys(role).forEach((key) => {
         if (role[key] == '') {
@@ -215,7 +215,9 @@ class RolesManagerIndex extends Component {
           request
       ))
       .then(() => this.fetchData(this.props.roleEndpoint, 'GET', 'roles'))
-      .then(() => this.fetchData(this.props.permissionEndpoint, 'GET', 'permissions'))
+      .then(() => this.fetchData(
+        this.props.permissionEndpoint, 'GET', 'permissions'
+      ))
       .then(() => resolve())
       .catch((e) => reject(e));
     });
@@ -248,7 +250,7 @@ class RolesManagerIndex extends Component {
     const fields = [
       {
         label: 'RoleID',
-        show: false
+        show: false,
       },
       {
         label: 'Code',
@@ -256,7 +258,7 @@ class RolesManagerIndex extends Component {
         filter: {
           name: 'roleCode',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Name',
@@ -264,7 +266,7 @@ class RolesManagerIndex extends Component {
         filter: {
           name: 'roleName',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Description',
@@ -272,7 +274,7 @@ class RolesManagerIndex extends Component {
         filter: {
           name: 'roleDescription',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Permissions',
@@ -284,7 +286,7 @@ class RolesManagerIndex extends Component {
       },
       {
         label: 'Edit Role',
-        show: hasPermission('roles_edit')
+        show: hasPermission('roles_edit'),
       },
     ];
 
@@ -318,10 +320,6 @@ class RolesManagerIndex extends Component {
     const request = edit ? 'PUT' : 'POST';
 
     const handleSubmit = () => {
-
-      console.log("--------------------");
-      console.log(request);
-
       // no user in this role or new role
       if (role.nbUsers == null || role.nbUsers == 0) {
         // no user in this role, can edit without warning.
@@ -343,7 +341,10 @@ class RolesManagerIndex extends Component {
         if (result.value) {
           // proceed with the change
           return this.saveRole(role, request);
-        } else if (result.dismiss === 'cancel' || result.dismiss == 'backdrop') {
+        } else if (
+          result.dismiss === 'cancel'
+          || result.dismiss == 'backdrop'
+        ) {
           // cancel or backdrop (clicked outside the confirmation modal)
           return false;
         }
@@ -355,7 +356,7 @@ class RolesManagerIndex extends Component {
     return (
       <div>
         <FilterableDataTable
-          name="roles_manager"
+          name='roles_manager'
           data={rolesArray}
           fields={fields}
           actions={actions}
@@ -450,7 +451,9 @@ window.addEventListener('load', () => {
   ).render(
     <RolesManagerIndex
       roleEndpoint={`${loris.BaseURL}/roles_manager/roleendpoint/`}
-      permissionEndpoint={`${loris.BaseURL}/roles_manager/rolepermissionsendpoint`}
+      permissionEndpoint={
+        `${loris.BaseURL}/roles_manager/rolepermissionsendpoint`
+      }
       hasPermission={loris.userHasPermission}
     />
   );
