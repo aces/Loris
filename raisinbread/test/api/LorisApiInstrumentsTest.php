@@ -101,10 +101,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers,
                 'json'    => $json_data,
             ]
-	);
-	$this->markTestSkipped(
-              'Fix this test later'
-            );
+	    );
+	    $this->markTestSkipped('Fix this test later');
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
