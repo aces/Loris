@@ -158,6 +158,7 @@ abstract class RedcapImporter implements IRedcapImporter
             $site    = '';
             $dob     = '';
             $sex     = '';
+
             foreach ($mapping as $loris_field => $redcap_field) {o
 
                 $val = ''; // The redcap data point
@@ -242,7 +243,101 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_visits Array of new visits created
      */
-    abstract function createNewVisits(array $records) : array;
+    function createNewVisits(array $records) : array
+    {
+        $new_visits = [];
+        $project    = $this->project;
+        $mapping    = $this->getMetadataMapping();
+
+        print "\nCreating visits..\n\n";
+        // record is at the visit level i.e. redcap_event_name
+        foreach ($records as $row) {
+            $pscid = $row[$mapping['pscid']];
+
+            // Check if candidate exists before attempting
+            // to create visit
+            if (!$this->candidateExists($pscid)) {
+                continue;
+            }
+
+            // Get row visit label
+            $visit = $this->getVisitMapping($row[$mapping['visit']]);
+            if ($visit === null) {
+                print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
+                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
+                                        . " for candidate $pscid: visit label invalid.";
+                continue;
+            }
+
+            // Get candidate id
+            $dccid = $this->getCandidateID($pscid);
+            if ($dccid === null) {
+                $error_message = "Getting candidate ID for $pscid failed.";
+                print "\t$error_message\n";
+                $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            // If visit already exists in LORIS, skip
+            if ($this->visitExists($dccid, $visit)) {
+                continue;
+            }
+
+            // Get cohort value
+            $cohort       = ''; // The redcap data point
+            $cohort_field = ''; // The redcap variable name
+
+            // If there are multiple REDCap fields for cohort,
+            // use the first field in list with a non empty value
+            $redcap_field = $mapping['cohort');
+            if (is_array($redcap_field) {
+                $cohort_field = current(array_filter($redcap_field, function ($i) use ($row) {
+                    return isset($row[$i]) && strlen($row[$i]) != 0;
+                }));
+            } else {
+                $cohort_field = $redcap_field;
+            }
+
+            // If cohort data not available in REDCap row,
+            // get candidate's most recent visit cohort in LORIS
+            $cohort = $this->getCohortMapping()[$row[$cohort_field] ?? '']
+                ?? \Candidate::singleton(new CandID($dccid))->getCohortForMostRecentVisit()['title']
+                ?? '';
+
+            // Validate create visit values
+            if ($cohort === ''
+                || $project === ''
+            ) {
+                $error_message = "Cannot create visit $visit for candidate $pscid: cohort missing or invalid.";
+                print "\t$error_message\n";
+                $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            // Get candidate site
+            $site = $this->getCandidateSite($pscid);
+
+            print "\tCreating visit $visit for candidate $pscid:\n";
+            $new_visit = $this->createVisit(
+                $dccid,
+                $visit,
+                $site,
+                $cohort,
+                $project
+            );
+
+            if (is_null($new_visit)) {
+                print "\t\tVisit $visit NOT created for candidate $pscid.";
+                $this->errors[$pscid][] = "Creating visit $visit for candidate $pscid failed.";
+                continue;
+            }
+
+            print "\t\t201 Created visit for candidate $pscid: $visit\n";
+            $new_visits[] = $new_visit;
+        }
+
+        return $new_visits;
+    }
 
     /**
      * Update candidate consent
@@ -433,7 +528,14 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getCohortMapping() : array
     {
-        return getImporterConfig()['cohortMapping'];
+        $config  = getImporterConfig()['cohortMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     /**
@@ -447,7 +549,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $config  = getImporterConfig()['siteMapping'];
         $mapping = [];
 
-        foreach($config as $option) {
+        foreach ($config as $option) {
             $mapping[$option['redcapValue']] = $option['lorisValue'];
         }
 
@@ -465,7 +567,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $config  = getImporterConfig()['sexMapping'];
         $mapping = [];
 
-        foreach($config as $option) {
+        foreach ($config as $option) {
             $mapping[$option['redcapValue']] = $option['lorisValue'];
         }
 
@@ -473,15 +575,20 @@ abstract class RedcapImporter implements IRedcapImporter
     }
 
     /**
-     * Get visit mapping for LORIS by REDCap visit label
+     * Get visit mapping for LORIS by REDCap visit in config file
      *
-     * @param $visit_label The REDCap visit label
-     *
-     * @return ?string The Loris visit value for the redcap visit label
+     * @return array An array of visit mapping
      */
-    function getVisitMapping (string $visit_label) : ?string
+    function getVisitMapping() : array
     {
-        return getImporterConfig()['visitMapping'];
+        $config  = getImporterConfig()['visitMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     function getInstrumentMapping(): array
@@ -994,5 +1101,101 @@ abstract class RedcapImporter implements IRedcapImporter
 
         return $update_consent_rel;
     }
-}
 
+    /**
+     * Checks if visit exists by its visit label and cand id
+     *
+     * @param $dccid       The candidate id, DCCID
+     * @param $visit_label The visit label
+     *
+     * return bool True if visit exists
+     */
+    function visitExists(string $dccid, string $visit_label) : bool
+    {
+        return $this->getCandidateVisit($dccid, $visit_label) ? true : false;
+    }
+
+    /**
+     * Get candidate visit
+     *
+     * @param string $dccid The candidate id, DCCID
+     * @param string $visit The visit label
+     *
+     * return ?\Swagger\Client\Model\InlineResponse2003 The visit object
+     */
+    function getCandidateVisit(string $dccid, string $visit) : ?\Swagger\Client\Model\InlineResponse2003
+    {
+        try {
+            $apiInstance = new Swagger\Client\Api\VisitApi(
+                $this->httpClient,
+                $this->lorisApiConfig
+            );
+            $result = $apiInstance->candidatesIdVisitGet($dccid, $visit);
+        } catch (Exception $e) {
+            // Returns 404 if not found
+            return null;
+        }
+
+        if (empty($result) || is_null($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Gets a candidate's site
+     *
+     * @param $id The candidate id, PSCID or DCCID
+     *
+     * @return ?string The candidate site
+     */
+    function getCandidateSite(string $id) : ?string
+    {
+        return  $this->getCandidate($id)['meta']['site'] ?? null;
+    }
+
+    /**
+     * Create new visit
+     *
+     * @param string $candid     DCCID
+     * @param string $visit      Visit
+     * @param string $site       Site
+     * @param string $subproject Subproject
+     * @param string $project    Project
+     *
+     * @return ?\Swagger\Client\Model\InlineResponse2003 $result The created visit object
+     */
+    function createVisit(
+        string                      $candid,
+        string                      $visit,
+        string                      $site,
+        string                      $subproject,
+        string                      $project
+    ) : ?\Swagger\Client\Model\InlineResponse2003
+    {
+        $apiInstance = new Swagger\Client\Api\VisitApi(
+            $this->httpClient,
+            $this->lorisApiConfig
+        );
+
+        $body = new \Swagger\Client\Model\VisitMetaFields([
+            'cand_id' => $candid,
+            'visit'   => $visit,
+            'site'    => $site,
+            'battery' => $subproject,
+            'project' => $project,
+        ]);
+
+        try {
+            $apiInstance->candidatesIdVisitPut($candid, $visit, $body);
+        } catch (Exception $e) {
+            print "\nException when calling VisitApi->candidatesIdVisitPut: " . $e->getMessage() . PHP_EOL;
+            return null;
+        }
+
+        // Because candidatesIdVisitPut returns void,
+        // check that the timepoint was created, and return result
+        return $this->getCandidateVisit($candid, $visit);
+    }
+}
