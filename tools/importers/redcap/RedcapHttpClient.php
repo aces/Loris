@@ -32,14 +32,14 @@ class RedcapHttpClient
      * @param ?string $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
      *                                created or modified
      * @param ?string $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
-     *                                              created or modified
+     *                                created or modified
      *
      * @return array
      */
     private function _exportRecords(
         ?string $pscid = null,
         ?string $visit_label = null,
-        ?string $instrument = null
+        ?string $instrument = null,
         bool    $label = false,
         ?string $dateRangeBegin = null,
         ?string $dateRangeEnd = null
@@ -111,7 +111,7 @@ class RedcapHttpClient
     /**
      * Returns a report from REDCap.
      *
-     * @param int $reportId  The report id
+     * @param int  $reportId The report id
      * @param bool $label    Indicates labels should be exported for options of
      *                       multiple choice fields, instead of raw coded values
      *
@@ -125,15 +125,15 @@ class RedcapHttpClient
         $rawOrLabel = $label ? 'label' : 'raw';
 
         $data = [
-            'token'                  => $this->_token,
-            'content'                => 'report',
-            'format'                 => 'json',
-            'report_id'              => $reportId,
-            'csvDelimiter'           => '',
-            'rawOrLabel'             => $rawOrLabel,
-            'rawOrLabelHeaders'      => 'raw',
-            'exportCheckboxLabel'    => 'false',
-            'returnFormat'           => 'json'
+            'token'               => $this->_token,
+            'content'             => 'report',
+            'format'              => 'json',
+            'report_id'           => $reportId,
+            'csvDelimiter'        => '',
+            'rawOrLabel'          => $rawOrLabel,
+            'rawOrLabelHeaders'   => 'raw',
+            'exportCheckboxLabel' => 'false',
+            'returnFormat'        => 'json'
         ];
 
         $response = $this->_client->request(

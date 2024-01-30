@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-namespace \LORIS\redcap\Importers;
-
 /**
  * This represents a REDCap Report importer
  *
@@ -42,7 +40,7 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
      *
      * @return array $records The array of records in the REDCap report
      */
-    private function _fetchRecords() : array
+    public function fetchRecords() : array
     {
         $NUM_OF_ATTEMPTS = 3;
         $attempts        = 0;
@@ -68,9 +66,9 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
     /**
      * Gets the REDCap report Id from importer configurations
      *
-     * @return int the REDCap Report ID 
+     * @return int the REDCap Report ID
      */
-    function getReportId() : int
+    public function getReportId() : int
     {
         return $this->redcapConfig->getImporterConfig('reportId');
     }

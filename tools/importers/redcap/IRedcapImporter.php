@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
-namespace LORIS\redcap\Importers;
-
 /**
  * This interface allows for type abstraction of REDCap importers
  *
@@ -20,11 +18,11 @@ interface IRedcapImporter
      *
      * @return Swagger\Client\Configuration The LORIS api configuration
      */
-    private function _loginApi(
+    public function loginApi(
         Swagger\Client\Configuration $config,
         string $username,
         string $password
-    ): Swagger\Client\Configuration;
+    ) : Swagger\Client\Configuration;
 
     /**
      * Runs the importer
@@ -38,7 +36,7 @@ interface IRedcapImporter
      *
      * @return array $records The array of records in the REDCap report
      */
-    private function _fetchRecords() : array;
+    public function fetchRecords() : array;
 
     /**
      * Create new candidates
@@ -47,7 +45,7 @@ interface IRedcapImporter
      *
      * @return array $new_candidates Array of new candidates created
      */
-   function createNewCandidates(array $records) : array;
+    function createNewCandidates(array $records) : array;
 
     /**
      * Create new visits
@@ -56,7 +54,7 @@ interface IRedcapImporter
      *
      * @return array $new_visits Array of new visits created
      */
-    abstract function createNewVisits(array $records) : array;
+    function createNewVisits(array $records) : array;
 
     /**
      * Update candidate consent
@@ -65,8 +63,8 @@ interface IRedcapImporter
      *
      * @return array $new_consents Array of consent data imported
      */
-    abstract function updateCandidateConsents(array $records) : array;
-}
+    function updateCandidateConsents(array $records) : array;
+
     /**
      * Update candidate instrument data
      *
@@ -74,7 +72,7 @@ interface IRedcapImporter
      *
      * @return array $new_data Array of instrument data imported
      */
-    abstract function updateCandidateData(array $records) : array;
+    function updateCandidateData(array $records) : array;
 
     /**
      * Creates run log
@@ -136,7 +134,7 @@ interface IRedcapImporter
      *
      * @return ?string The Loris visit value for the redcap visit label
      */
-    function getVisitMapping (string $visit_label) : ?string;
+    function getVisitMapping(string $visit_label) : ?string;
 
     function getInstrumentMapping(): array;
 
@@ -145,8 +143,8 @@ interface IRedcapImporter
      *
      * @param string $instrument The instrument name
      *
-     * return ?string The date_taken field name for that instrument,
-     *                or null if doesn't exist
+     * @return ?string The date_taken field name for that instrument,
+     *                 or null if doesn't exist
      */
     function getDateTakenMapping(string $instrument) : ?string;
 
@@ -157,7 +155,7 @@ interface IRedcapImporter
      *
      * @param string $fieldname The field name in REDcap
      *
-     * return ?string The LORIS equivalent field name
+     * @return ?string The LORIS equivalent field name
      */
     function getStatusFieldsMapping(string $fieldname) : ?string;
 
@@ -166,8 +164,8 @@ interface IRedcapImporter
      *
      * @param string $instrument The instrument name
      *
-     * return ?string The examiner field name for that instrument,
-     *                or null if doesn't exist
+     * @return ?string The examiner field name for that instrument,
+     *                           or null if doesn't exist
      */
     function getExaminerMapping(string $instrument) : ?string;
 
@@ -180,11 +178,11 @@ interface IRedcapImporter
     /**
      * Get candidate instrument REDCap record
      *
-     * @param string $record_id  The REDCap record id, the candidate id
-     * @param string $event      The raw event name, the visit
-     * @param string $form       The form name, the instrument
+     * @param string $record_id The REDCap record id, the candidate id
+     * @param string $event     The raw event name, the visit
+     * @param string $form      The form name, the instrument
      *
-     * return ?array The redcap form records
+     * @return ?array The redcap form records
      */
     function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array;
 
@@ -195,7 +193,7 @@ interface IRedcapImporter
      * @param string $visit      The visit label
      * @param string $instrument The instrument name
      *
-     * return ?array The instrument data
+     * @return ?array The instrument data
      */
     function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array;
 
@@ -206,7 +204,7 @@ interface IRedcapImporter
      * @param string $visit      The visit label
      * @param string $instrument The instrument name
      *
-     * return ?Swagger\Client\Model\InstrumentFlagsFlags The instrument flags data
+     * @return ?Swagger\Client\Model\InstrumentFlagsFlags The instrument flags data
      */
     function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags;
 
@@ -225,7 +223,7 @@ interface IRedcapImporter
         string                       $administration,
         Swagger\Client\Configuration $clientConfig
     ) : bool;
-    
+
     function setInstrumentValidityFlag(
         string                       $candid,
         string                       $visit,

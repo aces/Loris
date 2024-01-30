@@ -13,7 +13,7 @@ interface IRedcapReportImporter extends IRedcapImporter
     /**
      * Gets the REDCap report Id from importer configurations
      *
-     * @return int the REDCap Report ID 
+     * @return int the REDCap Report ID
      */
-    function getReportId() : int;
+    public function getReportId() : int;
 }

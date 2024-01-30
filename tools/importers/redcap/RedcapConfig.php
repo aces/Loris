@@ -16,7 +16,7 @@ class RedcapConfig
     function __construct($project)
     {
         $this->configFilePath = __DIR__ . "redcap_config_$project.json";
-        $this->import_config = $this->_load();
+        $this->import_config  = $this->_load();
     }
 
     private function _load(): array
@@ -208,8 +208,8 @@ class RedcapConfig
             }
 
             $dates[$date_field['id']] = [
-                'format'    = $date_field['format'],
-                'component' = $components
+                'format'    => $date_field['format'],
+                'component' => $components
             ];
         }
 
