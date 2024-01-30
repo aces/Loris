@@ -5,10 +5,10 @@
  *
  * PHP Version 8
  *
- * @package  Roles_Manager
- * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @package Roles_Manager
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\roles_manager;
@@ -19,10 +19,10 @@ namespace LORIS\roles_manager;
  *
  * PHP Version 8
  *
- * @package  Roles_Manager
- * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @package Roles_Manager
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 class RoleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {

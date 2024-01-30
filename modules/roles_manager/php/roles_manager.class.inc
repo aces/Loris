@@ -31,11 +31,13 @@ class Roles_Manager extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission([
-            'roles_view',
-            'roles_edit',
-            'roles_assign'
-        ]);
+        return $user->hasAnyPermission(
+            [
+                'roles_view',
+                'roles_edit',
+                'roles_assign'
+            ]
+        );
     }
 
     /**

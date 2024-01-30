@@ -32,16 +32,16 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * Create a new Test Instance.
      *
-     * @param \LORIS\LorisInstance $loris  The LORIS instance
-     * @param array                $row    The row (in the same format as
-                                           \Database::pselectRow returns)
+     * @param \LORIS\LorisInstance $loris The LORIS instance
+     * @param array                $row   The row (in the same format as
+                                          \Database::pselectRow returns)
      */
     public function __construct(
         \LORIS\LorisInstance $loris,
         array $row
     ) {
-        $this->row    = $row;
-        $this->loris  = $loris;
+        $this->row   = $row;
+        $this->loris = $loris;
 
         // list of permissions
         if (!isset($this->row['permissions'])) {
@@ -112,7 +112,6 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * Useful during new Role creation.
      * Generate the corresponding role code from a given role name.
-     * 
      *
      * @param string $name a role name
      *
@@ -137,9 +136,9 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Returns if the current role has the permission code.
-     * 
-     * @param string $code a permission code.
-     * 
+     *
+     * @param string $permissionCode a permission code.
+     *
      * @return bool true if it has, else false.
      */
     public function hasPermission(string $permissionCode): bool
@@ -148,7 +147,7 @@ class Role implements \LORIS\Data\DataInstance
         if (empty($permissionCode) || empty($permissions)) {
             return false;
         }
-        // 
+        //
         $permissionCodes = array_map(
             fn($v) => $v['permissionCode'],
             array_filter(
@@ -161,14 +160,16 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Get all permissions values from DB.
-     * 
+     *
      * Values are formatted as follow:
      * - permissionID: permission id,
      * - permissionCode: permission code,
      * - permissionDescription: permission description,
      * - permissionAction: linked actions,
      * - moduleName: module name.
-     * 
+     *
+     * @param LorisInstance $loris as loris instance object.
+     *
      * @return array an array of permissions values.
      */
     public static function getAllPermissions(LorisInstance $loris): array
@@ -181,7 +182,7 @@ class Role implements \LORIS\Data\DataInstance
                 p.Description AS permissionDescription,
                 p.action AS permissionAction,
                 m.Name AS moduleName
-            FROM permissions p 
+            FROM permissions p
                 JOIN modules m ON (p.moduleID = m.ID)
             WHERE p.code <> 'superuser'
             ORDER BY m.Name",
@@ -191,23 +192,23 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Get this role permissions values from DB.
-     * 
+     *
      * Values are formatted as follow:
      * - permissionCode: permission code,
      * - permissionDescription: permission description,
      * - permissionAction: linked actions,
      * - moduleName: module name,
      * - hasPermission: true if the current role has the permission, else false.
-     * 
+     *
      * @return array an array of permissions values.
      */
     public function getPermissions(): array
     {
         $db = $this->loris->getDatabaseConnection();
-        
+
         // all permission
         $allPermissions = Role::getAllPermissions($this->loris);
-        
+
         // all of this role permissions
         $query = "SELECT
                 p.code AS permissionCode,
@@ -223,16 +224,18 @@ class Role implements \LORIS\Data\DataInstance
 
         // query
         $res = $db->pselect(
-            $query, 
+            $query,
             ['rid' => $this->row['RoleID']]
         );
 
         // add a new indication if the role has the permission or not.
         $permissions = [];
-        $pCodes = array_map(fn($v) => $v['permissionCode'], $res);
+        $pCodes      = array_map(fn($v) => $v['permissionCode'], $res);
         foreach ($allPermissions as $p) {
             $newPermission = $p;
-            $newPermission['hasPermission'] = (array_search($p['permissionCode'], $pCodes, true) !== false);
+            $newPermission['hasPermission'] = (
+                array_search($p['permissionCode'], $pCodes, true) !== false
+            );
             $permissions[] = $newPermission;
         }
 
@@ -242,6 +245,8 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * Update this role permissions in DB.
      * Change the DB values based on those in $this->row['permissions'].
+     *
+     * @return void
      */
     public function updateRolePermissions(): void
     {
@@ -263,12 +268,12 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Get all users taht have access to the current role.
-     * 
+     *
      * @return array<\User> an array of User objects.
      */
     public function getRoleUsers(): array
     {
-        $db = $this->loris->getDatabaseConnection();
+        $db      = $this->loris->getDatabaseConnection();
         $userIDs = $db->pselectCol(
             "SELECT u.UserID
             FROM users u
@@ -286,12 +291,12 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Get a permission ID (permID) based on a permission code.
-     * 
+     *
      * @param string $code a permission code.
-     * 
+     *
      * @return ?string a permission ID (permID) if found, else null
      */
-    private function getPermissionIDFromCode(string $code): ?string
+    private function _getPermissionIDFromCode(string $code): ?string
     {
         if (empty($code)) {
             return null;
@@ -307,11 +312,13 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Revoke a permission from a user.
-     * 
+     *
      * @param \User  $user a LORIS user.
      * @param string $code a permission code to revoke.
+     *
+     * @return void
      */
-    private function revokeUserPermission(\User $user, string $code): void
+    private function _revokeUserPermission(\User $user, string $code): void
     {
 
         // all other user roles
@@ -323,24 +330,25 @@ class Role implements \LORIS\Data\DataInstance
         error_log('   - considering permission: ' . $code);
 
         $hasPermission = $user->hasPermission($code);
-        error_log('    - has permission "' . $code . '": ' . (($hasPermission) ? 'yes' : 'no'));
-        
+        error_log('    - has permission "' . $code . '": '
+            . (($hasPermission) ? 'yes' : 'no'));
+
         // not permission to revoke
         if (!$hasPermission) {
             error_log('    - skipping');
             return;
         }
-        
+
         // does this user has other roles with that same permission?
         if (empty($otherRoles)) {
             // no other role, can be revoked
             error_log('    - no other role, can revoke');
             error_log('   - REVOKE: ' . $code);
-            $permID = $this->getPermissionIDFromCode($code);
+            $permID = $this->_getPermissionIDFromCode($code);
             if (!is_null($permID)) {
                 $user->removePermissions([$permID]);
             }
-            
+
         } else {
             // other role, need to check the roles
             // if at least one role has the same permission, leave it.
@@ -358,7 +366,7 @@ class Role implements \LORIS\Data\DataInstance
             if (!$found) {
                 error_log('    - not found, revoke');
                 error_log('   - REVOKE: ' . $code);
-                $permID = $this->getPermissionIDFromCode($code);
+                $permID = $this->_getPermissionIDFromCode($code);
                 if (!is_null($permID)) {
                     $user->removePermissions([$permID]);
                 }
@@ -370,15 +378,18 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Grant a permission to a user.
-     * 
+     *
      * @param \User  $user a LORIS user.
      * @param string $code a permission code to grant.
+     *
+     * @return void
      */
-    private function grantUserPermission(\User $user, string $code): void
+    private function _grantUserPermission(\User $user, string $code): void
     {
         error_log('   - considering permission: ' . $code);
         $hasPermission = $user->hasPermission($code);
-        error_log('    - already has permission "' . $code . '": ' . (($hasPermission) ? 'yes' : 'no'));
+        error_log('    - already has permission "' . $code . '": '
+            . (($hasPermission) ? 'yes' : 'no'));
 
         // Already has permission, then skip.
         // If the user already has that permission, it could be from another
@@ -390,7 +401,7 @@ class Role implements \LORIS\Data\DataInstance
         }
 
         // else grant it
-        $permID = $this->getPermissionIDFromCode($code);
+        $permID = $this->_getPermissionIDFromCode($code);
         if (!is_null($permID)) {
             $user->addPermissions([$permID]);
         }
@@ -399,15 +410,14 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * Update all permissions for users that have access to this role.
      * This method will try to revoke first, then grant permissions.
-     * 
+     *
      * @param array<string> $toGrant  an array of permission codes to grant.
      * @param array<string> $toRevoke an array of permission codes to revoke.
      */
     public function updateUserPermissions(array $toGrant, array $toRevoke): void
     {
         error_log(" ======================= Updating user permissions...");
-        
-        
+
         // if no user for this role, skip.
         if (!isset($this->row['nbUsers']) || $this->row['nbUsers'] == 0) {
             error_log('No user in this role. Skipping.');
@@ -429,7 +439,7 @@ class Role implements \LORIS\Data\DataInstance
             if (!empty($toRevoke)) {
                 error_log('  -> trying to revoke permissions...');
                 foreach ($toRevoke as $pCodeToRevoke) {
-                    $this->revokeUserPermission($user, $pCodeToRevoke);
+                    $this->_revokeUserPermission($user, $pCodeToRevoke);
                 }
             }
 
@@ -437,7 +447,7 @@ class Role implements \LORIS\Data\DataInstance
             if (!empty($toGrant)) {
                 error_log('  -> trying to grant permissions...');
                 foreach ($toGrant as $pCodeToGrant) {
-                    $this->grantUserPermission($user, $pCodeToGrant);
+                    $this->_grantUserPermission($user, $pCodeToGrant);
                 }
             }
         }
@@ -446,12 +456,12 @@ class Role implements \LORIS\Data\DataInstance
 
     /**
      * Get the number of users with that role.
-     * 
+     *
      * @return int the number of users with that role.
      */
     public function getNbUsers(): int
     {
-        $db = $this->loris->getDatabaseConnection();
+        $db      = $this->loris->getDatabaseConnection();
         $nbUsers = $db->pselectOne(
             "SELECT COUNT(*) FROM user_role_rel WHERE RoleID = :rid",
             ['rid' => $this->row['RoleID']]
@@ -462,8 +472,8 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * Returns if the current role object has an ID.
      * New roles just inserted in DB do not have ID yet.
-     * 
-     * @return bool 
+     *
+     * @return bool
      */
     public function hasId(): bool
     {
@@ -474,9 +484,9 @@ class Role implements \LORIS\Data\DataInstance
     /**
      * For the current role, check if any missing relations exists.
      * This could happen e.g. if a role is added to a user, but permissions are
-     * not updated. 
+     * not updated.
      * Mainly useful when checking role-permission-user relations.
-     * 
+     *
      * @return array an array of anomalies, meaning missing relations to insert.
      */
     public function evaluate(): array
@@ -485,9 +495,9 @@ class Role implements \LORIS\Data\DataInstance
 
         // anmalies to process
         $anomalies = [];
-        
+
         // ---- build data dict
-        
+
         // users that were granted this role
         $userIDs = $db->pselectCol(
             "SELECT u.ID
@@ -527,7 +537,7 @@ class Role implements \LORIS\Data\DataInstance
                 $currentUserPermissions
             );
 
-            // add 
+            // add
             foreach ($missingPermissions as $missingPermID) {
                 $anomalies[] = [
                     'userID' => $userID,
@@ -535,25 +545,25 @@ class Role implements \LORIS\Data\DataInstance
                 ];
             }
         }
-        
+
         return $anomalies;
     }
 
     /**
      * For all roles, check if any missing relations exists.
      * This could happen e.g. if a role is added to a user, but permissions are
-     * not updated. 
+     * not updated.
      * Mainly useful when checking role-permission-user relations.
-     * 
+     *
+     * @param LorisInstance $loris a loris instance object
+     *
      * @return array an array of anomalies, meaning missing relations to insert.
      */
     public static function evaluateRoles(LorisInstance $loris): array
     {
-        $db = $loris->getDatabaseConnection();
-
+        $db        = $loris->getDatabaseConnection();
         $anomalies = [];
-
-        $roles = $db->pselect(
+        $roles     = $db->pselect(
             "SELECT RoleID, Code, Name, Description FROM roles",
             []
         );

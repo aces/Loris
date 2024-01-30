@@ -608,7 +608,7 @@ class User extends UserPermissions implements
 
     /**
      * Get the roles this user has access to.
-     * 
+     *
      * @return array an array with role values.
      */
     public function getRoles(): array

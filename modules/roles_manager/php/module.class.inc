@@ -34,11 +34,13 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasAnyPermission([
-                'roles_view',
-                'roles_edit',
-                'roles_assign'
-            ]);
+            $user->hasAnyPermission(
+                [
+                    'roles_view',
+                    'roles_edit',
+                    'roles_assign'
+                ]
+            );
     }
 
     /**

@@ -4,10 +4,10 @@
  *
  * PHP Version 8
  *
- * @package  Roles_Manager
- * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @package Roles_Manager
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 namespace LORIS\roles_manager;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -22,10 +22,10 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * PHP Version 8
  *
- * @package  Roles_Manager
- * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @package Roles_Manager
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 class RolePermissionsEndpoint extends \NDB_Page
 {

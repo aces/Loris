@@ -144,8 +144,6 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _putInstance(ServerRequestInterface $request)
     {
         $roleArray = json_decode($request->getBody()->getContents(), true);
-        error_log(" === PUT");
-        error_log(print_r($roleArray, true));
         $role      = new Role($this->loris, $roleArray);
         return $this->_saveInstance($role);
     }
@@ -177,7 +175,9 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _saveInstance(Role $role)
     {
         if (!$this->user->hasPermission('roles_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden('Role Edit Permission Denied');
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Role Edit Permission Denied'
+            );
         }
 
         // validate instance
@@ -197,13 +197,13 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
 
         // get the current role permissions
         $currentRolePermissions = array_map(
-            fn($v) => $v['permissionCode'], 
+            fn($v) => $v['permissionCode'],
             array_filter(
                 $role->getPermissions(),
                 fn($v) => $v['hasPermission']
             )
         );
-    
+
         // new permissions from front-end
         $newRolePermissions = array_map(
             fn($v) => $v['permissionCode'],
@@ -235,7 +235,7 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
 
             // is it a new role?
             $isNewRole = !$role->hasId();
-            
+
             // refresh role data (a new role object does not have ID)
             if ($isNewRole) {
                 $lastId = $this->db->getLastInsertId();
@@ -251,7 +251,7 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
                 $permissionsToGrant,
                 $permissionsToRevoke
             );
-            
+
             return new \LORIS\Http\Response\JSON\OK();
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
