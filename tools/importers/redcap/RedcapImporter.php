@@ -139,12 +139,27 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     private function _fetchRecords() : ?array
     {
-        return $this->redcapClient->_exportRecords(
-            null,
-            null,
-            null,
-            $this->exportLabel
-        ) ?: null;
+        $NUM_OF_ATTEMPTS = 3;
+        $attempts        = 0;
+        $records         = null;
+
+        do {
+            try {
+                $records = $this->redcapClient->_exportRecords(
+                    null,
+                    null,
+                    null,
+                    $this->exportLabel
+                );
+            } catch (Exception $e) {
+                $attempts++;
+                sleep(60);
+                continue;
+            }
+            break;
+        } while ($attempts < $NUM_OF_ATTEMPTS);
+
+        return $records;
     }
 
     /**
@@ -1034,12 +1049,27 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array
     {
-        return $this->redcapClient->_exportRecords(
-            $record_id,
-            $event,
-            $form,
-            $this->exportLabel
-        ) ?: null;
+        $NUM_OF_ATTEMPTS = 3;
+        $attempts        = 0;
+        $records         = null;
+
+        do {
+            try {
+                $records = $this->redcapClient->_exportRecords(
+                    $record_id,
+                    $event,
+                    $form,
+                    $this->exportLabel
+                );
+            } catch (Exception $e) {
+                $attempts++;
+                sleep(60);
+                continue;
+            }
+            break;
+        } while ($attempts < $NUM_OF_ATTEMPTS);
+
+        return $records;
     }
 
     /**

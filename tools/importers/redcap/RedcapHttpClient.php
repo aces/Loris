@@ -84,11 +84,11 @@ class RedcapHttpClient
         $record = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() != 200) {
-            throw new \LorisException('Cannot export record');
+            throw new \Exception('Cannot export record');
         }
 
         if (count($record) < 1) {
-            throw new \LorisException('No record found');
+            throw new \Exception('No record found');
         }
 
         return $record;
@@ -134,11 +134,11 @@ class RedcapHttpClient
         $report = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() != 200) {
-            throw new \LorisException('Cannot export report');
+            throw new \Exception('Cannot export report');
         }
 
         if (count($report) < 1) {
-            throw new \LorisException('No report found');
+            throw new \Exception('No report found');
         }
 
         return $report;
@@ -170,11 +170,11 @@ class RedcapHttpClient
         $events = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() != 200) {
-            throw new \LorisException('Cannot export record');
+            throw new \Exception('Cannot export record');
         }
 
         if (count($events) < 1) {
-            throw new \LorisException('No event found');
+            throw new \Exception('No event found');
         }
 
         return $events;

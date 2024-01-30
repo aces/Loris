@@ -33,10 +33,25 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
      */
     private function _fetchRecords() : array
     {
-        return $this->redcapClient->_exportReport(
-            intval($this->redcapReportId),
-            $this->exportLabel
-        );
+        $NUM_OF_ATTEMPTS = 3;
+        $attempts        = 0;
+        $records         = null;
+
+        do {
+            try {
+                $records = $this->redcapClient->_exportReport(
+                    intval($this->redcapReportId),
+                    $this->exportLabel
+                );
+            } catch (Exception $e) {
+                $attempts++;
+                sleep(60);
+                continue;
+            }
+            break;
+        } while ($attempts < $NUM_OF_ATTEMPTS);
+
+        return $records;
     }
 
     /**
