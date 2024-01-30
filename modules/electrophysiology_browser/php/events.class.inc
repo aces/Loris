@@ -2,6 +2,7 @@
 
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
@@ -144,6 +145,25 @@ class Events extends \NDB_Page
                     ));
                 }
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
+            case 'dataset_tags':
+                $added_tags = $parameters['added_tags'];
+                $deleted_tags = $parameters['deleted_tags'];
+                $edited_tags = $parameters['edited_tags'];
+
+                // TODO: Figure out a better description modeled on other derivatives
+                $metadata = [
+                    'description' => 'An event',
+                    'sources' => 'EEGNet LORIS',
+                    'author' => $user->getFullname()
+                ];
+                error_log($metadata);
+
+                $dataset_tags = new DatasetTags(intval($parameters['physioFileID']));
+                $idMapping = $dataset_tags->update($added_tags, $deleted_tags, $edited_tags);
+
+                return (new \LORIS\Http\Response\JSON\OK(
+                    ['mapping' => $idMapping]
+                ));
             }
             default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

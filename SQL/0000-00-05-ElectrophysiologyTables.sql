@@ -75,6 +75,7 @@ CREATE TABLE `physiological_split_file` (
 CREATE TABLE `physiological_parameter_file` (
   `PhysiologicalParameterFileID` INT(10) UNSIGNED NOT NULL  AUTO_INCREMENT,
   `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
+  `ProjectID`                    INT(10) UNSIGNED NOT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
   `Value`                        TEXT,
@@ -85,7 +86,10 @@ CREATE TABLE `physiological_parameter_file` (
     ON DELETE CASCADE,
   CONSTRAINT `FK_param_type_ParamTypeID`
     FOREIGN KEY (`ParameterTypeID`)
-    REFERENCES `parameter_type` (`ParameterTypeID`)
+    REFERENCES `parameter_type` (`ParameterTypeID`),
+  CONSTRAINT `FK_ppf_project_ID`
+    FOREIGN KEY (`ProjectID`)
+    REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -271,7 +275,8 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_electrode_rel` (
 -- Create `physiological_event_file` table
 CREATE TABLE `physiological_event_file` (
     `EventFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `PhysiologicalFileID` int(10) unsigned NOT NULL,
+    `PhysiologicalFileID` int(10) unsigned DEFAULT NULL,
+    `ProjectID` int(10) unsigned NOT NULL,
     `FileType` varchar(20) NOT NULL,
     `FilePath` varchar(255) DEFAULT NULL,
     `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -280,7 +285,8 @@ CREATE TABLE `physiological_event_file` (
     KEY `FK_physio_file_ID` (`PhysiologicalFileID`),
     KEY `FK_event_file_type` (`FileType`),
     CONSTRAINT `FK_event_file_type` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes` (`type`),
-    CONSTRAINT `FK_physio_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`)
+    CONSTRAINT `FK_physio_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`),
+    CONSTRAINT `FK_pef_project_ID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
 
@@ -299,9 +305,9 @@ CREATE TABLE `physiological_task_event` (
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
-  `AssembledHED`	     TEXT             DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
+  INDEX idx_pte_EventValue (`EventValue`),
   CONSTRAINT `FK_phys_file_FileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
@@ -535,3 +541,84 @@ INSERT INTO ImagingFileTypes
   ('edf',  'European data format (EEG)'),
   ('cnt',  'Neuroscan CNT data format (EEG)'),
   ('archive', 'Archive file');
+
+-- Create `hed_schema` table
+CREATE TABLE `hed_schema` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Version` varchar(255) NOT NULL,
+  `Description` text NULL,
+  `URL` varchar(255) NOT NULL UNIQUE,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create `hed_schema_nodes` table
+CREATE TABLE `hed_schema_nodes` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ParentID` int(10) unsigned NULL,
+  `SchemaID` int(10) unsigned NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `LongName` varchar(255) NOT NULL,
+  `Description` text NOT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_hed_parent_node`
+      FOREIGN KEY (`ParentID`)
+          REFERENCES `hed_schema_nodes` (`ID`),
+  CONSTRAINT `FK_hed_schema` FOREIGN KEY (`SchemaID`) REFERENCES `hed_schema` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create `physiological_task_event_hed_rel` table
+CREATE TABLE `physiological_task_event_hed_rel` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PhysiologicalTaskEventID` int(10) unsigned NOT NULL,
+  `HEDTagID` int(10) unsigned NULL,     -- Reference to hed_schema_nodes.ID. Can be null to only add parentheses
+  `TagValue` text NULL,                 -- For value tags
+  `HasPairing` boolean DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
+  `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
+  `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_physiological_task_event_hed_rel_pair` FOREIGN KEY (`PairRelID`)
+      REFERENCES `physiological_task_event_hed_rel` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `FK_physiological_task_event_hed_rel_2` (`HEDTagID`),
+  CONSTRAINT `FK_physiological_task_event_hed_rel_2` FOREIGN KEY (`HEDTagID`)
+      REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_physiological_task_event_hed_rel_1` FOREIGN KEY (`PhysiologicalTaskEventID`)
+        REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create `bids_event_dataset_mapping` table
+CREATE TABLE `bids_event_dataset_mapping` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `PropertyName` varchar(50) NOT NULL,
+  `PropertyValue` varchar(255) NOT NULL,
+  `HEDTagID` int(10) unsigned NULL,     -- Reference to hed_schema_nodes.ID. Can be null to only add parentheses
+  `TagValue` text NULL,                 -- For value tags
+  `Description` TEXT NULL,              -- Level Description
+  `HasPairing` BOOLEAN DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
+  `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
+  `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+  PRIMARY KEY (`ID`),
+  INDEX idx_event_dataset_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
+  CONSTRAINT `FK_project_id` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_dataset_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- Create `bids_event_file_mapping` table
+CREATE TABLE `bids_event_file_mapping` (
+ `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `EventFileID` int(10) unsigned NOT NULL,
+ `PropertyName` varchar(50) NOT NULL,
+ `PropertyValue` varchar(255) NOT NULL,
+ `HEDTagID` int(10) unsigned NULL,     -- Reference to hed_schema_nodes.ID. Can be null to only add parentheses
+ `TagValue` text NULL,                 -- For value tags
+ `Description` TEXT NULL,              -- Level Description
+ `HasPairing` BOOLEAN DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
+ `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
+ `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+ PRIMARY KEY (`ID`),
+ INDEX idx_event_file_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
+ CONSTRAINT `FK_event_mapping_file_id` FOREIGN KEY (`EventFileID`) REFERENCES `physiological_event_file` (`EventFileID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ CONSTRAINT `FK_file_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

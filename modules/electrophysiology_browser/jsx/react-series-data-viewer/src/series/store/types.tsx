@@ -33,7 +33,7 @@ export type Epoch = {
   value: string,
   trialType: string,
   properties?: any[],
-  hed?: string,
+  hed?: HEDTag[],
   channels: number[] | 'all',
   physiologicalTaskEventID?: number,
 };
@@ -46,6 +46,7 @@ export type EpochFilter = {
 export type EventMetadata = {
   instances: any[],
   extraColumns: any[],
+  hedTags: any[],
 }
 
 export type RightPanel =
@@ -69,4 +70,28 @@ export type Electrode = {
 export type Cursor = {
   cursorPosition: [number, number] | null,
   viewerRef: MutableRefObject<any> | null,
+};
+
+export type HEDSchemaElement = {
+  id: number,
+  parentID: number,
+  schemaID: number,
+  name: string,
+  longName: string,
+  description: string,
+  schemaName: string,
+}
+
+// Currently uppercase. DB columns unprocessed
+export type HEDTag = {
+  schemaElement: HEDSchemaElement | null,
+  HEDTagID: number | null,  // redundant (id above)
+  ID: any,
+  PropertyName: string | null,
+  PropertyValue: string | null,
+  TagValue: string | null,
+  Description: string, // Level Description
+  HasPairing: string,
+  PairRelID: any,
+  AdditionalMembers: number,
 };

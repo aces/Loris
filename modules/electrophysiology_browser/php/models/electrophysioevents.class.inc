@@ -61,9 +61,21 @@ class ElectrophysioEvents
             []
         );
 
+        $hedTags = $db->pselect(
+            'SELECT *
+                  FROM physiological_task_event_hed_rel
+                  WHERE PhysiologicalTaskEventID IN ('
+            . (
+            count($taskEventIDs) > 0
+                ? join(',', $taskEventIDs)
+                : 'null'
+            ) . ')', []
+        );
+
         $this->_data = [
             'instances'     => $taskEvents,
             'extra_columns' => $extraColumns,
+            'hed_tags' => $hedTags
         ];
     }
 
@@ -128,12 +140,38 @@ class ElectrophysioEvents
 
             // TODO: Support Event Instance Insert
             if (!empty($eventFileID)) {
+
+                // TODO: VALIDATE HED
+                $deletedTagIDs = $instance_data['deleted_hed'];
+                $newTagIDs = $instance_data['added_hed'];
+
                 // Update physiological_task_event
                 $db->update(
                     'physiological_task_event',
                     $instance,
                     ['PhysiologicalTaskEventID' => $instance_id]
                 );
+
+                // Update HED tags
+                foreach ($deletedTagIDs as $deletedTagID) {
+                    $db->delete(
+                        'physiological_task_event_hed_rel',
+                        [
+                            'PhysiologicalTaskEventID'  => $instance_id,
+                            'ID'                        => $deletedTagID
+                        ]
+                    );
+                }
+
+                foreach ($newTagIDs as $newTagID) {
+                    $db->insert(
+                        'physiological_task_event_hed_rel',
+                        [
+                            'PhysiologicalTaskEventID'  => $instance_id,
+                            'HEDTagID'                  => $newTagID
+                        ]
+                    );
+                }
 
                 $db->update(
                     'physiological_event_file',
@@ -155,9 +193,17 @@ class ElectrophysioEvents
                 ['PTEID' => $instance_id]
             );
 
+            $hedTags = $db->pselect(
+                'SELECT *
+                  FROM physiological_task_event_hed_rel
+                  WHERE PhysiologicalTaskEventID=:PTEID',
+                ['PTEID' => $instance_id]
+            );
+
             return [
                 'instance'      => $taskEvent[0],
                 'extra_columns' => $extraColumns,
+                'hed_tags' => $hedTags
             ];
         }
         return [];
@@ -186,6 +232,37 @@ class ElectrophysioEvents
             $db->delete(
                 "physiological_task_event",
                 ['PhysiologicalTaskEventID' => $physiologicalTaskEventID]
+            );
+        }
+    }
+
+    /**
+     * Deletes one event's HED tag
+     *
+     * @param int $physiologicalTaskEventID PhysiologicalTaskEventID
+     * @param int $hedTagID HEDTagID
+     *
+     * @return void
+     */
+    function deleteHEDTag(int $physiologicalTaskEventID, int $hedTagID): void
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        $physioFileID = $db->pselectone(
+            'SELECT PhysiologicalFileID
+              FROM physiological_task_event
+              WHERE PhysiologicalTaskEventID=:taskEventID',
+            ['taskEventID' => $physiologicalTaskEventID]
+        );
+
+        // TODO: Check that this cascades properly to rel tables
+        if ($this->_physioFileID == $physioFileID) {
+            $db->delete(
+                "physiological_task_event_hed_rel",
+                [
+                    'PhysiologicalTaskEventID' => $physiologicalTaskEventID,
+                    'HEDTagID' => $hedTagID
+                ]
             );
         }
     }
@@ -223,16 +300,55 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $tsvPath = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
+        $projectID = intval($db->pselectOne(
+            'SELECT ProjectID FROM session AS s WHERE s.ID = (
+                SELECT SessionID FROM physiological_file
+                WHERE PhysiologicalFileID=:PFID
+            )',
+            ['PFID' => $this->_physioFileID]
+        ));
+
+        $json = $db->pselect(
+            "SELECT
+        EventFileID   AS id,
+        FilePath      AS filePath,
+        LastUpdate    AS lastUpdate,
+        LastWritten   AS lastWritten
+      FROM physiological_event_file
+      WHERE (
+          PhysiologicalFileID=:PFID OR ProjectID=:PID
+      )
+      AND FileType='json'",
+            [
+                'PFID' => $this->_physioFileID,
+                'PID' => $projectID
+            ]
+        );
+
+        $tsvPath  = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
+        $jsonPath = count($json) > 0 ? $dataDir . $json[0]['filePath'] : '';
 
         // Update files if files updated before database updated
-        if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']) {
+        if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']
+            || $json[0]['lastWritten'] <= $json[0]['lastUpdate']
+        ) {
             // events.tsv
             $tsvFile = fopen($tsvPath, 'w'); // Will override all file content
 
             $extraColumns = $db->pselect(
                 "SELECT *
                     FROM physiological_task_event_opt
+                    WHERE PhysiologicalTaskEventID IN (
+                        SELECT PhysiologicalTaskEventID
+                        FROM physiological_task_event
+                        WHERE PhysiologicalFileID=:PFID
+                    )",
+                ['PFID' => $this->_physioFileID]
+            );
+
+            $hed_tags = $db->pselect(
+                "SELECT *
+                    FROM physiological_task_event_hed_rel
                     WHERE PhysiologicalTaskEventID IN (
                         SELECT PhysiologicalTaskEventID
                         FROM physiological_task_event
@@ -252,6 +368,9 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
+            $datasetTags = new DatasetTags($this->_physioFileID);
+            $datasetHEDTags = $datasetTags->getData();
+
             // TODO: Make columns more dynamic
             $tsvEntries = [
                 'onset', 'duration', 'sample', 'trial_type', 'response_time', 'value'
@@ -259,7 +378,8 @@ class ElectrophysioEvents
             foreach ($columnNames as $columnName) {
                 $tsvEntries[] = $columnName['PropertyName'];
             }
-            //            $tsvEntries[] = 'HED';
+
+            $tsvEntries[] = 'HED';
 
             // Add columns names
             $columns = implode("\t", $tsvEntries);
@@ -326,6 +446,17 @@ class ElectrophysioEvents
                     $inputTSV
                 );
 
+                // Build assembled HED string
+                $hed = $datasetTags->buildHEDString(
+                    $instance,
+                    $instanceExtraColumns,
+                    array_filter($hed_tags, function ($hed_tag) use ($taskEventID) {
+                        return $hed_tag['PhysiologicalTaskEventID'] == $taskEventID;
+                    }),
+                    $datasetHEDTags
+                );
+                $inputTSV[] = $hed;
+
                 // Implode with tabs as delimiter
                 $input = implode("\t", $inputTSV);
 
@@ -333,8 +464,55 @@ class ElectrophysioEvents
             }
             fclose($tsvFile);
 
+            // events.json
+            $eventsJSON = [];
+
+            foreach (array_keys($datasetHEDTags) as $eventColumn) {
+                $levels = [];
+                $hed = [];
+                foreach (array_keys($datasetHEDTags[$eventColumn]) as $columnValue) {
+                    $tags = $datasetHEDTags[$eventColumn][$columnValue];
+                    $levelDescription = '';
+                    $hedString = '';
+                    if (count($tags) > 0) {
+                        $levelDescription = $tags[0]['Description'] ?? '';
+                        $hedString = $datasetTags->buildHEDString(
+                            [],
+                            [],
+                            $tags,
+                            $datasetHEDTags
+                        );
+                    }
+                    $levels[$columnValue] = $levelDescription;
+                    $hed[$columnValue] = $hedString;
+                }
+                $eventsJSON[$this->_getColumnName($eventColumn)] = [
+                    'Levels' => $levels,
+                    'HED' => $hed,
+                ];
+            }
+
+
+            $eventsEncode = json_encode($eventsJSON, JSON_PRETTY_PRINT);
+            if (strlen($jsonPath) === 0) {
+                $tsvRelPath = $tsv[0]['filePath'];
+                $jsonPath = substr($tsvRelPath, 0, strrpos($tsvRelPath, '.')) . '.json';
+                $db->insert(
+                    'physiological_event_file',
+                    [
+                        'ProjectID'               => $tsv[0]['projectID'],
+                        'PhysiologicalFileID'     => $this->_physioFileID,
+                        'FileType'                => 'json',
+                        'FilePath'                => $jsonPath,
+                    ]
+                );
+            }
+            $jsonFile = fopen($jsonPath, 'w');
+            fwrite($jsonFile, $eventsEncode);
+            fclose($jsonFile);
+
             //Update archives and create new hash
-            $this->_updateArchives([$tsvPath]);
+            $this->_updateArchives([$tsvPath, $jsonPath]);
 
             // Update time that files were written to
             $db->update(

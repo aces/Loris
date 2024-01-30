@@ -14,6 +14,7 @@
  */
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
@@ -475,6 +476,12 @@ class Sessions extends \NDB_Page
         );
         $fileSummary['events'] = $events->getData();
 
+
+        $datasetTags = new DatasetTags(
+            intval($physioFileID)
+        );
+        $fileSummary['datasetTags'] = $datasetTags->getData();
+
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
             FROM physiological_event_file
@@ -485,6 +492,22 @@ class Sessions extends \NDB_Page
 
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
+
+        // TODO: Fetch all relevant ones and merge beforehand (project_schema_rel?)
+        $hedSchema = $db->pselect(
+            "SELECT node.ID as id,
+           node.ParentID as parentID,
+           node.SchemaID as schemaID,
+           node.Name as name,
+           node.LongName as longName,
+           node.Description as description,
+           hs.Name as schemaName
+           FROM hed_schema_nodes AS node
+           LEFT JOIN hed_schema AS hs ON (hs.ID = node.SchemaID)",
+            []
+        );
+
+        $fileSummary['hedSchema'] = $hedSchema;
 
         return $fileSummary;
     }

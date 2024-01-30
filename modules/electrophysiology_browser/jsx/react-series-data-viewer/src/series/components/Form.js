@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 export const SelectElement = (props) => {
@@ -30,6 +30,7 @@ export const SelectElement = (props) => {
   let emptyOptionHTML = null;
   let requiredHTML = null;
   let elementClass = props.noMargins ? '' : 'row form-group';
+  let useOptionGroups = props.useOptionGroups;
 
   // Add required asterisk
   if (required) {
@@ -68,18 +69,46 @@ export const SelectElement = (props) => {
       );
     });
   } else {
-    optionList = Object.keys(options).map(function(option) {
-      let isDisabled = (option in disabledOptions);
-      return (
-        <option
-          value={option}
-          key={option}
-          disabled={isDisabled}
-        >
-          {options[option]}
-        </option>
-      );
-    });
+    if (useOptionGroups) {
+      const optGroups = new Set(options.map((opt) => opt.optgroup));
+
+      optionList = Array.from(optGroups).sort().map((optGroup) => {
+        return (
+          <optgroup label={optGroup}>
+            {
+              options.filter((option) =>
+                option.optgroup === optGroup
+              ).map((opt) => {
+                let isDisabled = (opt in disabledOptions);
+                return (
+                  <option
+                    value={opt.label}
+                    key={opt.label}
+                    disabled={isDisabled}
+                  >
+                    {opt.label}
+                  </option>
+                );
+              })
+            }
+          </optgroup>
+        );
+      });
+
+    } else {
+      optionList = options.map(function(option) {
+        let isDisabled = (option in disabledOptions);
+        return (
+          <option
+            value={option.value}
+            key={option.label}
+            disabled={isDisabled}
+          >
+            {option.value}
+          </option>
+        );
+      });
+    }
   }
 
   if (props.placeholder !== '') {
@@ -108,7 +137,10 @@ export const SelectElement = (props) => {
   }
 
   return (
-    <div className={elementClass}>
+    <div
+      className={elementClass}
+      style={{ marginBottom: '5px' }}
+    >
       {label}
       <div className={inputClass}>
         <select
@@ -132,7 +164,7 @@ export const SelectElement = (props) => {
 
 SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
-  options: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
   disabledOptions: PropTypes.object,
   label: PropTypes.string,
   value: PropTypes.oneOfType([
@@ -149,11 +181,12 @@ SelectElement.propTypes = {
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
+  useOptionGroups: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
   name: '',
-  options: {},
+  options: [],
   disabledOptions: {},
   value: undefined,
   id: null,
@@ -169,9 +202,11 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  useOptionGroups: false,
 };
 
 export const NumericElement = (props) => {
+
   const handleChange = (e) => {
     props.onUserInput(props.name, e.target.value);
   };
@@ -383,4 +418,455 @@ TextboxElement.propTypes = {
   bannedCharacters: PropTypes.array,
   readonly: PropTypes.bool,
   help: PropTypes.string,
+};
+
+/**
+ * Checkbox Component
+ * React wrapper for a <input type="checkbox"> element.
+ */
+export const CheckboxElement = (props) => {
+  /**
+   * handleChange - input change by user.
+   *
+   * @param {object} event - input event
+   */
+  const handleChange = (event) => {
+    const checked = event.target.checked;
+    props.onUserInput(props.name, checked);
+  };
+
+  let disabled = props.disabled ? 'disabled' : null;
+  let required = props.required ? 'required' : null;
+  let errorMessage = null;
+  let requiredHTML = null;
+  let elementClass = props.class + ' ' + props.offset;
+  const divStyle = props.class === 'checkbox-inline'
+    ? {paddingRight: '5px'}
+    : {paddingRight: '5px', display: 'inline-block'};
+
+  // Add required asterix
+  if (required) {
+    requiredHTML = <span className="text-danger">*</span>;
+  }
+
+  // Add error message
+  if (props.errorMessage) {
+    errorMessage = <span>{props.errorMessage}</span>;
+    elementClass = elementClass + ' has-error';
+  }
+
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  return (
+    <div className={elementClass}>
+      <div className={'row'}>
+        <label htmlFor={props.id} className={'checkbox-flex-label'}>
+          <div style={divStyle} className={'col-sm-1'}>
+            <input
+              type="checkbox"
+              name={props.name}
+              id={props.id}
+              checked={props.value}
+              required={props.required}
+              disabled={props.disabled}
+              onChange={handleChange}
+            />
+          </div>
+          {errorMessage}
+          <div className={'col-sm-10'}>
+            {props.label}
+            {requiredHTML}
+          </div>
+        </label>
+      </div>
+    </div>
+  );
+}
+CheckboxElement.defaultProps = {
+  readonly: false,
+  required: false,
+};
+CheckboxElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.bool.isRequired,
+  id: PropTypes.string,
+  class: PropTypes.string,
+  offset: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+
+CheckboxElement.defaultProps = {
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
+  elementClass: 'checkbox-inline col-sm-offset-3',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
+
+
+
+/**
+ * MultiSelect Dropdown component
+ * Note this is only used in DQT
+ * For generic SelectDropdown, see Select in Form.js
+ */
+class SelectField extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
+  }
+
+  /**
+   * Toggle checkbox
+   */
+  toggleCheckbox() {
+    this.props.toggleCheckbox(this.props.label);
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let checked = (this.props.checked) ? 'checked' : '';
+    let input;
+    if (this.props.multi) {
+      input = (
+        <input
+          type="checkbox"
+          value={this.props.label}
+          checked={checked}
+          onChange={this.toggleCheckbox}/>
+      );
+    }
+    return (
+      <li>
+        <div className="col-xs-12">
+          <label>
+            {input} {this.props.label}
+          </label>
+        </div>
+      </li>
+    );
+  }
+}
+SelectField.propTypes = {
+  toggleCheckbox: PropTypes.func,
+  label: PropTypes.string,
+  checked: PropTypes.bool,
+  multi: PropTypes.bool,
+};
+
+/**
+ * Search Field React component
+ */
+class SearchField extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+
+    this.clearFilter = this.cleaFilter.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+  }
+
+  /**
+   * Clear the filter
+   */
+  clearFilter() {
+    this.props.updateFilter('');
+  }
+
+  /**
+   * Update the filter
+   * with the event target value
+   *
+   * @param {object} event
+   */
+  updateFilter(event) {
+    this.props.updateFilter(event.target.value);
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    return (
+      <li className="dropdownSearch">
+        <div className="input-group col-xs-12">
+          <span className="input-group-addon">
+            <span className="glyphicon glyphicon-search"></span>
+          </span>
+          <input
+            type="text"
+            className="form-control"
+            onChange={this.updateFilter}
+            value={this.props.filter}
+          />
+          <span className="input-group-addon" onClick={this.clearFilter}>
+            <span className="glyphicon glyphicon-remove"></span>
+          </span>
+        </div>
+      </li>
+    );
+  }
+}
+SearchField.propTypes = {
+  updateFilter: PropTypes.func,
+  filter: PropTypes.string,
+};
+
+/**
+ * Select Dropdown React component
+ */
+export class SelectDropdown extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      filter: '',
+      open: false,
+      options: {
+        V01: 'false',
+        V02: 'true',
+      },
+    };
+    this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
+    this.selectAll = this.selectAll.bind(this);
+    this.deselectAll = this.deselectAll.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.overlayClickHandler = this.overlayClickHandler.bind(this);
+  }
+
+  /**
+   * Close Dropdown if overlay clicked.
+   */
+  overlayClickHandler() {
+    if (this.state.open) {
+      this.toggleDropdown();
+    }
+  }
+
+  /**
+   * Toggle Dropdown
+   */
+  toggleDropdown() {
+    let open = !this.state.open;
+    this.setState({open});
+  }
+
+  /**
+   * Toggle the checkbox
+   *
+   * @param {string} key
+   */
+  toggleCheckbox(key) {
+    if (this.props.multi) {
+      let action = (this.props.options[key]) ? 'uncheck' : 'check';
+      this.props.onFieldClick(key, action);
+    } else {
+      this.props.onFieldClick(key);
+      this.toggleDropdown();
+    }
+  }
+
+  /**
+   * Select all options
+   */
+  selectAll() {
+    this.props.onToggleAll('check');
+    // for (let option in this.props.options) {
+    //   if (!this.props.options[option]) {
+    //     this.props.onFieldClick(option, 'check');
+    //   }
+    // }
+  }
+
+  /**
+   * Deselect all options
+   */
+  deselectAll() {
+    this.props.onToggleAll('uncheck');
+    // for (let option in this.props.options) {
+    //   if (this.props.options[option]) {
+    //     this.props.onFieldClick(option, 'uncheck');
+    //   }
+    // }
+  }
+
+  /**
+   * Update the filter React component variable
+   * with the given parameter
+   *
+   * @param {string} filter
+   */
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let parentDivClass = 'btn-group col-xs-12';
+    let selectLabel = 'None Selected';
+    let selectCount = 0;
+    let sizeCount = 0;
+    let options = [];
+    let key = '';
+    let filter = '';
+
+    if (this.state.open) {
+      parentDivClass += ' open';
+    }
+    if (this.props.multi) {
+      for (key in this.props.options) {
+        // Make sure inherited properties are not checked
+        // See http://eslint.org/docs/rules/guard-for-in
+        if ({}.hasOwnProperty.call(this.props.options, key)) {
+          sizeCount++;
+          options.push(
+            <SelectField
+              key={key}
+              label={key}
+              checked={this.props.options[key]}
+              toggleCheckbox={this.toggleCheckbox}
+              multi={this.props.multi}
+            />
+          );
+          if (this.props.options[key]) {
+            selectCount++;
+          }
+        }
+      }
+      if (selectCount === sizeCount) {
+        options.unshift(
+          <SelectField
+            key="selectAll"
+            label="Select All"
+            checked={true}
+            toggleCheckbox={this.deselectAll}
+            multi={this.props.multi}
+          />
+        );
+      } else {
+        options.unshift(
+          <SelectField
+            key="selectAll"
+            label="Select All"
+            checked={false}
+            toggleCheckbox={this.selectAll}
+            multi={this.props.multi}
+          />
+        );
+      }
+      if (selectCount > 0) {
+        selectLabel = selectCount + ' Selected';
+      }
+    } else {
+      for (key in this.props.options) {
+        // Make sure inherited properties are not checked
+        // See http://eslint.org/docs/rules/guard-for-in
+        if ({}.hasOwnProperty.call(this.props.options, key)) {
+          filter = this.state.filter.toLowerCase();
+          if (key.toLowerCase().indexOf(filter) === -1 &&
+            this.props.options[key].toLowerCase().indexOf(filter)) {
+            continue;
+          }
+          options.push(
+            <SelectField
+              key={key}
+              label={this.props.options[key]}
+              checked={this.props.options[key]}
+              toggleCheckbox={this.toggleCheckbox}
+              multi={this.props.multi}
+            />
+          );
+        }
+      }
+      options.unshift(
+        <SearchField
+          updateFilter={this.updateFilter}
+          filter={this.state.filter}
+        />
+      );
+      if (this.props.selectedCategory === '') {
+        selectLabel = 'Select One';
+      } else {
+        selectLabel = this.props.selectedCategory;
+      }
+    }
+    const overlay = this.state.open ? (
+      <div style={{
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        position: 'fixed',
+        width: 'calc(100vw)',
+        height: 'calc(100vh)',
+      }} onClick={this.overlayClickHandler}
+      />
+    ) : null;
+    return (
+      <>
+        <div className={parentDivClass}>
+          <button type="button"
+                  className="btn btn-default dropdown-toggle btn-dropdown-toggle col-xs-12"
+                  onClick={this.toggleDropdown}>
+            <div className="col-xs-10">
+                <span className="pull-left">
+                  {selectLabel}
+                </span>
+            </div>
+            <div className="pull-right">
+              <span className="glyphicon glyphicon-menu-down"></span>
+            </div>
+          </button>
+          <ul className="dropdown-menu">
+            {options}
+          </ul>
+        </div>
+        {overlay}
+      </>
+    );
+  }
+}
+SelectDropdown.propTypes = {
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  onFieldClick: PropTypes.func,
+  onToggleAll: PropTypes.func,
+  selectedCategory: PropTypes.string,
 };
