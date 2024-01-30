@@ -10,22 +10,20 @@ namespace \LORIS\redcap\Importers;
 abstract class RedcapReportImporter extends RedcapImporter implements IRedcapReportImporter
 {
     private int  $redcapReportId; // REDCap report id
-    private bool $exportLabel;    // True or false export the Redcap records as label
-                                  // for multiple choice fields. If false, export raw values
 
     /**
      * Create new instance.
      *
      * @param \LORIS\LorisInstance $loris       The LORIS instance that data is being
      *                                          imported from.
+     * @param string               $project     The LORIS project to import for
      * @param bool                 $exportLabel The export label boolean
      */
-    function __construct(\LORIS\LorisInstance $loris, bool $exportLabel = false, string $project)
+    function __construct(\LORIS\LorisInstance $loris, string $project, bool $exportLabel = false)
     {
-        parent::__construct($loris, $project);
+        parent::__construct($loris, $project, $exportLabel);
 
         $this->redcapReportId = getReportId();
-        $this->exportLabel    = $exportLabel;
     }
 
     /**

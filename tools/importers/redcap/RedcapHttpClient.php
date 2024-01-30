@@ -24,15 +24,23 @@ class RedcapHttpClient
     /**
      * Returns a list of records from REDCap.
      *
-     * @param ?string $pscid The participant id
+     * @param ?string $pscid       The participant id
      * @param ?string $visit_label The visit label
-     * @param ?string $instrument The instrument name
+     * @param ?string $instrument  The instrument name
+     * @param bool    $label       Indicates labels should be exported for options of
+     *                             multiple choice fields, instead of raw coded values
+     *
+     * @return array
      */
     private function _exportRecords(
         ?string $pscid = null,
         ?string $visit_label = null,
         ?string $instrument = null
+        bool    $label = false,
     ): array {
+
+        $rawOrLabel = $label ? 'label' : 'raw';
+
         $data = [
             'token'                  => $this->_token,
             'content'                => 'record',
@@ -44,7 +52,7 @@ class RedcapHttpClient
             'fields'                 => [],
             'forms'                  => [],
             'events'                 => [],
-            'rawOrLabel'             => 'raw',
+            'rawOrLabel'             => $rawOrLabel,
             'rawOrLabelHeaders'      => 'raw',
             'exportCheckboxLabel'    => 'true',
             'exportSurveyFields'     => 'true',
@@ -92,6 +100,8 @@ class RedcapHttpClient
      * @param int $reportId  The report id
      * @param bool $label    Indicates labels should be exported for options of
      *                       multiple choice fields, instead of raw coded values
+     *
+     * @return array
      */
     private function _exportReport(
         int  $reportId,
@@ -132,5 +142,41 @@ class RedcapHttpClient
         }
 
         return $report;
+    }
+
+    /**
+     * Returns a list of events from REDCap.
+     *
+     * @return array
+     */
+    private function _exportEvents(): array
+    {
+        $data = [
+            'token'        => $this->_token,
+            'content'      => 'event',
+            'format'       => 'json',
+            'returnFormat' => 'json'
+        ];
+
+        $response = $this->_client->request(
+            'POST',
+            '/api/',
+            [
+                'form_params' => $data,
+                'debug'       => false
+            ]
+        );
+
+        $events = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() != 200) {
+            throw new \LorisException('Cannot export record');
+        }
+
+        if (count($events) < 1) {
+            throw new \LorisException('No event found');
+        }
+
+        return $events;
     }
 }

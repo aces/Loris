@@ -32,13 +32,17 @@ abstract class RedcapImporter implements IRedcapImporter
 
     var $project;
 
+    private bool $exportLabel; // True or false export the Redcap records as label
+                               // for multiple choice fields. If false, export raw values
     /**
      * Create new instance.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance that data is being
-     *                                    imported from.
+     * @param \LORIS\LorisInstance $loris       The LORIS instance that data is being
+     *                                          imported from.
+     * @param string               $project     The LORIS project to import for
+     * @param bool                 $exportLabel The export label boolean
      */
-    function __construct(\LORIS\LorisInstance $loris, string $project)
+    function __construct(\LORIS\LorisInstance $loris, string $project, bool $exportLabel = false)
     {
         $this->loris = $loris;
         $this->DB    = $this->loris->getDatabaseConnection();
@@ -67,7 +71,8 @@ abstract class RedcapImporter implements IRedcapImporter
         $this->dates_to_scrub   = $this->getDatesToScrub();
         $this->fields_to_ignore = $this->getFieldsToIgnore();
 
-        $this->project = $project;
+        $this->project     = $project;
+        $this->exportLabel = $exportLabel;
     }
 
     /**
@@ -129,7 +134,12 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     private function _fetchRecords() : ?array
     {
-        return $this->redcapClient->_exportRecords() ?: null;
+        return $this->redcapClient->_exportRecords(
+            null,
+            null,
+            null,
+            $this->exportLabel
+        ) ?: null;
     }
 
     /**
@@ -260,21 +270,21 @@ abstract class RedcapImporter implements IRedcapImporter
                 continue;
             }
 
-            // Get row visit label
-            $visit = $this->getVisitMapping($row[$mapping['visit']]);
-            if ($visit === null) {
-                print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
-                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
-                                        . " for candidate $pscid: visit label invalid.";
-                continue;
-            }
-
             // Get candidate id
             $dccid = $this->getCandidateID($pscid);
             if ($dccid === null) {
                 $error_message = "Getting candidate ID for $pscid failed.";
                 print "\t$error_message\n";
                 $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            // Get row visit label
+            $visit = $this->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
+            if ($visit === '') {
+                print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
+                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
+                                        . " for candidate $pscid: visit label invalid.";
                 continue;
             }
 
@@ -464,7 +474,444 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_data Array of instrument data imported
      */
-    abstract function updateCandidateData(array $records) : array;
+    function updateCandidateData(array $records) : array
+    {
+        $new_data = [];
+        $mapping  = $this->getMetadataMapping();
+
+        print "\nProcessing instruments...\n";
+        // record is at the visit level i.e. redcap_event_name
+        foreach ($records as $row) {
+            $pscid = $row[$mapping['pscid']];
+
+            // Check if candidate exists
+            if (!$this->candidateExists($pscid)) {
+                continue;
+            }
+
+            print "\n\tCandidate $pscid:\n";
+            $cand_id = $this->getCandidateID($pscid);
+            if ($cand_id === null) {
+                $error_message = "Getting candidate ID for $pscid failed.";
+                print "\t\t$error_message\n";
+                $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            // Get row visit label
+            $visit = $this->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
+            if ($visit === '') {
+                print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
+                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
+                                        . " for candidate $pscid: visit label invalid.";
+                continue;
+            }
+
+            // If visit doesn't exist, skip
+            if (!$this->visitExists($cand_id, $visit)) {
+                $error_message = "Visit $visit doesn't exist for candidate $pscid.";
+                print "\t\t$error_message\n";
+                $this->errors[$pscid][] = $error_message;
+                continue;
+            }
+
+            // Check if visit has started before importing data, start visit if not
+            $candidate_visit = $this->getCandidateVisit($cand_id, $visit);
+            if (empty($candidate_visit['stages'])) {
+                // Get date of visit value
+                $date_visit       = ''; // The redcap data point
+                $date_visit_field = ''; // The redcap variable name
+
+                // If there are multiple REDCap fields for date of visit,
+                // use the first field in list with a non empty value
+                $redcap_field = $mapping['dateOfVisit');
+                if (is_array($redcap_field) {
+                    $date_visit_field = current(array_filter($redcap_field, function ($i) use ($row) {
+                        return isset($row[$i]) && strlen($row[$i]) != 0;
+                    }));
+                } else {
+                    $date_visit_field = $redcap_field;
+                }
+
+                $date_visit = $row[$date_visit_field] ?? '';
+
+                // Validate start visit values
+                if ($date_visit === '' || strtotime($date_visit) === false) {
+                    $error_message = "Cannot start visit $visit for candidate $pscid: date_visit missing or invalid.";
+                    print "\t\t$error_message\n";
+                    $this->errors[$pscid][] = $error_message;
+                    continue;
+                }
+
+                // Format date_visit, and scrub if required
+                $date_visit = new \DateTime($date_visit);
+                if (array_key_exists($date_visit_field, $this->dates_to_scrub)) {
+                    $date_visit = $this->scrubDate(
+                        $date_visit,
+                        $this->dates_to_scrub[$date_visit_field]['component']
+                    )->format($this->dates_to_scrub[$date_visit_field]['format']);
+                }
+
+                // Start the visit
+                if (!$this->startVisit($candidate_visit, $date_visit)) {
+                    print "\t\tVisit $visit NOT started for candidate $pscid.";
+                    $this->errors[$pscid][] = "Starting visit $visit for candidate $pscid failed.";
+                    continue;
+                }
+                print "\t\tVisit $visit successfully started for candidate $pscid.\n";
+            }
+
+
+            // Process instrument data
+
+            // Get visit's instrument list
+            $instrument_list = $this->getCandidateTestBattery($cand_id, $visit);
+            if (is_null($instrument_list)) {
+                print "\t\tCandidate $pscid has no instruments in the $visit test battery.\n";
+                $this->errors[$pscid][] = "Unable to save instrument data for candidate $pscid: No instruments populated in the $visit test battery.";
+                continue;
+            }
+
+            // Get redcap raw event
+            $raw_event = $row[$mapping['visit']];
+            if ($this->exportLabel) {
+                $raw_event = $this->getRedcapEvent($row[$mapping['visit']]);
+            }
+
+            // Get visit site
+            $site = $this->getVisitSite($cand_id, $visit);
+
+            foreach ($instrument_list as $instrument) {
+                print "\n\t\tInstrument $instrument:\n";
+
+                // Handle instruments where name is different in REDCap and LORIS
+                $redcap_instrument_name = $instrument;
+                $mapping_key            = array_search($instrument, $this->getInstrumentMapping());
+                if ($mapping_key !== false) {
+                    $redcap_instrument_name = $mapping_key;
+                }
+
+                // Get LORIS and REDCap instrument data
+                // TO-DO: check if redcap_data is null?
+                $redcap_data = $this->getRedcapInstrumentData($pscid, $raw_event, $redcap_instrument_name);
+                $loris_data  = $this->getLorisInstrumentData($cand_id, $visit, $instrument);
+                $flags_data  = $this->getLorisFlagsData($cand_id, $visit, $instrument);
+
+                // Get values to save for LORIS metadata fields: administration and validity flags, examiner_id, date_taken
+                $administration_flag = $this->getAdministrationFlag($redcap_data, $redcap_instrument_name);
+                $validity_flag       = $this->getValidityFlag($redcap_data, $redcap_instrument_name);
+                $data_entry_flag     = $this->getDataEntryFlag($redcap_data, $redcap_instrument_name);
+                $examiner_id         = null;
+                $date_taken          = '';
+
+                // Get examiner field from redcap data and validate if in LORIS
+                $redcap_examiner = '';
+                $examiner_field  = $this->getExaminerMapping()[$instrument] ?? null;
+
+                // If examiner field not available, set examiner as "N/A"
+                // If field available, but no data, leave as ""
+                // If field available, but doesn't exist in redcap data, throw error
+                if ($examiner_field === null) {
+                    $redcap_examiner = "N/A";
+                } else {
+                    // extract value from recap_data
+                    if (!isset($redcap_data[$examiner_field])) {
+                        print "\n\t\t\tField $examiner_field not found in REDCap data. No Examiner data available.";
+                        print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
+                        $error_message = "$pscid $visit $instrument: Examiner field $examiner_field does not exist in REDCap data.";
+                        $this->errors[$pscid][] = $error_message;
+                        // print to output
+                        fwrite(STDERR, $error_message . PHP_EOL);
+                        continue;
+                    }
+
+                    $redcap_examiner = $redcap_data[$examiner_field];
+                }
+
+                // Get LORIS examiner_id from redcap_examiner name
+                if ($redcap_examiner === '') {
+                    // $examiner_id remains null, examiner field won't be saved.
+                } else {
+                    // Check examiner name exists in LORIS
+                    if (!$this->examinerExistsAtSite($redcap_examiner, $site)) {
+                        print "\n\t\t\tExaminer $redcap_examiner at site $site does not exist.";
+                        print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
+                        $error_message = "$pscid $visit $instrument: Examiner $redcap_examiner at site $site does not exist in LORIS.";
+                        $this->errors[$pscid][] = $error_message;
+                        // print to output
+                        fwrite(STDERR, $error_message . PHP_EOL);
+                        continue;
+                    }
+
+                    try {
+                        $examiner_id = $this->getExaminerID($redcap_examiner);
+                    } catch (Exception $e) {
+                        $error_message = "Exception when querying examinerID for $redcap_examiner: ";
+                        print "\n\t\t\t$error_message: " . $e->getMessage() . PHP_EOL;
+                        print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
+                        $this->errors[$pscid][] = $error_message . $e->getMessage();
+                        // print to output
+                        fwrite(STDERR, $error_message . $e->getMessage() . PHP_EOL);
+                        continue;
+                    }
+                }
+
+                // Get date_taken field from redcap data and format
+                $date_taken_field = $this->getDateTakenMapping()[$instrument] ?? null;
+
+                if ($date_taken_field === null) {
+                    print "\n\t\t\tDate_taken equivalent field not found in REDCap data. No Date_taken data available.\n";
+                    print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
+                    $error_message = "$pscid $visit $instrument: Date_taken field equivalent does not exist in REDCap data.";
+                    $this->errors[$pscid][] = $error_message;
+                    // print to output
+                    fwrite(STDERR, $error_message . PHP_EOL);
+                    continue;
+                }
+
+                if (!isset($redcap_data[$date_taken_field])) {
+                    print "\n\t\t\tField $date_taken_field not found in REDCap data. No Date_taken data available.";
+                    print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
+                    $error_message = "$pscid $visit $instrument: Date_taken field $date_taken_field does not exist in REDCap data.";
+                    $this->errors[$pscid][] = $error_message;
+                    // print to output
+                    fwrite(STDERR, $error_message . PHP_EOL);
+                    continue;
+                }
+
+                $date_taken = $redcap_data[$date_taken_field];
+
+                if ($date_taken !== '' && strtotime($date_taken) !== false) {
+                    $date_taken = new \DateTime($date_taken);
+                    if (array_key_exists($date_taken_field, $this->dates_to_scrub)) {
+                        $date_taken = $this->scrubDate(
+                            $date_taken,
+                            $this->dates_to_scrub[$date_taken_field]['component']
+                        )->format($this->dates_to_scrub[$date_taken_field]['format']);
+                    }
+                }
+
+
+                // Get instrument data from redcap records
+
+                // Unset completion field from redcap data as it doesn't exist in LORIS
+                // and so doesn't need to be saved
+                unset($redcap_data[$redcap_instrument_name . '_complete']);
+
+                // For each field, PATCH data iff value is different to LORIS instrument data value.
+                $instrument_data = [];
+                foreach ($redcap_data as $key => &$value) {
+                    $fieldname     = $key;
+                    $isMultiSelect = false;
+
+                    // check if field is an ignored field and skip over
+                    if (in_array($fieldname, $this->fields_to_ignore)) {
+                        continue;
+                    }
+
+                    // check if field is a site specific field
+                    // and skip over if candidate is not from a configured site
+                    if (array_key_exists($fieldname, $this->site_specific_fields)) {
+                        if (!in_array($site, $this->site_specific_fields[$fieldname])) {
+                            continue;
+                        }
+                    }
+
+                    // handle multiselect, extract LORIS fieldname from REDCap fieldname
+                    if ($this->exportLabel && strpos($fieldname, "___") !== false) {
+                        $isMultiSelect = true;
+                        $fieldname     = substr($fieldname, 0, strpos($fieldname, "___"));
+                    }
+
+                    // if fieldname includes '_status', map to fieldname in LORIS (without "_status")
+                    if (strpos($fieldname, "_status") !== false) {
+                        $status_fields = $this->getStatusFieldsMapping();
+                        if (array_key_exists($fieldname, $status_fields) {
+                            $fieldname = $status_fields[$fieldname];
+                        }
+                    }
+
+                    // check if field doesn't exist in loris
+                    if (!array_key_exists($fieldname, $loris_data)) {
+                        $fieldValPair = [
+                            'instrument' => $instrument,
+                            'field'      => $fieldname,
+                        ];
+                        if (!in_array($fieldValPair, $this->missing_fields)) {
+                            $error_message = "Field $fieldname does not exist in LORIS.\n";
+                            print "\n\t\t\t$error_message";
+                            $this->missing_fields[] = $fieldValPair;
+                            // print to output
+                            fwrite(STDERR, $error_message . PHP_EOL);
+                        }
+                        continue;
+                    }
+
+                    // Format date field, and scrub if required
+                    if (strpos($fieldname, 'date') !== false ||
+                        array_key_exists($fieldname, $this->dates_to_scrub)
+                    ) {
+                        if (!empty($value) && strtotime($value) !== false) {
+                            $value = new \DateTime($value);
+                            if (array_key_exists($fieldname, $this->dates_to_scrub)) {
+                                $value = $this->scrubDate(
+                                    $value,
+                                    $this->dates_to_scrub[$fieldname]['component']
+                                )->format($this->dates_to_scrub[$fieldname]['format']);
+                            }
+                        }
+                    }
+
+                    // Compare values between REDCap and LORIS
+                    if ($isMultiSelect) {
+                        // Process REDCap values, $key   == [$fieldname___$multiValue]
+                        //                        $value == 1 or 0
+                        $multiValue     = substr($key, (strpos($key, "___")+3));
+                        $multiIsChecked = $value;
+
+                        // Process LORIS values
+                        // remove all NULL, FALSE and Empty Strings but leave 0 values
+                        $valueArr = array_filter(explode("{@}", $loris_data[$fieldname]), 'strlen');
+
+                        // if field not checked, make sure not in LORIS
+                        // if field is checked, make sure in LORIS
+                        if (!$multiIsChecked) {
+                            if (!in_array($multiValue, $valueArr)) {
+                                continue;
+                            }
+                            // Remove value from LORIS
+                            $keyInArray = array_search($multiValue, $valueArr);
+                            unset($valueArr[$keyInArray]);
+                        } else {
+                            if (in_array($multiValue, $valueArr)) {
+                                continue;
+                            }
+                            // save value to LORIS
+                            array_push($valueArr, $multiValue);
+                        }
+
+                        // Save new value to loris_data so that it isn't
+                        // lost in the next iteration
+                        $loris_data[$fieldname] = implode("{@}", $valueArr);
+
+                        // Set instrument data value as array
+                        // Let instrument _saveValues handle implode with "{@}"
+                        $instrument_data[$fieldname] = $valueArr;
+                    } else {
+                        // If value in LORIS DB and REDCap are the same, do nothing
+                        if ($value == htmlspecialchars_decode($loris_data[$fieldname])) {
+                            continue;
+                        }
+                        if (empty($value) && !is_numeric($value)) {
+                            // Set value as ''
+                            $instrument_data[$fieldname] = '';
+                            if (array_key_exists($fieldname.'_status', $loris_data)) {
+                                // if field doesn't have value, set $fieldname_status to 'not_answered'
+                                $instrument_data[$fieldname.'_status'] = 'not_answered';
+                            }
+                        } else {
+                            // Set value as $value
+                            $instrument_data[$fieldname] = $value;
+                        }
+                    }
+                }
+
+                // Save LORIS metadata field values examiner_id, date_taken first, then instrument data, then flags
+
+                // Save examiner
+                if ($examiner_id !== null &&
+                    $examiner_id != htmlspecialchars_decode($loris_data['Examiner'])
+                ) {
+                    if ($this->setInstrumentData(
+                            $cand_id,
+                            $visit,
+                            $instrument,
+                            ['Examiner' => $examiner_id],
+                            $this->lorisApiConfig
+                        )
+                    ) {
+                        print "\t\t\tSaved to Examiner\n";
+                        $new_data[$pscid][$visit][$instrument]['Examiner'] = $examiner_id;
+                    }
+                }
+
+                // Save Date_taken
+                if ($date_taken !== '' &&
+                    $date_taken != htmlspecialchars_decode($loris_data['Date_taken'])
+                ) {
+                    if ($this->setInstrumentData(
+                            $cand_id,
+                            $visit,
+                            $instrument,
+                            ['Date_taken' => $date_taken],
+                            $this->lorisApiConfig
+                        )
+                    ) {
+                        print "\t\t\tSaved to Date_taken\n";
+                        $new_data[$pscid][$visit][$instrument]['Date_taken'] = $date_taken;
+                    }
+                }
+
+                // SAVE INSTRUMENT DATA
+                if (!empty($instrument_data)) {
+                    if ($this->setInstrumentData(
+                            $cand_id,
+                            $visit,
+                            $instrument,
+                            $instrument_data,
+                            $this->lorisApiConfig
+                        )
+                    ) {
+                        foreach ($instrument_data as $fieldSaved => $valueSaved) {
+                            print "\t\t\tSaved to $fieldSaved\n";
+                        }
+                        $instrument_new_data = $new_data[$pscid][$visit][$instrument] ?? array();
+                        $new_data[$pscid][$visit][$instrument] = array_merge($instrument_new_data, $instrument_data);
+                    }
+                } else {
+                    print "\t\t\tNo instrument data to save.\n";
+                }
+
+                // Save Administration flag
+                // Once flag is set in LORIS DB, cannot patch to NULL with API
+                if ($administration_flag !== null &&
+                    $administration_flag != $flags_data['administration']
+                ) {
+                    if ($this->setInstrumentAdministrationFlag(
+                            $cand_id,
+                            $visit,
+                            $instrument,
+                            $administration_flag,
+                            $this->lorisApiConfig
+                        )
+                    ) {
+                        print "\n\t\t\tSaved Administration flag\n";
+                        $new_data[$pscid][$visit][$instrument]['Administration'] = $administration_flag;
+                    }
+                }
+
+                // Save Validity flag
+                // Once flag is set in LORIS DB, cannot patch to NULL with API
+                if ($validity_flag !== null &&
+                    $validity_flag != $flags_data['validity']
+                ) {
+                    if ($this->setInstrumentValidityFlag(
+                            $cand_id,
+                            $visit,
+                            $instrument,
+                            $validity_flag,
+                            $this->lorisApiConfig
+                        )
+                    ) {
+                        print "\n\t\t\tSaved Validity flag\n";
+                        $new_data[$pscid][$visit][$instrument]['Validity'] = $validity_flag;
+                    }
+                }
+            }
+        }
+
+        return $new_data;
+    }
 
     /**
      * Creates run log
@@ -593,20 +1040,31 @@ abstract class RedcapImporter implements IRedcapImporter
 
     function getInstrumentMapping(): array
     {
-        return getImporterConfig()['instrumentMapping'];
+        $config  = getImporterConfig()['instrumentMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     /**
-     * Get the REDCap date_taken field for given instrument
+     * Get the REDCap date_taken field mappings for configured instrument
      *
-     * @param string $instrument The instrument name
-     *
-     * return ?string The date_taken field name for that instrument,
-     *                or null if doesn't exist
+     * return array The date_taken field names for configured instrument
      */
-    function getDateTakenMapping(string $instrument) : ?string
+    function getDateTakenMapping() : array
     {
-        return getImporterConfig()['dateTakenMapping'];
+        $config  = getImporterConfig()['dateTakenMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['instrument']] = $option['dateTaken'];
+        }
+
+        return $mapping;
     }
 
     /**
@@ -614,31 +1072,47 @@ abstract class RedcapImporter implements IRedcapImporter
      * the string '_status' exists in the REDCap field name, a reserved
      * key word in LORIS.
      *
-     * @param string $fieldname The field name in REDcap
-     *
-     * return ?string The LORIS equivalent field name
+     * return array
      */
-    function getStatusFieldsMapping(string $fieldname) : ?string
+    function getStatusFieldsMapping() : array
     {
-        return getImporterConfig()['statusFieldsMapping'];
+        $config  = getImporterConfig()['statusFieldsMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['redcapValue']] = $option['lorisValue'];
+        }
+
+        return $mapping;
     }
 
     /**
-     * Get the REDCap examiner field for given instrument
+     * Get the REDCap examiner field mapping
      *
-     * @param string $instrument The instrument name
-     *
-     * return ?string The examiner field name for that instrument,
-     *                or null if doesn't exist
+     * return array The examiner field names for configured instruments
      */
-    function getExaminerMapping(string $instrument) : ?string
+    function getExaminerMapping() : array
     {
-        return getImporterConfig()['examinerMapping'];
+        $config  = getImporterConfig()['examinerMapping'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['instrument']] = $option['examiner'];
+        }
+
+        return $mapping;
     }
 
     function getSiteSpecificFields(): array
     {
-        return getImporterConfig()['siteSpecific'];
+        $config  = getImporterConfig()['siteSpecific'];
+        $mapping = [];
+
+        foreach ($config as $option) {
+            $mapping[$option['id']] = $option['site'];
+        }
+
+        return $mapping;
     }
 
     function getDatesToScrub(): array
@@ -677,6 +1151,91 @@ abstract class RedcapImporter implements IRedcapImporter
         }
     }
 
+    function getInstrumentFlagsMapping(): array
+    {
+        $config  = getImporterConfig()['instrumentFlagsMapping'];
+        $mapping = [];
+
+        foreach ($config as $instrument) {
+            $administration = $instrument['administration'] ?? null;
+            $validity       = $instrument['validity'] ?? null;
+            $dataEntry      = $instrument['dataEntry'] ?? null;
+
+            $mapping[$instrument['instrument']] = [
+                'administration' => $administration,
+                'validity'       => $validity,
+                'dataEntry'      => $dataEntry
+            ];
+        }
+    }
+
+    /*
+     * Get candidate instrument administration flag from REDCap data.
+     * In REDCap, 2=Complete, 1=Unverified, 0=Incomplete
+     *
+     * @param array  $data       The redcap data
+     * @param string $instrument The instrument name
+     *
+     * return ?string The instrument adminstration flag
+     */
+    function getAdministrationFlag(array $data, string $instrument) : ?string
+    {
+        $administrationMapping = $this->getInstrumentFlagsMapping()[$instrument]['administration'] ?? null;
+
+        if ($administrationMapping === null) {
+            return null;
+        }
+
+        $administration_field  = $administrationMapping['id'];
+        $administration_status = $administrationMapping['statusMapping'];
+
+        return array_search($data[$administration_field], $administration_status) ?: null;
+    }
+
+    /*
+     * Get candidate instrument validity flag from REDCap data.
+     *
+     * @param array  $data       The redcap data
+     * @param string $instrument The instrument name
+     *
+     * return ?string The instrument validity flag
+     */
+    function getValidityFlag(array $data, string $instrument) : ?string
+    {
+        $validityMapping = $this->getInstrumentFlagsMapping()[$instrument]['validity'] ?? null;
+
+        if ($validityMapping === null) {
+            return null;
+        }
+
+        $validity_field  = $validityMapping['id'];
+        $validity_status = $validityMapping['statusMapping'];
+
+        return array_search($data[$validity_field], $validity_status) ?: null;
+    }
+
+    /*
+     * Get candidate instrument Data Entry flag from REDCap data.
+     *
+     * @param array  $data       The redcap data
+     * @param string $instrument The instrument name
+     *
+     * return ?string The instrument Data Entry flag
+     */
+    function getDataEntryFlag(array $data, string $instrument) : ?string
+    {
+        $dataEntryMapping = $this->getInstrumentFlagsMapping()[$instrument]['dataEntry'] ?? null;
+
+        if ($dataEntryMapping === null) {
+            return null;
+        }
+
+        $data_entry_field  = $dataEntryMapping['id'];
+        $data_entry_status = $dataEntryMapping['statusMapping'];
+
+        return array_search($data[$data_entry_field], $data_entry_status) ?: null;
+    }
+
     /**
      * Get candidate instrument REDCap record
      *
@@ -691,7 +1250,8 @@ abstract class RedcapImporter implements IRedcapImporter
         return $this->redcapClient->_exportRecords(
             $record_id,
             $event,
-            $form
+            $form,
+            $this->exportLabel
         ) ?: null;
     }
 
@@ -1197,5 +1757,167 @@ abstract class RedcapImporter implements IRedcapImporter
         // Because candidatesIdVisitPut returns void,
         // check that the timepoint was created, and return result
         return $this->getCandidateVisit($candid, $visit);
+    }
+
+    /**
+     * Starts a visit with Not Started stage
+     *
+     * @param \Swagger\Client\Model\InlineResponse2003 $visit      The visit object with properties
+     * @param \DateTime                                $date_visit The date of visit
+     *
+     * @return bool True if the visit succesfully started
+     */
+    function startVisit(\Swagger\Client\Model\InlineResponse2003 $visit, \DateTime $date_visit) : bool
+    {
+        $cand_id     = $visit['meta']['cand_id'];
+        $visit_label = $visit['meta']['visit'];
+        $site        = $visit['meta']['site'];
+        $battery     = $visit['meta']['battery'];
+        $project     = $visit['meta']['project'];
+
+        // Start visit
+        // Swagger-php docs for VisitPatchFields model is missing
+        // properties from VisitMetaFields, but VisitPatchFields
+        // model lib correctly extends VisitMetaFields
+        $body = new \Swagger\Client\Model\VisitPatchFields([
+            'cand_id' => $cand_id,
+            'visit'   => $visit_label,
+            'site'    => $site,
+            'battery' => $battery,
+            'project' => $project,
+            'stages'  => new \Swagger\Client\Model\InstrumentVisit([
+                'visit' => new \Swagger\Client\Model\VisitStage([
+                    'date'   => $date_visit,
+                    'status' => 'In Progress',
+                ])
+            ])
+        ]);
+
+        try {
+            $apiInstance = new Swagger\Client\Api\VisitApi($this->httpClient, $this->lorisApiConfig);
+            $apiInstance->candidatesIdVisitPatch($cand_id, $visit_label, $body);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the list of instruments in the candidate's visit's test battery
+     *
+     * @param string $cand_id The candidate id, the DCCID
+     * @param string $visit   The visit label
+     *
+     * return ?array The list of instruments
+     */
+    function getCandidateTestBattery($cand_id, $visit) : ?array
+    {
+        $apiInstance = new Swagger\Client\Api\InstrumentsApi(
+            $this->httpClient,
+            $this->lorisApiConfig
+        );
+
+        $result = $apiInstance->candidatesIdVisitInstrumentsGet($cand_id, $visit)['instruments'];
+
+        if (empty($result) || is_null($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get unique event name for REDCap by event label
+     *
+     * @param $event_label The REDCap event label
+     *
+     * @return string The redcap unique event name
+     */
+    function getRedcapEvent(string $event_label) : string
+    {
+        $events = $this->redcapClient->_exportEvents();
+
+        $event_name = explode(" ", $event_label)[0];
+        $arm        = str_replace(':', '', explode(" ", $event_label)[3]);
+
+        foreach ($events as $event) {
+            if ($event['event_name'] == $event_name &&
+                $event['arm_num'] == $arm
+            ) {
+                return $event['unique_event_name'];
+            }
+        } 
+    }
+
+    /**
+     * Gets a visit's site
+     *
+     * @param $dccid The candidate id, DCCID
+     * @param $visit The visit label
+     *
+     * @return ?string The visit's site
+     */
+    function getVisitSite(string $dccid, string $visit) : ?string
+    {
+        return $this->getCandidateVisit($dccid, $visit)['meta']['site'] ?? null;
+    }
+
+    /**
+     * Checks if an examiner name exists in the LORIS DB
+     * at a given site
+     *
+     * @param string $examiner The examiner name
+     * @param string $site     The site at which the examiner is registered
+     *
+     * return bool True if the examiner exists
+     */
+    function examinerExistsAtSite(string $examiner, string $site) : bool
+    {
+        $examiner_id  = $this->getExaminerID($examiner);
+
+        if ($examiner_id === null) {
+            return false;
+        }
+
+        $count = $this->DB->pselectOneInt(
+            "SELECT COUNT(*) FROM examiners_psc_rel epr
+                LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+              WHERE epr.examinerID=:examiner_id
+                AND psc.Name=:site_name",
+            [
+                'examiner_id' => $examiner_id,
+                'site_name'   => $site,
+            ]
+        );
+
+        if ($count < 1 || $count === null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get examiner ID for given examiner name in LORIS DB
+     *
+     * @param $examiner The examiner name
+     *
+     * return ?string The examiner id
+     */
+    function getExaminerID(string $examiner) : ?string
+    {
+        $examinerID = $this->DB->pselect(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:examiner",
+            ['examiner' => $examiner]
+        );
+
+        if (count($examinerID) > 1) {
+          throw new Exception('More than 1 examiner ID for ' . $examiner);
+        }
+
+        return $examinerID[0]['examinerID'] ?? null;
     }
 }
