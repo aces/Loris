@@ -117,6 +117,11 @@ abstract class RedcapImporter implements IRedcapImporter
     {
         $records = $this->_fetchRecords();
 
+        if ($records === null) {
+            print "\nNo records to import.\n";
+            return;
+        }
+
         $new_candidates = $this->createNewCandidates($records);
         $new_visits     = $this->createNewVisits($records);
         $new_consents   = $this->updateCandidateConsents($records);
@@ -582,8 +587,6 @@ abstract class RedcapImporter implements IRedcapImporter
             $site = $this->getVisitSite($cand_id, $visit);
 
             foreach ($instrument_list as $instrument) {
-                print "\n\t\tInstrument $instrument:\n";
-
                 // Handle instruments where name is different in REDCap and LORIS
                 $redcap_instrument_name = $instrument;
                 $mapping_key            = array_search($instrument, $this->getInstrumentMapping());
@@ -591,9 +594,18 @@ abstract class RedcapImporter implements IRedcapImporter
                     $redcap_instrument_name = $mapping_key;
                 }
 
-                // Get LORIS and REDCap instrument data
-                // TO-DO: check if redcap_data is null?
+                // Get REDCap instrument data
                 $redcap_data = $this->getRedcapInstrumentData($pscid, $raw_event, $redcap_instrument_name);
+
+                if ($redcap_data == null || empty($redcap_data)) {
+                    // No redcap data to import for pscid, visit, instrument
+                    // combination between date range if given
+                    continue;
+                }
+
+                print "\n\t\tInstrument $instrument:\n";
+
+                // Get LORIS instrument data
                 $loris_data  = $this->getLorisInstrumentData($cand_id, $visit, $instrument);
                 $flags_data  = $this->getLorisFlagsData($cand_id, $visit, $instrument);
 
