@@ -113,7 +113,7 @@ INSERT INTO `permissions` VALUES
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View'),
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL),
-    (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL)
+    (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL),
     (65,'roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
     (66,'roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'Edit/Upload/Delete'),
     (67,'roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View');
