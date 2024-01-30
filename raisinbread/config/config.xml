@@ -33,6 +33,11 @@
         <adminpass>%COUCH_PASSWORD%</adminpass>
     </CouchDB>
 
+    <REDCap>
+        <token>%REDCAP_TOKEN%</token>
+        <url>%%REDCAP_URL%$</url
+    </REDCap>
+
     <!-- study variables -->
     <study>
         <PSCID>

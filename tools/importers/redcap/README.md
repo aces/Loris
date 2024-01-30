@@ -41,6 +41,7 @@ A custom importer class requires the following:
 - And custom variables
 - Any custom methods
 - A redcap config file named 'redcap_config_$project.json' that meets the redcap_config_schema.json schema
+- REDCap credentials configured in the config.xml or lorisDB.xml file
 
 ## Maintaining REDCap instrument schema
 
