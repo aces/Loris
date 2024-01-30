@@ -29,14 +29,14 @@ interface IRedcapImporter
      *
      * @return void
      */
-    public function run(): void;
+    public function run() : void;
 
     /**
      * Fetches the records from REDCap
      *
-     * @return array $records The array of records in the REDCap report
+     * @return ?array $records The array of records in the REDCap report
      */
-    public function fetchRecords() : array;
+    public function fetchRecords() : ?array;
 
     /**
      * Create new candidates
@@ -86,94 +86,36 @@ interface IRedcapImporter
      */
     function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data): void;
 
-    /**
-     * Gets the importer configurations, with mappings of REDCap and LORIS fields
+    /*
+     * Get candidate instrument administration flag from REDCap data.
+     * In REDCap, 2=Complete, 1=Unverified, 0=Incomplete
      *
-     * @return array the mapping with loris field as key,
-     *               and redcap field as value(s)
-     */
-    function getImporterConfig() : array;
-
-    /**
-     * Gets the mapping of meta data field names for candidates and visit
-     * in REDCap and LORIS
-     *
-     * @return array the mapping with loris field as key,
-     *               and redcap field as value(s)
-     */
-    function getMetadataFieldMapping() : array;
-
-    /**
-     * Gets the mapping of cohort labels in REDCap and LORIS
-     *
-     * @return array the mapping with redcap site as key,
-     *               and loris site as value
-     */
-    function getCohortMapping() : array;
-
-    /**
-     * Gets the mapping of site names in REDCap and LORIS
-     *
-     * @return array the mapping with redcap site as key,
-     *               and loris site as value
-     */
-    function getSiteMapping() : array;
-
-    /**
-     * Gets the mapping of gender/sex in REDCap and LORIS
-     *
-     * @return array the mapping with redcap gender as key,
-     *               and loris sex as value
-     */
-    function getSexMapping() : array;
-
-    /**
-     * Get visit mapping for LORIS by REDCap visit label
-     *
-     * @param $visit_label The REDCap visit label
-     *
-     * @return ?string The Loris visit value for the redcap visit label
-     */
-    function getVisitMapping(string $visit_label) : ?string;
-
-    function getInstrumentMapping(): array;
-
-    /**
-     * Get the REDCap date_taken field for given instrument
-     *
+     * @param array  $data       The redcap data
      * @param string $instrument The instrument name
      *
-     * @return ?string The date_taken field name for that instrument,
-     *                 or null if doesn't exist
+     * @return ?string The instrument adminstration flag
      */
-    function getDateTakenMapping(string $instrument) : ?string;
+    function getAdministrationFlag(array $data, string $instrument) : ?string;
 
-    /**
-     * Gets Loris field names that are different than in REDCap because
-     * the string '_status' exists in the REDCap field name, a reserved
-     * key word in LORIS.
+    /*
+     * Get candidate instrument validity flag from REDCap data.
      *
-     * @param string $fieldname The field name in REDcap
-     *
-     * @return ?string The LORIS equivalent field name
-     */
-    function getStatusFieldsMapping(string $fieldname) : ?string;
-
-    /**
-     * Get the REDCap examiner field for given instrument
-     *
+     * @param array  $data       The redcap data
      * @param string $instrument The instrument name
      *
-     * @return ?string The examiner field name for that instrument,
-     *                           or null if doesn't exist
+     * @return ?string The instrument validity flag
      */
-    function getExaminerMapping(string $instrument) : ?string;
+    function getValidityFlag(array $data, string $instrument) : ?string;
 
-    function getSiteSpecificFields(): array;
-
-    function getDateFieldsToScrub(): array;
-
-    function getFieldsToIgnore(): array;
+    /*
+     * Get candidate instrument Data Entry flag from REDCap data.
+     *
+     * @param array  $data       The redcap data
+     * @param string $instrument The instrument name
+     *
+     * @return ?string The instrument Data Entry flag
+     */
+    function getDataEntryFlag(array $data, string $instrument) : ?string;
 
     /**
      * Get candidate instrument REDCap record

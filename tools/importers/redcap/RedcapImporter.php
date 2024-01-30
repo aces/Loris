@@ -2,8 +2,12 @@
 
 require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
-use LORIS\redcap\RedcapHttpClient;
-use LORIS\redcap\RedcapConfig;
+include 'RedcapHttpClient.php';
+include 'RedcapConfig.php';
+include 'IRedcapImporter.php';
+
+use \LORIS\LorisInstance;
+use \GuzzleHttp\Client;
 
 /**
  * This represents a REDCap importer
@@ -59,24 +63,23 @@ abstract class RedcapImporter implements IRedcapImporter
         $this->loris = $loris;
         $this->DB    = $this->loris->getDatabaseConnection();
 
-        $config    = $this->loris->getConfiguration();
-        $apiConfig = $config->getSetting('REDCap');
 
         $this->redcapClient = new RedcapHttpClient($loris);
         $this->redcapConfig = new RedcapConfig($project);
 
+        $this->httpClient     = new GuzzleHttp\Client();
+        $settings             = $this->loris->getConfiguration()->getSetting('API');
         $this->lorisApiConfig = new Swagger\Client\Configuration();
         $this->lorisApiConfig = Swagger\Client\Configuration::getDefaultConfiguration()->setHost(
-            $apiConfig['loris']['baseurl']
+            $settings['url']
         );
 
-        $this->lorisApiConfig = $this->_loginApi(
+        $this->lorisApiConfig = $this->loginApi(
             $this->lorisApiConfig,
-            $apiConfig['loris']['username'],
-            $apiConfig['loris']['password']
+            $settings['username'],
+            $settings['password']
         );
 
-        $this->httpClient = new GuzzleHttp\Client();
 
         // Set up data field restrictions, specifications
         $this->site_specific_fields = $this->getSiteSpecificFields();
@@ -130,7 +133,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return void
      */
-    function run()
+    function run() : void
     {
         $records = $this->_fetchRecords();
 
@@ -983,7 +986,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return void
      */
-    function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data)
+    function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data) : void
     {
         print "\nNew candidates: ".count($new_candidates)."\n";
         print_r($new_candidates);

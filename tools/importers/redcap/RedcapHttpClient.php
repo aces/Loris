@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\redcap;
-
 use \LORIS\LorisInstance;
 use \GuzzleHttp\Client;
 use \LORIS\Http\Request;

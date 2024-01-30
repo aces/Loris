@@ -1,4 +1,7 @@
-<?php
+<?php declare(strict_types=1);
+
+include 'RedcapReportImporter.php';
+
 /**
  * This file contains code to import REDCap data into LORIS.
  * The script first sends an API request to export a REDCap

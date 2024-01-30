@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\redcap;
-
 /**
  * This represents a REDCap importer
  *
@@ -15,13 +13,13 @@ class RedcapConfig
 
     function __construct($project)
     {
-        $this->configFilePath = __DIR__ . "redcap_config_$project.json";
+        $this->configFilePath = __DIR__ . "/redcap_config_$project.json";
         $this->import_config  = $this->_load();
     }
 
     private function _load(): array
     {
-        return json_decode($file_get_contents($this->configFilePath), true);
+        return json_decode(file_get_contents($this->configFilePath), true);
     }
 
     /**
@@ -30,7 +28,7 @@ class RedcapConfig
      * @return array the mapping with loris field as key,
      *               and redcap field as value(s)
      */
-    function getImportConfig(): array
+    function getImporterConfig(): array
     {
         return $this->import_config;
     }

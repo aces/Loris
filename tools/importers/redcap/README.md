@@ -26,6 +26,12 @@ java -jar swagger-codegen-cli.jar generate \
    -o ./../../../php/libraries
 ```
 
+Run composer install:
+```
+cd php/libraries/SwaggerClient-php
+composer install
+```
+
 ## Importers and their requirements
 
 There are two importers that can be extended to write a project's custom REDCap importer:
@@ -42,6 +48,7 @@ A custom importer class requires the following:
 - Any custom methods
 - A redcap config file named 'redcap_config_$project.json' that meets the redcap_config_schema.json schema
 - REDCap credentials configured in the config.xml or lorisDB.xml file
+- LORIS API credentials configured in the config.xml or lorisDB.xml file
 
 ## Maintaining REDCap instrument schema
 
