@@ -12,3 +12,8 @@
 .submit-area {
     margin-top: 30px;
 }
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+}

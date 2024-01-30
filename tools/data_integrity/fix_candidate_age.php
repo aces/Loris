@@ -82,37 +82,16 @@ foreach ($instruments as $testName=>$instrument) {
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
             JOIN candidate c ON c.CandID=s.CandID
-        WHERE c.Active='Y' AND s.Active='Y'",
-        []
+        WHERE c.Active='Y' AND s.Active='Y'
+        AND f.Test_name=:tn",
+        ['tn' => $testName]
     );
 
-    foreach ($CommentIDs as $commentID) {
-        // Get Instrument Instance with commentID
-        try {
-            $instrument = NDB_BVL_Instrument::factory(
-                $lorisInstance,
-                $testName,
-                $commentID,
-                '',
-                false
-            );
-        } catch (Exception $e) {
-            echo "\t$testName instrument row with CommentID: ".$commentID.
-                " was ignored for one of the following reasons:\n".
-                "  - The candidate is inactive.\n".
-                "  - The session is inactive.\n\n";
-            continue;
-        }
+    $instrumentInstances = $instrument->bulkLoadInstanceData($CommentIDs);
 
-        if (!$instrument) {
-            // instrument does not exist
-            echo "\t"
-            . "$testName for CommentID:$commentID could not be instantiated."
-            . "\n";
-            continue;
-        }
-
-        $data      = $instrument->getInstanceData();
+    foreach ($instrumentInstances as $instrumentInstance) {
+        $data      = $instrumentInstance->getInstanceData();
+        $commentID = $instrumentInstance->getCommentID();
         $dateTaken = $data['Date_taken'] ?? null;
 
         // Flag for problem with date
@@ -125,8 +104,8 @@ foreach ($instruments as $testName=>$instrument) {
                 $trouble =true;
             } else {
                 // get Age from instrument class
-                $calculatedAge       = $instrument->getCandidateAge();
-                $calculatedAgeMonths = $instrument->calculateAgeMonths(
+                $calculatedAge       = $instrumentInstance->getCandidateAge();
+                $calculatedAgeMonths = $instrumentInstance->calculateAgeMonths(
                     $calculatedAge
                 );
                 //Compare age to value saved in the instrument table
@@ -144,7 +123,7 @@ foreach ($instruments as $testName=>$instrument) {
             //Fix the saved values if confirm and trouble flags enabled
             if ($trouble && $confirm) {
                 echo "\tFixing age for CommentID: ".$commentID."\n";
-                $instrument->_saveValues(['Date_taken' => $dateTaken]);
+                $instrumentInstance->_saveValues(['Date_taken' => $dateTaken]);
             }
         }
     }

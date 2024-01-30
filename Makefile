@@ -62,14 +62,23 @@ data_release:
 instrument_manager:
 	target=instrument_manager npm run compile
 
+dataquery:
+	target=dataquery npm run compile
+
 login:
 	target=login npm run compile
+
+module_manager:
+	target=module_manager npm run compile
 
 mri_violations:
 	target=mri_violations npm run compile
 
 issue_tracker:
 	target=issue_tracker npm run compile
+
+candidate_parameters:
+	target=candidate_parameters npm run compile
 
 dashboard:
 	target=dashboard npm run compile

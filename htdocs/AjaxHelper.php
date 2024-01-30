@@ -94,7 +94,7 @@ try {
     $loris = new \LORIS\LorisInstance(
         new \Database(),
         new \NDB_Config(),
-        [__DIR__ . "/../modules", __DIR__ . "/../project/modules"]
+        [__DIR__ . "/../project/modules", __DIR__ . "/../modules"]
     );
     $m     = $loris->getModule($Module);
 

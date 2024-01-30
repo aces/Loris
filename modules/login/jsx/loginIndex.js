@@ -9,6 +9,7 @@ import Panel from 'Panel';
 import DOMPurify from 'dompurify';
 import {
     FormElement,
+    StaticElement,
     TextboxElement,
     PasswordElement,
     ButtonElement,

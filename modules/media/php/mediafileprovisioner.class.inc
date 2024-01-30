@@ -90,10 +90,19 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         // make sure not to call the factory when $testname is null or ''
         if (!empty($testname) && !isset($this->_instrumentnames[$testname])) {
-            $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
-                $this->loris,
-                $testname,
-            )->getFullname();
+            try {
+                $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
+                    $this->loris,
+                    $testname,
+                )->getFullname();
+            } catch (\Exception $e) {
+                error_log(
+                    "There was a problem instantiating the instrument ".
+                    "'$testname'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the media ".
+                    "module."
+                );
+            }
         }
         $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
 
