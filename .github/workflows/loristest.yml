@@ -167,9 +167,8 @@ jobs:
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-04-Help.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
-        find raisinbread/instruments/instrument_sql -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        find raisinbread/instruments/instrument_sql -name *.sql -not -name 9999-99-99-drop_instrument_tables.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-
     - name: Source instrument schemas
       run: |
         find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
