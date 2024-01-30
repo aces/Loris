@@ -82,9 +82,9 @@ abstract class RedcapImporter implements IRedcapImporter
 
 
         // Set up data field restrictions, specifications
-        $this->site_specific_fields = $this->getSiteSpecificFields();
-        $this->dates_to_scrub       = $this->getDatesToScrub();
-        $this->fields_to_ignore     = $this->getFieldsToIgnore();
+        $this->site_specific_fields = $this->redcapConfig->getSiteSpecificFields();
+        $this->dates_to_scrub       = $this->redcapConfig->getDatesToScrub();
+        $this->fields_to_ignore     = $this->redcapConfig->getFieldsToIgnore();
 
         $this->project     = $project;
         $this->exportLabel = $exportLabel;

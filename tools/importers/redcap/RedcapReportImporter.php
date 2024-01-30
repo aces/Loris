@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-include 'IRedcapReportImporter.php';
 include 'RedcapImporter.php';
 
 /**
@@ -8,7 +7,7 @@ include 'RedcapImporter.php';
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-abstract class RedcapReportImporter extends RedcapImporter implements IRedcapReportImporter
+abstract class RedcapReportImporter extends RedcapImporter
 {
     private int  $redcapReportId; // REDCap report id
 
@@ -35,7 +34,7 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
     ) {
         parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
 
-        $this->redcapReportId = getReportId();
+        $this->redcapReportId = $this->redcapConfig->getReportId();
     }
 
     /**
@@ -64,16 +63,6 @@ abstract class RedcapReportImporter extends RedcapImporter implements IRedcapRep
         } while ($attempts < $NUM_OF_ATTEMPTS);
 
         return $records;
-    }
-
-    /**
-     * Gets the REDCap report Id from importer configurations
-     *
-     * @return int the REDCap Report ID
-     */
-    public function getReportId() : int
-    {
-        return $this->redcapConfig->getImporterConfig('reportId');
     }
 }
 

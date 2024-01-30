@@ -246,4 +246,14 @@ class RedcapConfig
             ];
         }
     }
+
+    /**
+     * Gets the REDCap report Id from importer configurations
+     *
+     * @return int the REDCap Report ID
+     */
+    public function getReportId() : int
+    {
+        return $this->getImporterConfig()['reportId'];
+    }
 }
