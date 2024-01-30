@@ -330,8 +330,10 @@ class Role implements \LORIS\Data\DataInstance
         error_log('   - considering permission: ' . $code);
 
         $hasPermission = $user->hasPermission($code);
-        error_log('    - has permission "' . $code . '": '
-            . (($hasPermission) ? 'yes' : 'no'));
+        error_log(
+            '    - has permission "' . $code . '": '
+            . (($hasPermission) ? 'yes' : 'no')
+        );
 
         // not permission to revoke
         if (!$hasPermission) {
@@ -388,8 +390,10 @@ class Role implements \LORIS\Data\DataInstance
     {
         error_log('   - considering permission: ' . $code);
         $hasPermission = $user->hasPermission($code);
-        error_log('    - already has permission "' . $code . '": '
-            . (($hasPermission) ? 'yes' : 'no'));
+        error_log(
+            '    - already has permission "' . $code . '": '
+            . (($hasPermission) ? 'yes' : 'no')
+        );
 
         // Already has permission, then skip.
         // If the user already has that permission, it could be from another
@@ -413,6 +417,8 @@ class Role implements \LORIS\Data\DataInstance
      *
      * @param array<string> $toGrant  an array of permission codes to grant.
      * @param array<string> $toRevoke an array of permission codes to revoke.
+     *
+     * @return void
      */
     public function updateUserPermissions(array $toGrant, array $toRevoke): void
     {
@@ -568,7 +574,7 @@ class Role implements \LORIS\Data\DataInstance
             []
         );
         foreach ($roles as $roleRow) {
-            $role = new Role($loris, $roleRow);
+            $role          = new Role($loris, $roleRow);
             $roleAnomalies = $role->evaluate();
             if (!empty($roleAnomalies)) {
                 $anomalies[$role->row['RoleID']] = $roleAnomalies;
