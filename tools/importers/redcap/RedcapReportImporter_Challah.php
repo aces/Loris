@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+require_once __DIR__ . '/../../generic_includes.php';
+
 require 'RedcapReportImporter.php';
 
 /**
@@ -25,34 +27,6 @@ require 'RedcapReportImporter.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
-$project     = 'Challah';
-$exportLabel = true;
-
-$dateRangeBegin = null;
-$dateRangeEnd   = null;
-
-// Get days since to query REDCap data
-$opts = getopt("", ["since:"]);
-if (array_key_exists('since', $opts) && $opts['since'] != null) {
-    $days_since = $opts['since'];
-    // Set timezone
-    date_default_timezone_set("America/New_York");
-    $dateRangeEnd   = date("Y-m-d H:i:s");
-    $dateRangeBegin = new DateTime($dateRangeEnd);
-    $dateRangeBegin->sub(new DateInterval("P{$days_since}D"));
-    $dateRangeBegin = $dateRangeBegin->format("Y-m-d H:i:s");
-}
-
-$Runner = new RedcapReportImporter_Challah(
-    $lorisInstance,
-    $project,
-    $exportLabel,
-    $dateRangeBegin,
-    $dateRangeEnd
-);
-
-$Runner->run();
 
 /**
  * This file contains code to import records from a REDCap report into LORIS
@@ -81,7 +55,7 @@ class RedcapReportImporter_Challah extends RedcapReportImporter
      *
      * @return array
      */
-    function __construct(
+    public function __construct(
         \LORIS\LorisInstance $loris,
         string               $project,
         bool                 $exportLabel = false,
@@ -91,4 +65,32 @@ class RedcapReportImporter_Challah extends RedcapReportImporter
         parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
     }
 }
+
+$project     = 'Challah';
+$exportLabel = true;
+
+$dateRangeBegin = null;
+$dateRangeEnd   = null;
+
+// Get days since to query REDCap data
+$opts = getopt("", ["since:"]);
+if (array_key_exists('since', $opts) && $opts['since'] != null) {
+    $days_since = $opts['since'];
+    // Set timezone to Montreal
+    date_default_timezone_set("America/New_York");
+    $dateRangeEnd   = date("Y-m-d H:i:s");
+    $dateRangeBegin = new DateTime($dateRangeEnd);
+    $dateRangeBegin->sub(new DateInterval("P{$days_since}D"));
+    $dateRangeBegin = $dateRangeBegin->format("Y-m-d H:i:s");
+}
+
+$Runner = new RedcapReportImporter_Challah(
+    $lorisInstance,
+    $project,
+    $exportLabel,
+    $dateRangeBegin,
+    $dateRangeEnd
+);
+
+$Runner->run();
 
