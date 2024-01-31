@@ -247,6 +247,8 @@ class RedcapConfig
                 'dataEntry'      => $dataEntry
             ];
         }
+
+        return $mapping;
     }
 
     /**

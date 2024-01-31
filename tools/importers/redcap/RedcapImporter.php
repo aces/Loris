@@ -168,7 +168,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
         do {
             try {
-                $records = $this->redcapClient->_exportRecords(
+                $records = $this->redcapClient->exportRecords(
                     null,
                     null,
                     null,
@@ -635,7 +635,7 @@ abstract class RedcapImporter implements IRedcapImporter
             // Get redcap raw event
             $raw_event = $row[$mapping['visit']];
             if ($this->exportLabel) {
-                $raw_event = $this->getRedcapEvent($row[$mapping['visit']]);
+                $raw_event = $this->getRedcapEvent($raw_event);
             }
 
             // Get visit site
@@ -662,6 +662,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
                 // Get LORIS instrument data
                 $loris_data = $this->getLorisInstrumentData($cand_id, $visit, $instrument);
+
                 $flags_data = $this->getLorisFlagsData($cand_id, $visit, $instrument);
 
                 // Get values to save for LORIS metadata fields: administration and validity flags, examiner_id, date_taken
@@ -865,7 +866,7 @@ abstract class RedcapImporter implements IRedcapImporter
                         $instrument_data[$fieldname] = $valueArr;
                     } else {
                         // If value in LORIS DB and REDCap are the same, do nothing
-                        if ($value == htmlspecialchars_decode($loris_data[$fieldname])) {
+                        if ($value == htmlspecialchars_decode(strval($loris_data[$fieldname]))) {
                             continue;
                         }
                         if (empty($value) && !is_numeric($value)) {
@@ -886,7 +887,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
                 // Save examiner
                 if ($examiner_id !== null
-                    && $examiner_id != htmlspecialchars_decode($loris_data['Examiner'])
+                    && $examiner_id != htmlspecialchars_decode(strval($loris_data['Examiner']))
                 ) {
                     if ($this->setInstrumentData(
                         $cand_id,
@@ -903,7 +904,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
                 // Save Date_taken
                 if ($date_taken !== ''
-                    && $date_taken != htmlspecialchars_decode($loris_data['Date_taken'])
+                    && $date_taken != htmlspecialchars_decode(strval($loris_data['Date_taken']))
                 ) {
                     if ($this->setInstrumentData(
                         $cand_id,
@@ -943,10 +944,11 @@ abstract class RedcapImporter implements IRedcapImporter
                 if ($administration_flag !== null
                     && $administration_flag != $flags_data['administration']
                 ) {
-                    if ($this->setInstrumentAdministrationFlag(
+                    if ($this->setInstrumentFlag(
                         $cand_id,
                         $visit,
                         $instrument,
+                        'administration',
                         $administration_flag,
                         $this->lorisApiConfig
                     )
@@ -961,16 +963,36 @@ abstract class RedcapImporter implements IRedcapImporter
                 if ($validity_flag !== null
                     && $validity_flag != $flags_data['validity']
                 ) {
-                    if ($this->setInstrumentValidityFlag(
+                    if ($this->setInstrumentFlag(
                         $cand_id,
                         $visit,
                         $instrument,
+                        'validity',
                         $validity_flag,
                         $this->lorisApiConfig
                     )
                     ) {
                         print "\n\t\t\tSaved Validity flag\n";
                         $new_data[$pscid][$visit][$instrument]['Validity'] = $validity_flag;
+                    }
+                }
+
+                // Save DataEntry flag
+                // Once flag is set in LORIS DB, cannot patch to NULL with API
+                if ($data_entry_flag !== null
+                    && $data_entry_flag != $flags_data['data_entry']
+                ) {
+                    if ($this->setInstrumentFlag(
+                        $cand_id,
+                        $visit,
+                        $instrument,
+                        'data_entry',
+                        $data_entry_flag,
+                        $this->lorisApiConfig
+                    )
+                    ) {
+                        print "\n\t\t\tSaved DataEntry flag\n";
+                        $new_data[$pscid][$visit][$instrument]['DataEntry'] = $data_entry_flag;
                     }
                 }
             }
@@ -1030,7 +1052,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $administration_field  = $administrationMapping['id'];
         $administration_status = $administrationMapping['statusMapping'];
 
-        return array_search($data[$administration_field], $administration_status) ?: null;
+        return array_search($data[$administration_field] ?? '', $administration_status) ?: null;
     }
 
     /*
@@ -1052,7 +1074,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $validity_field  = $validityMapping['id'];
         $validity_status = $validityMapping['statusMapping'];
 
-        return array_search($data[$validity_field], $validity_status) ?: null;
+        return array_search($data[$validity_field] ?? '', $validity_status) ?: null;
     }
 
     /*
@@ -1074,11 +1096,11 @@ abstract class RedcapImporter implements IRedcapImporter
         $data_entry_field  = $dataEntryMapping['id'];
         $data_entry_status = $dataEntryMapping['statusMapping'];
 
-        return array_search($data[$data_entry_field], $data_entry_status) ?: null;
+        return array_search($data[$data_entry_field] ?? '', $data_entry_status) ?: null;
     }
 
     /**
-     * Get candidate instrument REDCap record
+     * Get candidate instrument REDCap record as raw values
      *
      * @param string $record_id The REDCap record id, the candidate id
      * @param string $event     The raw event name, the visit
@@ -1094,11 +1116,11 @@ abstract class RedcapImporter implements IRedcapImporter
 
         do {
             try {
-                $records = $this->redcapClient->_exportRecords(
+                $records = $this->redcapClient->exportRecords(
                     $record_id,
                     $event,
                     $form,
-                    $this->exportLabel,
+                    false,
                     $this->redcapDateRangeBegin,
                     $this->redcapDateRangeEnd
                 );
@@ -1110,7 +1132,7 @@ abstract class RedcapImporter implements IRedcapImporter
             break;
         } while ($attempts < $NUM_OF_ATTEMPTS);
 
-        return $records;
+        return $records['0'] ?? null;
     }
 
     /**
@@ -1216,64 +1238,22 @@ abstract class RedcapImporter implements IRedcapImporter
         return true;
     }
 
-    function setInstrumentAdministrationFlag(
+    function setInstrumentFlag(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
-        string                       $administration,
+        string                       $flag_type,
+        string                       $flag_data,
         Swagger\Client\Configuration $clientConfig
     ) : bool {
 
-        $apiInstance = new Swagger\Client\Api\InstrumentsApi(
-            $this->httpClient,
-            $this->lorisApiConfig
-        );
+        $valid_flag_types = ['data_entry','administration','validity'];
 
-        $meta = new \Swagger\Client\Model\InstrumentMeta(
-            [
-                'instrument' => $instrument,
-                'visit'      => $visit,
-                'candidate'  => $candid,
-                'dde'        => false,
-            ]
-        );
-
-        $flags = new \Swagger\Client\Model\InstrumentFlagsFlags(
-            [
-                'administration' => $administration
-            ]
-        );
-
-        $body = new \Swagger\Client\Model\InstrumentFlags(
-            [
-                'meta'  => $meta,
-                'flags' => $flags
-            ]
-        );
-
-        try {
-            $apiInstance->candidatesIdVisitInstrumentsInstrumentFlagsPatch(
-                $candid,
-                $visit,
-                $instrument,
-                $body
-            );
-        } catch (Exception $e) {
-            print "\nException when calling InstrumentsApi->candidatesIdVisitInstrumentsInstrumentFlagsPatch: " . $e->getMessage() . PHP_EOL;
+        if (!in_array($flag_type, $valid_flag_types)) {
+            print "\nError: Flag type $flag_type is not valid.\n";
             return false;
         }
 
-        return true;
-    }
-
-    function setInstrumentValidityFlag(
-        string                       $candid,
-        string                       $visit,
-        string                       $instrument,
-        string                       $validity,
-        Swagger\Client\Configuration $clientConfig
-    ) : bool {
-
         $apiInstance = new Swagger\Client\Api\InstrumentsApi(
             $this->httpClient,
             $this->lorisApiConfig
@@ -1290,7 +1270,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
         $flags = new \Swagger\Client\Model\InstrumentFlagsFlags(
             [
-                'validity' => $validity
+                $flag_type => $flag_data
             ]
         );
 
@@ -1653,7 +1633,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $cand_id     = $visit['meta']['cand_id'];
         $visit_label = $visit['meta']['visit'];
         $site        = $visit['meta']['site'];
-        $battery     = $visit['meta']['battery'];
+        $cohort      = $visit['meta']['cohort'];
         $project     = $visit['meta']['project'];
 
         // Start visit
@@ -1665,7 +1645,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 'cand_id' => $cand_id,
                 'visit'   => $visit_label,
                 'site'    => $site,
-                'battery' => $battery,
+                'cohort'  => $cohort,
                 'project' => $project,
                 'stages'  => new \Swagger\Client\Model\InstrumentVisit(
                     [
@@ -1723,10 +1703,10 @@ abstract class RedcapImporter implements IRedcapImporter
      */
     function getRedcapEvent(string $event_label) : string
     {
-        $events = $this->redcapClient->_exportEvents();
+        $events = $this->redcapClient->exportEvents();
 
         $event_name = explode(" ", $event_label)[0];
-        $arm        = str_replace(':', '', explode(" ", $event_label)[3]);
+        $arm        = str_replace(':', '', explode(" ", $event_label)[2]);
 
         foreach ($events as $event) {
             if ($event['event_name'] == $event_name

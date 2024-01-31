@@ -158,19 +158,12 @@ interface IRedcapImporter
         Swagger\Client\Configuration $clientConfig
     ) : bool;
 
-    function setInstrumentAdministrationFlag(
+    function setInstrumentFlag(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
-        string                       $administration,
-        Swagger\Client\Configuration $clientConfig
-    ) : bool;
-
-    function setInstrumentValidityFlag(
-        string                       $candid,
-        string                       $visit,
-        string                       $instrument,
-        string                       $validity,
+        string                       $flag_type,
+        string                       $flag_data,
         Swagger\Client\Configuration $clientConfig
     ) : bool;
 }

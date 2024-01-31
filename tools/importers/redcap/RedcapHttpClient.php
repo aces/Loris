@@ -34,7 +34,7 @@ class RedcapHttpClient
      *
      * @return array
      */
-    private function _exportRecords(
+    public function exportRecords(
         ?string $pscid = null,
         ?string $visit_label = null,
         ?string $instrument = null,
@@ -161,7 +161,7 @@ class RedcapHttpClient
      *
      * @return array
      */
-    private function _exportEvents(): array
+    public function exportEvents(): array
     {
         $data = [
             'token'        => $this->_token,
