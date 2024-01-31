@@ -8,6 +8,7 @@ include 'IRedcapImporter.php';
 
 use \LORIS\LorisInstance;
 use \GuzzleHttp\Client;
+use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * This represents a REDCap importer
@@ -1597,11 +1598,11 @@ abstract class RedcapImporter implements IRedcapImporter
     /**
      * Create new visit
      *
-     * @param string $candid     DCCID
-     * @param string $visit      Visit
-     * @param string $site       Site
-     * @param string $subproject Subproject
-     * @param string $project    Project
+     * @param string $candid  DCCID
+     * @param string $visit   Visit
+     * @param string $site    Site
+     * @param string $cohort  Cohort
+     * @param string $project Project
      *
      * @return ?\Swagger\Client\Model\InlineResponse2003 $result The created visit object
      */
@@ -1609,7 +1610,7 @@ abstract class RedcapImporter implements IRedcapImporter
         string                      $candid,
         string                      $visit,
         string                      $site,
-        string                      $subproject,
+        string                      $cohort,
         string                      $project
     ) : ?\Swagger\Client\Model\InlineResponse2003 {
         $apiInstance = new Swagger\Client\Api\VisitApi(
@@ -1622,7 +1623,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 'cand_id' => $candid,
                 'visit'   => $visit,
                 'site'    => $site,
-                'battery' => $subproject,
+                'cohort'  => $cohort,
                 'project' => $project,
             ]
         );
