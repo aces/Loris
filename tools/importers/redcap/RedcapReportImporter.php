@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-include 'RedcapImporter.php';
+require 'RedcapImporter.php';
 
 /**
  * This represents a REDCap Report importer

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../generic_includes.php';
 
-include 'RedcapReportImporter.php';
+require 'RedcapReportImporter.php';
 
 /**
  * This file contains code to import REDCap data into LORIS.

@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
-include 'RedcapHttpClient.php';
-include 'RedcapConfig.php';
-include 'IRedcapImporter.php';
+require 'RedcapHttpClient.php';
+require 'RedcapConfig.php';
+require 'IRedcapImporter.php';
 
 use \LORIS\LorisInstance;
 use \GuzzleHttp\Client;
@@ -65,12 +65,11 @@ abstract class RedcapImporter implements IRedcapImporter
         $this->loris = $loris;
         $this->DB    = $this->loris->getDatabaseConnection();
 
-
         $this->redcapClient = new RedcapHttpClient($loris);
         $this->redcapConfig = new RedcapConfig($project);
 
-        $this->httpClient     = new GuzzleHttp\Client();
-        $settings             = $this->loris->getConfiguration()->getSetting('API');
+        $this->httpClient = new GuzzleHttp\Client();
+        $settings         = $this->loris->getConfiguration()->getSetting('API');
         $this->lorisApiConfig = new Swagger\Client\Configuration();
         $this->lorisApiConfig = Swagger\Client\Configuration::getDefaultConfiguration()->setHost(
             $settings['url']
@@ -81,7 +80,6 @@ abstract class RedcapImporter implements IRedcapImporter
             $settings['username'],
             $settings['password']
         );
-
 
         // Set up data field restrictions, specifications
         $this->site_specific_fields = $this->redcapConfig->getSiteSpecificFields();
@@ -1459,8 +1457,8 @@ abstract class RedcapImporter implements IRedcapImporter
      * @param string $consent_date   The REDCap consent date
      * @param string $consenter_name The REDCap consenter's name
      * @param bool   $update         True if candidate consent already exists in LORIS,
-     *                                  and needs to be updated. False if consent is new,
-     *                                  and needs saving.
+     *                               and needs to be updated. False if consent is new,
+     *                               and needs saving.
      *
      * @return ?array The update_consent_rel array, or null if consent didn't update
      */
