@@ -69,6 +69,36 @@
       ]
     },
     {
+      "id": "consent_covid_date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "loris_consent_date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "date0",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "study_blood_draw",
       "format": "Y-m-d",
       "component": [

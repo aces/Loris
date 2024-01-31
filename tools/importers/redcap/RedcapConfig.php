@@ -227,6 +227,8 @@ class RedcapConfig
         foreach ($config as $consent) {
             $mapping[$consent['consentId']] = $consent;
         }
+
+        return $mapping;
     }
 
     function getInstrumentFlagsMapping(): array

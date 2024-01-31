@@ -415,7 +415,7 @@ abstract class RedcapImporter implements IRedcapImporter
     {
         $new_consents    = [];
         $mapping         = $this->metadataMapping;
-        $consent_mapping = $this->getConsentMapping();
+        $consent_mapping = $this->redcapConfig->getConsentMapping();
         $consent_list    = $this->getConsentListByGroup($this->project);
 
         print "\nProcessing consent data...\n\n";
@@ -443,7 +443,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 $consent_label = $consent['Label'];
 
                 // Check if consent data is empty but not '0'
-                if (empty($row[$consent_name]) && strlen($row[$consent_name]) == 0) {
+                if (!isset($row[$consent_name]) || strlen($row[$consent_name]) == 0) {
                     // No consent information
                     continue;
                 }
@@ -500,7 +500,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 $consent_update = $this->updateConsent(
                     $cand_id,
                     $pscid,
-                    $consent_id,
+                    strval($consent_id),
                     $consent_name,
                     $consent_label,
                     $consent_status,
