@@ -37,9 +37,12 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $taskEventIDs = array_map(function($taskEvent) {
-            return $taskEvent['PhysiologicalTaskEventID'];
-        }, $taskEvents);
+        $taskEventIDs = array_map(
+            function ($taskEvent) {
+                return $taskEvent['PhysiologicalTaskEventID'];
+            },
+            $taskEvents
+        );
 
         $taskEventIDs = array_combine(
             array_map('intval', array_keys($taskEventIDs)),
@@ -54,11 +57,12 @@ class ElectrophysioEvents
             count($taskEventIDs) > 0
                 ? join(',', $taskEventIDs)
                 : 'null'
-            ) . ')', []
+            ) . ')',
+            []
         );
 
         $this->_data = [
-            'instances' => $taskEvents,
+            'instances'     => $taskEvents,
             'extra_columns' => $extraColumns,
         ];
     }
@@ -127,8 +131,8 @@ class ElectrophysioEvents
             }
 
             $instance = [
-                'Onset'             => $instance_data['onset'],
-                'Duration'          => $instance_data['duration'],
+                'Onset'    => $instance_data['onset'],
+                'Duration' => $instance_data['duration'],
             ];
 
             // TODO: Support Event Instance Insert
@@ -161,7 +165,7 @@ class ElectrophysioEvents
             );
 
             return [
-                'instance' => $taskEvent[0],
+                'instance'      => $taskEvent[0],
                 'extra_columns' => $extraColumns,
             ];
         }
@@ -228,16 +232,17 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $projectID = intval($db->pselectOne(
-            'SELECT ProjectID FROM session AS s WHERE s.ID = (
+        $projectID = intval(
+            $db->pselectOne(
+                'SELECT ProjectID FROM session AS s WHERE s.ID = (
                 SELECT SessionID FROM physiological_file
                 WHERE PhysiologicalFileID=:PFID
             )',
-            ['PFID' => $this->_physioFileID]
-        ));
+                ['PFID' => $this->_physioFileID]
+            )
+        );
 
-
-        $tsvPath  = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
+        $tsvPath = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
 
         // Update files if files updated before database updated
         if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']) {
@@ -266,14 +271,14 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
-            # TODO: Make columns more dynamic
+            // TODO: Make columns more dynamic
             $tsvEntries = [
                 'onset', 'duration', 'sample', 'trial_type', 'response_time', 'value'
             ];
             foreach ($columnNames as $columnName) {
                 $tsvEntries[] = $columnName['PropertyName'];
             }
-//            $tsvEntries[] = 'HED';
+            //            $tsvEntries[] = 'HED';
 
             // Add columns names
             $columns = implode("\t", $tsvEntries);

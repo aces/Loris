@@ -30,136 +30,136 @@ class Events extends \NDB_Page
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute('user');
-        $db = $request->getAttribute('loris')->getDatabaseConnection();
+        $db   = $request->getAttribute('loris')->getDatabaseConnection();
 
         switch ($request->getMethod()) {
-            case 'GET':
-                // TODO: Get official server-side solution + Add to documentation
-                set_time_limit(300);  // Increase request time limit to 5 minutes
-                ini_set('memory_limit', '1G');   // Increase memory allocation limit to 1G
+        case 'GET':
+            // TODO: Get official server-side solution + Add to documentation
+            set_time_limit(300);  // Increase request time limit to 5 minutes
+            ini_set('memory_limit', '1G');   // Increase memory allocation limit to 1G
 
-                $parameters = $request->getQueryParams();
-                $sessionID = $db->pselectOne(
-                    'SELECT SessionID
+            $parameters = $request->getQueryParams();
+            $sessionID  = $db->pselectOne(
+                'SELECT SessionID
                     FROM physiological_file
                     WHERE PhysiologicalFileID=:PFID',
-                    ['PFID' => $parameters['physioFileID']]
-                );
+                ['PFID' => $parameters['physioFileID']]
+            );
 
-                $timepoint = \NDB_Factory::singleton()->timepoint(
-                    new \SessionID(strval($sessionID))
-                );
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionID))
+            );
 
-                if (!(($user->hasPermission('electrophysiology_browser_view_allsites')
-                        || ($user->hasCenter($timepoint->getCenterID())
-                            && $user->hasPermission('electrophysiology_browser_view_site')))
-                    && $user->hasProject($timepoint->getProject()->getId()))
-                ) {
-                    return (new \LORIS\Http\Response\JSON\Unauthorized());
-                }
+            if (!(($user->hasPermission('electrophysiology_browser_view_allsites')
+                || ($user->hasCenter($timepoint->getCenterID())
+                && $user->hasPermission('electrophysiology_browser_view_site')))
+                && $user->hasProject($timepoint->getProject()->getId()))
+            ) {
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
 
-                if (!isset($parameters['physioFileID'])
-                    || !isset($parameters['filePath'])
-                ) {
-                    return (new \LORIS\Http\Response\JSON\BadRequest());
-                }
+            if (!isset($parameters['physioFileID'])
+                || !isset($parameters['filePath'])
+            ) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
 
-                $physioFileID = intval($parameters['physioFileID']);
-                (new ElectrophysioEvents($physioFileID))->updateFiles();
+            $physioFileID = intval($parameters['physioFileID']);
+            (new ElectrophysioEvents($physioFileID))->updateFiles();
 
-                $config = \NDB_Factory::singleton()->config();
-                $downloadpath = \Utility::appendForwardSlash(
-                    $config->getSetting("dataDirBasepath")
-                );
+            $config       = \NDB_Factory::singleton()->config();
+            $downloadpath = \Utility::appendForwardSlash(
+                $config->getSetting("dataDirBasepath")
+            );
 
-                $file = $parameters['filePath'] ?? null;
-                $filename = urldecode(basename($file));
-                $path = dirname($file);
+            $file     = $parameters['filePath'] ?? null;
+            $filename = urldecode(basename($file));
+            $path     = dirname($file);
 
-                $downloader = new \LORIS\FilesDownloadHandler(
-                    new \SPLFileInfo($downloadpath . $path)
-                );
+            $downloader = new \LORIS\FilesDownloadHandler(
+                new \SPLFileInfo($downloadpath . $path)
+            );
 
-                return $downloader->handle(
-                    $request->withAttribute('filename', $filename)
-                );
-            case 'DELETE':
-                $parameters = json_decode((string)$request->getBody(), true);
-                $sessionID = $db->pselectOne(
-                    'SELECT SessionID
+            return $downloader->handle(
+                $request->withAttribute('filename', $filename)
+            );
+        case 'DELETE':
+            $parameters  = json_decode((string)$request->getBody(), true);
+            $sessionID   = $db->pselectOne(
+                'SELECT SessionID
                     FROM physiological_file
                     WHERE PhysiologicalFileID=:PFID',
-                    ['PFID' => $parameters['physioFileID']]
-                );
-                $timepoint = \NDB_Factory::singleton()->timepoint(
-                    new \SessionID(strval($sessionID))
-                );
-                $projectName = $timepoint->getProject()->getName();
+                ['PFID' => $parameters['physioFileID']]
+            );
+            $timepoint   = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionID))
+            );
+            $projectName = $timepoint->getProject()->getName();
 
-                if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
-                    return (new \LORIS\Http\Response\JSON\Unauthorized());
-                }
+            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
 
-                if (!isset($parameters['physioFileID'])
-                    || !isset($parameters['instance_id'])
-                ) {
-                    return (new \LORIS\Http\Response\JSON\BadRequest());
-                }
+            if (!isset($parameters['physioFileID'])
+                || !isset($parameters['instance_id'])
+            ) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
 
-//            (new ElectrophysioEvents(intval($parameters['physioFileID'])))
-//                ->deleteEvent(intval($parameters['instance_id']));
+            //            (new ElectrophysioEvents(intval($parameters['physioFileID'])))
+            //                ->deleteEvent(intval($parameters['instance_id']));
 
-                return (new \LORIS\Http\Response\JSON\OK());
-            case 'POST':
-                // TODO: Better failure reporting
-                $parameters = json_decode((string)$request->getBody(), true);
-                $sessionID = $db->pselectOne(
-                    'SELECT SessionID
+            return (new \LORIS\Http\Response\JSON\OK());
+        case 'POST':
+            // TODO: Better failure reporting
+            $parameters  = json_decode((string)$request->getBody(), true);
+            $sessionID   = $db->pselectOne(
+                'SELECT SessionID
                     FROM physiological_file
                     WHERE PhysiologicalFileID=:PFID',
-                    ['PFID' => $parameters['physioFileID']]
-                );
-                $timepoint = \NDB_Factory::singleton()->timepoint(
-                    new \SessionID(strval($sessionID))
-                );
-                $projectName = $timepoint->getProject()->getName();
+                ['PFID' => $parameters['physioFileID']]
+            );
+            $timepoint   = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionID))
+            );
+            $projectName = $timepoint->getProject()->getName();
 
-                if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
-                    return (new \LORIS\Http\Response\JSON\Unauthorized());
+            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
+
+            if (!isset($parameters['physioFileID']) || !isset($parameters['request_type'])) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+
+            switch ($parameters['request_type']) {
+            case 'event_update':
+                $instance_data = $parameters['instance'];
+                // $metadata      = $parameters['metadata'];
+                // TODO: Figure out a better description modeled on other derivatives
+                $metadata = [
+                    'description' => 'An event',
+                    'sources'     => 'EEGNet LORIS',
+                    'author'      => $user->getFullname()
+                ];
+
+                $instance_id = $parameters['instance_id'] ?
+                    intval($parameters['instance_id']) : null;
+
+                $updated_instance = (new ElectrophysioEvents(intval($parameters['physioFileID'])))
+                    ->update($instance_data, $metadata, $instance_id);
+
+                if (count($updated_instance) > 0) {
+                    return (new \LORIS\Http\Response\JSON\OK(
+                        ['instance' => $updated_instance]
+                    ));
                 }
-
-                if (!isset($parameters['physioFileID']) || !isset($parameters['request_type'])) {
-                    return (new \LORIS\Http\Response\JSON\BadRequest());
-                }
-
-                switch ($parameters['request_type']) {
-                    case 'event_update':
-                        $instance_data = $parameters['instance'];
-                        // $metadata      = $parameters['metadata'];
-                        // TODO: Figure out a better description modeled on other derivatives
-                        $metadata = [
-                            'description' => 'An event',
-                            'sources' => 'EEGNet LORIS',
-                            'author' => $user->getFullname()
-                        ];
-
-                        $instance_id = $parameters['instance_id'] ?
-                            intval($parameters['instance_id']) : null;
-
-                        $updated_instance = (new ElectrophysioEvents(intval($parameters['physioFileID'])))
-                            ->update($instance_data, $metadata, $instance_id);
-
-                        if (count($updated_instance) > 0) {
-                            return (new \LORIS\Http\Response\JSON\OK(
-                                ['instance' => $updated_instance]
-                            ));
-                        }
-                        return (new \LORIS\Http\Response\JSON\Unauthorized());
-                }
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
             default:
-                return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    ["GET", "DELETE", "POST"]
-                ));
+            return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ["GET", "DELETE", "POST"]
+            ));
         }
     }
 }

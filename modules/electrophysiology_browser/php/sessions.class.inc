@@ -570,11 +570,11 @@ class Sessions extends \NDB_Page
         // Metadata
 
         $queries = [
-            'physiological_electrode'          => 'physiological_electrode_file',
-            'physiological_coord_system'       => 'physiological_coord_system_file',
-            'physiological_channel'            => 'physiological_channel_file',
-            'physiological_event_archive'      => 'physiological_event_files',
-            'physiological_archive'            => 'all_files',
+            'physiological_electrode'     => 'physiological_electrode_file',
+            'physiological_coord_system'  => 'physiological_coord_system_file',
+            'physiological_channel'       => 'physiological_channel_file',
+            'physiological_event_archive' => 'physiological_event_files',
+            'physiological_archive'       => 'all_files',
         ];
 
         $labels = [
