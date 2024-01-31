@@ -375,7 +375,6 @@ class ImagingQueryEngineTest extends TestCase
 
         // 123458 had no files, but has a session, so still has the ScanDone 
         $this->assertEquals(count($results), 3);
-        var_dump($results);
         $this->assertEquals($results,
             [
                 "123456" => [

@@ -453,10 +453,12 @@ abstract class SQLQueryEngine implements QueryEngine
                                 assert($candval[$fname][$SID]['value'] == $row[$fname]);
                             } else {
                                 // It is cardinality many, so append the value.
-                                // $key = $row[$this->getCorrespondingKeyField($field)];
+                                // A null val in a cardinality many column means the row came from a left join
+                                // and shouldn't be included (as opposed to a cardinality:optional where it
+                                // means that the value was the value null)
                                 $key = $row[$field->getName() . ':key'];
-                                if ($key !== null) {
-                                       $val = $this->displayValue($field, $row[$fname]);
+                                $val = $this->displayValue($field, $row[$fname]);
+                                if ($key !== null && $val !== null) {
                                     if (isset($candval[$fname][$SID]['values']['key'])) {
                                         assert($candval[$fname][$SID]['values']['key'] == $val);
                                     } else {
@@ -476,7 +478,11 @@ abstract class SQLQueryEngine implements QueryEngine
                             } else {
                                 // It is many, so use an array
                                 $key = $row[$field->getName() . ':key'];
-                                if ($key !== null) {
+                                $val = $this->displayValue($field, $row[$fname]);
+                                // A null val in a cardinality many column means the row came from a left join
+                                // and shouldn't be included (as opposed to a cardinality:optional where it
+                                // means that the value was the value null)
+                                if ($key !== null && $val !== null) {
                                     $candval[$fname]['keytype'] = $this->getCorrespondingKeyFieldtype($field);
 
                                     // This is just to get around PHPCS complaining about line
@@ -484,7 +490,7 @@ abstract class SQLQueryEngine implements QueryEngine
                                     $sarray = [
                                                'VisitLabel' => $row['VisitLabel'],
                                                'SessionID'  => $row['SessionID'],
-                                               'values'     => [$key => $this->displayValue($field, $row[$fname])],
+                                               'values'     => [$key => $val],
                                               ];
                                     $candval[$fname][$SID] = $sarray;
                                 }
