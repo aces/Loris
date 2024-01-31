@@ -684,7 +684,7 @@ abstract class RedcapImporter implements IRedcapImporter
                     if (!isset($redcap_data[$examiner_field])) {
                         print "\n\t\t\tField $examiner_field not found in REDCap data. No Examiner data available.";
                         print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
-                        $error_message          = "$pscid $visit $instrument: Examiner field $examiner_field does not exist in REDCap data.";
+                        $error_message           = "$pscid $visit $instrument: Examiner field $examiner_field does not exist in REDCap data.";
                         $this->_errors[$pscid][] = $error_message;
                         // print to output
                         fwrite(STDERR, $error_message . PHP_EOL);
@@ -702,7 +702,7 @@ abstract class RedcapImporter implements IRedcapImporter
                     if (!$this->examinerExistsAtSite($redcap_examiner, $site)) {
                         print "\n\t\t\tExaminer $redcap_examiner at site $site does not exist.";
                         print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
-                        $error_message          = "$pscid $visit $instrument: Examiner $redcap_examiner at site $site does not exist in LORIS.";
+                        $error_message           = "$pscid $visit $instrument: Examiner $redcap_examiner at site $site does not exist in LORIS.";
                         $this->_errors[$pscid][] = $error_message;
                         // print to output
                         fwrite(STDERR, $error_message . PHP_EOL);
@@ -728,7 +728,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 if ($date_taken_field === null) {
                     print "\n\t\t\tDate_taken equivalent field not found in REDCap data. No Date_taken data available.\n";
                     print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
-                    $error_message          = "$pscid $visit $instrument: Date_taken field equivalent does not exist in REDCap data.";
+                    $error_message           = "$pscid $visit $instrument: Date_taken field equivalent does not exist in REDCap data.";
                     $this->_errors[$pscid][] = $error_message;
                     // print to output
                     fwrite(STDERR, $error_message . PHP_EOL);
@@ -738,7 +738,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 if (!isset($redcap_data[$date_taken_field])) {
                     print "\n\t\t\tField $date_taken_field not found in REDCap data. No Date_taken data available.";
                     print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
-                    $error_message          = "$pscid $visit $instrument: Date_taken field $date_taken_field does not exist in REDCap data.";
+                    $error_message           = "$pscid $visit $instrument: Date_taken field $date_taken_field does not exist in REDCap data.";
                     $this->_errors[$pscid][] = $error_message;
                     // print to output
                     fwrite(STDERR, $error_message . PHP_EOL);
