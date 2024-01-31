@@ -55,7 +55,7 @@ class RedcapReportImporter_COPN extends RedcapReportImporter
      *
      * @return array
      */
-    function __construct(
+    public function __construct(
         \LORIS\LorisInstance $loris,
         string               $project,
         bool                 $exportLabel = false,

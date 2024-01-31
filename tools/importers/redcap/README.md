@@ -28,14 +28,14 @@ java -jar swagger-codegen-cli.jar generate \
 
 Run composer install:
 ```
-cd php/libraries/SwaggerClient-php
+cd ../../../php/libraries/SwaggerClient-php
 composer install
 ```
 
 ## Importers and their requirements
 
 There are two importers that can be extended to write a project's custom REDCap importer:
-the abstract classes RedcapImporter and RedcapReportImporter.
+the class RedcapImporter which is abstract, and the class RedcapReportImporter which can be instantiated.
 
 The RedcapImporter queries all records from the REDCap API, while the RedcapReportImporter
 queries records from a REDCap report.

@@ -45,7 +45,7 @@ interface IRedcapImporter
      *
      * @return array $new_candidates Array of new candidates created
      */
-    function createNewCandidates(array $records) : array;
+    public function createNewCandidates(array $records) : array;
 
     /**
      * Create new visits
@@ -54,7 +54,7 @@ interface IRedcapImporter
      *
      * @return array $new_visits Array of new visits created
      */
-    function createNewVisits(array $records) : array;
+    public function createNewVisits(array $records) : array;
 
     /**
      * Update candidate consent
@@ -63,7 +63,7 @@ interface IRedcapImporter
      *
      * @return array $new_consents Array of consent data imported
      */
-    function updateCandidateConsents(array $records) : array;
+    public function updateCandidateConsents(array $records) : array;
 
     /**
      * Update candidate instrument data
@@ -72,7 +72,7 @@ interface IRedcapImporter
      *
      * @return array $new_data Array of instrument data imported
      */
-    function updateCandidateData(array $records) : array;
+    public function updateCandidateData(array $records) : array;
 
     /**
      * Creates run log
@@ -84,7 +84,7 @@ interface IRedcapImporter
      *
      * @return void
      */
-    function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data): void;
+    public function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data): void;
 
     /*
      * Get candidate instrument administration flag from REDCap data.
@@ -95,7 +95,7 @@ interface IRedcapImporter
      *
      * @return ?string The instrument adminstration flag
      */
-    function getAdministrationFlag(array $data, string $instrument) : ?string;
+    public function getAdministrationFlag(array $data, string $instrument) : ?string;
 
     /*
      * Get candidate instrument validity flag from REDCap data.
@@ -105,7 +105,7 @@ interface IRedcapImporter
      *
      * @return ?string The instrument validity flag
      */
-    function getValidityFlag(array $data, string $instrument) : ?string;
+    public function getValidityFlag(array $data, string $instrument) : ?string;
 
     /*
      * Get candidate instrument Data Entry flag from REDCap data.
@@ -115,7 +115,7 @@ interface IRedcapImporter
      *
      * @return ?string The instrument Data Entry flag
      */
-    function getDataEntryFlag(array $data, string $instrument) : ?string;
+    public function getDataEntryFlag(array $data, string $instrument) : ?string;
 
     /**
      * Get candidate instrument REDCap record
@@ -126,7 +126,7 @@ interface IRedcapImporter
      *
      * @return ?array The redcap form records
      */
-    function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array;
+    public function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array;
 
     /**
      * Get candidate instrument LORIS data
@@ -137,7 +137,7 @@ interface IRedcapImporter
      *
      * @return ?array The instrument data
      */
-    function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array;
+    public function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array;
 
     /**
      * Get candidate instrument LORIS flags data
@@ -148,9 +148,9 @@ interface IRedcapImporter
      *
      * @return ?Swagger\Client\Model\InstrumentFlagsFlags The instrument flags data
      */
-    function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags;
+    public function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags;
 
-    function setInstrumentData(
+    public function setInstrumentData(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
@@ -158,7 +158,7 @@ interface IRedcapImporter
         Swagger\Client\Configuration $clientConfig
     ) : bool;
 
-    function setInstrumentFlag(
+    public function setInstrumentFlag(
         string                       $candid,
         string                       $visit,
         string                       $instrument,

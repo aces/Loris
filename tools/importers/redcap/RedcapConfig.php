@@ -7,19 +7,20 @@
  */
 class RedcapConfig
 {
-    private string $project;
-    private string $configFilePath;
-    private array  $import_config;
+    private string $_project;
+    private string $_config_file_path;
+    private array  $_import_config;
 
-    function __construct($project)
+    public function __construct($project)
     {
-        $this->configFilePath = __DIR__ . "/redcap_config_$project.json";
-        $this->import_config  = $this->_load();
+        $this->_project          = $project;
+        $this->_config_file_path = __DIR__ . "/redcap_config_$project.json";
+        $this->_import_config    = $this->_load();
     }
 
     private function _load(): array
     {
-        return json_decode(file_get_contents($this->configFilePath), true);
+        return json_decode(file_get_contents($this->_config_file_path), true);
     }
 
     /**
@@ -28,9 +29,9 @@ class RedcapConfig
      * @return array the mapping with loris field as key,
      *               and redcap field as value(s)
      */
-    function getImporterConfig(): array
+    private function _getImporterConfig(): array
     {
-        return $this->import_config;
+        return $this->_import_config;
     }
 
     /**
@@ -40,9 +41,9 @@ class RedcapConfig
      * @return array the mapping with loris field as key,
      *               and redcap field as value(s)
      */
-    function getMetadataMapping() : array
+    public function getMetadataMapping() : array
     {
-        return $this->getImporterConfig()['metadataMapping'];
+        return $this->_getImporterConfig()['metadataMapping'];
     }
 
     /**
@@ -51,9 +52,9 @@ class RedcapConfig
      * @return array the mapping with redcap site as key,
      *               and loris site as value
      */
-    function getCohortMapping() : array
+    public function getCohortMapping() : array
     {
-        $config  = $this->getImporterConfig()['cohortMapping'];
+        $config  = $this->_getImporterConfig()['cohortMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -69,9 +70,9 @@ class RedcapConfig
      * @return array the mapping with redcap site as key,
      *               and loris site as value
      */
-    function getSiteMapping() : array
+    public function getSiteMapping() : array
     {
-        $config  = $this->getImporterConfig()['siteMapping'];
+        $config  = $this->_getImporterConfig()['siteMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -87,9 +88,9 @@ class RedcapConfig
      * @return array the mapping with redcap gender as key,
      *               and loris sex as value
      */
-    function getSexMapping() : array
+    public function getSexMapping() : array
     {
-        $config  = $this->getImporterConfig()['sexMapping'];
+        $config  = $this->_getImporterConfig()['sexMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -104,9 +105,9 @@ class RedcapConfig
      *
      * @return array An array of visit mapping
      */
-    function getVisitMapping() : array
+    public function getVisitMapping() : array
     {
-        $config  = $this->getImporterConfig()['visitMapping'];
+        $config  = $this->_getImporterConfig()['visitMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -116,9 +117,9 @@ class RedcapConfig
         return $mapping;
     }
 
-    function getInstrumentMapping(): array
+    public function getInstrumentMapping(): array
     {
-        $config  = $this->getImporterConfig()['instrumentMapping'];
+        $config  = $this->_getImporterConfig()['instrumentMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -133,9 +134,9 @@ class RedcapConfig
      *
      * return array The date_taken field names for configured instrument
      */
-    function getDateTakenMapping() : array
+    public function getDateTakenMapping() : array
     {
-        $config  = $this->getImporterConfig()['dateTakenMapping'];
+        $config  = $this->_getImporterConfig()['dateTakenMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -152,9 +153,9 @@ class RedcapConfig
      *
      * return array
      */
-    function getStatusFieldsMapping() : array
+    public function getStatusFieldsMapping() : array
     {
-        $config  = $this->getImporterConfig()['statusFieldsMapping'];
+        $config  = $this->_getImporterConfig()['statusFieldsMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -169,9 +170,9 @@ class RedcapConfig
      *
      * return array The examiner field names for configured instruments
      */
-    function getExaminerMapping() : array
+    public function getExaminerMapping() : array
     {
-        $config  = $this->getImporterConfig()['examinerMapping'];
+        $config  = $this->_getImporterConfig()['examinerMapping'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -181,9 +182,9 @@ class RedcapConfig
         return $mapping;
     }
 
-    function getSiteSpecificFields(): array
+    public function getSiteSpecificFields(): array
     {
-        $config  = $this->getImporterConfig()['siteSpecific'];
+        $config  = $this->_getImporterConfig()['siteSpecific'];
         $mapping = [];
 
         foreach ($config as $option) {
@@ -193,9 +194,9 @@ class RedcapConfig
         return $mapping;
     }
 
-    function getDatesToScrub(): array
+    public function getDatesToScrub(): array
     {
-        $config = $this->getImporterConfig()['datesToScrub'];
+        $config = $this->_getImporterConfig()['datesToScrub'];
         $dates  = [];
 
         foreach ($config as $date_field) {
@@ -214,14 +215,14 @@ class RedcapConfig
         return $dates;
     }
 
-    function getFieldsToIgnore(): array
+    public function getFieldsToIgnore(): array
     {
-        return $this->getImporterConfig()['toIgnore'];
+        return $this->_getImporterConfig()['toIgnore'];
     }
 
-    function getConsentMapping(): array
+    public function getConsentMapping(): array
     {
-        $config  = $this->getImporterConfig()['consentMapping'];
+        $config  = $this->_getImporterConfig()['consentMapping'];
         $mapping = [];
 
         foreach ($config as $consent) {
@@ -231,9 +232,9 @@ class RedcapConfig
         return $mapping;
     }
 
-    function getInstrumentFlagsMapping(): array
+    public function getInstrumentFlagsMapping(): array
     {
-        $config  = $this->getImporterConfig()['instrumentFlagsMapping'];
+        $config  = $this->_getImporterConfig()['instrumentFlagsMapping'];
         $mapping = [];
 
         foreach ($config as $instrument) {
@@ -258,6 +259,6 @@ class RedcapConfig
      */
     public function getReportId() : int
     {
-        return $this->getImporterConfig()['reportId'];
+        return $this->_getImporterConfig()['reportId'];
     }
 }

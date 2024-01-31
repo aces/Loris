@@ -7,9 +7,9 @@ require 'RedcapImporter.php';
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-abstract class RedcapReportImporter extends RedcapImporter
+class RedcapReportImporter extends RedcapImporter
 {
-    private int  $redcapReportId; // REDCap report id
+    private int  $_redcapReportId; // REDCap report id
 
     /**
      * Create new instance.
@@ -25,7 +25,7 @@ abstract class RedcapReportImporter extends RedcapImporter
      * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
      *                                             created or modified
      */
-    function __construct(
+    public function __construct(
         \LORIS\LorisInstance $loris,
         string               $project,
         bool                 $exportLabel = false,
@@ -34,7 +34,7 @@ abstract class RedcapReportImporter extends RedcapImporter
     ) {
         parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
 
-        $this->redcapReportId = $this->redcapConfig->getReportId();
+        $this->_redcapReportId = $this->redcapConfig->getReportId();
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class RedcapReportImporter extends RedcapImporter
         do {
             try {
                 $records = $this->redcapClient->exportReport(
-                    intval($this->redcapReportId),
+                    intval($this->_redcapReportId),
                     $this->exportLabel
                 );
             } catch (Exception $e) {

@@ -17,32 +17,32 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 abstract class RedcapImporter implements IRedcapImporter
 {
-    var $loris;                // reference to the LorisInstance object
-    var $DB;                   // reference to the database handler
+    private LorisInstance $_loris; // reference to the LorisInstance object
+    private Database      $_DB;    // reference to the database handler
 
-    var $redcapClient;         // reference to the RedcapHttpClient object
-    var $redcapConfig;         // reference to the RedcapConfig object
+    public RedcapHttpClient $redcapClient; // reference to the RedcapHttpClient object
+    public RedcapConfig     $redcapConfig; // reference to the RedcapConfig object
 
-    var $lorisApiConfig;       // Swagger client configuration, use LORIS api where possible
-    var $httpClient;
+    public GuzzleHttp\Client            $httpClient;
+    public Swagger\Client\Configuration $lorisApiConfig; // Swagger client configuration, use LORIS api where possible
 
-    var $errors         = [];  // error handling
-    var $missing_fields = [];  // REDCap fields not in LORIS
+    private array $_errors         = [];  // error handling
+    private array $_missing_fields = [];  // REDCap fields not in LORIS
 
-    var $site_specific_fields; // only site candidates will have these field values imported
-    var $dates_to_scrub;       // Specify date fields that don't have the string 'date' in the fieldname
-    var $fields_to_ignore;     // REDCap fields to ignore and not import into LORIS
-    var $metadataMapping;      // REDCap candidate and visit level metadata fields
+    public array $site_specific_fields; // only site candidates will have these field values imported
+    public array $dates_to_scrub;       // Specify date fields that don't have the string 'date' in the fieldname
+    public array $fields_to_ignore;     // REDCap fields to ignore and not import into LORIS
+    public array $metadataMapping;      // REDCap candidate and visit level metadata fields
 
-    var $project;
+    public string $project;
 
     public bool $exportLabel; // True or false export the Redcap records as label
-                               // for multiple choice fields. If false, export raw values
+                              // for multiple choice fields. If false, export raw values
 
-    var $redcapDateRangeBegin; // Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records
-                               // were created/modified
-    var $redcapDateRangeEnd;   // Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records
-                               // were created/modified
+    public ?string $redcapDateRangeBegin; // Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records
+                                          // were created/modified
+    public ?string $redcapDateRangeEnd;   // Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records
+                                          // were created/modified
     /**
      * Create new instance.
      *
@@ -55,21 +55,21 @@ abstract class RedcapImporter implements IRedcapImporter
      * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
      *                                             created or modified
      */
-    function __construct(
+    public function __construct(
         \LORIS\LorisInstance $loris,
         string               $project,
         bool                 $exportLabel = false,
         ?string              $dateRangeBegin = null,
         ?string              $dateRangeEnd = null
     ) {
-        $this->loris = $loris;
-        $this->DB    = $this->loris->getDatabaseConnection();
+        $this->_loris = $loris;
+        $this->_DB    = $this->_loris->getDatabaseConnection();
 
         $this->redcapClient = new RedcapHttpClient($loris);
         $this->redcapConfig = new RedcapConfig($project);
 
         $this->httpClient = new GuzzleHttp\Client();
-        $settings         = $this->loris->getConfiguration()->getSetting('API');
+        $settings         = $this->_loris->getConfiguration()->getSetting('API');
         $this->lorisApiConfig = new Swagger\Client\Configuration();
         $this->lorisApiConfig = Swagger\Client\Configuration::getDefaultConfiguration()->setHost(
             $settings['url']
@@ -134,7 +134,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return void
      */
-    function run() : void
+    public function run() : void
     {
         $records = $this->fetchRecords();
 
@@ -192,7 +192,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_candidates Array of new candidates created
      */
-    function createNewCandidates(array $records) : array
+    public function createNewCandidates(array $records) : array
     {
         $new_candidates = [];
         $project        = $this->project;
@@ -266,7 +266,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 || strtotime($dob) === false
             ) {
                 print "\tCreating candidate $pscid failed.\n";
-                $this->errors[$pscid][] = "Cannot create candidate $pscid: dob, project, pscid, site, or sex missing or invalid.";
+                $this->_errors[$pscid][] = "Cannot create candidate $pscid: dob, project, pscid, site, or sex missing or invalid.";
                 continue;
             }
 
@@ -283,7 +283,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
             if (is_null($new_cand)) {
                 print "\t\tCandidate $pscid NOT created.";
-                $this->errors[$pscid][] = "Creating candidate $pscid failed.";
+                $this->_errors[$pscid][] = "Creating candidate $pscid failed.";
                 continue;
             }
 
@@ -301,7 +301,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_visits Array of new visits created
      */
-    function createNewVisits(array $records) : array
+    public function createNewVisits(array $records) : array
     {
         $new_visits = [];
         $project    = $this->project;
@@ -323,7 +323,7 @@ abstract class RedcapImporter implements IRedcapImporter
             if ($dccid === null) {
                 $error_message = "Getting candidate ID for $pscid failed.";
                 print "\t$error_message\n";
-                $this->errors[$pscid][] = $error_message;
+                $this->_errors[$pscid][] = $error_message;
                 continue;
             }
 
@@ -331,7 +331,7 @@ abstract class RedcapImporter implements IRedcapImporter
             $visit = $this->redcapConfig->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
             if ($visit === '') {
                 print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
-                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
+                $this->_errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
                                         . " for candidate $pscid: visit label invalid.";
                 continue;
             }
@@ -373,7 +373,7 @@ abstract class RedcapImporter implements IRedcapImporter
             ) {
                 $error_message = "Cannot create visit $visit for candidate $pscid: cohort missing or invalid.";
                 print "\t$error_message\n";
-                $this->errors[$pscid][] = $error_message;
+                $this->_errors[$pscid][] = $error_message;
                 continue;
             }
 
@@ -391,7 +391,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
             if (is_null($new_visit)) {
                 print "\t\tVisit $visit NOT created for candidate $pscid.";
-                $this->errors[$pscid][] = "Creating visit $visit for candidate $pscid failed.";
+                $this->_errors[$pscid][] = "Creating visit $visit for candidate $pscid failed.";
                 continue;
             }
 
@@ -409,7 +409,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_consents Array of consent data imported
      */
-    function updateCandidateConsents(array $records) : array
+    public function updateCandidateConsents(array $records) : array
     {
         $new_consents    = [];
         $mapping         = $this->metadataMapping;
@@ -429,7 +429,7 @@ abstract class RedcapImporter implements IRedcapImporter
             if ($cand_id === null) {
                 $error_message = "Getting candidate ID for $pscid failed.";
                 print "\t$error_message\n";
-                $this->errors[$pscid][] = $error_message;
+                $this->_errors[$pscid][] = $error_message;
                 continue;
             }
 
@@ -465,7 +465,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 ) {
                     $error_message = "Consent $consent_name status and/or date is missing or invalid for candidate $pscid. ";
                     print "\t$error_message\n";
-                    $this->errors[$pscid][] = $error_message;
+                    $this->_errors[$pscid][] = $error_message;
                     continue;
                 }
 
@@ -513,7 +513,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 } else {
                     $error_message = "Consent $consent_name failed to be updated for candidate $pscid.";
                     print "\t$error_message\n";
-                    $this->errors[$pscid][] = $error_message;
+                    $this->_errors[$pscid][] = $error_message;
                 }
             }
         }
@@ -528,7 +528,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return array $new_data Array of instrument data imported
      */
-    function updateCandidateData(array $records) : array
+    public function updateCandidateData(array $records) : array
     {
         $new_data = [];
         $mapping  = $this->metadataMapping;
@@ -548,7 +548,7 @@ abstract class RedcapImporter implements IRedcapImporter
             if ($cand_id === null) {
                 $error_message = "Getting candidate ID for $pscid failed.";
                 print "\t\t$error_message\n";
-                $this->errors[$pscid][] = $error_message;
+                $this->_errors[$pscid][] = $error_message;
                 continue;
             }
 
@@ -556,7 +556,7 @@ abstract class RedcapImporter implements IRedcapImporter
             $visit = $this->redcapConfig->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
             if ($visit === '') {
                 print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
-                $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
+                $this->_errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
                                         . " for candidate $pscid: visit label invalid.";
                 continue;
             }
@@ -565,7 +565,7 @@ abstract class RedcapImporter implements IRedcapImporter
             if (!$this->visitExists($cand_id, $visit)) {
                 $error_message = "Visit $visit doesn't exist for candidate $pscid.";
                 print "\t\t$error_message\n";
-                $this->errors[$pscid][] = $error_message;
+                $this->_errors[$pscid][] = $error_message;
                 continue;
             }
 
@@ -598,7 +598,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 if ($date_visit === '' || strtotime($date_visit) === false) {
                     $error_message = "Cannot start visit $visit for candidate $pscid: date_visit missing or invalid.";
                     print "\t\t$error_message\n";
-                    $this->errors[$pscid][] = $error_message;
+                    $this->_errors[$pscid][] = $error_message;
                     continue;
                 }
 
@@ -614,7 +614,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 // Start the visit
                 if (!$this->startVisit($candidate_visit, $date_visit)) {
                     print "\t\tVisit $visit NOT started for candidate $pscid.";
-                    $this->errors[$pscid][] = "Starting visit $visit for candidate $pscid failed.";
+                    $this->_errors[$pscid][] = "Starting visit $visit for candidate $pscid failed.";
                     continue;
                 }
                 print "\t\tVisit $visit successfully started for candidate $pscid.\n";
@@ -626,7 +626,7 @@ abstract class RedcapImporter implements IRedcapImporter
             $instrument_list = $this->getCandidateTestBattery($cand_id, $visit);
             if (is_null($instrument_list)) {
                 print "\t\tCandidate $pscid has no instruments in the $visit test battery.\n";
-                $this->errors[$pscid][] = "Unable to save instrument data for candidate $pscid: No instruments populated in the $visit test battery.";
+                $this->_errors[$pscid][] = "Unable to save instrument data for candidate $pscid: No instruments populated in the $visit test battery.";
                 continue;
             }
 
@@ -685,7 +685,7 @@ abstract class RedcapImporter implements IRedcapImporter
                         print "\n\t\t\tField $examiner_field not found in REDCap data. No Examiner data available.";
                         print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
                         $error_message          = "$pscid $visit $instrument: Examiner field $examiner_field does not exist in REDCap data.";
-                        $this->errors[$pscid][] = $error_message;
+                        $this->_errors[$pscid][] = $error_message;
                         // print to output
                         fwrite(STDERR, $error_message . PHP_EOL);
                         continue;
@@ -703,7 +703,7 @@ abstract class RedcapImporter implements IRedcapImporter
                         print "\n\t\t\tExaminer $redcap_examiner at site $site does not exist.";
                         print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
                         $error_message          = "$pscid $visit $instrument: Examiner $redcap_examiner at site $site does not exist in LORIS.";
-                        $this->errors[$pscid][] = $error_message;
+                        $this->_errors[$pscid][] = $error_message;
                         // print to output
                         fwrite(STDERR, $error_message . PHP_EOL);
                         continue;
@@ -715,7 +715,7 @@ abstract class RedcapImporter implements IRedcapImporter
                         $error_message = "Exception when querying examinerID for $redcap_examiner: ";
                         print "\n\t\t\t$error_message: " . $e->getMessage() . PHP_EOL;
                         print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
-                        $this->errors[$pscid][] = $error_message . $e->getMessage();
+                        $this->_errors[$pscid][] = $error_message . $e->getMessage();
                         // print to output
                         fwrite(STDERR, $error_message . $e->getMessage() . PHP_EOL);
                         continue;
@@ -729,7 +729,7 @@ abstract class RedcapImporter implements IRedcapImporter
                     print "\n\t\t\tDate_taken equivalent field not found in REDCap data. No Date_taken data available.\n";
                     print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
                     $error_message          = "$pscid $visit $instrument: Date_taken field equivalent does not exist in REDCap data.";
-                    $this->errors[$pscid][] = $error_message;
+                    $this->_errors[$pscid][] = $error_message;
                     // print to output
                     fwrite(STDERR, $error_message . PHP_EOL);
                     continue;
@@ -739,7 +739,7 @@ abstract class RedcapImporter implements IRedcapImporter
                     print "\n\t\t\tField $date_taken_field not found in REDCap data. No Date_taken data available.";
                     print "\n\t\t\tSkipping saving $instrument data for $pscid at $visit.\n\n";
                     $error_message          = "$pscid $visit $instrument: Date_taken field $date_taken_field does not exist in REDCap data.";
-                    $this->errors[$pscid][] = $error_message;
+                    $this->_errors[$pscid][] = $error_message;
                     // print to output
                     fwrite(STDERR, $error_message . PHP_EOL);
                     continue;
@@ -802,10 +802,10 @@ abstract class RedcapImporter implements IRedcapImporter
                             'instrument' => $instrument,
                             'field'      => $fieldname,
                         ];
-                        if (!in_array($fieldValPair, $this->missing_fields)) {
+                        if (!in_array($fieldValPair, $this->_missing_fields)) {
                             $error_message = "Field $fieldname does not exist in LORIS.\n";
                             print "\n\t\t\t$error_message";
-                            $this->missing_fields[] = $fieldValPair;
+                            $this->_missing_fields[] = $fieldValPair;
                             // print to output
                             fwrite(STDERR, $error_message . PHP_EOL);
                         }
@@ -1009,7 +1009,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return void
      */
-    function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data) : void
+    public function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data) : void
     {
         print "\nNew candidates: ".count($new_candidates)."\n";
         print_r($new_candidates);
@@ -1023,11 +1023,11 @@ abstract class RedcapImporter implements IRedcapImporter
         print "\nNew behavioural data: ".count($new_data)." candidates\n";
         print_r($new_data);
 
-        print "\nMissing fields: ".count($this->missing_fields)."\n";
-        print_r($this->missing_fields);
+        print "\nMissing fields: ".count($this->_missing_fields)."\n";
+        print_r($this->_missing_fields);
 
-        print "\nErrors: ".count($this->errors)."\n";
-        print_r($this->errors);
+        print "\nErrors: ".count($this->_errors)."\n";
+        print_r($this->_errors);
     }
 
     /*
@@ -1039,7 +1039,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The instrument adminstration flag
      */
-    function getAdministrationFlag(array $data, string $instrument) : ?string
+    public function getAdministrationFlag(array $data, string $instrument) : ?string
     {
         $administrationMapping = $this->redcapConfig->getInstrumentFlagsMapping()[$instrument]['administration'] ?? null;
 
@@ -1061,7 +1061,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The instrument validity flag
      */
-    function getValidityFlag(array $data, string $instrument) : ?string
+    public function getValidityFlag(array $data, string $instrument) : ?string
     {
         $validityMapping = $this->redcapConfig->getInstrumentFlagsMapping()[$instrument]['validity'] ?? null;
 
@@ -1083,7 +1083,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The instrument Data Entry flag
      */
-    function getDataEntryFlag(array $data, string $instrument) : ?string
+    public function getDataEntryFlag(array $data, string $instrument) : ?string
     {
         $dataEntryMapping = $this->redcapConfig->getInstrumentFlagsMapping()[$instrument]['dataEntry'] ?? null;
 
@@ -1106,7 +1106,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?array The redcap form records
      */
-    function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array
+    public function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array
     {
         $NUM_OF_ATTEMPTS = 3;
         $attempts        = 0;
@@ -1142,7 +1142,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?array The instrument data
      */
-    function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array
+    public function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array
     {
         try {
             $apiInstance = new Swagger\Client\Api\InstrumentsApi(
@@ -1171,7 +1171,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?Swagger\Client\Model\InstrumentFlagsFlags The instrument flags data
      */
-    function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags
+    public function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags
     {
         $result = new \Swagger\Client\Model\InstrumentFlagsFlags();
 
@@ -1193,7 +1193,7 @@ abstract class RedcapImporter implements IRedcapImporter
         return $result;
     }
 
-    function setInstrumentData(
+    public function setInstrumentData(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
@@ -1236,7 +1236,7 @@ abstract class RedcapImporter implements IRedcapImporter
         return true;
     }
 
-    function setInstrumentFlag(
+    public function setInstrumentFlag(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
@@ -1301,7 +1301,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return bool True if candidate exists
      */
-    function candidateExists(string $id) : bool
+    public function candidateExists(string $id) : bool
     {
         return $this->getCandidate($id) ? true : false;
     }
@@ -1313,7 +1313,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The candidate dccid
      */
-    function getCandidateID(string $pscid) : ?string
+    public function getCandidateID(string $pscid) : ?string
     {
         $candidate = $this->getCandidate($pscid);
 
@@ -1327,7 +1327,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?\Swagger\Client\Model\InlineResponse2002
      */
-    function getCandidate(string $id) : ?\Swagger\Client\Model\InlineResponse2002
+    public function getCandidate(string $id) : ?\Swagger\Client\Model\InlineResponse2002
     {
         try {
             $api    = new Swagger\Client\Api\CandidatesApi(
@@ -1354,7 +1354,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?\Swagger\Client\Model\Candidate $result The created candidate object
      */
-    function createCandidate(
+    public function createCandidate(
         string                       $project,
         string                       $pscid,
         string                       $site,
@@ -1397,7 +1397,7 @@ abstract class RedcapImporter implements IRedcapImporter
         return $result;
     }
 
-    function scrubDate(string $datetime, array $components) : \DateTime
+    public function scrubDate(string $datetime, array $components) : \DateTime
     {
         $datetime = new \DateTime($datetime);
 
@@ -1432,7 +1432,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *               labels, and consent ID, for the given consent group.
      *               The keys of the arrays are the IDs of the consents.
      */
-    function getConsentListByGroup(string $group) : array
+    public function getConsentListByGroup(string $group) : array
     {
         $query = "SELECT c.ConsentID AS ConsentID, c.Name AS Name, c.Label AS Label FROM consent c
             LEFT JOIN consent_group cg USING (ConsentGroupID)
@@ -1440,7 +1440,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $where = ['consent_group' => $group];
         $key   = 'ConsentID';
 
-        $result = $this->DB->pselectWithIndexKey($query, $where, $key);
+        $result = $this->_DB->pselectWithIndexKey($query, $where, $key);
 
         return $result;
     }
@@ -1462,7 +1462,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?array The update_consent_rel array, or null if consent didn't update
      */
-    function updateConsent(
+    public function updateConsent(
         string $cand_id,
         string $pscid,
         string $consent_id,
@@ -1495,7 +1495,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
         if ($update) {
             try {
-                $this->DB->update(
+                $this->_DB->update(
                     'candidate_consent_rel',
                     $update_consent_rel,
                     [
@@ -1503,15 +1503,15 @@ abstract class RedcapImporter implements IRedcapImporter
                         'ConsentID'   => $consent_id,
                     ]
                 );
-                $this->DB->insert('candidate_consent_history', $update_consent_history);
+                $this->_DB->insert('candidate_consent_history', $update_consent_history);
             } catch (Exception $e) {
                 return null;
             }
         } else {
             // then, insert
             try {
-                $this->DB->insert('candidate_consent_rel', $update_consent_rel);
-                $this->DB->insert('candidate_consent_history', $update_consent_history);
+                $this->_DB->insert('candidate_consent_rel', $update_consent_rel);
+                $this->_DB->insert('candidate_consent_history', $update_consent_history);
             } catch (Exception $e) {
                 return null;
             }
@@ -1528,7 +1528,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return bool True if visit exists
      */
-    function visitExists(string $dccid, string $visit_label) : bool
+    public function visitExists(string $dccid, string $visit_label) : bool
     {
         return $this->getCandidateVisit($dccid, $visit_label) ? true : false;
     }
@@ -1541,7 +1541,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?\Swagger\Client\Model\InlineResponse2003 The visit object
      */
-    function getCandidateVisit(string $dccid, string $visit) : ?\Swagger\Client\Model\InlineResponse2003
+    public function getCandidateVisit(string $dccid, string $visit) : ?\Swagger\Client\Model\InlineResponse2003
     {
         try {
             $apiInstance = new Swagger\Client\Api\VisitApi(
@@ -1568,7 +1568,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The candidate site
      */
-    function getCandidateSite(string $id) : ?string
+    public function getCandidateSite(string $id) : ?string
     {
         return  $this->getCandidate($id)['meta']['site'] ?? null;
     }
@@ -1584,7 +1584,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?\Swagger\Client\Model\InlineResponse2003 $result The created visit object
      */
-    function createVisit(
+    public function createVisit(
         string                      $candid,
         string                      $visit,
         string                      $site,
@@ -1626,7 +1626,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return bool True if the visit succesfully started
      */
-    function startVisit(\Swagger\Client\Model\InlineResponse2003 $visit, string $date_visit) : bool
+    public function startVisit(\Swagger\Client\Model\InlineResponse2003 $visit, string $date_visit) : bool
     {
         $cand_id     = $visit['meta']['cand_id'];
         $visit_label = $visit['meta']['visit'];
@@ -1676,7 +1676,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?array The list of instruments
      */
-    function getCandidateTestBattery($cand_id, $visit) : ?array
+    public function getCandidateTestBattery($cand_id, $visit) : ?array
     {
         $apiInstance = new Swagger\Client\Api\InstrumentsApi(
             $this->httpClient,
@@ -1699,7 +1699,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return string The redcap unique event name
      */
-    function getRedcapEvent(string $event_label) : string
+    public function getRedcapEvent(string $event_label) : string
     {
         $events = $this->redcapClient->exportEvents();
 
@@ -1723,7 +1723,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The visit's site
      */
-    function getVisitSite(string $dccid, string $visit) : ?string
+    public function getVisitSite(string $dccid, string $visit) : ?string
     {
         return $this->getCandidateVisit($dccid, $visit)['meta']['site'] ?? null;
     }
@@ -1737,7 +1737,7 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return bool True if the examiner exists
      */
-    function examinerExistsAtSite(string $examiner, string $site) : bool
+    public function examinerExistsAtSite(string $examiner, string $site) : bool
     {
         $examiner_id = $this->getExaminerID($examiner);
 
@@ -1745,7 +1745,7 @@ abstract class RedcapImporter implements IRedcapImporter
             return false;
         }
 
-        $count = $this->DB->pselectOneInt(
+        $count = $this->_DB->pselectOneInt(
             "SELECT COUNT(*) FROM examiners_psc_rel epr
                 LEFT JOIN psc ON (epr.centerID=psc.CenterID)
               WHERE epr.examinerID=:examiner_id
@@ -1770,9 +1770,9 @@ abstract class RedcapImporter implements IRedcapImporter
      *
      * @return ?string The examiner id
      */
-    function getExaminerID(string $examiner) : ?string
+    public function getExaminerID(string $examiner) : ?string
     {
-        $examinerID = $this->DB->pselect(
+        $examinerID = $this->_DB->pselect(
             "SELECT examinerID
              FROM examiners
              WHERE full_name=:examiner",
