@@ -85,7 +85,7 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
       return (dispatch) => {
         dispatch(setFilteredEpochs({
           plotVisibility: newFilteredEpochs,
-          columnVisibility: filteredEpochs.columnVisibility
+          columnVisibility: filteredEpochs.columnVisibility,
         }));
       };
     })
@@ -139,4 +139,4 @@ export const getEpochsInRange = (epochs, interval) => {
       )
     )
   );
-}
+};

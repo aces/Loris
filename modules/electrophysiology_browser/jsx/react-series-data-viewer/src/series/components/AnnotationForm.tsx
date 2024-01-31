@@ -247,8 +247,8 @@ const AnnotationForm = ({
         type: 'Event',
         label: data.instance.EventValue,  // Unused
         value: data.instance.EventValue,
-        trial_type: data.instance.TrialType,
-        properties: data.extra_columns,
+        trialType: data.instance.TrialType,
+        properties: data.extraColumns,
         channels: 'all',
         physiologicalTaskEventID: data.instance.PhysiologicalTaskEventID,
       };
@@ -402,7 +402,7 @@ const AnnotationForm = ({
                   marginLeft: '10px',
                 }}>
                   {
-                    currentAnnotation.label === currentAnnotation.trial_type
+                    currentAnnotation.label === currentAnnotation.trialType
                       ? 'trial_type'
                       : 'value'
                   }

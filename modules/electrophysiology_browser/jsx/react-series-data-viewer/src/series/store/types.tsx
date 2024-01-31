@@ -31,7 +31,7 @@ export type Epoch = {
   type: 'Event',
   label: string,
   value: string,
-  trial_type: string,
+  trialType: string,
   properties?: any[],
   hed?: string,
   channels: number[] | 'all',
@@ -45,7 +45,7 @@ export type EpochFilter = {
 
 export type EventMetadata = {
   instances: any[],
-  extra_columns: any[],
+  extraColumns: any[],
 }
 
 export type RightPanel =

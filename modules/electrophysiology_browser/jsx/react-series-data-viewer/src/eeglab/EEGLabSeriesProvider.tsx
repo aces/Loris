@@ -18,7 +18,10 @@ import {
   setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {setCoordinateSystem, setElectrodes} from '../series/store/state/montage';
+import {
+    setCoordinateSystem,
+    setElectrodes,
+} from '../series/store/state/montage';
 import {EventMetadata} from '../series/store/types';
 
 declare global {
@@ -123,10 +126,17 @@ class EEGLabSeriesProvider extends Component<CProps> {
       }).then(() => {
         const epochs = [];
         events.instances.map((instance) => {
-          const epochIndex = epochs.findIndex((e) => e.physiologicalTaskEventID === instance.PhysiologicalTaskEventID);
+          const epochIndex =
+              epochs.findIndex((e) =>
+                  e.physiologicalTaskEventID ===
+                  instance.PhysiologicalTaskEventID
+              );
 
-          const extraColumns = Array.from(events.extra_columns).filter((column) => {
-            return column.PhysiologicalTaskEventID === instance.PhysiologicalTaskEventID
+          const extraColumns = Array.from(
+              events.extraColumns
+          ).filter((column) => {
+            return column.PhysiologicalTaskEventID ===
+                instance.PhysiologicalTaskEventID;
           });
           if (epochIndex === -1) {
             const epochLabel = [null, 'n/a'].includes(instance.TrialType)
@@ -137,8 +147,8 @@ class EEGLabSeriesProvider extends Component<CProps> {
               duration: parseFloat(instance.Duration),
               type: 'Event',
               label: epochLabel ?? instance.EventValue,
-              value:  instance.EventValue,
-              trial_type: instance.TrialType,
+              value: instance.EventValue,
+              trialType: instance.TrialType,
               properties: extraColumns,
               hed: null,
               channels: 'all',
@@ -152,7 +162,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
     }).then((epochs) => {
         const sortedEpochs = epochs
         .flat()
-        .sort(function (a, b) {
+        .sort(function(a, b) {
           return a.onset - b.onset;
         });
 
@@ -161,7 +171,8 @@ class EEGLabSeriesProvider extends Component<CProps> {
       this.store.dispatch(setFilteredEpochs({
         plotVisibility: sortedEpochs.reduce((indices, epoch, index) => {
           if (!(epoch.onset < 1 && epoch.duration >= timeInterval[1])) {
-            indices.push(index);  // Full-recording events not visible by default
+            // Full-recording events not visible by default
+            indices.push(index);
           }
           return indices;
         }, []),
@@ -190,12 +201,16 @@ class EEGLabSeriesProvider extends Component<CProps> {
     Promise.race(racers(fetchJSON, coordSystemURL))
       .then( ({json, _}) => {
         if (json) {
-          const {EEGCoordinateSystem, EEGCoordinateUnits, EEGCoordinateSystemDescription} = json;
+          const {
+            EEGCoordinateSystem,
+            EEGCoordinateUnits,
+            EEGCoordinateSystemDescription,
+          } = json;
           this.store.dispatch(
             setCoordinateSystem({
-              name: EEGCoordinateSystem	?? 'Other',
+              name: EEGCoordinateSystem ?? 'Other',
               units: EEGCoordinateUnits ?? 'm',
-              description: EEGCoordinateSystemDescription ?? 'n/a'
+              description: EEGCoordinateSystemDescription ?? 'n/a',
             })
           );
         }
