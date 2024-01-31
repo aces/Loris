@@ -1430,18 +1430,18 @@ abstract class RedcapImporter implements IRedcapImporter
         foreach ($components as $component => $value) {
             switch ($component) {
             case 'day':
-                $day = strval($value);
+                $day = $value;
                 break;
             case 'month';
-                $month = strval($value);
+                $month = $value;
                 break;
             case 'year';
-                $year = strval($value);
+                $year = $value;
                 break;
             }
         }
 
-        return $datetime->setDate($year, $month, $day);
+        return $datetime->setDate(intval($year), intval($month), intval($day));
     }
 
     /**

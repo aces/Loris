@@ -59,6 +59,16 @@
   ],
   "datesToScrub": [
     {
+      "id": "dob",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "study_blood_draw",
       "format": "Y-m-d",
       "component": [
