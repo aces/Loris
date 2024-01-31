@@ -498,9 +498,6 @@ function organizeData(
                                         dataRow.push(null);
                                     } else {
                                       const mappedVals = Object.keys(thevalues)
-                                        .filter(
-                                            (key) => thevalues[key] !== null
-                                        )
                                         .map(
                                             (key) => key + '=' + thevalues[key]
                                         )
@@ -675,14 +672,11 @@ function expandLongitudinalCells(
                     const thissession: SessionRowCell = celldata[session];
                     switch (fielddict.cardinality) {
                     case 'many':
-                        // Imaging Query Engine returns more null keys than it should.
-                        // We need to filter them out.
                         if (thissession.values === undefined) {
                             return null;
                         }
                         const thevalues = thissession.values;
                         return Object.keys(thevalues)
-                           .filter( (key) => thevalues[key] !== null)
                            .map( (key) => key + '=' + thevalues[key])
                            .join(';');
                     default:
