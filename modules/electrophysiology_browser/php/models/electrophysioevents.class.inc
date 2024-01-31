@@ -222,7 +222,7 @@ class ElectrophysioEvents
       AND FileType='tsv'",
             ['PFID' => $this->_physioFileID]
         );
-        
+
         $tsvPath = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
 
         // Update files if files updated before database updated

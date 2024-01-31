@@ -84,7 +84,7 @@ class Events extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
-            $parameters  = json_decode((string)$request->getBody(), true);
+            $parameters = json_decode((string)$request->getBody(), true);
 
             if (!$user->hasPermission(
                 'electrophysiology_browser_edit_annotations'
@@ -105,7 +105,7 @@ class Events extends \NDB_Page
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
             // TODO: Better failure reporting
-            $parameters  = json_decode((string)$request->getBody(), true);
+            $parameters = json_decode((string)$request->getBody(), true);
 
             if (!$user->hasPermission(
                 'electrophysiology_browser_edit_annotations'
