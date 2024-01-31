@@ -35,8 +35,8 @@ class Events extends \NDB_Page
         switch ($request->getMethod()) {
         case 'GET':
             // TODO: Get official server-side solution + Add to documentation
-            set_time_limit(300);  // Increase request time limit to 5 minutes
-            ini_set('memory_limit', '1G');   // Increase memory allocation limit to 1G
+            // set_time_limit(300);  // Increase request time limit to 5 minutes
+            // ini_set('memory_limit', '1G'); // Increase memory allocation limit
 
             $parameters = $request->getQueryParams();
             $sessionID  = $db->pselectOne(
@@ -96,7 +96,10 @@ class Events extends \NDB_Page
             );
             $projectName = $timepoint->getProject()->getName();
 
-            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
+            if (!$user->hasPermission(
+                'electrophysiology_browser_edit_annotations'
+            )
+            ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
@@ -106,8 +109,8 @@ class Events extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            //            (new ElectrophysioEvents(intval($parameters['physioFileID'])))
-            //                ->deleteEvent(intval($parameters['instance_id']));
+            // (new ElectrophysioEvents(intval($parameters['physioFileID'])))
+            //    ->deleteEvent(intval($parameters['instance_id']));
 
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
@@ -124,11 +127,16 @@ class Events extends \NDB_Page
             );
             $projectName = $timepoint->getProject()->getName();
 
-            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')) {
+            if (!$user->hasPermission(
+                'electrophysiology_browser_edit_annotations'
+            )
+            ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
-            if (!isset($parameters['physioFileID']) || !isset($parameters['request_type'])) {
+            if (!isset($parameters['physioFileID'])
+                || !isset($parameters['request_type'])
+            ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
@@ -136,7 +144,7 @@ class Events extends \NDB_Page
             case 'event_update':
                 $instance_data = $parameters['instance'];
                 // $metadata      = $parameters['metadata'];
-                // TODO: Figure out a better description modeled on other derivatives
+                // TODO: Figure out better description modeled on other derivatives
                 $metadata = [
                     'description' => 'An event',
                     'sources'     => 'EEGNet LORIS',
@@ -146,8 +154,9 @@ class Events extends \NDB_Page
                 $instance_id = $parameters['instance_id'] ?
                     intval($parameters['instance_id']) : null;
 
-                $updated_instance = (new ElectrophysioEvents(intval($parameters['physioFileID'])))
-                    ->update($instance_data, $metadata, $instance_id);
+                $updated_instance = (
+                  new ElectrophysioEvents(intval($parameters['physioFileID']))
+                )->update($instance_data, $metadata, $instance_id);
 
                 if (count($updated_instance) > 0) {
                     return (new \LORIS\Http\Response\JSON\OK(

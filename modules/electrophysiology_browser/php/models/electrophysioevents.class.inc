@@ -312,11 +312,12 @@ class ElectrophysioEvents
                 $taskEventID = $instance['PhysiologicalTaskEventID'];
 
                 // Get instance's extra columns
-                $instanceExtraColumns =
-                    array_filter(
+                $instanceExtraColumns
+                    = array_filter(
                         array_values($extraColumns),
                         function ($column) use ($taskEventID) {
-                            return $column['PhysiologicalTaskEventID'] == $taskEventID;
+                            return
+                                $column['PhysiologicalTaskEventID'] == $taskEventID;
                         }
                     );
 
@@ -324,7 +325,8 @@ class ElectrophysioEvents
                     $column = array_filter(
                         array_values($instanceExtraColumns),
                         function ($col) use ($columnName) {
-                            return $col['PropertyName'] == $columnName['PropertyName'];
+                            return
+                                $col['PropertyName'] == $columnName['PropertyName'];
                         }
                     );
 
