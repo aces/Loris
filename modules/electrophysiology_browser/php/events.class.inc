@@ -85,16 +85,6 @@ class Events extends \NDB_Page
             );
         case 'DELETE':
             $parameters  = json_decode((string)$request->getBody(), true);
-            $sessionID   = $db->pselectOne(
-                'SELECT SessionID
-                    FROM physiological_file
-                    WHERE PhysiologicalFileID=:PFID',
-                ['PFID' => $parameters['physioFileID']]
-            );
-            $timepoint   = \NDB_Factory::singleton()->timepoint(
-                new \SessionID(strval($sessionID))
-            );
-            $projectName = $timepoint->getProject()->getName();
 
             if (!$user->hasPermission(
                 'electrophysiology_browser_edit_annotations'
@@ -116,16 +106,6 @@ class Events extends \NDB_Page
         case 'POST':
             // TODO: Better failure reporting
             $parameters  = json_decode((string)$request->getBody(), true);
-            $sessionID   = $db->pselectOne(
-                'SELECT SessionID
-                    FROM physiological_file
-                    WHERE PhysiologicalFileID=:PFID',
-                ['PFID' => $parameters['physioFileID']]
-            );
-            $timepoint   = \NDB_Factory::singleton()->timepoint(
-                new \SessionID(strval($sessionID))
-            );
-            $projectName = $timepoint->getProject()->getName();
 
             if (!$user->hasPermission(
                 'electrophysiology_browser_edit_annotations'

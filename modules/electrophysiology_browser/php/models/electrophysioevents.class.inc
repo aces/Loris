@@ -98,16 +98,6 @@ class ElectrophysioEvents
         $user    = $factory->user();
         $db      = $factory->database();
 
-        $sessionID = $db->pselectOne(
-            'SELECT SessionID
-                    FROM physiological_file
-                    WHERE PhysiologicalFileID=:PFID',
-            ['PFID' => $this->_physioFileID]
-        );
-        $timepoint = \NDB_Factory::singleton()->timepoint(
-            new \SessionID(strval($sessionID))
-        );
-
         if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
 
             //If no derivative files exist, must create new files
@@ -124,6 +114,7 @@ class ElectrophysioEvents
                 'Sources'     => $metadata['sources'],
                 'Author'      => $metadata['author']
             ];
+            error_log(json_encode($metadata));
 
             if (is_null($instance_id)) {
                 // TODO: Support Instance INSERT
@@ -231,17 +222,7 @@ class ElectrophysioEvents
       AND FileType='tsv'",
             ['PFID' => $this->_physioFileID]
         );
-
-        $projectID = intval(
-            $db->pselectOne(
-                'SELECT ProjectID FROM session AS s WHERE s.ID = (
-                SELECT SessionID FROM physiological_file
-                WHERE PhysiologicalFileID=:PFID
-            )',
-                ['PFID' => $this->_physioFileID]
-            )
-        );
-
+        
         $tsvPath = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
 
         // Update files if files updated before database updated
