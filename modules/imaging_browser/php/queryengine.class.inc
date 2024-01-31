@@ -12,6 +12,18 @@ use \LORIS\Data\Cardinality;
  */
 class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 {
+    protected $baseURL;
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance being queried
+     */
+    public function __construct(protected \LORIS\LorisInstance $loris)
+    {
+        $factory = \NDB_Factory::singleton();
+        $this->baseURL = $factory->settings()->getBaseURL();
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -37,8 +49,16 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $scantypes = \Utility::getScanTypeList();
         foreach ($scantypes as $ScanType) {
             $items[] = new LocationDictionaryItem(
+                $ScanType . "_file",
+                "$ScanType acquisition file path",
+                $scope,
+                new \LORIS\Data\Types\StringType(),
+                new Cardinality(Cardinality::MANY),
                 $ScanType,
-                "$ScanType acquisition location",
+            );
+            $items[] = new LocationDictionaryItem(
+                $ScanType . "_url",
+                "$ScanType acquisition file URL",
                 $scope,
                 new \LORIS\Data\Types\URI(),
                 new Cardinality(Cardinality::MANY),
@@ -125,11 +145,27 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             // Because of complex interactions between joins that get
             // out of hand when a scan type that doesn't exist is selected
             // alongside one that does, we use a subselect here.
-            return "(SELECT File FROM files as files2
-                        JOIN mri_scan_type
-                            ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
-                        WHERE files2.FileID=files.FileID
-                            AND mri_scan_type.Scan_type='{$modality}')";
+            if (str_ends_with($item->getName(), "_file")) { 
+                return "(SELECT File FROM files as files2
+                            JOIN mri_scan_type
+                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                            WHERE files2.FileID=files.FileID
+                                AND mri_scan_type.Scan_type='{$modality}')";
+            } else if (str_ends_with($item->getName(), "_url")) { 
+                return "(SELECT CONCAT(
+                            \"$this->baseURL\",
+                            \"/api/v0.0.3/candidates/\",
+                            c.CandID,
+                            \"/\",
+                            s.Visit_label,
+                            \"/images/\", 
+                            SUBSTRING_INDEX(files.File, '/', -1)
+                            ) FROM files as files2
+                            JOIN mri_scan_type
+                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                            WHERE files2.FileID=files.FileID
+                                AND mri_scan_type.Scan_type='{$modality}')";
+            }
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
@@ -171,12 +207,9 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     public function getCorrespondingKeyField(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) {
-        if ($item instanceof LocationDictionaryItem) {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
-            return "SUBSTRING_INDEX(files.File, '/', -1)";
-        }
-        if ($item instanceof QCDictionaryItem) {
+        if ($item instanceof LocationDictionaryItem
+                || $item instanceof QCDictionaryItem
+        ) {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";

@@ -268,7 +268,7 @@ class ImagingQueryEngineTest extends TestCase
      * @return void
      */
     public function testImageLocationMatches() {
-        $dict = $this->_getDictItem("ScanType1");
+        $dict = $this->_getDictItem("ScanType1_file");
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($dict, new Equal('test/abc.file'))
@@ -365,7 +365,7 @@ class ImagingQueryEngineTest extends TestCase
             $this->engine->getCandidateData(
                 [
                     $this->_getDictItem("ScanDone"),
-                    $this->_getDictItem("ScanType1"),
+                    $this->_getDictItem("ScanType1_file"),
                     $this->_getDictItem("ScanType1_QCStatus"),
                 ],
                 [new CandID("123456"), new CandID("123457"), new CandID("123458")],
@@ -390,7 +390,7 @@ class ImagingQueryEngineTest extends TestCase
                             'value' => false,
                         ],
                     ],
-                    "ScanType1" => [
+                    "ScanType1_file" => [
                         'keytype' => 'Imaging Filename',
                         "1" => [
                             'VisitLabel' => 'TestMRIVisit',
@@ -415,7 +415,7 @@ class ImagingQueryEngineTest extends TestCase
                            'value' => true,
                         ]
                     ],
-                    "ScanType1" => [
+                    "ScanType1_file" => [
                         'keytype' => 'Imaging Filename',
                         "3" => [
                             'VisitLabel' => 'TestMRIVisit',
@@ -440,7 +440,7 @@ class ImagingQueryEngineTest extends TestCase
                  ],
                  "123458" => [
                     'ScanDone' => [],
-                    'ScanType1' => [],
+                    'ScanType1_file' => [],
                     'ScanType1_QCStatus' => [],
                  ],
             ]
