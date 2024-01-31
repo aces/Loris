@@ -31,6 +31,7 @@ abstract class RedcapImporter implements IRedcapImporter
     var $site_specific_fields; // only site candidates will have these field values imported
     var $dates_to_scrub;       // Specify date fields that don't have the string 'date' in the fieldname
     var $fields_to_ignore;     // REDCap fields to ignore and not import into LORIS
+    var $metadataMapping;      // REDCap candidate and visit level metadata fields
 
     var $project;
 
@@ -85,6 +86,7 @@ abstract class RedcapImporter implements IRedcapImporter
         $this->site_specific_fields = $this->redcapConfig->getSiteSpecificFields();
         $this->dates_to_scrub       = $this->redcapConfig->getDatesToScrub();
         $this->fields_to_ignore     = $this->redcapConfig->getFieldsToIgnore();
+        $this->metadataMapping      = $this->redcapConfig->getMetadataMapping();
 
         $this->project     = $project;
         $this->exportLabel = $exportLabel;
@@ -195,7 +197,7 @@ abstract class RedcapImporter implements IRedcapImporter
     {
         $new_candidates = [];
         $project        = $this->project;
-        $mapping        = $this->getMetadataMapping();
+        $mapping        = $this->metadataMapping;
 
         print "\nCreating candidates..\n\n";
         // record is at the visit level i.e. redcap_event_name
@@ -235,13 +237,13 @@ abstract class RedcapImporter implements IRedcapImporter
 
                 switch ($loris_field) {
                 case 'site':
-                    $site = $this->getSiteMapping()[$val] ?? '';
+                    $site = $this->redcapConfig->getSiteMapping()[$val] ?? '';
                     break;
                 case 'dob':
                     $dob = $val;
                     // Format dob, and scrub if required
                     if (strtotime($dob) !== false) {
-                        $dob = new \DateTime($dob);
+                        $dob = (new \DateTime($dob))->format('Y-m-d');
                         if (array_key_exists($var, $this->dates_to_scrub)) {
                             $dob = $this->scrubDate(
                                 $dob,
@@ -251,7 +253,7 @@ abstract class RedcapImporter implements IRedcapImporter
                     }
                     break;
                 case 'sex':
-                    $sex = $this->getSexMapping()[$val] ?? '';
+                    $sex = $this->redcapConfig->getSexMapping()[$val] ?? '';
                     break;
                 }
             }
@@ -304,7 +306,7 @@ abstract class RedcapImporter implements IRedcapImporter
     {
         $new_visits = [];
         $project    = $this->project;
-        $mapping    = $this->getMetadataMapping();
+        $mapping    = $this->metadataMapping;
 
         print "\nCreating visits..\n\n";
         // record is at the visit level i.e. redcap_event_name
@@ -327,7 +329,7 @@ abstract class RedcapImporter implements IRedcapImporter
             }
 
             // Get row visit label
-            $visit = $this->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
+            $visit = $this->redcapConfig->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
             if ($visit === '') {
                 print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
                 $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
@@ -362,7 +364,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
             // If cohort data not available in REDCap row,
             // get candidate's most recent visit cohort in LORIS
-            $cohort = $this->getCohortMapping()[$row[$cohort_field] ?? '']
+            $cohort = $this->redcapConfig->getCohortMapping()[$row[$cohort_field] ?? '']
                 ?? \Candidate::singleton(new CandID($dccid))->getCohortForMostRecentVisit()['title']
                 ?? '';
 
@@ -411,7 +413,7 @@ abstract class RedcapImporter implements IRedcapImporter
     function updateCandidateConsents(array $records) : array
     {
         $new_consents    = [];
-        $mapping         = $this->getMetadataMapping();
+        $mapping         = $this->metadataMapping;
         $consent_mapping = $this->getConsentMapping();
         $consent_list    = $this->getConsentListByGroup($this->project);
 
@@ -469,7 +471,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 }
 
                 // Format dob, and scrub if required
-                $consent_date       = new \DateTime($consent_date);
+                $consent_date       = (new \DateTime($consent_date))->format('Y-m-d');
                 $consent_date_field = $consent_mapping[$consent_name]['consentDateField'];
                 if (array_key_exists(
                     $consent_date_field,
@@ -530,7 +532,7 @@ abstract class RedcapImporter implements IRedcapImporter
     function updateCandidateData(array $records) : array
     {
         $new_data = [];
-        $mapping  = $this->getMetadataMapping();
+        $mapping  = $this->metadataMapping;
 
         print "\nProcessing instruments...\n";
         // record is at the visit level i.e. redcap_event_name
@@ -552,7 +554,7 @@ abstract class RedcapImporter implements IRedcapImporter
             }
 
             // Get row visit label
-            $visit = $this->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
+            $visit = $this->redcapConfig->getVisitMapping()[$row[$mapping['visit']] ?? ''] ?? '';
             if ($visit === '') {
                 print "\tCreating visit " . $row[$mapping['visit']] . " for $pscid failed.\n";
                 $this->errors[$pscid][] = "Cannot create visit " . $row[$mapping['visit']]
@@ -602,7 +604,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 }
 
                 // Format date_visit, and scrub if required
-                $date_visit = new \DateTime($date_visit);
+                $date_visit = (new \DateTime($date_visit))->format('Y-m-d');
                 if (array_key_exists($date_visit_field, $this->dates_to_scrub)) {
                     $date_visit = $this->scrubDate(
                         $date_visit,
@@ -641,7 +643,7 @@ abstract class RedcapImporter implements IRedcapImporter
             foreach ($instrument_list as $instrument) {
                 // Handle instruments where name is different in REDCap and LORIS
                 $redcap_instrument_name = $instrument;
-                $mapping_key            = array_search($instrument, $this->getInstrumentMapping());
+                $mapping_key            = array_search($instrument, $this->redcapConfig->getInstrumentMapping());
                 if ($mapping_key !== false) {
                     $redcap_instrument_name = $mapping_key;
                 }
@@ -670,7 +672,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
                 // Get examiner field from redcap data and validate if in LORIS
                 $redcap_examiner = '';
-                $examiner_field  = $this->getExaminerMapping()[$instrument] ?? null;
+                $examiner_field  = $this->redcapConfig->getExaminerMapping()[$instrument] ?? null;
 
                 // If examiner field not available, set examiner as "N/A"
                 // If field available, but no data, leave as ""
@@ -721,7 +723,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 }
 
                 // Get date_taken field from redcap data and format
-                $date_taken_field = $this->getDateTakenMapping()[$instrument] ?? null;
+                $date_taken_field = $this->redcapConfig->getDateTakenMapping()[$instrument] ?? null;
 
                 if ($date_taken_field === null) {
                     print "\n\t\t\tDate_taken equivalent field not found in REDCap data. No Date_taken data available.\n";
@@ -746,7 +748,7 @@ abstract class RedcapImporter implements IRedcapImporter
                 $date_taken = $redcap_data[$date_taken_field];
 
                 if ($date_taken !== '' && strtotime($date_taken) !== false) {
-                    $date_taken = new \DateTime($date_taken);
+                    $date_taken = (new \DateTime($date_taken))->format('Y-m-d');
                     if (array_key_exists($date_taken_field, $this->dates_to_scrub)) {
                         $date_taken = $this->scrubDate(
                             $date_taken,
@@ -788,7 +790,7 @@ abstract class RedcapImporter implements IRedcapImporter
 
                     // if fieldname includes '_status', map to fieldname in LORIS (without "_status")
                     if (strpos($fieldname, "_status") !== false) {
-                        $status_fields = $this->getStatusFieldsMapping();
+                        $status_fields = $this->redcapConfig->getStatusFieldsMapping();
                         if (array_key_exists($fieldname, $status_fields)) {
                             $fieldname = $status_fields[$fieldname];
                         }
@@ -815,7 +817,7 @@ abstract class RedcapImporter implements IRedcapImporter
                         || array_key_exists($fieldname, $this->dates_to_scrub)
                     ) {
                         if (!empty($value) && strtotime($value) !== false) {
-                            $value = new \DateTime($value);
+                            $value = (new \DateTime($value))->format('Y-m-d');
                             if (array_key_exists($fieldname, $this->dates_to_scrub)) {
                                 $value = $this->scrubDate(
                                     $value,
@@ -1416,8 +1418,10 @@ abstract class RedcapImporter implements IRedcapImporter
         return $result;
     }
 
-    function scrubDate(\DateTime $datetime, array $components) : \DateTime
+    function scrubDate(string $datetime, array $components) : \DateTime
     {
+        $datetime = new \DateTime($datetime);
+
         // Grab each component wtihout leading zeros
         $day   = $datetime->format('j');
         $month = $datetime->format('n');
@@ -1465,15 +1469,15 @@ abstract class RedcapImporter implements IRedcapImporter
     /**
      * Update specific candidate's consent data
      *
-     * @param string    $cand_id        The candidate id, the DCCID
-     * @param string    $pscid          The candidate id, the PSCID
-     * @param string    $consent_id     The consent id
-     * @param string    $consent_name   The consent name
-     * @param string    $consent_label  The consent label
-     * @param string    $consent_status The REDCap consent status
-     * @param \DateTime $consent_date   The REDCap consent date
-     * @param string    $consenter_name The REDCap consenter's name
-     * @param bool      $update         True if candidate consent already exists in LORIS,
+     * @param string $cand_id        The candidate id, the DCCID
+     * @param string $pscid          The candidate id, the PSCID
+     * @param string $consent_id     The consent id
+     * @param string $consent_name   The consent name
+     * @param string $consent_label  The consent label
+     * @param string $consent_status The REDCap consent status
+     * @param string $consent_date   The REDCap consent date
+     * @param string $consenter_name The REDCap consenter's name
+     * @param bool   $update         True if candidate consent already exists in LORIS,
      *                                  and needs to be updated. False if consent is new,
      *                                  and needs saving.
      *
@@ -1639,11 +1643,11 @@ abstract class RedcapImporter implements IRedcapImporter
      * Starts a visit with Not Started stage
      *
      * @param \Swagger\Client\Model\InlineResponse2003 $visit      The visit object with properties
-     * @param \DateTime                                $date_visit The date of visit
+     * @param string                                   $date_visit The date of visit
      *
      * @return bool True if the visit succesfully started
      */
-    function startVisit(\Swagger\Client\Model\InlineResponse2003 $visit, \DateTime $date_visit) : bool
+    function startVisit(\Swagger\Client\Model\InlineResponse2003 $visit, string $date_visit) : bool
     {
         $cand_id     = $visit['meta']['cand_id'];
         $visit_label = $visit['meta']['visit'];
