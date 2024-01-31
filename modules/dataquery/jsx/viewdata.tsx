@@ -821,9 +821,18 @@ function organizedFormatter(
                                             Object.keys(values).map(
                                                 (keyid: string):
                                                   React.ReactNode => {
-                                                    const val = values[keyid];
+                                                    let val = values[keyid];
                                                     if (val === null) {
                                                         return;
+
+                                                    }
+                                                    if(fielddict.type == 'URI') {
+                                                        val = (
+                                                            <a href={val} download>
+                                                                {val}
+                                                            </a>
+                                                        );
+
                                                     }
                                                     hasdata = true;
                                                     return (
