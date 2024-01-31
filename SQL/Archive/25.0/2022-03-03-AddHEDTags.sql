@@ -44,6 +44,7 @@ INSERT INTO physiological_event_file (PhysiologicalFileID, FilePath, FileType)
 UPDATE physiological_task_event te
     SET EventFileID=(SELECT EventFileID FROM physiological_event_file WHERE PhysiologicalFileID=te.PhysiologicalFileID)
 ;
+SET FOREIGN_KEY_CHECKS= 1;
 
 -- Delete FilePath column in `physiological_task_event` table
 ALTER TABLE physiological_task_event

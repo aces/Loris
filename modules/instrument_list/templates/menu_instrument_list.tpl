@@ -3,8 +3,9 @@
   <!-- column headings -->
   <thead>
   <tr class="info">
+    {assign var="DoB" value=$candidate->getDisplayDoB()}
     <th>
-      DOB
+      {$DoB['label']}
     </th>
     {if $display.EDC!=""}
       <th>
@@ -57,7 +58,7 @@
   <tbody>
   <tr>
     <td>
-      {$display.DoB}
+      {$DoB['value']}
     </td>
     {if $display.EDC!=""}
       <td>

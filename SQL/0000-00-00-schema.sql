@@ -2278,7 +2278,7 @@ CREATE TABLE `consent` (
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
@@ -2294,7 +2294,7 @@ CREATE TABLE `candidate_consent_history` (
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
