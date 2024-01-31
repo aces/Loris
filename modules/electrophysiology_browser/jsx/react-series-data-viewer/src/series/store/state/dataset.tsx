@@ -1,6 +1,12 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
-import {ChannelMetadata, Epoch, EpochFilter, HEDSchemaElement, HEDTag} from '../types';
+import {
+  ChannelMetadata,
+  Epoch,
+  EpochFilter,
+  HEDSchemaElement,
+  HEDTag,
+} from '../types';
 import {DEFAULT_MAX_CHANNELS} from '../../../vector';
 
 export const SET_EPOCHS = 'SET_EPOCHS';
@@ -121,9 +127,6 @@ export const datasetReducer = (
     }
     case SET_ACTIVE_EPOCH: {
       return R.assoc('activeEpoch', action.payload, state);
-    }
-    case SET_PHYSIOFILE_ID: {
-      return R.assoc('physioFileID', action.payload, state);
     }
     case SET_PHYSIOFILE_ID: {
       return R.assoc('physioFileID', action.payload, state);

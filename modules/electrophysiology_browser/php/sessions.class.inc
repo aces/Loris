@@ -476,7 +476,6 @@ class Sessions extends \NDB_Page
         );
         $fileSummary['events'] = $events->getData();
 
-
         $datasetTags = new DatasetTags(
             intval($physioFileID)
         );

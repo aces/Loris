@@ -85,7 +85,7 @@ export type HEDSchemaElement = {
 // Currently uppercase. DB columns unprocessed
 export type HEDTag = {
   schemaElement: HEDSchemaElement | null,
-  HEDTagID: number | null,  // redundant (id above)
+  HEDTagID: number | null, // redundant (id above)
   ID: any,
   PropertyName: string | null,
   PropertyValue: string | null,
