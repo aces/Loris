@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This represents a REDCap importer
+ * This represents a REDCap Configuration
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -11,6 +11,11 @@ class RedcapConfig
     private string $_config_file_path;
     private array  $_import_config;
 
+    /**
+     * Create a new instance
+     *
+     * @param $project The REDCap project
+     */
     public function __construct($project)
     {
         $this->_project          = $project;
@@ -18,6 +23,11 @@ class RedcapConfig
         $this->_import_config    = $this->_load();
     }
 
+    /**
+     * Load the contents of the redcap config file
+     *
+     * @return array The config contents
+     */
     private function _load(): array
     {
         return json_decode(file_get_contents($this->_config_file_path), true);
@@ -117,6 +127,12 @@ class RedcapConfig
         return $mapping;
     }
 
+    /**
+     * Get the REDCap to LORIS mapping for instruments that don't
+     * have idential names in both platforms
+     *
+     * @return array The list of instrument
+     */
     public function getInstrumentMapping(): array
     {
         $config  = $this->_getImporterConfig()['instrumentMapping'];
@@ -132,7 +148,7 @@ class RedcapConfig
     /**
      * Get the REDCap date_taken field mappings for configured instrument
      *
-     * return array The date_taken field names for configured instrument
+     * @return array The date_taken field names for configured instrument
      */
     public function getDateTakenMapping() : array
     {
@@ -151,7 +167,7 @@ class RedcapConfig
      * the string '_status' exists in the REDCap field name, a reserved
      * key word in LORIS.
      *
-     * return array
+     * @return array
      */
     public function getStatusFieldsMapping() : array
     {
@@ -168,7 +184,7 @@ class RedcapConfig
     /**
      * Get the REDCap examiner field mapping
      *
-     * return array The examiner field names for configured instruments
+     * @return array The examiner field names for configured instruments
      */
     public function getExaminerMapping() : array
     {
@@ -182,6 +198,12 @@ class RedcapConfig
         return $mapping;
     }
 
+    /**
+     * Get the list of site specific fields to import
+     * only for provided sites
+     *
+     * @return array The list of fields
+     */
     public function getSiteSpecificFields(): array
     {
         $config  = $this->_getImporterConfig()['siteSpecific'];
@@ -194,6 +216,13 @@ class RedcapConfig
         return $mapping;
     }
 
+    /**
+     * Get the date fields to be scrubbed,
+     * along with the date component to scrub,
+     * the value to scrub it with, and format
+     *
+     * @return array The date fields, with their components
+     */
     public function getDatesToScrub(): array
     {
         $config = $this->_getImporterConfig()['datesToScrub'];
@@ -215,11 +244,21 @@ class RedcapConfig
         return $dates;
     }
 
+    /**
+     * Get the list of fields to ignore from importing
+     *
+     * @return array The list of fields
+     */
     public function getFieldsToIgnore(): array
     {
         return $this->_getImporterConfig()['toIgnore'];
     }
 
+    /**
+     * Get the consent mapping
+     *
+     * @return array The mapping
+     */
     public function getConsentMapping(): array
     {
         $config  = $this->_getImporterConfig()['consentMapping'];
@@ -232,6 +271,11 @@ class RedcapConfig
         return $mapping;
     }
 
+    /**
+     * Get the instrument flags mapping
+     *
+     * @return array The mapping
+     */
     public function getInstrumentFlagsMapping(): array
     {
         $config  = $this->_getImporterConfig()['instrumentFlagsMapping'];

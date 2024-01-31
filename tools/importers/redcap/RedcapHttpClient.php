@@ -4,11 +4,21 @@ use \LORIS\LorisInstance;
 use \GuzzleHttp\Client;
 use \LORIS\Http\Request;
 
+/**
+ * This represents a REDCap Http Client
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class RedcapHttpClient
 {
     private Client $_client;
     private string $_token;
 
+    /**
+     * Create new instance
+     *
+     * @param LorisInstance $loris The loris instance
+     */
     public function __construct(LorisInstance $loris)
     {
         $settings = $loris->getConfiguration()->getSetting('REDCap');
@@ -25,11 +35,15 @@ class RedcapHttpClient
      * @param ?string $pscid          The participant id
      * @param ?string $visit_label    The visit label
      * @param ?string $instrument     The instrument name
-     * @param bool    $label          Indicates labels should be exported for options of
-     *                                multiple choice fields, instead of raw coded values
-     * @param ?string $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     * @param bool    $label          Indicates labels should be
+     *                                exported for options of
+     *                                multiple choice fields,
+     *                                instead of raw coded values
+     * @param ?string $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS'
+     *                                after which REDCap records were
      *                                created or modified
-     * @param ?string $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     * @param ?string $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS'
+     *                                before which REDCap records were
      *                                created or modified
      *
      * @return array

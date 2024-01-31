@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
-require_once __DIR__ . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
+require_once __DIR__
+    . '/../../../php/libraries/SwaggerClient-php/vendor/autoload.php';
 
 /**
  * This interface allows for type abstraction of REDCap importers
@@ -80,13 +81,19 @@ interface IRedcapImporter
      * @param array $new_candidates List of new candidates created
      * @param array $new_consents   List of updated candidate consents
      * @param array $new_visits     List of new visits created
-     * @param array $new_data       List of new and updated candidate behavioural data
+     * @param array $new_data       List of new and updated candidate
+     *                              behavioural data
      *
      * @return void
      */
-    public function createRunLog(array $new_candidates, array $new_consents, array $new_visits, array $new_data): void;
+    public function createRunLog(
+        array $new_candidates,
+        array $new_consents,
+        array $new_visits,
+        array $new_data
+    ): void;
 
-    /*
+    /**
      * Get candidate instrument administration flag from REDCap data.
      * In REDCap, 2=Complete, 1=Unverified, 0=Incomplete
      *
@@ -95,9 +102,12 @@ interface IRedcapImporter
      *
      * @return ?string The instrument adminstration flag
      */
-    public function getAdministrationFlag(array $data, string $instrument) : ?string;
+    public function getAdministrationFlag(
+        array $data,
+        string $instrument
+    ) : ?string;
 
-    /*
+    /**
      * Get candidate instrument validity flag from REDCap data.
      *
      * @param array  $data       The redcap data
@@ -105,9 +115,12 @@ interface IRedcapImporter
      *
      * @return ?string The instrument validity flag
      */
-    public function getValidityFlag(array $data, string $instrument) : ?string;
+    public function getValidityFlag(
+        array $data,
+        string $instrument
+    ) : ?string;
 
-    /*
+    /**
      * Get candidate instrument Data Entry flag from REDCap data.
      *
      * @param array  $data       The redcap data
@@ -115,7 +128,10 @@ interface IRedcapImporter
      *
      * @return ?string The instrument Data Entry flag
      */
-    public function getDataEntryFlag(array $data, string $instrument) : ?string;
+    public function getDataEntryFlag(
+        array $data,
+        string $instrument
+    ) : ?string;
 
     /**
      * Get candidate instrument REDCap record
@@ -126,7 +142,11 @@ interface IRedcapImporter
      *
      * @return ?array The redcap form records
      */
-    public function getRedcapInstrumentData(string $record_id, string $event, string $form) : ?array;
+    public function getRedcapInstrumentData(
+        string $record_id,
+        string $event,
+        string $form
+    ) : ?array;
 
     /**
      * Get candidate instrument LORIS data
@@ -137,7 +157,11 @@ interface IRedcapImporter
      *
      * @return ?array The instrument data
      */
-    public function getLorisInstrumentData(string $cand_id, string $visit, string $instrument) : ?array;
+    public function getLorisInstrumentData(
+        string $cand_id,
+        string $visit,
+        string $instrument
+    ) : ?array;
 
     /**
      * Get candidate instrument LORIS flags data
@@ -148,22 +172,46 @@ interface IRedcapImporter
      *
      * @return ?Swagger\Client\Model\InstrumentFlagsFlags The instrument flags data
      */
-    public function getLorisFlagsData(string $cand_id, string $visit, string $instrument) : ?Swagger\Client\Model\InstrumentFlagsFlags;
+    public function getLorisFlagsData(
+        string $cand_id,
+        string $visit,
+        string $instrument
+    ) : ?Swagger\Client\Model\InstrumentFlagsFlags;
 
+    /**
+     * Save candidate instrument data via LORIS API
+     *
+     * @param string $candid         The candidate id, the DCCID
+     * @param string $visit          The visit label
+     * @param string $instrument     The instrument name
+     * @param array  $instrumentData The instrument data
+     *
+     * @return bool True or false data was saved
+     */
     public function setInstrumentData(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
-        array                        $instrumentData,
-        Swagger\Client\Configuration $clientConfig
+        array                        $instrumentData
     ) : bool;
 
+    /**
+     * Save candidate instrument flags data via LORIS API
+     *
+     * @param string $candid     The candidate id, the DCCID
+     * @param string $visit      The visit label
+     * @param string $instrument The instrument name
+     * @param string $flag_type  The flag, one of 'Administration',
+     *                           'Validity', 'DataEntry'
+     * @param array  $flag_data  The instrument flag data
+     *
+     * @return bool True or false data was saved
+     */
     public function setInstrumentFlag(
         string                       $candid,
         string                       $visit,
         string                       $instrument,
         string                       $flag_type,
-        string                       $flag_data,
-        Swagger\Client\Configuration $clientConfig
+        string                       $flag_data
     ) : bool;
 }

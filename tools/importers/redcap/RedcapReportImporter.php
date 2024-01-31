@@ -14,15 +14,17 @@ class RedcapReportImporter extends RedcapImporter
     /**
      * Create new instance.
      *
-     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
-     *                                             imported from.
+     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is
+     *                                             being imported from.
      * @param string               $project        The LORIS project to import for
      * @param bool                 $exportLabel    The export label boolean
-     * @param \LORIS\LorisInstance $loris          The LORIS instance that data is being
-     *                                             imported from.
-     * @param ?string              $dateRangeBegin Date string 'YYYY-MM-DD HH:MM:SS' after which REDCap records were
+     * @param ?string              $dateRangeBegin Date string
+     *                                             'YYYY-MM-DD HH:MM:SS' after
+     *                                             which REDCap records were
      *                                             created or modified
-     * @param ?string              $dateRangeEnd   Date string 'YYYY-MM-DD HH:MM:SS' before which REDCap records were
+     * @param ?string              $dateRangeEnd   Date string
+     *                                             'YYYY-MM-DD HH:MM:SS' before
+     *                                             which REDCap records were
      *                                             created or modified
      */
     public function __construct(
@@ -32,7 +34,13 @@ class RedcapReportImporter extends RedcapImporter
         ?string              $dateRangeBegin = null,
         ?string              $dateRangeEnd = null
     ) {
-        parent::__construct($loris, $project, $exportLabel, $dateRangeBegin, $dateRangeEnd);
+        parent::__construct(
+            $loris,
+            $project,
+            $exportLabel,
+            $dateRangeBegin,
+            $dateRangeEnd
+        );
 
         $this->_redcapReportId = $this->redcapConfig->getReportId();
     }
