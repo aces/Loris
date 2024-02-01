@@ -1,4 +1,4 @@
-FROM mariadb:lts
+FROM mariadb:10.3
 
 ARG BASE_DIR
 
