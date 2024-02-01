@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_electrode_rel` (
 CREATE TABLE `physiological_event_file` (
     `EventFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PhysiologicalFileID` int(10) unsigned DEFAULT NULL,
-    `ProjectID` int(10) unsigned NOT NULL,
+    `ProjectID` int(10) unsigned DEFAULT NULL,
     `FileType` varchar(20) NOT NULL,
     `FilePath` varchar(255) DEFAULT NULL,
     `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
