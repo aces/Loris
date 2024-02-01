@@ -23,7 +23,7 @@ import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
-    EEGLabSeriesProviderStore: Store;
+    EEGLabSeriesProviderStore: Store[];   // Store reference per recording
   }
 }
 
@@ -34,6 +34,7 @@ type CProps = {
   annotations: AnnotationMetadata,
   physioFileID: number,
   limit: number,
+  samplingFrequency: number,
   children: React.ReactNode,
 };
 
@@ -58,8 +59,6 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     epicMiddleware.run(rootEpic);
 
-    window.EEGLabSeriesProviderStore = this.store;
-
     const {
       chunksURL,
       electrodesURL,
@@ -67,7 +66,12 @@ class EEGLabSeriesProvider extends Component<CProps> {
       annotations,
       physioFileID,
       limit,
+      samplingFrequency,
     } = props;
+
+    if (!window.EEGLabSeriesProviderStore)
+      window.EEGLabSeriesProviderStore = [];
+    window.EEGLabSeriesProviderStore[chunksURL] = this.store;
 
     this.store.dispatch(setPhysioFileID(physioFileID));
 

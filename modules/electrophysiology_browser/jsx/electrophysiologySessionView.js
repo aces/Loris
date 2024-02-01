@@ -368,6 +368,7 @@ class ElectrophysiologySessionView extends Component {
                   annotations={annotations}
                   electrodesURL={electrodesURL}
                   physioFileID={this.state.database[i].file.id}
+                  samplingFrequency={this.state.database[i].file.summary[0].value}
                 >
                   <Panel
                     id='channel-viewer'
