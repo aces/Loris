@@ -80,12 +80,16 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       limit,
     } = props;
 
+    /**
+     *
+     * @returns {void} - Confirmation dialog to prevent accidental page leave
+     */
     window.onbeforeunload = function() {
       const dataset = window.EEGLabSeriesProviderStore.getState().dataset;
       if ([...dataset.addedTags, ...dataset.deletedTags].length > 0) {
         return 'Are you sure you want to leave unsaved changes behind?';
       }
-    }
+    };
 
     const formattedDatasetTags = {};
     Object.keys(datasetTags).forEach((column) => {
