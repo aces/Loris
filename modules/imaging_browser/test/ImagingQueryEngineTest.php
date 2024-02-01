@@ -9,14 +9,6 @@ use LORIS\Data\Query\Criteria\Equal;
 use LORIS\Data\Query\Criteria\NotEqual;
 use LORIS\Data\Query\Criteria\In;
 
-use LORIS\Data\Query\Criteria\GreaterThanOrEqual;
-use LORIS\Data\Query\Criteria\GreaterThan;
-use LORIS\Data\Query\Criteria\LessThanOrEqual;
-use LORIS\Data\Query\Criteria\LessThan;
-
-use LORIS\Data\Query\Criteria\IsNull;
-use LORIS\Data\Query\Criteria\NotNull;
-
 use LORIS\Data\Query\Criteria\StartsWith;
 use LORIS\Data\Query\Criteria\EndsWith;
 use LORIS\Data\Query\Criteria\Substring;
@@ -267,7 +259,8 @@ class ImagingQueryEngineTest extends TestCase
      *
      * @return void
      */
-    public function testImageLocationMatches() {
+    public function testImageLocationMatches()
+    {
         $dict = $this->_getDictItem("ScanType1_file");
 
         $result = $this->engine->getCandidateMatches(
@@ -315,7 +308,13 @@ class ImagingQueryEngineTest extends TestCase
         $this->assertEquals($result[0], new CandID("123457"));
     }
 
-    public function testImageQCMatches() {
+    /**
+     * Test that matching a QC Status matches the correct CandIDs.
+     *
+     * @return void
+     */
+    public function testImageQCMatches()
+    {
         $dict = $this->_getDictItem("ScanType1_QCStatus");
 
         // Both candidates have a passed scan
@@ -373,54 +372,55 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
 
-        // 123458 had no files, but has a session, so still has the ScanDone 
+        // 123458 had no files, but has a session, so still has the ScanDone
         $this->assertEquals(count($results), 3);
-        $this->assertEquals($results,
+        $this->assertEquals(
+            $results,
             [
                 "123456" => [
-                    "ScanDone" => [
+                    "ScanDone"           => [
                         "1" => [
                             'VisitLabel' => 'TestMRIVisit',
-                            'SessionID' => 1,
-                            'value' => true,
+                            'SessionID'  => 1,
+                            'value'      => true,
                         ],
                         "2" => [
                             'VisitLabel' => 'TestBvlVisit',
-                            'SessionID' => 2,
-                            'value' => false,
+                            'SessionID'  => 2,
+                            'value'      => false,
                         ],
                     ],
-                    "ScanType1_file" => [
+                    "ScanType1_file"     => [
                         'keytype' => 'Imaging Filename',
-                        "1" => [
+                        "1"       => [
                             'VisitLabel' => 'TestMRIVisit',
-                            'SessionID' => 1,
-                            'values' => ['abc.file' => 'test/abc.file'],
+                            'SessionID'  => 1,
+                            'values'     => ['abc.file' => 'test/abc.file'],
                         ],
                     ],
                     "ScanType1_QCStatus" => [
                         'keytype' => 'Imaging Filename',
-                        "1" => [
+                        "1"       => [
                             'VisitLabel' => 'TestMRIVisit',
-                            'SessionID' => 1,
-                            'values' => ['abc.file' => 'Pass'],
+                            'SessionID'  => 1,
+                            'values'     => ['abc.file' => 'Pass'],
                         ],
                     ],
                 ],
                 "123457" => [
-                    "ScanDone" => [
-                        "3" => [
-                           'VisitLabel' => 'TestMRIVisit',
-                           'SessionID' => 3,
-                           'value' => true,
-                        ]
-                    ],
-                    "ScanType1_file" => [
-                        'keytype' => 'Imaging Filename',
+                    "ScanDone"           => [
                         "3" => [
                             'VisitLabel' => 'TestMRIVisit',
-                            'SessionID' => 3,
-                            'values' => [
+                            'SessionID'  => 3,
+                            'value'      => true,
+                        ]
+                    ],
+                    "ScanType1_file"     => [
+                        'keytype' => 'Imaging Filename',
+                        "3"       => [
+                            'VisitLabel' => 'TestMRIVisit',
+                            'SessionID'  => 3,
+                            'values'     => [
                                 'abc.file1' => 'test/abc.file1',
                                 'abc.file2' => 'test/abc.file2'
                             ],
@@ -428,21 +428,21 @@ class ImagingQueryEngineTest extends TestCase
                     ],
                     "ScanType1_QCStatus" => [
                         'keytype' => 'Imaging Filename',
-                        "3" => [
+                        "3"       => [
                             'VisitLabel' => 'TestMRIVisit',
-                            'SessionID' => 3,
-                            'values' => [
+                            'SessionID'  => 3,
+                            'values'     => [
                                 'abc.file1' => 'Fail',
                                 'abc.file2' => 'Pass'
                             ],
                         ],
                     ],
-                 ],
-                 "123458" => [
-                    'ScanDone' => [],
-                    'ScanType1_file' => [],
+                ],
+                "123458" => [
+                    'ScanDone'           => [],
+                    'ScanType1_file'     => [],
                     'ScanType1_QCStatus' => [],
-                 ],
+                ],
             ]
         );
     }

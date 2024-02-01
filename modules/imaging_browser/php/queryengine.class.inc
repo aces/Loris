@@ -20,7 +20,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      */
     public function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory = \NDB_Factory::singleton();
+        $factory       = \NDB_Factory::singleton();
         $this->baseURL = $factory->settings()->getBaseURL();
     }
 
@@ -145,13 +145,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             // Because of complex interactions between joins that get
             // out of hand when a scan type that doesn't exist is selected
             // alongside one that does, we use a subselect here.
-            if (str_ends_with($item->getName(), "_file")) { 
+            if (str_ends_with($item->getName(), "_file")) {
                 return "(SELECT File FROM files as files2
                             JOIN mri_scan_type
                                 ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
                             WHERE files2.FileID=files.FileID
                                 AND mri_scan_type.Scan_type='{$modality}')";
-            } else if (str_ends_with($item->getName(), "_url")) { 
+            } else if (str_ends_with($item->getName(), "_url")) {
                 return "(SELECT CONCAT(
                             \"$this->baseURL\",
                             \"/api/v0.0.3/candidates/\",
@@ -208,7 +208,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) {
         if ($item instanceof LocationDictionaryItem
-                || $item instanceof QCDictionaryItem
+            || $item instanceof QCDictionaryItem
         ) {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
