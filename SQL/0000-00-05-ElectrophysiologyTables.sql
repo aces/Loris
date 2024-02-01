@@ -74,8 +74,8 @@ CREATE TABLE `physiological_split_file` (
 -- information that accompanies the BIDS physiological dataset
 CREATE TABLE `physiological_parameter_file` (
   `PhysiologicalParameterFileID` INT(10) UNSIGNED NOT NULL  AUTO_INCREMENT,
-  `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
-  `ProjectID`                    INT(10) UNSIGNED NOT NULL,
+  `PhysiologicalFileID`          INT(10) UNSIGNED DEFAULT NULL,
+  `ProjectID`                    INT(10) UNSIGNED DEFAULT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
   `Value`                        TEXT,
