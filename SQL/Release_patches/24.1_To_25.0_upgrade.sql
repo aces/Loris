@@ -1,11 +1,29 @@
+
+SELECT 'Running: SQL/Archive/25.0/2021-03-01-publication-add-columns.sql';
+
+ALTER TABLE publication
+    ADD COLUMN journal varchar(255) DEFAULT NULL,
+    ADD COLUMN doi text DEFAULT NULL,
+    ADD COLUMN datePublication date DEFAULT NULL,
+    ADD COLUMN link varchar(255) DEFAULT NULL,
+    ADD COLUMN publishingStatus enum('In Progress','Published') DEFAULT NULL,
+    ADD COLUMN project int(10) unsigned DEFAULT NULL,
+    ADD CONSTRAINT `FK_publication_project`
+    FOREIGN KEY (project) REFERENCES Project(ProjectID);
+
+SELECT 'Running: SQL/Archive/25.0/2021-09-13_fix_project_primary_key.sql';
+
 -- Add a unique constraint on Project.Name
 CREATE UNIQUE INDEX `u_ProjectName` ON `Project` (`Name`);
 
-ALTER TABLE `Project`
-MODIFY `Name` VARCHAR(255) NOT NULL;
+
+SELECT 'Running: SQL/Archive/25.0/2021-12-01-make_subproject_titles_unique.sql';
+
 ALTER TABLE subproject ADD UNIQUE (`title`);
-ALTER TABLE session
-	ADD COLUMN Date_status_change date DEFAULT NULL AFTER Date_visit;-- ############################## CAPTURE HEDVersion ########################## --
+
+SELECT 'Running: SQL/Archive/25.0/2022-03-03-AddHEDTags.sql';
+
+-- ############################## CAPTURE HEDVersion ########################## --
 -- HEDVersion from dataset_description.json to be added to parameter_type
 -- Entry in physiological_parameter_file will be added on dataset import**
 INSERT INTO parameter_type (Name, Type, Description, SourceFrom) VALUES
@@ -51,6 +69,7 @@ INSERT INTO physiological_event_file (PhysiologicalFileID, FilePath, FileType)
 UPDATE physiological_task_event te
     SET EventFileID=(SELECT EventFileID FROM physiological_event_file WHERE PhysiologicalFileID=te.PhysiologicalFileID)
 ;
+SET FOREIGN_KEY_CHECKS= 1;
 
 -- Delete FilePath column in `physiological_task_event` table
 ALTER TABLE physiological_task_event
@@ -98,27 +117,9 @@ CREATE TABLE `physiological_event_parameter_category_level` (
     CONSTRAINT `FK_event_param_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'createVisit', 'Enable visit creation in the imaging pipeline', 1, 0, 'boolean', ID, 'Enable visit creation', 11 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'default_project', 'Default project used when creating scan candidate or visit', 1, 0, 'text', ID, 'Default project', 12 FROM ConfigSettings WHERE Name="imaging_pipeline";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'default_cohort', 'Default cohort used when creating scan visit', 1, 0, 'text', ID, 'Default cohort', 13 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
-UPDATE ConfigSettings SET Label = 'Enable candidate creation' WHERE Name = 'createCandidates';
+SELECT 'Running: SQL/Archive/25.0/2022-11-22-eeg-additional-events-table.sql';
 
-UPDATE ConfigSettings SET OrderNumber = 14 WHERE Name = 'default_bids_vl';
-UPDATE ConfigSettings SET OrderNumber = 15 WHERE Name = 'is_qsub';
-UPDATE ConfigSettings SET OrderNumber = 16 WHERE Name = 'DTI_volumes';
-UPDATE ConfigSettings SET OrderNumber = 17 WHERE Name = 't1_scan_type';
-UPDATE ConfigSettings SET OrderNumber = 18 WHERE Name = 'reject_thresh';
-UPDATE ConfigSettings SET OrderNumber = 19 WHERE Name = 'niak_path';
-UPDATE ConfigSettings SET OrderNumber = 20 WHERE Name = 'QCed2_step';
-UPDATE ConfigSettings SET OrderNumber = 21 WHERE Name = 'excluded_series_description';
-UPDATE ConfigSettings SET OrderNumber = 22 WHERE Name = 'ComputeDeepQC';
-UPDATE ConfigSettings SET OrderNumber = 23 WHERE Name = 'MriConfigFile';
-UPDATE ConfigSettings SET OrderNumber = 24 WHERE Name = 'EnvironmentFile';
-UPDATE ConfigSettings SET OrderNumber = 25 WHERE Name = 'compute_snr_modalities';
-UPDATE ConfigSettings SET OrderNumber = 26 WHERE Name = 'reference_scan_type_for_defacing';
-UPDATE ConfigSettings SET OrderNumber = 27 WHERE Name = 'modalities_to_deface';
-UPDATE ConfigSettings SET OrderNumber = 28 WHERE Name = 'MriPythonConfigFile';
 -- Create `physiological_task_event_opt` table
 -- tracks additional events from bids archives
 CREATE TABLE `physiological_task_event_opt` (
@@ -130,34 +131,9 @@ CREATE TABLE `physiological_task_event_opt` (
     CONSTRAINT `FK_event_task_opt`
         FOREIGN KEY (`PhysiologicalTaskEventID`)
         REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;-- Create EEG upload table
-CREATE TABLE `electrophysiology_uploader` (
-    `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `UploadedBy` varchar(255) NOT NULL,
-    `UploadDate` DateTime NOT NULL,
-    `UploadLocation` varchar(255) NOT NULL,
-    `Status` enum('Not Started', 'Extracted', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
-    `SessionID` int(10) unsigned,
-    `Checksum` varchar(40) DEFAULT NULL,
-    `MetaData` TEXT DEFAULT NULL,
-    PRIMARY KEY (`UploadID`),
-    KEY (`SessionID`),
-    CONSTRAINT `FK_eegupload_SessionID`
-        FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
-    CONSTRAINT `FK_eegupload_UploadedBy`
-        FOREIGN KEY (`UploadedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SELECT 'Running: SQL/Archive/25.0/2022-11-24-electrode-coord-system.sql';
 
--- Add to module table
-INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
-
--- Add new configurations for eeg uploader
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
-    SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
-
--- Add new permissions for eeg uploader
-INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
-    ('monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2');
 -- -----------------------------------------------------
 -- ADDED
 -- Table `physiological_coord_system_type`
@@ -410,30 +386,9 @@ ALTER TABLE physiological_electrode
   DROP FOREIGN KEY FK_phys_file_FileID_3;
 ALTER TABLE physiological_electrode
   DROP COLUMN PhysiologicalFileID;
-INSERT INTO ConfigSettings
-    (
-        Name,
-        Description,
-        Visible,
-        AllowMultiple,
-        DataType,
-        Parent,
-        Label,
-        OrderNumber
-    )
-    SELECT
-        'UserMaximumDaysInactive',
-        'The maximum number of days since last login before making a user inactive',
-        1,
-        0,
-        'text',
-        ID,
-        'Maximum Days Before Making User Inactive',
-        30
-    FROM ConfigSettings
-    WHERE Name="study";
 
-INSERT INTO Config (ConfigID, Value) SELECT ID, "365" FROM ConfigSettings WHERE Name="UserMaximumDaysInactive";
+SELECT 'Running: SQL/Archive/25.0/2022-12-01-subprojects_no_more.sql';
+
 ALTER TABLE subproject RENAME TO cohort;
 ALTER TABLE project_subproject_rel RENAME TO project_cohort_rel;
 ALTER TABLE visit_project_subproject_rel RENAME TO visit_project_cohort_rel;
@@ -466,11 +421,9 @@ ALTER TABLE mri_protocol_group_target CHANGE `CohortID` `SubprojectID` int(10) u
 ALTER TABLE visit_project_subproject_rel CHANGE `VisitProjectCohortRelID` `VisitProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE visit_project_subproject_rel CHANGE `ProjectCohortRelID` `ProjectSubprojectRelID` int(10) unsigned NOT NULL;
  */
--- ---------------------------------------------------------------------------------------------
--- alter MRICandidateErrors table to add PhaseEncodingDirection and EchoNumber
--- ---------------------------------------------------------------------------------------------
-ALTER TABLE MRICandidateErrors ADD COLUMN `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL;
-ALTER TABLE MRICandidateErrors ADD COLUMN `EchoNumber`             VARCHAR(20) DEFAULT NULL;
+
+SELECT 'Running: SQL/Archive/25.0/2022-12-05-AddVizConfig.sql';
+
 -- Adds the option to toggle the EEG Browser visualization components (disabled by default).
 INSERT INTO ConfigSettings
   (
@@ -498,7 +451,8 @@ INSERT INTO ConfigSettings
     Name="gui";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="useEEGBrowserVisualizationComponents";
-CREATE INDEX `i_violations_resolved_extid_type` ON `violations_resolved` (`ExtID`, `TypeTable`);
+
+SELECT 'Running: SQL/Archive/25.0/2022-12-20-instrumentpermissions.sql';
 
 CREATE TABLE `testnames_permissions_rel` (
     `TestID` int(10) unsigned NOT NULL,
@@ -507,3 +461,107 @@ CREATE TABLE `testnames_permissions_rel` (
     CONSTRAINT `FK_testnames_permissions_rel_test` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`),
     CONSTRAINT `FK_testnames_permissions_rel_perm` FOREIGN KEY (`permID`) REFERENCES `permissions` (`permID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SELECT 'Running: SQL/Archive/25.0/2022-12-20-project-name-not-null.sql';
+
+ALTER TABLE `Project`
+MODIFY `Name` VARCHAR(255) NOT NULL;
+
+SELECT 'Running: SQL/Archive/25.0/2023-01-19_add_index_on_violations_resolved.sql';
+
+CREATE INDEX `i_violations_resolved_extid_type` ON `violations_resolved` (`ExtID`, `TypeTable`);
+
+
+SELECT 'Running: SQL/Archive/25.0/2023-01-31-add-date-stage-change.sql';
+
+ALTER TABLE session
+	ADD COLUMN Date_status_change date DEFAULT NULL AFTER Date_visit;
+SELECT 'Running: SQL/Archive/25.0/2023-02-17-imaging-new-config.sql';
+
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'createVisit', 'Enable visit creation in the imaging pipeline', 1, 0, 'boolean', ID, 'Enable visit creation', 11 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'default_project', 'Default project used when creating scan candidate or visit', 1, 0, 'text', ID, 'Default project', 12 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'default_cohort', 'Default cohort used when creating scan visit', 1, 0, 'text', ID, 'Default cohort', 13 FROM ConfigSettings WHERE Name="imaging_pipeline";
+
+UPDATE ConfigSettings SET Label = 'Enable candidate creation' WHERE Name = 'createCandidates';
+
+UPDATE ConfigSettings SET OrderNumber = 14 WHERE Name = 'default_bids_vl';
+UPDATE ConfigSettings SET OrderNumber = 15 WHERE Name = 'is_qsub';
+UPDATE ConfigSettings SET OrderNumber = 16 WHERE Name = 'DTI_volumes';
+UPDATE ConfigSettings SET OrderNumber = 17 WHERE Name = 't1_scan_type';
+UPDATE ConfigSettings SET OrderNumber = 18 WHERE Name = 'reject_thresh';
+UPDATE ConfigSettings SET OrderNumber = 19 WHERE Name = 'niak_path';
+UPDATE ConfigSettings SET OrderNumber = 20 WHERE Name = 'QCed2_step';
+UPDATE ConfigSettings SET OrderNumber = 21 WHERE Name = 'excluded_series_description';
+UPDATE ConfigSettings SET OrderNumber = 22 WHERE Name = 'ComputeDeepQC';
+UPDATE ConfigSettings SET OrderNumber = 23 WHERE Name = 'MriConfigFile';
+UPDATE ConfigSettings SET OrderNumber = 24 WHERE Name = 'EnvironmentFile';
+UPDATE ConfigSettings SET OrderNumber = 25 WHERE Name = 'compute_snr_modalities';
+UPDATE ConfigSettings SET OrderNumber = 26 WHERE Name = 'reference_scan_type_for_defacing';
+UPDATE ConfigSettings SET OrderNumber = 27 WHERE Name = 'modalities_to_deface';
+UPDATE ConfigSettings SET OrderNumber = 28 WHERE Name = 'MriPythonConfigFile';
+
+SELECT 'Running: SQL/Archive/25.0/2023-02-24-electrophysiology_uploader.sql';
+
+-- Create EEG upload table
+CREATE TABLE `electrophysiology_uploader` (
+    `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `UploadedBy` varchar(255) NOT NULL,
+    `UploadDate` DateTime NOT NULL,
+    `UploadLocation` varchar(255) NOT NULL,
+    `Status` enum('Not Started', 'Extracted', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
+    `SessionID` int(10) unsigned,
+    `Checksum` varchar(40) DEFAULT NULL,
+    `MetaData` TEXT DEFAULT NULL,
+    PRIMARY KEY (`UploadID`),
+    KEY (`SessionID`),
+    CONSTRAINT `FK_eegupload_SessionID`
+        FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+    CONSTRAINT `FK_eegupload_UploadedBy`
+        FOREIGN KEY (`UploadedBy`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Add to module table
+INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
+
+-- Add new configurations for eeg uploader
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+    SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
+
+-- Add new permissions for eeg uploader
+INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
+    ('monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2');
+
+SELECT 'Running: SQL/Archive/25.0/2023-02-28_create_max_days_inactive_config_for_users.sql';
+
+INSERT INTO ConfigSettings
+    (
+        Name,
+        Description,
+        Visible,
+        AllowMultiple,
+        DataType,
+        Parent,
+        Label,
+        OrderNumber
+    )
+    SELECT
+        'UserMaximumDaysInactive',
+        'The maximum number of days since last login before making a user inactive',
+        1,
+        0,
+        'text',
+        ID,
+        'Maximum Days Before Making User Inactive',
+        30
+    FROM ConfigSettings
+    WHERE Name="study";
+
+INSERT INTO Config (ConfigID, Value) SELECT ID, "365" FROM ConfigSettings WHERE Name="UserMaximumDaysInactive";
+
+SELECT 'Running: SQL/Archive/25.0/2023-04-24_add_phase_enc_dir_and_echo_number_to_MRICandidateErrors.sql';
+
+-- ---------------------------------------------------------------------------------------------
+-- alter MRICandidateErrors table to add PhaseEncodingDirection and EchoNumber
+-- ---------------------------------------------------------------------------------------------
+ALTER TABLE MRICandidateErrors ADD COLUMN `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL;
+ALTER TABLE MRICandidateErrors ADD COLUMN `EchoNumber`             VARCHAR(20) DEFAULT NULL;

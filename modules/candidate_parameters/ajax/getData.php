@@ -524,10 +524,22 @@ function getDOBFields(): array
     );
     $pscid         = $candidateData['PSCID'] ?? null;
     $dob           = $candidateData['DoB'] ?? null;
-    $result        = [
-        'pscid'  => $pscid,
-        'candID' => $candID->__toString(),
-        'dob'    => $dob,
+
+    // Get DoB format
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
+    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
+    $result = [
+        'pscid'     => $pscid,
+        'candID'    => $candID->__toString(),
+        'dob'       => $formattedDate,
+        'dobFormat' => $dobFormat,
     ];
     return $result;
 }
@@ -549,11 +561,30 @@ function getDODFields(): array
     if ($candidateData === null) {
         throw new \LorisException("Invalid candidate");
     }
+
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    // Get formatted dod
+    $dodFormat = $config->getSetting('dodFormat');
+
+    $dodProcessedFormat = implode("-", str_split($dodFormat, 1));
+    $dodDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoD']);
+    $dod = $dodDate ? $dodDate->format($dodProcessedFormat) : null;
+
+    // Get formatted dob
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
+    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
     $result = [
-        'pscid'  => $candidateData['PSCID'],
-        'candID' => $candID->__toString(),
-        'dod'    => $candidateData['DoD'],
-        'dob'    => $candidateData['DoB'],
+        'pscid'     => $candidateData['PSCID'],
+        'candID'    => $candID->__toString(),
+        'dod'       => $dod,
+        'dob'       => $dob,
+        'dodFormat' => $config->getSetting('dodFormat'),
     ];
     return $result;
 }

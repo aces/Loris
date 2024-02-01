@@ -484,11 +484,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $qcStatus = $this->getBVLQCStatus();
 
         foreach ($this->bvlQcTypes as $type) {
-            $isSelected =$type == $this->getBVLQCType();
-            $type       =strtolower($type);
-            if ($type==null) {
-                $type ="none";
-            }
+            $isSelected = $type == $this->getBVLQCType();
+            $type       = strtolower($type ?? 'none');
             if ($isSelected) {
                 $this->tpl_data['bvl_qc_type_'.$type]['icon']
                     = 'far fa-check-square';
@@ -523,11 +520,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $qcType = $this->getBVLQCType();
 
         foreach ($this->bvlQcStatuses as $status) {
-            $isSelected =$status == $this->getBVLQCStatus();
-            $status     =strtolower($status);
-            if ($status==null) {
-                $status ="none";
-            }
+            $isSelected = $status == $this->getBVLQCStatus();
+            $status     = strtolower($status ?? 'none');
             if ($isSelected) {
                 $this->tpl_data['bvl_qc_status_'.$status]['icon']
                     = 'far fa-check-square';

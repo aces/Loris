@@ -625,6 +625,40 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
+     * Returns the way that the DoB should be displayed for this
+     * candidate to a user on the frontend.
+     *
+     * @return ?array{label:string,value:string}
+     */
+    function getDisplayDoB(): ?array
+    {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $dobFormat = $config->getSetting('dobFormat');
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
+        switch ($dobFormat) {
+        case 'Ym':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m'),
+            ];
+        case 'Ymd':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m-d'),
+            ];
+        default:
+            throw new Exception("Unhandled DoB format: $dobFormat");
+        }
+    }
+
+    /**
      * Returns the expect date of confinement (due date)
      * of this candidate.
      *

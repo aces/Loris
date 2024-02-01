@@ -53,11 +53,11 @@
 {/function}
 
 {function name=createTextArea}
-    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v}</textarea>
+    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v|escape:html}</textarea>
 {/function}
 
 {function name=createText}
-     <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
+     <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
 {function name=createLogDropdown}
@@ -111,7 +111,7 @@
         {elseif $node['DataType'] eq 'date_format'}
             {call createDateFormat k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$id v=$id d=$node['Disabled']}
+            {call createEmail k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
             {call createTextArea k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}

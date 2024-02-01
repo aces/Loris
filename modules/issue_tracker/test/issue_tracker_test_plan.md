@@ -40,6 +40,7 @@
 10. Test if users assigned to issues can upload attachments.
 11. Test if users can delete their own uploaded attachments.
 12. Test if user assigned to issue cannot delete attachments of issue owner.
+13. Test that emails are sent to users that are watching the issue.
 
 ## Permissions [Automation Testing]
 1. Remove `access_all_profiles` permission.
