@@ -304,6 +304,7 @@ const lorisModules = {
   instrument_builder: [
     'react.instrument_builder',
     'react.questions',
+    'redcap2linst',
   ],
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
