@@ -23,7 +23,7 @@ import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
-    EEGLabSeriesProviderStore: Store[];   // Store reference per recording
+    EEGLabSeriesProviderStore: Store[]; // Store reference per recording
   }
 }
 
@@ -69,8 +69,10 @@ class EEGLabSeriesProvider extends Component<CProps> {
       samplingFrequency,
     } = props;
 
-    if (!window.EEGLabSeriesProviderStore)
+    if (!window.EEGLabSeriesProviderStore) {
       window.EEGLabSeriesProviderStore = [];
+    }
+
     window.EEGLabSeriesProviderStore[chunksURL] = this.store;
 
     this.store.dispatch(setPhysioFileID(physioFileID));
@@ -115,6 +117,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
               timeInterval,
               seriesRange,
               limit,
+              samplingFrequency,
             })
           );
           this.store.dispatch(setChannels(emptyChannels(

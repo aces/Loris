@@ -171,7 +171,9 @@ export const createLowPassFilterEpic = () => (
     dispatch(setFilter({
       key: 'lowPass',
       name: payload,
-      fn: R.curry(applyFilter)(LOW_PASS_FILTERS[payload].coefficients[samplingFrequency]),
+      fn: R.curry(applyFilter)(
+        LOW_PASS_FILTERS[payload].coefficients[samplingFrequency]
+      ),
     }));
     dispatch(updateViewedChunks());
   })
@@ -290,7 +292,9 @@ export const createHighPassFilterEpic = () => (
     dispatch(setFilter({
       key: 'highPass',
       name: payload,
-      fn: R.curry(applyFilter)(HIGH_PASS_FILTERS[payload].coefficients[samplingFrequency]),
+      fn: R.curry(applyFilter)(
+        HIGH_PASS_FILTERS[payload].coefficients[samplingFrequency]
+      ),
     }));
     dispatch(updateViewedChunks());
   })

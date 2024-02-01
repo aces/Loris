@@ -79,6 +79,7 @@ type CProps = {
   timeSelection?: [number, number],
   setCursor: (number) => void,
   setRightPanel: (_: RightPanel) => void,
+  chunksURL: string,
   channels: Channel[],
   channelMetadata: ChannelMetadata[],
   hidden: number[],
@@ -121,6 +122,7 @@ type CProps = {
  * @param root0.setCursor
  * @param root0.setRightPanel
  * @param root0.channels
+ * @param root0.chunksURL
  * @param root0.channelMetadata
  * @param root0.hidden
  * @param root0.epochs
@@ -157,6 +159,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   timeSelection,
   setCursor,
   setRightPanel,
+  chunksURL,
   channels,
   channelMetadata,
   hidden,
@@ -1168,6 +1171,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       mouseMove={updateCursorCallback}
                       mouseDown={updateTimeSelectionCallback}
                       showOverflow={showOverflow}
+                      chunksURL={chunksURL}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -1342,6 +1346,7 @@ export default connect(
     amplitudeScale: state.bounds.amplitudeScale,
     rightPanel: state.rightPanel,
     timeSelection: state.timeSelection,
+    chunksURL: state.dataset.chunksURL,
     channels: state.channels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,

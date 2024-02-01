@@ -19,6 +19,7 @@ type CProps = {
   mouseY: number,
   setHidden: (_: number[]) => void,
   physioFileID: number,
+  chunksURL: string,
 };
 
 /**
@@ -31,6 +32,7 @@ const EEGMontage = (
   {
     electrodes,
     physioFileID,
+    chunksURL,
   }: CProps) => {
   if (electrodes.length === 0) return null;
 
@@ -303,11 +305,15 @@ const EEGMontage = (
                 mouseDown={dragStart}
                 mouseUp={dragEnd}
                 mouseLeave={dragEnd}
+                chunksURL={chunksURL}
               >
                 <Montage3D />
               </ResponsiveViewer>
             :
-              <ResponsiveViewer>
+              <ResponsiveViewer
+                // @ts-ignore
+                chunksURL={chunksURL}
+              >
                 <Montage2D />
               </ResponsiveViewer>
             }
@@ -340,6 +346,7 @@ const EEGMontage = (
 EEGMontage.defaultProps = {
   montage: [],
   hidden: [],
+  chunksURL: '',
 };
 
 export default connect(
@@ -347,6 +354,7 @@ export default connect(
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
     physioFileID: state.dataset.physioFileID,
+    chunksURL: state.dataset.chunksURL,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

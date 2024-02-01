@@ -13,6 +13,7 @@ type CProps = {
   mouseLeave?: (_: any) => void,
   children: any,
   showOverflow: boolean,
+  chunksURL: string,
 };
 
 /**
@@ -27,6 +28,7 @@ type CProps = {
  * @param root0.mouseLeave
  * @param root0.children
  * @param root0.showOverflow
+ * @param root0.chunksURL
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
   ref,
@@ -37,7 +39,8 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
-  showOverflow
+  showOverflow,
+  chunksURL,
 }) => {
   /**
    *
@@ -51,7 +54,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 
   const layers = React.Children.toArray(children).map(provision);
 
-  const domain = window.EEGLabSeriesProviderStore.getState().bounds.domain;
+  const domain = window.EEGLabSeriesProviderStore[chunksURL]?.getState().bounds.domain;
   const amplitude = [0, 1];
   const eventScale = [
     scaleLinear()

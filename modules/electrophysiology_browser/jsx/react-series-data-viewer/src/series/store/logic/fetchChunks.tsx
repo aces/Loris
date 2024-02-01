@@ -15,6 +15,7 @@ export const UPDATE_VIEWED_CHUNKS = 'UPDATE_VIEWED_CHUNKS';
 export const updateViewedChunks = createAction(UPDATE_VIEWED_CHUNKS);
 
 type FetchedChunks = {
+  chunksURL: string,
   channelIndex: number,
   traceIndex: number,
   chunks: Chunk[]
@@ -30,7 +31,7 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
   return (dispatch: (_: any) => void) => {
     const channels : Channel[] = [];
 
-    const filters: Filter[] = window.EEGLabSeriesProviderStore
+    const filters: Filter[] = window.EEGLabSeriesProviderStore[chunksData[0].chunksURL]
                               .getState().filters;
     for (let index = 0; index < chunksData.length; index++) {
       const {channelIndex, chunks} : {
@@ -207,6 +208,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
 
               return from(
                 Promise.all(chunkPromises).then((chunks) => ({
+                  chunksURL: chunksURL,
                   channelIndex: channel.index,
                   traceIndex: traceIndex,
                   chunks,
