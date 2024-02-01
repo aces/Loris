@@ -121,8 +121,8 @@ type CProps = {
  * @param root0.timeSelection
  * @param root0.setCursor
  * @param root0.setRightPanel
- * @param root0.channels
  * @param root0.chunksURL
+ * @param root0.channels
  * @param root0.channelMetadata
  * @param root0.hidden
  * @param root0.epochs
