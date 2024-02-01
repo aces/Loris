@@ -818,15 +818,14 @@ function organizedFormatter(
                                                     let val = values[keyid];
                                                     if (val === null) {
                                                         return;
-
                                                     }
-                                                    if(fielddict.type == 'URI') {
+                                                    const ftyp = fielddict.type;
+                                                    if (ftyp == 'URI') {
                                                         val = (
-                                                            <a href={val} download>
+                                                            <a href={val}>
                                                                 {val}
                                                             </a>
                                                         );
-
                                                     }
                                                     hasdata = true;
                                                     return (
