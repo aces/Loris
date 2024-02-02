@@ -16,13 +16,13 @@
 		{section name=item loop=$status}
 		<li>
 			{if $access.status and $status[item].showlink|default}
-                        	<span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span><a href="?candID={$candID}&sessionID={$sessionID}&setStageUpdate={$status[item].label}">{$status[item].label}</a>
+				{assign var="onclickValue" value="{$status[item].label}"}
+                <span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span><a onclick="setStageAndUpdate('{$onclickValue}')">{$status[item].label}</a>
 			{else}
-                        	<span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span>{$status[item].label}
+                <span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span>{$status[item].label}
 			{/if}
 		</li>
 		{/section}
-
 	</ul>
 
 	<h3 class="controlPanelSection">Send Time Point</h3>
@@ -90,3 +90,23 @@
 			{/if}
 		</li>
 	</ul>
+
+<script>
+	function setStageAndUpdate(stageLabel) {
+		// Make an AJAX request to the endpoint
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '?candID={$candID}&sessionID={$sessionID}&setStageUpdate=' + encodeURIComponent(stageLabel), true);
+
+		xhr.onload = function () {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				console.log('Request successful');
+				window.location.reload(true);
+			} else {
+				// Request failed, handle errors if needed
+				console.error('Request failed with status ' + xhr.status);
+			}
+		};
+
+		xhr.send();
+	}
+</script>
