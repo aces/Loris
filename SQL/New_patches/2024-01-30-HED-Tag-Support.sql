@@ -1,8 +1,9 @@
 -- Remove unused column
 ALTER TABLE `physiological_task_event` DROP COLUMN `AssembledHED`;
 
--- Add index for performance improvement
+-- Add indices for performance improvement
 ALTER TABLE `physiological_task_event` ADD INDEX idx_pte_EventValue (`EventValue`);
+ALTER TABLE `physiological_task_event` ADD INDEX idx_pte_TrialType (`TrialType`);
 
 -- Event files are always associated to Projects, sometimes exclusively (dataset-scope events.json files)
 -- Add ProjectID and make PhysiologicalFileID DEFAULT NULL (ProjectID should ideally not be NULLable)
