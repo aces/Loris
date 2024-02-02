@@ -308,6 +308,7 @@ CREATE TABLE `physiological_task_event` (
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
   INDEX idx_pte_EventValue (`EventValue`),
+  INDEX idx_pte_TrialType (`TrialType`),
   CONSTRAINT `FK_phys_file_FileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
