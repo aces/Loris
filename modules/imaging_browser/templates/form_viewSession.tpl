@@ -27,7 +27,6 @@
                 'FileID'   : "{$files[file].FileID}",
                 'Filename' : "{$files[file].Filename}",
                 'QCStatus' : "{$files[file].QCStatus}",
-                'APIFile' : "{$files[file].APIFile}",
 
                 'HasQCPerm': {if $has_qc_permission}true{else}false{/if},
                 'FileNew'  : {if $files[file].New}true{else}false{/if},
@@ -36,7 +35,7 @@
                 "Caveat" : "{$files[file].Caveat}",
                 "EditableCaveat": "{$files[file].EditableCaveat}",
                 "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
-                'HeaderInfo' : {
+                'infos' : {
                   "SeriesUID" : "{$files[file].SeriesUID}",
                   'XStep' : "{$files[file].Xstep}",
                   'YStep' : "{$files[file].Ystep}",
@@ -63,14 +62,17 @@
                   "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
                   "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
                 },
+                files: {
+                  minc: "{$files[file].APIFile}",
+                  xmlProtocol: "{$files[file].XMLprotocol}",
+                  xmlReport: "{$files[file].XMLreport}",
+                  nrrd: "{$files[file].NrrdFile}",
+                  nifti: "{$files[file].NiiFile}",
+                  bval: "{$files[file].BvalFile}",
+                  bvec: "{$files[file].BvecFile}",
+                  json: "{$files[file].JsonFile}",
+                },
                 'Fullname' : "{$files[file].FullFilename}",
-                "XMLProtocol" : "{$files[file].XMLprotocol}",
-                "XMLReport" : "{$files[file].XMLreport}",
-                "NrrdFile" : "{$files[file].NrrdFile}",
-                "NiiFile" : "{$files[file].NiiFile}",
-                "BvalFile" : "{$files[file].BvalFile}",
-                "BvecFile" : "{$files[file].BvecFile}",
-                "JsonFile" : "{$files[file].JsonFile}",
                 "OtherTimepoints" : "{$files[file].OtherTimepoints}",
                 "SeriesUID": "{$files[file].SeriesUID}"
               }),
