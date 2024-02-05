@@ -88,28 +88,30 @@ class Attachment extends \NDB_Page implements ETagCalculator
         if (strpos($result['file_name'], "s3://") === 0) {
             // Get the S3 object metadata
             try {
-                $s3part    
-                    = explode("/", str_replace("s3://", "", $result['file_name']));
-                    $s3Client   = \S3ClientSingleton::getInstance()->getS3Client();
-                    $config     = \NDB_Config::singleton();
-                $bucketName 
-                    = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
-                    $s3result   = $s3Client->getObject(
+                $str_todo     = str_replace("s3://", "", $result['file_name']);
+                $s3part       = explode("/", $str_todo);
+                $s3Client     = \S3ClientSingleton::getInstance()->getS3Client();
+                $config       = \NDB_Config::singleton();
+                $aws_Issue    = 'AWS_S3_Default_Bucket_Issue_Tracker';
+                $bucketName   = $config->getSetting($aws_Issue);
+                    $s3result = $s3Client->getObject(
                         [
                             'Bucket' => $bucketName,
                             'Key'    => end($s3part),
                         ]
                     );
-                    $headers    = [
+                    $headers  = [
                         'Content-Type'        => $s3result['ContentType'],
-                'Content-Disposition' => 'attachment; filename="' 
-                                   . end($s3part) . '"',
+                        'Content-Disposition' => 'attachment; filename="'.
+                         end($s3part) . '"',
                         'Content-Length'      => $s3result['ContentLength'],
                     ];
 
-                    return 
+                    return
                     new \GuzzleHttp\Psr7\Response(
-                        200, $headers, $s3result['Body']
+                        200,
+                        $headers,
+                        $s3result['Body']
                     );
             } catch (Exception $e) {
                 return (new \LORIS\Http\Response())
