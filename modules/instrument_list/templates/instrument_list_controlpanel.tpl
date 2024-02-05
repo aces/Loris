@@ -17,7 +17,15 @@
 		<li>
 			{if $access.status and $status[item].showlink|default}
 				{assign var="onclickValue" value="{$status[item].label}"}
-                <span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span><a onclick="setStageAndUpdate('{$onclickValue}')">{$status[item].label}</a>
+                <span class="fa-li">
+					<i class="{$status[item].icon|default:'far fa-square'}"></i>
+				</span>
+				<a
+					onclick="setStageAndUpdate('{$onclickValue}')"
+					style="cursor: pointer;"
+				>
+					{$status[item].label}
+				</a>
 			{else}
                 <span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span>{$status[item].label}
 			{/if}
