@@ -221,8 +221,9 @@ class Files extends \NDB_Page
         if (strpos($dataDir, "s3://") === 0) {
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $config           = \NDB_Config::singleton();
-            $bucketName     
-                = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+            $bucketName       = $config->getSetting(
+                'AWS_S3_Default_Bucket_Document_Repository'
+            );
             $delete_status    = $s3ClientInstance->s3DeleteFile(
                 $bucketName,
                 null,
@@ -530,7 +531,7 @@ class Files extends \NDB_Page
      * @param ServerRequestInterface $request The PSR7 request.
      *
      * @return ResponseInterface The outgoing PSR7 response.
-     */ 
+     */
     function uploadDocFileToS3($request): ResponseInterface
     {
         $instance = $request->getAttribute('loris');

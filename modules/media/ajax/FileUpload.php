@@ -195,7 +195,10 @@ function uploadFile()
 
         $s3ClientInstance = S3ClientSingleton::getInstance();
         $s3_upload_status = $s3ClientInstance->s3uploadfile(
-            $bucketName, null, $s3_fileName, $s3_fileTmpName
+            $bucketName,
+            null,
+            $s3_fileName,
+            $s3_fileTmpName
         );
         if ($s3_upload_status) {
             $query['file_name'] = "s3://".$bucketName."/".$s3_fileName;
@@ -233,7 +236,7 @@ function uploadFile()
         }
     }
     // upload to local
-    if (!$s3_upload_status  
+    if (!$s3_upload_status
         && move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)
     ) {
         try {

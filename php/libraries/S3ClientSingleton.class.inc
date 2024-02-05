@@ -63,11 +63,11 @@ class S3ClientSingleton
     /**
      * GetInstance function
      *
-     * @param string $accessKey The accessKey 
+     * @param string $accessKey The accessKey
      * @param string $secretKey The secretKey
      * @param string $region    region
      *
-     * @return S3ClientSingleton 
+     * @return S3ClientSingleton
      */
     public static function getInstance(
         $accessKey = null,
@@ -83,7 +83,7 @@ class S3ClientSingleton
     /**
      * GetS3Client funtion
      *
-     * @return S3ClientSingleton 
+     * @return S3ClientSingleton
      */
     public function getS3Client()
     {
@@ -96,7 +96,7 @@ class S3ClientSingleton
      * @param string $folderName The folderName
      * @param string $fileName   fileName
      *
-     * @return bool it will return true or false 
+     * @return bool it will return true or false
      */
     public function s3download($bucketName, $folderName, $fileName)
     {
@@ -132,8 +132,8 @@ class S3ClientSingleton
      * @param string $fileName      fileName
      * @param string $localFilePath localFilePath
      *
-     * @return bool it will return true or false 
-     */    
+     * @return bool it will return true or false
+     */
     public function s3uploadfile($bucketName, $folderName, $fileName, $localFilePath)
     {
         try {
@@ -163,7 +163,7 @@ class S3ClientSingleton
      * @param string $folderName The folderName
      * @param string $fileName   fileName
      *
-     * @return bool it will return true or false 
+     * @return bool it will return true or false
      */
     public function checkS3FileExist($bucketName, $folderName, $fileName)
     {
@@ -187,8 +187,8 @@ class S3ClientSingleton
      * @param string $folderName The folderName
      * @param string $fileName   fileName
      *
-     * @return bool it will return true or false 
-     */    
+     * @return bool it will return true or false
+     */
     public function s3DeleteFile($bucketName, $folderName, $fileName)
     {
         try {

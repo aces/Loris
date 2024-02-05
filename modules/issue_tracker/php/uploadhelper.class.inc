@@ -94,7 +94,7 @@ class UploadHelper
                 'description' => $this->_values['fileDescription'] ?? '',
             ];
 
-        if (!$this->setFullPath($this->_fileToUpload) 
+        if (!$this->setFullPath($this->_fileToUpload)
             && getenv('AWS_ACCESS_KEY_ID') === false
         ) {
             $this->errorMessage
@@ -170,12 +170,15 @@ class UploadHelper
         // handle upload to AWS S3
         if (getenv('AWS_ACCESS_KEY_ID') !== false) {
             $config           = \NDB_Config::singleton();
-            $bucketName       
-                = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
+            $bucketName
+       = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
             $s3ClientInstance = \S3ClientSingleton::getInstance();
-            $s3_upload_status 
+            $s3_upload_status
                 = $s3ClientInstance->s3uploadfile(
-                    $bucketName, null, $fileToUpload->file, $tmpFilePath
+                    $bucketName,
+                    null,
+                    $fileToUpload->file,
+                    $tmpFilePath
                 );
             if ($s3_upload_status) {
                   // set a s3 file name
