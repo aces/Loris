@@ -34,7 +34,7 @@ use Aws\S3\S3Client;
 class S3ClientSingleton
 {
     private static $_instance = null;
-    private $_s3Client;
+    private S3Client $_s3Client;
     /**
      * __construct function
      *
@@ -51,7 +51,7 @@ class S3ClientSingleton
         $region   = $config->getSetting('AWS_S3_Region');
         $s3Config = [
             'version'     => 'latest',
-            'region'      => $region ?? 'us-east-1',
+            'region'      => $region,
             'credentials' => [
                 'key'    => $accessKey ?? getenv('AWS_ACCESS_KEY_ID'),
                 'secret' => $secretKey ?? getenv('AWS_SECRET_ACCESS_KEY'),
@@ -83,7 +83,7 @@ class S3ClientSingleton
     /**
      * GetS3Client funtion
      *
-     * @return S3ClientSingleton
+     * @return S3Client
      */
     public function getS3Client()
     {
