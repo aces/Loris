@@ -170,8 +170,8 @@ class UploadHelper
         // handle upload to AWS S3
         if (getenv('AWS_ACCESS_KEY_ID') !== false) {
             $config           = \NDB_Config::singleton();
-            $bucketName
-       = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');
+            $aws_issue        = 'AWS_S3_Default_Bucket_Issue_Tracker';
+            $bucketName       = $config->getSetting($aws_issue);
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $s3_upload_status
                 = $s3ClientInstance->s3uploadfile(
