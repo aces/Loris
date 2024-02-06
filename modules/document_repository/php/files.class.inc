@@ -189,7 +189,7 @@ class Files extends \NDB_Page
         $user    = $factory->user();
         $config  = $factory->config();
         if (! $user->hasPermission('document_repository_delete')) {
-            $emsg = "Missing document_repository_delete permission".
+            $emsg = "Missing document_repository_delete permission";
                 return (new \LORIS\Http\Response())
                 ->withStatus(404)
                 ->withHeader('Content-Type', 'text/json')
