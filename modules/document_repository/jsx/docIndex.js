@@ -1,4 +1,4 @@
-import { Tabs, TabPane } from 'Tabs';
+import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
 import ParentTree from './parentTree';
@@ -7,7 +7,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {CheckboxElement} from 'jsx/Form';
@@ -47,7 +47,7 @@ class DocIndex extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -59,7 +59,7 @@ class DocIndex extends React.Component {
   handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
-    this.setState({ parentNode });
+    this.setState({parentNode});
     if (value == true) {
       this.getAllData();
     } else {
@@ -131,16 +131,16 @@ class DocIndex extends React.Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-        this.setState({ data: data, tableData: data.Data });
+        this.setState({data: data, tableData: data.Data});
       }).then(() => {
         this.dataByNode(0);
       })
-      .then(() => this.setState({ newCategory: false }))
+      .then(() => this.setState({newCategory: false}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
       });
   }
 
@@ -157,7 +157,7 @@ class DocIndex extends React.Component {
    * New category state
    */
   newCategoryState() {
-    this.setState({ newCategory: true });
+    this.setState({newCategory: true});
   }
 
   /**
@@ -193,7 +193,7 @@ class DocIndex extends React.Component {
             + '/document_repository/Files/'
             + encodeURIComponent(row['Uploaded By'])
             + '/?s3file='
-            + row['Data dir']
+            + row['Data dir'];
           result = <td>
             <a
               href={s3url}
@@ -219,7 +219,7 @@ class DocIndex extends React.Component {
         function click() {
           swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: 'You won\'t be able to revert this!',
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -227,7 +227,9 @@ class DocIndex extends React.Component {
             confirmButtonText: 'Yes, delete it!',
           }).then((result) => {
             if (result.value) {
-              let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
+              let deleteurl = loris.BaseURL +
+                       '/document_repository/Files/' +
+                       id;
               fetch(deleteurl, {
                 method: 'DELETE',
                 cache: 'no-cache',
@@ -236,9 +238,10 @@ class DocIndex extends React.Component {
                 .then((resp) => {
                   if (resp.status === 403) {
                     return resp.json().then((data) => {
-                      swal.fire('Access Denied', data.error, 'error').then(() => {
+                      swal.fire(
+                         'Access Denied', data.error, 'error'
+                      ).then(() => {
                         location.reload();
-
                       });
                     });
                   } else if (resp.status === 200) {
@@ -253,7 +256,7 @@ class DocIndex extends React.Component {
 
 
         result = <td>
-          <a style={{ cursor: 'pointer' }} onClick={click}>Delete</a>
+          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
         </td>;
         break;
     }
@@ -282,42 +285,42 @@ class DocIndex extends React.Component {
         label: 'File Name', show: true, filter: {
           name: 'fileName',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Version', show: true, filter: {
           name: 'version',
           type: 'text',
-        }
+        },
       },
       {
         label: 'File Type', show: true, filter: {
           name: 'fileTypes',
           type: 'select',
           options: options.fileTypes,
-        }
+        },
       },
-      { label: 'Instrument', show: false },
+      {label: 'Instrument', show: false},
       {
         label: 'Uploaded By', show: true, filter: {
           name: 'uploadedBy',
           type: 'text',
-        }
+        },
       },
       {
         label: 'For Site', show: true, filter: {
           name: 'site',
           type: 'select',
           options: options.sites,
-        }
+        },
       },
       {
         label: 'Comments', show: true, filter: {
           name: 'Comments',
           type: 'text',
-        }
+        },
       },
-      { label: 'Date Uploaded', show: true },
+      {label: 'Date Uploaded', show: true},
       {
         label: 'Edit',
         show: this.props.hasPermission('superUser')
@@ -328,12 +331,12 @@ class DocIndex extends React.Component {
         show: this.props.hasPermission('superUser')
           || this.props.hasPermission('document_repository_delete'),
       },
-      { label: 'Category', show: false },
-      { label: 'Data dir', show: false },
+      {label: 'Category', show: false},
+      {label: 'Data dir', show: false},
     ];
 
     let tabList = [
-      { id: 'browse', label: 'Browse' },
+      {id: 'browse', label: 'Browse'},
     ];
     let uploadDoc;
     let uploadCategory;
