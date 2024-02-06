@@ -111,7 +111,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         $headers,
                         $s3result['Body']
                     );
-            } catch (Exception $e) {
+            } catch (\Http\Client\Exception $e) {
                 return (new \LORIS\Http\Response())
                     ->withStatus(404)
                     ->withHeader('Content-Type', 'text/plain')

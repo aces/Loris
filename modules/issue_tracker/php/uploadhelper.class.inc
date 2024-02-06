@@ -166,7 +166,6 @@ class UploadHelper
             'file_size'   => $fileToUpload->size,
             'mime_type'   => $fileToUpload->mime_type
         ];
-            $s3_upload_status = false;
         // handle upload to AWS S3
         if (getenv('AWS_ACCESS_KEY_ID') !== false) {
             $config           = \NDB_Config::singleton();
@@ -176,7 +175,7 @@ class UploadHelper
             $s3_upload_status
                 = $s3ClientInstance->s3uploadfile(
                     $bucketName,
-                    null,
+                    '',
                     $fileToUpload->file,
                     $tmpFilePath
                 );
