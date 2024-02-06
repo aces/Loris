@@ -1,6 +1,11 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Publication upload form component
@@ -72,6 +77,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -86,6 +92,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -99,6 +106,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -116,6 +124,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -135,6 +144,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {
@@ -266,6 +276,7 @@ class PublicationUploadForm extends React.Component {
               removeListItem={this.removeListItem}
               toggleEmailNotify={this.toggleEmailNotify}
               uploadTypes={this.state.Data.uploadTypes}
+              projectOptions={this.state.Data.projectOptions}
               users={this.state.Data.users}
               allVOIs={this.state.Data.allVOIs}
               allKWs={this.state.Data.allKWs}
@@ -278,5 +289,10 @@ class PublicationUploadForm extends React.Component {
     );
   }
 }
+PublicationUploadForm.propTypes = {
+  DataURL: PropTypes.string,
+  action: PropTypes.string,
+  editMode: PropTypes.bool,
+};
 
 export default PublicationUploadForm;

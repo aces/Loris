@@ -30,6 +30,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
+  /sites:
+    get:
+      tags:
+        - Sites
+      summary: List all sites available to the requesting user
+      responses:
+        '200':
+          description: A list of all sites for the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sites'
   /projects:
     get:
       tags:
@@ -388,6 +400,39 @@ paths:
       responses:
         '200':
           description: The list of instrument short names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+    post:
+      tags:
+        - Instruments
+      summary: Add instruments the the visit test battery
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inline_response_200_4'
+      responses:
+        '200':
+          description: The battery was successfully updated. Returns the new battery
           content:
             application/json:
               schema:
@@ -925,7 +970,7 @@ paths:
         - Images
       summary: Get the qc values of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
           description: The candidate identifier. Either PSCID or CandID.
           required: true
@@ -1288,7 +1333,7 @@ paths:
         - Dicoms
       summary: List all dicoms for that timepoint
       parameters:
-        - name: candid
+        - name: id
           in: path
           description: ID of the candidate. Either PSCID or CandID
           required: true
@@ -1703,6 +1748,22 @@ paths:
                 format: binary
 components:
   schemas:
+    Sites:
+      type: object
+      properties:
+        Sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    Site:
+      type: object
+      properties:
+        Name:
+          type: string
+        Alias:
+          type: string
+        MRI alias:
+          type: string
     Project:
       type: object
       properties:
@@ -1852,7 +1913,9 @@ components:
       type: object
       properties:
         Candidates:
-          $ref: '#/components/schemas/Candidate'
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
     Candidate:
       type: object
       properties:
@@ -1873,6 +1936,7 @@ components:
           enum:
             - Female
             - Male
+            - Other
     NewCandidate:
       type: object
       properties:
@@ -1944,8 +2008,10 @@ components:
       properties:
         Meta:
           $ref: '#/components/schemas/InstrumentMeta'
-        $InstrumentShortName:
-          $ref: '#/components/schemas/InstrumentData'
+        Data:
+          type: object
+          additionalProperties:
+            type: string
     InstrumentMeta:
       type: object
       properties:
@@ -1957,10 +2023,6 @@ components:
           type: string
         DDE:
           type: boolean
-    InstrumentData:
-      type: object
-      additionalProperties:
-        type: string
     InstrumentFlags:
       type: object
       properties:
@@ -2170,7 +2232,7 @@ components:
     inline_response_200_2:
       type: object
       properties:
-        Candidate:
+        Meta:
           $ref: '#/components/schemas/Candidate'
         Visits:
           type: array
@@ -2249,6 +2311,7 @@ components:
           enum:
             - Female
             - Male
+            - Other
     InstrumentFlags_Flags:
       type: object
       properties:
@@ -2471,19 +2534,6 @@ components:
           type: string
         EventFilePath:
           type: string
-
-    VisitStage:
-      type: object
-      properties:
-        Date:
-          type: string
-        Status:
-          type: string
-          enum:
-            - Pass
-            - Failure
-            - Withdrawal
-            - In Progress
     VisitPatchFields:
       type: object
       allOf:
@@ -2492,19 +2542,6 @@ components:
           properties:
             Stages:
               $ref: '#/components/schemas/InstrumentVisit'
-
-    InstrumentVisit:
-      type: object
-      properties:
-        Visit:
-          $ref: '#/components/schemas/VisitStage'
-
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

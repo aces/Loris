@@ -1,5 +1,6 @@
 <?php
-/** Script to clean up orphan entries in the imaging tables.
+/**
+ * Script to clean up orphan entries in the imaging tables.
  *
  * WARNING!!
  *  This script should be run before applying the following SQL patch
@@ -27,64 +28,62 @@
  *         so the patch can create successfully the foreign key TarchiveID
  *         and FileID
  *  3) Congratulations!! You are ready to run the SQL patch!
- *
  */
 
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
 
-$table_array = array(
-    'MRICandidateErrors' => array(
+$table_array = [
+    'MRICandidateErrors'  => [
         'table1'   => 'MRICandidateErrors',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
         'FK_name2' => 'TarchiveID'
-    ),
-    'mri_violations_log' => array(
+    ],
+    'mri_violations_log'  => [
         'table1'   => 'mri_violations_log',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
         'FK_name2' => 'TarchiveID'
-    ),
-    'files' => array(
+    ],
+    'files'               => [
         'table1'   => 'files',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveSource',
         'FK_name2' => 'TarchiveID'
-    ),
-    'files_qcstatus' => array(
+    ],
+    'files_qcstatus'      => [
         'table1'   => 'files_qcstatus',
         'table2'   => 'files',
         'FK_name1' => 'FileID',
         'FK_name2' => 'FileID'
-    ),
-    'mri_upload_tarchive' => array(
+    ],
+    'mri_upload_tarchive' => [
         'table1'   => 'mri_upload',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
         'FK_name2' => 'TarchiveID'
-    ),
-    'mri_upload_session' => array(
+    ],
+    'mri_upload_session'  => [
         'table1'   => 'mri_upload',
         'table2'   => 'session',
         'FK_name1' => 'SessionID',
         'FK_name2' => 'ID'
-    ),
-    'mri_protocol_checks' => array(
+    ],
+    'mri_protocol_checks' => [
         'table1'   => 'mri_protocol_checks',
         'table2'   => 'mri_scan_type',
         'FK_name1' => 'Scan_type',
         'FK_name2' => 'ID'
-    ),
-    'tarchive' => array(
+    ],
+    'tarchive'            => [
         'table1'   => 'tarchive',
         'table2'   => 'session',
         'FK_name1' => 'SessionID',
         'FK_name2' => 'ID'
-    )
-);
+    ]
+];
 
-iterate($table_array);
+iterate($table_array, $lorisInstance->getDatabaseConnection());
 
 /**
  * iterate through the array of tables to look for orphan entries
@@ -93,7 +92,7 @@ iterate($table_array);
  *
  * @return nothing
  */
-function iterate($table_array)
+function iterate($table_array, $db)
 {
     foreach ($table_array as &$table_fields) {
         $table1 = $table_fields['table1'];
@@ -104,7 +103,7 @@ function iterate($table_array)
         $select_all = createSelect($table1, $table2, $FK1, $FK2, '*');
         $select_IDs = createSelect($table1, $table2, $FK1, $FK2, $FK1);
 
-        main($select_all, $table1, $FK1, $select_IDs);
+        main($select_all, $table1, $FK1, $select_IDs, $db);
     }
 }
 
@@ -142,13 +141,13 @@ function createSelect($table1, $table2, $FK1, $FK2, $select_fields)
  *
  * @return nothing
  */
-function main($select_all_query, $table_name, $FK_field, $select_ID_query)
+function main($select_all_query, $table_name, $FK_field, $select_ID_query, $db)
 {
     // get the list of orphans to be displayed in the terminal
-    $orphan_list = selectOrphan($select_all_query);
+    $orphan_list = selectOrphan($select_all_query, $db);
 
     // if no entries found, return to continue to the next table
-    if ( empty($orphan_list) ) {
+    if (empty($orphan_list) ) {
         print "Congratulations! No orphans found in $table_name! \n";
         return;
     }
@@ -173,18 +172,17 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
 
     // if user wants to delete orphan entries, back it back in a text file
     if (preg_match("/^y$/i", $delete_answer)) {
-        backupEntries($select_ID_query, $table_name, $FK_field);
+        backupEntries($select_ID_query, $table_name, $FK_field, $db);
     }
-
 
     // clean up the table $table_name based on answer provided by the user
     cleanTable(
         $table_name,
         $FK_field,
         $select_ID_query,
-        $delete_answer
+        $delete_answer,
+        $db,
     );
-
 }
 
 /**
@@ -193,12 +191,9 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
  * @param string $query query to use to select orphans
  *
  * @return array result of the select query
- *
  */
-function selectOrphan($query)
+function selectOrphan($query, $db)
 {
-    $db = Database::singleton();
-
     $result = $db->pselect($query, []);
 
     return $result;
@@ -224,7 +219,7 @@ function printOrphan($table_name, $orphan_list)
  *
  * @param string $table_name name of the table in which to delete orphans
  * @param string $FK_field   foreign key to set to null if don't want to delete
- * orphans
+ *                           orphans
  *
  * @return string  answer from the user to the question
  */
@@ -255,16 +250,16 @@ function askToDelete($table_name, $FK_field)
  *
  * @return nothing
  */
-function backupEntries($selectID, $table_name, $FK_field)
+function backupEntries($selectID, $table_name, $FK_field, $db)
 {
     // grep the IDs to backup from the database based on query stored in
     // $selectID. This will be given as an argument to mysqldump using
     // --where option
-    $IDs = generateIdList($selectID, $FK_field);
+    $IDs   = generateIdList($selectID, $FK_field, $db);
     $where = $FK_field . " IN (" . $IDs . ")";
 
     // create directory where the back up will go if it does not exist yet
-    if ( !file_exists(__DIR__."/../project/backup") ) {
+    if (!file_exists(__DIR__."/../project/backup") ) {
         mkdir(__DIR__."/../project/backup");
     }
 
@@ -315,7 +310,7 @@ function backupEntries($selectID, $table_name, $FK_field)
  *
  * @return nothing
  */
-function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
+function cleanTable($table_name, $FK_field, $selectID, $delete_answer, $db)
 {
     // grep the IDs to delete from the database based on query stored in
     // $selectID
@@ -335,7 +330,6 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
                   WHERE $FK_field IN ($IDs)";
     }
 
-    $db = Database::singleton(); // database connection
     $db->run($query); // run query
 }
 
@@ -347,11 +341,8 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
  *
  * @return string $IDs string of concatenated IDs found
  */
-function generateIdList($selectIDs, $FK_field)
+function generateIdList($selectIDs, $FK_field, $db)
 {
-    //database connection
-    $db = Database::singleton();
-
     // grep the IDs to delete from the database based on selectIDs
     // stored in $selectID
     $result = $db->pselect($selectIDs, []);
@@ -370,4 +361,4 @@ function generateIdList($selectIDs, $FK_field)
     return $IDs; // return sting of IDs
 }
 
-?>
+

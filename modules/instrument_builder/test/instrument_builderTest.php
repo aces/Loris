@@ -40,6 +40,14 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Instrument Builder", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the Instrument builder module with permission, some

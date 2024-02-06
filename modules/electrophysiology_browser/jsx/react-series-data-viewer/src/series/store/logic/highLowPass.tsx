@@ -5,7 +5,8 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {updateViewedChunks} from './fetchChunks';
 import {setFilter} from '../state/filters';
-import {DifferenceEquationSignal1D} from 'differenceequationsignal1d';
+import {DifferenceEquationSignal1D}
+from '../../../libs/DifferenceEquationSignal1D';
 
 export const SET_LOW_PASS_FILTER = 'SET_LOW_PASS_FILTER';
 export const setLowPassFilter = createAction(SET_LOW_PASS_FILTER);
@@ -15,6 +16,13 @@ export const setHighPassFilter = createAction(SET_HIGH_PASS_FILTER);
 
 export type Action = (_: (_: any) => void) => void;
 
+/**
+ * applyFilter
+ *
+ * @param {object} coefficients - The coefficients a, b
+ * @param {Float32Array} input - The input signal
+ * @returns {Float32Array} - The output signal
+ */
 const applyFilter = (coefficients, input) => {
   const diffFilter = new DifferenceEquationSignal1D();
   diffFilter.enableBackwardSecondPass();
@@ -64,6 +72,11 @@ export const LOW_PASS_FILTERS = {
   },
 };
 
+/**
+ * createLowPassFilterEpic
+ *
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createLowPassFilterEpic = () => (
   action$: Observable<any>,
   state$: Observable<any>,
@@ -116,6 +129,11 @@ export const HIGH_PASS_FILTERS = {
   },
 };
 
+/**
+ * createLowPassFilterEpic
+ *
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createHighPassFilterEpic = () => (
   action$: Observable<any>,
   state$: Observable<any>

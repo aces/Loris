@@ -74,8 +74,8 @@ class Database
         if ($table == '*') {
             $table = '\*';
         }
-        $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
-            " `?([*]|${database})`?[.]`?([*]|${table})`?/";
+        $pattern = "/GRANT .*(ALL|{$privilege}).* ON" .
+            " `?([*]|{$database})`?[.]`?([*]|{$table})`?/";
 
         // Test all privileges return from SHOW GRANTS against the pattern
         return array_reduce(

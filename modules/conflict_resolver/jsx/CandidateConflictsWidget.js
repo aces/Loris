@@ -1,13 +1,13 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Renders a representation of the candidate conflicts as a React
  * component
  *
  * @param {array} props - The React props
- *
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
@@ -74,12 +74,16 @@ function CandidateConflictsWidget(props) {
         </ul>
     </div>;
 }
+CandidateConflictsWidget.propTypes = {
+  Conflicts: PropTypes.array,
+  BaseURL: PropTypes.string,
+  Candidate: PropTypes.object,
+};
 
 /**
  * Get a list of unique visits in the data passed.
  *
  * @param {object} data - The summary data
- *
  * @return {array}
  */
 function getVisits(data) {
@@ -94,7 +98,6 @@ function getVisits(data) {
  * Get a list of unique instruments in the data passed.
  *
  * @param {object} data - The summary data
- *
  * @return {array}
  */
 function getInstruments(data) {
@@ -112,7 +115,6 @@ function getInstruments(data) {
  * @param {array} visits      - An array of visit labels
  * @param {array} instruments - An array of instruments in the data
  * @param {array} conflicts   - The unprocessed data from the database
- *
  * @return {array} - an array suitable for an C3 data key
  */
 function getDataBreakdown(visits, instruments, conflicts) {

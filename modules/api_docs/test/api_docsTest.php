@@ -28,9 +28,9 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
      *
      * @return void
      */
-    function testAnonymousUserDoesPageLoad()
+    function testDoesPageLoad()
     {
-        $this->setupPermissions([]);
+        $this->setupPermissions(['api_docs']);
         $this->safeGet($this->url . "/api_docs");
         $selectOptions = null;
         try {
@@ -44,5 +44,24 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
             $this->fail('Can`t find select element. Found: ' . $content->getText());
         }
         $this->assertNotEmpty($selectOptions);
+    }
+
+    /**
+     * Tests that, when loading the api_docs module without permission, the spec
+     * is unavailable.
+     *
+     * @return void
+     */
+    function testAnonymousUserDoesPageLoad()
+    {
+        $this->setupPermissions([]);
+        $this->safeGet($this->url . "/api_docs");
+        $accessText = $this->safeFindElement(
+            WebDriverBy::id("lorisworkspace")
+        )->getText();
+        $this->assertStringContainsString(
+            "You do not have access to this page",
+            $accessText
+        );
     }
 }

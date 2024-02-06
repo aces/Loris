@@ -55,7 +55,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Dictionary (Beta)";
+        return "Data Dictionary";
     }
 
     /**
@@ -95,7 +95,7 @@ class Module extends \Module
                 continue;
             }
 
-            $mdict = $module->getDataDictionary($this->lorisinstance);
+            $mdict = $module->getQueryEngine()->getDataDictionary();
             $mname = $module->getName();
 
             if (count($mdict) > 0) {

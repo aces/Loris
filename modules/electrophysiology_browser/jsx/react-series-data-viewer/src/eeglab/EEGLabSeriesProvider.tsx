@@ -6,17 +6,20 @@ import {createEpicMiddleware} from 'redux-observable';
 import thunk from 'redux-thunk';
 import {fetchJSON, fetchText} from '../ajax';
 import {rootReducer, rootEpic} from '../series/store';
-import {MAX_CHANNELS} from '../vector';
+import {DEFAULT_MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
 import {
   setChannels,
+  emptyChannels,
+} from '../series/store/state/channels';
+import {
   setEpochs,
   setDatasetMetadata,
-  emptyChannels,
+  setPhysioFileID,
+  setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
-import {Channel} from '../series/store/types';
+import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
@@ -26,9 +29,12 @@ declare global {
 
 type CProps = {
   chunksURL: string,
-  epochsURL: string,
   electrodesURL: string,
+  events: EventMetadata,
+  annotations: AnnotationMetadata,
+  physioFileID: number,
   limit: number,
+  children: React.ReactNode,
 };
 
 /**
@@ -36,12 +42,9 @@ type CProps = {
  */
 class EEGLabSeriesProvider extends Component<CProps> {
   private store: Store;
-  public state: {
-    channels: Channel[]
-  };
 
   /**
-   * @constructor
+   * @class
    * @param {object} props - React Component properties
    */
   constructor(props: CProps) {
@@ -53,23 +56,28 @@ class EEGLabSeriesProvider extends Component<CProps> {
       applyMiddleware(thunk, epicMiddleware)
     );
 
-    this.state = {
-      channels: [],
-    };
-
-    this.store.subscribe(this.listener.bind(this));
-
     epicMiddleware.run(rootEpic);
 
     window.EEGLabSeriesProviderStore = this.store;
 
     const {
       chunksURL,
-      epochsURL,
       electrodesURL,
+      events,
+      annotations,
+      physioFileID,
       limit,
     } = props;
 
+    this.store.dispatch(setPhysioFileID(physioFileID));
+
+    /**
+     *
+     * @param {Function} fetcher The fn to collect the type of data
+     * @param {string} url - The url
+     * @param {string} route - The route
+     * @returns {Promise} - The data
+     */
     const racers = (fetcher, url, route = '') => {
       if (url) {
         return [fetcher(`${url}${route}`)
@@ -77,22 +85,29 @@ class EEGLabSeriesProvider extends Component<CProps> {
         // if request fails don't resolve
         .catch((error) => {
           console.error(error);
-          return new Promise((resolve) => {});
+          return Promise.resolve();
         })];
       } else {
-        return [new Promise((resolve) => {})];
+        return [Promise.resolve()];
       }
     };
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
-          const {channelMetadata, shapes, timeInterval, seriesRange} = json;
+          const {
+            channelMetadata,
+            shapes,
+            timeInterval,
+            seriesRange,
+            validSamples,
+          } = json;
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
               channelMetadata,
               shapes,
+              validSamples,
               timeInterval,
               seriesRange,
               limit,
@@ -103,28 +118,58 @@ class EEGLabSeriesProvider extends Component<CProps> {
               1
           )));
           this.store.dispatch(setDomain(timeInterval));
-          this.store.dispatch(setInterval(timeInterval));
+          this.store.dispatch(setInterval(DEFAULT_TIME_INTERVAL));
         }
-      }
-    ).then(() => Promise.race(racers(fetchText, epochsURL)).then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
+      }).then(() => {
+        return events.instances.map((instance) => {
+          const onset = parseFloat(instance.Onset);
+          const duration = parseFloat(instance.Duration);
+          const label = instance.TrialType && instance.TrialType !== 'n/a' ?
+            instance.TrialType : instance.EventValue;
+          const hed = instance.AssembledHED;
+          return {
+            onset: onset,
+            duration: duration,
+            type: 'Event',
+            label: label,
+            comment: null,
+            hed: hed,
+            channels: 'all',
+            annotationInstanceID: null,
+          };
+        });
+      }).then((events) => {
+        const epochs = events;
+        annotations.instances.map((instance) => {
+          const label = annotations.labels
+            .find((label) =>
+              label.AnnotationLabelID == instance.AnnotationLabelID
+            ).LabelName;
+          epochs.push({
+            onset: parseFloat(instance.Onset),
+            duration: parseFloat(instance.Duration),
+            type: 'Annotation',
+            label: label,
+            comment: instance.Description,
+            hed: null,
+            channels: 'all',
+            annotationInstanceID: instance.AnnotationInstanceID,
+          });
+        });
+        return epochs;
+      }).then((epochs) => {
         this.store.dispatch(
-          setEpochs(tsvParse(
-            text.json.replace('trial_type', 'label'))
-              .map(({onset, duration, label}, i) => ({
-                onset: parseFloat(onset),
-                duration: parseFloat(duration),
-                type: 'Event',
-                label: label,
-                comment: null,
-                channels: 'all',
-              }))
+          setEpochs(
+            epochs
+            .flat()
+            .sort(function(a, b) {
+              return a.onset - b.onset;
+            })
           )
         );
-        this.store.dispatch(updateFilteredEpochs());
+        this.store.dispatch(setFilteredEpochs(epochs.map((_, index) => index)));
       })
-    );
+    ;
 
     Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {
@@ -146,32 +191,23 @@ class EEGLabSeriesProvider extends Component<CProps> {
   }
 
   /**
-   * Store update listener
-   */
-  listener() {
-    this.setState({
-      channels: this.store.getState().dataset.channels,
-    });
-  }
-
-  /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @returns {JSX} - React markup for the component
    */
   render() {
-    const [signalViewer, ...rest] = this.props.children;
+    const [signalViewer, ...rest] = React.Children.toArray(this.props.children);
     return (
       <Provider store={this.store}>
-        {(this.state.channels.length > 0) && signalViewer}
+        {signalViewer}
         {rest}
       </Provider>
     );
   }
 
   static defaultProps = {
-    limit: MAX_CHANNELS,
-  };  
+    limit: DEFAULT_MAX_CHANNELS,
+  };
 }
 
 export default EEGLabSeriesProvider;

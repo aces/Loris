@@ -44,6 +44,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, page loads with data_entry permission
@@ -150,15 +158,11 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-02'"
         );
-        $scanDone = $this->safeFindElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Control");
+        $Cohort->sendKeys("Control");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
@@ -188,15 +192,11 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-        $scanDone = $this->safeFindElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Fresh");
+        $Cohort->sendKeys("Fresh");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")

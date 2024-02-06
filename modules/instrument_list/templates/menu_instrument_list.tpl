@@ -3,8 +3,9 @@
   <!-- column headings -->
   <thead>
   <tr class="info">
+    {assign var="DoB" value=$candidate->getDisplayDoB()}
     <th>
-      DOB
+      {$DoB['label']}
     </th>
     {if $display.EDC!=""}
       <th>
@@ -32,7 +33,7 @@
         Visit to Site
       </th>
       <th>
-        Subproject
+        Cohort
       </th>
       <th>
         MR Scan Done
@@ -57,7 +58,7 @@
   <tbody>
   <tr>
     <td>
-      {$display.DoB}
+      {$DoB['value']}
     </td>
     {if $display.EDC!=""}
       <td>
@@ -87,7 +88,7 @@
         {$display.PSC}
       </td>
       <td>
-        {$display.SubprojectTitle}
+        {$display.CohortTitle}
       </td>
       <td>
         {$display.Scan_done|default:"<img alt=\"Data Missing\" src=\"{$baseurl|default}/images/help2.gif\" width=\"12\" height=\"12\" />"}

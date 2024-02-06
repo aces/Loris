@@ -46,7 +46,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                b.AgeMinDays as ageMinDays,
                b.AgeMaxDays as ageMaxDays,
                b.Stage as stage,
-               s.SubprojectID as subproject,
+               s.CohortID as cohort,
                b.Visit_label as visitLabel,
                p.CenterID as centerId,
                b.firstVisit,
@@ -54,7 +54,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                b.Active as active
         FROM test_battery b
           JOIN test_names t USING (Test_name)
-          LEFT JOIN subproject s USING (SubprojectID)
+          LEFT JOIN cohort s USING (CohortID)
           LEFT JOIN psc p USING (CenterID)
         ORDER BY t.Test_name",
             []

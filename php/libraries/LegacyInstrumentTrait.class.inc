@@ -33,7 +33,7 @@ trait LegacyInstrumentTrait
      *
      * @var \LORIS\LorisInstance
      */
-    protected $loris;
+    protected \LORIS\LorisInstance $loris;
 
     /**
      * The testName being accessed. Not that this is set in

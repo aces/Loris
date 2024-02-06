@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file contains the NDB_Menu_Filter_media class
- *
- * PHP Version 7
- *
- * @category Module
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
- */
 namespace LORIS\media;
 
 /**
@@ -103,7 +92,7 @@ class Media extends \DataFrameworkMenu
         foreach ($instrumentsQuery as $instrument) {
             try {
                 $instrumentName = \NDB_BVL_Instrument::factory(
-                    $this->lorisinstance,
+                    $this->loris,
                     $instrument["Test_name"],
                 )->getFullname();
             } catch (\Exception $e) {
@@ -129,8 +118,8 @@ class Media extends \DataFrameworkMenu
         $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = [
-                0 => 'Visible only',
-                1 => 'Hidden only',
+                'visible' => 'Visible only',
+                'hidden'  => 'Hidden only',
             ];
         }
 
@@ -153,7 +142,7 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new MediaFileProvisioner($this->lorisinstance);
+        return new MediaFileProvisioner($this->loris);
     }
 
     /**

@@ -163,7 +163,7 @@ class Feedback_MRI_Popup extends \NDB_Page
         // get identifier of subject/volume
         if ($feedbackObj->fileID) {
             $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label,
-                             s.SubprojectID, f.File AS File_name, st.Scan_type
+                             s.CohortID, f.File AS File_name, st.Scan_type
                       FROM files AS f, session AS s, candidate AS c,
                            mri_scan_type AS st
                       WHERE f.FileID=:FID
@@ -174,7 +174,7 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             $qparams = ['FID' => $feedbackObj->fileID];
         } elseif ($feedbackObj->sessionID) {
-            $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID
+            $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.CohortID
                 FROM session AS s, candidate AS c
               WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 

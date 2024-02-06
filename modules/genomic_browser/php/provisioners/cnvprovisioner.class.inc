@@ -29,7 +29,7 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 LPAD(candidate.CandID, 6, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
-                cohort.SubprojectID AS _Subproject,
+                cohort.CohortID AS _Cohort,
                 DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _ExternalID,
                 candidate.RegistrationCenterID as _centerID,
@@ -58,7 +58,7 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 LEFT JOIN (
                     SELECT
                         s.CandID,
-                        min(s.subprojectID) AS SubprojectID
+                        min(s.cohortID) AS CohortID
                     FROM
                         session s
                     GROUP BY

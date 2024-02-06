@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -56,7 +57,6 @@ class SurveyAccountsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -144,10 +144,11 @@ SurveyAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <SurveyAccountsIndex
       dataURL={`${loris.BaseURL}/survey_accounts/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

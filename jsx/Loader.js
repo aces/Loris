@@ -3,7 +3,6 @@
  *
  * @author Henri Rabalais
  * @version 1.0.0
- *
  */
 import PropTypes from 'prop-types';
 
@@ -12,8 +11,7 @@ import PropTypes from 'prop-types';
  * something is loading.
  *
  * @param {array} props - The React props
- *
- * @return {DOMObject} - Loader React component
+ * @return {HTMLElement} - Loader React component
  */
 function Loader(props) {
     return (

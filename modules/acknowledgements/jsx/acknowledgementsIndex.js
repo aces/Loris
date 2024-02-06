@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,6 +7,13 @@ import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    DateElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Acknowledgements Module page.
@@ -18,7 +26,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class AcknowledgementsIndex extends Component {
   /**
@@ -107,7 +114,6 @@ class AcknowledgementsIndex extends Component {
    *
    * @param {string} formElement
    * @param {string[]} keys
-   *
    * @return {object} - Object of key => value
    */
   pickElements(formElement, keys) {
@@ -183,7 +189,6 @@ class AcknowledgementsIndex extends Component {
    *
    * @param {string} data - string with commas
    * @param {string} key - string for state json retrieval.
-   *
    * @return {string} formatted string for table cell
    */
   parseMultiple(data, key) {
@@ -209,7 +214,6 @@ class AcknowledgementsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -459,12 +463,13 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

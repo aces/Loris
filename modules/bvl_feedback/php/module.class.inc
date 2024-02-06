@@ -68,16 +68,31 @@ class Module extends \Module
 
             $last_login = $user->getLastLogin($DB);
 
-            $bvl_feedback      = $DB->pselect(
-                "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName,
+            // Base query
+            $query = "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName,
                 fbth.CommentID, fbth.SessionID, fbth.CandID, fbth.Feedback_level
                 FROM feedback_bvl_entry fbe
                 JOIN feedback_bvl_thread fbth USING (FeedbackID)
                 JOIN feedback_bvl_type fbt USING (Feedback_type)
-                WHERE fbth.Status='opened' AND fbth.Active='Y'
-                ORDER BY Testdate DESC LIMIT 4",
+                JOIN session s ON s.ID=fbth.SessionID
+                WHERE fbth.Status='opened' AND fbth.Active='Y'";
+
+            // Add centerID restriction if needed
+            if (!$user->hasPermission('access_all_profiles')) {
+                $site_arr = implode(",", $user->getCenterIDs());
+                $query   .= " AND s.CenterID IN ({$site_arr}) ";
+            }
+
+            // Add project restriction & order BY
+            $project_arr = implode(",", $user->getProjectIDs());
+            $query      .= " AND s.ProjectID IN ({$project_arr}) 
+                ORDER BY Testdate DESC LIMIT 4";
+
+            $bvl_feedback = $DB->pselect(
+                $query,
                 []
             );
+
             $frontend_feedback = [];
             foreach ($bvl_feedback as $row) {
                 if (new \DateTime($row['Testdate']) > $last_login) {

@@ -72,6 +72,7 @@ class FamilyInfo extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -85,6 +86,7 @@ class FamilyInfo extends Component {
 
   /**
    * On submit
+   *
    * @param {object} e - Event object
    */
   onSubmit(e) {
@@ -169,7 +171,7 @@ class FamilyInfo extends Component {
         // remove from list of candidates because it can only be added once
         delete candidateList[candID];
       }
-    };
+    }
 
     let alertMessage = '';
     let alertClass = 'alert text-center hide';
@@ -325,6 +327,7 @@ class FamilyInfo extends Component {
 
   /**
    * Delete family member
+   *
    * @param {*} candID
    * @param {*} key
    * @param {*} candidateList

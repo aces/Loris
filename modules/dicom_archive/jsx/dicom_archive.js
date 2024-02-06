@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -15,7 +16,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author LORIS Team
  * @version 1.0.0
- *
  */
 class DicomArchive extends Component {
   /**
@@ -64,7 +64,6 @@ class DicomArchive extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -190,8 +189,9 @@ DicomArchive.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>,
+  createRoot(
     document.getElementById('lorisworkspace')
+  ).render(
+    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
   );
 });

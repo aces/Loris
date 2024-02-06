@@ -1,11 +1,11 @@
 # Survey Module Test Plan
 
-1.  Check user permission: Survey Accounts: view module [survey_account_view].
+1.  Check that the user needs the following permission in order to access the module: `survey_accounts_view` (_"Survey Accounts: View Candidate Surveys"_).
     [Automation Testing]
 2.  Selection Filter:  try filtering by PSCID, Visit, and Instrument.
     [Automation Testing]
-3.  Enter a PSCID, email, visit label and Instrument then use “Clear Form”:
-    should show visit and instrument “All” and blank for PSCID and email.
+3.  Enter a PSCID, visit label and Instrument then use “Clear Filter”:
+    should show blank option for all filters.
     [Automation Testing]
 4.  Ensure all columns are sortable (ascending and descending).
     [Manual Testing]
@@ -18,7 +18,7 @@
     * Try sending the URL to yourself -  make sure that both email addresses match in order for the “Email Survey” button to work
       (try mismatched email addresses to make sure that the "Email Survey" button remains inactive).
     * Once you hit “Email Survey” you should get a blank page where you can customize an email to go along with the URL –
-    enter in a message and make sure it sends (also try the cancel button on this page).
+    enter in a message and make sure it sends (also try the "Close" button on this page).
     The email can be pre-populated for each instrument using participant_emails table.
     * Ensure that the instrument being sent is what you get (and that the URL brings you to the correct survey).
     * Use the `Create Survey` button (no email address should be specified).

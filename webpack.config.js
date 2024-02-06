@@ -1,21 +1,25 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
+const cp = require('child_process');
+const {IgnorePlugin, DefinePlugin} = require('webpack');
+
+const modulePlugins = [];
 
 const optimization = {
   minimizer: [
-    new TerserPlugin({
-      cache: true,
-      parallel: true,
-      terserOptions: {
-        compress: false,
-        ecma: 6,
-        mangle: false,
-      },
-      sourceMap: true,
-    }),
+    (compiler) => {
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: false,
+        },
+        extractComments: false,
+      }).apply(compiler);
+    },
   ],
 };
 
@@ -25,13 +29,10 @@ const resolve = {
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
     DataTable: path.resolve(__dirname, './jsx/DataTable'),
-    DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
     Filter: path.resolve(__dirname, './jsx/Filter'),
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
-    Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
-    Markdown: path.resolve(__dirname, './jsx/Markdown'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
@@ -41,27 +42,65 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
+    Help: path.resolve(__dirname, './jsx/Help'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  fallback: {
+    fs: false,
+    path: false,
+  },
 };
 
 const mod = {
   rules: [],
 };
 
-// If no compiled chunk.proto found, desactivate compilation
-// on the file importing it to avoid import errors
-// chunk.proto is only required for EEG visualization and requires protoc
-if (!fs.existsSync(
-  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
-  + 'protocol-buffers/chunk_pb.js')
-) {
-  mod.rules.push({
-    test: /react-series-data-viewer\/src\/chunks/,
-    exclude: /project/,
-    use: 'null-loader',
-  });
+/*
+ * ------------------------------------------------------------
+ * Check if useEEGBrowserVisualizationComponents is set to TRUE
+ * If not, protoc compiled file chunk.proto may not exist.
+ * Deactivate compilation of the EEGBrowserVisualization files
+ * to avoid import errors and optimize performance
+ */
+
+let EEGVisEnabled = false;
+if ('EEG_VIS_ENABLED' in process.env) {
+  EEGVisEnabled = process.env.EEG_VIS_ENABLED;
+} else {
+  const getConfig = cp.spawnSync('php', [
+    'tools/get_config.php',
+    'useEEGBrowserVisualizationComponents',
+  ], {});
+
+  try {
+    EEGVisEnabled = JSON.parse(getConfig.stdout);
+  } catch (e) {
+    console.warn(
+      '\x1b[33m',
+      'WARNING: Unable to fetch DB config',
+      'useEEGBrowserVisualizationComponents',
+      '\x1b[0m',
+    );
+  }
 }
+
+modulePlugins.push(
+  new DefinePlugin({
+    EEG_VIS_ENABLED: EEGVisEnabled,
+  })
+);
+
+if (EEGVisEnabled !== 'true') {
+  modulePlugins.push(
+    new IgnorePlugin({
+      resourceRegExp: /react-series-data-viewer/,
+    })
+  );
+}
+
+/*
+ * ------------------------------------------------------------
+ */
 
 mod.rules.push(
   {
@@ -97,21 +136,20 @@ mod.rules.push(
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
- * @param {boolean} override - Is the module an override or a native LORIS module.
- *
  * @return {object} - The webpack configuration
  */
-function lorisModule(mname, entries, override=false) {
+function lorisModule(mname, entries) {
   let entObj = {};
   let base = './modules';
 
-  if (override) {
+  // Check if an override exists in ./project/
+  if (fs.existsSync('./project/modules/' + mname)) {
     base = './project/modules';
   }
 
   for (let i = 0; i < entries.length; i++) {
     entObj[entries[i]] =
-      base + '/' + mname + '/jsx/' + entries[i] + '.js';
+      base + '/' + mname + '/jsx/' + entries[i];
   }
   return {
     entry: entObj,
@@ -125,45 +163,61 @@ function lorisModule(mname, entries, override=false) {
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
-    plugins: [],
+    plugins: modulePlugins,
     optimization: optimization,
     resolve: resolve,
     module: mod,
-    mode: 'none',
-    stats: 'errors-warnings',
+    stats: 'errors-only',
   };
 }
 
-let mode = 'production';
-try {
-  const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
-  if (res && parseInt(res[1]) == 1) mode = 'development';
-} catch (error) {
-  console.error(
-    'Error - Can\'t read config.xml file. '
-    + 'Webpack mode set to production.'
-  );
-}
+const plugins = [
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, 'node_modules/react/umd'),
+        to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+        force: true,
+        globOptions: {
+          ignore: ['react.profiling.min.js'],
+        },
+        filter: async (path) => {
+          const file = path.split('\\').pop().split('/').pop();
+          const keep = [
+            'react.development.js',
+            'react.production.min.js',
+          ];
+          return keep.includes(file);
+        },
+      },
+      {
+        from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
+        to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+        force: true,
+        filter: async (path) => {
+          const file = path.split('\\').pop().split('/').pop();
+          const keep = [
+            'react-dom.development.js',
+            'react-dom.production.min.js',
+          ];
+          return keep.includes(file);
+        },
+      },
+    ],
+  }),
+];
 
-const config = [
+let config = [
   // Core components
   {
-    mode: mode,
     entry: {
-      DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',
       StaticDataTable: './jsx/StaticDataTable.js',
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
-      Form: './jsx/Form.js',
-      Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
+      Help: './jsx/Help.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -175,93 +229,50 @@ const config = [
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
-    plugins: [
-      new ESLintPlugin({
-        files: [
-          'modules/',
-          'jsx/',
-          'jslib/',
-          'htdocs/js/',
-          'webpack.config.js',
-        ],
-        cache: true,
-      }),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, 'node_modules/react/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
-            force: true,
-            globOptions: {
-              ignore: ['react.profiling.min.js'],
-            },
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react.development.js',
-                'react.production.min.js',
-              ];
-              return keep.includes(file);
-            },
-          },
-          {
-            from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
-            force: true,
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react-dom.development.js',
-                'react-dom.production.min.js',
-              ];
-              return keep.includes(file);
-            },
-          },
-        ],
-      }),
-    ],
+    plugins: plugins,
     optimization: optimization,
     resolve: resolve,
     module: mod,
     stats: 'errors-warnings',
   },
-  // Modules
-  lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
-  lorisModule('issue_tracker', [
+];
+
+const lorisModules = {
+  media: ['CandidateMediaWidget', 'mediaIndex'],
+  issue_tracker: [
     'issueTrackerIndex',
     'index',
     'CandidateIssuesWidget',
-  ]),
-  lorisModule('login', ['loginIndex']),
-  lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
-  lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-  lorisModule('candidate_parameters', [
+  ],
+  login: ['loginIndex'],
+  publication: ['publicationIndex', 'viewProjectIndex'],
+  document_repository: ['docIndex', 'editFormIndex'],
+  candidate_parameters: [
     'CandidateParameters',
     'ConsentWidget',
-  ]),
-  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
-  lorisModule('conflict_resolver', ['conflict_resolver']),
-  lorisModule('battery_manager', ['batteryManagerIndex']),
-  lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-  lorisModule('behavioural_qc', ['behaviouralQCIndex']),
-  lorisModule('create_timepoint', ['createTimepointIndex']),
-  lorisModule('candidate_list', [
+  ],
+  configuration: [
+    'CohortRelations',
+    'configuration_helper',
+    'DiagnosisEvolution',
+  ],
+  conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
+  battery_manager: ['batteryManagerIndex'],
+  bvl_feedback: ['react.behavioural_feedback_panel'],
+  behavioural_qc: ['behaviouralQCIndex'],
+  create_timepoint: ['createTimepointIndex'],
+  candidate_list: [
     'openProfileForm',
-    'onLoad',
     'candidateListIndex',
-  ]),
-  lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('data_release', [
+  ],
+  datadict: ['dataDictIndex'],
+  dataquery: ['index'],
+  data_release: [
     'dataReleaseIndex',
-  ]),
-  lorisModule('dictionary', ['dataDictIndex']),
-  lorisModule('dqt', [
+  ],
+  dictionary: ['dataDictIndex'],
+  dqt: [
     'components/expansionpanels',
     'components/searchabledropdown',
     'components/stepper',
@@ -273,51 +284,61 @@ const config = [
     'react.savedqueries',
     'react.sidebar',
     'react.tabs',
-  ]),
-  lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['genomicBrowserIndex']),
-  lorisModule('electrophysiology_browser', [
+  ],
+  dicom_archive: ['dicom_archive'],
+  genomic_browser: ['genomicBrowserIndex'],
+  electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
-  ]),
-  lorisModule('imaging_browser', [
+  ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
+  ],
+  imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
     'CandidateScanQCSummaryWidget',
-  ]),
-  lorisModule('instrument_builder', [
+  ],
+  instrument_builder: [
     'react.instrument_builder',
     'react.questions',
-  ]),
-  lorisModule('instrument_manager', ['instrumentManagerIndex']),
-  lorisModule('survey_accounts', ['surveyAccountsIndex']),
-  lorisModule('mri_violations', [
-    'mri_protocol_check_violations_columnFormatter',
-    'columnFormatter',
-    'columnFormatterUnresolved',
-    'mri_protocol_violations_columnFormatter',
-  ]),
-  lorisModule('user_accounts', ['userAccountsIndex']),
-  lorisModule('examiner', ['examinerIndex']),
-  lorisModule('help_editor', ['help_editor']),
-  lorisModule('brainbrowser', ['Brainbrowser']),
-  lorisModule('imaging_uploader', ['index']),
-  lorisModule('acknowledgements', ['acknowledgementsIndex']),
-  lorisModule('new_profile', ['NewProfileIndex']),
-  lorisModule('module_manager', ['modulemanager']),
-  lorisModule('imaging_qc', ['imagingQCIndex']),
-  lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-  lorisModule('instruments', ['CandidateInstrumentList']),
-  lorisModule('candidate_profile', ['CandidateInfo']),
-  lorisModule('api_docs', ['swagger-ui_custom']),
-];
+  ],
+  instrument_manager: ['instrumentManagerIndex'],
+  survey_accounts: ['surveyAccountsIndex'],
+  mri_violations: ['mriViolationsIndex'],
+  user_accounts: ['userAccountsIndex'],
+  examiner: ['examinerIndex'],
+  help_editor: ['help_editor', 'helpEditorForm'],
+  brainbrowser: ['Brainbrowser'],
+  imaging_uploader: ['index'],
+  acknowledgements: ['acknowledgementsIndex'],
+  new_profile: ['NewProfileIndex'],
+  module_manager: ['modulemanager'],
+  imaging_qc: ['imagingQCIndex'],
+  server_processes_manager: ['server_processes_managerIndex'],
+  statistics: ['WidgetIndex'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
+  candidate_profile: ['CandidateInfo'],
+  api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
+};
+for (const [key] of Object.entries(lorisModules)) {
+  const target = process.env.target;
+  if (target && target !== key) {
+    // continue loop if target exists && module key doesn't match
+    continue;
+  }
+  config.push(lorisModule(key, lorisModules[key]));
+}
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
 
   for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
+    config.push(lorisModule(module, files));
   }
 }
 

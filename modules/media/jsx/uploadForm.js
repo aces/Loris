@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    HeaderElement,
+    StaticElement,
+    SelectElement,
+    DateElement,
+    TextareaElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Media Upload Form
@@ -12,8 +22,7 @@ import swal from 'sweetalert2';
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
- * */
+ */
 class MediaUploadForm extends Component {
   /**
    * @constructor
@@ -211,9 +220,11 @@ class MediaUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
+/**
+ * *******************************************************************************
  *                      ******     Helper methods     *******
- *********************************************************************************/
+ ********************************************************************************
+ */
 
   /**
    * Returns a valid name for the file to be uploaded
@@ -232,6 +243,7 @@ class MediaUploadForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -433,6 +445,7 @@ MediaUploadForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   insertRow: PropTypes.func.isRequired,
+  maxUploadSize: PropTypes.string,
 };
 
 export default MediaUploadForm;

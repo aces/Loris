@@ -82,12 +82,10 @@ class ManagePermissionsForm extends Component {
         onClose={this.props.onClose}
         onSubmit={this.handleSubmit}
       >
-        <FormElement>
-          {Object.entries(data).map(([userId, user]) =>
-            <StaticElement
-              label={user.name}
-              text={Object.values(options.versions).map((version) =>
-                <div>
+        <FormElement name="manage_permissions">
+          {Object.entries(data).map(([userId, user]) => {
+            const versions = Object.values(options.versions).map((version) =>
+                <div key={version}>
                   <CheckboxElement
                     name={version}
                     label={version || 'Unversioned'}
@@ -97,9 +95,14 @@ class ManagePermissionsForm extends Component {
                     }
                   /><br/>
                 </div>
-              )}
-            />
-          )}
+            );
+
+            return <StaticElement
+                      key={userId}
+                      label={user.name}
+                      text={<div>{versions}</div>}
+                   />;
+         })};
         </FormElement>
       </Modal>
     );
@@ -110,7 +113,7 @@ class ManagePermissionsForm extends Component {
    *
    * @param {string} userId
    * @param {string} version
-   * @param {boulean} permission
+   * @param {boolean} permission
    */
   setFormData(userId, version, permission) {
     let {data} = JSON.parse(JSON.stringify(this.state));
@@ -126,7 +129,7 @@ class ManagePermissionsForm extends Component {
   /**
    * Handles submission of the form
    *
-   * @return {promise}
+   * @return {Promise}
    */
   handleSubmit() {
     const {data} = JSON.parse(JSON.stringify(this.state));
@@ -163,6 +166,10 @@ class ManagePermissionsForm extends Component {
 ManagePermissionsForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  options: PropTypes.object,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
+  fetchData: PropTypes.func,
 };
 
 export default ManagePermissionsForm;

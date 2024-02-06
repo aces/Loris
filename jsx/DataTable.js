@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
+import {CTA} from 'jsx/Form';
 
 /**
  * Data Table component
@@ -42,7 +43,7 @@ class DataTable extends Component {
    * Set the component page variable
    * to a new value
    *
-   * @param {int} i - Page index
+   * @param {number} i - Page index
    */
   changePage(i) {
     const page = this.state.page;
@@ -55,7 +56,7 @@ class DataTable extends Component {
    * If component sort.column is already set to column
    * Toggle sort.ascending
    *
-   * @param {int} column - The column index
+   * @param {number} column - The column index
    */
   setSortColumn(column) {
     if (this.state.sort.column === column) {
@@ -68,7 +69,7 @@ class DataTable extends Component {
   /**
    * Update the sort column
    *
-   * @param {int} column - The column index
+   * @param {number} column - The column index
    */
   updateSortColumn(column) {
     const sort = this.state.sort;
@@ -88,7 +89,7 @@ class DataTable extends Component {
   /**
    * Updates page state
    *
-   * @param {int} number - Number of page
+   * @param {number} number - Number of page
    */
   updatePageNumber(number) {
     const page = this.state.page;
@@ -111,15 +112,24 @@ class DataTable extends Component {
   /**
    * Export the filtered rows and columns into a csv
    *
-   * @param {int[]} filteredRowIndexes - The filtered Row Indexes
+   * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
+
   downloadCSV(filteredRowIndexes) {
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
       .map((row, i) => this.props.fields
-        .map((field, j) => this.props.getMappedCell(field.label, row[j]))
+        .flatMap((field, j) => this.props.getMappedCell(
+            field.label,
+            row[j],
+            row,
+            this.props.fields.map(
+                (val) => val.label,
+            ),
+            j
+        ))
       );
     }
 
@@ -152,8 +162,6 @@ class DataTable extends Component {
 
   /**
    * Get the Filtered Row Indexes
-   *
-   * @return {int[]}
    */
   getFilteredRowIndexes() {
     let useKeyword = false;
@@ -208,8 +216,8 @@ class DataTable extends Component {
   /**
    * Sort the given rows according to the sort configuration
    *
-   * @param {int[]} rowIndexes - The row indexes
-   * @return {Object[]}
+   * @param {number[]} rowIndexes - The row indexes
+   * @return {object[]}
    */
   sortRows(rowIndexes) {
     const index = [];
@@ -385,13 +393,15 @@ class DataTable extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    $('.dynamictable').DynamicTable();
+    if (!this.props.noDynamicTable) {
+      $('.dynamictable').DynamicTable();
+    }
   }
 
   /**
    * Renders the Actions buttons.
    *
-   * @return {string[]} - Array of React Elements
+   * @return {string[]|void} - Array of React Elements
    */
   renderActions() {
     if (this.props.actions) {
@@ -473,10 +483,6 @@ class DataTable extends Component {
     let index = this.sortRows(filteredRowIndexes);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
 
-    if (this.props.filters.keyword) {
-      useKeyword = true;
-    }
-
     // Format each cell for the data table.
     for (let i = currentPageRow;
          (i < filteredCount) && (rows.length < rowsPerPage);
@@ -500,12 +506,18 @@ class DataTable extends Component {
             this.props.fields
               .forEach((field, k) => row[field.label] = rowData[k]);
 
+            const headers = this.props.fields.map(
+                (val) => val.label
+            );
+
             // Get custom cell formatting if available
             if (this.props.getFormattedCell) {
                 cell = this.props.getFormattedCell(
                     this.props.fields[j].label,
                     celldata,
-                    row
+                    row,
+                    headers,
+                    j
                 );
             } else {
                 cell = <td>{celldata}</td>;
@@ -520,7 +532,9 @@ class DataTable extends Component {
         const rowIndexDisplay = index[i].Content;
         rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              {this.props.hide.defaultColumn === true ? null : (
               <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+              )}
               {curRow}
             </tr>
         );
@@ -571,12 +585,14 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
-              <button
-                className="btn btn-primary"
-                onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-              >
+              {this.props.hide.downloadCSV === true ? '' : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                  >
                 Download Table as CSV
-              </button>
+              </button>)
+              }
               <PaginationLinks
                 Total={filteredCount}
                 onChangePage={this.changePage}
@@ -589,7 +605,7 @@ class DataTable extends Component {
       </div>
     );
 
-    let footer = this.props.hide.downloadCSV === true ? '' : (
+    let footer = (
       <div>
         <div className="row">
           <div style={{
@@ -654,6 +670,14 @@ DataTable.propTypes = {
   actions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
+  noDynamicTable: PropTypes.bool,
+  getMappedCell: PropTypes.func,
+  fields: PropTypes.array,
+  RowNameMap: PropTypes.array,
+  filters: PropTypes.object,
+  freezeColumn: PropTypes.string,
+  loading: PropTypes.element,
+  folder: PropTypes.element,
 };
 DataTable.defaultProps = {
   headers: [],
@@ -666,6 +690,7 @@ DataTable.defaultProps = {
     defaultColumn: false,
   },
   nullTableShow: false,
+  noDynamicTable: false,
 };
 
 export default DataTable;

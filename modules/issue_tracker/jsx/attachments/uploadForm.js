@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  ButtonElement,
+  TextareaElement,
+  FileElement,
+} from 'jsx/Form';
 
 /**
  * Issue Upload Attachment Form
@@ -12,7 +18,6 @@ import swal from 'sweetalert2';
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class IssueUploadAttachmentForm extends Component {
   /**
@@ -51,6 +56,7 @@ class IssueUploadAttachmentForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {

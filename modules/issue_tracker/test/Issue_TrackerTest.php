@@ -49,8 +49,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             [
-                'ID'     => '999998',
-                'UserID' => 'TestUser',
+                'ID'         => '999998',
+                'UserID'     => 'TestUser',
+                'First_name' => 'Test',
+                'Last_name'  => 'User',
             ]
         );
         $this->DB->insert(
@@ -61,6 +63,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
                 'status'   => 'new',
                 'priority' => 'low',
                 'reporter' => 'TestUser',
+                'assignee' => 'TestUser',
                 'centerID' => '55',
             ]
         );
@@ -92,6 +95,14 @@ class Issue_TrackerTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
         $this->assertStringContainsString("Issue Tracker", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -120,7 +131,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->_testFilter('999999');
         $this->_testFilter('new');
         $this->_testFilter('low');
-        $this->_testFilter('TestUser');
+        $this->_testFilter('Test User');
     }
     /**
      * Tests that Issue Tracker filter

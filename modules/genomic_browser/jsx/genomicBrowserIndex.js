@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {TabPane, Tabs} from 'jsx/Tabs';
@@ -12,12 +13,10 @@ import Files from './tabs_content/files';
  * Genomic Browser.
  *
  * @description the Genomic Browser of LORIS.
- * @param {param} props the react properties for the component.
- * @return {react} element tabPane of the GenomicBrowser.
- *
+ * @param {object} props the react properties for the component.
+ * @return {JSX} element tabPane of the GenomicBrowser.
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 const GenomicBrowser = (props) => {
   const tabList = [
@@ -30,7 +29,7 @@ const GenomicBrowser = (props) => {
   ];
 
   /**
-   * @return {React} render the panels of the GenomicBrowser.
+   * @return {JSX} render the panels of the GenomicBrowser.
    */
   return (
     <div className={'col-sm-12'}>
@@ -67,10 +66,11 @@ GenomicBrowser.propTypes = {
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <GenomicBrowser
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

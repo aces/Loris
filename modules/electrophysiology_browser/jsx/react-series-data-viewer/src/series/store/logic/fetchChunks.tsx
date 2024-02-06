@@ -4,40 +4,69 @@ import {Observable, from, of} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {createAction} from 'redux-actions';
 import {State as DatasetState} from '../state/dataset';
-import {Filter} from '../state/filters'
-import {Chunk} from '../types';
+import {Filter} from '../state/filters';
+import {Channel, Chunk} from '../types';
 import {State as BoundsState} from '../state/bounds';
 import {fetchChunk} from '../../../chunks';
 import {MAX_VIEWED_CHUNKS} from '../../../vector';
-import {setActiveChannel} from '../state/dataset';
-import {setChunks} from '../state/channel';
+import {setChannels} from '../state/channels';
 
 export const UPDATE_VIEWED_CHUNKS = 'UPDATE_VIEWED_CHUNKS';
 export const updateViewedChunks = createAction(UPDATE_VIEWED_CHUNKS);
 
 type FetchedChunks = {
   channelIndex: number,
+  traceIndex: number,
   chunks: Chunk[]
 };
 
-
-export const loadChunks = ({channelIndex, ...rest}: FetchedChunks) => {
+/**
+ * loadChunks
+ *
+ * @param {FetchedChunks[]} chunksData - The fetched chunks
+ * @returns {Function} - Dispatch actions to the store
+ */
+export const loadChunks = (chunksData: FetchedChunks[]) => {
   return (dispatch: (_: any) => void) => {
-    let filters: Filter[] = window.EEGLabSeriesProviderStore.getState().filters;
-    rest.chunks.forEach((chunk, index, chunks) => {
-      chunk.filters = [];
-      chunks[index].values = Object.values(filters).reduce(
-        (signal: number[], filter: Filter) => {
-          chunks[index].filters.push(filter.name);
-          return filter.fn(signal);
-        },
-        chunk.originalValues
-      );
-    });
+    const channels : Channel[] = [];
 
-    dispatch(setActiveChannel(channelIndex));
-    dispatch(setChunks({...rest, channelIndex}));
-    dispatch(setActiveChannel(null));
+    const filters: Filter[] = window.EEGLabSeriesProviderStore
+                              .getState().filters;
+    for (let index = 0; index < chunksData.length; index++) {
+      const {channelIndex, chunks} : {
+        channelIndex: number,
+        chunks: Chunk[]
+      } = chunksData[index];
+      for (let i = 0; i < chunks.length; i++) {
+        chunks[i].filters = [];
+        chunks[i].values = Object.values(filters).reduce(
+          (signal: number[], filter: Filter) => {
+            chunks[i].filters.push(filter.name);
+            return filter.fn(signal);
+          },
+          chunks[i].originalValues
+        );
+      }
+
+      const idx = channels.findIndex((c) => c.index === channelIndex);
+      if (idx >= 0) {
+        channels[idx].traces.push({
+          chunks: chunks,
+          type: 'line',
+        });
+      } else {
+        channels.push({
+          index: channelIndex,
+          traces: [{
+            chunks: chunks,
+            type: 'line',
+          }],
+        });
+      }
+    }
+
+    channels.sort((a, b) => a.index - b.index);
+    dispatch(setChannels(channels));
   };
 };
 
@@ -56,10 +85,21 @@ export const fetchChunkAt = R.memoizeWith(
   )
 );
 
-type State = {bounds: BoundsState, dataset: DatasetState};
+type State = {bounds: BoundsState, dataset: DatasetState, channels: Channel[]};
+type chunkIntervals = {
+  interval: [ number, number ],
+  numChunks: number,
+  downsampling: number,
+};
 
 const UPDATE_DEBOUNCE_TIME = 100;
 
+/**
+ * createFetchChunksEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable} - An observable
+ */
 export const createFetchChunksEpic = (fromState: (any) => State) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -67,81 +107,108 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
   return action$.pipe(
     ofType(UPDATE_VIEWED_CHUNKS),
     Rx.withLatestFrom(state$),
-    Rx.map(([_, state]) => fromState(state)),
+    Rx.map(([, state]) => fromState(state)),
     Rx.debounceTime(UPDATE_DEBOUNCE_TIME),
-    Rx.concatMap(({bounds, dataset}) => {
-      const {chunksURL, shapes, timeInterval, channels} = dataset;
+    Rx.concatMap(({bounds, dataset, channels}) => {
+      const {chunksURL, shapes, validSamples, timeInterval} = dataset;
       if (!chunksURL) {
         return of();
       }
 
       const fetches = R.flatten(
-        channels.map((channel, i) => {
+        channels.map((channel) => {
           return (
             channel &&
-            channel.traces.map((trace, j) => {
-              const ncs = shapes.map((shape) => shape[shape.length - 2]);
+            channel.traces.map((_, traceIndex) => {
+              const shapeChunks =
+                shapes.map((shape) => shape[shape.length - 2]);
 
-              const citvs = ncs
-                .map((nc, downsampling) => {
-                  const timeLength = Math.abs(
+              const valuesPerChunk =
+                shapes.map((shape) => shape[shape.length - 1]);
+
+              const chunkIntervals = shapeChunks
+                .map((numChunks, downsampling) => {
+                  const recordingDuration = Math.abs(
                     timeInterval[1] - timeInterval[0]
                   );
+
+                  const filledChunks = (numChunks - 1) +
+                    (validSamples[downsampling] / valuesPerChunk[downsampling]);
+
                   const i0 =
-                    (nc * Math.ceil(bounds.interval[0] - bounds.domain[0])) /
-                    timeLength;
+                    (filledChunks *
+                      Math.floor(bounds.interval[0] - bounds.domain[0])
+                    ) / recordingDuration;
+
                   const i1 =
-                    (nc * Math.ceil(bounds.interval[1] - bounds.domain[0])) /
-                    timeLength;
+                    (filledChunks *
+                      Math.ceil(bounds.interval[1] - bounds.domain[0])
+                    ) / recordingDuration;
+
+                  const interval : [number, number] = [
+                    Math.floor(i0),
+                    Math.min(Math.ceil(i1), numChunks),
+                  ];
+
                   return {
-                    interval: [Math.floor(i0), Math.min(Math.ceil(i1), nc)],
-                    numChunks: nc,
+                    interval:
+                      [
+                        Math.floor(i0),
+                        Math.min(Math.ceil(i1), filledChunks),
+                      ],
+                    numChunks: numChunks,
                     downsampling,
                   };
                 })
-                .filter(
-                  ({interval, downsampling}) =>
-                    // TODO: check this condition...
-                    // Why interval[1] - interval[0] < MAX_VIEWED_CHUNKS ?
-                    // downsampling === 0 prevents a change of downsampling
-                    // otherwise the interval becomes wrong
+                .filter(({interval}) =>
                     interval[1] - interval[0] < MAX_VIEWED_CHUNKS
-                    && downsampling === 0
-                );
+                )
+                .reverse();
 
-              const max = R.reduce(
+              const finestChunks : chunkIntervals = R.reduce(
                 R.maxBy(({interval}) => interval[1] - interval[0]),
-                {interval: [0, 0]},
-                citvs
+                chunkIntervals[0],
+                chunkIntervals
               );
 
-              const chunkPromises = R.range(...max.interval).map(
+              const chunkPromises = R.range(...finestChunks.interval).flatMap(
                 (chunkIndex) => {
-                  const numChunks = max.numChunks;
-                  return fetchChunkAt(
-                    chunksURL,
-                    max.downsampling,
-                    channel.index,
-                    j,
-                    chunkIndex
-                  ).then((chunk) => ({
-                    interval: [
-                      timeInterval[0] +
-                        (chunkIndex / numChunks) *
-                          (timeInterval[1] - timeInterval[0]),
-                      timeInterval[0] +
-                        ((chunkIndex + 1) / numChunks) *
-                          (timeInterval[1] - timeInterval[0]),
-                    ],
-                    ...chunk,
-                  }));
+                  const numChunks = finestChunks.numChunks;
+
+                  const filledChunks = (numChunks - 1) + (
+                    validSamples[finestChunks.downsampling] /
+                    valuesPerChunk[finestChunks.downsampling]
+                  );
+
+                  const chunkInterval = [
+                    timeInterval[0] +
+                    (chunkIndex / filledChunks) *
+                    (timeInterval[1] - timeInterval[0]),
+                    timeInterval[0] +
+                    ((chunkIndex + 1) / filledChunks) *
+                    (timeInterval[1] - timeInterval[0]),
+                  ];
+                  if (chunkInterval[0] <= bounds.interval[1]) {
+                    return fetchChunkAt(
+                      chunksURL,
+                      finestChunks.downsampling,
+                      channel.index,
+                      traceIndex,
+                      chunkIndex
+                    ).then((chunk) => ({
+                      interval: chunkInterval,
+                      ...chunk,
+                    }));
+                  } else {
+                    return [];
+                  }
                 }
               );
 
               return from(
                 Promise.all(chunkPromises).then((chunks) => ({
                   channelIndex: channel.index,
-                  traceIndex: j,
+                  traceIndex: traceIndex,
                   chunks,
                 }))
               );
@@ -150,8 +217,12 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
         })
       );
 
-      return from(fetches).pipe(Rx.mergeMap(R.identity));
+      return from(fetches).pipe(
+        Rx.mergeMap(R.identity),
+        Rx.toArray(),
+      );
     }),
+    // @ts-ignore
     Rx.map((payload) => loadChunks(payload))
   );
 };

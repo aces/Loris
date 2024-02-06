@@ -66,11 +66,11 @@ class CnvDTO implements DataInstance, SiteHaver
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -224,7 +224,7 @@ class CnvDTO implements DataInstance, SiteHaver
             'DCCID'             => $this->_DCCID,
             'PSCID'             => $this->_PSCID,
             'Sex'               => $this->_Sex,
-            'Subproject'        => $this->_Subproject,
+            'Cohort'            => $this->_Cohort,
             'DoB'               => $this->_DoB,
             'ExternalID'        => $this->_ExternalID,
             'Chromosome'        => $this->_Chromosome,

@@ -45,7 +45,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               session.CenterID as centerid,
               Project.ProjectID as projectid
              FROM
-              conflicts_unresolved 
+              conflicts_unresolved
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
              LEFT JOIN session ON (flag.SessionID=session.ID)
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)

@@ -60,7 +60,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
      *
      * @var string
      */
-    private $_subproject = '';
+    private $_cohort = '';
 
     /**
      * The site
@@ -153,7 +153,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
             'pscID'           => $this->_pscID,
             'visit'           => $this->_visit,
             'project'         => $this->_project,
-            'subproject'      => $this->_subproject,
+            'cohort'          => $this->_cohort,
             'site'            => $this->_site,
             'feedbackID'      => $this->_feedbackID,
             'sessionID'       => $this->_sessionID,

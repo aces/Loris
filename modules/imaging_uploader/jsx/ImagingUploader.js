@@ -6,6 +6,7 @@ import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
+import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
 
 /**
  * Imaging uploader component
@@ -97,7 +98,6 @@ class ImagingUploader extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -179,15 +179,15 @@ class ImagingUploader extends Component {
 
     if (column === 'Number Of Files Created') {
       let violatedScans;
-      // eslint-disable-next-line max-len
-      if (row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0) {
+      if (
+        row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0
+      ) {
         let numViolatedScans =
              row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
-        let patientName = row.PatientName;
-        violatedScans = <a
-          onClick={this.openViolatedScans.bind(null, patientName)}
-        >
+        const violUrl = loris.BaseURL +
+                         '/mri_violations/?patientName=' + row.PatientName;
+        violatedScans = <a href={violUrl}>
            ({numViolatedScans} violated scans)
         </a>;
       }
@@ -202,18 +202,6 @@ class ImagingUploader extends Component {
     }
 
     return (<td style={cellStyle}>{cell}</td>);
-  }
-
-  /**
-   * Opens MRI Violations for when there are violated scans
-   *
-   * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
-   * @param {object} e - event info
-   */
-  openViolatedScans(patientName, e) {
-    loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName,
-    })(e);
   }
 
   /**

@@ -3,6 +3,6 @@ How to create each of the LORIS study entities:
 
 - visits
 - projects
-- subprojects
+- cohorts
 - identifiers
 - ...

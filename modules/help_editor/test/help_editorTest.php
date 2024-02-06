@@ -75,6 +75,14 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Help Editor", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }//end test_help_pageload()
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some

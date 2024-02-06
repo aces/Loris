@@ -47,6 +47,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("New Profile", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         // check EDC shows on the page
         $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
                  " div > div:nth-child(1) > label";
@@ -93,12 +101,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->sendKeys("2015-01-01");
         $this->safeClick(WebDriverBy::cssSelector($this->btn));
 
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                '#lorisworkspace > fieldset > div > div > p:nth-child(1)'
-            )
+        $swalTitle = $this->safeFindElement(
+            WebDriverBy::Id("swal2-title")
         )->getText();
-        $this->assertStringContainsString("New candidate created.", $bodyText);
+        $this->assertEquals("New Candidate Created", $swalTitle);
     }
 
 }

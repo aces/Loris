@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Candidate date of birth component
@@ -38,7 +44,8 @@ class CandidateDOB extends Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -52,6 +59,7 @@ class CandidateDOB extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -77,6 +85,7 @@ class CandidateDOB extends Component {
         return <Loader/>;
     }
 
+    let dateFormat = this.state.data.dobFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dob_edit')) {
@@ -108,6 +117,7 @@ class CandidateDOB extends Component {
           <DateElement
             label='Date Of Birth:'
             name='dob'
+            dateFormat={dateFormat}
             value={this.state.formData.dob}
             onUserInput={this.setFormData}
             disabled={disabled}
@@ -171,7 +181,7 @@ class CandidateDOB extends Component {
             type: 'success',
             confrimButtonText: 'OK',
           });
-          if (result.value) {
+          if (resp.value) {
               this.fetchData();
           }
         } else {

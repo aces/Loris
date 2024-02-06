@@ -1,6 +1,11 @@
 /* global UploadProgress */
 import React, {Component} from 'react';
 import Panel from 'Panel';
+import {
+    FormElement,
+    SelectElement,
+    TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Log Panel Component
@@ -10,8 +15,6 @@ import Panel from 'Panel';
  *
  * @author Alex Ilea
  * @version 1.0.0
- * @since 2017/04/01
- *
  */
 class LogPanel extends Component {
   /**
@@ -125,7 +128,8 @@ class LogPanel extends Component {
 
   /**
    * Starts/stops polling on the server.
-   * @param {bool} poll - pool boolean
+   *
+   * @param {boolean} poll - pool boolean
    */
   setServerPolling(poll) {
     const uploadProgress = this.uploadProgress;
@@ -178,6 +182,7 @@ class LogPanel extends Component {
 
   /**
    * On log type change
+   *
    * @param {string} name
    * @param {*} value
    */

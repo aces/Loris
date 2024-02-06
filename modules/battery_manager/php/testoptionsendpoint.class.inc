@@ -67,7 +67,7 @@ class TestOptionsEndpoint extends \NDB_Page
                 $this->loris
             ),
             'stages'      => $this->_getStageList(),
-            'subprojects' => \Utility::getSubprojectList(null),
+            'cohorts'     => \Utility::getCohortList(null),
             'visits'      => $visitController->getVisitlabels(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),

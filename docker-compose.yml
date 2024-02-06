@@ -73,7 +73,7 @@ services:
   web-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
@@ -88,7 +88,7 @@ services:
   unit-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
     working_dir: /app
@@ -103,7 +103,7 @@ services:
   integration-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7.debug
+      dockerfile: Dockerfile.test.php8.debug
     volumes:
       - ./:/app
     working_dir: /app

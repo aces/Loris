@@ -60,17 +60,24 @@ class Datadict extends \DataFrameworkMenu
     {
         $instruments     = \Utility::getAllInstruments();
         $dictInstruments = [];
-        $lorisinstance   = $this->lorisinstance;
+
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // database we need to instantiate the object to get the table name
             try {
                 $iObj = \NDB_BVL_Instrument::factory(
-                    $lorisinstance,
+                    $this->loris,
                     $instrument,
                     '',
                     ''
                 );
+                if ($iObj->_hasAccess($user)) {
+                    $this->logger->debug(
+                        "Skipping $instrument in field options"
+                        . " because user does not have permission"
+                    );
+                    continue;
+                }
             } catch (\Exception $e) {
                 error_log(
                     "There was a problem instantiating the instrument ".

@@ -85,13 +85,13 @@ The following permissions should be available in the database
 
 - The datatable should display the following columns (Summary fields)
 
-| No. | PSCID | Sex | Subproject | Files | SNPs | CNVs | CPGs |
+| No. | PSCID | Sex | Cohort | Files | SNPs | CNVs | CPGs |
 | ---| --- | ---| --- | ---| --- | ---| ---|
 | | | | | | | | |
 
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
-No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
+No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 | ---| --- | --- | ---| --- | ---| --- | ---| ---| --- | ---| ---|
 | | | | | | | | | | | |
 
@@ -137,7 +137,7 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
-|No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Gene Symbol|Gene Name|Platform|RsID|SNP Name|SNP Description|External Source|Allele A|Allele B|Reference Base|Minor Allele|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
+|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Gene Symbol|Gene Name|Platform|RsID|SNP Name|SNP Description|External Source|Allele A|Allele B|Reference Base|Minor Allele|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
@@ -170,7 +170,7 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
-|No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Location|Gene Symbol|Gene Name|CNV Description|CNV Type|Copy Num Change|Event Name|Common CNV|Characteristics|Inheritance|Array Report|Markers|Validation Method|Platform|
+|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Location|Gene Symbol|Gene Name|CNV Description|CNV Type|Copy Num Change|Event Name|Common CNV|Characteristics|Inheritance|Array Report|Markers|Validation Method|Platform|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | 
 | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
 
@@ -204,7 +204,7 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
-|No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|Sample|Cpg Name|Beta Value|Chromosome|Strand|StartLoc|Probe Loc A|Probe Seq A|Probe Loc B|Probe Seq B|Design|Color|Assembly|SNP 10|Gene|Accession Number|Gene Grp|Island Loc|Context|Fantom Prom|DMR|Enhancer|HMM Island|Reg Feature Loc|Reg Feature Grp|DHS|Platform|
+|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|Sample|Cpg Name|Beta Value|Chromosome|Strand|StartLoc|Probe Loc A|Probe Seq A|Probe Loc B|Probe Seq B|Design|Color|Assembly|SNP 10|Gene|Accession Number|Gene Grp|Island Loc|Context|Fantom Prom|DMR|Enhancer|HMM Island|Reg Feature Loc|Reg Feature Grp|DHS|Platform|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 

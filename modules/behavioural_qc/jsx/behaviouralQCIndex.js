@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {TabPane, Tabs} from 'jsx/Tabs';
@@ -10,11 +11,9 @@ import BehaviouralFeedback from './tabs_content/behaviouralFeedback';
  *
  * @description the Behavioural Quality Control of LORIS.
  * @param {object} props for the behavioural_qc
- * @return {reactElement} the tabPane of the behavioural_qc
- *
+ * @return {JSX} the tabPane of the behavioural_qc
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 const BehaviouralQC = (props) => {
   const tabList = [
@@ -24,7 +23,7 @@ const BehaviouralQC = (props) => {
   ];
 
   /**
-   * @return {React}
+   * @return {JSX}
    */
   return (
     <div className={'col-sm-12'}>
@@ -52,10 +51,11 @@ BehaviouralQC.propTypes = {
  * Render Behavioural Quality Control on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BehaviouralQC
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

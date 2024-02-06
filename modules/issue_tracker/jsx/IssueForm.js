@@ -4,9 +4,17 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-
+import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  SelectElement,
+  StaticElement,
+  FormElement,
+  TextboxElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Issue add/edit form
@@ -326,6 +334,7 @@ class IssueForm extends Component {
             name='othersWatching'
             label='Add others to watching?'
             emptyOption={true}
+            autoSelect={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
@@ -520,6 +529,7 @@ class IssueForm extends Component {
 
   /**
    * Display a success/error alert message after form submission
+   *
    * @param {string} msgType - error/success message
    * @param {string} message - message content
    */
@@ -571,6 +581,7 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
+  userHasPermission: PropTypes.bool,
 };
 
 export default IssueForm;

@@ -1,6 +1,8 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `notification_modules_services_rel`;
 LOCK TABLES `notification_modules_services_rel` WRITE;
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (1,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (2,2);
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (3,2);
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (4,2);
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (5,2);

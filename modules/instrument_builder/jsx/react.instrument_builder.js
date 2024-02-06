@@ -36,6 +36,7 @@ class LoadPane extends Component {
   /**
    * Choose file
    * Indicates to the state which file has been chosen
+   *
    * @param {object} e - Event object
    */
   chooseFile(e) {
@@ -50,10 +51,11 @@ class LoadPane extends Component {
     }
   }
   /**
-  * Sets the alert to the specified type.
-  * @param {*} type
-  * @param {string} message
-  */
+   * Sets the alert to the specified type.
+   *
+   * @param {*} type
+   * @param {string} message
+   */
   setAlert(type, message) {
     this.setState({
       alert: type,
@@ -181,6 +183,7 @@ class SavePane extends Component {
    * Load state
    * Used to set the state when a file is loaded
    * using the load tab.
+   *
    * @param {object} newState
    */
   loadState(newState) {
@@ -193,6 +196,7 @@ class SavePane extends Component {
   /**
    * On change file
    * Keep track of the file name, saving it in the state
+   *
    * @param {object} e - Event object
    */
   onChangeFile(e) {
@@ -203,10 +207,11 @@ class SavePane extends Component {
   }
 
    /**
-   * On change instrument
-   * Keep track of the instrument name, saving it in the state
-   * @param {object} e - Event object
-   */
+    * On change instrument
+    * Keep track of the instrument name, saving it in the state
+    *
+    * @param {object} e - Event object
+    */
   onChangeInst(e) {
     let value = e.target.value;
     this.setState({
@@ -285,6 +290,7 @@ class DisplayElements extends Component {
   /**
    * Get placeholder
    * Used for the drag and drop rows
+   *
    * @return {object} - A <tr> DOM element
    */
   getPlaceholder() {
@@ -303,6 +309,7 @@ class DisplayElements extends Component {
   /**
    * Get table row
    * Used for the drag and drop rows
+   *
    * @param {object} element
    * @return {object} - A <tr> DOM element
    */
@@ -316,6 +323,7 @@ class DisplayElements extends Component {
   /**
    * Drag start
    * Used for the drag and drop rows
+   *
    * @param {object} e - Event object
    */
   dragStart(e) {
@@ -328,6 +336,7 @@ class DisplayElements extends Component {
   /**
    * Drag end
    * Used for the drag and drop rows
+   *
    * @param {object} e - Event object
    */
   dragEnd(e) {
@@ -349,6 +358,7 @@ class DisplayElements extends Component {
   /**
    * Drag over
    * Used for the drag and drop rows
+   *
    * @param {object} e - Event object
    */
   dragOver(e) {
@@ -376,6 +386,7 @@ class DisplayElements extends Component {
 
   /**
    * Create table rows
+   *
    * @return {JSX} - React markup for the component
    */
   tableRows() {
@@ -466,6 +477,7 @@ DisplayElements.propTypes = {
   updateElement: PropTypes.func,
   editElement: PropTypes.func,
   deleteElement: PropTypes.func,
+  elements: PropTypes.array,
 };
 
 /**
@@ -510,6 +522,7 @@ class BuildPane extends Component {
    * Load elements
    * Load in a group of elements, replacing any that
    * were already present
+   *
    * @param {object[]} elements
    */
   loadElements(elements) {
@@ -530,7 +543,8 @@ class BuildPane extends Component {
    * Set the element editing flag to true to render the element
    * as an AddQuestion object. Increase the number of editing to
    * disable drag and drop
-   * @param {Number} elementIndex
+   *
+   * @param {number} elementIndex
    */
   editElement(elementIndex) {
     // Use a function to update the state to enqueue an atomic
@@ -553,7 +567,8 @@ class BuildPane extends Component {
   /**
    * Delete element
    * Remove an element from the current page's elements.
-   * @param {Number} elementIndex
+   *
+   * @param {number} elementIndex
    */
   deleteElement(elementIndex) {
     // Use a function to update the state to enqueue an atomic
@@ -572,6 +587,7 @@ class BuildPane extends Component {
 
   /**
    * Update an element.
+   *
    * @param {object} element
    * @param {number} index
    * @return {boolean} - true on success, false otherwise
@@ -604,6 +620,7 @@ class BuildPane extends Component {
   }
   /**
    * Add a new question to the page's elements
+   *
    * @param {object} element
    * @return {object}
    */
@@ -633,6 +650,7 @@ class BuildPane extends Component {
 
   /**
    * Add a new page
+   *
    * @param {string} pageName
    */
   addPage(pageName) {
@@ -658,7 +676,8 @@ class BuildPane extends Component {
 
   /**
    * Change to a page
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   selectPage(index) {
     this.setState({
@@ -757,6 +776,7 @@ class InstrumentBuilderApp extends Component {
 
   /**
    * Load an instrument
+   *
    * @param {*} elements
    * @param {*} info
    */

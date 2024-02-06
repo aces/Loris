@@ -31,7 +31,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 candidate.Sex AS _Sex,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
-                cohort.SubprojectID AS _Subproject,
+                cohort.CohortID AS _Cohort,
                 DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 gscr.sample_label AS _Sample,
                 cpg.cpg_name AS _cpg_name,
@@ -65,7 +65,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LEFT JOIN (
                     SELECT
                         s.CandID,
-                        min(s.subprojectID) AS SubprojectID
+                        min(s.cohortID) AS CohortID
                     FROM
                         session s
                     GROUP BY

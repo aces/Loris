@@ -2,14 +2,15 @@
  *  The following file contains the components used for the filter builder tab
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
 import {getSessions, enumToArray} from '../js/arrayintersect';
+import PropTypes from 'prop-types';
 
 /**
  * LogicOperator Component
@@ -28,6 +29,7 @@ class LogicOperator extends Component {
 
   /**
    * Wrapper function updating operator
+   *
    * @param {object} op
    */
   changeOperator(op) {
@@ -64,6 +66,10 @@ class LogicOperator extends Component {
     );
   }
 }
+LogicOperator.propTypes = {
+  updateGroupOperator: PropTypes.func,
+  logicOperator: PropTypes.number,
+};
 
 /**
  * FilterRule Component
@@ -107,23 +113,29 @@ class FilterRule extends Component {
 
   /**
    * Update the rules instrument, getting the instruments available fields
+   *
    * @param {object} event
    */
   selectInstrument(event) {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL
-        + '/dqt/ajax/datadictionary.php',
-        {category: rule.instrument}, (data) => {
+      fetch(
+        loris.BaseURL + '/dqt/ajax/datadictionary.php?category='
+            + rule.instrument,
+        {credentials: 'same-origin'},
+      )
+      .then( (resp) => resp.json())
+      .then( (data) => {
         rule.fields = data;
         this.props.updateRule(this.props.index, rule);
-      }, 'json');
+      });
     }
   }
 
   /**
    * Update the rules desired field, setting the rules field and field type
+   *
    * @param {object} event
    */
   fieldSelect(event) {
@@ -143,6 +155,7 @@ class FilterRule extends Component {
 
   /**
    * Update the desired rule operation for the selected field
+   *
    * @param {object} event
    */
   operatorSelect(event) {
@@ -166,6 +179,7 @@ class FilterRule extends Component {
 
   /**
    * value changed event
+   *
    * @param {object} event
    */
   valueChange(event) {
@@ -213,15 +227,16 @@ class FilterRule extends Component {
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
-        $.get(loris.BaseURL + '/dqt/ajax/' + script,
-          {
-            category: rule.instrument,
-            field: rule.field,
-            value: this.state.value,
-          },
-          responseHandler,
-          'json',
-        );
+          fetch(loris.BaseURL + '/dqt/ajax/' + script
+            + '?category=' + rule.instrument
+            + '&field=' + rule.field
+            + '&value=' + this.state.value,
+            {credentials: 'same-origin'},
+          )
+          .then( (resp) => resp.json())
+          .then( (data) => {
+                  responseHandler(data);
+          });
       };
       switch (rule.operator) {
         case 'equal':
@@ -252,6 +267,7 @@ class FilterRule extends Component {
 
   /**
    * Update rule to filter for specified visit
+   *
    * @param {object} event
    */
   updateVisit(event) {
@@ -430,6 +446,15 @@ class FilterRule extends Component {
     );
   }
 }
+FilterRule.propTypes = {
+  rule: PropTypes.object,
+  updateRule: PropTypes.func,
+  index: PropTypes.number,
+  updateSessions: PropTypes.func,
+  Visits: PropTypes.object,
+  items: PropTypes.array,
+  deleteRule: PropTypes.func,
+};
 
 /**
  * FilterGroup Component
@@ -452,6 +477,7 @@ class FilterGroup extends Component {
 
   /**
    * Update a specified child in the groups children
+   *
    * @param {number} index
    * @param {string} child
    */
@@ -470,6 +496,7 @@ class FilterGroup extends Component {
 
   /**
    * Update the group's operator
+   *
    * @param {object} operator
    */
   updateGroupOperator(operator) {
@@ -490,6 +517,7 @@ class FilterGroup extends Component {
 
   /**
    * Computes the desired sessions of the current group
+   *
    * @param {number} index
    * @param {string} child
    */
@@ -511,6 +539,7 @@ class FilterGroup extends Component {
 
   /**
    * Add a child to the group
+   *
    * @param {string} type
    */
   addChild(type) {
@@ -546,6 +575,7 @@ class FilterGroup extends Component {
 
   /**
    * Delete a child
+   *
    * @param {number} index
    */
   deleteChild(index) {
@@ -652,6 +682,16 @@ class FilterGroup extends Component {
     );
   }
 }
+FilterGroup.propTypes = {
+  group: PropTypes.object,
+  index: PropTypes.number,
+  updateGroup: PropTypes.func,
+  updateFilter: PropTypes.func,
+  updateSessions: PropTypes.func,
+  items: PropTypes.array,
+  Visits: PropTypes.object,
+  deleteGroup: PropTypes.func,
+};
 
 /**
  * FilterBuilder Component
@@ -676,6 +716,7 @@ class FilterBuilder extends Component {
 
   /**
    * Open the CSV "import data" Modal.
+   *
    * @param {object} e
    */
   openModalCSV(e) {
@@ -692,6 +733,7 @@ class FilterBuilder extends Component {
 
   /**
    * requestSessions - get request for session mapping.
+   *
    * @param {string} type
    * @param {object} data
    * @param {function} callback
@@ -728,6 +770,7 @@ class FilterBuilder extends Component {
 
   /**
    * Define the Candidates from CSV.
+   *
    * @param {string} type
    * @param {number} operator
    * @param {object} data
@@ -827,6 +870,13 @@ class FilterBuilder extends Component {
     );
   }
 }
+FilterBuilder.propTypes = {
+  filter: PropTypes.object,
+  items: PropTypes.array,
+  updateFilter: PropTypes.func,
+  Visits: PropTypes.object,
+  loadImportedCSV: PropTypes.func,
+};
 
 window.LogicOperator = LogicOperator;
 window.FilterRule = FilterRule;

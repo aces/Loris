@@ -140,13 +140,13 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $callback = function () use ($mincpath, $fullpath) {
             return shell_exec(
-                "${mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath"
+                "{$mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath"
             );
         };
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/x.raw')
-            ->withHeader('Content-Disposition', "attachment; filename=${filename}")
+            ->withHeader('Content-Disposition', "attachment; filename={$filename}")
             ->withBody(new \Laminas\Diactoros\CallbackStream($callback));
     }
 

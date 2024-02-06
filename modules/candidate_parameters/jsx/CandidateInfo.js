@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  DateElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Candiate info component
@@ -65,6 +73,7 @@ class CandidateInfo extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -91,6 +100,7 @@ class CandidateInfo extends Component {
 
   /**
    * On Submit
+   *
    * @param {object} e - event object
    */
   onSubmit(e) {
@@ -113,7 +123,7 @@ class CandidateInfo extends Component {
           </div>
         );
       }
-    };
+    }
 
     let disabled = true;
     let updateButton = null;

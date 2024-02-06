@@ -9,7 +9,6 @@ import React, {Component} from 'react';
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
  */
 class BrainBrowser extends Component {
   /**

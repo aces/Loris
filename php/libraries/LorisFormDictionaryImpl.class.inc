@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
@@ -35,7 +35,7 @@ trait LorisFormDictionaryImpl
      * Variable from NDB_Page. Must be included in trait
      * to avoid PhanUndeclaredProperty errors.
      */
-    protected $loris;
+    protected \LORIS\LorisInstance $loris;
 
     /**
      * Recursively extract non-group elements from $elements, and
@@ -143,7 +143,8 @@ trait LorisFormDictionaryImpl
                 $label,
                 $scope,
                 $t,
-                $card
+                $card,
+                $element['name'],
             );
         }
         return $items;

@@ -1,10 +1,12 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * CandidateIssuesWidget represents a list of open issues to be displayed
  * for a candidate on the candidate dashboard. It's displayed as a list
  * with links to the issue tracker for each widget
  *
  * @param {array} props - the React props
- *
  * @return {object}
  */
 function CandidateIssuesWidget(props) {
@@ -14,7 +16,7 @@ function CandidateIssuesWidget(props) {
             comments = ' ('+ issue.comments + ' comment';
             if (issue.comments != '1') {
                 comments += 's';
-            };
+            }
             comments += ')';
         }
         return (<li key={issue.ID}>
@@ -26,5 +28,9 @@ function CandidateIssuesWidget(props) {
     });
     return <ul>{issues}</ul>;
 }
+CandidateIssuesWidget.propTypes = {
+  Issues: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
 export default CandidateIssuesWidget;

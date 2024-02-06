@@ -65,7 +65,12 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
-         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+
     }
 
 
@@ -98,7 +103,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
                 "form > div > div:nth-child(1) > h3"
             )
         )->getText();
-        $this->assertStringContainsString("Upload a file", $text);
+        $this->assertStringContainsString("Upload files", $text);
 
     }
     /**

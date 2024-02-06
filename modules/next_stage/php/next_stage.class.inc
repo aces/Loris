@@ -82,20 +82,11 @@ class Next_Stage extends \NDB_Form
             ]
         );
 
-        // set SubprojectID if applicable
-        if (isset($values['SubprojectID'])) {
+        // set CohortID if applicable
+        if (isset($values['CohortID'])) {
             $timePoint->setData(
                 [
-                    'SubprojectID' => $values['SubprojectID'],
-                ]
-            );
-        }
-
-        // set scan done if applicable
-        if (isset($values['scan_done'])) {
-            $timePoint->setData(
-                [
-                    'Scan_done' => $values['scan_done'],
+                    'CohortID' => $values['CohortID'],
                 ]
             );
         }
@@ -119,7 +110,7 @@ class Next_Stage extends \NDB_Form
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
             $this->loris,
-            $timePoint->getSubprojectID(),
+            $timePoint->getCohortID(),
             $newStage,
             $timePoint->getVisitLabel(),
             $timePoint->getCenterID(),
@@ -163,20 +154,6 @@ class Next_Stage extends \NDB_Form
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;
 
-        // add form elements
-        if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
-            $this->addSelect(
-                'scan_done',
-                'Scan Done',
-                [
-                    ''  => null,
-                    'Y' => 'Yes',
-                    'N' => 'No',
-                ]
-            );
-            $this->addRule('scan_done', 'Scan done is required', 'required');
-        }
-
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
         // add dates
@@ -193,15 +170,15 @@ class Next_Stage extends \NDB_Form
             $dateAttributes
         );
 
-        // let user select subproject *only* if subprojectid is not > 0
-        if (!($timePoint->getSubprojectID() > 0)) {
-            $list_of_objectives = \Utility::getSubprojectList();
+        // let user select cohort *only* if cohortid is not > 0
+        if (!($timePoint->getCohortID() > 0)) {
+            $list_of_objectives = \Utility::getCohortList();
             $this->addSelect(
-                'SubprojectID',
+                'CohortID',
                 'Objective',
                 ['' => ''] + $list_of_objectives
             );
-            $this->addRule('SubprojectID', 'Required', 'required');
+            $this->addRule('CohortID', 'Required', 'required');
         }
 
         // add date rules
@@ -243,7 +220,7 @@ class Next_Stage extends \NDB_Form
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
-        // get candidate's DOB or EDC according to SubprojectID
+        // get candidate's DOB or EDC according to CohortID
         $candidateBirthDate = $timePoint->getEffectiveDateOfBirth();
 
         //Determine the next stage, and validate accordingly
@@ -253,11 +230,6 @@ class Next_Stage extends \NDB_Form
             // must be > DOB - ONLY WHEN starting Visit stage
             $date = $values['date1'] ?? '';
 
-            if (empty($values['scan_done'])
-                && $config->getSetting('useScanDone')!='false'
-            ) {
-                $errors['scan_done'] = 'Scan done is required';
-            }
             if ($config->getSetting('useScreening')=="true"
                 && $config->getSetting('screeningAfterVisit')!="true"
                 && strcmp($date, $timePoint->getData('Date_screening')) < 0

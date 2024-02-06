@@ -9,14 +9,12 @@ import PropTypes from 'prop-types';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- **/
+ */
 const spanStyle = {
   marginLeft: '15px',
   marginRight: '15px',
   fontSize: '110%',
   fontWeight: 'bold',
-  fontFamily: 'verdana, sans-serif, bold',
   color: '#034785',
   border: '0px',
   display: 'inline-block',
@@ -31,7 +29,6 @@ const commentStyle = {
   paddingLeft: '10px',
   paddingRight: '10px',
   borderRadius: '5px',
-  fontFamily: 'verdana, sans-serif',
   fontStyle: 'italic',
   color: '#034785',
   backgroundColor: '#E4EBF2',
@@ -66,6 +63,7 @@ class ChildTree extends Component {
 
   /**
    * Action
+   *
    * @param {object} obj
    */
   action(obj) {

@@ -1,17 +1,22 @@
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    StaticElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Create Timepoint.
  *
  * @description form for create timepoint.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class CreateTimepoint extends React.Component {
   /**
@@ -29,20 +34,20 @@ class CreateTimepoint extends React.Component {
       },
       form: {
         display: {
-          subproject: false,
+          cohort: false,
           visit: false,
           psc: false,
           project: false,
           languages: false,
         },
         options: {
-          subproject: {},
+          cohort: {},
           visit: {},
           psc: {},
           project: {},
           languages: {},
           required: {
-            subproject: true,
+            cohort: true,
             psc: true,
             project: true,
             visit: true,
@@ -50,7 +55,7 @@ class CreateTimepoint extends React.Component {
           },
         },
         value: {
-          subproject: null,
+          cohort: null,
           visit: null,
           psc: null,
           project: null,
@@ -135,12 +140,12 @@ class CreateTimepoint extends React.Component {
             state.form.options.project = data.project;
             state.form.display.project = true;
           }
-          // Populate the select options for subproject.
-          if (data.hasOwnProperty('subprojectGroups')) {
+          // Populate the select options for cohort.
+          if (data.hasOwnProperty('cohortGroups')) {
             // Store the (complete) visit selection information.
-            state.storage.subproject = data.subprojectGroups;
-            // Handle subproject selection.
-            this.handleSubproject();
+            state.storage.cohort = data.cohortGroups;
+            // Handle cohort selection.
+            this.handleCohort();
           }
           // Populate the select options for visit.
           if (data.hasOwnProperty('visitGroups')) {
@@ -173,40 +178,40 @@ class CreateTimepoint extends React.Component {
   }
 
   /**
-   * Subproject refreshes when Project changes.
+   * Cohort refreshes when Project changes.
    */
-  handleSubproject() {
+  handleCohort() {
     const state = Object.assign({}, this.state);
-    if (Array.isArray(state.storage.subproject[state.form.value.project])) {
+    if (Array.isArray(state.storage.cohort[state.form.value.project])) {
       // Display error message to user.
-      const errorMessage = `No subprojects defined for project: ${
+      const errorMessage = `No cohorts defined for project: ${
         this.state.form.options.project[
           this.state.form.value.project
       ]}`;
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
-      state.form.options.subproject = {};
+      state.form.options.cohort = {};
       state.form.options.visit = {};
     } else {
-      state.form.options.subproject = state.storage.subproject[
+      state.form.options.cohort = state.storage.cohort[
         state.form.value.project
       ];
-      state.form.value.subproject = null;
+      state.form.value.cohort = null;
       state.form.value.visit = null;
       // Remove existing error messages.
       state.messages = [];
     }
-    state.form.display.subproject = true;
-    if (Array.isArray(state.storage.subproject)
-      && !state.storage.subproject.length
+    state.form.display.cohort = true;
+    if (Array.isArray(state.storage.cohort)
+      && !state.storage.cohort.length
     ) {
-      state.form.display.subproject = false;
+      state.form.display.cohort = false;
     }
     this.setState(state);
   }
 
   /**
-   * Visit Labels refreshes when Subproject changes.
+   * Visit Labels refreshes when Cohort changes.
    */
   handleVisitLabel() {
     const state = Object.assign({}, this.state);
@@ -214,16 +219,16 @@ class CreateTimepoint extends React.Component {
         state.form.value.project
       ] !== undefined) {
       if (Array.isArray(state.storage.visit[
-        state.form.value.project][state.form.value.subproject])
+        state.form.value.project][state.form.value.cohort])
       ) {
-        const errorMessage = `No visit labels defined for 
+        const errorMessage = `No visit labels defined for
         combination of project: ${
           this.state.form.options.project[
             this.state.form.value.project
           ]
-        } and subproject: ${
-          this.state.form.options.subproject[
-            this.state.form.value.subproject
+        } and cohort: ${
+          this.state.form.options.cohort[
+            this.state.form.value.cohort
         ]}`;
         state.messages = [errorMessage];
         swal.fire(errorMessage, '', 'error');
@@ -231,7 +236,7 @@ class CreateTimepoint extends React.Component {
       } else {
         state.form.options.visit = state.storage.visit[
           state.form.value.project
-        ][state.form.value.subproject];
+        ][state.form.value.cohort];
         state.form.value.visit = null;
       }
     }
@@ -253,14 +258,15 @@ class CreateTimepoint extends React.Component {
     state.form.value[formElement] = value;
     this.setState(state);
     if (formElement === 'project') {
-      this.handleSubproject();
-    } else if (formElement === 'subproject') {
+      this.handleCohort();
+    } else if (formElement === 'cohort') {
       this.handleVisitLabel();
     }
   }
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -270,7 +276,7 @@ class CreateTimepoint extends React.Component {
     const send = JSON.stringify({
       candID: state.url.params.candID,
       identifier: state.url.params.identifier,
-      subproject: state.form.value.subproject,
+      cohort: state.form.value.cohort,
       psc: state.form.value.psc,
       project: state.form.value.project,
       visit: state.form.value.visit,
@@ -319,6 +325,7 @@ class CreateTimepoint extends React.Component {
 
     /**
      * Populate the elements of messages to display.
+     *
      * @param {array} values (messages) data from server.
      * @return {array} individual messages.
      */
@@ -340,19 +347,19 @@ class CreateTimepoint extends React.Component {
     const messages = this.state.messages
       ? renderErrors(this.state.messages)
       : null;
-    // Include subproject select.
-    const subproject = this.state.form.display.subproject ? (
+    // Include cohort select.
+    const cohort = this.state.form.display.cohort ? (
       <SelectElement
-        id={'subproject'}
-        name={'subproject'}
-        label={'Subproject'}
-        value={this.state.form.value.subproject}
-        options={this.state.form.options.subproject}
+        id={'cohort'}
+        name={'cohort'}
+        label={'Cohort'}
+        value={this.state.form.value.cohort}
+        options={this.state.form.options.cohort}
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
         autoSelect={true}
-        required={this.state.form.options.required.subproject}
+        required={this.state.form.options.required.cohort}
       />
     ) : null;
     // Include psc select.
@@ -401,6 +408,8 @@ class CreateTimepoint extends React.Component {
       />
     ) : null;
     // Include languages select.
+    const emptyLangOption =
+      Object.keys(this.state.form.options.languages).length > 1;
     const languages = this.state.form.display.languages ? (
       <SelectElement
         id={'languageID'}
@@ -409,7 +418,7 @@ class CreateTimepoint extends React.Component {
         value={this.state.form.value.languages}
         options={this.state.form.options.languages}
         onUserInput={this.setForm}
-        emptyOption={true}
+        emptyOption={emptyLangOption}
         disabled={false}
         autoSelect={true}
         required={this.state.form.options.required.languages}
@@ -430,7 +439,7 @@ class CreateTimepoint extends React.Component {
           />
           {psc}
           {project}
-          {subproject}
+          {cohort}
           {visit}
           {languages}
           <ButtonElement
@@ -451,10 +460,11 @@ CreateTimepoint.propTypes = {
  * Render create_timepoint on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CreateTimepoint
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

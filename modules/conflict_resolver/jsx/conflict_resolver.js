@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
@@ -10,7 +11,7 @@ class ConflictResolver extends Component {
   /**
    * Constructor
    *
-   * @param {Object} props The props based to the component.
+   * @param {object} props The props based to the component.
    */
   constructor(props) {
     super(props);
@@ -25,7 +26,7 @@ class ConflictResolver extends Component {
   /**
    * Update active tab to selected tab.
    *
-   * @param {int} tabId The Id of the selected tab.
+   * @param {number} tabId The Id of the selected tab.
    */
   onTabChange(tabId) {
     this.setState({activeTab: tabId});
@@ -34,7 +35,7 @@ class ConflictResolver extends Component {
   /**
    * Render tabs for conflict resolve module.
    *
-   * @return {jsx}
+   * @return {JSX}
    */
   render() {
     const tabs = [
@@ -71,9 +72,8 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <ConflictResolver />,
+  createRoot(
     document.getElementById('lorisworkspace')
-  );
+  ).render(<ConflictResolver />);
 });
 

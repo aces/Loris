@@ -10,16 +10,18 @@ class UnresolvedFilterableDataTable extends Component {
   /**
    * Constructor
    *
-   * @param {Object} props The properties passed to the component.
+   * @param {object} props The properties passed to the component.
    */
   constructor(props) {
     super(props);
 
     this.state = {
       data: {},
+      fieldsMeta: {},
       isLoaded: false,
     };
 
+    this.fetchFieldsMeta = this.fetchFieldsMeta.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
@@ -28,7 +30,8 @@ class UnresolvedFilterableDataTable extends Component {
    * Fetches data upon component mount.
    */
   componentDidMount() {
-    this.fetchData()
+    this.fetchFieldsMeta()
+      .then(() => this.fetchData())
       .then(() => this.setState({isLoaded: true}));
   }
 
@@ -39,7 +42,6 @@ class UnresolvedFilterableDataTable extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -60,6 +62,26 @@ class UnresolvedFilterableDataTable extends Component {
       <td>{cell}</td>
     );
   }
+
+  /**
+   * Retrieve all the field metadata
+   *
+   * @return {object}
+   */
+  fetchFieldsMeta() {
+    const url = loris.BaseURL.concat('/dictionary/module/instruments');
+    return fetch(url, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((json) => {
+        if (json.error) {
+          throw new Error(json.error);
+        }
+        this.setState({fieldsMeta: json});
+      })
+      .catch((error) => {
+        this.setState({error});
+      });
+  }
   /**
    * Retrieve data from the provided URL and save it in state
    *
@@ -75,7 +97,15 @@ class UnresolvedFilterableDataTable extends Component {
         }
         const data = {
           fieldOptions: json.fieldOptions,
-          data: json.data.map((e) => Object.values(e)),
+          data: json.data.map((e) => {
+            const fieldInfo = this.state.fieldsMeta[e['Instrument']][
+              e['Instrument']
+              + '_'
+              + e['Question']
+            ];
+            e['Description'] = fieldInfo ? fieldInfo['description'] : '';
+            return Object.values(e);
+          }),
         };
         this.setState({data});
       })
@@ -87,7 +117,7 @@ class UnresolvedFilterableDataTable extends Component {
   /**
    * Renders the filterable datatable for the component.
    *
-   * @return {jsx}
+   * @return {JSX}
    */
   render() {
     // If error occurs, return a message.
@@ -140,6 +170,10 @@ class UnresolvedFilterableDataTable extends Component {
       }},
       {label: 'Question', show: true, filter: {
         name: 'Question',
+        type: 'text',
+      }},
+      {label: 'Description', show: true, filter: {
+        name: 'Description',
         type: 'text',
       }},
       {label: 'Value 1', show: false},

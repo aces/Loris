@@ -32,15 +32,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $subproject     = 'select[name="subproject"]';
-    static $advancedFilter = "div:nth-child(2) > .btn:nth-child(1)";
+    static $cohort         = 'select[name="cohort"]';
+    static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
     static $dob         = 'input[name="DoB"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
-    static $lastVisit   = 'select[name="latestVisitStatus"]';
     static $edc         = 'input[name="edc"]';
 
 
@@ -155,10 +154,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            $this->assertEquals("input", $edcOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-        $latestVisitOptions = $this->safeFindElement(
-            WebDriverBy::Name("latestVisitStatus")
-        );
-           $this->assertEquals("select", $latestVisitOptions->getTagName());
         $feedbackOptions = $this->safeFindElement(
             WebDriverBy::Name("feedback")
         );
@@ -283,15 +278,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$feedback,
             self::$display,
             self::$clearFilter,
-            "closed",
+            "Closed",
             '11 rows'
-        );
-        $this->_filterTest(
-            self::$lastVisit,
-            self::$display,
-            self::$clearFilter,
-            "Visit",
-            '413'
         );
         $this->_filterTest(
             self::$edc,
@@ -301,7 +289,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '1 row'
         );
         $this->_filterTest(
-            self::$subproject,
+            self::$cohort,
             self::$display,
             self::$clearFilter,
             "High Yeast",

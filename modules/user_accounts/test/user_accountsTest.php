@@ -47,7 +47,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private $_site        = 'select[name="site"]';
     private $_clearFilter = ".nav-tabs a";
     private $_table       = "#dynamictable > tbody > tr";
-    private $_addUserBtn  = "div:nth-child(2) > .btn:nth-child(1)";
+    private $_addUserBtn  = ".panel-body .btn-primary:nth-child(1)";
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -125,6 +125,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $this->safeFindElement(
                 WebDriverBy::Name("__Confirm")
             )->getAttribute("type")
+        );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
         );
     }
     /**

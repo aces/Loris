@@ -66,6 +66,11 @@ const Panel = (props) => {
     </>
   );
 };
+Panel.propTypes = {
+  alwaysOpen: PropTypes.bool,
+  title: PropTypes.string,
+  content: PropTypes.element,
+};
 
 const ExpansionPanels = (props) => {
   return (

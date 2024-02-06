@@ -19,19 +19,13 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// require all relevant OO class libraries
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/Database.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
+require_once __DIR__ . "/generic_includes.php";
 
 // Get command line options
 $opts = getopt("D");
 
-$fp   = fopen("ip_output.txt", "r");
-$data = fread($fp, filesize("ip_output.txt"));
+$fp   = fopen(__DIR__ . "/ip_output.txt", "r");
+$data = fread($fp, filesize(__DIR__ . "/ip_output.txt"));
 fclose($fp);
 
 $instruments = explode("{-@-}", trim($data));
@@ -39,8 +33,9 @@ $instruments = explode("{-@-}", trim($data));
 $tblCount       = 0;
 $parameterCount = 0;
 foreach ($instruments as $instrument) {
-    $catId = "";
-    $items = explode("\n", trim($instrument));
+    $catId  = "";
+    $output = "";
+    $items  = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
@@ -55,8 +50,7 @@ foreach ($instruments as $instrument) {
         // generate the CREATE TABLE syntax
         case "table":
             $tablename = $bits[1];
-            $filename  = "../project/tables_sql/".$tablename.".sql";
-            $output    = "";
+            $filename  = __DIR__ . "/../project/tables_sql/".$tablename.".sql";
             if (isset($opts["D"])) {
                 $output = "DROP TABLE IF EXISTS `$tablename`;\n";
             }
@@ -108,15 +102,16 @@ foreach ($instruments as $instrument) {
                 );
                 break;
             }
-            if (array_key_exists(2, $bits)) {
-                $bits[2] = htmlspecialchars($bits[2]);
-            }
             $output .= "`$bits[1]` $bits[0] default NULL,\n";
         }
     }
     $output .= "PRIMARY KEY  (`CommentID`)\n"
             . ") ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
-    $fp      = fopen($filename, "w");
+    $dirname = dirname($filename);
+    if (!is_dir($dirname)) {
+        mkdir($dirname, 0755, true);
+    }
+    $fp = fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);
 }

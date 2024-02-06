@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    SelectElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Document Upload Form
@@ -10,8 +17,7 @@ import swal from 'sweetalert2';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 class DocCategoryForm extends React.Component {
   /**
    * @constructor
@@ -43,7 +49,8 @@ class DocCategoryForm extends React.Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -107,12 +114,15 @@ class DocCategoryForm extends React.Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -181,6 +191,8 @@ class DocCategoryForm extends React.Component {
 DocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  refreshPage: PropTypes.func,
+  newCategoryState: PropTypes.func,
 };
 
 export default DocCategoryForm;

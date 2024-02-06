@@ -30,6 +30,7 @@ namespace LORIS\candidate_list;
  */
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private string $dobFormat;
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
@@ -43,21 +44,23 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
+        $this->dobFormat = $config->getSetting("dobFormat");
+
         parent::__construct(
             "SELECT
                 c.PSCID,
                 c.CandID AS DCCID,
                 GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
                 psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Subproject,
+                GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
                 DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                max(s.Current_stage) AS LatestVisitStatus,
                 p.Name AS RegistrationProject,
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
@@ -71,7 +74,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
-                    LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+                    LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
@@ -98,6 +101,19 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // one of the user's sites.
         $cid = new \CenterID($row['RegistrationCenterID']);
         $pid = new \ProjectID($row['RegistrationProjectID']);
+        if ($row['DoB'] !== null) {
+            $dob = new \DateTimeImmutable($row['DoB']);
+            switch ($this->dobFormat) {
+            case 'Ym':
+                $row['DoB'] = $dob->format('Y-m');
+                break;
+            case 'Ymd':
+                $row['DoB'] = $dob->format('Y-m-d');
+                break;
+            default:
+                throw new \Exception("Unhandled DoB format: $this->dobFormat");
+            }
+        }
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);

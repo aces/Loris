@@ -86,7 +86,7 @@ You must already have MySQL installed, and MySQL root credential set up.
 1. Fill in `<mysql-database>`; this database must not exist yet as the installer will try to create it
 1. Submit
 
-[[img/Installing-Loris-After-Installing-Prerequisites/install-db-admin-zoomed-4.png]]
+[[https://images.loris.ca/deprecated-wiki/install-db-admin-zoomed-4.png]]
 
 # Installing the Database - 2 of 2
 
@@ -94,7 +94,7 @@ You must already have MySQL installed, and MySQL root credential set up.
 1. Fill in `<loris-admin-username>`, `<loris-admin-password>`; 8 or more characters, must include a capital letter and a special character
 1. Submit
 
-[[img/Installing-Loris-After-Installing-Prerequisites/install-db-user-zoomed-4.png]]
+[[https://images.loris.ca/deprecated-wiki/install-db-user-zoomed-4.png]]
 
 # Logging In to the LORIS Admin Panel
 
@@ -104,7 +104,7 @@ You must already have MySQL installed, and MySQL root credential set up.
 1. Fill in `<loris-admin-password>`
 1. Log in
 
-[[img/Installing-Loris-After-Installing-Prerequisites/log-in-zoomed-3.png]]
+[[https://images.loris.ca/deprecated-wiki/log-in-zoomed-3.png]]
 
 ***
 You now have the basic LORIS features installed and are [ready to set up](https://github.com/aces/Loris/wiki/Setup) configurations, Behavioural instruments and Imaging support.

@@ -5,6 +5,7 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {setFilteredEpochs, setActiveEpoch} from '../state/dataset';
 import {MAX_RENDERED_EPOCHS} from '../../../vector';
+import {Epoch} from '../types';
 
 export const UPDATE_FILTERED_EPOCHS = 'UPDATE_FILTERED_EPOCHS';
 export const updateFilteredEpochs = createAction(UPDATE_FILTERED_EPOCHS);
@@ -17,6 +18,12 @@ export const updateActiveEpoch = createAction(UPDATE_ACTIVE_EPOCH);
 
 export type Action = (_: (_: any) => void) => void;
 
+/**
+ * createFilterEpochsEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -25,7 +32,7 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_FILTERED_EPOCHS),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map(([, state]) => {
       const {interval, epochs} = fromState(state);
       let newFilteredEpochs = [...Array(epochs.length).keys()]
         .filter((index) =>
@@ -44,6 +51,12 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
   );
 };
 
+/**
+ * createToggleEpochEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createToggleEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -74,6 +87,12 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
   );
 };
 
+/**
+ * createActiveEpochEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createActiveEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -94,5 +113,34 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
         dispatch(setActiveEpoch(index));
       };
     })
+  );
+};
+
+/**
+ * getEpochsInRange
+ *
+ * @param {Epoch[]} epochs - Array of epoch
+ * @param {[number, number]} interval - Time interval to search
+ * @param {string} epochType - Epoch type (Annotation|Event)
+ * @param {boolean} withComments - Include only if has comments
+ * @returns {Epoch[]} - Epoch[] in interval with epochType
+ */
+export const getEpochsInRange = (
+  epochs,
+  interval,
+  epochType,
+  withComments = false,
+) => {
+  return [...Array(epochs.length).keys()].filter((index) =>
+    (
+      (isNaN(epochs[index].onset) && interval[0] === 0)
+      ||
+      (
+        epochs[index].onset + epochs[index].duration > interval[0] &&
+        epochs[index].onset < interval[1]
+      )
+    ) &&
+    epochs[index].type === epochType &&
+    (!withComments || epochs[index].hed || epochs[index].comment)
   );
 };

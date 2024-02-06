@@ -1,5 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  StaticElement,
+  TagsElement,
+  FileElement,
+  ButtonElement,
+  TextareaElement,
+  TextboxElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Email element component
@@ -7,7 +18,6 @@ import swal from 'sweetalert2';
 class EmailElement extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -17,6 +27,7 @@ class EmailElement extends React.Component {
 
   /**
    * Handle change
+   *
    * @param {object} e - Event object
    */
   handleChange(e) {
@@ -25,6 +36,7 @@ class EmailElement extends React.Component {
 
   /**
    * Handle blur
+   *
    * @param {object} e - Event object
    */
   handleBlur(e) {
@@ -89,7 +101,19 @@ class EmailElement extends React.Component {
     );
   }
 }
-
+EmailElement.propTypes = {
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+  disabled: PropTypes.bool,
+  name: PropTypes.string,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  toggleEmailNotify: PropTypes.func,
+  addressee: PropTypes.string,
+};
 EmailElement.defaultProps = {
   name: '',
   label: '',
@@ -114,7 +138,6 @@ EmailElement.defaultProps = {
 class ProjectFormFields extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -129,7 +152,8 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Delete upload
-   * @param {Number} uploadID
+   *
+   * @param {number} uploadID
    */
   deleteUpload(uploadID) {
     swal.fire({
@@ -163,7 +187,8 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Create file fields
-   * @return {JSX[]} - Array of React markup for the component
+   *
+   * @return {React.ReactElement[]} - Array of React markup for the component
    */
   createFileFields() {
     let fileFields = [];
@@ -267,6 +292,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Create collab email fields
+   *
    * @return {JSX} - React markup for the component
    */
   createCollabEmailFields() {
@@ -296,6 +322,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Add collaborator
+   *
    * @param {*} formElement
    * @param {string} value
    * @param {*} pendingValKey
@@ -316,6 +343,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Remove collaborator
+   *
    * @param {*} formElement
    * @param {*} value
    */
@@ -327,6 +355,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Set collaborator email
+   *
    * @param {string} formElement
    * @param {string} value
    */
@@ -340,6 +369,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Toggle email notify
+   *
    * @param {object} e - Event object
    */
   toggleEmailNotify(e) {
@@ -381,6 +411,11 @@ class ProjectFormFields extends React.Component {
       Imaging: 'Imaging',
     };
 
+    const publishingStatusOptions = {
+      'In Progress': 'In progress',
+      'Published': 'Published',
+    };
+
     const allVOIs = this.props.allVOIs;
     let voiOptions = {};
     let type = this.props.formData.voiType;
@@ -392,6 +427,8 @@ class ProjectFormFields extends React.Component {
       voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
     }
 
+    const published = this.props.formData.publishingStatus==='Published';
+
     return (
       <div>
         <TextareaElement
@@ -400,6 +437,56 @@ class ProjectFormFields extends React.Component {
           onUserInput={this.props.setFormData}
           required={true}
           value={this.props.formData.description}
+        />
+        <SelectElement
+          name="project"
+          label="Project"
+          options={this.props.projectOptions}
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.project}
+          emptyOption={true}
+        />
+        <SelectElement
+          name="publishingStatus"
+          label="Publishing status"
+          options={publishingStatusOptions}
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.publishingStatus}
+          emptyOption={true}
+        />
+        <DateElement
+          name="datePublication"
+          label="Date published"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.datePublication}
+          disabled={!published}
+        />
+        <TextboxElement
+          name="journal"
+          label="Journal"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.journal}
+          disabled={!published}
+        />
+        <TextboxElement
+          name="doi"
+          label="DOI"
+          onUserInput={this.props.setFormData}
+          required={false}
+          value={this.props.formData.doi}
+          disabled={!published}
+        />
+        <TextboxElement
+          name="link"
+          label="Link"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.link}
+          disabled={!published}
         />
         <TextboxElement
           name="leadInvestigator"
@@ -500,5 +587,22 @@ class ProjectFormFields extends React.Component {
     );
   }
 }
-
+ProjectFormFields.propTypes = {
+  fetchData: PropTypes.func,
+  files: PropTypes.array,
+  numFiles: PropTypes.number,
+  setFormData: PropTypes.func,
+  formData: PropTypes.object,
+  uploadTypes: PropTypes.array,
+  setFileData: PropTypes.func,
+  formErrors: PropTypes.array,
+  allVOIs: PropTypes.object,
+  users: PropTypes.object,
+  addListItem: PropTypes.func,
+  removeListItem: PropTypes.func,
+  allCollabs: PropTypes.object,
+  allKWs: PropTypes.object,
+  editMode: PropTypes.string,
+  projectOptions: PropTypes.object,
+};
 export default ProjectFormFields;

@@ -74,13 +74,18 @@ class ExaminerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
-        $tableText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Examiner", $tableText);
-        $this->assertStringContainsString("Site", $tableText);
-        $this->assertStringContainsString("Radiologist", $tableText);
-
+        $this->assertStringContainsString("Examiner", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -100,6 +105,10 @@ class ExaminerTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -117,6 +126,10 @@ class ExaminerTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
             $bodyText
         );
         $this->resetPermissions();

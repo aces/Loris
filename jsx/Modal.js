@@ -3,11 +3,11 @@
  *
  * @author Henri Rabalais
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Modal Component.
@@ -30,7 +30,6 @@ import swal from 'sweetalert2';
 class Modal extends Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();

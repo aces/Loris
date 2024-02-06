@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +6,13 @@ import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    ButtonElement,
+    CheckboxElement,
+    SelectElement,
+    FormElement,
+    TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Examiner Module Page.
@@ -16,7 +24,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Victoria Foing, Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class ExaminerIndex extends Component {
   /**
@@ -132,7 +139,6 @@ class ExaminerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -158,6 +164,20 @@ class ExaminerIndex extends Component {
       case 'Certification':
         if (row.Certification === null) {
           result = <td>None</td>;
+        }
+        break;
+      case 'Site':
+        // If user has multiple sites, join array of sites into string
+        result = (
+          <td>{cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+          </td>
+        );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
         }
         break;
     }
@@ -265,18 +285,19 @@ class ExaminerIndex extends Component {
         type: 'text',
       }},
       {label: 'Email', show: true},
-      {label: 'ID', show: false},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
+      {label: 'ID', show: false},
       {label: 'Radiologist', show: true, filter: {
         name: 'radiologist',
         type: 'select',
         options: options.radiologists,
       }},
-      {label: 'Certification', show: this.state.data.useCertification},
+      {label: 'Certification',
+        show: this.state.data.fieldOptions.useCertification},
     ];
     const actions = [
       {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
@@ -301,15 +322,17 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  submitURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
-      submitURL={`${loris.BaseURL}/examiner/`}
+      submitURL={`${loris.BaseURL}/examiner/addExaminer`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

@@ -9,14 +9,13 @@ import Loader from 'jsx/Loader';
  * Files Component.
  *
  * @description Genomic Browser Files tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class Files extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -67,7 +66,7 @@ class Files extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
             permissions: json.permissions,
           };
           this.setState({
@@ -146,7 +145,6 @@ class Files extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -163,8 +161,8 @@ class Files extends Component {
         const urlPscid = `${this.props.baseURL}/${rowData.DCCID}/`;
         reactElement = <td><a href={urlPscid}>{rowData.PSCID}</a></td>;
         break;
-      case 'Subproject':
-        reactElement = <td>{this.state.data.subprojects[parseInt(cell)]}</td>;
+      case 'Cohort':
+        reactElement = <td>{this.state.data.cohorts[parseInt(cell)]}</td>;
         break;
       default:
         reactElement = <td>{cell}</td>;

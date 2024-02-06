@@ -3,15 +3,20 @@
  *
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  *  @author   Jordan Stirling <jstirling91@gmail.com>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import StaticDataTable from '../../../jsx/StaticDataTable';
+import swal from 'sweetalert2';
+import {
+    RadioElement,
+} from 'jsx/Form';
 const {jStat} = require('jstat');
+import JSZip from 'jszip';
 
 /**
  * Loading Component
@@ -66,6 +71,13 @@ const TabPane = (props) => {
     </div>
   );
 };
+TabPane.propTypes = {
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  TabId: PropTypes.string,
+  Title: PropTypes.string,
+  children: PropTypes.node,
+};
 
 /**
  * InfoTabPane Component
@@ -104,6 +116,12 @@ let InfoTabPane = (props) => {
     </TabPane>
   );
 };
+InfoTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  UpdatedTime: PropTypes.string,
+};
 
 /**
  * FieldSelectTabPane Component
@@ -130,6 +148,16 @@ let FieldSelectTabPane = (props) => {
     </TabPane>
   );
 };
+FieldSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
+  categories: PropTypes.array,
+  onFieldChange: PropTypes.func,
+  selectedFields: PropTypes.array,
+  Visits: PropTypes.array,
+  fieldVisitSelect: PropTypes.array,
+};
 
 /**
  * FilterSelectTabPane Component
@@ -151,6 +179,17 @@ let FilterSelectTabPane = (props) => {
       />
     </TabPane>
   );
+};
+FilterSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  categories: PropTypes.array,
+  updateFilter: PropTypes.func,
+  filter: PropTypes.object,
+  Visits: PropTypes.array,
+  Active: PropTypes.bool,
+  loadImportedCSV: PropTypes.func,
+  getAllSessions: PropTypes.func,
 };
 
 /**
@@ -186,6 +225,7 @@ class ViewDataTabPane extends Component {
 
   /**
    * Called by React when the component has updated.
+   *
    * @param {object} prevProps - Previous component properties
    * @param {object} prevState - Previous component state
    */
@@ -217,6 +257,33 @@ class ViewDataTabPane extends Component {
       default:
         break;
     }
+  }
+
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} _ - column name
+   * @param {string} cell - cell content
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(_, cell) {
+    if (Array.isArray(cell)) {
+      return (
+        <td>
+          {cell.map((line) => {
+            if (typeof line === 'string' && line.startsWith('http')) {
+              line = (
+                <a target='_blank' href={line}>
+                  {line.split(/[\\/]/).pop()}
+                </a>
+              );
+            }
+            return (<p>{line}</p>);
+          })}
+        </td>
+      );
+    }
+    return (<td>{cell}</td>);
   }
 
   /**
@@ -550,6 +617,7 @@ class ViewDataTabPane extends Component {
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
+        getFormattedCell={this.formatColumn}
         RowNameMap={this.props.RowInfo}
         DisableFilter={true}
       />
@@ -594,6 +662,20 @@ class ViewDataTabPane extends Component {
 
 ViewDataTabPane.propTypes = {
   runQuery: PropTypes.func.isRequired,
+  Fields: PropTypes.array,
+  Sessions: PropTypes.array,
+  changeDataDisplay: PropTypes.func,
+  FileData: PropTypes.array,
+  displayVisualizedData: PropTypes.func,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
+  RowHeaders: PropTypes.array,
+  RowInfo: PropTypes.array,
+  Criteria: PropTypes.object,
+  AllSessions: PropTypes.array,
+  filter: PropTypes.object,
+  Data: PropTypes.array,
 };
 
 /**
@@ -618,7 +700,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * lsFit statistics
-   * @param {[]} data
+   *
+   * @param {array} data
    * @return {number[]}
    */
   lsFit(data) {
@@ -646,7 +729,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * minmaxx statistics
-   * @param {[]} arr
+   *
+   * @param {array} arr
    * @return {number[]}
    */
   minmaxx(arr) {
@@ -834,6 +918,10 @@ class ScatterplotGraph extends Component {
     );
   }
 }
+ScatterplotGraph.propTypes = {
+  Data: PropTypes.array,
+  Fields: PropTypes.array,
+};
 
 /**
  * StatsVisualizationTabPane Component
@@ -948,6 +1036,10 @@ StatsVisualizationTabPane.defaultProps = {
 
 StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
+  Fields: PropTypes.array,
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
 };
 
 /**
@@ -1036,6 +1128,10 @@ let SaveQueryDialog = (props) => {
     </div>
   );
 };
+SaveQueryDialog.propTypes = {
+  onDismissClicked: PropTypes.func,
+  onSaveClicked: PropTypes.func,
+};
 
 /**
  * ManageSavedQueryFilter Component
@@ -1114,6 +1210,9 @@ class ManageSavedQueryFilter extends Component {
     );
   }
 }
+ManageSavedQueryFilter.propTypes = {
+  filterItem: PropTypes.object,
+};
 
 /**
  * ManageSavedQueryRow Component
@@ -1130,6 +1229,36 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
+         deleteclick() {
+          let id = this.props.Query['_id'];
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
+              + encodeURIComponent(id);
+              fetch(deleteurl, {
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('delete Successful!', '', 'success');
+                  } else {
+                   swal.fire('delete Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }
 
   /**
    * Renders the React component.
@@ -1238,6 +1367,17 @@ class ManageSavedQueryRow extends Component {
             {filters}
           </div>
         </td>
+        <td>
+          <div className={'tableNamesCell'}>
+           <button className='btn btn-danger'
+             onClick={()=> {
+              this.deleteclick();
+             }}
+           >
+            delete
+          </button>
+          </div>
+        </td>
       </tr>
     );
   }
@@ -1310,6 +1450,7 @@ let ManageSavedQueriesTabPane = (props) => {
           <th>Query Name</th>
           <th>Fields</th>
           <th>Filters</th>
+          <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -1338,6 +1479,9 @@ ManageSavedQueriesTabPane.propTypes = {
   globalQueries: PropTypes.array,
   queriesLoaded: PropTypes.bool,
   queryDetails: PropTypes.object,
+  onSelectQuery: PropTypes.func,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
 };
 
 window.Loading = Loading;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const NoticeMessage = (props) => {
   let alert;
@@ -61,6 +62,13 @@ const NoticeMessage = (props) => {
       {alert}
     </>
   );
+};
+NoticeMessage.propTypes = {
+  alertLoaded: PropTypes.bool,
+  dismissAlert: PropTypes.func,
+  alertSaved: PropTypes.bool,
+  alertConflict: PropTypes.object,
+  overrideQuery: PropTypes.func,
 };
 
 export default NoticeMessage;

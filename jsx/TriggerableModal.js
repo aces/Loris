@@ -3,12 +3,12 @@
  *
  * @author Henri Rabalais
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
+import {CTA} from 'jsx/Form';
 
 /**
  * Triggerable Modal Component.
@@ -32,7 +32,6 @@ import Modal from 'Modal';
 class TriggerableModal extends Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -76,6 +75,7 @@ class TriggerableModal extends Component {
 TriggerableModal.propTypes = {
   label: PropTypes.string.isRequired,
   onClose: PropTypes.func,
+  onUserInput: PropTypes.func,
 };
 
 export default TriggerableModal;

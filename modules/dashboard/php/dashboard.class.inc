@@ -78,12 +78,8 @@ class Dashboard extends \NDB_Form
         // otherwise setup() only gets called by handle() of NDB_Page while
         // calculating the body.
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
         $user    = $factory->user();
-
-        // FIXME: This should use \LORIS\LorisInstance->getActiveModules(), but there
-        // is no access to a LORISInstance object at this point in the code.
-        $modules = \Module::getActiveModules($DB);
+        $modules = $loris->getActiveModules();
 
         $this->_smallwidgets = [];
         $this->_mainwidgets  = [];

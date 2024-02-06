@@ -67,7 +67,7 @@ class Dictionary extends \DataFrameworkMenu
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
         return new DataDictRowProvisioner(
-            $this->lorisinstance,
+            $this->loris,
             $this->categoryitems
         );
     }
@@ -135,12 +135,10 @@ class Dictionary extends \DataFrameworkMenu
     public function loadResources(
         \User $user, ServerRequestInterface $request
     ) : void {
-        $this->lorisinstance = $request->getAttribute("loris");
-
         assert($this->Module instanceof Module);
         $modulesandcats = $this->Module->getUserModuleCategories(
             $user,
-            $this->lorisinstance,
+            $this->loris,
         );
 
         $this->categoryitems = $modulesandcats['CategoryItems'];

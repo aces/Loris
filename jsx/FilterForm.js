@@ -3,11 +3,11 @@
  *
  * @author Loris Team
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import {FormElement} from 'jsx/Form';
 
 /**
  * FilterForm component.
@@ -126,7 +126,6 @@ class FilterForm extends Component {
    * @param {string} type - form element type (i.e component name)
    * @param {string} key - the name of the form element
    * @param {string} value - the value of the form element
-   *
    * @return {{}} filter - filterData
    */
   setFilter(type, key, value) {
@@ -229,6 +228,8 @@ FilterForm.propTypes = {
   height: PropTypes.string,
   title: PropTypes.string,
   onUpdate: PropTypes.func,
+  children: PropTypes.node,
+  formElements: PropTypes.object,
 };
 
 export default FilterForm;

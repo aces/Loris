@@ -13,12 +13,16 @@
 {/function}
 
 {function name=createInstrument}
+<div>
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$instruments key=name item=label}
             <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
         {/foreach}
     </select>
+    </div>
 {/function}
+
+
 
 {function name=createScanType}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
@@ -49,11 +53,11 @@
 {/function}
 
 {function name=createTextArea}
-    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v}</textarea>
+    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v|escape:html}</textarea>
 {/function}
 
 {function name=createText}
-     <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
+     <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
 {function name=createLogDropdown}
@@ -158,9 +162,10 @@
 {/function}
 
 <p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
-<p>To configure study subprojects <a href="{$baseurl|default}/configuration/subproject/">click here</a>.
+<p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.
     To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
 </p>
+<p>To configure the diagnosis trajectory of the study <a href="{$baseurl}/configuration/diagnosis_evolution/">click here</a>.
 <br>
 
 <div class="col-md-3">

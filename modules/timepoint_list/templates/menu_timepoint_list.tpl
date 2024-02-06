@@ -4,7 +4,8 @@
   <thead>
   <tr class="info">
     <th>
-      DOB
+    {assign var="DoB" value=$cand->getDisplayDoB()}
+    {$DoB['label']} 
     </th>
     {if $candidate.EDC!=""}
       <th>
@@ -28,7 +29,7 @@
   <tbody>
   <tr>
     <td>
-      {$candidate.DoB}
+      {$DoB['value']} 
     </td>
     {if $candidate.EDC!=""}
       <td>
@@ -68,7 +69,7 @@
     <thead>
         <tr class="info">
             <th>Visit Label<BR>(Click to Open)</th>
-            <th>Subproject</th>
+            <th>Cohort</th>
             <th>Site</th>
             <th>Project</th>
             <th>Stage</th>
@@ -87,7 +88,7 @@
         <tr>
             <td><a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
 
-            <td>{$timePoints[timepoint].SubprojectTitle}</td>
+            <td>{$timePoints[timepoint].CohortTitle}</td>
 
             <td>{$timePoints[timepoint].SiteAlias}</td>
             <td>{$timePoints[timepoint].ProjectName}</td>

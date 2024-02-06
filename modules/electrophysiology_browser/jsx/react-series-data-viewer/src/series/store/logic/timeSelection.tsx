@@ -5,7 +5,7 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {setTimeSelection} from '../state/timeSelection';
 import {Action as BoundsAction} from '../state/bounds';
-import {MIN_INTERVAL_FACTOR} from '../../../vector';
+import {MIN_INTERVAL} from '../../../vector';
 
 export const START_DRAG_SELECTION = 'START_DRAG_SELECTION';
 export const startDragSelection = createAction(START_DRAG_SELECTION);
@@ -18,10 +18,27 @@ export const endDragSelection = createAction(END_DRAG_SELECTION);
 
 export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 
+/**
+ * roundTime
+ *
+ * @param {number} value - The initial time value
+ * @param {number} decimals - The desired decimal precision
+ * @returns {number} - The value rounded to 'decimal' decimal places
+ */
+export const roundTime = (value, decimals = 3) => {
+  return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+};
+
+/**
+ * createTimeSelectionEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
-): Observable<Action> => {
+): Observable<any> => {
   const startDrag$ = action$.pipe(
     ofType(START_DRAG_SELECTION),
     Rx.map(R.prop('payload')),
@@ -32,30 +49,44 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     Rx.map(R.prop('payload'))
   );
 
+  /**
+   * initInterval
+   *
+   * @param {Array} root - An array
+   * @param {number} root."0" - The mouse position
+   * @param {object} root."1" - The state
+   * @returns {Function} - Action creator for dispatching actions
+   */
   const initInterval = ([position, state]) => {
     const {interval} = R.clone(fromState(state));
-    const x = Math.round(interval[0] + position * (interval[1] - interval[0]));
+    const x = roundTime(interval[0] + position * (interval[1] - interval[0]));
     return setTimeSelection([x, x]);
   };
 
+  /**
+   * updateInterval
+   *
+   * @param {Array} root - An array
+   * @param {number} root."0" - The mouse position
+   * @param {object} root."1" - The state
+   * @returns {Function} - Action creator for dispatching actions
+   */
   const updateInterval = ([position, state]) => {
     const {interval, timeSelection} = R.clone(fromState(state));
     const x = interval[0] + position * (interval[1] - interval[0]);
-    const minSize = Math.abs(interval[1] - interval[0]) * MIN_INTERVAL_FACTOR;
-    timeSelection[1] = Math.round(
-      x + Math.max(timeSelection[0] + minSize - timeSelection[1], 0)
-    );
-
+    timeSelection[1] = roundTime(x);
     return setTimeSelection(timeSelection);
   };
 
   const endDrag$ = action$.pipe(
     ofType(END_DRAG_SELECTION),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map(([, state]) => {
       if (
         state.timeSelection
-        && (state.timeSelection[1] - state.timeSelection[0] < 2)
+        && (
+          Math.abs(state.timeSelection[1] - state.timeSelection[0]
+        ) < MIN_INTERVAL)
       ) {
         return setTimeSelection(null);
       } else {

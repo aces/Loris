@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import {
+    FormElement,
+    StaticElement,
+    TextboxElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Reset password form.
  *
  * @description form for reset password.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class ResetPassword extends Component {
   /**
@@ -93,7 +97,7 @@ class ResetPassword extends Component {
           name={'resetPassword'}
           action={''}
           id={'form'}
-          fileUpload={'false'}
+          fileUpload={false}
           onSubmit={this.handleSubmit}
         >
           <StaticElement

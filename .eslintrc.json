@@ -1,18 +1,32 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "plugins": [
     "react",
-    "no-jquery"
+    "no-jquery",
+    "jsdoc"
   ],
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "jsdoc": {
+      "tagNamePreference": {
+        "return": "return",
+        "tag constructor": "constructor"
+      },
+      "preferredTypes": {
+        "Function": "function",
+        "function": "Function",
+        "Array": "array",
+        "array": "Array"
+      }
     }
   },
   "env": {
     "browser": true,
     "jquery": true,
-    "node": true
+    "node": true,
+    "es6": true
   },
   "parserOptions": {
     "sourceType": "module",
@@ -21,19 +35,26 @@
       "globalReturn": false
     }
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:jsdoc/recommended",
+    "google"
+  ],
   "rules": {
     "max-len": ["error", {
         "code": 80,
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "no-unexpected-multiline": "off",
+    "no-unused-vars": "warn",
     "no-useless-escape": "off",
     "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",
     "react/jsx-no-target-blank": "off",
-    "react/no-unknown-property": "off",
-    "react/no-find-dom-node": "off",
+    "react/no-unknown-property": "error",
+    "react/no-find-dom-node": "error",
     "no-empty": "off",
     "no-redeclare": "off",
     "no-inner-declarations": "off",
@@ -41,18 +62,19 @@
     "react/no-deprecated": "off",
     "react/no-string-refs": "off",
     "no-case-declarations": "off",
-    "no-fallthrough": "off",
+    "no-fallthrough": "error",
     "react/jsx-no-undef": "off",
-    "react/prop-types": "off",
-    "no-undef": "off",
+    "react/prop-types": "error",
+    "no-undef": "error",
     "react/jsx-key": "off",
-    "no-extra-semi": "off",
+    "no-extra-semi": "error",
     "no-prototype-builtins": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",
     "array-callback-return": "off",
-    "require-jsdoc": "error",
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off",
     "no-implicit-globals": "off",
     "no-invalid-this": "off",
     "no-alert": "off",
@@ -61,9 +83,40 @@
     }],
     "no-console": ["warn", {
       "allow": ["info", "warn", "error"]
-    }]
+    }],
+    "jsdoc/require-param-description": "off",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-returns-description": "off",
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error",
+    "jsdoc/valid-types": "error",
+    "jsdoc/no-undefined-types": "error"
   },
   "overrides": [
+    {
+      "files": "**/*.+(ts|tsx)",
+      "plugins": ["@typescript-eslint"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "jsdoc/require-jsdoc": [
+          "error",
+          {"require": {
+            "ArrowFunctionExpression": true,
+            "FunctionExpression": true,
+            "ClassDeclaration": true,
+            "MethodDefinition": true
+          }}
+        ],
+        "jsdoc/require-param-description": "error",
+        "jsdoc/require-returns": "error",
+        "jsdoc/require-returns-description": "error",
+        "no-undef": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
     {
       "files": [
         "modules/**"
@@ -148,10 +201,9 @@
     {
       "files": [
         "modules/candidate_parameters/**",
-        "modules/bvl_feedback/**",
-        "modules/dataquery/**",
         "modules/dqt/**",
-        "modules/configuration/jsx/configuration_helper.js"
+        "modules/configuration/jsx/configuration_helper.js",
+        "modules/brainbrowser/js/brainbrowser.loris.js"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",
@@ -234,6 +286,8 @@
     "ReactDOM": true,
     "loris": true,
     "QueryString": true,
-    "swal": true
+    "swal": true,
+    "schemaUrls": true,
+    "JSX": true
   }
 }

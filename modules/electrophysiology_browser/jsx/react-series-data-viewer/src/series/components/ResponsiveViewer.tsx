@@ -1,27 +1,48 @@
 import * as R from 'ramda';
-import React, { FunctionComponent, ReactNode, Children } from 'react';
+import React, {FunctionComponent, MutableRefObject} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
-import { WithParentSizeProps } from '@visx/responsive/lib/enhancers/withParentSizeModern';
 
 type CProps = {
+  ref: MutableRefObject<any>,
   parentWidth?: number,
   parentHeight?: number,
   mouseDown?: (_: any) => void,
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
-  mouseLeave?: (_: any) => void
+  mouseLeave?: (_: any) => void,
+  children: any,
+  showOverflow: boolean,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.ref
+ * @param root0.parentWidth
+ * @param root0.parentHeight
+ * @param root0.mouseDown
+ * @param root0.mouseMove
+ * @param root0.mouseUp
+ * @param root0.mouseLeave
+ * @param root0.children
+ * @param root0.showOverflow
+ */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
+  ref,
   parentWidth,
   parentHeight,
   mouseDown,
   mouseMove,
   mouseUp,
   mouseLeave,
-  children
+  children,
+  showOverflow
 }) => {
+  /**
+   *
+   * @param layer
+   */
   const provision = (layer) =>
     React.cloneElement(
       layer,
@@ -41,6 +62,10 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
       .range([-parentHeight/2, parentHeight/2]),
   ];
 
+  /**
+   *
+   * @param e
+   */
   const eventToPosition = (e) => {
     const {
       top,
@@ -70,7 +95,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflow: 'hidden'}}
+      style={{overflowY: showOverflow ? 'visible' : 'hidden'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(
@@ -98,10 +123,30 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 ResponsiveViewer.defaultProps = {
   parentWidth: 400,
   parentHeight: 300,
-  mouseMove: () => {},
-  mouseDown: () => {},
-  mouseUp: () => {},
-  mouseLeave: () => {},
+  /**
+   *
+   */
+  mouseMove: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseDown: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseUp: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseLeave: () => {
+    // do nothing
+  },
 };
 
 export default withParentSize(ResponsiveViewer);

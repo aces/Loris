@@ -26,11 +26,10 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface
+class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 {
     use Psr\Log\LoggerAwareTrait;
 
-    protected $lorisinstance;
     /**
      * The name of the test_name being accessed
      */
@@ -77,13 +76,6 @@ class NDB_Page implements RequestHandlerInterface
     public $template;
 
     /**
-     * The LorisInstance that this page was created to serve.
-     *
-     * @var \LORIS\LorisInstance
-     */
-    protected $loris;
-
-    /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
      * either 'json' or empty (for the default return value of HTML format).
@@ -126,13 +118,14 @@ class NDB_Page implements RequestHandlerInterface
      * @param string               $commentID  The CommentID to load the data for
      */
     function __construct(
-        \LORIS\LorisInstance $loris,
+        protected \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        $this->loris  = $loris;
+        parent::__construct($loris);
+
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
@@ -708,9 +701,6 @@ class NDB_Page implements RequestHandlerInterface
                 )->withStatus(403);
         }
 
-        $loris = $request->getAttribute("loris");
-        $this->lorisinstance = $loris;
-
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
         // carried along with the request object. We use a pageclass attribute
@@ -751,20 +741,6 @@ class NDB_Page implements RequestHandlerInterface
         $this->setup();
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
-    }
-
-    /**
-     * This function can be overridden in a module's page to load the necessary
-     * resources to check the permissions of a user.
-     *
-     * @param User                   $user    The user to load the resources for
-     * @param ServerRequestInterface $request The PSR15 Request being handled
-     *
-     * @return void
-     */
-    public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void {
     }
 
     /**
@@ -861,7 +837,7 @@ class NDB_Page implements RequestHandlerInterface
 
         $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-            $baseurl . '/js/helpHandler.js',
+            $baseurl . '/js/loris-scripts.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
@@ -879,10 +855,8 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
             $baseurl . "/js/util/queryString.js",
-            $baseurl . '/js/components/Form.js',
-            $baseurl . '/js/components/Markdown.js',
+            $baseurl . '/js/components/Help.js',
         ];
         return $files;
     }
@@ -903,8 +877,7 @@ class NDB_Page implements RequestHandlerInterface
         $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
-            $baseurl . "/js/jquery/datepicker/datepicker.css",
-            $baseurl . '/vendor/sweetalert/sweetalert.css',
+            $baseurl . "/js/jquery/datepicker/datepicker.css"
         ];
         return $files;
     }

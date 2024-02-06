@@ -12,19 +12,26 @@
  * @link     https://github.com/aces/Loris
  */
 
+$factory  = \NDB_Factory::singleton();
+$user     = $factory->user();
+$editable = $user->hasPermission('context_help');
+
 try {
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
-    $m           = Module::factory($moduleName);
+    $m           = $loris->getModule($moduleName);
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
     $help = [
-        'content' => $m->getHelp($subpageName ?? $moduleName),
-        'format'  => 'markdown',
+        'content'  => $m->getHelp($subpageName ?? $moduleName),
+        'source'   => 'helpfile',
+        'editable' => $editable,
     ];
     print json_encode($help);
-    ob_end_flush();
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
     exit;
 } catch (Exception $e) {
 
@@ -43,11 +50,13 @@ try {
             $data = [
                 'content' => '',
                 'topic'   => '',
-                'updated' => ''
+                'updated' => '',
             ];
         }
 
-        $data['content'] = trim($data['content']);
+        $data['content']  = trim($data['content']);
+        $data['editable'] = $editable;
+        $data['source']   = 'db';
 
         if (empty($data['updated'])) {
             // if document was never updated should display date created
@@ -57,7 +66,7 @@ try {
                 $data['updated'] = "-";
             }
         }
+        print json_encode($data);
+        ob_end_flush();
     }
-    print json_encode($data);
-    ob_end_flush();
 }

@@ -5,7 +5,6 @@ module.exports = function(api) {
     "@babel/preset-env"
   ];
   const plugins = [
-    "@babel/plugin-proposal-object-rest-spread",
     ["@babel/plugin-transform-runtime",
       {
         "regenerator": true

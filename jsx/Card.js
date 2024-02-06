@@ -3,7 +3,6 @@
  *
  * @author Zaliqa Rosli
  * @version 1.0.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -82,6 +81,10 @@ Card.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   initCollapsed: PropTypes.bool,
+  style: PropTypes.object,
+  cardSize: PropTypes.string,
+  children: PropTypes.node,
+  collapsing: PropTypes.bool,
 };
 
 Card.defaultProps = {

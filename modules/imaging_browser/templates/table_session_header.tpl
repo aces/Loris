@@ -12,7 +12,7 @@
             <th>Sex</th>
             <th>Output Type</th>
             <th>Scanner</th>
-            <th>Subproject</th>
+            <th>Cohort</th>
             {if $useEDC|default}
             <th>EDC</th>
             {/if}
@@ -31,7 +31,7 @@
             <td>{$subject.sex|escape}</td>
             <td>{$outputType|escape}</td>
             <td>{$subject.scanner|escape}</td>
-            <td>{$subject.SubprojectTitle|escape}</td>
+            <td>{$subject.CohortTitle|escape}</td>
             {if $useEDC|default}
             <td>{$subject.edc|escape}</td>
             {/if}

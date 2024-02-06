@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -59,7 +60,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} url
    * @param {string} method
    * @param {string} state
-   *
    * @return {object} promise
    */
   fetchData(url, method, state) {
@@ -80,7 +80,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} url
    * @param {object} data
    * @param {string} method
-   *
    * @return {object} promise
    */
   postData(url, data, method) {
@@ -116,7 +115,6 @@ class BatteryManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} value - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, value) {
@@ -128,6 +126,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Active':
         switch (value) {
           case 'Y':
@@ -135,6 +134,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Change Status':
         return '';
       case 'Edit Metadata':
@@ -150,7 +150,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -161,8 +160,8 @@ class BatteryManagerIndex extends Component {
       case 'Instrument':
         result = <td>{this.state.options.instruments[cell]}</td>;
         break;
-      case 'Subproject':
-        result = <td>{this.state.options.subprojects[cell]}</td>;
+      case 'Cohort':
+        result = <td>{this.state.options.cohorts[cell]}</td>;
         break;
       case 'Site':
         result = <td>{this.state.options.sites[cell]}</td>;
@@ -223,7 +222,7 @@ class BatteryManagerIndex extends Component {
   /**
    * Activate Test
    *
-   * @param {int} id
+   * @param {number} id
    */
   activateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
@@ -234,7 +233,7 @@ class BatteryManagerIndex extends Component {
   /**
    * Deactivate Test
    *
-   * @param {int} id
+   * @param {number} id
    */
   deactivateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
@@ -247,7 +246,6 @@ class BatteryManagerIndex extends Component {
    *
    * @param {object} test
    * @param {string} request
-   *
    * @return {object} promise
    */
   saveTest(test, request) {
@@ -313,10 +311,10 @@ class BatteryManagerIndex extends Component {
           type: 'select',
           options: options.stages,
         }},
-      {label: 'Subproject', show: true, filter: {
-          name: 'subproject',
+      {label: 'Cohort', show: true, filter: {
+          name: 'cohort',
           type: 'select',
-          options: options.subprojects,
+          options: options.cohorts,
         }},
       {label: 'Visit Label', show: true, filter: {
           name: 'visitLabel',
@@ -361,7 +359,7 @@ class BatteryManagerIndex extends Component {
         test.ageMinDays,
         test.ageMaxDays,
         test.stage,
-        test.subproject,
+        test.cohort,
         test.visitLabel,
         test.centerId,
         test.firstVisit,
@@ -388,7 +386,6 @@ class BatteryManagerIndex extends Component {
           title={modalTitle}
           show={add || edit}
           onClose={this.closeForm}
-          onSubmit={handleSubmit}
           throwWarning={Object.keys(test).length !== 0}
         >
           <BatteryManagerForm
@@ -397,6 +394,7 @@ class BatteryManagerIndex extends Component {
             options={options}
             add={add}
             errors={errors}
+            handleSubmit={handleSubmit}
           />
         </Modal>
       </div>
@@ -407,7 +405,6 @@ class BatteryManagerIndex extends Component {
    * Checks whether the Test is a duplicate of an existing Test.
    *
    * @param {object} test
-   *
    * @return {object} promise
    */
   checkDuplicate(test) {
@@ -419,7 +416,7 @@ class BatteryManagerIndex extends Component {
           test.ageMinDays == testCheck.ageMinDays &&
           test.ageMaxDays == testCheck.ageMaxDays &&
           test.stage == testCheck.stage &&
-          test.subproject == testCheck.subproject &&
+          test.cohort == testCheck.cohort &&
           test.visitLabel == testCheck.visitLabel &&
           test.centerId == testCheck.centerId &&
           test.firstVisit == testCheck.firstVisit
@@ -465,7 +462,6 @@ class BatteryManagerIndex extends Component {
    * Checks that test fields are valide
    *
    * @param {object} test
-   *
    * @return {object} promise
    */
   validateTest(test) {
@@ -484,7 +480,7 @@ class BatteryManagerIndex extends Component {
       } else if (test.ageMaxDays < 0) {
         errors.ageMaxDays = 'This field must be 0 or greater';
       }
-      if (test.ageMinDays > test.ageMaxDays) {
+      if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
         errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
         errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
       }
@@ -508,12 +504,13 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

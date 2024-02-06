@@ -8,7 +8,131 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 24.1 (Release Date: 2022-10-04)
+## LORIS 26.0 (Release Date: ????-??-??)
+### Core
+#### Features
+- Add OpenID Connect authorization support to LORIS (PR #8255)
+
+#### Bug Fixes
+- Fix examiner site display (PR #8967)
+- bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
+
+## LORIS 25.0 (Release Date: ????-??-??)
+### Core
+#### Features
+- Added new interface intended to be used for querying module data from PHP (PR #8215) 
+- Added the NOT NULL constraint on Project Name (PR #8295)
+- Added ability to display images in issue tracker tickets (PR #8346)
+- Migrated instrument permissions from config.xml to database and added the ability
+  to manage instrument permissions in the frontend from the `instrument_manager`
+  module. (PR #8302)
+- new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
+  when `make` or `npm ci` is executed (PR #8244)
+
+#### Updates and Improvements
+- Upgrade react to version 18 (PR #8188)
+- Rename subproject to Cohort (PR #7817, applied changes in LORIS-MRI PR #882)
+- Create new CohortData and CohortController classes to use as data access model 
+  and transfer object (PR #7817)
+- BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
+- Add Date status change value in session table (PR #8350)
+- Fixed the Candidate Age at Death field label and Data Dictionary item for LINST instruments (PR #8362)
+- Allow clearing a previously entered consent status in candidate parameters (PR #7772)
+- Add code sanitizer before dangerouslySetInnerHTML is used in login to protect against XSS attacks (PR #7491)
+- npm package freeze with versionning of `package-lock.json` and switch from `npm install` to `npm ci` (PR #8224)
+- New imaging config to set:
+  - createVisit
+  - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
+  - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
+- Help and help editor reactification (PR #8309)
+
+#### Bug Fixes
+- Fix a Fatal error on the Genomic Browser tabs (PR #8468)
+
+### Modules
+
+#### API
+- Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
+provided as the body of a PUT/PATCH request. The values of all fields are now defined by
+the `Data` key instead of `$InstrumentName` (PR #7857)
+- Fix Candidate endpoint error:
+The candidates/{CanID} endpoint throws a fatal error if a missing but valid (format pass validation) CanID is provided (PR #8417)
+
+
+#### Candidate Parameters
+- Added date restriction for consent withdrawal so that withdrawal date cannot be earlier
+than the given consent response date (PR #8298)
+
+#### EEG Browser
+- Visualization:
+  - Electrode 2D montage: detect if the coordinate space is in the ALS orientation to convert to RAS (nose up)
+  - Use the optimal signal sampling that fulfills number of chunk displayed < MAX_VIEWED_CHUNKS
+  - Fixes UI panels open/close glitches (PR #8238)
+  - Upgrade codebase to Typescript 4.0 syntax (PR #8211)
+  - New config (GUI/useEEGBrowserVisualizationComponents) to enable the EEG visualization (PR #8263)
+  - Annotations: HED tags support (PR #8236)
+- Added a SQL table to save any additional task events property data imported through BIDS files (PR #8237)
+  - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #873)
+- Added SQL tables to save coordinate system data imported through BIDS files (PR #8242)
+  - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #885)
+- Fix a few issues with EEGLAB set/fdt files:
+  - Download link broken
+  - Incorrect placement, it should be logically after the .set file (PR #8323)
+- Download All files fails when no annotations exists (PR #8323)
+- Clean dependency tree and fix security issues (PR #8486)
+
+#### Instrument Builder
+- Fixed display order of select options that were previously ordered alphabetically.
+Now the options correctly display in order of how they are defined in the instrument. (PR #8361)
+
+#### Instruments
+- Added `postMortem` functionality for LINST instruments, fixing display of 'Candidate Age at Death' when `postMortem` is set to true (PR #8362)
+- Added/modified documentation for configuring 'Candidate Age at Death' field display in instruments (PR #8362)
+
+#### Issue Tracker
+- Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
+
+#### EEG uploader
+- New module (PR #8409)
+
+#### Dashboard
+- Reactification (PR #8476)
+
+#### MRI violation
+- Reactification (PR #7473)
+- Fixes links to BrainBrowser from the MRI violations module (PR #8392)
+- Remove MRI violation module tabs (PR #8399)
+- Fix multiple rows for file protocol violations not resolvable (PR #8661)
+- Fix hashing algorithm for `violations_resolved` table's `hash` column (PR #8664)
+
+#### Statistics
+- Reactification (PR #8476)
+
+### Tools
+- Fix CouchDB_MRI_Importer.php script for PHP > 8.0 (PR #8369) 
+
+### Clean Up
+- Fixed inconsistency in candidate consent data and history in Raisinbread (PR #8297)
+- Removed references to `participant_accounts` `Email` column in Raisinbread,
+SQL schema, and automated testing (PR #8313)
+
+### Notes For Existing Projects
+- API: Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
+provided as the body of a PUT/PATCH request. The values of all fields are now defined by
+the `Data` key instead of `$InstrumentName` (PR #7857)
+- Run the script `tools/single_use/update_violations_resolved_hashes.sql.php` to update hashes
+  for the `violations_resolved` table according to the new hashing nomenclature. Not doing so 
+  will result in duplication of data in the `violations_resolved` table when users update
+  a resolution status for a violation.
+
+### Notes For Developers
+- Require jsodc comments to have correct `@return` and `@param` values in javascript (PR #8266)
+- Disable ESLint on build (prod instances) (PR #8229)
+
+
+
+## LORIS 24.1 (Release Date: 2022-10-05)
 ### Core
 #### Updates and Improvements
 - Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
@@ -21,10 +145,10 @@ changes in the following format: PR #1234***
   present in the "Could not identify scan" page of the MRI violation module (PR #8156)
 - Modification of the list of headers displayed in the image panel headers table (PR #8157)
 #### Bug Fixes
-- Bug fix to the imaging uploader so that when clicking on an upload row, the row is 
+- Bug fix to the imaging uploader so that when clicking on an upload row, the row is
   highlighted and the proper log is being displayed in the log viewer (PR #8154)
 - Remove SNR label from the image panel of the imaging browser when no SNR values can
-be found for the image (PR #8155)
+  be found for the image (PR #8155)
 - Add the missing download buttons for BVAL, BVEC and JSON files that comes with BIDS/NIfTI
   dataset/images. In addition, the "Download MINC" button has been renamed to a more generic
   label "Download Image" (PR #8159)
@@ -34,10 +158,10 @@ be found for the image (PR #8155)
 - Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
 - Add support for PHP 8.1 (PR #7989)
 - Fix Project tab of Configuration module to give correct errors, and prevent saving without Alias (PR #8349)
+- Fix BVL feedback summary in instruments (PR #8889)
 ### Modules
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
-
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
@@ -70,7 +194,7 @@ on the naming format of a Basic Date or `MonthYear` field. (PR #6923)
 - React Form Select Element now has the ability to set an option in the element 
 as a disabled option. (PR #7306)
 - Pending accounts in Dashboard now includes DCC users (PR #7054)
-- Subproject filter added to Behavioural QC module (PR #7430)
+- Cohort filter added to Behavioural QC module (PR #7430)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - Addition of new tables to store PET HRRT data (PR #6142)
 - Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
@@ -87,6 +211,7 @@ multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` 
 from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the 
 default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+- The statistics displayed in the dashboard was changed to only show the data relevant to the user's site(s). (PR #8132)
 
 #### Bug Fixes
 - A LINST instrument Date field name now appears correctly (not truncated) on the 
@@ -115,6 +240,7 @@ if a candidate has some visits that the user should not see. Fixes error where p
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Adding `GET /sites` endpoint to list available sites in version 0.0.4-dev.
 - Addition of a PATCH request for `/candidates/$CandID/$VisitLabel` to start next 
 stage when the payload contains a "Visit" stage with "In Progress" as Status, 
 when the current status of the Visit stage is "Not Started". (PR #7479)
@@ -155,7 +281,7 @@ inefficient code and conditional display of select options based on previous sel
 - The dataquery module user interface has been completely redesigned. (PR #6908)
 #### EEG Browser
 - Signal Visualization, Events and Electrode map (PR #7387)
-- Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+- Site/Project/cohort filters only displays entries user has permission for. (PR #7400)
 - Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
 on the session page to support new annotation features (PR #7345)
 - New integration test class added to this module (PR #6922)
@@ -201,7 +327,7 @@ user name match email address" and "Generate new password". (PR #6803)
 - New tool `generate_candidate_externalids.php` to fill external IDs for all 
 candidates where a NULL value is found. (PR #7095)
 - New tool `populate_visits.php` to back-populate visits from the `config.xml`, 
-`session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+`session` table and `Visit_Windows` table into the `visit` and `visit_project_cohort_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
 - Fixes a bug in the way that the data dictionary entries associated to MRI comments were named in the CouchDB database (PR #7082).
 
@@ -227,8 +353,8 @@ scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `RegistrationProjectID` column of the candidate table and the `ProjectID` column of the session table 
 in the database are no longer nullable. This means that a value must be set in these fields BEFORE running 
 the release SQL patch or it will fail.
-- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getSubprojectIDUsingCandID`, 
-adding the ability to determine which subproject a candidate belongs to given their most recent visit.
+- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getCohortIDUsingCandID`, 
+adding the ability to determine which cohort a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the `getFullName()` and `getSubtestList()`
 functions thus making entries in the `test_names` and `instrument_subtests` tables 
 unnecessary for LINST instruments (PR #7169)
@@ -345,7 +471,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 - Projects filter only displays projects user has permission for. (PR #6706)
 
 #### Genomic Browser
-- In Profile and SNP screens, display subproject title instead of id. (PR #6633)
+- In Profile and SNP screens, display cohort title instead of id. (PR #6633)
 
 #### Survey
 - Fix Notice error logs and infinite redirect. (PR #6644)
@@ -355,6 +481,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 
 #### DQT
 - Improve the visibility of some dropdown elements (PR #6602)
+- ADD delete the saved query feature (PR #8078)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database

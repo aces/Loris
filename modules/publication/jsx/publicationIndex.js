@@ -1,6 +1,10 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Publication index component
@@ -8,7 +12,6 @@ import PublicationUploadForm from './uploadForm.js';
 class PublicationIndex extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -58,6 +61,7 @@ class PublicationIndex extends React.Component {
 
   /**
    * Update filter
+   *
    * @param {*} filter
    */
   updateFilter(filter) {
@@ -156,7 +160,6 @@ class PublicationIndex extends React.Component {
    * @param {*} cell
    * @param {object} rowData
    * @param {string[]} rowHeaders
-   *
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -185,13 +188,16 @@ class PublicationIndex extends React.Component {
     return <td className={classes}>{cell}</td>;
   }
 }
+PublicationIndex.propTypes = {
+  DataURL: PropTypes.string,
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-  const publicationIndex = (
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>
   );
-
-  ReactDOM.render(publicationIndex, document.getElementById('lorisworkspace'));
 });

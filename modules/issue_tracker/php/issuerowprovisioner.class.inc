@@ -35,9 +35,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance with the issues
+     * @param \LORIS\LorisInstance $loris the LORIS instance with the issues
      */
-    function __construct(\LORIS\LorisInstance $loris)
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -48,14 +48,15 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $loris->getAllSites()
         );
         $userID = $user->getUsername();
+
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
                     i.title,
                     m.name as module,
                     i.category,
-                    i.reporter,
-                    i.assignee,
+                    CONCAT(uReporter.First_name, ' ', uReporter.Last_name),
+                    CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name),
                     i.status,
                     i.priority,
                     i.centerID as centerId,
@@ -77,6 +78,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = w.issueID AND w.userID=:username)
             LEFT JOIN issues_comments ic
               ON (i.issueID = ic.issueID)
+            JOIN users uReporter
+              ON (i.reporter = uReporter.UserID)
+            LEFT JOIN users uAssignee
+              ON (i.assignee = uAssignee.UserID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
             ['username' => $userID]
@@ -99,10 +104,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         static $modules = [];
 
         $mname  = $row['module'];
-        $module = new \NullModule();
+        $module = new \NullModule($this->loris);
         if (!empty($mname)) {
             if (!isset($modules[$mname])) {
-                $modules[$mname] = \Module::factory($mname);
+                $modules[$mname] = $this->loris->getModule($mname);
             }
             $module = &$modules[$mname];
         }

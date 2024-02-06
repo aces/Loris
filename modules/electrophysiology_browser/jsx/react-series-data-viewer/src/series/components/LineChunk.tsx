@@ -1,15 +1,21 @@
 import * as R from 'ramda';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
 import {vec2} from 'gl-matrix';
-import {colorOrder} from '../../color';
 import {Chunk} from '../store/types';
 import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
+import {colorOrder} from '../../color';
 
 const LineMemo = R.memoizeWith(
-  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex}) =>
-    `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
-  + `${channelIndex}-${traceIndex}-${chunkIndex}`,
+  ({amplitudeScale, interval, filters,
+     channelIndex, traceIndex, chunkIndex,
+     isStacked, DCOffset, numChannels,
+     numChunks, previousPoint,
+  }) =>
+    `${amplitudeScale},${interval.join('-')},${filters.join('-')},`
+    + `${channelIndex}-${traceIndex}-${chunkIndex},`
+    + `${isStacked},${DCOffset},${numChannels},`
+    + `${numChunks},${previousPoint}`,
   ({
     channelIndex,
     traceIndex,
@@ -19,9 +25,13 @@ const LineMemo = R.memoizeWith(
     amplitudeScale,
     filters,
     values,
-    color,
+    isStacked,
+    DCOffset,
+    numChannels,
+    numChunks,
+    previousPoint,
     ...rest
-}) => {
+   }) => {
     const scales = [
       scaleLinear()
         .domain(interval)
@@ -31,21 +41,37 @@ const LineMemo = R.memoizeWith(
         .range([-0.5, 0.5]),
     ];
 
-    const points = values.map((value, i) =>
-      vec2.fromValues(
-        scales[0](
-          interval[0] + (i / values.length) * (interval[1] - interval[0])
-        ),
-        -scales[1](value)
+    const points = previousPoint === null
+      ? []
+      : [
+        vec2.fromValues(
+          scales[0](
+            interval[0] - (1 / values.length) * (interval[1] - interval[0])
+          ),
+          -(scales[1](previousPoint) - DCOffset)
+        )
+    ];
+
+    points.push(
+      ...values.map((value, i) =>
+        vec2.fromValues(
+          scales[0](
+            interval[0] + (i / values.length) * (interval[1] - interval[0])
+          ),
+          -(scales[1](value) - DCOffset)
+        )
       )
     );
 
     return (
       <LinePath
+        className={`channel-${channelIndex}`}
         vectorEffect="non-scaling-stroke"
         data={points}
         strokeWidth={1}
-        stroke={color}
+        stroke={isStacked
+          ? colorOrder(channelIndex.toString()).toString()
+          : '#999'}
         {...rest}
       />
     );
@@ -59,10 +85,37 @@ type CProps = {
   chunk: Chunk,
   seriesRange: [number, number],
   amplitudeScale: number,
-  scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>],
-  color?: string
+  scales: [
+    ScaleLinear<number, number, never>,
+    ScaleLinear<number, number, never>,
+  ],
+  physioFileID: number,
+  isHovered: boolean,
+  isStacked: boolean,
+  withDCOffset: number,
+  numChannels: number,
+  numChunks: number,
+  previousPoint: number | null,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.channelIndex
+ * @param root0.traceIndex
+ * @param root0.chunkIndex
+ * @param root0.chunk
+ * @param root0.seriesRange
+ * @param root0.amplitudeScale
+ * @param root0.scales
+ * @param root0.physioFileID
+ * @param root0.isHovered
+ * @param root0.isStacked
+ * @param root0.withDCOffset
+ * @param root0.numChannels
+ * @param root0.numChunks
+ * @param root0.previousPoint
+ */
 const LineChunk = ({
   channelIndex,
   traceIndex,
@@ -71,9 +124,15 @@ const LineChunk = ({
   seriesRange,
   amplitudeScale,
   scales,
-  color,
+  physioFileID,
+  isHovered,
+  isStacked,
+  withDCOffset,
+  numChannels,
+  numChunks,
+  previousPoint,
   ...rest
-}: CProps) => {
+ }: CProps) => {
   const {interval, values} = chunk;
 
   if (values.length === 0) {
@@ -89,16 +148,14 @@ const LineChunk = ({
     (range[0] + range[1]) / 2
   );
 
-  const lineColor = colorOrder(channelIndex.toString()) || '#999';
-
   return (
     <Group
-      style={{clipPath: 'url(#lineChunk)'}}
+      // style={{clipPath: 'url(#lineChunk-' + physioFileID + ')'}}
       top={-p0[1]}
     >
       <Group
-        transform={'translate(' + p0[0] + ' 0)' +
-                   'scale(' + chunkLength + ' ' + chunkHeight + ')'
+        transform={'translate(' + p0[0] + ' 0) ' +
+          'scale(' + chunkLength + ' ' + chunkHeight + ')'
         }
       >
         <LineMemo
@@ -111,7 +168,11 @@ const LineChunk = ({
           seriesRange={seriesRange}
           amplitudeScale={amplitudeScale}
           filters={chunk.filters}
-          color={lineColor}
+          isStacked={isStacked}
+          DCOffset={withDCOffset}
+          numChannels={numChannels}
+          numChunks={numChunks}
+          previousPoint={previousPoint}
         />
       </Group>
     </Group>

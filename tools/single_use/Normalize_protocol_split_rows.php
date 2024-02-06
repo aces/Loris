@@ -21,13 +21,14 @@ require_once 'Utility.class.inc';
  * Converts an array of arrays of values for different fields into
  * an array of unique combinations of the different values.
  */
-function cartesian($input) {
+function cartesian($input)
+{
     // filter out empty values
-    $result = array(array());
+    $result = [[]];
     foreach ($input as $key => $values) {
-        $append = array();
-        foreach($result as $product) {
-            foreach($values as $item) {
+        $append = [];
+        foreach ($result as $product) {
+            foreach ($values as $item) {
                 $product[$key] = $item;
                 // remove $key with empty value so that
                 // an empty string isn't inserted into the database instead of a default NULL value
@@ -42,14 +43,14 @@ function cartesian($input) {
     return $result;
 }
 
-function split_commas($table_name) {
-    $DB = \Database::singleton();
+function split_commas($table_name, $DB)
+{
     // Get the list of unique IDs from the table
-    $rows = $DB->pselect("SELECT * FROM ".$table_name."", array());
+    $rows         = $DB->pselect("SELECT * FROM ".$table_name."", []);
     $total_commas = 0;
     foreach ($rows as $row) {
         $num_commas = 0;
-        foreach($row as $key => $value) {
+        foreach ($row as $key => $value) {
             if ($key == "ID") {
                 $id = $row[$key];
             }
@@ -68,7 +69,7 @@ function split_commas($table_name) {
             $DB->insert($table_name, $combination);
         }
         // remove the row for the original ID
-        $DB->delete($table_name, array("ID" => $id));
+        $DB->delete($table_name, ["ID" => $id]);
     }
     if ($total_commas == 0) {
         echo("$table_name: No commas have been detected in $table_name. The table has been unaltered.\n\n");
@@ -77,7 +78,7 @@ function split_commas($table_name) {
     }
 }
 
-$tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
+$tables_to_normalize = ["mri_protocol", "mri_protocol_checks"];
 foreach ($tables_to_normalize as $table) {
-    split_commas($table);
+    split_commas($table, $lorisInstance->getDatabaseConnection());
 }

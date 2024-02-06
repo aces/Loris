@@ -185,7 +185,6 @@ class UploadFileForm extends Component {
             }
           });
       } else if (!response.ok) {
-        console.log(response);
         const body = await response.json();
         let msg;
         if (body && body.error) {

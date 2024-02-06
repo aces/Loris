@@ -3,7 +3,6 @@
  *
  * @author Loris Team
  * @version 1.1.0
- *
  */
 
 import React, {Component} from 'react';
@@ -71,7 +70,7 @@ class Tabs extends Component {
    * tab. If this.props.updateURL is set, update the window
    * URL and scroll to the top of the page.
    *
-   * @param {int} tabId -- The tab clicked on
+   * @param {number} tabId -- The tab clicked on
    * @param {Event} e -- The click event
    */
   handleClick(tabId, e) {
@@ -167,6 +166,8 @@ Tabs.propTypes = {
   tabs: PropTypes.array.isRequired,
   defaultTab: PropTypes.string,
   updateURL: PropTypes.bool,
+  onTabChange: PropTypes.func,
+  children: PropTypes.node,
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
@@ -219,7 +220,7 @@ class VerticalTabs extends Component {
    * tab. If this.props.updateURL is set, update the window
    * URL and scroll to the top of the page.
    *
-   * @param {int} tabId -- The tab clicked on
+   * @param {number} tabId -- The tab clicked on
    * @param {Event} e -- The click event
    */
   handleClick(tabId, e) {
@@ -320,6 +321,8 @@ VerticalTabs.propTypes = {
   tabs: PropTypes.array.isRequired,
   defaultTab: PropTypes.string,
   updateURL: PropTypes.bool,
+  onTabChange: PropTypes.func,
+  children: PropTypes.node,
 };
 VerticalTabs.defaultProps = {
   onTabChange: function() {},
@@ -361,6 +364,7 @@ TabPane.propTypes = {
   TabId: PropTypes.string.isRequired,
   Title: PropTypes.string,
   activeTab: PropTypes.string,
+  children: PropTypes.node,
 };
 
 export {

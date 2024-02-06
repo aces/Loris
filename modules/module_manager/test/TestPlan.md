@@ -1,6 +1,6 @@
 # Module Manager Test Plan
 
-1. Verify that the module loads with either `module_manager_view` or `module_manager_edit`
+1. Verify that the module loads with either `module_manager_view` (Module Manager: View Installed Modules) or `module_manager_edit` (Module Manager: Edit Installed Modules)
    permissions [automated]
 2. Verify that the module has a permission denied error with neither of the above permissions
    [automated]

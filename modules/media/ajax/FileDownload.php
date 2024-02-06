@@ -17,7 +17,7 @@
 $user =& User::singleton();
 //NOTE Should this be 'media_read' instead? It seems that downloading files
 //should be a read permission, not write.
-if (!$user->hasPermission('media_write')) {
+if (!$user->hasPermission('media_read')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }

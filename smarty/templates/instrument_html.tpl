@@ -41,7 +41,7 @@
         Visit to Site
       </th>
       <th>
-        Subproject
+        Cohort
       </th>
       <th>
         MR Scan Done
@@ -94,7 +94,7 @@
         {$timePoint.PSC}
       </td>
       <td>
-        {$timePoint.SubprojectTitle}
+        {$timePoint.CohortTitle}
       </td>
       <td>
         {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}

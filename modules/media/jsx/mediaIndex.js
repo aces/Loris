@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -64,6 +65,7 @@ class MediaIndex extends Component {
   /**
    * Insert row of data into table after successful
    * file upload and display recent data.
+   *
    * @param {object} data - row to add to table
    */
   insertRow(data) {
@@ -79,7 +81,6 @@ class MediaIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} value - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, value) {
@@ -97,13 +98,12 @@ class MediaIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
-   * @return {*} a formated table cell for a given column
+   * @return {React.ReactElement|void} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
     cell = this.mapColumn(column, cell);
     // Set class to 'bg-danger' if file is hidden.
-    const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
+    const style = (row['File Visibility'] === 'hidden') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
     case 'File Name':
@@ -283,11 +283,12 @@ MediaIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <MediaIndex
       dataURL={`${loris.BaseURL}/media/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

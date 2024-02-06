@@ -89,7 +89,14 @@ if (is_dir($basePath . "project/modules/$Module")
 
 $public = false;
 try {
-    $m = Module::factory($Module);
+    // GetModule doesn't use the database or ndb_config, so for now
+    // just pass a fake one to the constructor
+    $loris = new \LORIS\LorisInstance(
+        new \Database(),
+        new \NDB_Config(),
+        [__DIR__ . "/../project/modules", __DIR__ . "/../modules"]
+    );
+    $m     = $loris->getModule($Module);
 
     $public = $m->isPublicModule();
 } catch (LorisModuleMissingException $e) {

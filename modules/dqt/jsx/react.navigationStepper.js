@@ -49,6 +49,8 @@ NavigationStepper.defaultProps = {
 };
 NavigationStepper.propTypes = {
   visible: PropTypes.bool,
+  stepperClicked: PropTypes.func,
+  setIndex: PropTypes.func,
 };
 
 const NavigationWithSave = (props) => {
@@ -146,6 +148,7 @@ NavigationWithSave.propTypes = {
   onClickHandler: PropTypes.func,
   disable: PropTypes.object,
   visible: PropTypes.bool,
+  index: PropTypes.number,
 };
 
 export {

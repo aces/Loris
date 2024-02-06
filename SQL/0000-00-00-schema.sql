@@ -4,36 +4,38 @@
 
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `Name` VARCHAR(255) NULL,
+    `Name` VARCHAR(255) NOT NULL,
     `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
-    PRIMARY KEY (`ProjectID`)
+    PRIMARY KEY (`ProjectID`),
+    UNIQUE KEY `u_ProjectName` (`Name`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
-CREATE TABLE `subproject` (
-    `SubprojectID` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE `cohort` (
+    `CohortID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
     `useEDC` boolean,
     `WindowDifference` enum('optimal', 'battery'),
     `RecruitmentTarget` int(10) unsigned,
-    PRIMARY KEY (SubprojectID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
+    PRIMARY KEY (CohortID),
+    UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Cohorts used in Loris';
 
 
-INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
+INSERT INTO cohort (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_subproject_rel` (
-  `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `project_cohort_rel` (
+  `ProjectCohortRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ProjectID` int(10) unsigned NOT NULL,
-  `SubprojectID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ProjectSubprojectRelID`),
-  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
-  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
-  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
+  `CohortID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ProjectCohortRelID`),
+  CONSTRAINT `UK_project_cohort_rel_ProjectID_CohortID` UNIQUE KEY (ProjectID, CohortID),
+  CONSTRAINT `FK_project_cohort_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_cohort_rel_CohortID` FOREIGN KEY (`CohortID`) REFERENCES `cohort` (`CohortID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -185,7 +187,7 @@ CREATE TABLE `session` (
   `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(10) unsigned DEFAULT NULL,
+  `CohortID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') NOT NULL DEFAULT 'Not Started',
   `Date_stage_change` date DEFAULT NULL,
@@ -193,6 +195,7 @@ CREATE TABLE `session` (
   `Date_screening` date DEFAULT NULL,
   `Visit` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_visit` date DEFAULT NULL,
+  `Date_status_change` date DEFAULT NULL,
   `Approval` enum('In Progress','Pass','Failure') DEFAULT NULL,
   `Date_approval` date DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -216,11 +219,11 @@ CREATE TABLE `session` (
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
-  KEY `SessionSubproject` (`SubprojectID`),
+  KEY `SessionCohort` (`CohortID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`CohortID`) REFERENCES `cohort` (`CohortID`),
   CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
@@ -249,7 +252,7 @@ CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
-  `Sub_group` int(11) unsigned default NULL,
+  `Sub_group` int(11) unsigned NOT NULL,
   `IsDirectEntry` boolean default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
@@ -279,12 +282,10 @@ CREATE TABLE `flag` (
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
-  KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
   KEY `flag_Test_name` (`Test_name`),
@@ -318,7 +319,7 @@ CREATE TABLE `test_battery` (
   `AgeMaxDays` int(10) unsigned default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
-  `SubprojectID` int(11) default NULL,
+  `CohortID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
@@ -678,15 +679,15 @@ CREATE TABLE `mri_protocol_group_target` (
      `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
      `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
-     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
+     `CohortID`             INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`              VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY (`MriProtocolGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
      CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
+     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)       REFERENCES `cohort` (`CohortID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
     VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
 
 
@@ -760,15 +761,15 @@ CREATE TABLE `mri_protocol_checks_group_target` (
      `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
      `ProjectID`                      INT(10) UNSIGNED DEFAULT NULL,
-     `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
+     `CohortID`                   INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY(`MriProtocolChecksGroupTargetID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
+     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`CohortID`)             REFERENCES `cohort` (`CohortID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
     VALUES((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
 
 
@@ -939,6 +940,8 @@ CREATE TABLE `MRICandidateErrors` (
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
   `EchoTime` double DEFAULT NULL,
+  `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL,
+  `EchoNumber`             VARCHAR(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_tarchive_MRICandidateError_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -978,7 +981,8 @@ CREATE TABLE `violations_resolved` (
   `User` varchar(255) DEFAULT NULL,
   `ChangeDate` datetime DEFAULT NULL,
   `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `i_violations_resolved_extid_type` (`ExtID`,`TypeTable`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_violated_scans` (
@@ -1281,7 +1285,6 @@ CREATE TABLE `participant_accounts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `SessionID` int(6) DEFAULT NULL,
   `Test_name` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL,
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
   `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
@@ -1528,7 +1531,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID','watching') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -1725,6 +1728,7 @@ INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
   ('laterality','Laterality','text','Laterality of (paired) body part examined. Required if the body part examined is a paired structure and Image Laterality (0020,0062) or Frame Laterality (0020,9072) are not sent. DICOM:0020_0060','parameter_file'),
   ('position_reference_indicator','PositionReferenceIndicator','text','Part of the imaging target used as a reference. DICOM:0020_1040','parameter_file'),
   ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file'),
+  ('HEDVersion', 'HEDVersion', 'text', 'HED Schema Version','physiological_parameter_file'),
   ('PhaseEncodingDirection',NULL,'text','BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)','parameter_file');
 
 CREATE TABLE `parameter_type_category` (
@@ -2274,7 +2278,7 @@ CREATE TABLE `consent` (
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
@@ -2290,7 +2294,7 @@ CREATE TABLE `candidate_consent_history` (
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2303,17 +2307,43 @@ CREATE TABLE `visit` (
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `visit_project_subproject_rel` (
-  `VisitProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `visit_project_cohort_rel` (
+  `VisitProjectCohortRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `VisitID` int(10) unsigned NOT NULL,
-  `ProjectSubprojectRelID` int(10) unsigned NOT NULL,
-  CONSTRAINT PK_visit_project_subproject_rel PRIMARY KEY (`VisitProjectSubprojectRelID`),
-  CONSTRAINT UK_visit_project_subproject_rel_VisitID_ProjectSubprojectRelID UNIQUE KEY (`VisitID`, `ProjectSubprojectRelID`),
-  CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
+  `ProjectCohortRelID` int(10) unsigned NOT NULL,
+  CONSTRAINT PK_visit_project_cohort_rel PRIMARY KEY (`VisitProjectCohortRelID`),
+  CONSTRAINT UK_visit_project_cohort_rel_VisitID_ProjectCohortRelID UNIQUE KEY (`VisitID`, `ProjectCohortRelID`),
+  CONSTRAINT FK_visit_project_cohort_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
-    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_visit_project_cohort_rel_ProjectCohortRelID FOREIGN KEY (`ProjectCohortRelID`)
+    REFERENCES `project_cohort_rel`(`ProjectCohortRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Diagnosis Evolution
+CREATE TABLE `diagnosis_evolution` (
+  `DxEvolutionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) DEFAULT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `visitLabel` varchar(255) DEFAULT NULL,
+  `instrumentName` varchar(255) DEFAULT NULL,
+  `sourceField` varchar(255) DEFAULT NULL,
+  `orderNumber` int(10) unsigned DEFAULT NULL,
+  CONSTRAINT `PK_diagnosis_evolution` PRIMARY KEY (`DxEvolutionID`),
+  CONSTRAINT `UK_diagnosis_evolution_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `FK_diagnosis_evolution_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_diagnosis_evolution_instrumentName` FOREIGN KEY (`instrumentName`) REFERENCES `test_names` (`Test_name`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_diagnosis_evolution_rel` (
+  `CandID` int(6) NOT NULL,
+  `DxEvolutionID` int(10) unsigned NOT NULL,
+  `Diagnosis` text DEFAULT NULL,
+  `Confirmed` enum('Y', 'N') DEFAULT NULL,
+  `LastUpdate` datetime NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+  CONSTRAINT `PK_candidate_diagnosis_evolution_rel` PRIMARY KEY (`CandID`, `DxEvolutionID`),
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_DxEvolutionID` FOREIGN KEY (`DxEvolutionID`) REFERENCES `diagnosis_evolution` (`DxEvolutionID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Publication Status
 CREATE TABLE `publication_status` (
@@ -2346,6 +2376,13 @@ CREATE TABLE `publication` (
     `Title` varchar(255) NOT NULL,
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
+    `journal` varchar(255) DEFAULT NULL,
+    `doi` text DEFAULT NULL,
+    `datePublication` date DEFAULT NULL,
+    `link` varchar(255) DEFAULT NULL,
+    `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `project` int(10) unsigned DEFAULT NULL,
+    CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
@@ -2429,3 +2466,68 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE dataquery_queries (
+    QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    Query JSON NOT NULL,
+    PRIMARY KEY (QueryID)
+    -- FOREIGN KEY (Owner) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_query_names (
+    QueryID int(10) unsigned NOT NULL,
+    UserID int(10) unsigned NOT NULL,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY (QueryID, UserID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+
+CREATE TABLE dataquery_run_queries (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    QueryID int(10) unsigned,
+    UserID int(10) unsigned,
+    RunTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (RunID),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (UserID) REFERENCES users(ID)
+);
+CREATE TABLE dataquery_shared_queries_rel (
+    QueryID int(10) unsigned,
+    SharedBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (SharedBy) REFERENCES users(ID),
+    CONSTRAINT unique_share UNIQUE (QueryID, SharedBy)
+);
+
+CREATE TABLE dataquery_starred_queries_rel (
+    QueryID int(10) unsigned,
+    StarredBy int(10) unsigned,
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (StarredBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, StarredBy)
+);
+
+CREATE TABLE dataquery_run_results (
+    RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
+    CandID int(6) NOT NULL,
+    -- JSON or same format that's streamed in?
+    RowData LONGTEXT DEFAULT NULL,
+
+    PRIMARY KEY (RunID, CandID),
+    FOREIGN KEY (CandID) REFERENCES candidate(CandID),
+    FOREIGN KEY (RunID) REFERENCES dataquery_run_queries(RunID)
+);
+
+CREATE TABLE dataquery_study_queries_rel (
+    QueryID int(10) unsigned,
+    PinnedBy int(10) unsigned,
+    -- A top query shows on the top of the dataquery tool similarly
+    -- to a saved query but is chosen by admins, a dashboard query
+    -- shows the number of matching results on the LORIS dashboard.
+    Name varchar(255) NOT NULL,
+    PinType enum('topquery', 'dashboard'),
+    FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
+    FOREIGN KEY (PinnedBy) REFERENCES users(ID),
+    CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
+);

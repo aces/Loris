@@ -132,13 +132,16 @@ Step.propTypes = {
   onClick: PropTypes.func,
   active: PropTypes.bool,
   highlightSteps: PropTypes.bool,
+  width: PropTypes.number,
+  index: PropTypes.number,
+  length: PropTypes.number,
+  activeIndex: PropTypes.number,
 };
 
 /**
  * Stepper component.
  *
  * @description guides the user with steps to complete a task.
- *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -186,13 +189,17 @@ const StepperPanel = (props) => {
     </div>
   );
 };
+StepperPanel.propTypes = {
+  TabId: PropTypes.string,
+  active: PropTypes.bool,
+  content: PropTypes.element,
+};
 
 /**
  * ProgressBar component.
  *
  * @description ProgressBar used for DQT loading status
  * and showing or hiding the Stepper component.
- *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */

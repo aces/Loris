@@ -1,4 +1,5 @@
 project
+p_*/
 smarty/templates_c
 .gitmodules
 project-*

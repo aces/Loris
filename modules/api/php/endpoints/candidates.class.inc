@@ -148,7 +148,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $candID = new CandID($pscids[0]["CandID"]);
         }
 
-        $candidate = \NDB_Factory::singleton()->candidate($candID);
+        try {
+            $candidate = \NDB_Factory::singleton()->candidate($candID);
+        } catch (\DomainException $e) {
+            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+        }
 
         if (!$candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden();
@@ -239,8 +243,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $candid = \Candidate::createNew(
                 new \CenterID("$centerid"),
-                $data['Candidate']['DoB'],
-                $data['Candidate']['EDC'],
+                $data['Candidate']['DoB'] ?? null,
+                $data['Candidate']['EDC'] ?? null,
                 $sex,
                 $pscid,
                 $project->getId()

@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -17,6 +18,7 @@ class ImagingQCIndex extends Component {
       ImgData: {},
       isLoadedImg: false,
       imgFilter: {},
+      error: '',
     };
     this.fetchData = this.fetchData.bind(this);
   }
@@ -27,7 +29,6 @@ class ImagingQCIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -44,6 +45,7 @@ class ImagingQCIndex extends Component {
                        + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
+        break;
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
           let imgURL = loris.BaseURL
@@ -51,6 +53,7 @@ class ImagingQCIndex extends Component {
                        + row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
+        break;
       case 'Tarchive':
         if (cell == 'In DICOM') {
           let tarchiveURL = loris.BaseURL +
@@ -74,15 +77,23 @@ class ImagingQCIndex extends Component {
    *
    * @param {string} url
    * @param {object} state - The React state object
-   *
    * @return {object}
    */
   fetchData(url, state) {
     return fetch(url, {credentials: 'same-origin'})
-        .then((resp) => resp.json())
-        .then((data) => this.setState({[state]: data}))
-        .catch((error) => {
-            this.setState({error: true});
+      .then((resp) => {
+        return resp.text();
+      })
+      .then((data) => {
+        if (data === 'MRI Parameter Form table does not exist') {
+          this.setState({error: data});
+        } else {
+          this.setState({[state]: JSON.parse(data)});
+        }
+      })
+      .catch((error) => {
+          this.setState({error: error});
+          console.log(error);
       });
   }
 
@@ -127,10 +138,10 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: 'Subproject', show: true, filter: {
-            name: 'subproject',
+          label: 'Cohort', show: true, filter: {
+            name: 'cohort',
             type: 'select',
-            options: ImgOptions.subproject,
+            options: ImgOptions.cohort,
           },
         },
         {
@@ -216,7 +227,21 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          <h3>An error occurred while loading the page.</h3>
+            {this.state.error === 'MRI Parameter Form table does not exist' ?
+              <>
+                <h3>
+                  The MRI parameter form instrument must be
+                  installed in-order to use this module.
+                </h3>
+                <p>
+                  Please contact your administrator
+                  if you require this functionality.
+                </p>
+              </> :
+              <h3>
+                An error occurred while loading the page.
+              </h3>
+            }
         </div>
       );
     }
@@ -229,12 +254,13 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 

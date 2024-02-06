@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -56,7 +57,6 @@ class IssueTrackerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -102,7 +102,7 @@ class IssueTrackerIndex extends Component {
         break;
       default:
         result = <td>None</td>;
-      };
+      }
       break;
     case 'Site':
       // if cell is an array containing all sites values
@@ -281,11 +281,12 @@ IssueTrackerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <IssueTrackerIndex
       dataURL={`${loris.BaseURL}/issue_tracker/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

@@ -42,7 +42,7 @@ class FilterableDataTable extends Component {
     this.updateQueryParams(filters);
     this.setState({filters});
     if (this.props.updateFilterCallback) {
-      this.props.updateFilterCallback(filter);
+      this.props.updateFilterCallback(filters);
     }
   }
 
@@ -69,7 +69,7 @@ class FilterableDataTable extends Component {
    *
    * @param {string} name
    * @param {*}      value
-   * @param {bool}   exactMatch
+   * @param {boolean}   exactMatch
    */
   addFilter(name, value, exactMatch) {
     const filters = this.state.filters;
@@ -160,6 +160,7 @@ class FilterableDataTable extends Component {
         getMappedCell={this.props.getMappedCell}
         folder={this.props.folder}
         nullTableShow={this.props.nullTableShow}
+        noDynamicTable={this.props.noDynamicTable}
       />
     );
 
@@ -175,6 +176,7 @@ class FilterableDataTable extends Component {
 
 FilterableDataTable.defaultProps = {
   columns: 3,
+  noDynamicTable: false,
 };
 
 FilterableDataTable.propTypes = {
@@ -187,6 +189,12 @@ FilterableDataTable.propTypes = {
   getFormattedCell: PropTypes.func,
   actions: PropTypes.array,
   updateFilterCallback: PropTypes.func,
+  noDynamicTable: PropTypes.bool,
+  loading: PropTypes.element,
+  getMappedCell: PropTypes.func,
+  folder: PropTypes.element,
+  nullTableShow: PropTypes.element,
+  children: PropTypes.node,
 };
 
 export default FilterableDataTable;

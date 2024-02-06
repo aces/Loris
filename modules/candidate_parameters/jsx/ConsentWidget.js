@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
+
 /**
  * A Widget to display consent information for a candidate in
  * LORIS
  *
  * @param {array} props - The React props
- *
  * @return {object} - The rendered widget
  */
 function ConsentWidget(props) {
@@ -25,12 +26,14 @@ function ConsentWidget(props) {
         </tbody>
     </table>);
 }
+ConsentWidget.propTypes = {
+  Consents: PropTypes.array,
+};
 
 /**
  * Returns a rendered JSX component for a single consent type
  *
  * @param {array} consent - The type of consent
- *
  * @return {object}
  */
 function consentTerm(consent) {

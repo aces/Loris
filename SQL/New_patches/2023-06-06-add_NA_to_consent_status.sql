@@ -1,0 +1,2 @@
+ALTER TABLE candidate_consent_rel MODIFY COLUMN `Status` enum('yes', 'no', 'not_applicable') DEFAULT NULL;
+ALTER TABLE candidate_consent_history MODIFY COLUMN `Status` enum('yes', 'no', 'not_applicable') DEFAULT NULL;

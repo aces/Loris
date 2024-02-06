@@ -1,5 +1,3 @@
-/* exported RPaginationLinks */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -35,7 +33,7 @@ class PaginationLinks extends Component {
    * Creates an onClick Event Handler
    * execyting this.props.onChangePage(i)
    *
-   * @param {int} i - Page index
+   * @param {number} i - Page index
    * @return {function(event)} - onClick Event Handler
    */
   changePage(i) {
@@ -134,15 +132,14 @@ class PaginationLinks extends Component {
 PaginationLinks.propTypes = {
   onChangePage: PropTypes.func,
   Total: PropTypes.number.isRequired,
+  RowsPerPage: PropTypes.number,
+  Active: PropTypes.number,
 };
 PaginationLinks.defaultProps = {
   RowsPerPage: 10,
   Active: 1,
 };
 
-let RPaginationLinks = React.createFactory(PaginationLinks);
-
 window.PaginationLinks = PaginationLinks;
-window.RPaginationLinks = RPaginationLinks;
 
 export default PaginationLinks;

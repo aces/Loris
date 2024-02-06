@@ -1,6 +1,15 @@
 import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    TextboxElement,
+    StaticElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
@@ -9,7 +18,6 @@ import swal from 'sweetalert2';
  * @author Alex Ilea
  * @author Victoria Foing
  * @version 1.0.0
- * @since 2017/04/01
  */
 class UploadForm extends Component {
   /**
@@ -253,6 +261,7 @@ class UploadForm extends Component {
   /**
    * Uploads file to the server, listening to the progress
    * in order to get the percentage uploaded as value for the progress bar
+   *
    * @param {boolean} overwriteFile
    */
   uploadFile(overwriteFile) {
@@ -320,6 +329,7 @@ class UploadForm extends Component {
 
   /**
    * Process XMLHttpRequest errors
+   *
    * @param {XMLHttpRequest} xhr - XMLHttpRequest
    */
   processError(xhr) {
@@ -488,8 +498,12 @@ class UploadForm extends Component {
     );
   }
 }
-
-UploadForm.propTypes = {};
+UploadForm.propTypes = {
+  form: PropTypes.func,
+  mriList: PropTypes.array,
+  imagingUploaderAutoLaunch: PropTypes.string,
+  maxUploadSize: PropTypes.string,
+};
 UploadForm.defaultProps = {};
 
 export default UploadForm;

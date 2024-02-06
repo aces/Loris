@@ -3,9 +3,9 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
@@ -49,6 +49,12 @@ class CategoryItem extends Component {
     );
   }
 }
+CategoryItem.propTypes = {
+  selected: PropTypes.bool,
+  count: PropTypes.number,
+  onClick: PropTypes.func,
+  name: PropTypes.string,
+};
 
 /**
  * CategoryList Component
@@ -71,8 +77,9 @@ class CategoryList extends Component {
 
   /**
    * select category handler
+   *
    * @param {string} category
-   * @return {function} - A callback executed when the event is triggered
+   * @return {Function} - A callback executed when the event is triggered
    */
   selectCategoryHandler(category) {
     return ((evt) => {
@@ -110,6 +117,10 @@ class CategoryList extends Component {
     );
   }
 }
+CategoryList.propTypes = {
+  onCategorySelect: PropTypes.func,
+  items: PropTypes.array,
+};
 
 /**
  * FieldItem Component
@@ -132,6 +143,7 @@ class FieldItem extends Component {
 
   /**
    * visit select
+   *
    * @param {object} evt - An event
    */
   visitSelect(evt) {
@@ -231,6 +243,17 @@ class FieldItem extends Component {
     );
   }
 }
+FieldItem.propTypes = {
+  Category: PropTypes.string,
+  FieldName: PropTypes.string,
+  fieldVisitSelect: PropTypes.func,
+  selected: PropTypes.bool,
+  Visits: PropTypes.object,
+  downloadable: PropTypes.bool,
+  onClick: PropTypes.func,
+  Description: PropTypes.string,
+  selectedVisits: PropTypes.array,
+};
 
 /**
  * FieldList Component
@@ -251,6 +274,7 @@ class FieldList extends Component {
 
   /**
    * field clicked
+   *
    * @param {string} fieldName
    * @param {boolean} downloadable
    */
@@ -338,6 +362,19 @@ class FieldList extends Component {
     );
   }
 }
+FieldList.propTypes = {
+  selectedVisits: PropTypes.array,
+  onFieldSelect: PropTypes.func,
+  category: PropTypes.string,
+  FieldsPerPage: PropTypes.number,
+  PageNumber: PropTypes.number,
+  Filter: PropTypes.string,
+  selected: PropTypes.bool,
+  changePage: PropTypes.func,
+  items: PropTypes.array,
+  Visits: PropTypes.object,
+  fieldVisitSelect: PropTypes.func,
+};
 
 /**
  * FieldSelector Component
@@ -370,6 +407,7 @@ class FieldSelector extends Component {
 
   /**
    * Wrapper function for field changes
+   *
    * @param {string} fieldName
    * @param {string} category
    * @param {boolean} downloadable
@@ -380,6 +418,7 @@ class FieldSelector extends Component {
 
   /**
    * Use the cached version if it exists
+   *
    * @param {string} elementName
    * @param {string} category
    */
@@ -387,15 +426,19 @@ class FieldSelector extends Component {
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
-        {category: category}, (data) => {
+      fetch(loris.BaseURL
+        + '/AjaxHelper.php'
+        + '?Module=dqt'
+        + '&script=datadictionary.php'
+        + '&category=' + category)
+      .then((resp) => resp.json())
+      .then( (data) => {
           let cf = this.state.categoryFields;
           cf[category] = data;
           this.setState({
             categoryFields: cf,
           });
-        }, 'json');
+      });
     }
     this.setState({
       selectedCategory: category,
@@ -405,6 +448,7 @@ class FieldSelector extends Component {
 
   /**
    * filter change event.
+   *
    * @param {object} evt - An event
    */
   filterChange(evt) {
@@ -485,6 +529,7 @@ class FieldSelector extends Component {
 
   /**
    * Modify category field visits.
+   *
    * @param {string} visit
    * @param {string} action
    */
@@ -535,6 +580,7 @@ class FieldSelector extends Component {
 
   /**
    * Change page
+   *
    * @param {number} i
    */
   changePage(i) {
@@ -554,6 +600,7 @@ class FieldSelector extends Component {
 
   /**
    * onFocus for search within fields
+   *
    * @param {object} e - an event
    */
   onFocus(e) {
@@ -709,9 +756,14 @@ class FieldSelector extends Component {
     );
   }
 }
-
 FieldSelector.propTypes = {
   selectedFields: PropTypes.object,
+  items: PropTypes.array,
+  onFieldChange: PropTypes.func,
+  Visits: PropTypes.object,
+  title: PropTypes.string,
+  Criteria: PropTypes.string,
+  fieldVisitSelect: PropTypes.func,
 };
 
 window.CategoryItem = CategoryItem;

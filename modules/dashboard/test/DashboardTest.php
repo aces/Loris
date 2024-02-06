@@ -69,10 +69,10 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -97,14 +97,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '222222',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => '',
-                'SubprojectID' => '55',
-                'Active'       => 'Y',
+                'ID'          => '222222',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => '',
+                'CohortID'    => '55',
+                'Active'      => 'Y',
             ]
         );
         $this->DB->insert(
@@ -121,6 +121,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'        => '111',
                 'Test_name' => 'TestName11111111111',
+                'Sub_group' => 1,
             ]
         );
         $this->DB->insert(
@@ -288,8 +289,8 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "Project",
@@ -330,10 +331,18 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $welcomeText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".welcome")
         )->getText();
-        $this->assertStringContainsString("Welcome", $welcomeText);
+        $this->assertStringContainsString("Welcome", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -348,27 +357,31 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/button"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1) .views button"
             )
         );
         $views->click();
 
         $assertText1 = $this->safeFindElement(
-            WebDriverBy::XPath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[1]/a"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(1)"
             )
         )->getText();
+
         $assertText2 = $this->safeFindElement(
-            WebDriverBy::XPath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[2]/a"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(2)"
             )
         )->getText();
-        $this->assertStringContainsString("View overall recruitment", $assertText1);
-        $this->assertStringContainsString("View site breakdown", $assertText2);
+
+        $this->assertStringContainsString("Recruitment - overall", $assertText1);
+        $this->assertStringContainsString(
+            "Recruitment - site breakdown",
+            $assertText2
+        );
     }
 
     /**
@@ -576,6 +589,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan2()
     {
+        $this->setupConfigSetting('recruitmentTarget', '');
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
@@ -584,6 +598,7 @@ class DashboardTest extends LorisIntegrationTest
             "Please add a recruitment target for Overall Recruitment.",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
     /**
      * Put a recruitment target in the configuration module and check that
@@ -602,12 +617,12 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->clear();
         $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->sendKeys('888');
         $this->safeFindElement(
@@ -657,10 +672,11 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div/div[1]/div[3]"
+            WebDriverBy::cssSelector(
+                "#statistics_studyprogression .panel-body div:nth-child(1)"
             )
         )->getText();
+
         $this->assertStringContainsString(
             "Scan sessions per site",
             $testText

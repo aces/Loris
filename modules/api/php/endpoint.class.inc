@@ -59,7 +59,9 @@ abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
+            // If it's not supported by a version of the API, that means the
+            // endpoint for that version should be not found
+            return new \LORIS\Http\Response\JSON\NotFound('Unsupported version');
         }
 
         return parent::process($request, $handler);

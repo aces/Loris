@@ -1,5 +1,13 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  SelectElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * View project component
@@ -32,6 +40,7 @@ class ViewProject extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {
@@ -100,6 +109,11 @@ class ViewProject extends React.Component {
           let formData = {
             title: data.title,
             description: data.description,
+            project: data.project,
+            publishingStatus: data.publishingStatus,
+            datePublication: data.datePublication,
+            journal: data.journal,
+            link: data.link,
             leadInvestigator: data.leadInvestigator,
             leadInvestigatorEmail: data.leadInvestigatorEmail,
             notifyLead: false,
@@ -131,6 +145,7 @@ class ViewProject extends React.Component {
 
           this.setState({
             formData: formData,
+            projectOptions: data.projectOptions,
             users: data.users,
             statusOpts: data.statusOpts,
             userCanEdit: data.userCanEdit,
@@ -160,6 +175,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create file download links
+   *
    * @return {JSX} - React markup for the component
    */
   createFileDownloadLinks() {
@@ -200,6 +216,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create menu filter links
+   *
    * @param {string[]} stringArr
    * @param {string} filterVar
    * @return {JSX} - React markup for the component
@@ -226,6 +243,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create static components
+   *
    * @return {JSX} - React markup for the component
    */
   createStaticComponents() {
@@ -284,6 +302,31 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
         <StaticElement
+          name="project"
+          label="Project"
+          text={this.state.formData.project}
+        />
+        <StaticElement
+          name="publishingStatus"
+          label="Publishing status"
+          text={this.state.formData.publishingStatus}
+        />
+        <StaticElement
+          name="datePublication"
+          label="Date published"
+          text={this.state.formData.datePublication}
+        />
+        <StaticElement
+          name="journal"
+          label="Journal"
+          text={this.state.formData.journal}
+        />
+        <StaticElement
+          name="link"
+          label="Link"
+          text={this.state.formData.link}
+        />
+        <StaticElement
           name="leadInvestigator"
           label="Lead Investigator"
           text={this.state.formData.leadInvestigator}
@@ -303,6 +346,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create editable components
+   *
    * @return {JSX} - React markup for the component
    */
   createEditableComponents() {
@@ -319,6 +363,7 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           toggleEmailNotify={this.toggleEmailNotify}
           uploadTypes={this.state.uploadTypes}
+          projectOptions={this.state.projectOptions}
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}
@@ -332,6 +377,7 @@ class ViewProject extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -349,6 +395,7 @@ class ViewProject extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -369,6 +416,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {*} formElement
    * @param {*} value
    */
@@ -382,6 +430,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -516,5 +565,9 @@ class ViewProject extends React.Component {
     );
   }
 }
+ViewProject.propTypes = {
+  action: PropTypes.string,
+  DataURL: PropTypes.string,
+};
 
 export default ViewProject;

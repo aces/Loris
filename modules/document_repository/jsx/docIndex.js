@@ -7,6 +7,10 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {CheckboxElement} from 'jsx/Form';
 
 /**
  * Doc index component
@@ -48,6 +52,7 @@ class DocIndex extends React.Component {
 
   /**
    * Handle global
+   *
    * @param {*} formElement
    * @param {boolean} value
    */
@@ -64,7 +69,8 @@ class DocIndex extends React.Component {
 
   /**
    * Get all data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   getAllData() {
     return fetch(loris.BaseURL + '/document_repository/docTree/0')
@@ -92,8 +98,9 @@ class DocIndex extends React.Component {
   /**
    * Data by node
    * Change tableData
-   * @param {Number} id
-   * @return {Promise<void>}
+   *
+   * @param {number} id
+   * @return {Promise}
    */
   dataByNode(id) {
     return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
@@ -120,7 +127,8 @@ class DocIndex extends React.Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -138,6 +146,7 @@ class DocIndex extends React.Component {
 
   /**
    * Get content
+   *
    * @param {object} obj
    */
   getContent(obj) {
@@ -153,9 +162,10 @@ class DocIndex extends React.Component {
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
+   *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {arrray} row - array of cell contents for a specific row
+   * @param {array} row - array of cell contents for a specific row
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -421,15 +431,20 @@ class DocIndex extends React.Component {
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <div className="page-document">
-    <DocIndex
-      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-    </div>,
+  createRoot(
     document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-document">
+      <DocIndex
+        dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />
+    </div>
   );
 });

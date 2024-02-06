@@ -7,11 +7,11 @@
  *
  * @author Alex Ilea
  * @version 0.0.2
- * @since 2016-11-22
- *
+ */
+
+/**
  * @constructor
  * @return {{}} - QueryString helper object
- *
  */
 let QueryString = {
   /**

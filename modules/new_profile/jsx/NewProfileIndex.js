@@ -1,5 +1,16 @@
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    ButtonElement,
+    FieldsetElement,
+} from 'jsx/Form';
 
 /**
  * New Profile Form
@@ -19,9 +30,7 @@ class NewProfileIndex extends React.Component {
     this.state = {
       configData: {},
       formData: {},
-      newData: {},
       isLoaded: false,
-      isCreated: false,
       error: false,
       submitDisabled: false,
     };
@@ -83,46 +92,95 @@ class NewProfileIndex extends React.Component {
     e.preventDefault();
     const match = this.validateMatchDate();
     if (!match) {
-      this.setState({
-        isCreated: false,
-      });
-    } else {
-      let formData = this.state.formData;
-      let formObject = new FormData();
-      for (let key in formData) {
-        if (formData[key] !== '') {
-          formObject.append(key, formData[key]);
-        }
-      }
-      formObject.append('fire_away', 'New Candidate');
-
-      // disable button to prevent form resubmission.
-      this.setState({submitDisabled: true});
-
-      fetch(this.props.submitURL, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject,
-        })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            this.setState({newData: data});
-            this.setState({isCreated: true});
-          });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({submitDisabled: false});
-            swal.fire('Error!', message.error, 'error');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      return;
     }
+    const formData = this.state.formData;
+    const configData = this.state.configData;
+
+    let candidateObject = {
+      'Candidate': {
+        'Project': configData.project[formData.project],
+        // 'PSCID' : conditionally included below
+        // 'EDC' : conditionally included below
+        'DoB': formData.dobDate,
+        'Sex': formData.sex,
+        'Site': configData.site[formData.site],
+      },
+    };
+
+    if (this.state.configData['edc'] === 'true') {
+      candidateObject.Candidate.EDC = formData.edcDate;
+    }
+    if (this.state.configData['pscidSet'] === 'true') {
+      candidateObject.Candidate.PSCID = formData.pscid;
+    }
+
+    // disable button to prevent form resubmission.
+    this.setState({submitDisabled: true});
+
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: JSON.stringify(candidateObject),
+    })
+    .then((resp) => {
+      if (resp.ok && resp.status === 201) {
+        resp.json().then((data) => {
+          swal.fire({
+            type: 'success',
+            title: 'New Candidate Created',
+            html: 'DCCID: ' + data.CandID + ' '
+                  + 'PSCID: ' + data.PSCID + ' ',
+            confirmButtonText: 'Access Profile',
+            // Repurpose "cancel" as "recruit another candidate".
+            // Use the same colour for both buttons, since one
+            // isn't more "right" than the other.
+            showCancelButton: true,
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Recruit another candidate',
+          }).then((result) => {
+            if (result.value === true) {
+              window.location.href = '/' + data.CandID;
+            } else {
+              this.setState({
+                formData: {},
+                submitDisabled: false,
+              });
+            }
+          });
+        } )
+        .catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
+        });
+      } else {
+        resp.json().then((message) => {
+          // enable button for form resubmission.
+          this.setState({submitDisabled: false});
+          swal.fire('Error!', message.error, 'error');
+        }).catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
+        });
+      }
+    })
+    .catch((error) => {
+      swal.fire({
+        type: 'error',
+        title: 'Error!',
+        text: error,
+      });
+      console.error(error);
+    });
   }
 
   /**
@@ -153,7 +211,6 @@ class NewProfileIndex extends React.Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-    let profile = null;
     let edc = null;
     let pscid = null;
     let site = null;
@@ -213,73 +270,59 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />;
     }
-    if (!this.state.isCreated) {
-      profile = (
-        <FormElement
-          name = "newProfileForm"
-          onSubmit = {this.handleSubmit}
-        >
-          <DateElement
-            name = "dobDate"
-            label = "Date of Birth"
-            minYear = {minYear}
-            maxYear = {dobMaxYear}
-            dateFormat = {dateFormat}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.dobDate}
-            required = {requireBirthDate}
-          />
-          <DateElement
-            name = "dobDateConfirm"
-            label = "Date of Birth Confirm"
-            minYear = {minYear}
-            maxYear = {dobMaxYear}
-            dateFormat = {dateFormat}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.dobDateConfirm}
-            required = {requireBirthDate}
-          />
-          {edc}
-          <SelectElement
-            name = "sex"
-            label = "Sex"
-            options = {this.state.configData.sex}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.sex}
-            required = {true}
-          />
-          {site}
-          {pscid}
-          <SelectElement
-            name = "project"
-            label = "Project"
-            options = {this.state.configData.project}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.project}
-            required = {true}
-          />
-          <ButtonElement
-            name = "fire_away"
-            label = "Create"
-            id = "button"
-            type = "submit"
-            disabled={this.state.submitDisabled}
-          />
-        </FormElement>
-      );
-    } else {
-      profile = (
-        <div>
-          <p>{'New candidate created. '
-              + 'DCCID: ' + this.state.newData.candID + ' '
-              + 'PSCID: ' + this.state.newData.pscid + ' '}</p>
-          <p><a href = {'/' + this.state.newData.candID}>
-              Access this candidate
-          </a></p>
-          <p><a href = "/new_profile/" > Recruit another candidate </a></p>
-        </div>
-      );
-    }
+    const profile = (
+      <FormElement
+        name = "newProfileForm"
+        onSubmit = {this.handleSubmit}
+      >
+        <DateElement
+          name = "dobDate"
+          label = "Date of Birth"
+          minYear = {minYear}
+          maxYear = {dobMaxYear}
+          dateFormat = {dateFormat}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.dobDate}
+          required = {requireBirthDate}
+        />
+        <DateElement
+          name = "dobDateConfirm"
+          label = "Date of Birth Confirm"
+          minYear = {minYear}
+          maxYear = {dobMaxYear}
+          dateFormat = {dateFormat}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.dobDateConfirm}
+          required = {requireBirthDate}
+        />
+        {edc}
+        <SelectElement
+          name = "sex"
+          label = "Sex"
+          options = {this.state.configData.sex}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.sex}
+          required = {true}
+        />
+        {site}
+        {pscid}
+        <SelectElement
+          name = "project"
+          label = "Project"
+          options = {this.state.configData.project}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.project}
+          required = {true}
+        />
+        <ButtonElement
+          name = "fire_away"
+          label = "Create"
+          id = "button"
+          type = "submit"
+          disabled={this.state.submitDisabled}
+        />
+      </FormElement>
+    );
     return (
       <FieldsetElement legend={'Create a New Profile'}>
         {profile}
@@ -287,13 +330,19 @@ class NewProfileIndex extends React.Component {
     );
   }
 }
+NewProfileIndex.propTypes = {
+  dataURL: PropTypes.string,
+  submitURL: PropTypes.string,
+};
+
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <NewProfileIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/new_profile/`}
+      submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
       hasPermission = {loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

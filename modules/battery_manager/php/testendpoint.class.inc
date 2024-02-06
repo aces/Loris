@@ -214,7 +214,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                          AgeMinDays,
                          AgeMaxDays,
                          Stage,
-                         SubprojectID,
+                         CohortID,
                          Visit_label,
                          CenterID,
                          firstVisit
@@ -229,7 +229,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['AgeMinDays'] == $entry['AgeMinDays']
                 && $testArray['AgeMaxDays'] == $entry['AgeMaxDays']
                 && $testArray['Stage'] == $entry['Stage']
-                && $testArray['SubprojectID'] == $entry['SubprojectID']
+                && $testArray['CohortID'] == $entry['CohortID']
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
@@ -279,6 +279,12 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         }
         if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] < 0) {
             $errors[] = 'Maximum age must be greater than 0.';
+        }
+        if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] > 99999) {
+             $errors[] = 'Maximum age must be less than 99999.';
+        }
+        if (isset($test->row['ageMinDays']) && $test ->row['ageMinDays'] > 99999) {
+             $errors[] = 'Minimum age must be less than 99999';
         }
         if ($test->row['ageMaxDays'] < $test->row['ageMinDays']) {
             $errors[] = 'Maximum age must be greater than minimum age.';

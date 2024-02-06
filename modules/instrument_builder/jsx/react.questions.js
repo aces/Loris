@@ -11,6 +11,14 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextareaElement,
+    TextElement,
+    NumericElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
@@ -63,10 +71,12 @@ class LorisElement extends Component {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        options={element.Options.Values}/>;
         }
         break;
@@ -92,6 +102,9 @@ class LorisElement extends Component {
     );
   }
 }
+LorisElement.propTypes = {
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the question text input
@@ -112,6 +125,7 @@ class QuestionText extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -155,6 +169,8 @@ class QuestionText extends Component {
 }
 QuestionText.propTypes = {
   inputLabel: PropTypes.string,
+  updateState: PropTypes.func,
+  element: PropTypes.object,
 };
 QuestionText.defaultProps = {
   inputLabel: 'Question Text',
@@ -179,6 +195,7 @@ class BasicOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -225,6 +242,10 @@ class BasicOptions extends Component {
     );
   }
 }
+BasicOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the Dropdown options
@@ -247,6 +268,7 @@ class DropdownOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -373,6 +395,10 @@ class DropdownOptions extends Component {
     );
   }
 }
+DropdownOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the date options
@@ -408,6 +434,7 @@ class DateOptions extends Component {
   /**
    * On change
    * Keep track of the inputed years
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -502,6 +529,10 @@ class DateOptions extends Component {
     );
   }
 }
+DateOptions.propTypes = {
+  element: PropTypes.object,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for the numeric options
@@ -523,6 +554,7 @@ class NumericOptions extends Component {
    * On change
    * Keep track of the inputed numbers, casting them to
    * integer values.
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -590,6 +622,10 @@ class NumericOptions extends Component {
     );
   }
 }
+NumericOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the dropdown for the
@@ -610,6 +646,7 @@ class ListElements extends Component {
 
   /**
    * Set the desired question type
+   *
    * @param {*} newId
    * @param {*} newValue
    */
@@ -818,6 +855,10 @@ class ListElements extends Component {
     );
   }
 }
+ListElements.propTypes = {
+  value: PropTypes.string,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for adding a new element or
@@ -870,6 +911,7 @@ class AddElement extends Component {
 
   /**
    * Update element state
+   *
    * @param {object} newState
    */
   updateState(newState) {
@@ -996,12 +1038,60 @@ class AddElement extends Component {
       });
     }
 
+    if (questionName.length > 64 && selected !== 'textbox'
+        && selected !== 'textarea' && selected !== 'date'
+        && selected !== 'numeric') {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 64 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the element's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
+    if (questionName.length > 57 && (selected === 'textbox'
+      || selected === 'textarea' || selected === 'date'
+      || selected === 'numeric')) {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 57 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
     if (questionName === '' && selected !== 'header' && selected !== 'label' &&
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Must specifiy name for database to save value into';
+      temp.questionName = 'Must specify name for database to save value into';
       this.setState({
         error: temp,
       });
@@ -1079,6 +1169,7 @@ class AddElement extends Component {
 
   /**
    * Add an option to the options array
+   *
    * @param {boolean} multi
    */
   addOption(multi) {
@@ -1213,6 +1304,12 @@ class AddElement extends Component {
     );
   }
 }
+AddElement.propTypes = {
+  element: PropTypes.object,
+  updateQuestions: PropTypes.func,
+  addPage: PropTypes.func,
+  index: PropTypes.number,
+};
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;

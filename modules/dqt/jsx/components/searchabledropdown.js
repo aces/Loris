@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 /**
  * Search Component
  * React wrapper for a searchable dropdown
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -155,6 +156,7 @@ SearchableDropdown.propTypes = {
   errorMessage: PropTypes.string,
   placeHolder: PropTypes.string,
   onUserInput: PropTypes.func,
+  sortByValue: PropTypes.bool,
 };
 SearchableDropdown.defaultProps = {
   name: '',

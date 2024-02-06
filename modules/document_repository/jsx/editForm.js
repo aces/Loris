@@ -10,8 +10,7 @@ import swal from 'sweetalert2';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 class DocEditForm extends React.Component {
   /**
    * @constructor
@@ -42,7 +41,8 @@ class DocEditForm extends React.Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -144,6 +144,7 @@ class DocEditForm extends React.Component {
 
   /**
    * Handles form submission
+   *
    * @param {event} e - Form submition event
    */
   handleSubmit(e) {

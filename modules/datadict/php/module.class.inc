@@ -55,6 +55,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Dictionary";
+        return "Data Dictionary (Legacy)";
     }
 }

@@ -57,12 +57,20 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         $this->safeGet(
             $this->url . "/create_timepoint/".
-            "?candID=900000&identifier=900000&subprojectID=1"
+            "?candID=900000&identifier=900000&cohortID=1"
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -86,20 +94,20 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * Create a timepoint with three parameters.
      *
      * @param string $canID      ID of candidate
-     * @param string $subproject text of subproject
+     * @param string $cohort     text of cohort
      * @param string $visitlabel text of visit label
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
+    private function _createTimepoint($canID, $cohort, $visitlabel)
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("subproject"));
+        $select  = $this->safeFindElement(WebDriverBy::Name("cohort"));
         $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
+        $element->selectByVisibleText($cohort);
         $this->safeFindElement(
             WebDriverBy::Name("visit")
         )->sendKeys($visitlabel);
@@ -110,12 +118,12 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
 
 
     /**
-     * Tests that, create a timepoint and input a empty subproject
+     * Tests that, create a timepoint and input a empty cohort
      * get Error message
      *
      * @return void
      */
-    function testCreateTimepointErrorEmptySubproject()
+    function testCreateTimepointErrorEmptyCohort()
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"

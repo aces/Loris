@@ -1,52 +1,82 @@
 import * as R from 'ramda';
 import {bisector} from 'd3-array';
 import {colorOrder} from '../../color';
-import {Channel, Epoch} from '../store/types';
+import {Channel, ChannelMetadata, Epoch} from '../store/types';
 import {connect} from 'react-redux';
 import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
-import {useEffect} from 'react';
+import {MutableRefObject, useEffect} from 'react';
 import {RootState} from '../store';
+import {getEpochsInRange} from '../store/logic/filterEpochs';
 
 type CursorContentProps = {
   time: number,
   channel: Channel,
   contentIndex: number,
-  showMarker: boolean,
+  showEvents: boolean,
+  hoveredChannels: number[],
+  channelMetadata: ChannelMetadata[],
 };
 
 type CProps = {
-  cursor: number,
+  cursorRef: MutableRefObject<any>,
+  cursorPosition: [number, number],
   channels: Channel[],
   epochs: Epoch[],
   filteredEpochs: number[],
   CursorContent: (_: CursorContentProps) => JSX.Element,
   interval: [number, number],
-  showMarker: boolean
+  showEvents: boolean,
+  enabled: boolean,
+  hoveredChannels: number[],
+  channelMetadata: ChannelMetadata[],
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.cursorRef
+ * @param root0.cursorPosition
+ * @param root0.channels
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.CursorContent
+ * @param root0.interval
+ * @param root0.showEvents
+ * @param root0.enabled
+ * @param root0.hoveredChannels
+ * @param root0.channelMetadata
+ */
 const SeriesCursor = (
   {
-    cursor,
+    cursorRef,
+    cursorPosition,
     channels,
     epochs,
     filteredEpochs,
     CursorContent,
     interval,
-    showMarker,
+    showEvents,
+    enabled,
+    hoveredChannels,
+    channelMetadata,
   }: CProps
 ) => {
-  if (!cursor) return null;
-
   let reversedEpochs = [...filteredEpochs].reverse();
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
   }, [filteredEpochs]);
 
-  const left = Math.min(Math.max(100 * cursor, 0), 100) + '%';
-  const time = interval[0] + cursor * (interval[1] - interval[0]);
+  if (!cursorPosition) return null;
 
+  const left = Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%';
+  const time = interval[0] + cursorPosition[0] * (interval[1] - interval[0]);
+
+  /**
+   *
+   */
   const Cursor = () => (
     <div
+      ref={cursorRef}
       style={{
         position: 'absolute',
         left,
@@ -58,6 +88,9 @@ const SeriesCursor = (
     />
   );
 
+  /**
+   *
+   */
   const ValueTags = () => (
     <div
       style={{
@@ -79,13 +112,18 @@ const SeriesCursor = (
             time={time}
             channel={channel}
             contentIndex={i}
-            showMarker={showMarker}
+            showEvents={showEvents}
+            hoveredChannels={hoveredChannels}
+            channelMetadata={channelMetadata}
           />
         </div>
       ))}
     </div>
   );
 
+  /**
+   *
+   */
   const TimeMarker = () => (
     <div
       style={{
@@ -93,37 +131,72 @@ const SeriesCursor = (
         top: '100%',
         position: 'absolute',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: '#fff',
         color: '#064785',
         padding: '2px 2px',
         borderRadius: '3px',
       }}
     >
-      {Math.round(time)} s
+      {Math.round(time * 1000) / 1000}s
+      <br/>
+      {showEvents && <EpochMarker />}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {hoveredChannels.map((channelIndex) => {
+          const channelName = channelMetadata[channelIndex].name;
+          const hoveredChannel = channels.find(
+            (channel) => channel.index === channelIndex
+          );
+          if (!hoveredChannel) return;
+          const hoveredChunk = hoveredChannel.traces[0].chunks.find(
+            (chunk) => chunk.interval[0] <= time &&
+              chunk.interval[1] >= time
+          );
+          if (!hoveredChunk) return;
+          const chunkValue = computeValue(hoveredChunk, time);
+          const channelColor = colorOrder(channelIndex.toString()).toString();
+          return (
+            <div
+              key={channelIndex.toString()}
+              style={{
+                color: channelColor,
+                width: '100px',
+              }}
+            >
+            {channelName}: {Math.round(chunkValue)} {SIGNAL_UNIT}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 
+  /**
+   *
+   */
   const EpochMarker = () => {
-    if (reversedEpochs.length > MAX_RENDERED_EPOCHS) return null;
+    const visibleEpochs = getEpochsInRange(epochs, interval, 'Event');
+    if (visibleEpochs
+        .filter((index) => {
+ filteredEpochs.includes(index);
+})
+        .length > MAX_RENDERED_EPOCHS
+    ) {
+      return null;
+    }
 
-    const index = reversedEpochs.find((index) =>
-      epochs[index].onset < time
+    const index = visibleEpochs.find((index) =>
+      epochs[index].onset < time &&
+      (epochs[index].onset + Math.max(epochs[index].duration, 0.05)) > time
     );
 
     return index !== undefined ? (
-      <div
-        style={{
-          left,
-          top: 'calc(100% + 26px)',
-          position: 'absolute',
-          display: 'flex',
-          flexDirection: 'row',
-          backgroundColor: '#E4EBF2',
-          padding: '2px 2px',
-          borderRadius: '3px',
-        }}
-      >
+      <div>
         {epochs[index].label}
       </div>
     ) : null;
@@ -140,49 +213,65 @@ const SeriesCursor = (
       }}
     >
       <Cursor />
-      <ValueTags />
+      {enabled ? <ValueTags /> : null}
       <TimeMarker />
-      <EpochMarker />
     </div>
   );
 };
 
 const createIndices = R.memoizeWith(
-  R.identity,
+  (s: string) => s,
   (array) => array.map((_, i) => i)
 );
 
+/**
+ *
+ * @param chunk
+ */
 const indexToTime = (chunk) => (index) =>
   chunk.interval[0] +
   (index / chunk.values.length) * (chunk.interval[1] - chunk.interval[0]);
 
-const CursorContent = ({time, channel, contentIndex, showMarker}) => {
-  const Marker = ({color}) => (
-    <div
-      style={{
-        margin: 'auto',
-        marginLeft: '5px',
-        marginRight: '5px',
-        padding: '5px 5px',
-        backgroundColor: color,
-      }}
-    />
-  );
+/**
+ *
+ * @param chunk
+ * @param time
+ */
+const computeValue = (chunk, time) => {
+  const indices = createIndices(chunk.values);
+  const bisectTime = bisector(indexToTime(chunk)).left;
+  const idx = bisectTime(indices, time);
+  const value = chunk.values[idx-1];
 
+  return value * SIGNAL_SCALE;
+};
+
+/**
+ *
+ * @param root0
+ * @param root0.time
+ * @param root0.channel
+ * @param root0.contentIndex
+ * @param root0.showEvents
+ * @param root0.hoveredChannels
+ * @param root0.channelMetadata
+ */
+const CursorContent = (
+  {
+    time,
+    channel,
+    contentIndex,
+    showEvents,
+    hoveredChannels,
+    channelMetadata,
+  }: CursorContentProps
+) => {
   return (
-    <div style={{margin: '5px 5px'}}>
+    <div style={{margin: '0 5px', width: '120px'}}>
       {channel.traces.map((trace, i) => {
         const chunk = trace.chunks.find(
           (chunk) => chunk.interval[0] <= time && chunk.interval[1] >= time
         );
-        const computeValue = (chunk) => {
-          const indices = createIndices(chunk.values);
-          const bisectTime = bisector(indexToTime(chunk)).left;
-          const idx = bisectTime(indices, time);
-          const value = chunk.values[idx-1];
-
-          return value * SIGNAL_SCALE;
-        };
 
         return (
           <div
@@ -190,13 +279,17 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              backgroundColor: 'rgba(238, 238, 238, 0.8)',
+              backgroundColor: 'rgba(238, 238, 238, 0.65)',
               padding: '2px 2px',
               borderRadius: '3px',
+              color: `${hoveredChannels.includes(channel.index)
+                ? colorOrder(channel.index.toString())
+                : '#333'
+              }`,
             }}
           >
-            {showMarker && (<Marker color={colorOrder(contentIndex)} />)}
-            {chunk && Math.round(computeValue(chunk))} {SIGNAL_UNIT}
+            {channelMetadata[channel.index].name}:&nbsp;
+            {chunk && Math.round(computeValue(chunk, time))} {SIGNAL_UNIT}
           </div>
         );
       })}
@@ -209,11 +302,13 @@ SeriesCursor.defaultProps = {
   epochs: [],
   filteredEpochs: [],
   CursorContent,
-  showMarker: false,
+  showEvents: false,
+  enabled: false,
 };
 
 export default connect(
   (state: RootState)=> ({
+    cursorPosition: state.cursor.cursorPosition,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
   })
