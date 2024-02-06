@@ -59,7 +59,7 @@ if (substr($file, 0, 3) !== "s3:") {
         $s3part           = explode("/", str_replace("s3://", "", $file));
         $s3ClientInstance = S3ClientSingleton::getInstance();
         // it will pass bucketname folder and filename to download
-        $s3ClientInstance->s3download($s3part[0], null, end($s3part));
+        $s3ClientInstance->s3download($s3part[0], end($s3part), '');
     }
 }
 $downloadNotifier->notify();

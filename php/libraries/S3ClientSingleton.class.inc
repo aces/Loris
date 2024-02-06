@@ -96,7 +96,7 @@ class S3ClientSingleton
      *
      * @return bool it will return true or false
      */
-    public function s3download($bucketName, $folderName='', $fileName)
+    public function s3download($bucketName, $fileName, $folderName='')
     {
         try {
             // Use the provided bucketName and folderName to construct S3object key
