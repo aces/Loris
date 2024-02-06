@@ -263,6 +263,47 @@ will return a JSON object of the form:
 }
 ```
 
+#### 2.1.6 Single project dicoms tar files
+
+GET /projects/$ProjectName/dicoms
+
+will return a JSON object of the form:
+
+```js
+{
+  "Dicoms": [
+    {
+      "Candidate": "587630",
+      "PSCID": "DCC090",
+      "Entity_type": "Human",
+      "Visit": "V1",
+      "Visit_date": "2018-04-20",
+      "CenterID": "1",
+      "Site": "Data Coordinating Center",
+      "date_acquired": "2018-04-20",
+      "date_first_archived": "2019-05-23 13:46:39",
+      "date_last_archived": "2019-05-23 13:46:39",
+      "tarchiveid": "27",
+      "DicomArchiveID": "1.2.840.113745.101000.1022000.39911.6153.5242769",
+      "Archive": "2018/DCM_2018-04-20_ImagingUpload-13-42-zcoZR0.tar",
+      "Source": "/tmp/ImagingUpload-13-42-zcoZR0",
+      "FileName": "DCM_2018-04-20_ImagingUpload-13-42-zcoZR0.tar"
+    },
+    ...
+  ]
+}
+
+```
+It is possible to provide a GET parameter named `since` where the value need to be a date or datetime.
+```
+ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
+```
+We recommend using a format that includes timezone. The `since` parameter should be
+passed like the following example:
+```
+https://demo.loris.ca/api/v0.0.4-dev/projects/pumpernickel/dicoms?2016-08-09T10:00:00-05:00
+```
+
 ### 2.2 Instrument Forms
 
 ```
