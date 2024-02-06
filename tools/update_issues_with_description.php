@@ -43,7 +43,7 @@ foreach ($allIssueIDsWithComments as $issueID) {
         ["issue_id" => $issueID]
     );
     if (!$existingDescription) {
-        $description = $DB->pselectCol(
+        $description = $DB->pselectOne(
             "SELECT issueComment
             FROM issues_comments ic
             WHERE ic.issueID = :issue_id
@@ -53,7 +53,7 @@ foreach ($allIssueIDsWithComments as $issueID) {
         );
         $DB->update(
             "issues",
-            ["description" => $description[0]],
+            ["description" => $description],
             ["issueID" => $issueID]
         );
     }
