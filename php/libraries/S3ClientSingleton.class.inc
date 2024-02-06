@@ -91,8 +91,8 @@ class S3ClientSingleton
      * The s3download function
      *
      * @param string $bucketName The bucketName
-     * @param string $folderName The folderName
      * @param string $fileName   fileName
+     * @param string $folderName The folderName
      *
      * @return bool it will return true or false
      */
