@@ -82,8 +82,6 @@ class Attachment extends \NDB_Page implements ETagCalculator
                 ->withStatus(404)
                 ->withHeader('Content-Type', 'text/plain')
                 ->withBody(new \LORIS\Http\StringStream("Not found"));
-                exit;
-
         }
         if (strpos($result['file_name'], "s3://") === 0) {
             // Get the S3 object metadata

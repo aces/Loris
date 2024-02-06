@@ -236,7 +236,7 @@ class Files extends \NDB_Page
             );
             $delete_status    = $s3ClientInstance->s3DeleteFile(
                 $bucketName,
-                null,
+                '',
                 $dataDir
             );
             if ($delete_status) {
@@ -546,14 +546,15 @@ class Files extends \NDB_Page
     {
         $instance = $request->getAttribute('loris');
         $DB       = $instance->getDatabaseConnection();
-        $config   = $instance->getConfiguration();
         $user     = $request->getAttribute('user');
         $name     = $user->getUsername();
 
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
         $body          = $request->getParsedBody();
-
-        $category = $body['category']; // required
+        $category      = null;
+        if ($body !== null && is_array($body) && isset($body['category'])) {
+            $category = $body['category'];
+        }
         if (!\Utility::valueIsPositiveInteger($category)) {
             // $category is a string representation of an ID, and so should be
             // at least equal to zero.
@@ -586,14 +587,17 @@ class Files extends \NDB_Page
 
             $s3_upload_status = $s3ClientInstance->s3uploadfile(
                 $bucketName,
-                null,
+                '',
                 $filename,
                 $_FILES['files']['tmp_name'][$i]
             );
              $i++;
             if ($s3_upload_status) {
-                // Prepare fields for database entry once upload has completed.
-                $site = $body['forSite']       !== '' ? $body['forSite'] : null;
+                if ($body !== null && is_array($body) && isset($body['forSite'])) {
+                    $site = $body['forSite'];
+                } else {
+                    $site = null;
+                }
                 $site = $DB->pselectOne(
                     "SELECT CenterID FROM psc WHERE Name=:name",
                     ['name' => $site]
@@ -641,7 +645,7 @@ class Files extends \NDB_Page
                 $addedFiles[]       = $filename;
                 $responseMessages[] = "$filename: Success";
             } else {
-                    $responseMessages[] = "$filename: {$e->getMessage()}";
+                    $responseMessages[] = "$filename: Failed";
                     $errorCounter      += 1;
                     continue;
             }
