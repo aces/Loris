@@ -40,12 +40,10 @@ class S3ClientSingleton
      *
      * @param $accessKey = null,
      * @param $secretKey = null,
-     * @param $region    = null
      */
     private function __construct(
         $accessKey = null,
         $secretKey = null,
-        $region = null
     ) {
         $config   = \NDB_Config::singleton();
         $region   = $config->getSetting('AWS_S3_Region');
