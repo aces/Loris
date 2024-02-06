@@ -135,7 +135,7 @@ class Utility
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $query = "SELECT SexValue FROM sex";
+        $query = "SELECT Sex FROM sex";
 
         $result = $DB->pselectCol($query, []);
 
