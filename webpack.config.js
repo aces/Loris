@@ -297,7 +297,7 @@ const lorisModules = {
     'UploadViewer',
   ],
   imaging_browser: [
-    'ImagePanel',
+    'Session',
     'imagingBrowserIndex',
     'CandidateScanQCSummaryWidget',
   ],

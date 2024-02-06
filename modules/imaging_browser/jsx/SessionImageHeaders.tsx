@@ -1,5 +1,13 @@
 import { ImageHeaders } from './types';
 
+function formatDate(timestamp: number) {
+  const date = new Date(timestamp * 1000);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  return `${year}-${month}-${day}`;
+}
+
 interface ImagePanelInfosProps {
   infos: ImageHeaders;
 }
@@ -17,14 +25,7 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
     : null;
 
   return (
-    <table className="
-      table
-      table-hover
-      table-bordered
-      header-info
-      col-xs-12
-      dynamictable
-    ">
+    <table className="table table-hover table-bordered header-info col-xs-12 dynamictable">
       <tbody>
       <tr>
         <th className="col-xs-2 info">Series Instance UID</th>
@@ -53,7 +54,7 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
         </td>
         <th className="col-xs-2 info">Inserted Date</th>
         <td className="col-xs-2">
-          {props.infos.InsertedDate}
+          {formatDate(parseInt(props.infos.InsertedDate))}
         </td>
       </tr>
       <tr>

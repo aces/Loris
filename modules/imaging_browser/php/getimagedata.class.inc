@@ -6,7 +6,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
+class GetImageData extends \NDB_Page implements RequestHandlerInterface {
     /**
      * The database connection
      *
@@ -140,7 +140,6 @@ class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
             'processing:processing_date'
         );
         $FileInsertDate      = $FileObj->getParameter('InsertTime');
-        $SeriesDescription   = $FileObj->getParameter('series_description');
         $SeriesNumber        = (int) $FileObj->getParameter('series_number');
         $EchoTime            = round(
             (float)$FileObj->getParameter('echo_time') * 1000,
@@ -288,6 +287,14 @@ class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
         return $file;
     }
 
+    /**
+     * Gets a rejected parameter according to its type
+     *
+     * @param \MRIFile $file file object
+     * @param string   $type type of the rejected
+     *
+     * @return ?string The parameter of the rejected
+     */
     function _getRejected(\MRIFile $file, string $type): ?string
     {
         $array     = [];
@@ -325,6 +332,15 @@ class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
         return $selected != null ? (bool) $selected : null;
     }
 
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?int ID of the associated record in table violations_resolved or
+     *              null if there is none.
+     */
     function _getManualCaveatViolationsResolvedID(int $fileID): ?int
     {
         $query = "
@@ -344,6 +360,14 @@ class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
         return $this->db->pselectOneInt($query, ['fileID' => $fileID]);
     }
 
+    /**
+     * Gets candidate's scans with the same acquisitionID.
+     *
+     * @param int $initialFileID            the value of initialFileID
+     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
+     *
+     * @return string of FileIDs, comma separated
+     */
     function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID)
     {
         $selectResults = $this->db->pselect(
@@ -365,6 +389,15 @@ class GetImageFile extends \NDB_Page implements RequestHandlerInterface {
         return $fileIDString;
     }
 
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?array array of IDs of the associated records in table
+     *              mri_violations_log or null if there is none.
+     */
     function _getProtocolViolations(int $fileID): ?array
     {
         $query = "

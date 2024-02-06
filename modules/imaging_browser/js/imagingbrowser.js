@@ -8,7 +8,7 @@ $(document).ready(function () {
 
         return function () {
             var checked = $("input.mripanel:checkbox:checked");
- 
+
             if (0 < checked.size()) {
                 // Build the url params based on selected image(s)
                 var FileIDs = [];
@@ -29,7 +29,7 @@ $(document).ready(function () {
             }
         };
     };
-    
+
     // Add event listener to each button
     $("#bboverlay").click(callback("&overlay=true"));
     $("#bbonly").click(callback());
