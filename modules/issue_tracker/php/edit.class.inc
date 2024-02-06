@@ -416,7 +416,6 @@ class Edit extends \NDB_Page implements ETagCalculator
 
     /**
      * Gets the description of the issue
-     *
      * @param int $issueID the relevant issue
      *
      * @return string
@@ -425,16 +424,11 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         $db = $this->loris->getDatabaseConnection();
 
-        $desc = $db->pselect(
+        $desc = $db->pselectOne(
             "SELECT description from issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
-
-        $description = "";
-        foreach ($desc as $d) {
-            $description = $d['description'] ?? '';
-        }
-        return $description;
+        return $desc ?? '';
     }
 
     /**
