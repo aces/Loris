@@ -8,6 +8,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
+import {CTA} from 'jsx/Form';
 
 /**
  * Triggerable Modal Component.

@@ -8,6 +8,16 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 26.0 (Release Date: ????-??-??)
+### Core
+#### Features
+- Add OpenID Connect authorization support to LORIS (PR #8255)
+
+#### Bug Fixes
+- Fix examiner site display (PR #8967)
+- bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
+
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
 #### Features
@@ -19,7 +29,6 @@ changes in the following format: PR #1234***
   module. (PR #8302)
 - new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
   when `make` or `npm ci` is executed (PR #8244)
-
 
 #### Updates and Improvements
 - Upgrade react to version 18 (PR #8188)

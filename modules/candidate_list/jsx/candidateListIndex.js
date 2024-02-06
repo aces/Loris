@@ -268,6 +268,14 @@ class CandidateListIndex extends Component {
         },
       },
       {
+        'label': 'Date of registration',
+        'show': true,
+        'filter': {
+          name: 'Date_registered',
+          type: 'date',
+        },
+      },
+      {
         label: 'Sex',
         show: true,
         filter: {

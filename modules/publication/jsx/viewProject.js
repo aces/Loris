@@ -1,6 +1,13 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  SelectElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * View project component

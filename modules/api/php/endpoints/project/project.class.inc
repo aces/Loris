@@ -82,6 +82,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -133,15 +134,18 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface
      */
-    private function _handleGET(): ResponseInterface
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;
         }
+        $version = $request->getAttribute("LORIS-API-Version") ?? "unknown";
 
-        $array = (new \LORIS\api\Views\Project($this->_project))
+        $array = (new \LORIS\api\Views\Project($this->_project, $version))
             ->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);

@@ -3,6 +3,14 @@ import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    ButtonElement,
+    FieldsetElement,
+} from 'jsx/Form';
 
 /**
  * New Profile Form

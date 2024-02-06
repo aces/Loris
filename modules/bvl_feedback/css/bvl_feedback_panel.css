@@ -1,0 +1,53 @@
+/* Based on "loris/htdocs/css/panel.css" */
+
+#bvl_panel_wrapper .navmenu {
+    width: 800px;
+    position: fixed;
+    z-index: 1040;
+    top: 0;
+    bottom: 0;
+}
+
+#bvl_panel_wrapper .panel-wrapper {
+    margin-right: -800px;
+    right: 0;
+    width: 800px;
+    background: #F5F5F5;
+    height: 100%;
+    border-color: #064785;
+    border-left: 2px solid;
+    border-top: 2px solid;
+    overflow-y: scroll;
+    z-index: 998;
+    transition: all 0.4s ease 0s;
+    padding-bottom: 50px;
+}
+
+#bvl_panel_wrapper .bvl_panel {
+    padding-right: 800px;
+    transition: all 0.4s ease 0s;
+}
+
+#bvl_panel_wrapper .active_panel_footer {
+    padding-right: 800px;
+}
+
+#bvl_panel_wrapper .active_panel {
+    right: 800px;
+}
+
+@media (max-width: 884px) {
+    #bvl_panel_wrapper .panel-wrapper {
+        margin-right: -100%;
+        width: 100%;
+    }
+
+    #bvl_panel_wrapper .active_panel {
+        right: 100%;
+    }
+}
+
+#comment_author {
+    color: gray;
+    font-size: 12px
+}

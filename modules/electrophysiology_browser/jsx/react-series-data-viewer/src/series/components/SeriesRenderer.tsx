@@ -17,7 +17,6 @@ import {
   DEFAULT_MAX_CHANNELS,
   CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
-  Vector2,
   DEFAULT_TIME_INTERVAL,
   STATIC_SERIES_RANGE,
   DEFAULT_VIEWER_HEIGHT,
@@ -624,7 +623,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           />
         </clipPath>
 
-        {channelList.map((channel, i) => {
+        {
+          channelList.map((channel, i) => {
           if (!channelMetadata[channel.index]) {
             return null;
           }
@@ -734,12 +734,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 : 0;
 
               return (
-                trace.chunks.map((chunk, k) => (
+                trace.chunks.map((chunk, k, chunks) => (
                     <LineChunk
                       channelIndex={channel.index}
                       traceIndex={j}
                       chunkIndex={k}
-                      key={`${k}-${trace.chunks.length}`}
+                      key={`${channel.index}-${k}-${trace.chunks.length}`}
                       chunk={chunk}
                       seriesRange={seriesRange}
                       amplitudeScale={amplitudeScale}
@@ -750,6 +750,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       withDCOffset={DCOffset}
                       numChannels={numDisplayedChannels}
                       numChunks={numChunks}
+                      previousPoint={
+                        k === 0
+                          ? null
+                          : chunks[k - 1].values.slice(-1)[0]
+                      }
                     />
                 ))
               );
@@ -814,7 +819,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    *
    * @param v
    */
-  const updateTimeSelectionCallback = useCallback((v: Vector2) => {
+  const updateTimeSelectionCallback = useCallback((v: vec2) => {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
     R.compose(dragStart, R.nth(0))(v);

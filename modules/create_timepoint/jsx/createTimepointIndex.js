@@ -4,6 +4,12 @@ import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    StaticElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Create Timepoint.

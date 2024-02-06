@@ -80,6 +80,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['cand']      = $candidate;
 
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
