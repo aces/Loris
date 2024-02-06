@@ -148,7 +148,6 @@ class ViewSession extends \NDB_Form
                 $this->FormAction = "/imaging_browser/viewSession/?sessionID=" .
                          $this->sessionID;
             }
-
         }
     }
 
@@ -196,6 +195,7 @@ class ViewSession extends \NDB_Form
         );
 
         $this->tpl_data['files'] = [];
+        $this->tpl_data['fileIds'] = [];
 
         $timePoint = \TimePoint::singleton(
             new \SessionID($this->sessionID),
@@ -377,6 +377,8 @@ class ViewSession extends \NDB_Form
             ];
 
             $this->tpl_data['files'][] = $file;
+
+            $this->tpl_data['fileIds'][] = $FileID;
         }
     }
 

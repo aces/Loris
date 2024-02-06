@@ -1,19 +1,19 @@
-import { ImageInfos } from './types';
+import { ImageHeaders } from './types';
 
 interface ImagePanelInfosProps {
-  infos: ImageInfos;
+  infos: ImageHeaders;
 }
 
 /**
  * Component for the table that displays the file header information of an image
  */
 function ImagePanelInfos(props: ImagePanelInfosProps) {
-  const inversionTime = props.infos.InversionTime !== '0.00'
+  const inversionTime = props.infos.InversionTime !== 0
     ? props.infos.InversionTime + ' ms'
     : null;
 
-  const numVolumes = props.infos.NumVolumes !== '0.00'
-    ? parseInt(props.infos.NumVolumes) + ' volumes'
+  const numVolumes = props.infos.NumVolumes !== 0
+    ? props.infos.NumVolumes + ' volumes'
     : null;
 
   return (
@@ -35,12 +35,7 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
       <tr>
         <th className="col-xs-2 info">Voxel Size</th>
         <td className="col-xs-6" colSpan={3}>
-          {props.infos.XStep === '' ? ' ' : 'X: ' +
-            props.infos.XStep + ' mm, '}
-          {props.infos.YStep === '' ? ' ' : 'Y: ' +
-            props.infos.YStep + ' mm, '}
-          {props.infos.ZStep === '' ? ' ' : 'Z: ' +
-            props.infos.ZStep + ' mm '}
+          {`X: ${props.infos.Xstep} mm, Y: ${props.infos.Ystep} mm, Z: ${props.infos.Zstep} mm `}
         </td>
         <th className="col-xs-2 info">Output Type</th>
         <td className="col-xs-2">

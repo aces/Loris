@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
 interface ImagePanelQcDropdownProps {
+  fileID: number;
   label: ReactNode;
   editable: boolean;
   options: {[keyid: string]: string};
-  fileID: string;
   formName: string;
   defaultValue: string;
   url?: string;
@@ -55,10 +55,10 @@ function ImagePanelQcDropdown(props: ImagePanelQcDropdownProps) {
 }
 
 interface ImagePanelQcStatusSelectorProps {
+  fileID: number;
   fileNew: boolean;
   hasQcPerm: boolean;
   qcStatus: string;
-  fileID: string;
 }
 
 /**
@@ -92,9 +92,9 @@ function ImagePanelQcStatusSelector(props: ImagePanelQcStatusSelectorProps) {
 }
 
 interface ImagePanelQcSelectedSelectorProps {
-  fileID: string,
+  fileID: number,
   hasQcPerm: boolean,
-  selected: string,
+  selected: boolean | null,
 }
 
 /**
@@ -107,17 +107,17 @@ function ImagePanelQcSelectedSelector(props: ImagePanelQcSelectedSelectorProps) 
       formName="selectedvol"
       fileID={props.fileID}
       editable={props.hasQcPerm}
-      options={{'': '', 'true': 'True', 'false': 'False'}}
-      defaultValue={props.selected}
+      options={{'': '', '1': 'True', '0': 'False'}}
+      defaultValue={props.selected !== null ? (props.selected ? '1' : '0') : ''}
     />
   );
 }
 
 interface ImagePanelQcCaveatSelectorProps {
-  fileID: string;
+  fileID: number;
   hasQcPerm: boolean;
   seriesUID: string;
-  caveat: string;
+  caveat: boolean;
   editableCaveat: boolean;
   fullName: string;
 }
@@ -127,7 +127,7 @@ interface ImagePanelQcCaveatSelectorProps {
  */
 function ImagePanelQcCaveatSelector(props: ImagePanelQcCaveatSelectorProps) {
   // Link caveat to MRI Violations if set true (the hell does that mean ?)
-  const mriViolationsLink = props.fullName && props.caveat === '1'
+  const mriViolationsLink = props.fullName && props.caveat
     ? `/mri_violations/?mincFile=${props.fullName}&seriesUID=${props.seriesUID}`
     : undefined;
 
@@ -144,7 +144,7 @@ function ImagePanelQcCaveatSelector(props: ImagePanelQcCaveatSelectorProps) {
           '0': 'False',
         }
       }
-      defaultValue={props.caveat}
+      defaultValue={props.caveat ? '1' : '0'}
       url={mriViolationsLink}
     />
   );
@@ -174,7 +174,7 @@ function ImageQcStatic(props: ImageQcStaticProps) {
 }
 
 interface ImagePanelQcSnrValueProps {
-  fileID: string;
+  fileID: number;
   snr: string;
 }
 
@@ -188,12 +188,12 @@ function ImagePanelQcSnrValue(props: ImagePanelQcSnrValueProps) {
 }
 
 interface ImagePanelQcProps {
-  fileID: string,
+  fileID: number,
   hasQcPerm: boolean,
   qcStatus: string,
   fileNew: boolean,
-  selected: string,
-  caveat: string,
+  selected: boolean | null,
+  caveat: boolean,
   seriesUID: string,
   snr: string,
   editableCaveat: boolean,

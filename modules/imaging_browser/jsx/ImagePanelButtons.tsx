@@ -3,7 +3,6 @@ import { ImageFiles } from './types';
 
 interface DownloadButtonProps {
   label: string,
-  baseUrl?: string,
   url?: string,
   fileName?: string,
 }
@@ -12,11 +11,7 @@ interface DownloadButtonProps {
  * Download button component
  */
 function DownloadButton(props: DownloadButtonProps) {
-  if (!props.fileName && !props.url) {
-    return <span />;
-  }
-
-  const url = props.url || `${props.baseUrl}/mri/jiv/get_file.php?file=${props.fileName}`;
+  const url = props.url || `${window.location.origin}/mri/jiv/get_file.php?file=${props.fileName}`;
 
   const style = {
     margin: 6,
@@ -31,8 +26,7 @@ function DownloadButton(props: DownloadButtonProps) {
 }
 
 interface ImageQcButtonProps {
-  fileID: string;
-  baseUrl: string;
+  FileID: number;
 }
 
 /**
@@ -48,17 +42,13 @@ class ImageQcButton extends Component<ImageQcButtonProps, {}> {
   openWindowHandler(e: MouseEvent) {
     e.preventDefault();
     window.open(
-      `${this.props.baseUrl}/imaging_browser/feedback_mri_popup/fileID=${this.props.fileID}`,
+      `${window.location.origin}/imaging_browser/feedback_mri_popup/fileID=${this.props.FileID}`,
       'feedback_mri',
       'width=700,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes'
     );
   }
 
   render() {
-    if (!this.props.fileID) {
-      return <span/>;
-    }
-
     return (
       <a
         className="btn btn-default"
@@ -75,9 +65,8 @@ class ImageQcButton extends Component<ImageQcButtonProps, {}> {
 }
 
 interface LongitudinalViewButtonProps {
-  fileID: string,
-  baseUrl: string,
-  otherTimepoints: string,
+  FileID: number,
+  OtherTimepoints: number,
 }
 
 /**
@@ -93,17 +82,13 @@ class LongitudinalViewButton extends Component<LongitudinalViewButtonProps, {}> 
   openWindowHandler(e: MouseEvent) {
     e.preventDefault();
     window.open(
-      `${this.props.baseUrl}/brainbrowser/?minc_id=${this.props.otherTimepoints}`,
+      `${window.location.origin}/brainbrowser/?minc_id=${this.props.OtherTimepoints}`,
       'BrainBrowser Volume Viewer',
       'location = 0,width = auto, height = auto, scrollbars=yes'
     );
   }
 
   render() {
-    if (!this.props.fileID) {
-      return <span/>;
-    }
-
     return (
       <a className="btn btn-default"
          href="#noID"
@@ -119,9 +104,9 @@ class LongitudinalViewButton extends Component<LongitudinalViewButtonProps, {}> 
 }
 
 interface ImagePanelButtonsProps {
-  fileID: string;
-  baseUrl: string;
-  otherTimepoints: string;
+  FileID: number;
+  APIFile: string;
+  OtherTimepoints: number;
   files: ImageFiles;
 }
 
@@ -132,61 +117,55 @@ function ImagePanelButtons(props: ImagePanelButtonsProps) {
   return (
     <div className="row mri-second-row-panel col-xs-12">
       <LongitudinalViewButton
-        fileID={props.fileID}
-        baseUrl={props.baseUrl}
-        otherTimepoints={props.otherTimepoints}
+        FileID={props.FileID}
+        OtherTimepoints={props.OtherTimepoints}
       />
       <ImageQcButton
-        fileID={props.fileID}
-        baseUrl={props.baseUrl}
+        FileID={props.FileID}
       />
       <DownloadButton
-        url={props.files.minc}
-        baseUrl={props.baseUrl}
+        url={props.APIFile}
         label='Download Image'
       />
-      { props.files.xmlProtocol ?
+      { props.files.protocol ?
         <DownloadButton
-          baseUrl={props.baseUrl}
-          fileName={props.files.xmlProtocol}
+          fileName={props.files.protocol}
           label="Download XML Protocol"
         /> : null
       }
-      { props.files.xmlReport ?
+      { props.files.report ?
         <DownloadButton
-          fileName={props.files.xmlReport}
-          baseUrl={props.baseUrl}
+          fileName={props.files.report}
           label="Download XML Report"
         /> : null
       }
       { props.files.nrrd ?
         <DownloadButton
           fileName={props.files.nrrd}
-          baseUrl={props.baseUrl}
           label="Download NRRD"
         /> : null
       }
-      { props.files.nifti ?
+      { props.files.nii ?
         <DownloadButton
-          url={props.files.minc + '/format/nifti'}
+          url={props.APIFile + '/format/nifti'}
           label="Download NIfTI"
         /> : null
       }
       { props.files.bval ?
         <DownloadButton
-          url={props.files.minc + '/format/bval'}
+          url={props.APIFile + '/format/bval'}
           label="Download BVAL"
         /> : null
       }
       { props.files.bvec ?
         <DownloadButton
-          url={props.files.minc + '/format/bvec'}
+          url={props.APIFile + '/format/bvec'}
           label="Download BVEC"
         /> : null
       }
       { props.files.json ?
         <DownloadButton
-          url={props.files.minc + '/format/bidsjson'}
+          url={props.APIFile + '/format/bidsjson'}
           label="Download BIDS JSON"
         /> : null
       }

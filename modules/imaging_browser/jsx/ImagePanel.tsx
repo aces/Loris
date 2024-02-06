@@ -1,11 +1,12 @@
-import React, { Component, MouseEvent } from 'react';
-import { ImageInfos, ImageFiles, QcStatus } from './types';
+import React, { Component, MouseEvent, useEffect, useState } from 'react';
+import { QcStatus } from './types';
 import ImagePanelInfos from './ImagePanelInfos';
 import ImagePanelQc from './ImagePanelQc';
 import ImagePanelButtons from './ImagePanelButtons';
+import { Image } from './types';
 
 interface ImagePanelHeaderProps {
-  fileId: string;
+  fileId: number;
   filename: string;
   qcStatus: QcStatus;
   headerExpanded: boolean;
@@ -52,21 +53,8 @@ function ImagePanelHeader(props: ImagePanelHeaderProps) {
 }
 
 interface ImagePanelBodyProps {
-  FileID: string;
-  FileNew: boolean;
-  HasQCPerm: boolean;
-  QCStatus: string;
-  Caveat: string;
-  Selected: string;
-  SNR: string;
-  SeriesUID: string;
-  BaseURL: string;
-  Fullname: string;
-  OtherTimepoints: string;
+  image: Image;
   HeadersExpanded: boolean;
-  EditableCaveat: boolean;
-  infos: ImageInfos;
-  files: ImageFiles;
 }
 
 /**
@@ -81,7 +69,7 @@ class ImagePanelBody extends Component<ImagePanelBodyProps, {}> {
   openWindowHandler(e: MouseEvent) {
     e.preventDefault();
     window.open(
-      `${this.props.BaseURL}/brainbrowser/?minc_id=${this.props.FileID}`,
+      `${window.location.origin}/brainbrowser/?minc_id=${this.props.image.FileID}`,
       'BrainBrowser Volume Viewer',
       'location = 0,width = auto, height = auto, scrollbars=yes'
     );
@@ -92,55 +80,40 @@ class ImagePanelBody extends Component<ImagePanelBodyProps, {}> {
       <div className="panel-body">
         <div className="row">
           <div className="col-xs-9 imaging_browser_pic">
-            <a href="#noID" onClick={(e) => this.openWindowHandler(e)}>
+            <a href="#noID" onClick={this.openWindowHandler}>
               <img className="img-checkpic img-responsive"
-                   src={this.props.files.minc + '/format/thumbnail'}/>
+                   src={this.props.image.APIFile + '/format/thumbnail'}/>
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">
             <ImagePanelQc
-              fileID={this.props.FileID}
-              fileNew={this.props.FileNew}
-              hasQcPerm={this.props.HasQCPerm}
-              qcStatus={this.props.QCStatus}
-              caveat={this.props.Caveat}
-              selected={this.props.Selected}
-              snr={this.props.SNR}
-              seriesUID={this.props.SeriesUID}
-              editableCaveat={this.props.EditableCaveat}
-              fullName={this.props.Fullname}
+              fileID={this.props.image.FileID}
+              fileNew={this.props.image.New}
+              hasQcPerm={this.props.image.HasQCPerm}
+              qcStatus={this.props.image.QCStatus}
+              caveat={this.props.image.Caveat}
+              selected={this.props.image.Selected}
+              snr={this.props.image.SNR}
+              seriesUID={this.props.image.headers.SeriesUID}
+              editableCaveat={this.props.image.EditableCaveat}
+              fullName={this.props.image.FullFilename}
             />
           </div>
         </div>
         <ImagePanelButtons
-          baseUrl={this.props.BaseURL}
-          fileID={this.props.FileID}
-          files={this.props.files}
-          otherTimepoints={this.props.OtherTimepoints}
+          FileID={this.props.image.FileID}
+          APIFile={this.props.image.APIFile}
+          OtherTimepoints={this.props.image.OtherTimepoints}
+          files={this.props.image.files}
         />
-        {this.props.HeadersExpanded ? <ImagePanelInfos infos={this.props.infos} /> : ''}
+        {this.props.HeadersExpanded ? <ImagePanelInfos infos={this.props.image.headers} /> : ''}
       </div>
     );
   }
 }
 
 interface ImagePanelProps {
-  FileID: string;
-  Filename: string;
-  FileNew: boolean;
-  HasQCPerm: boolean;
-  QCStatus: QcStatus;
-  Caveat: string;
-  Selected: string;
-  SNR: string;
-  SeriesUID: string;
-  BaseURL: string;
-  Fullname: string;
-  OtherTimepoints: string;
-  HeadersExpanded: string;
-  EditableCaveat: boolean;
-  infos: ImageInfos;
-  files: ImageFiles;
+  image: Image;
 }
 
 interface ImagePanelState {
@@ -179,9 +152,9 @@ class ImagePanel extends Component<ImagePanelProps, ImagePanelState> {
       <div className="col-xs-12 col-md-6">
         <div className="panel panel-default">
           <ImagePanelHeader
-            fileId={this.props.FileID}
-            filename={this.props.Filename}
-            qcStatus={this.props.QCStatus}
+            fileId={this.props.image.FileID}
+            filename={this.props.image.Filename}
+            qcStatus={this.props.image.QCStatus}
             headerExpanded={!this.state.HeadersCollapsed}
             bodyExpanded={!this.state.BodyCollapsed}
             onToggleBody={this.toggleBody}
@@ -189,23 +162,8 @@ class ImagePanel extends Component<ImagePanelProps, ImagePanelState> {
           />
           {this.state.BodyCollapsed ? '' :
             <ImagePanelBody
-              BaseURL={this.props.BaseURL}
-
-              FileID={this.props.FileID}
+              image={this.props.image}
               HeadersExpanded={!this.state.HeadersCollapsed}
-              infos={this.props.infos}
-              FileNew={this.props.FileNew}
-              HasQCPerm={this.props.HasQCPerm}
-              QCStatus={this.props.QCStatus}
-              Caveat={this.props.Caveat}
-              EditableCaveat={this.props.EditableCaveat}
-              Selected={this.props.Selected}
-              SNR={this.props.SNR}
-
-              Fullname={this.props.Fullname}
-              files={this.props.files}
-              OtherTimepoints={this.props.OtherTimepoints}
-              SeriesUID={this.props.SeriesUID}
             />}
         </div>
       </div>
@@ -213,8 +171,41 @@ class ImagePanel extends Component<ImagePanelProps, ImagePanelState> {
   }
 }
 
-let RImagePanel = React.createFactory(ImagePanel);
+interface ImagePanelWrapperProps {
+  fileId: number;
+}
 
-(window as any).RImagePanel = RImagePanel;
+function ImagePanelWrapper(props: ImagePanelWrapperProps) {
+  const [image, setImage] = useState<Image | null>(null);
 
-export default RImagePanel;
+  useEffect(() => {
+    fetch(`${window.location.origin}/imaging_browser/getimagefile?fileID=${props.fileId}`,
+      {credentials: 'same-origin'})
+      .then((response) => response.json())
+      .then((image) => { setImage(image); console.log(image) })
+  }, []);
+
+  return image ? (
+    <ImagePanel image={image} />
+  ) : null;
+}
+
+interface ImagePanelsProps {
+  fileIds: number[];
+}
+
+function ImagePanels(props: ImagePanelsProps) {
+  return (
+    <>
+      {props.fileIds.map((fileId, key) => (
+        <ImagePanelWrapper key={key} fileId={fileId} />
+      ))}
+    </>
+  );
+}
+
+let RImagePanels = React.createFactory(ImagePanels);
+
+(window as any).RImagePanels = RImagePanels;
+
+export default RImagePanels;
