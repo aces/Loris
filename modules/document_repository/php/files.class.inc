@@ -180,16 +180,26 @@ class Files extends \NDB_Page
      * @param string $rid the file id
      *
      * @throws \DatabaseException
-     * @return string
+     * @return ResponseInterface
      */
-    function deleteFile($rid)
+    function deleteFile($rid): ResponseInterface
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $user    = $factory->user();
         $config  = $factory->config();
         if (! $user->hasPermission('document_repository_delete')) {
-            return;
+            $emsg = "Missing document_repository_delete permission".
+                return (new \LORIS\Http\Response())
+                ->withStatus(404)
+                ->withHeader('Content-Type', 'text/json')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            ['error'=>$emsg]
+                        )
+                    )
+                );
         }
         $path = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
