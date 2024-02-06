@@ -432,7 +432,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $description = "";
         foreach ($desc as $d) {
-            $description = $d['description'];
+            $description = $d['description'] ?? '';
         }
         return $description;
     }
