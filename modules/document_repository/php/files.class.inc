@@ -191,15 +191,15 @@ class Files extends \NDB_Page
         if (! $user->hasPermission('document_repository_delete')) {
             $emsg = "Missing document_repository_delete permission";
                 return (new \LORIS\Http\Response())
-                ->withStatus(404)
-                ->withHeader('Content-Type', 'text/json')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            ['error'=>$emsg]
+                    ->withStatus(404)
+                    ->withHeader('Content-Type', 'text/json')
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(
+                                ['error'=>$emsg]
+                            )
                         )
-                    )
-                );
+                    );
         }
         $path = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")

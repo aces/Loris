@@ -185,8 +185,8 @@ function uploadFile()
         $s3_upload_status =false;
     // upload to aws s3
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-        $config           = \NDB_Config::singleton();
-        $bucketName       = $config->getSetting('AWS_S3_Default_Bucket_Media');
+        $config     = \NDB_Config::singleton();
+        $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Media');
 
         $s3_file        = $_FILES['file'];
         $s3_fileName    = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
