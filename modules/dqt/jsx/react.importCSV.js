@@ -10,7 +10,7 @@ import Papa from 'papaparse';
 import {
     FileElement,
     RadioElement,
-    ButtonElement
+    ButtonElement,
 } from 'jsx/Form';
 /**
  * Import CSV Modal Component

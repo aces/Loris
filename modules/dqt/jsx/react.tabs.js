@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import StaticDataTable from '../../../jsx/StaticDataTable';
 import swal from 'sweetalert2';
 import {
-    RadioElement
+    RadioElement,
 } from 'jsx/Form';
 const {jStat} = require('jstat');
 import JSZip from 'jszip';
