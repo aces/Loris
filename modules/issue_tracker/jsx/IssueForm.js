@@ -107,6 +107,8 @@ class IssueForm extends Component {
     const hasEditPermission = (
       this.state.Data.hasEditPermission ||
       this.state.Data.isOwnIssue ||
+      this.state.Data.isSiteIssue ||
+      this.state.Data.canEditAllIssue ||
       this.state.isNewIssue
     );
 
