@@ -416,6 +416,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
     /**
      * Gets the description of the issue
+     *
      * @param int $issueID the relevant issue
      *
      * @return string

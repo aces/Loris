@@ -13,6 +13,7 @@ import {
   TextboxElement,
   ButtonElement,
   TextareaElement,
+  FileElement,
 } from 'jsx/Form';
 
 /**
@@ -114,7 +115,6 @@ class IssueForm extends Component {
     let lastUpdatedByValue;
     let dateCreated;
     let submitButtonValue;
-    let commentLabel;
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
@@ -130,7 +130,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = 'No-one!';
       dateCreated = 'Sometime Soon!';
       submitButtonValue = 'Submit Issue';
-      commentLabel = 'Description';
       attachmentFileElement = (
         <FileElement
           name='file'
@@ -146,7 +145,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
-      commentLabel = 'New Comment';
       attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
@@ -336,12 +334,16 @@ class IssueForm extends Component {
             multiple={true}
             value={this.state.formData.othersWatching}
           />
-          <TextareaElement
-            name='comment'
-            label={commentLabel}
-            onUserInput={this.setFormData}
-            value={this.state.formData.comment}
-          />
+          {!this.state.isNewIssue ?
+            <TextareaElement
+              name='comment'
+              hidden={true}
+              label='New Comment'
+              onUserInput={this.setFormData}
+              value={this.state.formData.comment}
+            />
+            :null
+          }
           {attachmentFileElement}
           <ButtonElement label={submitButtonValue}/>
           {attachmentUploadBtn}
