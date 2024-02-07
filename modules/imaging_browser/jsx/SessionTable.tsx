@@ -1,20 +1,6 @@
-import { useEffect, useState } from 'react';
-
-interface Subject {
-  mriqcstatus: any;
-  mriqcpending: any;
-  pscid: any;
-  candid: any;
-  visitLabel: any;
-  site: any;
-  dob: any;
-  sex: any;
-  scanner: any;
-  CohortTitle: any;
-  edc: any;
-  useEDC: boolean;
-  outputType: any;
-}
+import {useContext, useEffect, useState} from 'react';
+import {Subject, Scanner} from './types';
+import {ScannerContext} from './Session';
 
 interface TableProps {
   subject: Subject;
@@ -51,19 +37,46 @@ function Table(props: TableProps) {
             <td>{props.subject.site}</td>
             <td>
               {props.subject.mriqcpending === 'Y'
-              ? <img src={window.location.origin + "/images/check_blue.gif"} width={12} height={12} />
+              ? <img
+                  src={window.location.origin + '/images/check_blue.gif'}
+                  width={12}
+                  height={12}
+                />
               : null}
             </td>
             <td>{props.subject.dob}</td>
             <td>{props.subject.sex}</td>
-            <td>{props.subject.outputType}</td>
-            <td>{props.subject.scanner}</td>
+            <td>{new URLSearchParams(window.location.search).get('outputType')}</td>
+            <td><Scanner /></td>
             <td>{props.subject.CohortTitle}</td>
             {props.subject.useEDC ? <td>{props.subject.edc}</td> : null}
           </tr>
         </tbody>
       </table>
     </div>
+  );
+}
+
+function Scanner() {
+  const [scanner, setScanner] = useState<Scanner | null>(null);
+  const [scannerID, _] = useContext(ScannerContext);
+
+  useEffect(() => {
+    if (scannerID !== null) {
+      fetch(`${window.location.origin}/imaging_browser/getscannerdata?scannerID=${scannerID}`,
+        {credentials: 'same-origin'})
+        .then((response) => response.json())
+        .then((scanner) => setScanner(scanner));
+    }
+  }, [scannerID]);
+
+  return (
+    <>
+      {scanner !== null
+        ? `${scanner.manufacturer} ${scanner.model} ${scanner.serialNumber}`
+        : null
+      }
+    </>
   );
 }
 
@@ -75,7 +88,7 @@ function TableWrapper() {
     fetch(`${window.location.origin}/imaging_browser/getsubjectdata?sessionID=${sessionID}`,
       {credentials: 'same-origin'})
       .then((response) => response.json())
-      .then((subject) => setSubject(subject))
+      .then((subject) => setSubject(subject));
   }, []);
 
   return subject ? <Table subject={subject} /> : null;

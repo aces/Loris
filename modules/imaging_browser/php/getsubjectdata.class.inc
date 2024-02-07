@@ -6,20 +6,20 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class GetSubjectData extends \NDB_Page implements RequestHandlerInterface {
+/**
+ * Page that returns a subject's data as a Json.
+ * Note that much of the code was extracted, or sometimes duplicated, from `ViewSession`.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class GetSubjectData extends \NDB_Page implements RequestHandlerInterface
+{
     /**
      * The database connection
      *
      * @var \Database
      */
     private $db;
-
-    /**
-     * The user accessing the endpoint
-     *
-     * @var \User
-     */
-    private $user;
 
     /**
      * Returns true if user has access to this endpoint.
@@ -83,87 +83,83 @@ class GetSubjectData extends \NDB_Page implements RequestHandlerInterface {
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->db   = $this->loris->getDatabaseConnection();
-        $this->user = $request->getAttribute('user');
-        $method     = $request->getMethod();
+        $this->db = $this->loris->getDatabaseConnection();
+        $method   = $request->getMethod();
         switch ($method) {
         case 'GET':
-            return $this->getData();
+            return $this->_getData();
         }
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format.
+     * Returns a scanner's data as a Json response
      *
-     * @return ResponseInterface The outgoing PSR7 with a string of json
-     *                           encoded tests as the body.
+     * @return ResponseInterface The Json response.
      */
-    private function getData(): ResponseInterface
+    private function _getData(): ResponseInterface
     {
-        $row = $this->getRow($_REQUEST['sessionID']);
+        $row = $this->_getRow($_REQUEST['sessionID']);
         return new \LORIS\Http\Response\JSON\OK($row);
     }
 
-    function getRow($sessionID)
+    /**
+     * Returns a subject's data as a Json response
+     *
+     * @param $sessionID A session's id
+     *
+     * @return array The Json response.
+     */
+    private function _getRow($sessionID)
     {
         $timePoint = \TimePoint::singleton(
             new \SessionID(strval($sessionID))
         );
 
-        $subjectData = [];
-        $subjectData['sessionID']   = $sessionID;
-        $subjectData['CohortID']    = $timePoint->getCohortID();
-        $subjectData['CohortTitle'] = $timePoint->getData('CohortTitle');
-        $subjectData['visitLabel']  = $timePoint->getVisitLabel();
-        $subjectData['visitNo']     = $timePoint->getVisitNo();
-        $subjectData['site']        = $timePoint->getPSC();
+        $row = [];
+        $row['sessionID']   = $sessionID;
+        $row['CohortID']    = $timePoint->getCohortID();
+        $row['CohortTitle'] = $timePoint->getData('CohortTitle');
+        $row['visitLabel']  = $timePoint->getVisitLabel();
+        $row['visitNo']     = $timePoint->getVisitNo();
+        $row['site']        = $timePoint->getPSC();
+
         $qcstatus = $this->db->pselectRow(
             "SELECT MRIQCStatus, MRIQCPending, MRICaveat
             FROM session WHERE ID=:SID",
             ['SID' => $sessionID]
         );
+
         if (is_null($qcstatus)) {
             throw new \LorisException(
                 'Could not find QC status information for the supplied '
                 . 'session ID'
             );
         }
-        $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
-        $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
-        $subjectData['candid']       = $timePoint->getCandID();
 
-        $candidate            =& \Candidate::singleton($timePoint->getCandID());
-        $subjectData['pscid'] = $candidate->getPSCID();
-        $subjectData['dob']   = $candidate->getCandidateDoB();
-        $subjectData['edc']   = $candidate->getCandidateEDC();
-        $subjectData['sex']   = $candidate->getCandidateSex();
+        $row['mriqcstatus']  = $qcstatus['MRIQCStatus'];
+        $row['mriqcpending'] = $qcstatus['MRIQCPending'];
+        $row['mricaveat']    = $qcstatus['MRICaveat'];
+        $row['candid']       = $timePoint->getCandID();
 
-        // This doesn't work.
-        //Need to find the proper way to get the TarchiveID.
-        //It should be per file, not per candidate. --Dave
-        $params     = [];
-        $EntityType = $candidate->getEntityType();
-        if ($EntityType == 'Scanner') {
-            $ID = ":PPSCID";
-            $params['PPSCID'] = $timePoint->getData('PSCID');
-        } else {
-            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-            $params['PPSCID']  = $candidate->getPSCID();
-            $params['PCandID'] = $timePoint->getCandID();
-            $params['PVL']     = $timePoint->getVisitLabel();
-        }
-        $tarchiveIDs = $this->db->pselect(
-            "SELECT TarchiveID
-            FROM tarchive
-            WHERE PatientName LIKE $ID",
-            $params
-        );
-        $subjectData['tarchiveids'] = $tarchiveIDs;
-        // Cache the data
-        return $subjectData;
+        $candidate    =& \Candidate::singleton($timePoint->getCandID());
+        $row['pscid'] = $candidate->getPSCID();
+        $row['dob']   = $candidate->getCandidateDoB();
+        $row['edc']   = $candidate->getCandidateEDC();
+        $row['sex']   = $candidate->getCandidateSex();
+
+        $config        = \NDB_Config::singleton();
+        $row['useEDC'] = $config->getSetting('useEDC') === 'true' ? true : false;
+        return $row;
     }
 
+    /**
+     * Gets a rejected parameter according to its type
+     *
+     * @param \MRIFile $file file object
+     * @param string   $type type of the rejected
+     *
+     * @return ?string The parameter of the rejected
+     */
     function _getRejected(\MRIFile $file, string $type): ?string
     {
         $array     = [];
@@ -201,6 +197,15 @@ class GetSubjectData extends \NDB_Page implements RequestHandlerInterface {
         return $selected != null ? (bool) $selected : null;
     }
 
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?int ID of the associated record in table violations_resolved or
+     *              null if there is none.
+     */
     function _getManualCaveatViolationsResolvedID(int $fileID): ?int
     {
         $query = "
@@ -220,6 +225,14 @@ class GetSubjectData extends \NDB_Page implements RequestHandlerInterface {
         return $this->db->pselectOneInt($query, ['fileID' => $fileID]);
     }
 
+    /**
+     * Gets candidate's scans with the same acquisitionID.
+     *
+     * @param int $initialFileID            the value of initialFileID
+     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
+     *
+     * @return string of FileIDs, comma separated
+     */
     function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID)
     {
         $selectResults = $this->db->pselect(
@@ -241,6 +254,15 @@ class GetSubjectData extends \NDB_Page implements RequestHandlerInterface {
         return $fileIDString;
     }
 
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?array array of IDs of the associated records in table
+     *              mri_violations_log or null if there is none.
+     */
     function _getProtocolViolations(int $fileID): ?array
     {
         $query = "

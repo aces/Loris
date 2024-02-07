@@ -1,21 +1,14 @@
-import { ImageHeaders } from './types';
+import {ImageHeaders} from './types';
 
-function formatDate(timestamp: number) {
-  const date = new Date(timestamp * 1000);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear().toString();
-  return `${year}-${month}-${day}`;
-}
 
-interface ImagePanelInfosProps {
+interface ImageHeadersProps {
   infos: ImageHeaders;
 }
 
 /**
- * Component for the table that displays the file header information of an image
+ * Image file headers table component
  */
-function ImagePanelInfos(props: ImagePanelInfosProps) {
+function ImageHeaders(props: ImageHeadersProps) {
   const inversionTime = props.infos.InversionTime !== 0
     ? props.infos.InversionTime + ' ms'
     : null;
@@ -25,6 +18,7 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
     : null;
 
   return (
+    <div style={{overflowX: 'scroll'}}>
     <table className="table table-hover table-bordered header-info col-xs-12 dynamictable">
       <tbody>
       <tr>
@@ -54,7 +48,7 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
         </td>
         <th className="col-xs-2 info">Inserted Date</th>
         <td className="col-xs-2">
-          {formatDate(parseInt(props.infos.InsertedDate))}
+          {props.infos.InsertedDate}
         </td>
       </tr>
       <tr>
@@ -105,12 +99,12 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
           {numVolumes}
         </td>
         {props.infos.ProcessingPipeline ?
-        <th className="col-xs-2 info">Processing Pipeline</th>
+          <th className="col-xs-2 info">Processing Pipeline</th>
           : null}
         {props.infos.ProcessingPipeline ?
-        <td className="col-xs-2">
-          {props.infos.ProcessingPipeline}
-        </td>
+          <td className="col-xs-2">
+            {props.infos.ProcessingPipeline}
+          </td>
           : null}
         {props.infos.ProcDate ?
         <th className="col-xs-2 info">Processing Pipeline Date</th>
@@ -122,34 +116,35 @@ function ImagePanelInfos(props: ImagePanelInfosProps) {
           : null }
       </tr>
       {props.infos.ProcessingPipeline === 'DTIPrepPipeline' ?
-      <tr>
-        <th className="col-xs-2 info">Number of rejected directions</th>
-        <td className="col-xs-2">
-          {props.infos.TotalRejected}
-        </td>
-        <th className="col-xs-2 info">Number of Interlace correlations</th>
-        <td className="col-xs-2">
-          {props.infos.InterlaceRejected}
-        </td>
-        <th className="col-xs-2 info">
-          Number of Gradient-wise correlations
-        </th>
-        <td className="col-xs-2">
-          {props.infos.IntergradientRejected}
-        </td>
-      </tr>
+        <tr>
+          <th className="col-xs-2 info">Number of rejected directions</th>
+          <td className="col-xs-2">
+            {props.infos.TotalRejected}
+          </td>
+          <th className="col-xs-2 info">Number of Interlace correlations</th>
+          <td className="col-xs-2">
+            {props.infos.InterlaceRejected}
+          </td>
+          <th className="col-xs-2 info">
+            Number of Gradient-wise correlations
+          </th>
+          <td className="col-xs-2">
+            {props.infos.IntergradientRejected}
+          </td>
+        </tr>
         : null}
       {props.infos.ProcessingPipeline === 'DTIPrepPipeline' ?
-      <tr>
-        <th className="col-xs-2 info">Number of Slicewise correlations</th>
-        <td className="col-xs-2">
-          {props.infos.SlicewiseRejected}
-        </td>
-      </tr>
+        <tr>
+          <th className="col-xs-2 info">Number of Slicewise correlations</th>
+          <td className="col-xs-2">
+            {props.infos.SlicewiseRejected}
+          </td>
+        </tr>
         : null}
       </tbody>
     </table>
+    </div>
   );
 }
 
-export default ImagePanelInfos;
+export default ImageHeaders;

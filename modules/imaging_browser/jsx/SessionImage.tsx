@@ -1,5 +1,6 @@
-import { MouseEvent, useEffect, useState } from 'react';
-import { Image, QcStatus } from './types';
+import {MouseEvent, useEffect, useState, useContext} from 'react';
+import {Image, QcStatus} from './types';
+import {ScannerContext} from './Session';
 import ImageQc from './SessionImageQc';
 import ImageButtons from './SessionImageButtons';
 import ImageHeaders from './SessionImageHeaders';
@@ -7,23 +8,24 @@ import ImageHeaders from './SessionImageHeaders';
 interface ImagePanelHeaderProps {
   fileId: number;
   filename: string;
-  qcStatus: QcStatus;
+  qcStatus: QcStatus | null;
   bodyExpanded: boolean;
   toggleBody: () => void;
 }
 
 function ImagePanelHeader(props: ImagePanelHeaderProps) {
+  const expandDirection = props.bodyExpanded ? 'up' : 'down';
+
   let qcLabel;
   switch (props.qcStatus) {
     case 'Pass':
-      qcLabel = "success";
+      qcLabel = 'success';
       break;
     case 'Fail':
-      qcLabel = "danger";
+      qcLabel = 'danger';
       break;
   }
 
-  const expandDirection = props.bodyExpanded ? "up" : "down";
   return (
     <div className="panel-heading clearfix">
       <input type="checkbox" data-file-id={props.fileId} className="mripanel user-success"/>
@@ -42,9 +44,6 @@ interface ImagePanelBodyProps {
   image: Image;
 }
 
-/**
- * Image Panel Body component
- */
 function ImagePanelBody(props: ImagePanelBodyProps) {
   const [headersExpanded, setHeadersExpanded] = useState<boolean>(false);
   const toggleHeaders = () => setHeadersExpanded(!headersExpanded);
@@ -129,12 +128,15 @@ interface ImageWrapperProps {
 
 function ImageWrapper(props: ImageWrapperProps) {
   const [image, setImage] = useState<Image | null>(null);
-
+  const [_, setScanner] = useContext(ScannerContext);
   useEffect(() => {
     fetch(`${window.location.origin}/imaging_browser/getimagedata?fileID=${props.fileId}`,
       {credentials: 'same-origin'})
       .then((response) => response.json())
-      .then((image) => setImage(image))
+      .then((image) => {
+        setImage(image);
+        setScanner(image.ScannerID);
+      });
   }, []);
 
   return image ? <ImagePanel image={image} /> : null;

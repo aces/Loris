@@ -1,5 +1,5 @@
-import React, { Component, MouseEvent, ReactNode } from 'react';
-import { ImageFiles } from './types';
+import {MouseEvent, ReactNode} from 'react';
+import {ImageFiles} from './types';
 
 interface ButtonProps {
   icon: string;
@@ -8,8 +8,11 @@ interface ButtonProps {
   onClick?: (e: MouseEvent) => void;
 }
 
+/**
+ * Generic clickable button component, which may be a link or not
+ */
 function Button(props: ButtonProps) {
-  let element = (children: ReactNode) => props.url ?
+  const element = (children: ReactNode) => props.url ?
     (
       <a href={props.url} className="btn btn-default" onClick={props.onClick} style={{margin: 0}}>
         {children}
@@ -25,17 +28,15 @@ function Button(props: ButtonProps) {
       <span className={`glyphicon glyphicon-${props.icon}`} style={{marginRight: '5px'}} />
       <span className="hidden-xs">{props.children}</span>
     </>
-  )
+  );
 }
 
-interface DownloadButtonProps {
-  label: string,
-  url?: string,
-  fileName?: string,
+interface LongitudinalViewButtonProps {
+  OtherTimepoints: number,
 }
 
 /**
- * Image Longitudinal View Button component
+ * Image longitudinal view button component
  */
 function LongitudinalViewButton(props: LongitudinalViewButtonProps) {
   const url = `${window.location.origin}/brainbrowser/?minc_id=${props.OtherTimepoints}`;
@@ -46,7 +47,7 @@ function LongitudinalViewButton(props: LongitudinalViewButtonProps) {
       'BrainBrowser Volume Viewer',
       'location = 0,width = auto, height = auto, scrollbars=yes'
     );
-  }
+  };
 
   return (
     <Button icon="eye-open" url={url} onClick={openWindowHandler}>
@@ -60,7 +61,7 @@ interface QcButtonProps {
 }
 
 /**
- * Image Quality Control comments button component
+ * Image quality control comments button component
  */
 function QcButton(props: QcButtonProps) {
   const url = `${window.location.origin}/imaging_browser/feedback_mri_popup/fileID=${props.FileID}`;
@@ -86,7 +87,7 @@ interface HeadersButtonProps {
 }
 
 /**
- * Image Longitudinal View Button component
+ * Image Longitudinal View Button
  */
 function HeadersButton(props: HeadersButtonProps) {
   return (
@@ -96,8 +97,16 @@ function HeadersButton(props: HeadersButtonProps) {
   );
 }
 
+interface DownloadButtonProps {
+  label: string,
+  url?: string,
+  fileName?: string,
+}
+
 /**
  * Download button component
+ *
+ * One of the `url` or `fileName` prop must be defined.
  */
 function DownloadButton(props: DownloadButtonProps) {
   const url = props.url || `${window.location.origin}/mri/jiv/get_file.php?file=${props.fileName}`;
@@ -106,10 +115,6 @@ function DownloadButton(props: DownloadButtonProps) {
       {props.label}
     </Button>
   );
-}
-
-interface LongitudinalViewButtonProps {
-  OtherTimepoints: number,
 }
 
 interface ImageButtonsProps {
@@ -121,12 +126,17 @@ interface ImageButtonsProps {
   toggleHeaders?: () => void;
 }
 
-/**
- * Image Buttons component
- */
 function ImageButtons(props: ImageButtonsProps) {
+  const style = {
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    flexWrap: 'wrap' as const,
+    gap: '5px',
+    paddingBottom: '10px',
+  };
+
   return (
-    <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px', paddingBottom: '10px'}}>
+    <div style={style}>
       <LongitudinalViewButton
         OtherTimepoints={props.OtherTimepoints}
       />

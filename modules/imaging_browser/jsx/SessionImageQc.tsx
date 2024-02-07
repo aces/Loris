@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import {ReactNode} from 'react';
 
-interface ImagePanelQcDropdownProps {
+interface ImageQcDropdownProps {
   fileID: number;
   label: ReactNode;
   editable: boolean;
@@ -10,32 +10,27 @@ interface ImagePanelQcDropdownProps {
   url?: string;
 }
 
-/**
- * Image Quality Control Dropdown component
- */
-function ImagePanelQcDropdown(props: ImagePanelQcDropdownProps) {
+function ImageQcDropdown(props: ImageQcDropdownProps) {
   const label = props.url
     ? <a href={props.url}>{props.label}</a>
     : props.label;
 
   let dropdown;
   if (props.editable) {
-    const options = Object.keys(props.options).map((key) => (
-      <option key={props.formName + props.fileID + key}
-        className="form-control input-sm option"
-        value={key}
-      >
-        {props.options[key]}
-      </option>
-    ));
-
     dropdown = (
       <select
         name={`${props.formName}[${props.fileID}]`}
         defaultValue={props.defaultValue}
         className="form-control input-sm"
       >
-        {options}
+        {Object.keys(props.options).map((key) => (
+          <option key={props.formName + props.fileID + key}
+            className="form-control input-sm option"
+            value={key}
+          >
+            {props.options[key]}
+          </option>
+        ))}
       </select>
     );
   } else {
@@ -54,25 +49,20 @@ function ImagePanelQcDropdown(props: ImagePanelQcDropdownProps) {
   );
 }
 
-interface ImagePanelQcStatusSelectorProps {
+interface ImageQcStatusSelectorProps {
   fileID: number;
   fileNew: boolean;
   hasQcPerm: boolean;
-  qcStatus: string;
+  qcStatus: string | null;
 }
 
-/**
- * Image Panel Quality Control Status Selector Component
- */
-function ImagePanelQcStatusSelector(props: ImagePanelQcStatusSelectorProps) {
+function ImageQcStatusSelector(props: ImageQcStatusSelectorProps) {
   let qcStatusLabel;
   if (props.hasQcPerm && props.fileNew) {
     qcStatusLabel = (
       <span>
-        QC Status <span className="text-info">
-              ( <span className="glyphicon glyphicon-star">
-            </span> New )
-          </span>
+        QC Status
+        <span className="text-info">(<span className="glyphicon glyphicon-star" /> New)</span>
       </span>
     );
   } else {
@@ -80,29 +70,26 @@ function ImagePanelQcStatusSelector(props: ImagePanelQcStatusSelectorProps) {
   }
 
   return (
-    <ImagePanelQcDropdown
+    <ImageQcDropdown
       label={qcStatusLabel}
       formName="status"
       fileID={props.fileID}
       editable={props.hasQcPerm}
-      defaultValue={props.qcStatus}
+      defaultValue={props.qcStatus ?? ''}
       options={{'': '', 'Pass': 'Pass', 'Fail': 'Fail'}}
     />
   );
 }
 
-interface ImagePanelQcSelectedSelectorProps {
+interface ImageQcSelectedSelectorProps {
   fileID: number,
   hasQcPerm: boolean,
   selected: boolean | null,
 }
 
-/**
- * Image Panel Quality Control Selected Selector component
- */
-function ImagePanelQcSelectedSelector(props: ImagePanelQcSelectedSelectorProps) {
+function ImageQcSelectedSelector(props: ImageQcSelectedSelectorProps) {
   return (
-    <ImagePanelQcDropdown
+    <ImageQcDropdown
       label="Selected"
       formName="selectedvol"
       fileID={props.fileID}
@@ -113,7 +100,7 @@ function ImagePanelQcSelectedSelector(props: ImagePanelQcSelectedSelectorProps) 
   );
 }
 
-interface ImagePanelQcCaveatSelectorProps {
+interface ImageQcCaveatSelectorProps {
   fileID: number;
   hasQcPerm: boolean;
   seriesUID: string;
@@ -122,17 +109,13 @@ interface ImagePanelQcCaveatSelectorProps {
   fullName: string;
 }
 
-/**
- * Image Panel Quality Control Caveat Selector component
- */
-function ImagePanelQcCaveatSelector(props: ImagePanelQcCaveatSelectorProps) {
-  // Link caveat to MRI Violations if set true (the hell does that mean ?)
+function ImageQcCaveatSelector(props: ImageQcCaveatSelectorProps) {
   const mriViolationsLink = props.fullName && props.caveat
     ? `/mri_violations/?mincFile=${props.fullName}&seriesUID=${props.seriesUID}`
     : undefined;
 
   return (
-    <ImagePanelQcDropdown
+    <ImageQcDropdown
       label="Caveat"
       formName="caveat"
       fileID={props.fileID}
@@ -151,13 +134,10 @@ function ImagePanelQcCaveatSelector(props: ImagePanelQcCaveatSelectorProps) {
 }
 
 interface ImageQcStaticProps {
-  label?: string;
+  label: string;
   defaultValue: string;
 }
 
-/**
- * Image quality control static component
- */
 function ImageQcStatic(props: ImageQcStaticProps) {
   const label = props.label
     ? <label>{props.label}</label>
@@ -173,51 +153,48 @@ function ImageQcStatic(props: ImageQcStaticProps) {
   );
 }
 
-interface ImagePanelQcSnrValueProps {
+interface ImageQcSnrValueProps {
   fileID: number;
-  snr: string;
+  snr: string | null;
 }
 
-function ImagePanelQcSnrValue(props: ImagePanelQcSnrValueProps) {
+function ImageQcSnrValue(props: ImageQcSnrValueProps) {
   return (
     <ImageQcStatic
-      label={props.snr ? 'SNR' : undefined}
-      defaultValue={props.snr}
+      label={props.snr ? 'SNR' : ''}
+      defaultValue={props.snr ?? ''}
     />
   );
 }
 
-interface ImagePanelQcProps {
+interface ImageQcProps {
   fileID: number,
   hasQcPerm: boolean,
-  qcStatus: string,
+  qcStatus: string | null,
   fileNew: boolean,
   selected: boolean | null,
   caveat: boolean,
   seriesUID: string,
-  snr: string,
+  snr: string | null,
   editableCaveat: boolean,
   fullName: string,
 }
 
-/**
- * Image Panel Quality Control component
- */
-function ImagePanelQc(props: ImagePanelQcProps) {
+function ImageQc(props: ImageQcProps) {
   return (
     <div className="form-group">
-      <ImagePanelQcStatusSelector
+      <ImageQcStatusSelector
         fileID={props.fileID}
         hasQcPerm={props.hasQcPerm}
         qcStatus={props.qcStatus}
         fileNew={props.fileNew}
       />
-      <ImagePanelQcSelectedSelector
+      <ImageQcSelectedSelector
         fileID={props.fileID}
         hasQcPerm={props.hasQcPerm}
         selected={props.selected}
       />
-      <ImagePanelQcCaveatSelector
+      <ImageQcCaveatSelector
         fileID={props.fileID}
         hasQcPerm={props.hasQcPerm}
         caveat={props.caveat}
@@ -225,7 +202,7 @@ function ImagePanelQc(props: ImagePanelQcProps) {
         editableCaveat={props.editableCaveat}
         fullName={props.fullName}
       />
-      <ImagePanelQcSnrValue
+      <ImageQcSnrValue
         fileID={props.fileID}
         snr={props.snr}
       />
@@ -233,4 +210,4 @@ function ImagePanelQc(props: ImagePanelQcProps) {
   );
 }
 
-export default ImagePanelQc;
+export default ImageQc;

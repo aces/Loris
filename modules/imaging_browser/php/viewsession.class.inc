@@ -106,15 +106,15 @@ class ViewSession extends \NDB_Form
         $this->sessionID = $_REQUEST['sessionID'];
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
+            $this->tpl_data['sessionID'] = $this->sessionID;
             $user = \User::singleton();
             if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
-
             }
-            $this->_setFilesData();
 
+            $this->_setFilesData();
             $this->tpl_data['showFloatJIV'] = true;
 
             $file = $this->_DB->pselectOne(
@@ -192,10 +192,7 @@ class ViewSession extends \NDB_Form
             $args
         );
 
-        $this->tpl_data['fileIDs'] = [];
-        foreach ($files as $fileRow) {
-            $this->tpl_data['fileIDs'][] = intval($fileRow['FileID']);
-        }
+        $this->tpl_data['fileIDs'] = array_map(fn($file) => intval($file['FileID']), $files);
     }
 
     /**
@@ -226,35 +223,6 @@ class ViewSession extends \NDB_Form
         return $this->_DB->pselectOneInt($query, ['fileID' => $fileID]);
     }
 
-    /**
-     * Gets the date according to the type
-     *
-     * @param \MRIFile $file file object
-     * @param string   $type type of the date
-     *
-     * @return int|string The date if exists, if not an empty string
-     */
-    function _getDate(\MRIFile $file, string $type)
-    {
-        $array = [];
-        if (preg_match(
-            "/(\d{4})-?(\d{2})-?(\d{2})/",
-            $file->getParameter($type) ?? '',
-            $array
-        )
-        ) {
-            return mktime(
-                12,
-                0,
-                0,
-                (int) $array[2],
-                (int) $array[3],
-                (int) $array[1]
-            );
-        } else {
-            return "";
-        }
-    }
     /**
      * Updates QCStatus in the form
      *
@@ -554,13 +522,13 @@ class ViewSession extends \NDB_Form
                 WHERE ID=:SID",
                 $params
             );
-            $updateSet       = [
+            $updateSet          = [
                 'MRIQCPending'        => $_POST['visit_pending'],
                 'MRIQCStatus'         => $_POST['visit_status'],
                 'MRICaveat'           => $_POST['visit_caveat'],
                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
             ];
-            $firstChangeTime = $this->_DB->pselectOne(
+            $firstChangeTime    = $this->_DB->pselectOne(
                 "SELECT MRIQCFirstChangeTime
                 FROM session
                 WHERE ID=:SID",
@@ -612,71 +580,6 @@ class ViewSession extends \NDB_Form
         }
     }
 
-    /**
-     * Populates data for the template
-     *
-     * @return array ($subjectData array with data)
-     */
-    function getSubjectData()
-    {
-        $timePoint = \TimePoint::singleton(
-            new \SessionID(strval($_REQUEST['sessionID']))
-        );
-
-        $subjectData = [];
-        $subjectData['sessionID']   = $_REQUEST['sessionID'];
-        $subjectData['CohortID']    = $timePoint->getCohortID();
-        $subjectData['CohortTitle'] = $timePoint->getData('CohortTitle');
-        $subjectData['visitLabel']  = $timePoint->getVisitLabel();
-        $subjectData['visitNo']     = $timePoint->getVisitNo();
-        $subjectData['site']        = $timePoint->getPSC();
-        $qcstatus = $this->_DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, MRICaveat
-            FROM session WHERE ID=:SID",
-            ['SID' => $_REQUEST['sessionID']]
-        );
-        if (is_null($qcstatus)) {
-            throw new \LorisException(
-                'Could not find QC status information for the supplied '
-                . 'session ID'
-            );
-        }
-        $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
-        $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
-        $subjectData['candid']       = $timePoint->getCandID();
-        $subjectData['scanner']      = $this->scanner;
-
-        $candidate            =& \Candidate::singleton($timePoint->getCandID());
-        $subjectData['pscid'] = $candidate->getPSCID();
-        $subjectData['dob']   = $candidate->getCandidateDoB();
-        $subjectData['edc']   = $candidate->getCandidateEDC();
-        $subjectData['sex']   = $candidate->getCandidateSex();
-
-        // This doesn't work.
-        //Need to find the proper way to get the TarchiveID.
-        //It should be per file, not per candidate. --Dave
-        $params     = [];
-        $EntityType = $candidate->getEntityType();
-        if ($EntityType == 'Scanner') {
-            $ID = ":PPSCID";
-            $params['PPSCID'] = $timePoint->getData('PSCID');
-        } else {
-            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-            $params['PPSCID']  = $candidate->getPSCID();
-            $params['PCandID'] = $timePoint->getCandID();
-            $params['PVL']     = $timePoint->getVisitLabel();
-        }
-        $tarchiveIDs = $this->_DB->pselect(
-            "SELECT TarchiveID
-            FROM tarchive
-            WHERE PatientName LIKE $ID",
-            $params
-        );
-        $subjectData['tarchiveids'] = $tarchiveIDs;
-        // Cache the data
-        return $subjectData;
-    }
     /**
      * Gets control panel
      *

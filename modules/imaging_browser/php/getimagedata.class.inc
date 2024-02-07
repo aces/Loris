@@ -6,20 +6,20 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class GetImageData extends \NDB_Page implements RequestHandlerInterface {
+/**
+ * Page that returns an image file data as a Json.
+ * Note that much of the code was extracted, or sometimes duplicated, from `ViewSession`.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class GetImageData extends \NDB_Page implements RequestHandlerInterface
+{
     /**
      * The database connection
      *
      * @var \Database
      */
     private $db;
-
-    /**
-     * The user accessing the endpoint
-     *
-     * @var \User
-     */
-    private $user;
 
     /**
      * Returns true if user has access to this endpoint.
@@ -30,9 +30,9 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface {
      */
     function _hasAccess(\User $user) : bool
     {
-        $FileObj = new \MRIFile(intval($_REQUEST['fileID']));
+        $file = new \MRIFile(intval($_REQUEST['fileID']));
 
-        $sessionId = $FileObj->getParameter('SessionID');
+        $sessionId = $file->getParameter('SessionID');
         $session   = \TimePoint::singleton(
             new \SessionID(strval($sessionId))
         );
@@ -85,44 +85,49 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface {
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = $this->loris->getDatabaseConnection();
-        $this->user = $request->getAttribute('user');
-        $method     = $request->getMethod();
+        $this->db = $this->loris->getDatabaseConnection();
+        $method   = $request->getMethod();
 
         switch ($method) {
         case 'GET':
-            return $this->getData();
+            return $this->_getData();
         }
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format.
+     * Returns a file's data as a Json response
      *
-     * @return ResponseInterface The outgoing PSR7 with a string of json
-     *                           encoded tests as the body.
+     * @return ResponseInterface The Json response.
      */
-    private function getData() : ResponseInterface
+    private function _getData() : ResponseInterface
     {
-        $row = $this->getRow($_REQUEST['fileID']);
+        $row = $this->_getRow($_REQUEST['fileID']);
         return new \LORIS\Http\Response\JSON\OK($row);
     }
 
-    private function getRow($fileId)
+    /**
+     * Returns a file's data as a Json response
+     *
+     * @param $fileID The file's id
+     *
+     * @return array The Json response.
+     */
+    private function _getRow($fileID)
     {
-        $FileObj = new \MRIFile(intval($fileId));
+        $file = new \MRIFile(intval($fileID));
 
-        $sessionId = $FileObj->getParameter('SessionID');
+        $sessionId = $file->getParameter('SessionID');
 
         $timePoint = \TimePoint::singleton(
             new \SessionID($sessionId),
         );
 
-        $factory   = \NDB_Factory::singleton();
-        $baseurl   = $factory->settings()->getBaseURL();
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
 
-
-        $FullFilename = $FileObj->getParameter('File') ?? '';
-        $FileID       = intval($fileId);
+        $FullFilename = $file->getParameter('File') ?? '';
+        $ScannerID    = $file->getParameter('ScannerID');
+        $FileID       = intval($fileID);
         $Filename     = basename($FullFilename);
         $APIFile      = $baseurl . "/api/v0.0.3/candidates/"
                 . $timePoint->getCandID() . "/"
@@ -130,94 +135,54 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface {
                 . "/images/"
                 . $Filename;
 
-        $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
-                                        true : false;
-        $OutputType = $FileObj->getParameter('OutputType');
-        $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
-        $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
-        $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
-        $ProcDate            = $FileObj->getParameter(
-            'processing:processing_date'
-        );
-        $FileInsertDate      = $FileObj->getParameter('InsertTime');
-        $SeriesNumber        = (int) $FileObj->getParameter('series_number');
-        $EchoTime            = round(
-            (float)$FileObj->getParameter('echo_time') * 1000,
-            2
-        );
-        $InversionTime       = round(
-            (float)$FileObj->getParameter('inversion_time') * 1000,
-            2
-        );
-        $RepetitionTime      = round(
-            (float)$FileObj->getParameter('repetition_time') * 1000,
-            2
-        );
-        $SliceThickness      = round(
-            intval($FileObj->getParameter('slice_thickness')),
-            2
-        );
-        $Time      = round(
-            intval($FileObj->getParameter('time')),
-            2
-        );
-        $ImageType = $FileObj->getParameter(
-            'dicominfo:image_type'
-        );
-        $PhaseEncodingDirection = $FileObj->getParameter(
-            'PhaseEncodingDirection'
-        );
-        $EchoNumber         = (int) $FileObj->getParameter('echo_numbers');
-        $Comment            = $FileObj->getParameter('Comment');
-        $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
-        $TotalRejected      = $FileObj->getParameter(
-            'processing:total_rejected'
-        );
-        $SourceFile         = basename(
-            $FileObj->getParameter('processing:sourceFile') ?? ''
-        );
-        $Tool = $FileObj->getParameter('Tool');
-        $SlicewiseRejected     = $this->_getRejected(
-            $FileObj,
-            'slicewise'
-        );
-        $InterlaceRejected     = $this->_getRejected(
-            $FileObj,
-            'interlace'
-        );
-        $IntergradientRejected = $this->_getRejected(
-            $FileObj,
-            'intergradient'
-        );
-        $Xstep       = round(
-            (float)($FileObj->getParameter('xstep')),
-            2
-        );
-        $Ystep       = round(
-            (float)($FileObj->getParameter('ystep')),
-            2
-        );
-        $Zstep       = round(
-            (float)($FileObj->getParameter('zstep')),
-            2
-        );
+        $New                 = ($file->getParameter('QCFirstChangeTime') == '') ? true : false;
+        $OutputType          = $file->getParameter('OutputType');
+        $AcquisitionProtocol = $file->getAcquisitionProtocol();
+        $CoordinateSpace     = $file->getParameter('CoordinateSpace');
+        $AcquisitionDate     = $file->getParameter('AcquisitionDate');
+        $ProcDate            = $file->getParameter('processing:processing_date');
+        $FileInsertDate      = date("Y-m-d", $file->getParameter('InsertTime'));
+        $SeriesNumber        = (int) $file->getParameter('series_number');
+
+        $EchoTime       = round((float) $file->getParameter('echo_time')       * 1000, 2);
+        $InversionTime  = round((float) $file->getParameter('inversion_time')  * 1000, 2);
+        $RepetitionTime = round((float) $file->getParameter('repetition_time') * 1000, 2);
+
+        $SliceThickness         = round(intval($file->getParameter('slice_thickness')), 2);
+        $Time                   = round(intval($file->getParameter('time')), 2);
+        $ImageType              = $file->getParameter('dicominfo:image_type');
+        $PhaseEncodingDirection = $file->getParameter('PhaseEncodingDirection');
+        $EchoNumber             = (int) $file->getParameter('echo_numbers');
+        $Comment                = $file->getParameter('Comment');
+        $ProcessingPipeline     = $file->getParameter('processing:pipeline');
+        $TotalRejected          = $file->getParameter('processing:total_rejected');
+        $SourceFile             = basename($file->getParameter('processing:sourceFile') ?? '');
+        $Tool                   = $file->getParameter('Tool');
+
+        $SlicewiseRejected     = $this->_getRejected($file, 'slicewise');
+        $InterlaceRejected     = $this->_getRejected($file, 'interlace');
+        $IntergradientRejected = $this->_getRejected($file, 'intergradient');
+
+        $Xstep = round((float) $file->getParameter('xstep'), 2);
+        $Ystep = round((float) $file->getParameter('ystep'), 2);
+        $Zstep = round((float) $file->getParameter('zstep'), 2);
+
         $Selected    = $this->_getSelected(
-            (int) $FileObj->getParameter('FileID')
+            (int) $file->getParameter('FileID')
         );
-        $QCStatus    = $FileObj->getParameter('QCStatus');
-        $QCDate      = $FileObj->getParameter('QCLastChangeTime');
-        $SNR         = $FileObj->getParameter('SNR');
-        $SeriesUID   = $FileObj->getParameter('SeriesUID');
-        $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
-        $XMLprotocol = $FileObj->getParameter('ProtocolFile');
-        $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
-        $NiiFile     = $FileObj->getParameter('check_nii_filename');
-        $BvalFile    = $FileObj->getParameter('check_bval_filename');
-        $BvecFile    = $FileObj->getParameter('check_bvec_filename');
-        $JsonFile    = $FileObj->getParameter('bids_json_file');
+        $QCStatus    = $file->getParameter('QCStatus');
+        $SNR         = $file->getParameter('SNR');
+        $SeriesUID   = $file->getParameter('SeriesUID');
+        $XMLreport   = $file->getParameter('processing:DTIPrepXmlReport');
+        $XMLprotocol = $file->getParameter('ProtocolFile');
+        $NrrdFile    = $file->getParameter('processing:nrrd_file');
+        $NiiFile     = $file->getParameter('check_nii_filename');
+        $BvalFile    = $file->getParameter('check_bval_filename');
+        $BvecFile    = $file->getParameter('check_bvec_filename');
+        $JsonFile    = $file->getParameter('bids_json_file');
         $OtherTimepoints = (int) $this->_getFilesAcrossTimepoints(
-            (int)$FileObj->getParameter('SessionID'),
-            (int)$FileObj->getParameter('AcquisitionProtocolID')
+            (int)$file->getParameter('SessionID'),
+            (int)$file->getParameter('AcquisitionProtocolID')
         );
 
         $manualCaveatViolationsResolvedID
@@ -230,49 +195,49 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface {
             $editableCaveat = false;
         }
         $file = [
-            'FileID'                 => $FileID,
-            'Filename'               => $Filename,
-            'APIFile'                => $APIFile,
-            'FullFilename'           => $FullFilename,
-            'New'                    => $New,
-            'Comment'                => $Comment,
-            'SourceFile'             => $SourceFile,
-            'Tool'                   => $Tool,
-            'Selected'               => $Selected,
-            'QCStatus'               => $QCStatus,
-            'QCDate'                 => $QCDate,
-            'Caveat'                 => $caveat,
-            'SNR'                    => $SNR,
-            'OtherTimepoints'        => $OtherTimepoints,
-            'EditableCaveat'         => $editableCaveat,
-            'headers' => [
-                'SeriesUID' => $SeriesUID,
-                'Xstep'     => $Xstep,
-                'Ystep'     => $Ystep,
-                'Zstep'     => $Zstep,
-                'OutputType' => $OutputType,
-                'CoordinateSpace' => $CoordinateSpace,
-                "AcquisitionProtocol" => $AcquisitionProtocol,
-                'AcquisitionDate' => $AcquisitionDate,
-                "InsertedDate" => $FileInsertDate, // date_format
-                "SeriesNumber" => $SeriesNumber,
-                "SeriesDescription" => $SeriesNumber,
-                "SliceThickness" => $SliceThickness,
-                "RepetitionTime" => $RepetitionTime,
-                "EchoTime" => $EchoTime,
-                "InversionTime" => $InversionTime,
+            'FileID'          => $FileID,
+            'Filename'        => $Filename,
+            'APIFile'         => $APIFile,
+            'FullFilename'    => $FullFilename,
+            'New'             => $New,
+            'Comment'         => $Comment,
+            'SourceFile'      => $SourceFile,
+            'Tool'            => $Tool,
+            'Selected'        => $Selected,
+            'QCStatus'        => $QCStatus,
+            'Caveat'          => $caveat,
+            'SNR'             => $SNR,
+            'ScannerID'       => $ScannerID,
+            'OtherTimepoints' => $OtherTimepoints,
+            'EditableCaveat'  => $editableCaveat,
+            'headers'         => [
+                'SeriesUID'              => $SeriesUID,
+                'Xstep'                  => $Xstep,
+                'Ystep'                  => $Ystep,
+                'Zstep'                  => $Zstep,
+                'OutputType'             => $OutputType,
+                'CoordinateSpace'        => $CoordinateSpace,
+                "AcquisitionProtocol"    => $AcquisitionProtocol,
+                'AcquisitionDate'        => $AcquisitionDate,
+                "InsertedDate"           => $FileInsertDate,
+                "SeriesNumber"           => $SeriesNumber,
+                "SeriesDescription"      => $SeriesNumber,
+                "SliceThickness"         => $SliceThickness,
+                "RepetitionTime"         => $RepetitionTime,
+                "EchoTime"               => $EchoTime,
+                "InversionTime"          => $InversionTime,
                 "PhaseEncodingDirection" => $PhaseEncodingDirection,
-                "ImageType" => $ImageType,
-                "EchoNumber" => $EchoNumber,
-                "NumVolumes" => $Time,
-                "ProcessingPipeline" => $ProcessingPipeline,
-                "ProcDate" => $ProcDate, // date format
-                "TotalRejected" => $TotalRejected,
-                "InterlaceRejected" => $InterlaceRejected,
+                "ImageType"              => $ImageType,
+                "EchoNumber"             => $EchoNumber,
+                "NumVolumes"             => $Time,
+                "ProcessingPipeline"     => $ProcessingPipeline,
+                "ProcDate"               => $ProcDate,
+                "TotalRejected"          => $TotalRejected,
+                "InterlaceRejected"      => $InterlaceRejected,
                 "IntergradientRejected"  => $IntergradientRejected,
-                "SlicewiseRejected" => $SlicewiseRejected,
+                "SlicewiseRejected"      => $SlicewiseRejected,
             ],
-            'files' => [
+            'files'           => [
                 'protocol' => $XMLprotocol,
                 'report'   => $XMLreport,
                 'nrrd'     => $NrrdFile,
@@ -281,7 +246,7 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface {
                 'bvec'     => $BvecFile,
                 'json'     => $JsonFile,
             ],
-            'HasQCPerm' => $this->_hasQCPerm(),
+            'HasQCPerm'       => $this->_hasQCPerm(),
         ];
 
         return $file;
