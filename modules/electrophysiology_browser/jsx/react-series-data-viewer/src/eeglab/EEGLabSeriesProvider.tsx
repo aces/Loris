@@ -95,12 +95,19 @@ class EEGLabSeriesProvider extends Component<CProps> {
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
-          const {channelMetadata, shapes, timeInterval, seriesRange} = json;
+          const {
+            channelMetadata,
+            shapes,
+            timeInterval,
+            seriesRange,
+            validSamples,
+          } = json;
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
               channelMetadata,
               shapes,
+              validSamples,
               timeInterval,
               seriesRange,
               limit,

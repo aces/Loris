@@ -58,6 +58,9 @@ case 'candidateDOB':
 case 'candidateDOD':
     echo json_encode(getDODFields());
     exit;
+case 'diagnosisEvolution':
+    echo json_encode(getDiagnosisEvolutionFields());
+    exit;
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
@@ -521,10 +524,22 @@ function getDOBFields(): array
     );
     $pscid         = $candidateData['PSCID'] ?? null;
     $dob           = $candidateData['DoB'] ?? null;
-    $result        = [
-        'pscid'  => $pscid,
-        'candID' => $candID->__toString(),
-        'dob'    => $dob,
+
+    // Get DoB format
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
+    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
+    $result = [
+        'pscid'     => $pscid,
+        'candID'    => $candID->__toString(),
+        'dob'       => $formattedDate,
+        'dobFormat' => $dobFormat,
     ];
     return $result;
 }
@@ -546,11 +561,107 @@ function getDODFields(): array
     if ($candidateData === null) {
         throw new \LorisException("Invalid candidate");
     }
+
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    // Get formatted dod
+    $dodFormat = $config->getSetting('dodFormat');
+
+    $dodProcessedFormat = implode("-", str_split($dodFormat, 1));
+    $dodDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoD']);
+    $dod = $dodDate ? $dodDate->format($dodProcessedFormat) : null;
+
+    // Get formatted dob
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
+    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
     $result = [
-        'pscid'  => $candidateData['PSCID'],
-        'candID' => $candID->__toString(),
-        'dod'    => $candidateData['DoD'],
-        'dob'    => $candidateData['DoB'],
+        'pscid'     => $candidateData['PSCID'],
+        'candID'    => $candID->__toString(),
+        'dod'       => $dod,
+        'dob'       => $dob,
+        'dodFormat' => $config->getSetting('dodFormat'),
+    ];
+    return $result;
+}
+
+/**
+ * Handles the fetching of candidate's diagnosis evolution.
+ *
+ * @return array
+ */
+function getDiagnosisEvolutionFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \NDB_Factory::singleton()->database();
+
+    $pscid = $db->pselectOne(
+        "SELECT PSCID FROM candidate
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candidateDiagnosisEvolution = $db->pselect(
+        "SELECT 
+            de.Name AS TrajectoryName,
+            p.Name AS Project,
+            visitLabel, 
+            instrumentName,
+            sourceField,
+            Diagnosis,
+            Confirmed,
+            LastUpdate,
+            OrderNumber
+        FROM candidate_diagnosis_evolution_rel
+        JOIN diagnosis_evolution de USING (DxEvolutionID)
+        JOIN Project p USING (ProjectID)
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $projectList = \Utility::getProjectList();
+
+    // Get all candidate's project affiliations
+    $candProjIDs = $db->pselectCol(
+        "SELECT DISTINCT ProjectID 
+        FROM session
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candProjects    = [];
+    $candidate       = \Candidate::singleton($candID);
+    $latestDiagnosis = [];
+    $latestConfirmedDiagnosis = [];
+    foreach ($candProjIDs as $projectID) {
+        $candProjects[$projectID]   = $projectList[$projectID];
+        $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
+            new \ProjectID($projectID),
+            false
+        );
+        $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
+            new \ProjectID($projectID),
+            true
+        );
+    }
+
+    // remove null results and re-index
+    $latestDiagnosis          = array_values(array_filter($latestDiagnosis));
+    $latestConfirmedDiagnosis = array_values(
+        array_filter($latestConfirmedDiagnosis)
+    );
+
+    $result = [
+        'pscid'                           => $pscid,
+        'candID'                          => $candID,
+        'diagnosisEvolution'              => $candidateDiagnosisEvolution,
+        'latestProjectDiagnosis'          => $latestDiagnosis,
+        'latestConfirmedProjectDiagnosis' => $latestConfirmedDiagnosis,
+        'projects'                        => $candProjects
     ];
     return $result;
 }

@@ -4,7 +4,8 @@
   <thead>
   <tr class="info">
     <th>
-      DOB
+    {assign var="DoB" value=$cand->getDisplayDoB()}
+    {$DoB['label']} 
     </th>
     {if $candidate.EDC!=""}
       <th>
@@ -28,7 +29,7 @@
   <tbody>
   <tr>
     <td>
-      {$candidate.DoB}
+      {$DoB['value']} 
     </td>
     {if $candidate.EDC!=""}
       <td>
