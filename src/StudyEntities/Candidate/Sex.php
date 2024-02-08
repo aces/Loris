@@ -60,7 +60,7 @@ class Sex implements \JsonSerializable
      */
     public static function validate(string $value, array $validValues): bool
     {
-        return in_array($value, $validValues, true);
+        return in_array($value, array_values($validValues), true);
     }
 
     /**
