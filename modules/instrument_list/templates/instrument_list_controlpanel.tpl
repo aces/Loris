@@ -100,11 +100,13 @@
 	</ul>
 
 <script>
-	async function setStageAndUpdate(stageLabel) {
+	function setStageAndUpdate(stageLabel) {
 		let url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
 		let response;
 		try {
-			response = await fetch(url, {credentials: 'same-origin'});
+			fetch(url, {credentials: 'same-origin'}).then((res) {
+				response = res;
+			});
 			if (response.ok) {
 				window.location.reload(true);
 			}
