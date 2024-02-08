@@ -101,25 +101,15 @@
 
 <script>
 	function setStageAndUpdate(stageLabel) {
-		let url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
-		let response;
+		var url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
 		try {
-			fetch(url, {credentials: 'same-origin'}).then((res) => {
-				response = res;
-			});
-			if (response.ok) {
-				window.location.reload(true);
-			}
+			fetch(url, {}).then((response) => {
+				if (response.ok) {
+					window.location.reload(true);
+				}
+			})
 		} catch (e) {
-			let errorMessage;
-			if (response.status) {
-				// Error from the response.
-				errorMessage = "An error occurred: " + response.status;
-			} else {
-				// All other possible errors.
-				errorMessage = "An error occurred: " + e.message;
-			}
-			console.log(errorMessage);
+			console.log("An error occurred: " + e.message);
 		}
 	}
 </script>
