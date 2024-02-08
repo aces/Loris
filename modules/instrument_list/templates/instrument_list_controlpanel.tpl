@@ -104,7 +104,7 @@
 		let url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
 		let response;
 		try {
-			fetch(url, {credentials: 'same-origin'}).then((res) {
+			fetch(url, {credentials: 'same-origin'}).then((res) => {
 				response = res;
 			});
 			if (response.ok) {
