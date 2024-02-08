@@ -100,21 +100,24 @@
 	</ul>
 
 <script>
-	function setStageAndUpdate(stageLabel) {
-		// Make an AJAX request to the endpoint
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '?candID={$candID}&sessionID={$sessionID}&setStageUpdate=' + encodeURIComponent(stageLabel), true);
-
-		xhr.onload = function () {
-			if (xhr.status >= 200 && xhr.status < 300) {
-				console.log('Request successful');
+	async function setStageAndUpdate(stageLabel) {
+		let url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
+		let response;
+		try {
+			response = await fetch(url, {credentials: 'same-origin'});
+			if (response.ok) {
 				window.location.reload(true);
-			} else {
-				// Request failed, handle errors if needed
-				console.error('Request failed with status ' + xhr.status);
 			}
-		};
-
-		xhr.send();
+		} catch (e) {
+			let errorMessage;
+			if (response.status) {
+				// Error from the response.
+				errorMessage = "An error occurred: " + response.status;
+			} else {
+				// All other possible errors.
+				errorMessage = "An error occurred: " + e.message;
+			}
+			console.log(errorMessage);
+		}
 	}
 </script>
