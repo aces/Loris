@@ -119,6 +119,7 @@ class Candidate_List extends \DataFrameworkMenu
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
+            'usedob'            => $config->getSetting("useDoB")
         ];
     }
 
@@ -163,4 +164,3 @@ class Candidate_List extends \DataFrameworkMenu
         return new CandidateListRowProvisioner();
     }
 }
-
