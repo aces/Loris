@@ -44,7 +44,7 @@ class Sex implements \JsonSerializable
         if (!self::validate($value, $this->validValues)) {
             throw new \DomainException(
                 'The value is not valid. Must be one of: '
-                . implode(', ', $this->validValues)
+                . implode(', ', array_values($this->validValues))
             );
         }
         $this->value = $value;
