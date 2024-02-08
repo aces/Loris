@@ -406,7 +406,7 @@ class DiagnosisEvolution extends Component {
                 });
             }
         }).catch((error) => {
-            console.log(error);
+            console.warn(error);
         });
     }
 
@@ -501,7 +501,7 @@ class DiagnosisEvolution extends Component {
                 });
             }
         }).catch((error) => {
-            console.log(error);
+            console.warn(error);
         });
     }
 
