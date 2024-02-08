@@ -192,7 +192,8 @@ class ViewSession extends \NDB_Form
             $args
         );
 
-        $this->tpl_data['fileIDs'] = array_map(fn($file) => intval($file['FileID']), $files);
+        $this->tpl_data['fileIDs']
+            = array_map(fn($file) => intval($file['FileID']), $files);
     }
 
     /**

@@ -8,7 +8,8 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Page that returns an image file data as a Json.
- * Note that much of the code was extracted, or sometimes duplicated, from `ViewSession`.
+ * Note that much of the code was extracted, or sometimes duplicated,
+ * from `ViewSession`.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -135,8 +136,8 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
                 . "/images/"
                 . $Filename;
 
-        $New                 = ($file->getParameter('QCFirstChangeTime') == '') ? true : false;
-        $OutputType          = $file->getParameter('OutputType');
+        $New        = $file->getParameter('QCFirstChangeTime') == '';
+        $OutputType = $file->getParameter('OutputType');
         $AcquisitionProtocol = $file->getAcquisitionProtocol();
         $CoordinateSpace     = $file->getParameter('CoordinateSpace');
         $AcquisitionDate     = $file->getParameter('AcquisitionDate');
@@ -144,20 +145,32 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
         $FileInsertDate      = date("Y-m-d", $file->getParameter('InsertTime'));
         $SeriesNumber        = (int) $file->getParameter('series_number');
 
-        $EchoTime       = round((float) $file->getParameter('echo_time')       * 1000, 2);
-        $InversionTime  = round((float) $file->getParameter('inversion_time')  * 1000, 2);
-        $RepetitionTime = round((float) $file->getParameter('repetition_time') * 1000, 2);
+        $EchoTime       = round(
+            (float) $file->getParameter('echo_time') * 1000,
+            2
+        );
+        $InversionTime  = round(
+            (float) $file->getParameter('inversion_time') * 1000,
+            2
+        );
+        $RepetitionTime = round(
+            (float) $file->getParameter('repetition_time') * 1000,
+            2
+        );
 
-        $SliceThickness         = round(intval($file->getParameter('slice_thickness')), 2);
-        $Time                   = round(intval($file->getParameter('time')), 2);
-        $ImageType              = $file->getParameter('dicominfo:image_type');
+        $SliceThickness
+            = round(intval($file->getParameter('slice_thickness')), 2);
+        $Time           = round(intval($file->getParameter('time')), 2);
+        $ImageType      = $file->getParameter('dicominfo:image_type');
         $PhaseEncodingDirection = $file->getParameter('PhaseEncodingDirection');
-        $EchoNumber             = (int) $file->getParameter('echo_numbers');
-        $Comment                = $file->getParameter('Comment');
-        $ProcessingPipeline     = $file->getParameter('processing:pipeline');
-        $TotalRejected          = $file->getParameter('processing:total_rejected');
-        $SourceFile             = basename($file->getParameter('processing:sourceFile') ?? '');
-        $Tool                   = $file->getParameter('Tool');
+        $EchoNumber         = (int) $file->getParameter('echo_numbers');
+        $Comment            = $file->getParameter('Comment');
+        $ProcessingPipeline = $file->getParameter('processing:pipeline');
+        $TotalRejected      = $file->getParameter('processing:total_rejected');
+        $SourceFile         = basename(
+            $file->getParameter('processing:sourceFile') ?? ''
+        );
+        $Tool = $file->getParameter('Tool');
 
         $SlicewiseRejected     = $this->_getRejected($file, 'slicewise');
         $InterlaceRejected     = $this->_getRejected($file, 'interlace');
@@ -187,7 +200,8 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
 
         $manualCaveatViolationsResolvedID
             = $this->_getManualCaveatViolationsResolvedID($FileID);
-        $caveat = $manualCaveatViolationsResolvedID ? true : false;
+        $caveat
+            = $manualCaveatViolationsResolvedID ? true : false;
         $foundProtocolViolations = $this->_getProtocolViolations($FileID);
         $editableCaveat          = true;
         if ($foundProtocolViolations) {

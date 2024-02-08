@@ -10,22 +10,41 @@ interface ButtonProps {
 
 /**
  * Generic clickable button component, which may be a link or not
+ *
+ * @returns The React element
  */
 function Button(props: ButtonProps) {
+  /**
+   * Higher-order component for the button
+   *
+   * @returns The React element
+   */
   const element = (children: ReactNode) => props.url ?
     (
-      <a href={props.url} className="btn btn-default" onClick={props.onClick} style={{margin: 0}}>
+      <a
+        href={props.url}
+        className="btn btn-default"
+        onClick={props.onClick}
+        style={{margin: 0}}
+      >
         {children}
       </a>
     ) : (
-      <div className="btn btn-default" onClick={props.onClick} style={{margin: 0}}>
+      <div
+        className="btn btn-default"
+        onClick={props.onClick}
+        style={{margin: 0}}
+      >
         {children}
       </div>
     );
 
   return element(
     <>
-      <span className={`glyphicon glyphicon-${props.icon}`} style={{marginRight: '5px'}} />
+      <span
+        className={`glyphicon glyphicon-${props.icon}`}
+        style={{marginRight: '5px'}}
+      />
       <span className="hidden-xs">{props.children}</span>
     </>
   );
@@ -36,10 +55,19 @@ interface LongitudinalViewButtonProps {
 }
 
 /**
- * Image longitudinal view button component
+ * Image Longitudinal View Button component
+ *
+ * @returns The React element
  */
 function LongitudinalViewButton(props: LongitudinalViewButtonProps) {
-  const url = `${window.location.origin}/brainbrowser/?minc_id=${props.OtherTimepoints}`;
+  const url = window.location.origin
+    + `/brainbrowser/?minc_id=${props.OtherTimepoints}`;
+
+  /**
+   * Open brain browser handler
+   *
+   * @returns void
+   */
   const openWindowHandler = (e: MouseEvent) => {
     e.preventDefault();
     window.open(
@@ -61,16 +89,26 @@ interface QcButtonProps {
 }
 
 /**
- * Image quality control comments button component
+ * Image Quality Control Comments Button component
+ *
+ * @returns The React element
  */
 function QcButton(props: QcButtonProps) {
-  const url = `${window.location.origin}/imaging_browser/feedback_mri_popup/fileID=${props.FileID}`;
+  const url = window.location.origin
+    + `/imaging_browser/feedback_mri_popup/fileID=${props.FileID}`;
+
+  /**
+   * Open feedback handler
+   *
+   * @returns void
+   */
   const openWindowHandler = (e: MouseEvent) => {
     e.preventDefault();
     window.open(
       url,
       'feedback_mri',
-      'width=700,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes'
+      'width=700,height=800,toolbar=no,location=no,'
+      + 'status=yes,scrollbars=yes,resizable=yes'
     );
   };
 
@@ -88,6 +126,8 @@ interface HeadersButtonProps {
 
 /**
  * Image Longitudinal View Button
+ *
+ * @returns The React element
  */
 function HeadersButton(props: HeadersButtonProps) {
   return (
@@ -107,9 +147,12 @@ interface DownloadButtonProps {
  * Download button component
  *
  * One of the `url` or `fileName` prop must be defined.
+ *
+ * @returns The React element
  */
 function DownloadButton(props: DownloadButtonProps) {
-  const url = props.url || `${window.location.origin}/mri/jiv/get_file.php?file=${props.fileName}`;
+  const url = props.url
+    || `${window.location.origin}/mri/jiv/get_file.php?file=${props.fileName}`;
   return (
     <Button icon="download-alt" url={url}>
       {props.label}
@@ -126,6 +169,11 @@ interface ImageButtonsProps {
   toggleHeaders?: () => void;
 }
 
+/**
+ * The Image Buttons component
+ *
+ * @returns The React element
+ */
 function ImageButtons(props: ImageButtonsProps) {
   const style = {
     display: 'flex' as const,

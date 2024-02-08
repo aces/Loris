@@ -48,8 +48,8 @@ class GetScannerData extends \NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = $this->loris->getDatabaseConnection();
-        $method     = $request->getMethod();
+        $this->db = $this->loris->getDatabaseConnection();
+        $method   = $request->getMethod();
 
         switch ($method) {
         case 'GET':

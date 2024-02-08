@@ -6,7 +6,9 @@ interface ImageHeadersProps {
 }
 
 /**
- * Image file headers table component
+ * Image File Headers Table component
+ *
+ * @returns The React element
  */
 function ImageHeaders(props: ImageHeadersProps) {
   const inversionTime = props.infos.InversionTime !== 0
@@ -19,7 +21,15 @@ function ImageHeaders(props: ImageHeadersProps) {
 
   return (
     <div style={{overflowX: 'scroll'}}>
-    <table className="table table-hover table-bordered header-info col-xs-12 dynamictable">
+    <table
+      className="
+        table
+        table-hover
+        table-bordered
+        header-info
+        col-xs-12
+        dynamictable"
+    >
       <tbody>
       <tr>
         <th className="col-xs-2 info">Series Instance UID</th>
@@ -30,7 +40,9 @@ function ImageHeaders(props: ImageHeadersProps) {
       <tr>
         <th className="col-xs-2 info">Voxel Size</th>
         <td className="col-xs-6" colSpan={3}>
-          {`X: ${props.infos.Xstep} mm, Y: ${props.infos.Ystep} mm, Z: ${props.infos.Zstep} mm `}
+          X: {props.infos.Xstep} mm,
+          Y: {props.infos.Ystep} mm,
+          Z: {props.infos.Zstep} mm
         </td>
         <th className="col-xs-2 info">Output Type</th>
         <td className="col-xs-2">

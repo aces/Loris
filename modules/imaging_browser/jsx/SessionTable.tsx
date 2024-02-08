@@ -6,10 +6,18 @@ interface TableProps {
   subject: Subject;
 }
 
+/**
+ * Table component, which receives its data as props
+ *
+ * @returns The React element
+ */
 function Table(props: TableProps) {
   return (
     <div style={{overflowX: 'scroll'}}>
-      <table className="table table-hover table-bordered dynamictable" id='table-header-left'>
+      <table
+        className="table table-hover table-bordered dynamictable"
+        id='table-header-left'
+      >
         <thead>
           <tr className="info">
             <th>QC Status</th>
@@ -30,7 +38,13 @@ function Table(props: TableProps) {
         <tbody>
           <tr>
             <td>{props.subject.mriqcstatus}</td>
-            <td>{props.subject.pscid}_{props.subject.candid}_{props.subject.visitLabel}</td>
+            <td>
+              {props.subject.pscid}
+              _
+              {props.subject.candid}
+              _
+              {props.subject.visitLabel}
+            </td>
             <td>{props.subject.pscid}</td>
             <td>{props.subject.candid}</td>
             <td>{props.subject.visitLabel}</td>
@@ -46,7 +60,9 @@ function Table(props: TableProps) {
             </td>
             <td>{props.subject.dob}</td>
             <td>{props.subject.sex}</td>
-            <td>{new URLSearchParams(window.location.search).get('outputType')}</td>
+            <td>
+              {new URLSearchParams(window.location.search).get('outputType')}
+            </td>
             <td><Scanner /></td>
             <td>{props.subject.CohortTitle}</td>
             {props.subject.useEDC ? <td>{props.subject.edc}</td> : null}
@@ -57,13 +73,20 @@ function Table(props: TableProps) {
   );
 }
 
+/**
+ * Scanner component, which reads the scanner context and updates its contenxt
+ * once a file has returned with a scanner id
+ *
+ * @returns The React element
+ */
 function Scanner() {
   const [scanner, setScanner] = useState<Scanner | null>(null);
   const [scannerID, _] = useContext(ScannerContext);
 
   useEffect(() => {
     if (scannerID !== null) {
-      fetch(`${window.location.origin}/imaging_browser/getscannerdata?scannerID=${scannerID}`,
+      fetch(window.location.origin
+        + `/imaging_browser/getscannerdata?scannerID=${scannerID}`,
         {credentials: 'same-origin'})
         .then((response) => response.json())
         .then((scanner) => setScanner(scanner));
@@ -80,12 +103,19 @@ function Scanner() {
   );
 }
 
+/**
+ * Table component, which fetches data from the module API
+ *
+ * @returns The React element
+ */
 function TableWrapper() {
   const [subject, setSubject] = useState<Subject | null>(null);
-  const sessionID = new URLSearchParams(window.location.search).get('sessionID');
+  const sessionID = new URLSearchParams(window.location.search)
+    .get('sessionID');
 
   useEffect(() => {
-    fetch(`${window.location.origin}/imaging_browser/getsubjectdata?sessionID=${sessionID}`,
+    fetch(window.location.origin
+      + `/imaging_browser/getsubjectdata?sessionID=${sessionID}`,
       {credentials: 'same-origin'})
       .then((response) => response.json())
       .then((subject) => setSubject(subject));

@@ -8,7 +8,8 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Page that returns a subject's data as a Json.
- * Note that much of the code was extracted, or sometimes duplicated, from `ViewSession`.
+ * Note that much of the code was extracted, or sometimes duplicated,
+ * from `ViewSession`.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */

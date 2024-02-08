@@ -10,6 +10,11 @@ interface ImageQcDropdownProps {
   url?: string;
 }
 
+/**
+ * Image Quality Control Dropdown componen
+ *
+ * @returns The React element
+ */
 function ImageQcDropdown(props: ImageQcDropdownProps) {
   const label = props.url
     ? <a href={props.url}>{props.label}</a>
@@ -56,13 +61,20 @@ interface ImageQcStatusSelectorProps {
   qcStatus: string | null;
 }
 
+/**
+ * Image Quality Control Status Selector component
+ *
+ * @returns The React element
+ */
 function ImageQcStatusSelector(props: ImageQcStatusSelectorProps) {
   let qcStatusLabel;
   if (props.hasQcPerm && props.fileNew) {
     qcStatusLabel = (
       <span>
         QC Status
-        <span className="text-info">(<span className="glyphicon glyphicon-star" /> New)</span>
+        <span className="text-info">
+          (<span className="glyphicon glyphicon-star" /> New)
+        </span>
       </span>
     );
   } else {
@@ -87,6 +99,11 @@ interface ImageQcSelectedSelectorProps {
   selected: boolean | null,
 }
 
+/**
+ * Image Quality Control Selected Selector component
+ *
+ * @returns The React element
+ */
 function ImageQcSelectedSelector(props: ImageQcSelectedSelectorProps) {
   return (
     <ImageQcDropdown
@@ -109,6 +126,11 @@ interface ImageQcCaveatSelectorProps {
   fullName: string;
 }
 
+/**
+ * Image Quality Control Caveat Selector component
+ *
+ * @returns The React element
+ */
 function ImageQcCaveatSelector(props: ImageQcCaveatSelectorProps) {
   const mriViolationsLink = props.fullName && props.caveat
     ? `/mri_violations/?mincFile=${props.fullName}&seriesUID=${props.seriesUID}`
@@ -138,6 +160,11 @@ interface ImageQcStaticProps {
   defaultValue: string;
 }
 
+/**
+ * Image Quality Control Static component
+ *
+ * @returns The React element
+ */
 function ImageQcStatic(props: ImageQcStaticProps) {
   const label = props.label
     ? <label>{props.label}</label>
@@ -158,6 +185,11 @@ interface ImageQcSnrValueProps {
   snr: string | null;
 }
 
+/**
+ * Image Quality Control SNR Value component
+ *
+ * @returns The React element
+ */
 function ImageQcSnrValue(props: ImageQcSnrValueProps) {
   return (
     <ImageQcStatic
@@ -180,6 +212,11 @@ interface ImageQcProps {
   fullName: string,
 }
 
+/**
+ * Image Quality Control component
+ *
+ * @returns The React element
+ */
 function ImageQc(props: ImageQcProps) {
   return (
     <div className="form-group">
