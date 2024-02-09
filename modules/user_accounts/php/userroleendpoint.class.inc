@@ -105,14 +105,27 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->db     = $this->loris->getDatabaseConnection();
-        $this->target = $request->getAttribute('targetUser');
-        $this->user   = $request->getAttribute('user');
+        $this->target = \User::factory($request->getAttribute('targetUser'));
+        $this->user   = \User::factory($request->getAttribute('user'));
         $method       = $request->getMethod();
 
-        switch ($method) {
-        case 'POST':
-            return $this->_postInstance($request);
+        if ($method !== 'POST') {
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
         }
+
+        if ($this->user === null && !($this->user instanceof \User)) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "No valid user"
+            );
+        }
+        if ($this->target === null && !($this->target instanceof \User)) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "No valid target user"
+            );
+        }
+
+        // only POST
+        return $this->_postInstance($request);
     }
 
     /**
@@ -126,11 +139,11 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         // get user and target user
-        $users = json_decode($request->getBody()->getContents(), true);
-        if (!is_null($this->user)) {
-            return new \LORIS\Http\Response\JSON\BadRequest();
-        }
-        $this->target = \User::factory($users['target']);
+        // $users = json_decode($request->getBody()->getContents(), true);
+        // if (!isset($this->user) || !isset($this->target)) {
+        //     return new \LORIS\Http\Response\JSON\BadRequest();
+        // }
+        // $this->target = \User::factory($users['target']);
 
         // load provisionner based on target
         $instances = (new \LORIS\Data\Table())

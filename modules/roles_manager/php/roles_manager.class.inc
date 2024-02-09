@@ -35,7 +35,6 @@ class Roles_Manager extends \NDB_Page
             [
                 'roles_view',
                 'roles_edit',
-                'roles_assign'
             ]
         );
     }
