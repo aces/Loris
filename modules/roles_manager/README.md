@@ -1,11 +1,5 @@
 # Roles Manager
 
-Other tasks:
-- [ ] Widget?
-- [ ] Documentation
-- [ ] Raisinbread
-- [ ] Tests
-
 ## Purpose
 
 The roles manager module allows to assign permissions to users based on their
@@ -22,10 +16,8 @@ change the pre-defined roles to users in a study.
 ## Scope
 
 The roles module is intended to view and manage roles and their selected set of
-permissions. Depending on the following permission, users can create new roles,
-modify or delete existing roles. Managing roles also allows to alter
-role-permission association, for instance to add a permission to set of users
-with the same role.
+permissions. Depending on the following permission, users can create new roles
+or modify existing roles. Managing roles also allows to alter role-permission association, e.g. to add a permission to set of users with the same role.
 
 
 ## Permissions
@@ -37,9 +29,12 @@ associated permissions.
 - `role_edit`: grants the user access to edit roles and their associated
 permissions.
 - `role_assign`: grants the user access to assign or unassing a role to another
-user.
+user. Not used in this module, see `user_accounts` module.
 
 
 ## Interactions with LORIS
 
-TBD
+- Modifications performed on roles will trigger granting or revoking associated permissions.
+- If users are affected to modified roles, these change will be applied to all these users.
+- Modifications on users can be seen in `user_accounts` module.
+- Assigning/unassigning users to role in `user_accounts` will change the number of counted users in the the main table for this module.
