@@ -162,7 +162,8 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
         $role      = new RolePermission($this->loris, $roleArray);
         // generate new code
         if (isset($roleArray['Name'])) {
-            $role->row['Code'] = RolePermission::generateCodeFromName($roleArray['Name']);
+            $name = $roleArray['Name'];
+            $role->row['Code'] = RolePermission::generateCodeFromName($name);
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Missing role name.'

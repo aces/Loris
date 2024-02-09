@@ -574,7 +574,6 @@ class Edit_User extends \NDB_Form
             );
         }
 
-
         // update roles
 
         // TODO
@@ -597,7 +596,7 @@ class Edit_User extends \NDB_Form
         //     ? array_keys($values['permID']) : [];
         // $editorPermissions = $editor->getPermissionIDs() ?? [];
         // $permIDs           = [];
-        
+
         // // store the permission IDs
         // if (!empty($values['permID'])) {
         //     // An editor can only grant permissions that they have already been
@@ -687,23 +686,24 @@ class Edit_User extends \NDB_Form
             if (isset($supervisorEmails)) {
                 foreach ($supervisorEmails as $email => $checkValue) {
                     if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
-                        if ($checkValue == 'on') {
-                            $msg_data = [];
-                            $msg_data['current_user']        = $editor->getFullname();
-                            $msg_data['study']               = $config->getSetting('title');
-                            $msg_data['realname']            = $values['Real_name'];
-                            $msg_data['username']            = $user->getUsername();
-                            $msg_data['roles_added']         = $rolesValues['roles_to_add'];
-                            $msg_data['roles_removed']       = $rolesValues['roles_to_remove'];
-                            $msg_data['permissions_added']   = $permissionsAdded;
-                            $msg_data['permissions_removed'] = $permissionsRemoved;
-                            \Email::send(
-                                $email,
-                                'permissions_change_notify_supervisor.tpl',
-                                $msg_data
-                            );
-                            unset($msg_data);
+                        if ($checkValue != 'on') {
+                            continue;
                         }
+                        $msg_data = [];
+                        $msg_data['current_user']  = $editor->getFullname();
+                        $msg_data['study']         = $config->getSetting('title');
+                        $msg_data['realname']      = $values['Real_name'];
+                        $msg_data['username']      = $user->getUsername();
+                        $msg_data['roles_added']   = $rolesValues['roles_to_add'];
+                        $msg_data['roles_removed'] = $rolesValues['roles_to_remove'];
+                        $msg_data['permissions_added']   = $permissionsAdded;
+                        $msg_data['permissions_removed'] = $permissionsRemoved;
+                        \Email::send(
+                            $email,
+                            'permissions_change_notify_supervisor.tpl',
+                            $msg_data
+                        );
+                        unset($msg_data);
                     }
                 }
             }
@@ -1430,19 +1430,19 @@ class Edit_User extends \NDB_Form
         if (!$editor->hasPermission('roles_assign')) {
             $errors['roles'] = 'You do not have the permission to assign roles.';
 
-        } else{
+        } else {
             // remove
             if (!is_null($values['roles_to_remove'])) {
                 // has an identifier?
                 if (is_null($this->identifier)) {
                     $errors['roles'] = 'Cannot remove a role for a new user.';
                 } else {
-                    $user = \User::factory($this->identifier);
-                    $userRoles = array_map(
+                    $user       = \User::factory($this->identifier);
+                    $oneMissing = false;
+                    $userRoles  = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
                     );
-                    $oneMissing = false;
                     if (!empty($userRoles)) {
                         $rVal = json_decode($values['roles_to_remove'], true);
                         foreach ($rVal as $roleCode) {
@@ -1468,7 +1468,7 @@ class Edit_User extends \NDB_Form
                         fn($v) => $v['Code'],
                         \Role::getAllRoles()
                     );
-                    $aVal = json_decode($values['roles_to_add'], true);
+                    $aVal  = json_decode($values['roles_to_add'], true);
                     foreach ($aVal as $roleCode) {
                         if (!in_array($roleCode, $roles, true)) {
                             $errors['roles'] = 'Cannot add role "' . $roleCode
@@ -1476,12 +1476,12 @@ class Edit_User extends \NDB_Form
                         }
                     }
                     //
-                    $user = \User::factory($this->identifier);
-                    $userRoles = array_map(
+                    $user       = \User::factory($this->identifier);
+                    $alreadyHas = false;
+                    $userRoles  = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
                     );
-                    $alreadyHas = false;
                     foreach ($aVal as $roleCode) {
                         if (in_array($roleCode, $userRoles, true)) {
                             $alreadyHas = true;

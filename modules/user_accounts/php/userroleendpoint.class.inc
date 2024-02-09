@@ -5,7 +5,7 @@
  * PHP Version 8
  *
  * @category Module
- * @package  user_accounts
+ * @package  User_Account
  * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -21,7 +21,7 @@ use \Psr\Http\Message\ResponseInterface;
  * PHP Version 8
  *
  * @category Module
- * @package  user_accounts
+ * @package  User_Account
  * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -126,7 +126,7 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         // get user and target user
-        $users = json_decode($request->getBody()->getContents(), true);
+        $users        = json_decode($request->getBody()->getContents(), true);
         $this->target = \User::factory($users['target']);
 
         // load provisionner based on target

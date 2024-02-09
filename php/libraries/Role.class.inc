@@ -63,8 +63,8 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         $obj->roleInfo['Code'] = $roleCode;
 
         // get the role ID
-        $db = \NDB_Factory::singleton()->database();
-        $roleID = $db->pselectOne(
+        $db        = \NDB_Factory::singleton()->database();
+        $roleID    = $db->pselectOne(
             "SELECT RoleID FROM roles WHERE Code = :rcode",
             ['rcode' => $roleCode]
         );
@@ -100,7 +100,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     function setPermissions(): void
     {
         // get all the permissions for this role
-        $db = \NDB_Factory::singleton()->database();
+        $db    = \NDB_Factory::singleton()->database();
         $query = "SELECT
             p.code AS permissionCode,
             p.Description AS permissionDescription,

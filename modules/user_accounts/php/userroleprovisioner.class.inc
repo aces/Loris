@@ -5,7 +5,7 @@
  *
  * PHP Version 8
  *
- * @package user_accounts
+ * @package User_Account
  * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link    https://www.github.com/aces/Loris/
@@ -20,7 +20,7 @@ use \LORIS\user_accounts\UserRole;
  *
  * PHP Version 8
  *
- * @package user_accounts
+ * @package User_Account
  * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link    https://www.github.com/aces/Loris/
@@ -29,17 +29,23 @@ class UserRoleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     private \LORIS\LorisInstance $loris;
 
+    /**
+     * A user reference.
+     *
+     * @var \User
+     */
     private \User $user;
 
     /**
      * Create a Role instance.
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
+     * @param \User                $user  The user
      */
     public function __construct(\LORIS\LorisInstance $loris, \User $user)
     {
-        $this->loris  = $loris;
-        $this->user   = $user;
+        $this->loris = $loris;
+        $this->user  = $user;
         parent::__construct(
             "SELECT RoleID, Code, Name, Description FROM roles",
             []

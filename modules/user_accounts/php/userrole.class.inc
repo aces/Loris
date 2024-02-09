@@ -5,11 +5,10 @@
  *
  * PHP Version 8
  *
- * @package    Main
- * @subpackage user_accounts
- * @author     Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @package User_Account
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\user_accounts;
@@ -18,22 +17,34 @@ use LORIS\LorisInstance;
 /**
  * A Role represents a user role.
  *
- * @package    Main
- * @subpackage user_accounts
- * @author     Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @package User_Account
+ * @author  Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://www.github.com/aces/Loris/
  */
 class UserRole implements \LORIS\Data\DataInstance
 {
-    public $row;
     private \LORIS\LorisInstance $loris;
+
+    /**
+     * A row reprensenting this data.
+     *
+     * @var array
+     */
+    public $row;
+
+    /**
+     * A user reference.
+     *
+     * @var \User
+     */
     private \User $user;
 
     /**
      * Create a new Test Instance.
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
+     * @param \User                $user  The user
      * @param array                $row   The row (in the same format as
                                           \Database::pselectRow returns)
      */
@@ -47,7 +58,7 @@ class UserRole implements \LORIS\Data\DataInstance
         $this->user  = $user;
 
         if (!isset($this->row['hasRole'])) {
-            $this->row['hasRole'] = $this->userHasRole();
+            $this->row['hasRole'] = $user->hasRole($this->row['Code']);
         }
 
         // list of permissions
@@ -64,22 +75,6 @@ class UserRole implements \LORIS\Data\DataInstance
     public function jsonSerialize() : array
     {
         return $this->row;
-    }
-
-    public function userHasRole(): bool
-    {
-        $db = $this->loris->getDatabaseConnection();
-        $res = $db->pselectOne(
-            "SELECT RoleID
-            FROM user_role_rel
-            WHERE userID = :uid
-            AND RoleID = :rid",
-            [
-            'uid' => $this->user->getId(),
-            'rid' => $this->row['RoleID']
-            ]
-        );
-        return !empty($res);
     }
 
     /**
