@@ -96,8 +96,8 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->user   = $request->getAttribute('user');
-        $method       = $request->getMethod();
+        $this->user = $request->getAttribute('user');
+        $method     = $request->getMethod();
 
         if ($method !== 'POST') {
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
