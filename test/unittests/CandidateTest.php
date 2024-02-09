@@ -157,7 +157,10 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-
+        // Set the expected behavior for the getSexList method
+        $this->_dbMock->expects($this->any())
+             ->method('pselectCol')
+             ->willReturn(['Male','Female','Other']);
         $this->_candidate = new Candidate();
     }
 
