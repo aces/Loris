@@ -51,6 +51,6 @@ class RoleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new Role($this->loris, $row);
+        return new RolePermission($this->loris, $row);
     }
 }

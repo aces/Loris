@@ -44,7 +44,7 @@ class RolePermissionsEndpoint extends \NDB_Page
         switch ($method) {
         case 'GET':
             return new \LORIS\Http\Response\JSON\OK(
-                Role::getAllPermissions($this->loris)
+                RolePermission::getAllPermissions($this->loris)
             );
         }
 

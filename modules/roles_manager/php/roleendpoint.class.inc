@@ -144,7 +144,7 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _putInstance(ServerRequestInterface $request)
     {
         $roleArray = json_decode($request->getBody()->getContents(), true);
-        $role      = new Role($this->loris, $roleArray);
+        $role      = new RolePermission($this->loris, $roleArray);
         return $this->_saveInstance($role);
     }
 
@@ -159,10 +159,10 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $roleArray = json_decode($request->getBody()->getContents(), true);
-        $role      = new Role($this->loris, $roleArray);
+        $role      = new RolePermission($this->loris, $roleArray);
         // generate new code
         if (isset($roleArray['Name'])) {
-            $role->row['Code'] = Role::generateCodeFromName($roleArray['Name']);
+            $role->row['Code'] = RolePermission::generateCodeFromName($roleArray['Name']);
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Missing role name.'
@@ -174,11 +174,11 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     /**
      * Generic save function for Role Instances.
      *
-     * @param Role $role The Role Instance to be saved.
+     * @param RolePermission $role The Role Instance to be saved.
      *
      * @return ResponseInterface response
      */
-    private function _saveInstance(Role $role)
+    private function _saveInstance(RolePermission $role)
     {
         if (!$this->user->hasPermission('roles_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -269,11 +269,11 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     /**
      * Checks if a role with the same code already exists.
      *
-     * @param Role $role Role to be checked.
+     * @param RolePermission $role Role to be checked.
      *
      * @return bool
      */
-    private function _isDuplicate(Role $role) : bool
+    private function _isDuplicate(RolePermission $role) : bool
     {
         // Build SQL query based on values entered by user
         $query = "SELECT
@@ -314,11 +314,11 @@ class RoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     /**
      * Validates the Role Instance and collects in errors in an array.
      *
-     * @param Role $role The Role instance to be validated
+     * @param RolePermission $role The Role instance to be validated
      *
      * @return array $errors An array string errors.
      */
-    private function _validateInstance(Role $role) : array
+    private function _validateInstance(RolePermission $role) : array
     {
         $errors = [];
         if (!isset($role->row['Name'])) {
