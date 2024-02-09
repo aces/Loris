@@ -1,5 +1,5 @@
 <br />
-<form method="post" name="edit_user" autocomplete="off">
+<form method="post" id="edit_user_form" name="edit_user" autocomplete="off">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors
@@ -468,6 +468,27 @@
           {$form.Pending_approval.html|default}
       </div>
   </div>
+
+  {* Roles *}
+  <div class="row form-group form-inline">
+    <div class="col-sm-2">
+      <b>Role selection</b>
+    </div>
+    <div class="col-sm-10">
+      <div id="role-modal-container"></div>
+      <div id="role-permissions-changes"></div>
+      {* <input type='hidden' name='roles-list' id='roles-list' value='' /> *}
+      <input type='hidden' name='roles_to_add' id='roles_to_add' value='' />
+      <input type='hidden' name='roles_to_remove' id='roles_to_remove' value='' />
+    </div>
+    {if $form.errors.roles|default}
+	    <div class="alert alert-danger" role="alert">
+	        {$form.errors.roles|default}
+	    </div>
+	{/if}
+  </div>
+
+  {* permissions *}
   <div class="row form-group form-inline">
    <label class="col-sm-2">
        {$form.PermID_Group.label}
@@ -481,6 +502,8 @@
       </div>
   </div>
 </div>
+
+{* supervisor *}
 <div class="row form-group form-inline">
     <label class="col-sm-2">
         {$form.Supervisors_Group.label}
@@ -494,6 +517,7 @@
     </div>
 </div>
 </div>
+
 <div class="row form-group form-inline">
    <div class="col-sm-2">
       <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
