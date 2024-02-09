@@ -143,7 +143,8 @@ class CandidateTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
         /**
          * To solve the phan issue
-         * @phan-methods  class \Database
+         *
+         * @phan-methods class \Database
          */
 
         $this->_candidateInfo = [
@@ -161,7 +162,7 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-	// Set the expected behavior for the getSexList method
+        // Set the expected behavior for the getSexList method
         /* @phan-suppress-next-line PhanUndeclaredMethod */
         $this->_dbMock->expects($this->any())
             ->method('pselectCol')
