@@ -606,6 +606,8 @@ class User extends UserPermissions implements
         return $this->userInfo['Pending_approval'] == 'Y';
     }
 
+    // --------------------------------------------------------------
+
     /**
      * Get the roles this user has access to.
      *
@@ -620,10 +622,141 @@ class User extends UserPermissions implements
                 r.Code,
                 r.Name,
                 r.Description
-            FROM role_user_rel rur
-                JOIN roles r ON (rur.RoleID = r.RoleID)
-            WHERE rur.userID = :userid",
+            FROM user_role_rel urr
+                JOIN roles r ON (urr.RoleID = r.RoleID)
+            WHERE urr.userID = :userid",
             ['userid' => $this->getId()]
+        );
+    }
+
+
+    /**
+     * Return whether the use has the role or not.
+     *
+     * @param string $roleCode a role code.
+     *
+     * @return bool
+     */
+    public function hasRole($roleCode): bool
+    {
+        $codes = array_map(fn($v) => $v['Code'], $this->getRoles());
+        return in_array($roleCode, $codes, true);
+    }
+
+
+    /**
+     * Remove a role from user with all attached permissions.
+     * Permission are only removed from user if no other role have it.
+     *
+     * @param string $roleCode a role code.
+     *
+     * @return array an array of permissions removed
+     */
+    public function removeRole($roleCode): array
+    {
+        $permissionsRemoved = [];
+        if ($this->hasRole($roleCode) && Role::exists($roleCode)) {
+            $db = \NDB_Factory::singleton()->database();
+            $role = Role::factory($roleCode);
+            $permissionsToRemove = $role->getPermissions();
+
+            // get all other user roles
+            $allRoles = $this->getRoles();
+            $otherRoles = array_filter(
+                $allRoles,
+                fn($r) => $r['Code'] != $role->getCode()
+            );
+
+            error_log(print_r($otherRoles, true));
+
+            // successive diff to select only permissions that are not in
+            // defined in other roles for this user.
+            foreach ($otherRoles as $roleValue) {
+                $otherRole = Role::factory($roleValue['Code']);
+                $otherPermissions = $otherRole->getPermissions();
+                // do not remove if permissions are defined in another role
+                $permissionsToRemove = array_diff(
+                    $permissionsToRemove,
+                    $otherPermissions
+                );
+            }
+
+            error_log(print_r($permissionsToRemove, true));
+
+            // remove filtered user permissions
+            $this->removePermissions($permissionsToRemove);
+            $permissionsRemoved = $permissionsToRemove;
+
+            // remove role
+            $db->delete(
+                'user_role_rel',
+                [
+                    'RoleID' => $role->getId(),
+                    'userID' => $this->getId()
+                ]
+            );
+            error_log('removed role: '. $role->getCode());
+        }
+        return $permissionsRemoved;
+    }
+
+    /**
+     * Add a role to a user with all permissions attached.
+     * Only adds a permission if the user do not have it through another role.
+     *
+     * @param string $roleCode a role code.
+     *
+     * @return array an array of permissions added
+     */
+    public function addRole($roleCode): array
+    {
+        $permissionsAdded = [];
+        if (!$this->hasRole($roleCode) && Role::exists($roleCode)) {
+            $db = \NDB_Factory::singleton()->database();
+            $role = Role::factory($roleCode);
+            $permissionsToAdd = $role->getPermissions();
+
+            // add role
+            $db->insert(
+                'user_role_rel',
+                [
+                    'RoleID' => $role->getId(),
+                    'userID' => $this->getId()
+                ]
+            );
+
+            // get all other user roles
+            $allRoles = $this->getRoles();
+            $otherRoles = array_filter(
+                $allRoles,
+                fn($r) => $r['Code'] != $role->getCode()
+            );
+
+            // successive diff to select only permissions that are not in
+            // defined in other roles for this user.
+            foreach ($otherRoles as $roleValue) {
+                $otherRole = Role::factory($roleValue['Code']);
+                $otherPermissions = $otherRole->getPermissions();
+                // do not add if permissions are defined in another role
+                $permissionsToAdd = array_diff(
+                    $permissionsToAdd,
+                    $otherPermissions
+                );
+            }
+
+            // add filtered user permissions
+            $this->addPermissions($permissionsToAdd);
+            $permissionsAdded = $permissionsToAdd;
+        }
+        return $permissionsAdded;
+    }
+
+    public function getRoleIDFromCode($roleCode): string
+    {
+        $db = \NDB_Factory::singleton()->database();
+        return $db->pselectOne(
+            "SELECT RoleID FROM roles WHERE Code = :code",
+            ['code' => $roleCode]
         );
     }
 }
