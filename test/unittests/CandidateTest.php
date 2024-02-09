@@ -159,8 +159,8 @@ class CandidateTest extends TestCase
         ];
         // Set the expected behavior for the getSexList method
         $this->_dbMock->expects($this->any())
-             ->method('pselectCol')
-             ->willReturn(['Male','Female','Other']);
+            ->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $this->_candidate = new Candidate();
     }
 
