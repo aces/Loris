@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {CTA} from 'jsx/Form';
 import Modal from 'Modal';
 import swal from 'sweetalert2';
 

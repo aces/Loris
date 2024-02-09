@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  TextboxElement,
+  TextareaElement,
+  ButtonElement,
+  CheckboxElement,
+} from 'jsx/Form';
 
 /**
  * Roles Form
@@ -49,38 +57,6 @@ class RolesManagerForm extends Component {
         Check permissions applicable to this role.<br/>
       </span>);
     };
-
-    // --------------------------------------
-    // permissions checkboxes
-
-    const permissionCheckboxes = [];
-    let p;
-    let permissionLabel;
-    for (let i = 0; i < role.permissions.length; i++) {
-      // current permission
-      p = role.permissions[i];
-
-      // label
-      permissionLabel = (p.moduleName == null ? '' : p.moduleName + ': ')
-        + (p.permissionAction == null ? '' : p.permissionAction + ' - ')
-        + p.permissionDescription;
-
-      // note: adding a "key" prop here to allow react to uniquely identify
-      // each element in the array.
-      permissionCheckboxes.push(
-        <CheckboxElement
-          key={i}
-          name={'permission-' + p.permissionCode}
-          label={permissionLabel}
-          onUserInput={setRole}
-          required={false}
-          disabled={!hasPermission('roles_edit')}
-          value={p.hasPermission}
-          errorMessage={errors.permissionCode}
-          hasError={errors.permissionCode}
-        />
-      );
-    }
 
     // --------------------------------------
     // Render

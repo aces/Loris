@@ -24,7 +24,7 @@ use LORIS\LorisInstance;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class Role implements \LORIS\Data\DataInstance
+class RolePermission implements \LORIS\Data\DataInstance
 {
     public $row;
     private \LORIS\LorisInstance $loris;
@@ -159,38 +159,6 @@ class Role implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Get all permissions values from DB.
-     *
-     * Values are formatted as follow:
-     * - permissionID: permission id,
-     * - permissionCode: permission code,
-     * - permissionDescription: permission description,
-     * - permissionAction: linked actions,
-     * - moduleName: module name.
-     *
-     * @param LorisInstance $loris as loris instance object.
-     *
-     * @return array an array of permissions values.
-     */
-    public static function getAllPermissions(LorisInstance $loris): array
-    {
-        $db = $loris->getDatabaseConnection();
-        return $db->pselect(
-            "SELECT
-                p.permID AS permissionID,
-                p.code AS permissionCode,
-                p.Description AS permissionDescription,
-                p.action AS permissionAction,
-                m.Name AS moduleName
-            FROM permissions p
-                JOIN modules m ON (p.moduleID = m.ID)
-            WHERE p.code <> 'superuser'
-            ORDER BY m.Name",
-            []
-        );
-    }
-
-    /**
      * Get this role permissions values from DB.
      *
      * Values are formatted as follow:
@@ -207,7 +175,7 @@ class Role implements \LORIS\Data\DataInstance
         $db = $this->loris->getDatabaseConnection();
 
         // all permission
-        $allPermissions = Role::getAllPermissions($this->loris);
+        $allPermissions = RolePermission::getAllPermissions($this->loris);
 
         // all of this role permissions
         $query = "SELECT
@@ -279,7 +247,7 @@ class Role implements \LORIS\Data\DataInstance
             FROM users u
                 JOIN user_role_rel rur ON (u.ID = rur.userID)
             WHERE rur.RoleID = :rid",
-            [':rid' => $this->row['RoleID']]
+            ['rid' => $this->row['RoleID']]
         );
         // array of User objects
         $users = [];
@@ -358,7 +326,7 @@ class Role implements \LORIS\Data\DataInstance
             error_log('    - other roles, checking...');
             $found = false;
             foreach ($otherRoles as $otherRoleValues) {
-                $otherRole = new Role($this->loris, $otherRoleValues);
+                $otherRole = new RolePermission($this->loris, $otherRoleValues);
                 if ($otherRole->hasPermission($code)) {
                     $found = true;
                     break;
@@ -574,12 +542,67 @@ class Role implements \LORIS\Data\DataInstance
             []
         );
         foreach ($roles as $roleRow) {
-            $role          = new Role($loris, $roleRow);
+            $role          = new RolePermission($loris, $roleRow);
             $roleAnomalies = $role->evaluate();
             if (!empty($roleAnomalies)) {
                 $anomalies[$role->row['RoleID']] = $roleAnomalies;
             }
         }
         return $anomalies;
+    }
+
+    /**
+     * Get all permissions values from DB.
+     *
+     * Values are formatted as follow:
+     * - permissionID: permission id,
+     * - permissionCode: permission code,
+     * - permissionDescription: permission description,
+     * - permissionAction: linked actions,
+     * - moduleName: module name.
+     *
+     * @param LorisInstance $loris as loris instance object.
+     *
+     * @return array an array of permissions values.
+     */
+    public static function getAllPermissions(LorisInstance $loris): array
+    {
+        $db = $loris->getDatabaseConnection();
+        return $db->pselect(
+            "SELECT
+                p.permID AS permissionID,
+                p.code AS permissionCode,
+                p.Description AS permissionDescription,
+                p.action AS permissionAction,
+                m.Name AS moduleName
+            FROM permissions p
+                JOIN modules m ON (p.moduleID = m.ID)
+            WHERE p.code <> 'superuser'
+            ORDER BY m.Name",
+            []
+        );
+    }
+
+    /**
+     * Get all roles from DB.
+     *
+     * Values are formatted as follow:
+     * - permissionID: permission id,
+     * - permissionCode: permission code,
+     * - permissionDescription: permission description,
+     * - permissionAction: linked actions,
+     * - moduleName: module name.
+     *
+     * @param LorisInstance $loris as loris instance object.
+     *
+     * @return array an array of permissions values.
+     */
+    public static function getAllRoles(LorisInstance $loris): array
+    {
+        $db = $loris->getDatabaseConnection();
+        return $db->pselect(
+            "SELECT RoleID, Code, Name, Description FROM roles",
+            []
+        );
     }
 }
