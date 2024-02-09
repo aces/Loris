@@ -184,6 +184,8 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
+        error_log('======================================');
+        error_log(print_r($values, true));
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $config  = $factory->config();
@@ -206,45 +208,65 @@ class Edit_User extends \NDB_Form
                 ? $values['Email'] : $values['UserID'];
             $user         = \User::factory($effectiveUID);
         }
-        ////Get the current permissions/////
-        $current_permissionids = $user->getPermissionIDs();
-        // All permissions are wiped on update.  $permIDs will contain ALL the
-        // user's permissions after an update.  Therefore its structure can be
-        // defined as:
-        // 1) The new permissions granted by the editor, AND
-        // 2) Certain old permissions that the editor is not permitted to alter
-        // In addition, old permissions should be removed if the editor has
-        // removed them and the editor has permissions to remove them.
-        $newPermissions    = isset($values['permID'])
-            ? array_keys($values['permID']) : [];
-        $editorPermissions = $editor->getPermissionIDs() ?? [];
-        $permIDs           = [];
-        $passwordExpired   = false;
-        // store the permission IDs
-        if (!empty($values['permID'])) {
-            // An editor can only grant permissions that they have already been
-            // granted unless they are a superuser
-            if ($editor->hasPermission('superuser')) {
-                $permIDs = $newPermissions;
-            } else {
-                $permIDs = array_intersect(
-                    $newPermissions,
-                    $editorPermissions
-                );
-            }
-        }
 
-        // Keep old permissions if the editor is not allowed to edit them,
-        // unless editor is superuser
-        foreach ($current_permissionids as $perm) {
-            if (!in_array($perm, $newPermissions)
-                && !in_array($perm, $editorPermissions)
-                && !$editor->hasPermission('superuser')
-            ) {
-                $permIDs[] = $perm;
-            }
-        }
+        $passwordExpired = false;
+
+        // ------------------------------------------
+        // PERMISSIONS
+        // Change in the workflow. Front-end permission table is now disabled
+        // by default. All permissions should be managed through roles.
+
+        // // Get the current permissions
+        // $current_permissionids = $user->getPermissionIDs();
+
+        // // All permissions are wiped on update.  $permIDs will contain ALL the
+        // // user's permissions after an update.  Therefore its structure can be
+        // // defined as:
+        // // 1) The new permissions granted by the editor, AND
+        // // 2) Certain old permissions that the editor is not permitted to alter
+        // // In addition, old permissions should be removed if the editor has
+        // // removed them and the editor has permissions to remove them.
+        // $newPermissions    = isset($values['permID'])
+        //     ? array_keys($values['permID']) : [];
+        // $editorPermissions = $editor->getPermissionIDs() ?? [];
+        // $permIDs           = [];
+        // // store the permission IDs
+        // if (!empty($values['permID'])) {
+        //     // An editor can only grant permissions that they have already been
+        //     // granted unless they are a superuser
+        //     if ($editor->hasPermission('superuser')) {
+        //         $permIDs = $newPermissions;
+        //     } else {
+        //         $permIDs = array_intersect(
+        //             $newPermissions,
+        //             $editorPermissions
+        //         );
+        //     }
+        // }
+
+        // // Keep old permissions if the editor is not allowed to edit them,
+        // // unless editor is superuser
+        // foreach ($current_permissionids as $perm) {
+        //     if (!in_array($perm, $newPermissions)
+        //         && !in_array($perm, $editorPermissions)
+        //         && !$editor->hasPermission('superuser')
+        //     ) {
+        //         $permIDs[] = $perm;
+        //     }
+        // }
         unset($values['permID']);
+
+        // ------------------------------------------
+        // ROLES
+        // extract roles from values, it is processed independantly
+        $rolesValues = [
+            'roles_to_add'    => json_decode($values['roles_to_add'], true),
+            'roles_to_remove' => json_decode($values['roles_to_remove'], true),
+        ];
+        unset($values['roles_to_add']);
+        unset($values['roles_to_remove']);
+
+        // ------------------------------------------
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
@@ -363,6 +385,11 @@ class Edit_User extends \NDB_Form
         unset($values['examiner_radiologist']);
         unset($values['examiner_pending']);
         // END SETUP EXAMINER VALUES
+
+        // ------------------------------------------------------
+        // values that do no go into User table should be prune/extracted
+        // before else error wil be raised.
+        // ------------------------------------------------------
 
         // make the set
         $set = [];
@@ -547,39 +574,114 @@ class Edit_User extends \NDB_Form
             );
         }
 
+
+        // update roles
+
+        // TODO
+        error_log('=========================== SET ROLES + PERMISSIONS');
+        error_log(print_r($values, true));
+        error_log(print_r($rolesValues, true));
+
+        // throw new \Exception();
+
+        // ////Get the current permissions/////
+        // $current_permissionids = $user->getPermissionIDs();
+        // // All permissions are wiped on update.  $permIDs will contain ALL the
+        // // user's permissions after an update.  Therefore its structure can be
+        // // defined as:
+        // // 1) The new permissions granted by the editor, AND
+        // // 2) Certain old permissions that the editor is not permitted to alter
+        // // In addition, old permissions should be removed if the editor has
+        // // removed them and the editor has permissions to remove them.
+        // $newPermissions    = isset($values['permID'])
+        //     ? array_keys($values['permID']) : [];
+        // $editorPermissions = $editor->getPermissionIDs() ?? [];
+        // $permIDs           = [];
+        
+        // // store the permission IDs
+        // if (!empty($values['permID'])) {
+        //     // An editor can only grant permissions that they have already been
+        //     // granted unless they are a superuser
+        //     if ($editor->hasPermission('superuser')) {
+        //         $permIDs = $newPermissions;
+        //     } else {
+        //         $permIDs = array_intersect(
+        //             $newPermissions,
+        //             $editorPermissions
+        //         );
+        //     }
+        // }
+
+        // // Keep old permissions if the editor is not allowed to edit them,
+        // // unless editor is superuser
+        // foreach ($current_permissionids as $perm) {
+        //     if (!in_array($perm, $newPermissions)
+        //         && !in_array($perm, $editorPermissions)
+        //         && !$editor->hasPermission('superuser')
+        //     ) {
+        //         $permIDs[] = $perm;
+        //     }
+        // }
+        // unset($values['permID']);
+
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
         // changes to the permissions are handled (there should not be any
         // change to the user's permission set since all the checkboxes are
         // disabled)
         if (!$this->_isEditingOwnAccount()) {
-            $user->removePermissions();
-            // Check for new permissions
-            if (!empty($permIDs)) {
-                foreach ($permIDs as $permID) {
-                    /* if the user didn't have the permission
-                       and the permission is now assigned then insert
-                       insert into the user_account_history as 'I'
-                     */
-                    if (!(in_array($permID, $current_permissionids))) {
-                        $user->insertIntoUserAccountHistory($permID, 'I');
-                        $permissionsAdded[]
-                            = $this->getDescriptionUsingPermID($permID);
-                    }
+            // $user->removePermissions();
+            // // Check for new permissions
+            // if (!empty($permIDs)) {
+            //     foreach ($permIDs as $permID) {
+            //         /* if the user didn't have the permission
+            //            and the permission is now assigned then insert
+            //            insert into the user_account_history as 'I'
+            //          */
+            //         if (!(in_array($permID, $current_permissionids))) {
+            //             $user->insertIntoUserAccountHistory($permID, 'I');
+            //             $permissionsAdded[]
+            //                 = $this->getDescriptionUsingPermID($permID);
+            //         }
+            //     }
+            // }
+            // if (!empty($current_permissionids)) {
+            //     // Check for permissions that are to be deleted
+            //     foreach ($current_permissionids as $currentPermID) {
+            //         //if the permission existed before and it's removed now///
+            //         ///Then insert into the user_account_history as 'D'
+            //         if (!in_array($currentPermID, $permIDs)) {
+            //             $user->insertIntoUserAccountHistory($currentPermID, 'D');
+            //             $permissionsRemoved[]
+            //                 = $this->getDescriptionUsingPermID($currentPermID);
+            //         }
+            //     }
+            // }
+
+            // change permissions through roles
+            error_log('--------------');
+            error_log(print_r($rolesValues, true));
+            $permissionsRemoved = [];
+            if (!empty($rolesValues['roles_to_remove'])) {
+                foreach ($rolesValues['roles_to_remove'] as $roleCode) {
+                    error_log('trying to remove: '. $roleCode);
+                    $permissionsRemoved = array_merge(
+                        $permissionsRemoved,
+                        $user->removeRole($roleCode)
+                    );
                 }
             }
-            if (!empty($current_permissionids)) {
-                // Check for permissions that are to be deleted
-                foreach ($current_permissionids as $currentPermID) {
-                    //if the permission existed before and it's removed now///
-                    ///Then insert into the user_account_history as 'D'
-                    if (!in_array($currentPermID, $permIDs)) {
-                        $user->insertIntoUserAccountHistory($currentPermID, 'D');
-                        $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($currentPermID);
-                    }
+            $permissionsAdded = [];
+            if (!empty($rolesValues['roles_to_add'])) {
+                error_log('trying to add: '. $roleCode);
+                foreach ($rolesValues['roles_to_add'] as $roleCode) {
+                    $permissionsAdded = array_merge(
+                        $permissionsAdded,
+                        $user->addRole($roleCode)
+                    );
                 }
             }
+
             // send the selected supervisors an email
             // (only if permissions have changed for the user)
             if (isset($supervisorEmails)) {
@@ -587,10 +689,12 @@ class Edit_User extends \NDB_Form
                     if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
                         if ($checkValue == 'on') {
                             $msg_data = [];
-                            $msg_data['current_user'] = $editor->getFullname();
-                            $msg_data['study']        = $config->getSetting('title');
-                            $msg_data['realname']     = $values['Real_name'];
-                            $msg_data['username']     = $user->getUsername();
+                            $msg_data['current_user']        = $editor->getFullname();
+                            $msg_data['study']               = $config->getSetting('title');
+                            $msg_data['realname']            = $values['Real_name'];
+                            $msg_data['username']            = $user->getUsername();
+                            $msg_data['roles_added']         = $rolesValues['roles_to_add'];
+                            $msg_data['roles_removed']       = $rolesValues['roles_to_remove'];
                             $msg_data['permissions_added']   = $permissionsAdded;
                             $msg_data['permissions_removed'] = $permissionsRemoved;
                             \Email::send(
@@ -947,36 +1051,48 @@ class Edit_User extends \NDB_Form
 
         $perms = $editor->getPermissionsVerbose($this->loris);
 
+        // TODO
+        // ROLES
+
         $lastRole = '';
         $group    = [];
         foreach ($perms as $row) {
-            if ($row['type'] != $lastRole) {
-                $lastRole = $row['type'];
-                $group[]  = $this->form->createElement(
-                    'static',
-                    '',
-                    '',
-                    '</div>'
-                    . "<h3 id=\"header_$lastRole\" "
-                    . "class=\"perm_header button\" "
-                    . "style=\"text-align: center; margin-top: 5px;\">"
-                    .ucwords($row['type'])
-                    . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
-                );
-            }
+            // if ($row['type'] != $lastRole) {
+            //     $lastRole = $row['type'];
+            //     $group[]  = $this->form->createElement(
+            //         'static',
+            //         '',
+            //         '',
+            //         '</div>'
+            //         . "<h3 id=\"header_$lastRole\" "
+            //         . "class=\"perm_header button\" "
+            //         . "style=\"text-align: center; margin-top: 5px;\">"
+            //         .ucwords($row['type'])
+            //         . '</h3>'
+            //         . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
+            //     );
+            // }
 
             // If the user is editing his/her own account, disable all permission
             // checkboxes. Note that they will not be submitted when the form is
             // saved
-            $attribs = ["class" => "perm_$lastRole"];
-            if ($this->_isEditingOwnAccount()) {
-                $attribs['disabled'] = true;
-            }
+            // $attribs = ["class" => "perm_$lastRole"];
+            // if ($this->_isEditingOwnAccount()) {
+            //     $attribs['disabled'] = true;
+            // }
+            // $group[] = $this->createCheckbox(
+            //     'permID['.$row['permID'].']',
+            //     htmlspecialchars($row['label']) . "<br>",
+            //     $attribs
+            // );
+
+            // it should be always disabled since permissions are managed
+            // through roles now. Floating permissions should only be given
+            // in extreme cases.
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 htmlspecialchars($row['label']) . "<br>",
-                $attribs
+                ["disabled" => true]
             );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "");
@@ -1305,6 +1421,82 @@ class Edit_User extends \NDB_Form
                 = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
+
+        //======================================
+        //           Validate Roles
+        //======================================
+
+        // permission missing
+        if (!$editor->hasPermission('roles_assign')) {
+            $errors['roles'] = 'You do not have the permission to assign roles.';
+
+        } else{
+            // remove
+            if (!is_null($values['roles_to_remove'])) {
+                // has an identifier?
+                if (is_null($this->identifier)) {
+                    $errors['roles'] = 'Cannot remove a role for a new user.';
+                } else {
+                    $user = \User::factory($this->identifier);
+                    $userRoles = array_map(
+                        fn($v) => $v['Code'],
+                        $user->getRoles()
+                    );
+                    $oneMissing = false;
+                    if (!empty($userRoles)) {
+                        $rVal = json_decode($values['roles_to_remove'], true);
+                        foreach ($rVal as $roleCode) {
+                            if (!in_array($roleCode, $userRoles, true)) {
+                                $oneMissing = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($oneMissing) {
+                        $errors['roles'] = 'Cannot remove role "' . $roleCode
+                            . '": user does not have this role.';
+                    }
+                }
+            }
+
+            // add
+            if (!is_null($values['roles_to_add'])) {
+                // has an identifier?
+                if (!is_null($this->identifier)) {
+                    // all name exists
+                    $roles = array_map(
+                        fn($v) => $v['Code'],
+                        \Role::getAllRoles()
+                    );
+                    $aVal = json_decode($values['roles_to_add'], true);
+                    foreach ($aVal as $roleCode) {
+                        if (!in_array($roleCode, $roles, true)) {
+                            $errors['roles'] = 'Cannot add role "' . $roleCode
+                            . '": role does not exist.';
+                        }
+                    }
+                    //
+                    $user = \User::factory($this->identifier);
+                    $userRoles = array_map(
+                        fn($v) => $v['Code'],
+                        $user->getRoles()
+                    );
+                    $alreadyHas = false;
+                    foreach ($aVal as $roleCode) {
+                        if (in_array($roleCode, $userRoles, true)) {
+                            $alreadyHas = true;
+                            break;
+                        }
+                    }
+                    if ($alreadyHas) {
+                        $errors['roles'] = 'Cannot add role "' . $roleCode
+                            . '": user already has this role.';
+                    }
+                }
+            }
+        }
+
+        // errors
         return $errors;
     }
 
@@ -1382,6 +1574,8 @@ class Edit_User extends \NDB_Form
                 $baseURL . '/js/passwordVisibility.js',
                 $baseURL . '/user_accounts/js/edit_user_helper.js',
                 $baseURL . '/js/invalid_form_scroll.js',
+                // roles
+                $baseURL . "/user_accounts/js/userAccountRolesForm.js",
             ]
         );
     }
