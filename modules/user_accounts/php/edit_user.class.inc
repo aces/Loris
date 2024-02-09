@@ -191,8 +191,6 @@ class Edit_User extends \NDB_Form
         $config  = $factory->config();
 
         //The arrays that contain the edited permissions
-        $permissionsRemoved = [];
-        $permissionsAdded   = [];
         $editor = $factory->user();
 
         // build the "real name"
@@ -672,8 +670,8 @@ class Edit_User extends \NDB_Form
             }
             $permissionsAdded = [];
             if (!empty($rolesValues['roles_to_add'])) {
-                error_log('trying to add: '. $roleCode);
                 foreach ($rolesValues['roles_to_add'] as $roleCode) {
+                    error_log('trying to add: '. $roleCode);
                     $permissionsAdded = array_merge(
                         $permissionsAdded,
                         $user->addRole($roleCode)
@@ -1054,7 +1052,7 @@ class Edit_User extends \NDB_Form
         // TODO
         // ROLES
 
-        $lastRole = '';
+        // $lastRole = '';
         $group    = [];
         foreach ($perms as $row) {
             // if ($row['type'] != $lastRole) {
@@ -1438,7 +1436,6 @@ class Edit_User extends \NDB_Form
                     $errors['roles'] = 'Cannot remove a role for a new user.';
                 } else {
                     $user       = \User::factory($this->identifier);
-                    $oneMissing = false;
                     $userRoles  = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
@@ -1447,14 +1444,11 @@ class Edit_User extends \NDB_Form
                         $rVal = json_decode($values['roles_to_remove'], true);
                         foreach ($rVal as $roleCode) {
                             if (!in_array($roleCode, $userRoles, true)) {
-                                $oneMissing = true;
+                                $errors['roles'] = 'Cannot remove role "' . $roleCode
+                                    . '": user does not have this role.';
                                 break;
                             }
                         }
-                    }
-                    if ($oneMissing) {
-                        $errors['roles'] = 'Cannot remove role "' . $roleCode
-                            . '": user does not have this role.';
                     }
                 }
             }
@@ -1477,20 +1471,16 @@ class Edit_User extends \NDB_Form
                     }
                     //
                     $user       = \User::factory($this->identifier);
-                    $alreadyHas = false;
                     $userRoles  = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
                     );
                     foreach ($aVal as $roleCode) {
                         if (in_array($roleCode, $userRoles, true)) {
-                            $alreadyHas = true;
+                            $errors['roles'] = 'Cannot add role "' . $roleCode
+                                . '": user already has this role.';
                             break;
                         }
-                    }
-                    if ($alreadyHas) {
-                        $errors['roles'] = 'Cannot add role "' . $roleCode
-                            . '": user already has this role.';
                     }
                 }
             }

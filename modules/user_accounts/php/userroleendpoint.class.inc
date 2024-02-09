@@ -127,6 +127,9 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     {
         // get user and target user
         $users        = json_decode($request->getBody()->getContents(), true);
+        if (!is_null($this->user)) {
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
         $this->target = \User::factory($users['target']);
 
         // load provisionner based on target

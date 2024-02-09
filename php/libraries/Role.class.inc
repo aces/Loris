@@ -82,7 +82,9 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
             );
 
             // store user data in object property
-            $obj->roleInfo = $row;
+            if (!is_null($row)) {
+                $obj->roleInfo = $row;
+            }
 
             // load the role's permissions
             $obj->setPermissions();
@@ -248,7 +250,8 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-     * Determines if the role has the permission.
+     * Determines if the role has the permission based on permission code.
+     * If the permission code does not exists, returns false.
      *
      * @param string $code The permission code
      *
@@ -256,6 +259,9 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
      */
     public function hasPermission(string $code): bool
     {
+        if (!array_key_exists($code, $this->permissions)) {
+            return false;
+        }
         return $this->permissions[$code]['roleHasPermission'];
     }
 
