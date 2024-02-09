@@ -3,7 +3,7 @@
 -- REMOVE PERMISSION CATEGORY TABLE
 -- ------------------------------------
 
--- Update the only 3 `roles` category permissions to `permissions` 
+-- Update the only 3 `roles` category permissions to `permissions`
 -- update bvl_feedback and data_entry to permission.
 UPDATE `permissions`
     SET categoryID = '2'
@@ -35,18 +35,17 @@ CREATE TABLE `roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 INSERT INTO `roles` VALUES
-  (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
-  (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
+  (1,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
 
 -- module
-INSERT INTO modules (Name, Active) VALUES ('roles', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('roles_manager', 'Y');
 
 -- add new permissions (related to roles module)
 INSERT INTO `permissions` (`code`, `description`, `action`, `moduleID`)
 VALUES
   ('roles_view','Roles Entries','View',(SELECT ID FROM modules WHERE Name='roles_manager')),
   ('roles_edit','Roles Entries','Create/Edit',(SELECT ID FROM modules WHERE Name='roles_manager')),
-  ('roles_assign','Roles Entries','Edit',(SELECT ID FROM modules WHERE Name='roles_manager'));
+  ('roles_assign','Roles Entries: Assign','Edit',(SELECT ID FROM modules WHERE Name='roles_manager'));
 
 -- add role-permission rel table
 DROP TABLE IF EXISTS `role_permission_rel`;
@@ -70,7 +69,7 @@ CREATE TABLE `role_permission_rel` (
 INSERT INTO `role_permission_rel`(`permID`,`RoleID`)
   SELECT permID, (
     SELECT RoleID FROM roles WHERE Code = 'administrator'
-  ) 
+  )
   FROM permissions;
 
 -- add role-user rel table
