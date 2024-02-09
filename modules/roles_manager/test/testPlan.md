@@ -4,8 +4,8 @@ Roles Manager module - Test plan
 ### Access
 
 1. Main page: the page should only load if a user has the `roles_edit` or `roles_view` permission.
-2. Edit modal: for any role, users having `roles_view` **SHOULD NOT** be able to interact with checkboxes in the edit modal.
-3. Edit modal: for any role, users having `roles_edit` **SHOULD** be able to interact with checkboxes in the edit modal.
+2. Main page: users having `roles_view` should NOT see the "Edit" button at the end of each lines.
+3. Edit modal: for any role, users having `roles_edit` should be able to interact with checkboxes in the edit modal.
 
 ### Interaction
 
