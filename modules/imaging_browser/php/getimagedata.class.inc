@@ -23,6 +23,28 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
     private $db;
 
     /**
+     * The file ID, gotten from the query parameters
+     *
+     * @var int
+     */
+    private $fileID;
+
+    /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR7 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+        $this->fileID = intval($request->getQueryParams()['fileID']);
+    }
+
+    /**
      * Returns true if user has access to this endpoint.
      *
      * @param \User $user The user whose access is being checked
@@ -31,14 +53,14 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
      */
     function _hasAccess(\User $user) : bool
     {
-        $file = new \MRIFile(intval($_REQUEST['fileID']));
+        $file = new \MRIFile($this->fileID);
 
-        $sessionId = $file->getParameter('SessionID');
+        $sessionID = $file->getParameter('SessionID');
         $session   = \TimePoint::singleton(
-            new \SessionID(strval($sessionId))
+            new \SessionID(strval($sessionID))
         );
-        $candid    = $session->getCandID();
-        $candidate = \Candidate::singleton($candid);
+        $candID    = $session->getCandID();
+        $candidate = \Candidate::singleton($candID);
 
         if ($candidate->getEntityType() == 'Scanner') {
             return ($user->hasPermission('imaging_browser_phantom_allsites')
@@ -87,11 +109,15 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->db = $this->loris->getDatabaseConnection();
-        $method   = $request->getMethod();
 
-        switch ($method) {
+        switch ($request->getMethod()) {
         case 'GET':
-            return $this->_getData();
+            return $this->_handleGET();
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ['GET'],
+                'Request must be GET'
+            );
         }
     }
 
@@ -100,27 +126,25 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
      *
      * @return ResponseInterface The Json response.
      */
-    private function _getData() : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
-        $row = $this->_getRow($_REQUEST['fileID']);
+        $row = $this->_getRow();
         return new \LORIS\Http\Response\JSON\OK($row);
     }
 
     /**
      * Returns a file's data as a Json response
      *
-     * @param $fileID The file's id
-     *
      * @return array The Json response.
      */
-    private function _getRow($fileID)
+    private function _getRow()
     {
-        $file = new \MRIFile(intval($fileID));
+        $file = new \MRIFile($this->fileID);
 
-        $sessionId = $file->getParameter('SessionID');
+        $sessionID = $file->getParameter('SessionID');
 
         $timePoint = \TimePoint::singleton(
-            new \SessionID($sessionId),
+            new \SessionID($sessionID),
         );
 
         $factory = \NDB_Factory::singleton();
@@ -128,7 +152,6 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
 
         $FullFilename = $file->getParameter('File') ?? '';
         $ScannerID    = $file->getParameter('ScannerID');
-        $FileID       = intval($fileID);
         $Filename     = basename($FullFilename);
         $APIFile      = $baseurl . "/api/v0.0.3/candidates/"
                 . $timePoint->getCandID() . "/"
@@ -199,17 +222,17 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
         );
 
         $manualCaveatViolationsResolvedID
-            = $this->_getManualCaveatViolationsResolvedID($FileID);
+            = $this->_getManualCaveatViolationsResolvedID($this->fileID);
         $caveat
             = $manualCaveatViolationsResolvedID ? true : false;
-        $foundProtocolViolations = $this->_getProtocolViolations($FileID);
+        $foundProtocolViolations = $this->_getProtocolViolations($this->fileID);
         $editableCaveat          = true;
         if ($foundProtocolViolations) {
             $caveat         = 1;
             $editableCaveat = false;
         }
         $file = [
-            'FileID'          => $FileID,
+            'FileID'          => $this->fileID,
             'Filename'        => $Filename,
             'APIFile'         => $APIFile,
             'FullFilename'    => $FullFilename,

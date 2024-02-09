@@ -53,18 +53,26 @@ class GetScannerData extends \NDB_Page implements RequestHandlerInterface
 
         switch ($method) {
         case 'GET':
-            return $this->_getData();
+            return $this->_handleGET($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ['GET'],
+                'Request must be GET'
+            );
         }
     }
 
     /**
      * Returns a scanner's data as a Json response
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface The Json response.
      */
-    private function _getData() : ResponseInterface
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $row = $this->_getRow($_REQUEST['scannerID']);
+        $scannerID = intval($request->getQueryParams()['scannerID']);
+        $row       = $this->_getRow($scannerID);
         return new \LORIS\Http\Response\JSON\OK($row);
     }
 
@@ -84,7 +92,7 @@ class GetScannerData extends \NDB_Page implements RequestHandlerInterface
         );
 
         return [
-            'id'           => (int) $row['ID'],
+            'id'           => $row['ID'],
             'manufacturer' => $row['Manufacturer'],
             'model'        => $row['Model'],
             'serialNumber' => $row['Serial_number'],
