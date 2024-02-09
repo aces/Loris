@@ -21,6 +21,11 @@ use LORIS\StudyEntities\Candidate\CandID;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+/**
+ * @phan-methods class \Database
+ * @method \PHPUnit\Framework\MockObject\MockObject|static pselectCol(mixed $query, array $params)
+ * @method \PHPUnit\Framework\MockObject\MockObject|static expects($thisArg)
+ */
 class CandidateTest extends TestCase
 {
     /**

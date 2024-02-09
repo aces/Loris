@@ -38,7 +38,8 @@ return [
         "php",
         "htdocs",
         "modules",
-        "src",
+	"src",
+        "vendor",
         "test"
     ],
     'exclude_file_list' => [
