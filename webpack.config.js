@@ -34,6 +34,7 @@ const resolve = {
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
+    Collapsible: path.resolve(__dirname, './jsx/Collapsible'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
     Panel: path.resolve(__dirname, './jsx/Panel'),
@@ -308,7 +309,7 @@ const lorisModules = {
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
   mri_violations: ['mriViolationsIndex'],
-  user_accounts: ['userAccountsIndex'],
+  user_accounts: ['userAccountsIndex', 'userAccountRolesTable', 'userAccountRolesForm'],
   examiner: ['examinerIndex'],
   help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
@@ -323,7 +324,7 @@ const lorisModules = {
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
-  roles_manager: ['rolesManagerIndex', 'rolesManagerForm'],
+  roles_manager: ['rolesManagerIndex'],
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
