@@ -28,14 +28,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
-
-    /**
-     * The database connection
-     *
-     * @var \Database
-     */
-    protected $db;
-
     /**
      * The editor accessing the endpoint.
      *
@@ -104,9 +96,7 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db     = $this->loris->getDatabaseConnection();
-        $this->target = \User::factory($request->getAttribute('targetUser'));
-        $this->user   = \User::factory($request->getAttribute('user'));
+        $this->user   = $request->getAttribute('user');
         $method       = $request->getMethod();
 
         if ($method !== 'POST') {
@@ -116,11 +106,6 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
         if ($this->user === null && !($this->user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 "No valid user"
-            );
-        }
-        if ($this->target === null && !($this->target instanceof \User)) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid target user"
             );
         }
 
@@ -139,11 +124,12 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         // get user and target user
-        // $users = json_decode($request->getBody()->getContents(), true);
-        // if (!isset($this->user) || !isset($this->target)) {
-        //     return new \LORIS\Http\Response\JSON\BadRequest();
-        // }
-        // $this->target = \User::factory($users['target']);
+        $users = json_decode($request->getBody()->getContents(), true);
+        if (!isset($users) || !isset($users['target'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
+        // fetched by userAccountRolesForm.js
+        $this->target = \User::factory($users['target']);
 
         // load provisionner based on target
         $instances = (new \LORIS\Data\Table())
