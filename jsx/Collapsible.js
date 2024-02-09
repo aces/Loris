@@ -34,7 +34,7 @@ class Collapsible extends Component {
      */
     toggleView(e) {
         e.preventDefault();
-        this.setState({ collapsibleOpen: !this.state.collapsibleOpen });
+        this.setState({collapsibleOpen: !this.state.collapsibleOpen});
     }
 
     /**
@@ -43,7 +43,7 @@ class Collapsible extends Component {
      * @return {JSX} - React markup for the component
      */
     render() {
-        const { children, title, colorActive, colorInactive } = this.props;
+        const {children, title, colorActive, colorInactive} = this.props;
 
         const detailsStyle = {
             border: '2px solid #689BCC',

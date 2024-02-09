@@ -309,7 +309,11 @@ const lorisModules = {
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
   mri_violations: ['mriViolationsIndex'],
-  user_accounts: ['userAccountsIndex', 'userAccountRolesTable', 'userAccountRolesForm'],
+  user_accounts: [
+    'userAccountsIndex',
+    'userAccountRolesTable',
+    'userAccountRolesForm',
+  ],
   examiner: ['examinerIndex'],
   help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
