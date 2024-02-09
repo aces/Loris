@@ -1053,7 +1053,7 @@ class Edit_User extends \NDB_Form
         // ROLES
 
         // $lastRole = '';
-        $group    = [];
+        $group = [];
         foreach ($perms as $row) {
             // if ($row['type'] != $lastRole) {
             //     $lastRole = $row['type'];
@@ -1435,8 +1435,8 @@ class Edit_User extends \NDB_Form
                 if (is_null($this->identifier)) {
                     $errors['roles'] = 'Cannot remove a role for a new user.';
                 } else {
-                    $user       = \User::factory($this->identifier);
-                    $userRoles  = array_map(
+                    $user      = \User::factory($this->identifier);
+                    $userRoles = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
                     );
@@ -1470,8 +1470,8 @@ class Edit_User extends \NDB_Form
                         }
                     }
                     //
-                    $user       = \User::factory($this->identifier);
-                    $userRoles  = array_map(
+                    $user      = \User::factory($this->identifier);
+                    $userRoles = array_map(
                         fn($v) => $v['Code'],
                         $user->getRoles()
                     );

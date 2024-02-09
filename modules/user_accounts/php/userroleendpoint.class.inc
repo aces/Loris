@@ -126,7 +126,7 @@ class UserRoleEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         // get user and target user
-        $users        = json_decode($request->getBody()->getContents(), true);
+        $users = json_decode($request->getBody()->getContents(), true);
         if (!is_null($this->user)) {
             return new \LORIS\Http\Response\JSON\BadRequest();
         }
