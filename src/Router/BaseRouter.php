@@ -115,7 +115,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
-            $factory->setBaseURL($baseurl);
+            $factory->setBaseURL((string )$baseurl);
 
             $module = $this->loris->getModule($modulename);
             $module->registerAutoloader();
@@ -137,7 +137,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
             $baseurl = $uri->withPath("")->withQuery("");
 
-            $factory->setBaseURL($baseurl);
+            $factory->setBaseURL((string )$baseurl);
             if (count($components) == 1) {
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
