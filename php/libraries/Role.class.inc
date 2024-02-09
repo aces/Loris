@@ -104,6 +104,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         // get all the permissions for this role
         $db    = \NDB_Factory::singleton()->database();
         $query = "SELECT
+            p.permID AS permissionID,
             p.code AS permissionCode,
             p.Description AS permissionDescription,
             p.action AS permissionAction,
@@ -111,7 +112,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         FROM permissions p
             LEFT JOIN role_permission_rel rpr ON (p.permID = rpr.permID)
             LEFT JOIN roles r ON (r.RoleID = rpr.RoleID)
-            JOIN modules m ON (p.moduleID = m.ID)
+            LEFT JOIN modules m ON (p.moduleID = m.ID)
         WHERE r.RoleID = :rid
             AND p.code <> 'superuser'";
 
@@ -125,10 +126,18 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
 
         // Fill the permissions array
         $pCodes = array_map(fn($v) => $v['permissionCode'], $results);
-        foreach ($this->permissions as $p) {
-            $p['roleHasPermission'] = (
-                array_key_exists($p['permissionCode'], $pCodes)
-            );
+        if (empty($pCodes)) {
+            foreach ($this->permissions as $code => $permission) {
+                $this->permissions[$code]['roleHasPermission'] = false;
+            }
+        } else {
+            foreach ($this->permissions as $code => $permission) {
+                $this->permissions[$code]['roleHasPermission'] = in_array(
+                    $code,
+                    $pCodes,
+                    true
+                );
+            }
         }
     }
 
@@ -262,7 +271,11 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         if (!array_key_exists($code, $this->permissions)) {
             return false;
         }
-        return $this->permissions[$code]['roleHasPermission'];
+        $p = $this->permissions[$code];
+        if (!array_key_exists('roleHasPermission', $p)) {
+            return false;
+        }
+        return $p['roleHasPermission'];
     }
 
     /**
