@@ -38,7 +38,6 @@ class Module extends \Module
                 [
                     'roles_view',
                     'roles_edit',
-                    'roles_assign'
                 ]
             );
     }
