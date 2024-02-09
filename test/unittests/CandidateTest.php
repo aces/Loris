@@ -144,9 +144,8 @@ class CandidateTest extends TestCase
         /**
          * To solve the phan issue
          *
-         * @phan-methods class \Database
-         * @method       MockObject|static pselectCol(mixed $query, array $params)
-         * @method       MockObject|static expects($thisArg)
+         * @phan-suppress PhanUndeclaredMethod
+         * @phan-methods  class \Database
          */
 
         $this->_candidateInfo = [
