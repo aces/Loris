@@ -114,9 +114,9 @@ INSERT INTO `permissions` VALUES
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL),
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL),
-    (65,'roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
-    (66,'roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'Edit/Upload/Delete'),
-    (67,'roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View');
+    (65,'roles_view','Roles Entries - View',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
+    (66,'roles_edit','Roles Entries - Edit',(SELECT ID FROM modules WHERE Name='roles'), 'Create/Edit'),
+    (67,'roles_assign','Roles Entries - Assign',(SELECT ID FROM modules WHERE Name='roles'), 'Edit');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
@@ -125,7 +125,6 @@ INSERT INTO `user_perm_rel` (userID, permID)
   ORDER BY p.permID;
 
 -- add role table
-DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `RoleID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Code` varchar(255) NOT NULL DEFAULT '',
@@ -135,12 +134,18 @@ CREATE TABLE `roles` (
   UNIQUE KEY `Code` (`Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-INSERT INTO `roles` VALUES
-  (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
-  (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
+INSERT INTO `roles` (`RoleID`, `Code`, `Name`, `Description`)
+VALUES
+  (1,'administrator', 'Administrator', 'An administrator. Has access to everything, no restrictions.'),
+  (2,'data_entry', 'Data Entry', 'Interact with user data such as instruments, users and timepoints.'),
+  (3,'data_analysis', 'Data Analysis', 'Query data through DQT and dictionnary.'),
+  (4,'data_release', 'Data Release', 'Interact with data release files.'),
+  (5,'coordinator', 'Coordinator', 'Resolve instrument data conflicts.'),
+  (6,'imaging', 'Imaging', 'Access imaging data.'),
+  (7,'scheduling', 'Scheduling', 'Schedule participants and surveys.'),
+  (8,'issue_reporter', 'Issue reporter', 'Report issues.');
 
 -- add role-permission rel table
-DROP TABLE IF EXISTS `role_permission_rel`;
 CREATE TABLE `role_permission_rel` (
   `RoleID` int(10) unsigned NOT NULL default '0',
   `permID` int(10) unsigned NOT NULL default '0',
@@ -158,11 +163,67 @@ CREATE TABLE `role_permission_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- administrator role has all permissions.
-INSERT INTO `role_permission_rel`(`permID`,`RoleID`)
+INSERT INTO `role_permission_rel` (`permID`,`RoleID`)
   SELECT permID, (
     SELECT RoleID FROM roles WHERE Code = 'administrator'
   )
   FROM permissions;
+-- other roles, select permissions
+INSERT INTO `role_permission_rel` (`RoleID`,`permID`)
+VALUES
+  -- data_entry
+  (2,2),
+  (2,3),
+  (2,9),
+  (2,10),
+  -- data_analysis
+  (3,14),
+  (3,32),
+  -- data_release
+  (4,40),
+  (4,41),
+  (4,42),
+  -- coordinator
+  (5,2),
+  (5,3),
+  (5,9),
+  (5,10),
+  (5,13),
+  -- imaging (own site)
+  (6,17),
+  (6,19),
+  (6,39),
+  (6,50),
+  (6,56),
+  (6,59),
+  -- scheduling
+  (7,58),
+  -- issue_reporter
+  (8,36);
+
+-- add role-user rel table
+CREATE TABLE `user_role_rel` (
+  `RoleID` int(10) unsigned NOT NULL default '0',
+  `userID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`RoleID`,`userID`),
+  CONSTRAINT `FK_user_role_rel_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_role_rel_2`
+  FOREIGN KEY (`RoleID`)
+    REFERENCES `roles` (`RoleID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- administrator user has administrator role.
+INSERT INTO `user_role_rel` (`RoleID`,`userID`)
+VALUES (
+  SELECT ID FROM users WHERE UserID = 'admin',
+  SELECT RoleID FROM roles WHERE Code = 'administrator'
+);
 
 -- permissions for each notification module
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
