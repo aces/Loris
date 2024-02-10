@@ -160,4 +160,100 @@ class UserRole implements \LORIS\Data\DataInstance
 
         return $permissions;
     }
+
+    // /**
+    //  * For the current role, check if any missing relations exists.
+    //  * This could happen e.g. if a role is added to a user with direct SQL, but
+    //  * permissions are not updated.
+    //  * Mainly useful when checking role-permission-user relations.
+    //  *
+    //  * @return array an array of anomalies, meaning missing relations to insert.
+    //  */
+    // public function evaluate(): array
+    // {
+    //     $db = $this->loris->getDatabaseConnection();
+
+    //     // anmalies to process
+    //     $anomalies = [];
+
+    //     // ---- build data dict
+
+    //     // users that were granted this role
+    //     $userIDs = $db->pselectCol(
+    //         "SELECT u.ID
+    //         FROM users u
+    //             JOIN user_role_rel rur ON (u.ID = rur.userID)
+    //         WHERE rur.RoleID = :rid",
+    //         [':rid' => $this->row['RoleID']]
+    //     );
+
+    //     // expected permissions (i.e. what this role grants)
+    //     $expectedPermIDs = $db->pselectCol(
+    //         "SELECT p.permID
+    //         FROM permissions p
+    //             JOIN role_permission_rel rpr ON (p.permID = rpr.permID)
+    //         WHERE rpr.RoleID = :rid
+    //         ORDER by p.permID",
+    //         [':rid' => $this->row['RoleID']]
+    //     );
+
+    //     // for each given user, check that it has AT LEAST those listed in the
+    //     // permIDs list. Some can be added as floating permissions outside the
+    //     // scope of a role (in user_account module).
+
+    //     foreach ($userIDs as $userID) {
+    //         // actual user permissions
+    //         $currentUserPermissions = $db->pselectCol(
+    //             "SELECT permID
+    //             FROM user_perm_rel
+    //             WHERE userID = :uid
+    //             ORDER BY permID",
+    //             [":uid" => $userID]
+    //         );
+
+    //         // missing permissions that should be added
+    //         $missingPermissions = array_diff(
+    //             $expectedPermIDs,
+    //             $currentUserPermissions
+    //         );
+
+    //         // add
+    //         foreach ($missingPermissions as $missingPermID) {
+    //             $anomalies[] = [
+    //                 'userID' => $userID,
+    //                 'permID' => $missingPermID
+    //             ];
+    //         }
+    //     }
+
+    //     return $anomalies;
+    // }
+
+    // /**
+    //  * For all roles, check if any missing relations exists.
+    //  * This could happen e.g. if a role is added to a user, but permissions are
+    //  * not updated.
+    //  * Mainly useful when checking role-permission-user relations.
+    //  *
+    //  * @param LorisInstance $loris a loris instance object
+    //  *
+    //  * @return array an array of anomalies, meaning missing relations to insert.
+    //  */
+    // public static function evaluateRoles(LorisInstance $loris): array
+    // {
+    //     $db        = $loris->getDatabaseConnection();
+    //     $anomalies = [];
+    //     $roles     = $db->pselect(
+    //         "SELECT RoleID, Code, Name, Description FROM roles",
+    //         []
+    //     );
+    //     foreach ($roles as $roleRow) {
+    //         $role          = new UserRole($loris, $roleRow);
+    //         $roleAnomalies = $role->evaluate();
+    //         if (!empty($roleAnomalies)) {
+    //             $anomalies[$role->row['RoleID']] = $roleAnomalies;
+    //         }
+    //     }
+    //     return $anomalies;
+    // }
 }

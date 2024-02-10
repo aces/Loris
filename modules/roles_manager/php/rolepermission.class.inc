@@ -457,8 +457,8 @@ class RolePermission implements \LORIS\Data\DataInstance
 
     /**
      * For the current role, check if any missing relations exists.
-     * This could happen e.g. if a role is added to a user, but permissions are
-     * not updated.
+     * This could happen e.g. if a role is added to a user with direct SQL, but
+     * permissions are not updated.
      * Mainly useful when checking role-permission-user relations.
      *
      * @return array an array of anomalies, meaning missing relations to insert.
