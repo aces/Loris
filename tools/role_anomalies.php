@@ -41,15 +41,23 @@ $anomalies = [];
 
 /**
  * Add a list of command to print then execute if confirmed.
+ *
+ * @param array  $anomalies_table the list of anomalies to correct.
+ * @param string $table           the table to change the anomalies.
+ * @param string $type            the type of change
+ * @param array  $cmds            the list of parameters for SQL commands.
+ *
+ * @return void
  */
-function addCommands(&$anomalies_table, $table, $type, $cmds = []) {
+function addCommands(&$anomalies_table, $table, $type, $cmds = []): void
+{
     // checks
     $valid_tables = [
         'user_role_rel',
         'user_perm_rel',
         'role_permission_rel'
     ];
-    $valid_types = [
+    $valid_types  = [
         'insert',
         'delete'
     ];
@@ -76,7 +84,7 @@ function addCommands(&$anomalies_table, $table, $type, $cmds = []) {
     if (!empty($aCmds)) {
         // not already in list
         $cmdsToAdd = [];
-        $keys = array_keys($aCmds[0]);
+        $keys      = array_keys($aCmds[0]);
         foreach ($cmds as $cmd) {
             $add = true;
             foreach ($aCmds as $aCmd) {
@@ -106,8 +114,11 @@ function addCommands(&$anomalies_table, $table, $type, $cmds = []) {
  * Prints anomalies commands.
  *
  * @param array $anomalies_table a structure of anomalies commands.
+ *
+ * @return void
  */
-function printCommands(&$anomalies_table) {
+function printCommands(&$anomalies_table): void
+{
     echo "\n - List of SQL to be executed:\n";
     if (empty($anomalies_table)) {
         echo "    -> nothing.\n";
@@ -134,9 +145,12 @@ function printCommands(&$anomalies_table) {
  *
  * @param array     $anomalies_table a structure of anomalies commands.
  * @param bool      $confirm         true to confirm changes, else false.
- * @param \Database $name            a db object.
+ * @param \Database $db              a db object.
+ *
+ * @return void
  */
-function executeCommands(&$anomalies_table, $confirm, $db) {
+function executeCommands(&$anomalies_table, $confirm, $db): void
+{
     if (!$confirm) {
         return;
     }
@@ -174,10 +188,12 @@ function executeCommands(&$anomalies_table, $confirm, $db) {
  * @param \User  $user     the user to check.
  * @param string $permCode the permission code to check.
  * @param string $roleCode the role code to exclude from check.
+ *
+ * @return bool
  */
-function userHasOtherRolePerm($user, $perm, $roleCode): bool
+function userHasOtherRolePerm($user, $permCode, $roleCode): bool
 {
-    if ($perm == 'superuser') {
+    if ($permCode == 'superuser') {
         // do not remove superuser from this script.
         return true;
     }
@@ -185,9 +201,11 @@ function userHasOtherRolePerm($user, $perm, $roleCode): bool
     $userRoles = $user->getRoles();
     $roleClean = array_filter($userRoles, fn($r) => $r['Code'] !== $roleCode);
     foreach ($roleClean as $otherRoleValues) {
-        $otherRole = Role::factory($otherRoleValues['Code']);
+        $otherRole        = Role::factory($otherRoleValues['Code']);
         $otherPermissions = $otherRole->getPermissions();
-        if (isset($otherPermissions[$perm]) && $otherPermissions[$perm]['roleHasPermission']) {
+        if (isset($otherPermissions[$permCode])
+            && $otherPermissions[$permCode]['roleHasPermission']
+        ) {
             // found one, can leave
             $hasPermissionFromOtherRole = true;
             break;
@@ -199,7 +217,7 @@ function userHasOtherRolePerm($user, $perm, $roleCode): bool
 // mappings
 echo "\n - Loading mappings...\n";
 
-$rolesMap = $DB->pselectColWithIndexKey(
+$rolesMap       = $DB->pselectColWithIndexKey(
     "SELECT RoleID, Code FROM roles",
     [],
     'RoleID'
@@ -209,7 +227,7 @@ $permissionsMap = $DB->pselectColWithIndexKey(
     [],
     'permID'
 );
-$usersMap = $DB->pselectColWithIndexKey(
+$usersMap       = $DB->pselectColWithIndexKey(
     "SELECT ID, userID FROM users",
     [],
     'ID'
@@ -229,10 +247,12 @@ foreach ($allRoles as $roleValues) {
     echo "    -> Role: " . $role->getCode() . ",";
 
     // get all permissions from that role
-    $rolePermissions = array_keys(array_filter(
-        $role->getPermissions(),
-        fn($p) => $p['roleHasPermission']
-    ));
+    $rolePermissions = array_keys(
+        array_filter(
+            $role->getPermissions(),
+            fn($p) => $p['roleHasPermission']
+        )
+    );
 
     // skip role if no permissions in it
     if (empty($rolePermissions)) {
@@ -271,10 +291,12 @@ foreach ($allRoles as $roleValues) {
             . $user->getUsername() . "\n";
 
         // permissions the user have access to
-        $userPermissions = array_keys(array_filter(
-            $user->getPermissions(),
-            fn($has) => ($has === true)
-        ));
+        $userPermissions = array_keys(
+            array_filter(
+                $user->getPermissions(),
+                fn($has) => ($has === true)
+            )
+        );
 
         // user has these permissions but they are not in the role.
         // must check if they are covered by another role.
@@ -306,7 +328,12 @@ foreach ($allRoles as $roleValues) {
         // else some are missing.
         // role describes permissions but user does not have them.
         // must add these.
-        $missingPermissions = array_values(array_diff($rolePermissions, $userPermissions));
+        $missingPermissions = array_values(
+            array_diff(
+                $rolePermissions,
+                $userPermissions
+            )
+        );
 
         // create commands
         $cmds = array_map(
@@ -323,7 +350,6 @@ foreach ($allRoles as $roleValues) {
             addCommands($anomalies, 'user_perm_rel', 'insert', $cmds);
         }
     }
-
 }
 
 // print commands
