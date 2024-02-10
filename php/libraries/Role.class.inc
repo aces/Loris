@@ -126,6 +126,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
 
         // Fill the permissions array
         $pCodes = array_map(fn($v) => $v['permissionCode'], $results);
+
         if (empty($pCodes)) {
             foreach ($this->permissions as $code => $permission) {
                 $this->permissions[$code]['roleHasPermission'] = false;
@@ -401,7 +402,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
                 p.action AS permissionAction,
                 m.Name AS moduleName
             FROM permissions p
-                JOIN modules m ON (p.moduleID = m.ID)
+                LEFT JOIN modules m ON (p.moduleID = m.ID)
             WHERE p.code <> 'superuser'
             ORDER BY m.Name",
             [],
