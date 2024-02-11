@@ -31,13 +31,6 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     protected $roleInfo = [];
 
     /**
-     * Role ID
-     *
-     * @var ?string
-     */
-    var $roleID;
-
-    /**
      * Stores the permissions
      *
      * @var array
@@ -68,17 +61,15 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
             "SELECT RoleID FROM roles WHERE Code = :rcode",
             ['rcode' => $roleCode]
         );
-        $hasRoleID = ($roleID !== null);
 
         // in db
-        if ($hasRoleID) {
-            // fix ID
-            $obj->roleID = $roleID;
-
+        if ($roleID !== null) {
             // get user data from database
             $row = $db->pselectRow(
-                "SELECT Code, Name, Description FROM roles WHERE RoleID = :rid",
-                ['rid' => $obj->roleID]
+                "SELECT RoleID, Code, Name, Description
+                FROM roles
+                WHERE RoleID = :rid",
+                ['rid' => $roleID]
             );
 
             // store user data in object property
@@ -118,7 +109,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
 
         $results = $db->pselect(
             $query,
-            ['rid' => $this->roleID]
+            ['rid' => $this->roleInfo['RoleID']]
         );
 
         // reset the array
@@ -215,7 +206,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
      */
     function getId(): int
     {
-        return intval($this->roleID);
+        return intval($this->roleInfo['RoleID']);
     }
 
     /**
@@ -295,7 +286,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
             $db->insert(
                 'role_permission_rel',
                 [
-                    'RoleID' => $this->roleID,
+                    'RoleID' => $this->roleInfo['RoleID'],
                     'permID' => $value,
                 ]
             );
@@ -320,7 +311,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         if (is_null($set)) {
             $db->delete(
                 'role_permission_rel',
-                ['RoleID' => $this->roleID]
+                ['RoleID' => $this->roleInfo['RoleID']]
             );
         } else {
             // remove the permissions
@@ -328,7 +319,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
                 $db->delete(
                     'role_permission_rel',
                     [
-                        'userID' => $this->roleID,
+                        'RoleID' => $this->roleInfo['RoleID'],
                         'permID' => $value,
                     ]
                 );
