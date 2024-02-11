@@ -156,28 +156,24 @@ class UserTest extends TestCase
         0 => ['permID' => 1,
             'code'        => "superuser",
             'description' => "superuser description",
-            'categoryID'  => 1,
             'action'      => null,
             'moduleID'    => null
         ],
         1 => ['permID' => 2,
             'code'        => "test_permission",
             'description' => "description 1",
-            'categoryID'  => 2,
             'action'      => 'View',
             'moduleID'    => 2
         ],
         2 => ['permID' => 3,
             'code'        => "test_permission2",
             'description' => "description 2",
-            'categoryID'  => 3,
             'action'      => 'Edit',
             'moduleID'    => 5
         ],
         3 => ['permID' => 4,
             'code'        => "test_permission3",
             'description' => "description 3",
-            'categoryID'  => 4,
             'action'      => 'View/Create',
             'moduleID'    => 5
         ]
@@ -205,16 +201,6 @@ class UserTest extends TestCase
         ],
         2 => ['permID' => 3,
             'userID' => 1
-        ]
-    ];
-    private $_categoryInfo = [0 => ['ID' => 1,
-        'Description' => "superuser category"
-    ],
-        1 => ['ID' => 2,
-            'Description' => "category 1"
-        ],
-        2 => ['ID' => 3,
-            'Description' => "category 2"
         ]
     ];
     /**
@@ -1117,10 +1103,6 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_dbMock->setFakeTableData(
-            "permissions_category",
-            $this->_categoryInfo
-        );
-        $this->_dbMock->setFakeTableData(
             "modules",
             $this->_moduleInfo
         );
@@ -1136,7 +1118,6 @@ class UserTest extends TestCase
                 0 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
-                    'type'        => "category 1",
                     'action'      => "View",
                     'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
@@ -1144,7 +1125,6 @@ class UserTest extends TestCase
                 1 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
-                    'type'        => "category 2",
                     'action'      => "Edit",
                     'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
@@ -1152,7 +1132,6 @@ class UserTest extends TestCase
                 2 => ['permID' => '4',
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
-                    'type'        => null,
                     'action'      => 'View/Create',
                     'moduleID'    => '5',
                     'label'       => 'Timepoint List: View/Create description 3'
