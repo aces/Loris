@@ -145,7 +145,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     public static function insert(array $set): void
     {
         $db = \NDB_Factory::singleton()->database();
-        $db->insert('users', $set);
+        $db->insert('roles', $set);
     }
 
     /**
