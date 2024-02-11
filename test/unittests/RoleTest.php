@@ -173,7 +173,7 @@ class RoleTest extends TestCase
 
         $this->_roleInfoComplete = $this->_roleInfo;
 
-        // $this->_setUpTestDoublesForFactoryUser();
+        $this->_setUpTestDoublesForFactoryRole();
         $this->_role = \Role::factory(self::ROLECODE);
     }
 
@@ -205,6 +205,19 @@ class RoleTest extends TestCase
         $this->_role = \Role::factory(self::ROLECODE);
         //validate _roleInfo
         $this->assertEquals($this->_roleInfoComplete, $this->_role->getData());
+    }
+
+    /**
+     * Set up the fake tables in the database to set up a new role object
+     *
+     * @return void
+     */
+    private function _setUpTestDoublesForFactoryRole()
+    {
+        $this->_dbMock->setFakeTableData(
+            "roles",
+            [0 => $this->_roleInfo]
+        );
     }
 }
 
