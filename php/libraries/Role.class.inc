@@ -56,8 +56,8 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
         $obj->roleInfo['Code'] = $roleCode;
 
         // get the role ID
-        $db        = \NDB_Factory::singleton()->database();
-        $roleID    = $db->pselectOne(
+        $db     = \NDB_Factory::singleton()->database();
+        $roleID = $db->pselectOne(
             "SELECT RoleID FROM roles WHERE Code = :rcode",
             ['rcode' => $roleCode]
         );
