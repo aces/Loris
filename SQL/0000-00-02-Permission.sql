@@ -221,8 +221,8 @@ CREATE TABLE `user_role_rel` (
 -- administrator user has administrator role.
 INSERT INTO `user_role_rel` (`RoleID`,`userID`)
 VALUES (
-  SELECT ID FROM users WHERE UserID = 'admin',
-  SELECT RoleID FROM roles WHERE Code = 'administrator'
+  (SELECT ID FROM users WHERE UserID = 'admin'),
+  (SELECT RoleID FROM roles WHERE Code = 'administrator')
 );
 
 -- permissions for each notification module
