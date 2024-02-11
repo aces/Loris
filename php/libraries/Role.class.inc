@@ -40,7 +40,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Stores the permissions
      *
-     * @var array<string,bool>
+     * @var array
      */
     private $permissions = [];
 
