@@ -560,7 +560,7 @@ class RoleTest extends TestCase
      */
     public function testGetAllRoles()
     {
-        $allRoles = \Role::getAllRoles();
+        $allRoles      = \Role::getAllRoles();
         $insertedRoles = array_merge(
             [0 => $this->_roleInfo],
             $this->_roleOthersInfo
@@ -608,10 +608,10 @@ class RoleTest extends TestCase
      */
     public function testInsert()
     {
-        $newRoleInfo                = $this->_roleInfo;
-        $newRoleInfo['RoleID']      = 10;
-        $newRoleInfo['Code']        = 'new_test';
-        $newRoleInfo['Name']        = 'New Test';
+        $newRoleInfo           = $this->_roleInfo;
+        $newRoleInfo['RoleID'] = 10;
+        $newRoleInfo['Code']   = 'new_test';
+        $newRoleInfo['Name']   = 'New Test';
         $newRoleInfo['Description'] = 'New description';
         \Role::insert($newRoleInfo);
         $otherRole = \Role::factory('new_test');
@@ -627,10 +627,10 @@ class RoleTest extends TestCase
     public function testUpdate()
     {
         // Insert the user so that it can be updated.
-        $newRoleInfo                = $this->_roleInfo;
-        $newRoleInfo['RoleID']      = 10;
-        $newRoleInfo['Code']        = 'new_test';
-        $newRoleInfo['Name']        = 'New Test';
+        $newRoleInfo           = $this->_roleInfo;
+        $newRoleInfo['RoleID'] = 10;
+        $newRoleInfo['Code']   = 'new_test';
+        $newRoleInfo['Name']   = 'New Test';
         $newRoleInfo['Description'] = 'New description';
         \Role::insert($newRoleInfo);
 
