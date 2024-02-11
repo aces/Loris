@@ -469,7 +469,7 @@ class RoleTest extends TestCase
     }
 
     /**
-     * Test that getId returns the correct role id
+     * Test that getId returns the correct role id if it exists
      *
      * @return void
      * @covers Role::getId
@@ -481,6 +481,18 @@ class RoleTest extends TestCase
             $this->_roleInfoComplete['RoleID'],
             $this->_role->getId()
         );
+    }
+
+    /**
+     * Test that getId returns the correct role id if it does not exist
+     *
+     * @return void
+     * @covers Role::getId
+     */
+    public function testGetIdNull()
+    {
+        $this->_role = \Role::factory('nope');
+        $this->assertNull($this->_role->getId());
     }
 
     /**
@@ -582,7 +594,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -593,6 +605,36 @@ class RoleTest extends TestCase
         $p4 = $this->_permInfo[3];
         $this->assertTrue($permissions[$p1['code']]['roleHasPermission']);
         $this->assertTrue($permissions[$p2['code']]['roleHasPermission']);
+        $this->assertFalse($permissions[$p3['code']]['roleHasPermission']);
+        $this->assertFalse($permissions[$p4['code']]['roleHasPermission']);
+    }
+
+    /**
+     * Test that getPermissions returns the array of permissions the
+     * non-existing role has, meaning no permissions.
+     *
+     * @return void
+     * @covers Role::setPermissions
+     * @covers Role::getPermissions
+     */
+    public function testGetPermissionsNullRole()
+    {
+        $this->_role = \Role::factory('nope');
+        $permissions = $this->_role->getPermissions();
+        // check that all permissions are here
+        $this->assertEquals(count($permissions), count($this->_permInfo));
+        $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
+        foreach ($permissions as $pCode => $pValues) {
+            $this->assertTrue(in_array($pCode, $expectedCodes, true));
+        }
+        // check that specific permissions are attributed to the role
+        // role 1 = p1 + p2 only
+        $p1 = $this->_permInfo[0];
+        $p2 = $this->_permInfo[1];
+        $p3 = $this->_permInfo[2];
+        $p4 = $this->_permInfo[3];
+        $this->assertFalse($permissions[$p1['code']]['roleHasPermission']);
+        $this->assertFalse($permissions[$p2['code']]['roleHasPermission']);
         $this->assertFalse($permissions[$p3['code']]['roleHasPermission']);
         $this->assertFalse($permissions[$p4['code']]['roleHasPermission']);
     }
@@ -659,7 +701,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -691,7 +733,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -722,7 +764,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -754,7 +796,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -786,7 +828,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
@@ -818,7 +860,7 @@ class RoleTest extends TestCase
         // check that all permissions are here
         $this->assertEquals(count($permissions), count($this->_permInfo));
         $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($this->_permInfo as $pCode => $pValues) {
+        foreach ($permissions as $pCode => $pValues) {
             $this->assertTrue(in_array($pCode, $expectedCodes, true));
         }
         // check that specific permissions are attributed to the role
