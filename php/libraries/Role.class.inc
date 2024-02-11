@@ -202,11 +202,15 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Get the role's id
      *
-     * @return int
+     * @return ?int
      */
-    function getId(): int
+    function getId(): ?int
     {
-        return intval($this->roleInfo['RoleID']);
+        if (array_key_exists('RoleID', $this->roleInfo)) {
+            return intval($this->roleInfo['RoleID']);
+        } else {
+            return null;
+        }
     }
 
     /**
