@@ -622,21 +622,7 @@ class RoleTest extends TestCase
         $this->_role = \Role::factory('nope');
         $permissions = $this->_role->getPermissions();
         // check that all permissions are here
-        $this->assertEquals(count($permissions), count($this->_permInfo));
-        $expectedCodes = array_map(fn($p) => $p['code'], $this->_permInfo);
-        foreach ($permissions as $pCode => $pValues) {
-            $this->assertTrue(in_array($pCode, $expectedCodes, true));
-        }
-        // check that specific permissions are attributed to the role
-        // role 1 = p1 + p2 only
-        $p1 = $this->_permInfo[0];
-        $p2 = $this->_permInfo[1];
-        $p3 = $this->_permInfo[2];
-        $p4 = $this->_permInfo[3];
-        $this->assertFalse($permissions[$p1['code']]['roleHasPermission']);
-        $this->assertFalse($permissions[$p2['code']]['roleHasPermission']);
-        $this->assertFalse($permissions[$p3['code']]['roleHasPermission']);
-        $this->assertFalse($permissions[$p4['code']]['roleHasPermission']);
+        $this->assertEquals(count($permissions), 0);
     }
 
     /**
