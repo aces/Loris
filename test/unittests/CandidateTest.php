@@ -156,8 +156,8 @@ class CandidateTest extends TestCase
             'UserID'                => 'admin',
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
-	];
-	'@phanvar \PHPUnit\Framework\MockObject\MockObject $this->_dbMock';
+        ];
+        '@phanvar \PHPUnit\Framework\MockObject\MockObject $this->_dbMock';
         $this->_dbMock->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
         $this->_candidate = new Candidate();
