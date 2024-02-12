@@ -557,11 +557,12 @@ class CandidateTest extends TestCase
      */
     public function testGetValidCohortsReturnsAListOfCohorts()
     {
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohorts = [
             ['CohortID' => 1],
             ['CohortID' => 2]
         ];
-        $this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -621,7 +622,8 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
     {
-        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohort = [
             [
                 'CohortID' => 1,
@@ -665,8 +667,8 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsNull()
     {
-        $this->_setUpTestDoublesForSelectCandidate();
-
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohort = [];
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
