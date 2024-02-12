@@ -4,6 +4,7 @@ namespace LORIS\candidate_parameters;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
 use LORIS\Data\Dictionary\DictionaryItem;
+use LORIS\Data\Types\Enumeration;
 
 /**
  * A CandidateQueryEngine providers a QueryEngine interface to query
@@ -54,6 +55,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             "Demographics",
             "Candidate Demographics",
         );
+        $sexList      = \Utility::getSexList();
+        $t            = new Enumeration(...$sexList);
         $demographics = $demographics->withItems(
             [
                 new DictionaryItem(
@@ -74,7 +77,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "Sex",
                     "Candidate's biological sex",
                     $candscope,
-                    new \LORIS\Data\Types\Enumeration('Male', 'Female', 'Other'),
+                    $t,
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
