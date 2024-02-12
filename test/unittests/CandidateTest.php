@@ -132,6 +132,9 @@ class CandidateTest extends TestCase
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $dbMock     = $this->getMockBuilder('\Database')->getMock();
 
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
         $this->_configMock = $configMock;
         $this->_dbMock     = $dbMock;
 
