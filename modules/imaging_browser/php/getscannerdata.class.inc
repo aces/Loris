@@ -91,11 +91,11 @@ class GetScannerData extends \NDB_Page implements RequestHandlerInterface
             ['ScannerID' => $scannerID]
         );
 
-        return [
+        return $row !== null ? [
             'id'           => $row['ID'],
             'manufacturer' => $row['Manufacturer'],
             'model'        => $row['Model'],
             'serialNumber' => $row['Serial_number'],
-        ];
+        ] : [];
     }
 }

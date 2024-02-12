@@ -322,7 +322,7 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
      *
      * @param int $FileID the value of FileID
      *
-     * @return ?string
+     * @return ?bool
      */
     function _getSelected($FileID): ?bool
     {
@@ -331,7 +331,15 @@ class GetImageData extends \NDB_Page implements RequestHandlerInterface
             "WHERE FileID =:FileID",
             ['FileID' => $FileID]
         );
-        return $selected != null ? (bool) $selected : null;
+
+        switch ($selected) {
+        case null:
+            return null;
+        case 'true':
+            return true;
+        case 'false':
+            return false;
+        }
     }
 
     /**
