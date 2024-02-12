@@ -130,10 +130,7 @@ class CandidateTest extends TestCase
         ];
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $dbMock     = $this->getMockBuilder(Database::class)->getMock();
-
-        '@phan-var \NDB_Config $configMock';
-        '@phan-var \Database $dbMock';
+        $dbMock     = $this->getMockBuilder('\Database')->getMock();
 
         $this->_configMock = $configMock;
         $this->_dbMock     = $dbMock;
@@ -157,8 +154,7 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-        $this->_dbMock->expects($this->any())
-            ->method('pselectCol')
+        $this->_dbMock->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
         $this->_candidate = new Candidate();
     }
