@@ -409,6 +409,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             // Generate candid and insert into setArray
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
+            $parentIDgenerator  = new \ParentIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            );
+            $parentID           = $parentIDgenerator->generate();
+            $setArray['ParentID'] = $parentID;
             try {
                 $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
@@ -426,7 +432,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // Return the new CandID
         return $candID;
     }
-
     /**
      * Checks if candidate exist given a candidate ID and PSCID
      * Used to check that PSCID matches CandID when entered into the boxes
