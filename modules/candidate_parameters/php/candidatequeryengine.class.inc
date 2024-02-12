@@ -54,6 +54,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             "Demographics",
             "Candidate Demographics",
         );
+        $sexList      = \Utility::getSexList();
+        $t            = new Enumeration(...$sexList);
         $demographics = $demographics->withItems(
             [
                 new DictionaryItem(
@@ -74,7 +76,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "Sex",
                     "Candidate's biological sex",
                     $candscope,
-                    new \LORIS\Data\Types\StringType(255),
+                    $t,
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(

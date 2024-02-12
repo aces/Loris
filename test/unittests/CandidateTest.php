@@ -130,7 +130,7 @@ class CandidateTest extends TestCase
         ];
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        $dbMock     = $this->getMockBuilder(Database::class)->getMock();
 
         '@phan-var \NDB_Config $configMock';
         '@phan-var \Database $dbMock';
@@ -141,11 +141,6 @@ class CandidateTest extends TestCase
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
-        /**
-         * To solve the phan issue
-         *
-         * @phan-methods class \Database
-         */
 
         $this->_candidateInfo = [
             'RegistrationCenterID'  => '2',
@@ -162,8 +157,6 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-        // Set the expected behavior for the getSexList method
-        /* @phan-suppress-next-line PhanUndeclaredMethod */
         $this->_dbMock->expects($this->any())
             ->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
