@@ -76,7 +76,7 @@ class Parent_Portal extends \NDB_Form
         } else if (empty($values['email'])  ) {
             $errors['email'] = " Email is required!";
         } else {
-            $db = \Database::singleton();
+            $db = \NDB_Factory::singleton()->database();
 
             $numSurveys = $db->pselectOne(
                 "SELECT COUNT(*) FROM participant_accounts p

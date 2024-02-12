@@ -47,16 +47,15 @@ class View_Surveys extends \NDB_Form
         $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.$pid.')';
         $survey_url = $baseURL. "/survey.php?key=";
         $this->tpl_data['survey_url'] =$survey_url;
-        $DB    =& \Database::singleton();
-        $query =$DB->pselect(
+        $DB       = \NDB_Factory::singleton()->database();
+	$query =$DB->pselect(
             "select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,
-            p.OneTimePassword,ict.completion_time
+            p.OneTimePassword
             FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN flag f ON (f.CommentID =p.CommentID)
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
-            LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
             WHERE p.Email=:surv_email
             AND c.ParentID=:pid
             ORDER BY p.Status",

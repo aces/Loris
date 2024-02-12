@@ -10,7 +10,6 @@
             <td><div><b>Survey</b></div></td>
             <td><div><b>Status</b></div></td>
             <td><div><b>Survey Link</b></div></td>
-            <td><div><b>Estimated Time To Complete (Minutes)</b></div></td>
         </tr>
         {assign var=number value=1}
         {section name=data loop=$survey_data}
@@ -26,11 +25,6 @@
             <td id="not_started"><div><p>Not Started</p></div></td>
             {/if}
                 <td><div><p><a href="{$survey_url}{$survey_data[data].OneTimePassword}" target="_blank">Open Survey</a></p></div></td>
-            {if $survey_data[data].completion_time === '' || $survey_data[data].completion_time === NULL}
-            <td><div><p>10</p></div></td>
-                {else}
-                <td><div><p>{$survey_data[data].completion_time}</p></div></td>
-            {/if}
         </tr>
         {/section}
         </tbody>
