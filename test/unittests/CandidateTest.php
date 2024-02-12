@@ -157,10 +157,7 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-        '@phanvar \PHPUnit\Framework\MockObject\MockObject $this->_dbMock';
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
-        $this->_candidate = new Candidate();
+        $this->_candidate     = new Candidate();
     }
 
     /**
@@ -1367,6 +1364,9 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
+
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
