@@ -182,7 +182,7 @@ class CandidateTest extends TestCase
      */
     public function testSelectRetrievesCandidateInfo()
     {
-        //$this->_setUpTestDoublesForSelectCandidate();
+        $this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock
             ->method('pselect')
             ->willReturn(
@@ -561,7 +561,7 @@ class CandidateTest extends TestCase
             ['CohortID' => 1],
             ['CohortID' => 2]
         ];
-        //$this->_setUpTestDoublesForSelectCandidate();
+        $this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -621,6 +621,7 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
     {
+        $this->_setUpTestDoublesForSelectCandidate();
         $cohort = [
             [
                 'CohortID' => 1,
@@ -664,6 +665,8 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsNull()
     {
+        $this->_setUpTestDoublesForSelectCandidate();
+
         $cohort = [];
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -833,6 +836,8 @@ class CandidateTest extends TestCase
      */
     public function testGetSessionIDForExistingVisit()
     {
+        $this->_setUpTestDoublesForSelectCandidate();
+
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
