@@ -4,6 +4,7 @@ namespace LORIS\candidate_parameters;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
 use LORIS\Data\Dictionary\DictionaryItem;
+use LORIS\Data\Types\Enumeration;
 
 /**
  * A CandidateQueryEngine providers a QueryEngine interface to query
