@@ -108,17 +108,9 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
-            //Get data from POST request
-            $metadata = [
-                'Description' => $metadata['description'],
-                'Sources'     => $metadata['sources'],
-                'Author'      => $metadata['author']
-            ];
-            error_log(json_encode($metadata));
-
             if (is_null($instance_id)) {
                 // TODO: Support Instance INSERT
-                $instance_id = 1;
+                return [];
             }
 
             $instance = [
