@@ -161,17 +161,14 @@ const AnnotationForm = ({
    *
    */
   const handleReset = () => {
-    // Clear all fields
-    // setEvent(['', '']);
-    // setTimeSelection([null, null]);
-    // setLabel('');
+    // TODO: Clear all fields
   };
 
   /**
    *
    */
   const handleDelete = () => {
-    // setIsDeleted(true);
+    // Not supported
   };
 
   // Submit
