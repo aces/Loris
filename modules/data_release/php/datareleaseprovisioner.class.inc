@@ -37,7 +37,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct()
     {
-        $user =& \User::singleton();
+        $user  =& \User::singleton();
         $query = "
             SELECT
                 file_name AS fileName,
@@ -47,7 +47,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
-            $query.= "
+            $query .= "
 	        INNER JOIN
                     data_release_permissions drp
                 ON
@@ -56,10 +56,10 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     drp.UserID=".$user->getID();
         }
 
-        $query.= " ORDER BY uploadDate";
+        $query .= " ORDER BY uploadDate";
 
-        parent::__construct( $query, []);
-   }
+        parent::__construct($query, []);
+    }
 
     /**
      * Returns an instance of a DataReleaseRow object for a given

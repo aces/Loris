@@ -229,7 +229,6 @@ class Data_Release extends \DataFrameworkMenu
      * HasAnyPermissionOrUserSiteMatch filter.
      *
      * @return ?array of site permissions or null
-     *
      */
     public function allSitePermissionNames() : ?array
     {
@@ -240,7 +239,6 @@ class Data_Release extends \DataFrameworkMenu
      * {@inheritDoc}
      *
      * @return bool
-     *
      */
     public function useProjectFilter() : bool
     {

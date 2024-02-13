@@ -33,7 +33,6 @@ class DataReleaseRow implements \LORIS\Data\DataInstance
      * Create a new DataReleaseRow
      *
      * @param array $row The row
-     *
      */
     public function __construct(array $row)
     {
