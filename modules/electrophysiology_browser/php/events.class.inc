@@ -99,9 +99,6 @@ class Events extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            // (new ElectrophysioEvents(intval($parameters['physioFileID'])))
-            //    ->deleteEvent(intval($parameters['instance_id']));
-
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
             // TODO: Better failure reporting
