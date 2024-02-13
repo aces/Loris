@@ -47,7 +47,7 @@ class View_Surveys extends \NDB_Form
         $this->tpl_data['page_title'] = 'Welcome To Participant Portal! (ID:'.$pid.')';
         $survey_url = $baseURL. "/survey.php?key=";
         $this->tpl_data['survey_url'] =$survey_url;
-        $DB    =& \Database::singleton();
+        $DB    =\NDB_Factory::singleton()->database();
         $query =$DB->pselect(
             "select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,
             p.OneTimePassword,ict.completion_time
