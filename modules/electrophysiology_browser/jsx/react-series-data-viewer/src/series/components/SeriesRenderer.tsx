@@ -1237,24 +1237,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }
                   </button>
                 }
-                {/*{*/}
-                {/*  <button*/}
-                {/*    className={'btn btn-primary'*/}
-                {/*      + (rightPanel === 'annotationForm' ? ' active' : '')*/}
-                {/*    }*/}
-                {/*    onClick={() => {*/}
-                {/*      rightPanel === 'annotationForm'*/}
-                {/*        ? setRightPanel(null)*/}
-                {/*        : setRightPanel('annotationForm');*/}
-                {/*      setCurrentAnnotation(null);*/}
-                {/*    }}*/}
-                {/*  >*/}
-                {/*    {rightPanel === 'annotationForm'*/}
-                {/*      ? 'Close Annotation Form'*/}
-                {/*      : 'Add Annotation'*/}
-                {/*    }*/}
-                {/*  </button>*/}
-                {/*}*/}
               </div>
             </div>
           </div>
