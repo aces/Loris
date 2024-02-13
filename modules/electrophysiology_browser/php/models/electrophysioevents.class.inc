@@ -291,7 +291,8 @@ class ElectrophysioEvents
                             array_values($extraColumns),
                             function ($column) use ($taskEventID) {
                                 return
-                                    $column['PhysiologicalTaskEventID'] == $taskEventID;
+                                    $column['PhysiologicalTaskEventID'] ==
+                                    $taskEventID;
                             }
                         );
 
@@ -300,7 +301,8 @@ class ElectrophysioEvents
                             array_values($instanceExtraColumns),
                             function ($col) use ($columnName) {
                                 return
-                                    $col['PropertyName'] == $columnName['PropertyName'];
+                                    $col['PropertyName'] ==
+                                    $columnName['PropertyName'];
                             }
                         );
 
