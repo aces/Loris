@@ -109,7 +109,7 @@
 				}
 			})
 		} catch (e) {
-			console.log("An error occurred: " + e.message);
+			console.error("An error occurred: " + e.message);
 		}
 	}
 </script>
