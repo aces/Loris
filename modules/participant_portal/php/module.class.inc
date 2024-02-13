@@ -28,8 +28,8 @@ class Module extends \Module
 {
 
     /**
-     * The participant portal module must be accessible publicly, so that non-logged in
-     * users can access.
+     * The participant portal module must be accessible publicly,
+     *  so that non-logged in users can access.
      *
      * @return true
      */
