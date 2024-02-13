@@ -246,7 +246,8 @@ class ElectrophysioEvents
 
                 // TODO: Make columns more dynamic
                 $tsvEntries = [
-                    'onset', 'duration', 'sample', 'trial_type', 'response_time', 'value'
+                    'onset', 'duration', 'sample', 'trial_type',
+                    'response_time', 'value'
                 ];
                 foreach ($columnNames as $columnName) {
                     $tsvEntries[] = $columnName['PropertyName'];
@@ -287,12 +288,12 @@ class ElectrophysioEvents
                     // Get instance's extra columns
                     $instanceExtraColumns
                         = array_filter(
-                        array_values($extraColumns),
-                        function ($column) use ($taskEventID) {
-                            return
-                                $column['PhysiologicalTaskEventID'] == $taskEventID;
-                        }
-                    );
+                            array_values($extraColumns),
+                            function ($column) use ($taskEventID) {
+                                return
+                                    $column['PhysiologicalTaskEventID'] == $taskEventID;
+                            }
+                        );
 
                     foreach ($columnNames as $columnName) {
                         $column = array_filter(
