@@ -76,7 +76,8 @@ class Survey_Handle extends \NDB_Form
                  FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE p.Email=:surv_email AND c.ParticipantID=:pid",
+                 JOIN participant_emails pe ON (p.Test_name=pe.Test_name)
+                 WHERE pe.Email=:surv_email AND c.ParticipantID=:pid",
                 [
                     'surv_email' => $values['email'],
                     'pid'        => $values['participantID'],
