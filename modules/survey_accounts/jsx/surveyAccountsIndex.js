@@ -70,7 +70,8 @@ class SurveyAccountsIndex extends Component {
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     case 'Participant Portal':
-      const pUrl = loris.BaseURL + '/participant_portal?id=' + row['Participant Portal'];
+      const pUrl = loris.BaseURL + '/participant_portal?id='
+                   + row['Participant Portal'];
       const content = <td><a href={pUrl}>Go To Participant Portal</a></td>;
       result = row['Participant Portal'] !== null ? content : <td>NA</td>;
       break;
