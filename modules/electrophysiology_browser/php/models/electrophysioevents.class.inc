@@ -215,50 +215,50 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $tsvPath = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
+        if (count($tsv) > 0) {
+            $tsvPath = $dataDir . $tsv[0]['filePath'];
+            // Update files if files updated before database updated
+            if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']) {
+                // events.tsv
+                $tsvFile = fopen($tsvPath, 'w'); // Will override all file content
 
-        // Update files if files updated before database updated
-        if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']) {
-            // events.tsv
-            $tsvFile = fopen($tsvPath, 'w'); // Will override all file content
-
-            $extraColumns = $db->pselect(
-                "SELECT *
+                $extraColumns = $db->pselect(
+                    "SELECT *
                     FROM physiological_task_event_opt
                     WHERE PhysiologicalTaskEventID IN (
                         SELECT PhysiologicalTaskEventID
                         FROM physiological_task_event
                         WHERE PhysiologicalFileID=:PFID
                     )",
-                ['PFID' => $this->_physioFileID]
-            );
+                    ['PFID' => $this->_physioFileID]
+                );
 
-            $columnNames = $db->pselect(
-                "SELECT DISTINCT PropertyName
+                $columnNames = $db->pselect(
+                    "SELECT DISTINCT PropertyName
                     FROM physiological_task_event_opt
                     WHERE PhysiologicalTaskEventID IN (
                         SELECT PhysiologicalTaskEventID
                         FROM physiological_task_event
                         WHERE PhysiologicalFileID=:PFID
                     )",
-                ['PFID' => $this->_physioFileID]
-            );
+                    ['PFID' => $this->_physioFileID]
+                );
 
-            // TODO: Make columns more dynamic
-            $tsvEntries = [
-                'onset', 'duration', 'sample', 'trial_type', 'response_time', 'value'
-            ];
-            foreach ($columnNames as $columnName) {
-                $tsvEntries[] = $columnName['PropertyName'];
-            }
-            //            $tsvEntries[] = 'HED';
+                // TODO: Make columns more dynamic
+                $tsvEntries = [
+                    'onset', 'duration', 'sample', 'trial_type', 'response_time', 'value'
+                ];
+                foreach ($columnNames as $columnName) {
+                    $tsvEntries[] = $columnName['PropertyName'];
+                }
+                //            $tsvEntries[] = 'HED';
 
-            // Add columns names
-            $columns = implode("\t", $tsvEntries);
-            fwrite($tsvFile, "$columns\n");
+                // Add columns names
+                $columns = implode("\t", $tsvEntries);
+                fwrite($tsvFile, "$columns\n");
 
-            $instances = $db->pselect(
-                "SELECT
+                $instances = $db->pselect(
+                    "SELECT
                     PhysiologicalTaskEventID,
                     Onset,
                     Duration,
@@ -268,25 +268,25 @@ class ElectrophysioEvents
                     EventValue
                 FROM physiological_task_event
                 WHERE PhysiologicalFileID=:PFID",
-                ['PFID' => $this->_physioFileID]
-            );
+                    ['PFID' => $this->_physioFileID]
+                );
 
-            foreach ($instances as $instance) {
-                // Setup each column in correct order
-                $inputTSV = [
-                    $instance['Onset'],
-                    $instance['Duration'],
-                    $instance['EventSample'],
-                    $instance['TrialType'],
-                    $instance['ResponseTime'],
-                    $instance['EventValue'],
-                ];
+                foreach ($instances as $instance) {
+                    // Setup each column in correct order
+                    $inputTSV = [
+                        $instance['Onset'],
+                        $instance['Duration'],
+                        $instance['EventSample'],
+                        $instance['TrialType'],
+                        $instance['ResponseTime'],
+                        $instance['EventValue'],
+                    ];
 
-                $taskEventID = $instance['PhysiologicalTaskEventID'];
+                    $taskEventID = $instance['PhysiologicalTaskEventID'];
 
-                // Get instance's extra columns
-                $instanceExtraColumns
-                    = array_filter(
+                    // Get instance's extra columns
+                    $instanceExtraColumns
+                        = array_filter(
                         array_values($extraColumns),
                         function ($column) use ($taskEventID) {
                             return
@@ -294,46 +294,47 @@ class ElectrophysioEvents
                         }
                     );
 
-                foreach ($columnNames as $columnName) {
-                    $column = array_filter(
-                        array_values($instanceExtraColumns),
-                        function ($col) use ($columnName) {
-                            return
-                                $col['PropertyName'] == $columnName['PropertyName'];
-                        }
+                    foreach ($columnNames as $columnName) {
+                        $column = array_filter(
+                            array_values($instanceExtraColumns),
+                            function ($col) use ($columnName) {
+                                return
+                                    $col['PropertyName'] == $columnName['PropertyName'];
+                            }
+                        );
+
+                        $columnValue = count($column) > 0
+                            ? array_values($column)[0]['PropertyValue']
+                            : 'n/a';
+
+                        $inputTSV[] = $columnValue;
+                    }
+
+                    // Set all null values to 'n/a'
+                    $inputTSV = array_map(
+                        function ($v) {
+                            return is_null($v) ? "n/a" : $v;
+                        },
+                        $inputTSV
                     );
 
-                    $columnValue = count($column) > 0
-                        ? array_values($column)[0]['PropertyValue']
-                        : 'n/a';
+                    // Implode with tabs as delimiter
+                    $input = implode("\t", $inputTSV);
 
-                    $inputTSV[] = $columnValue;
+                    fwrite($tsvFile, $input . "\n");
                 }
+                fclose($tsvFile);
 
-                // Set all null values to 'n/a'
-                $inputTSV = array_map(
-                    function ($v) {
-                        return is_null($v) ? "n/a" : $v;
-                    },
-                    $inputTSV
+                //Update archives and create new hash
+                $this->_updateArchives([$tsvPath]);
+
+                // Update time that files were written to
+                $db->update(
+                    'physiological_event_file',
+                    ['LastWritten' => date("Y-m-d H:i:s")],
+                    ['PhysiologicalFileID' => $this->_physioFileID]
                 );
-
-                // Implode with tabs as delimiter
-                $input = implode("\t", $inputTSV);
-
-                fwrite($tsvFile, $input."\n");
             }
-            fclose($tsvFile);
-
-            //Update archives and create new hash
-            $this->_updateArchives([$tsvPath]);
-
-            // Update time that files were written to
-            $db->update(
-                'physiological_event_file',
-                ['LastWritten' => date("Y-m-d H:i:s")],
-                ['PhysiologicalFileID' => $this->_physioFileID]
-            );
         }
     }
 
