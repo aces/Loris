@@ -485,15 +485,6 @@ const AnnotationForm = ({
           >
             Reset
           </button>
-          {/*{currentAnnotation &&*/}
-          {/*  <button*/}
-          {/*    type="button"*/}
-          {/*    onClick={handleDelete}*/}
-          {/*    className="btn btn-primary btn-xs"*/}
-          {/*  >*/}
-          {/*    Delete*/}
-          {/*  </button>*/}
-          {/*}*/}
           {annoMessage && (
             <div
               className="alert alert-success text-center"
