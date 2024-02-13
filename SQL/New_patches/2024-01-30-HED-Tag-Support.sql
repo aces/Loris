@@ -5,15 +5,6 @@ ALTER TABLE `physiological_task_event` DROP COLUMN `AssembledHED`;
 ALTER TABLE `physiological_task_event` ADD INDEX idx_pte_EventValue (`EventValue`);
 ALTER TABLE `physiological_task_event` ADD INDEX idx_pte_TrialType (`TrialType`);
 
--- Event files are always associated to Projects, sometimes exclusively (dataset-scope events.json files)
--- Add ProjectID and make PhysiologicalFileID DEFAULT NULL (ProjectID should ideally not be NULLable)
-ALTER TABLE `physiological_event_file`
-  CHANGE `PhysiologicalFileID` `PhysiologicalFileID` int(10) unsigned DEFAULT NULL,
-  ADD COLUMN `ProjectID` int(10) unsigned DEFAULT NULL AFTER `PhysiologicalFileID`,
-  ADD KEY `FK_physiological_event_file_project_id` (`ProjectID`),
-  ADD CONSTRAINT `FK_physiological_event_file_project_id`
-    FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`);
-
 -- Add ProjectID and make PhysiologicalFileID DEFAULT NULL
 ALTER TABLE `physiological_parameter_file`
   CHANGE `PhysiologicalFileID` `PhysiologicalFileID` int(10) unsigned DEFAULT NULL,
