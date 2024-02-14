@@ -28,11 +28,26 @@ VALUES
   (8,'issue_reporter', 'Issue reporter', 'Report issues.');
 
 -- add new permissions (related to roles module)
-INSERT INTO `permissions` (`code`, `description`, `action`, `moduleID`)
+INSERT INTO `permissions` (`code`, `description`, `action`, `moduleID`, `categoryID`)
 VALUES
-  ('roles_view','Roles Entries - View','View',(SELECT ID FROM modules WHERE Name='roles_manager')),
-  ('roles_edit','Roles Entries - Edit','Create/Edit',(SELECT ID FROM modules WHERE Name='roles_manager')),
-  ('roles_assign','Roles Entries - Assign','Edit',(SELECT ID FROM modules WHERE Name='roles_manager'));
+  ('roles_view','Roles Entries - View','View',(SELECT ID FROM modules WHERE Name='roles_manager'),2),
+  ('roles_edit','Roles Entries - Edit','Create/Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),2),
+  ('roles_assign','Roles Entries - Assign','Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),2);
+
+INSERT INTO `user_perm_rel` (userID, permID)
+VALUES
+  (
+    (SELECT ID FROM users WHERE UserID = 'admin'),
+    (SELECT permID FROM permissions WHERE code = 'roles_view')
+  ),
+  (
+    (SELECT ID FROM users WHERE UserID = 'admin'),
+    (SELECT permID FROM permissions WHERE code = 'roles_edit')
+  ),
+  (
+    (SELECT ID FROM users WHERE UserID = 'admin'),
+    (SELECT permID FROM permissions WHERE code = 'roles_assign')
+  );
 
 -- add role-permission rel table
 DROP TABLE IF EXISTS `role_permission_rel`;
