@@ -43,8 +43,8 @@ $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Remove the lorispath from the URI query parameters.
 // Both the request query parameters and the URI query string must be updated.
-$params        = $serverrequest->getQueryParams();
-$params        = array_diff_key($params, ["lorispath" => null]);
+$params = $serverrequest->getQueryParams();
+unset($params['lorispath']);
 $serverrequest = $serverrequest->withQueryParams($params);
 
 $query = implode(
