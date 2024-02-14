@@ -264,6 +264,7 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
      */
     public function hasPermission(string $code): bool
     {
+        $this->setPermissions();
         if (!array_key_exists($code, $this->permissions)) {
             return false;
         }
