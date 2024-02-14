@@ -191,16 +191,11 @@ class ElectrophysioEvents
      */
     function updateFiles(): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db      = \NDB_Factory::singleton()->database();
 
         //Get data directory base path from Config
-        $dataDir = $db->pselectOne(
-            'SELECT Value
-            FROM Config AS config
-            INNER JOIN ConfigSettings AS c
-            ON c.Name=:name AND config.ConfigID=c.ID',
-            ['name' => 'dataDirBasepath']
-        );
+        $config  = \NDB_Factory::singleton()->config();
+        $dataDir = $config->getSetting("dataDirBasepath");
 
         $tsv = $db->pselect(
             "SELECT
@@ -369,15 +364,12 @@ class ElectrophysioEvents
      */
     function _updateArchives(array $paths) : void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db      = \NDB_Factory::singleton()->database();
 
-        $dataDir = $db->pselectOne(
-            'SELECT Value
-        FROM Config AS config
-        INNER JOIN ConfigSettings AS c
-        ON c.Name=:name AND config.ConfigID=c.ID',
-            ['name' => 'dataDirBasepath']
-        );
+        //Get data directory base path from Config
+        $config  = \NDB_Factory::singleton()->config();
+        $dataDir = $config->getSetting("dataDirBasepath");
+
         $archive_table_names = [
             'physiological_event_archive',
             'physiological_archive'
