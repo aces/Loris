@@ -62,8 +62,8 @@ class ElectrophysioEvents
         );
 
         $this->_data = [
-            'instances'    => $taskEvents,
-            'extraColumns' => $extraColumns,
+            'instances'     => $taskEvents,
+            'extraColumns'  => $extraColumns,
         ];
     }
 
@@ -148,8 +148,8 @@ class ElectrophysioEvents
             );
 
             return [
-                'instance'     => $taskEvent[0],
-                'extraColumns' => $extraColumns,
+                'instance'      => $taskEvent[0],
+                'extra_columns' => $extraColumns,
             ];
         }
         return [];

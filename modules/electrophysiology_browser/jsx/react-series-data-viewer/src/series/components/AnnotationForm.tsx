@@ -238,14 +238,11 @@ const AnnotationForm = ({
 
       const data = response.instance;
 
-      const epochLabel = [null, 'n/a'].includes(data.instance.TrialType)
-          ? null
-          : data.instance.TrialType;
       const newAnnotation : EpochType = {
         onset: parseFloat(data.instance.Onset),
         duration: parseFloat(data.instance.Duration),
         type: 'Event',
-        label: epochLabel ?? data.instance.EventValue,
+        label: data.instance.EventValue,  // Unused
         value: data.instance.EventValue,
         trialType: data.instance.TrialType,
         properties: data.extraColumns,
