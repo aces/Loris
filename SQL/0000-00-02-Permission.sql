@@ -133,9 +133,9 @@ INSERT INTO `permissions` VALUES
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit','2'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
-    (65,'roles_view','Roles Entries - View','View',(SELECT ID FROM modules WHERE Name='roles_manager'),2),
-    (66,'roles_edit','Roles Entries - Edit','Create/Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),2),
-    (67,'roles_assign','Roles Entries - Assign','Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),2);
+    (65,'roles_view','Roles Entries - View',(SELECT ID FROM modules WHERE Name='roles_manager'),'View',2),
+    (66,'roles_edit','Roles Entries - Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),'Create/Edit',2),
+    (67,'roles_assign','Roles Entries - Assign',(SELECT ID FROM modules WHERE Name='roles_manager'),'Edit',2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
