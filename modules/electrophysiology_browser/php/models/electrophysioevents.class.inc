@@ -191,7 +191,7 @@ class ElectrophysioEvents
      */
     function updateFiles(): void
     {
-        $db      = \NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         //Get data directory base path from Config
         $config  = \NDB_Factory::singleton()->config();
@@ -364,7 +364,7 @@ class ElectrophysioEvents
      */
     function _updateArchives(array $paths) : void
     {
-        $db      = \NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         //Get data directory base path from Config
         $config  = \NDB_Factory::singleton()->config();
