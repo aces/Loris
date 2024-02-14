@@ -620,7 +620,7 @@ class User extends UserPermissions implements
             return true;
         }
         // user does not have permission, check roles.
-        foreach($this->getRoles() as $roleValues) {
+        foreach ($this->getRoles() as $roleValues) {
             $role = \Role::factory($roleValues['Code']);
             if (!is_null($role) && $role->hasPermission($code) === true) {
                 return true;
