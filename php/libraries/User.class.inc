@@ -606,29 +606,6 @@ class User extends UserPermissions implements
         return $this->userInfo['Pending_approval'] == 'Y';
     }
 
-    // /**
-    //  * Determines if the user has the permission to access a specific module
-    //  * or page. Override the hasPermission from UserPermission with Role access.
-    //  *
-    //  * @param string $code The permission code
-    //  *
-    //  * @return bool If the user has a permission.
-    //  */
-    // public function hasPermission(string $code): bool
-    // {
-    //     if (parent::hasPermission($code) === true) {
-    //         return true;
-    //     }
-    //     // user does not have permission, check roles.
-    //     foreach ($this->getRoles() as $roleValues) {
-    //         $role = \Role::factory($roleValues['Code']);
-    //         if (!is_null($role) && $role->hasPermission($code) === true) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
     /**
      * Get the roles this user has access to.
      *
