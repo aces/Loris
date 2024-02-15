@@ -144,7 +144,11 @@ class Mri_Violations extends \DataFrameworkMenu
             );
         default:
             return (new Provisioner())
-                ->filter(new UserCenterMatchOrNull())
+                ->filter(
+                    new UserCenterMatchOrNullOrAnyPermission(
+                        $this->allSitePermissionNames(),
+                    )
+                )
                 ->filter(new UserProjectMatchOrNull());
         }
     }
