@@ -629,24 +629,24 @@ class User extends UserPermissions implements
     //     return false;
     // }
 
-    // /**
-    //  * Get the roles this user has access to.
-    //  *
-    //  * @return array an array with role values.
-    //  */
-    // public function getRoles(): array
-    // {
-    //     $db = \NDB_Factory::singleton()->database();
-    //     return $db->pselect(
-    //         "SELECT
-    //             r.RoleID,
-    //             r.Code,
-    //             r.Name,
-    //             r.Description
-    //         FROM user_role_rel urr
-    //             JOIN roles r ON (urr.RoleID = r.RoleID)
-    //         WHERE urr.userID = :userid",
-    //         ['userid' => $this->getId()]
-    //     );
-    // }
+    /**
+     * Get the roles this user has access to.
+     *
+     * @return array an array with role values.
+     */
+    public function getRoles(): array
+    {
+        $db = \NDB_Factory::singleton()->database();
+        return $db->pselect(
+            "SELECT
+                r.RoleID,
+                r.Code,
+                r.Name,
+                r.Description
+            FROM user_role_rel urr
+                JOIN roles r ON (urr.RoleID = r.RoleID)
+            WHERE urr.userID = :userid",
+            ['userid' => $this->getId()]
+        );
+    }
 }
