@@ -7,6 +7,7 @@ import {
     FormElement,
     FieldsetElement,
     CheckboxElement,
+    NumericElement,
 } from 'jsx/Form';
 
 /**

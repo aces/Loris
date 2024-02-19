@@ -8,7 +8,7 @@ import Modal from 'Modal';
 import swal from 'sweetalert2';
 
 import BatteryManagerForm from './batteryManagerForm';
-
+import {CTA} from 'jsx/Form';
 /**
  * Battery Manager
  *
