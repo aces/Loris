@@ -73,22 +73,15 @@ class Dictionary extends \DataFrameworkMenu
     }
 
     /**
-     * Include the column formatter required to make the content editable in
-     * the datadict menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
-     **/
-    function getJSDependencies()
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/dictionary/js/dataDictIndex.js",
-            ]
-        );
+        return [
+            '/dictionary/js/dataDictIndex.js',
+        ];
     }
 
     /**

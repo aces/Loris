@@ -97,24 +97,15 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         return new ElectrophysiologyBrowserRowProvisioner();
     }
 
-
-
     /**
-     * Include additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        return array_merge(
-            parent::getJSDependencies(),
-            [
-                $baseURL
-                . '/electrophysiology_browser/js/electrophysiologyBrowserIndex.js',
-            ]
-        );
+        return [
+            '/electrophysiology_browser/js/electrophysiologyBrowserIndex.js',
+        ];
     }
-
 }

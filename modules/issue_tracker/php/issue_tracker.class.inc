@@ -212,18 +212,14 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Overrides base getJSDependencies() to add support for issue tracker
-     * specific React Index file.
+     * Add Javascript dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        return array_merge(
-            parent::getJSDependencies(),
-            [$baseurl . "/issue_tracker/js/issueTrackerIndex.js"]
-        );
+        return [
+            '/issue_tracker/js/issueTrackerIndex.js'
+        ];
     }
 }

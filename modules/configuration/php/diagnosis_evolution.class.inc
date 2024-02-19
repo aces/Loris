@@ -42,19 +42,15 @@ class Diagnosis_Evolution extends \NDB_Page
     }
 
     /**
-     * Include additional JS files:
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/configuration/js/DiagnosisEvolution.js"]
-        );
+        return [
+            '/configuration/js/DiagnosisEvolution.js',
+        ];
     }
 
     /**

@@ -50,28 +50,20 @@ class Brainbrowser extends \NDB_Page
     }
 
     /**
-     * Override base function to include brainbrowser javascript files
-     * and dependencies
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-
-        $deps = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/brainbrowser/js/Brainbrowser.js",
-                $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
-                $baseURL . "/brainbrowser/js/three.min.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.config.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
-            ]
-        );
+        return [
+            '/brainbrowser/js/Brainbrowser.js',
+            '/brainbrowser/js/jquery.mousewheel.min.js',
+            '/brainbrowser/js/three.min.js',
+            '/brainbrowser/js/brainbrowser.volume-viewer.min.js',
+            '/brainbrowser/js/brainbrowser.config.js',
+            '/brainbrowser/js/brainbrowser.loris.js',
+        ];
     }
 
     /**

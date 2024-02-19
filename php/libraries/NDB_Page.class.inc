@@ -818,49 +818,71 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 
     /**
      * Returns an ordered list of javascript dependencies that this page depends
-     * on.  These will get loaded into the template in order, so that
+     * on. These will get loaded into the template in order, so that
      * interdependent files can be included in the correct order.
      *
      * @return array of strings with URLs to retrieve JS resources
      */
-    function getJSDependencies()
+    function getAllJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseURL = $factory->settings()->getBaseURL();
         $config  = $factory->config();
 
-        $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+        $min = $config->getSetting("sandbox") === '0';
 
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
 
         $files = [
-            $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-            $baseurl . '/js/loris-scripts.js',
-            $baseurl . '/js/modernizr/modernizr.min.js',
-                  // Only load minified file on production, not sandboxes
-            $baseurl . '/js/polyfills.js',
-                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                    // $baseurl . '/js/react/react-dom' . $min . '.js',
-            $baseurl . ($min === '' ?
-                      '/vendor/js/react/react.development.js' :
-                      '/vendor/js/react/react.production' . $min . '.js'),
-            $baseurl . ($min === '' ?
-                      '/vendor/js/react/react-dom.development.js' :
-                      '/vendor/js/react/react-dom.production' . $min . '.js'),
-
-            $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
-            $baseurl . '/js/jquery.dynamictable.js',
-            $baseurl . '/js/jquery.fileupload.js',
-            $baseurl . '/bootstrap/js/bootstrap.min.js',
-            $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . "/js/util/queryString.js",
-            $baseurl . '/js/components/Help.js',
+            '/js/jquery/jquery-1.11.0.min.js',
+            '/js/loris-scripts.js',
+            '/js/modernizr/modernizr.min.js',
+            // Only load minified file on production, not sandboxes
+            '/js/polyfills.js',
+            // $baseurl . '/js/react/react-with-addons' . $min . '.js',
+            // $baseurl . '/js/react/react-dom' . $min . '.js',
+            ($min
+                ? '/vendor/js/react/react.production.min.js'
+                : '/vendor/js/react/react.development.js'),
+            ($min
+                ? '/vendor/js/react/react-dom.production.min.js'
+                : '/vendor/js/react/react-dom.development.js'),
+            '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+            '/js/jquery.dynamictable.js',
+            '/js/jquery.fileupload.js',
+            '/bootstrap/js/bootstrap.min.js',
+            '/js/components/Breadcrumbs.js',
+            '/js/util/queryString.js',
+            '/js/components/Help.js',
         ];
+
+        $files = array_merge(
+            $files,
+            $this->getJSDependencies()
+        );
+
+        $files = array_map(
+            fn($file) => $baseURL . $file,
+            $files
+        );
+
         return $files;
     }
 
+    /**
+     * Returns the ordered list of page-specific Javascript dependencies that a
+     * specific page depends on. These will get loaded into the template in
+     * order, after the global Loris Javascript dependencies.
+     *
+     * @return array The list of Javascript dependencies. The Loris base URL
+     * is automatically prepended to each path.
+     */
+    function getJSDependencies(): array
+    {
+        return [];
+    }
 
     /**
      * Returns an ordered list of CSS dependencies that this page depends

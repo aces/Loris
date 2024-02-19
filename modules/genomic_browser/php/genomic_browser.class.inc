@@ -47,20 +47,14 @@ class Genomic_Browser extends \NDB_Page
     }
 
     /**
-     * Loads the compiled react code for the genomic_browser.
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/genomic_browser/js/genomicBrowserIndex.js',
-            ]
-        );
+        return [
+            '/genomic_browser/js/genomicBrowserIndex.js',
+        ];
     }
 }

@@ -57,23 +57,17 @@ class Statistics extends \NDB_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the statistics menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/statistics/js/statistics.js",
-            ]
-        );
+        return [
+            '/statistics/js/statistics.js',
+        ];
     }
+
     /**
      * Include additional CSS files:
      *

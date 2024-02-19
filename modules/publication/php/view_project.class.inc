@@ -117,20 +117,14 @@ class View_Project extends \NDB_Form
     }
 
     /**
-     * Include additional JS files:
-     *  1. editForm.js - reactified form to update media
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/publication/js/viewProjectIndex.js"]
-        );
+        return [
+            '/publication/js/viewProjectIndex.js',
+        ];
     }
-
 }

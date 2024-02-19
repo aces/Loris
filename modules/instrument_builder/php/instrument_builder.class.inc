@@ -62,24 +62,17 @@ class Instrument_Builder extends \NDB_Form
     }
 
     /**
-     * Include additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of JS to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = parent::getJSDependencies();
-        return array_merge(
-            $depends,
-            [
-                $baseurl . "/instrument_builder/js/instrument_builder.instrument.js",
-                $baseurl . "/instrument_builder/js/instrument_builder.rules.js",
-                $baseurl . "/instrument_builder/js/react.questions.js",
-                $baseurl . "/instrument_builder/js/react.instrument_builder.js",
-            ]
-        );
+        return [
+            '/instrument_builder/js/instrument_builder.instrument.js',
+            '/instrument_builder/js/instrument_builder.rules.js',
+            '/instrument_builder/js/react.questions.js',
+            '/instrument_builder/js/react.instrument_builder.js',
+        ];
     }
 }
-

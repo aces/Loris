@@ -994,24 +994,18 @@ class ViewSession extends \NDB_Form
         );
         return $controlPanel->display();
     }
+
     /**
-     * Get js Dependencies
+     * Add Javascript dependencies
      *
-     * @return array
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $depends = parent::getJSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = array_merge(
-            $depends,
-            [
-                $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-                $baseurl . "/imaging_browser/js/ImagePanel.js",
-            ]
-        );
-        return $depends;
+        return [
+            '/imaging_browser/js/jiv_and_imaging_browser.js',
+            '/imaging_browser/js/ImagePanel.js',
+        ];
     }
 
     /**

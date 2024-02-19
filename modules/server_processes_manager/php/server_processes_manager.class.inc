@@ -70,7 +70,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
             'userid',
         ];
 
-        $this->query = " FROM server_processes 
+        $this->query = " FROM server_processes
                          WHERE 1=1";
 
         $this->formToFilter = [
@@ -82,22 +82,14 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Gathers JS dependecies and merge them with the parent
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL .
-             "/server_processes_manager/js/server_processes_managerIndex.js",
-            ]
-        );
+        return [
+            '/server_processes_manager/js/server_processes_managerIndex.js',
+        ];
     }
-
 }

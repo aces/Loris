@@ -91,7 +91,7 @@ class Module extends \Module
                         $baseURL . '/statistics/css/recruitment.css'
                     ],
                     [
-                        $baseURL . '/statistics/js/WidgetIndex.js'
+                        '/statistics/js/WidgetIndex.js'
                     ],
                 )
             );

@@ -1366,24 +1366,18 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Gathers JS dependencies and merges them with the parent
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/user_accounts/js/rejectUser.js',
-                $baseURL . '/js/passwordVisibility.js',
-                $baseURL . '/user_accounts/js/edit_user_helper.js',
-                $baseURL . '/js/invalid_form_scroll.js',
-            ]
-        );
+        return [
+            '/user_accounts/js/rejectUser.js',
+            '/js/passwordVisibility.js',
+            '/user_accounts/js/edit_user_helper.js',
+            '/js/invalid_form_scroll.js',
+        ];
     }
 
     /**

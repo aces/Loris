@@ -68,9 +68,9 @@ class Data_Release extends \NDB_Menu_Filter
         $this->query   = " FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
-            $this->query .= " JOIN data_release_permissions drp 
-            ON (dr.id=drp.data_release_id) 
-            JOIN users u ON (u.ID=drp.userid) 
+            $this->query .= " JOIN data_release_permissions drp
+            ON (dr.id=drp.data_release_id)
+            JOIN users u ON (u.ID=drp.userid)
             WHERE u.UserID=".$DB->quote($user->getUsername());
         }
 
@@ -248,19 +248,14 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Include the column formatter
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        return array_merge(
-            parent::getJSDependencies(),
-            [
-                $baseurl . "/data_release/js/dataReleaseIndex.js",
-            ]
-        );
+        return [
+            '/data_release/js/dataReleaseIndex.js',
+        ];
     }
 }

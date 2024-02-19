@@ -124,22 +124,15 @@ class Candidate_List extends \DataFrameworkMenu
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/candidate_list/js/candidateListIndex.js",
-            ]
-        );
+        return [
+            '/candidate_list/js/candidateListIndex.js',
+        ];
     }
 
     /**

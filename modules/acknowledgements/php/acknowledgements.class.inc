@@ -212,24 +212,14 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Add dependency on default acknowledgements.js
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-
-        $baseDeps = parent::getJSDependencies();
-
-        return array_merge(
-            $baseDeps,
-            [
-                $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
-            ]
-        );
-
+        return [
+            '/acknowledgements/js/acknowledgementsIndex.js',
+        ];
     }
-
 }

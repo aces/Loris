@@ -38,7 +38,7 @@ class PageDecorationMiddleware implements MiddlewareInterface
             return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
                 $baseURL ?? "",
                 $config,
-                $page->getJSDependencies(),
+                $page->getAllJSDependencies(),
                 $page->getCSSDependencies()
             )
             )->process($request, $handler);
@@ -51,7 +51,7 @@ class PageDecorationMiddleware implements MiddlewareInterface
             $baseURL ?? "",
             $page->name ?? "",
             $config,
-            $page->getJSDependencies(),
+            $page->getAllJSDependencies(),
             $page->getCSSDependencies(),
             $DB
         )

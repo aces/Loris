@@ -808,7 +808,7 @@ class NDB_PageTest extends TestCase
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
             ],
-            $this->_page->getJSDependencies()
+            $this->_page->getAllJSDependencies()
         );
     }
 

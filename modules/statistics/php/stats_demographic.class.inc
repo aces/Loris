@@ -628,21 +628,16 @@ class Stats_Demographic extends \NDB_Form
      * Include the column formatter required to display the feedback link colours
      * in the statistics menu
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/statistics/js/table_statistics.js',
-                $baseURL . '/statistics/js/form_stats_demographic.js',
-            ]
-        );
+        return [
+            '/statistics/js/table_statistics.js',
+            '/statistics/js/form_stats_demographic.js',
+        ];
     }
+
     /**
      * Include additional CSS files:
      *

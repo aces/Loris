@@ -64,21 +64,15 @@ class Candidate_Parameters extends \NDB_Form
     }
 
     /**
-     * Include the Tabs.js and index.js (entry point of the module)
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/candidate_parameters/js/CandidateParameters.js",
-            ]
-        );
+        return [
+            '/candidate_parameters/js/CandidateParameters.js',
+        ];
     }
 
     /**

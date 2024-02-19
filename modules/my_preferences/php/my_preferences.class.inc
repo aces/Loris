@@ -472,24 +472,17 @@ class My_Preferences extends \NDB_Form
     }
 
     /**
-     * Add dependency for password visibility
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be sourced
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory  = \NDB_Factory::singleton();
-        $baseurl  = $factory->settings()->getBaseURL();
-        $baseDeps = parent::getJSDependencies();
-
-        return array_merge(
-            $baseDeps,
-            [
-                $baseurl . '/js/passwordVisibility.js',
-                $baseurl . '/my_preferences/js/my_preferences_helper.js',
-                $baseurl . '/js/components/CSSGrid.js',
-            ]
-        );
+        return [
+            '/js/passwordVisibility.js',
+            '/my_preferences/js/my_preferences_helper.js',
+            '/js/components/CSSGrid.js',
+        ];
     }
 
     /**

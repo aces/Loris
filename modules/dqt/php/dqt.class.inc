@@ -43,32 +43,25 @@ class Dqt extends \NDB_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/js/d3.min.js',
-                $baseURL . '/js/c3.min.js',
-                $baseURL . '/dqt/js/react.fieldselector.js',
-                $baseURL . '/dqt/js/react.filterBuilder.js',
-                $baseURL . '/dqt/js/react.tabs.js',
-                $baseURL . '/dqt/js/react.sidebar.js',
-                $baseURL . '/dqt/js/react.app.js',
-                $baseURL . '/js/flot/jquery.flot.min.js',
-                $baseURL . '/js/components/PaginationLinks.js',
-                $baseURL . '/js/jszip/jszip.min.js',
-                $baseURL . '/js/components/MultiSelectDropdown.js',
-            ]
-        );
+        return [
+            '/js/d3.min.js',
+            '/js/c3.min.js',
+            '/dqt/js/react.fieldselector.js',
+            '/dqt/js/react.filterBuilder.js',
+            '/dqt/js/react.tabs.js',
+            '/dqt/js/react.sidebar.js',
+            '/dqt/js/react.app.js',
+            '/js/flot/jquery.flot.min.js',
+            '/js/components/PaginationLinks.js',
+            '/js/jszip/jszip.min.js',
+            '/js/components/MultiSelectDropdown.js',
+        ];
     }
 
     /**

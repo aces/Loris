@@ -106,8 +106,8 @@ class Configuration extends \NDB_Form
         $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );
@@ -184,22 +184,15 @@ class Configuration extends \NDB_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/configuration/js/configuration_helper.js",
-            ]
-        );
+        return [
+            '/configuration/js/configuration_helper.js',
+        ];
     }
 
      /**

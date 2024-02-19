@@ -201,22 +201,15 @@ class Imaging_Browser extends \DataFrameworkMenu
         );
     }
 
-
-
     /**
-     * Include the column formatter
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        return array_merge(
-            parent::getJSDependencies(),
-            [
-                $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
-            ]
-        );
+        return [
+            '/imaging_browser/js/imagingBrowserIndex.js',
+        ];
     }
 }

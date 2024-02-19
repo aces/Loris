@@ -252,22 +252,16 @@ class Publication extends \NDB_Menu_Filter_Form
         );
     }
 
-
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/publication/js/publicationIndex.js']
-        );
+        return [
+            '/publication/js/publicationIndex.js',
+        ];
     }
 
     /**
