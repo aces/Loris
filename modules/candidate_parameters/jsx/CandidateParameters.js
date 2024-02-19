@@ -8,6 +8,7 @@ import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
 import CandidateDOB from './CandidateDOB';
 import CandidateDOD from './CandidateDOD';
+import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
 
 /**
@@ -77,6 +78,11 @@ class CandidateParameters extends Component {
         id: 'candidateDOD',
         label: 'Date of Death',
         component: CandidateDOD,
+      },
+      {
+        id: 'diagnosisEvolution',
+        label: 'Diagnosis Evolution',
+        component: DiagnosisEvolution,
       },
     ];
 

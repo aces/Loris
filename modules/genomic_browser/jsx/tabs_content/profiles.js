@@ -168,10 +168,7 @@ class Profiles extends Component {
         filter: {
           name: 'Sex',
           type: 'select',
-          options: {
-            Male: 'Male',
-            Female: 'Female',
-          },
+          options: options.Sex,
         },
       },
       {

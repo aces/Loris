@@ -1336,10 +1336,11 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table     = 'medical_history';
-        $this->_instrument->testName  = 'Test';
-        $this->_instrument->formType  = "XIN";
+        $this->_instrument->commentID     = 'commentID1';
+        $this->_instrument->table         = 'medical_history';
+        $this->_instrument->testName      = 'Test';
+        $this->_instrument->formType      = "XIN";
+        $this->_instrument->DataEntryType = "normal";
         $values = ['Date_taken' => '2005-06-06',
             'arthritis_age'        => 2,
             'arthritis_age_status' => 'status'
@@ -1792,7 +1793,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->setup("commentID1", "page");
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table         = 'medical_history';
+        $this->_instrument->DataEntryType = "normal";
         $this->assertStringContainsString(
             "<input  name=\"candID\" value=\"\" type=\"hidden\">\n",
             $this->_instrument->display()

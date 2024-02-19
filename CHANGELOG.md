@@ -13,9 +13,13 @@ changes in the following format: PR #1234***
 #### Features
 - Add OpenID Connect authorization support to LORIS (PR #8255)
 
+#### Updates and Improvements
+- Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
 - bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core

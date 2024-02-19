@@ -183,7 +183,7 @@ class ViewProject extends React.Component {
     let toReturn = [];
     files.forEach(function(f) {
       let download = loris.BaseURL
-                     + '/publication/ajax/FileDownload.php?File='
+                     + '/publication/files/'
                      + f.Filename;
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
