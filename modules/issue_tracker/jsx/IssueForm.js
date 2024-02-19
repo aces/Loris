@@ -14,6 +14,7 @@ import {
   TextboxElement,
   ButtonElement,
   TextareaElement,
+  FileElement,
 } from 'jsx/Form';
 
 /**
