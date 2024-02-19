@@ -873,7 +873,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $baseURL = $factory->settings()->getBaseURL();
         $config  = $factory->config();
 
-        $min = $config->getSetting("sandbox") === '0';
+        $min = $config->getSetting("sandbox") !== '1';
 
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs

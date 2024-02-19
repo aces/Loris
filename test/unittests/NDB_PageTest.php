@@ -780,7 +780,7 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that getCSSDependencies returns the correct array of dependencies
+     * Test that getAllCSSDependencies returns the correct array of dependencies
      *
      * @covers NDB_Page::getAllCSSDependencies
      * @return void
@@ -803,7 +803,7 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that getJSDependencies returns the correct array of dependencies
+     * Test that getAllJSDependencies returns the correct array of dependencies
      *
      * @covers NDB_Page::getAllJSDependencies
      * @return void
