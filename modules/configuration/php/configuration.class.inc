@@ -195,20 +195,15 @@ class Configuration extends \NDB_Form
         ];
     }
 
-     /**
-      * Include additional CSS files:
-      *  1. configuration
-      *
-      * @return array of CSS to be inserted
-      */
-    function getCSSDependencies()
+    /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/configuration/css/configuration.css"]
-        );
+        return [
+            '/configuration/css/configuration.css',
+        ];
     }
 }

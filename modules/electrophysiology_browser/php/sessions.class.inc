@@ -667,23 +667,15 @@ class Sessions extends \NDB_Page
     }
 
     /**
-     * Get CSS Dependencies
+     * Add CSS dependencies
      *
-     * @return array
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $depends = parent::getCSSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = array_merge(
-            $depends,
-            [
-                $baseurl
-                . '/electrophysiology_browser/css/electrophysiology_browser.css',
-            ]
-        );
-        return $depends;
+        return [
+            '/electrophysiology_browser/css/electrophysiology_browser.css',
+        ];
     }
 
     /**

@@ -85,21 +85,6 @@ class View_Project extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. media.js
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies() : array
-    {
-        $deps = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            []
-        );
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail

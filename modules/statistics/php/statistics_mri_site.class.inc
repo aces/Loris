@@ -110,7 +110,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $query = '';
         switch ($issue) {
         case 'Tarchive_Missing':
-            $query = "SELECT DISTINCT f.CommentID as CommentID, 
+            $query = "SELECT DISTINCT f.CommentID as CommentID,
                             c.PSCID, s.ID as SessionID, s.CandID as CandID,
                             s.Visit_label
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
@@ -167,7 +167,7 @@ class Statistics_Mri_Site extends Statistics_Site
                         LEFT JOIN mri_parameter_form mpf
                        ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                        WHERE s.Active='Y' 
+                        WHERE s.Active='Y'
                            AND c.Entity_type != 'Scanner'
                            AND (f.ID IS NULL OR
                            f.Data_entry <> 'Complete' OR
@@ -251,19 +251,14 @@ class Statistics_Mri_Site extends Statistics_Site
     }
 
     /**
-     * Include additional CSS files:
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/statistics/css/statistics.css"]
-        );
+        return [
+            '/statistics/css/statistics.css',
+        ];
     }
 }
-

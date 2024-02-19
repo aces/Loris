@@ -1009,20 +1009,15 @@ class ViewSession extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. imaging_browser.css
+     * Add CSS dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/imaging_browser/css/imaging_browser.css"]
-        );
+        return [
+            '/imaging_browser/css/imaging_browser.css',
+        ];
     }
 
     /**

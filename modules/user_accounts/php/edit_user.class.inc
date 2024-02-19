@@ -1381,21 +1381,14 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. configuration
+     * Add CSS dependencies
      *
-     * @return array of CSS to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/css/password.css",
-            ]
-        );
+        return [
+            '/css/password.css',
+        ];
     }
 }

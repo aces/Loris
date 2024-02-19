@@ -639,20 +639,14 @@ class Stats_Demographic extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/statistics/css/statistics.css']
-        );
+        return [
+            '/statistics/css/statistics.css',
+        ];
     }
-
 }
-

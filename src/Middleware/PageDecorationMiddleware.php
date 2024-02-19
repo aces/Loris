@@ -39,7 +39,7 @@ class PageDecorationMiddleware implements MiddlewareInterface
                 $baseURL ?? "",
                 $config,
                 $page->getAllJSDependencies(),
-                $page->getCSSDependencies()
+                $page->getAllCSSDependencies()
             )
             )->process($request, $handler);
         }
@@ -52,7 +52,7 @@ class PageDecorationMiddleware implements MiddlewareInterface
             $page->name ?? "",
             $config,
             $page->getAllJSDependencies(),
-            $page->getCSSDependencies(),
+            $page->getAllCSSDependencies(),
             $DB
         )
         )->process($request, $handler);

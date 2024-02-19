@@ -782,7 +782,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that getJSDependencies returns the correct array of dependencies
      *
-     * @covers NDB_Page::getJSDependencies
+     * @covers NDB_Page::getAllJSDependencies
      * @return void
      */
     public function testGetJSDependencies()
@@ -815,7 +815,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that getCSSDependencies returns the correct array of dependencies
      *
-     * @covers NDB_Page::getCSSDependencies
+     * @covers NDB_Page::getAllCSSDependencies
      * @return void
      */
     public function testGetCSSDependencies()
@@ -831,7 +831,7 @@ class NDB_PageTest extends TestCase
                 '/bootstrap/css/custom-css.css',
                 '/js/jquery/datepicker/datepicker.css'
             ],
-            $this->_page->getCSSDependencies()
+            $this->_page->getAllCSSDependencies()
         );
     }
 }

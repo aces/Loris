@@ -53,6 +53,18 @@ class Behavioural_QC extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/behavioural_qc/css/behavioural_qc.css'
+        ];
+    }
+
+    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
@@ -64,23 +76,6 @@ class Behavioural_QC extends \NDB_Form
                 'Behavioural Quality Control',
                 '/behavioural_qc'
             )
-        );
-    }
-
-    /**
-     * Include additional CSS files:
-     *  1. behavioural_qc
-     *
-     * @return array of CSS to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/behavioural_qc/css/behavioural_qc.css']
         );
     }
 }

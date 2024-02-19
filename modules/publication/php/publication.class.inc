@@ -265,20 +265,15 @@ class Publication extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  imaging_uploader.css
+     * Add CSS dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies() : array
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/publication/css/publication.css']
-        );
+        return [
+            '/publication/css/publication.css',
+        ];
     }
 
     /**
@@ -306,4 +301,3 @@ class Publication extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-

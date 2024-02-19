@@ -183,24 +183,6 @@ class Imaging_Browser extends \DataFrameworkMenu
         return $provisioner;
     }
 
-
-    /**
-     * Include additional CSS files:
-     *  1. imaging_browser.css
-     *
-     * @return array of css to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/imaging_browser/css/imaging_browser.css"]
-        );
-    }
-
     /**
      * Add Javascript dependencies
      *
@@ -210,6 +192,18 @@ class Imaging_Browser extends \DataFrameworkMenu
     {
         return [
             '/imaging_browser/js/imagingBrowserIndex.js',
+        ];
+    }
+
+    /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/imaging_browser/css/imaging_browser.css',
         ];
     }
 }

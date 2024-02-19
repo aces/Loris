@@ -55,22 +55,6 @@ class Issue extends \NDB_Form
     }
 
     /**
-     * Include issue_tracker.css
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/issue_tracker/css/issue_tracker.css"]
-        );
-    }
-
-    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -79,6 +63,18 @@ class Issue extends \NDB_Form
     {
         return [
             '/issue_tracker/js/index.js'
+        ];
+    }
+
+    /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/issue_tracker/css/issue_tracker.css',
         ];
     }
 

@@ -29,19 +29,14 @@ class Login extends \NDB_Page
     }
 
     /**
-     * Include additional CSS files:
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/login/css/login.css']
-        );
+        return [
+            '/login/css/login.css',
+        ];
     }
-
 }

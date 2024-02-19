@@ -173,21 +173,14 @@ class Mri_Violations extends \DataFrameworkMenu
     }
 
     /**
-     * Include additional CSS files:
+     * Add CSS dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies() : array
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/mri_violations/css/mri_violations.css",
-            ]
-        );
+        return [
+            '/mri_violations/css/mri_violations.css',
+        ];
     }
 }
-

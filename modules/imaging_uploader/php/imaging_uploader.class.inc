@@ -730,21 +730,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  imaging_uploader.css
+     * Add CSS dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
-        );
+        return [
+            '/imaging_uploader/css/imaging_uploader.css',
+        ];
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json

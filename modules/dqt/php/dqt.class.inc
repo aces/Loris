@@ -65,6 +65,19 @@ class Dqt extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/dqt/css/dataquery.css',
+            '/css/c3.css',
+        ];
+    }
+
+    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
@@ -73,26 +86,6 @@ class Dqt extends \NDB_Form
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb('Data Query Tool', "/$this->name")
-        );
-    }
-
-    /**
-     * Include additional CSS files:
-     *  1. dataquery.css
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/dqt/css/dataquery.css',
-                $baseURL . '/css/c3.css',
-            ]
         );
     }
 }
