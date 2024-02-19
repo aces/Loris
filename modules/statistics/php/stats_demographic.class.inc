@@ -625,6 +625,18 @@ class Stats_Demographic extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/statistics/css/statistics.css',
+        ];
+    }
+
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the statistics menu
      *
@@ -635,18 +647,6 @@ class Stats_Demographic extends \NDB_Form
         return [
             '/statistics/js/table_statistics.js',
             '/statistics/js/form_stats_demographic.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/statistics/css/statistics.css',
         ];
     }
 }

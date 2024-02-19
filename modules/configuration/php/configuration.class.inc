@@ -184,18 +184,6 @@ class Configuration extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/configuration/js/configuration_helper.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -204,6 +192,18 @@ class Configuration extends \NDB_Form
     {
         return [
             '/configuration/css/configuration.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/configuration/js/configuration_helper.js',
         ];
     }
 }

@@ -1366,6 +1366,18 @@ class Edit_User extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/css/password.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -1377,18 +1389,6 @@ class Edit_User extends \NDB_Form
             '/js/passwordVisibility.js',
             '/user_accounts/js/edit_user_helper.js',
             '/js/invalid_form_scroll.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/css/password.css',
         ];
     }
 }

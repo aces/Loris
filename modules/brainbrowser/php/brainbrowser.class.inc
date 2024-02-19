@@ -50,6 +50,20 @@ class Brainbrowser extends \NDB_Page
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/css/loris-jquery/jquery-ui-1.10.4.custom.min.css',
+            '/brainbrowser/css/volume-viewer-demo.css',
+            '/brainbrowser/css/brainbrowser.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -63,20 +77,6 @@ class Brainbrowser extends \NDB_Page
             '/brainbrowser/js/brainbrowser.volume-viewer.min.js',
             '/brainbrowser/js/brainbrowser.config.js',
             '/brainbrowser/js/brainbrowser.loris.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/css/loris-jquery/jquery-ui-1.10.4.custom.min.css',
-            '/brainbrowser/css/volume-viewer-demo.css',
-            '/brainbrowser/css/brainbrowser.css',
         ];
     }
 }

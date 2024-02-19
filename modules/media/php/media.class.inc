@@ -162,18 +162,6 @@ class Media extends \DataFrameworkMenu
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/media/js/mediaIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -182,6 +170,18 @@ class Media extends \DataFrameworkMenu
     {
         return [
             '/media/css/media.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/media/js/mediaIndex.js',
         ];
     }
 }

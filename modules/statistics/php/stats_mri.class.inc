@@ -605,6 +605,18 @@ class Stats_MRI extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/statistics/css/statistics.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -614,18 +626,6 @@ class Stats_MRI extends \NDB_Form
         return [
             '/statistics/js/table_statistics.js',
             '/statistics/js/form_stats_MRI.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/statistics/css/statistics.css',
         ];
     }
 }

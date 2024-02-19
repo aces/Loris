@@ -42,18 +42,6 @@ class Diagnosis_Evolution extends \NDB_Page
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/configuration/js/DiagnosisEvolution.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -62,6 +50,18 @@ class Diagnosis_Evolution extends \NDB_Page
     {
         return [
             '/configuration/css/configuration.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/configuration/js/DiagnosisEvolution.js',
         ];
     }
 }

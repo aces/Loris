@@ -655,18 +655,6 @@ class Sessions extends \NDB_Page
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/electrophysiology_browser/js/electrophysiologySessionView.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -675,6 +663,18 @@ class Sessions extends \NDB_Page
     {
         return [
             '/electrophysiology_browser/css/electrophysiology_browser.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/electrophysiology_browser/js/electrophysiologySessionView.js',
         ];
     }
 

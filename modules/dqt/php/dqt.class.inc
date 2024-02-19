@@ -43,6 +43,19 @@ class Dqt extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/dqt/css/dataquery.css',
+            '/css/c3.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -61,19 +74,6 @@ class Dqt extends \NDB_Form
             '/js/components/PaginationLinks.js',
             '/js/jszip/jszip.min.js',
             '/js/components/MultiSelectDropdown.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/dqt/css/dataquery.css',
-            '/css/c3.css',
         ];
     }
 

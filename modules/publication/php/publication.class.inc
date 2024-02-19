@@ -253,18 +253,6 @@ class Publication extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/publication/js/publicationIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -273,6 +261,18 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         return [
             '/publication/css/publication.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/publication/js/publicationIndex.js',
         ];
     }
 

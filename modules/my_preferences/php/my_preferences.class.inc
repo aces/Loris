@@ -472,6 +472,18 @@ class My_Preferences extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/css/password.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -482,18 +494,6 @@ class My_Preferences extends \NDB_Form
             '/js/passwordVisibility.js',
             '/my_preferences/js/my_preferences_helper.js',
             '/js/components/CSSGrid.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/css/password.css',
         ];
     }
 }

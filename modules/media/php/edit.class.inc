@@ -56,18 +56,6 @@ class Edit extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/media/js/editFormIndex.js'
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -76,6 +64,18 @@ class Edit extends \NDB_Form
     {
         return [
             '/media/css/media.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/media/js/editFormIndex.js'
         ];
     }
 

@@ -55,18 +55,6 @@ class Issue extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/issue_tracker/js/index.js'
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -75,6 +63,18 @@ class Issue extends \NDB_Form
     {
         return [
             '/issue_tracker/css/issue_tracker.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/issue_tracker/js/index.js'
         ];
     }
 

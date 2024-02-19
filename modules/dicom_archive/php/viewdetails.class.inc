@@ -342,18 +342,6 @@ class ViewDetails extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/dicom_archive/js/view_details_link.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -362,6 +350,18 @@ class ViewDetails extends \NDB_Form
     {
         return [
             '/dicom_archive/css/dicom_archive.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/dicom_archive/js/view_details_link.js',
         ];
     }
 

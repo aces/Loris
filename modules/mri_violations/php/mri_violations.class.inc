@@ -161,18 +161,6 @@ class Mri_Violations extends \DataFrameworkMenu
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/mri_violations/js/mriViolationsIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -181,6 +169,18 @@ class Mri_Violations extends \DataFrameworkMenu
     {
         return [
             '/mri_violations/css/mri_violations.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/mri_violations/js/mriViolationsIndex.js',
         ];
     }
 }

@@ -45,6 +45,18 @@ class Instrument_Builder extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/instrument_builder/css/instrument_builder.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -56,18 +68,6 @@ class Instrument_Builder extends \NDB_Form
             '/instrument_builder/js/instrument_builder.rules.js',
             '/instrument_builder/js/react.questions.js',
             '/instrument_builder/js/react.instrument_builder.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/instrument_builder/css/instrument_builder.css',
         ];
     }
 }

@@ -53,19 +53,6 @@ class Statistics extends \NDB_Form
                  ORDER BY OrderNo",
             []
         );
-
-    }
-
-    /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/statistics/js/statistics.js',
-        ];
     }
 
     /**
@@ -77,6 +64,18 @@ class Statistics extends \NDB_Form
     {
         return [
             '/statistics/css/statistics.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/statistics/js/statistics.js',
         ];
     }
 }

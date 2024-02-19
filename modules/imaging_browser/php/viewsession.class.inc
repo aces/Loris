@@ -996,6 +996,18 @@ class ViewSession extends \NDB_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/imaging_browser/css/imaging_browser.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -1005,18 +1017,6 @@ class ViewSession extends \NDB_Form
         return [
             '/imaging_browser/js/jiv_and_imaging_browser.js',
             '/imaging_browser/js/ImagePanel.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/imaging_browser/css/imaging_browser.css',
         ];
     }
 

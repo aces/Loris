@@ -717,6 +717,18 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Add CSS dependencies
+     *
+     * @return array The list of CSS files this page depends on
+     */
+    function getCSSDependencies(): array
+    {
+        return [
+            '/imaging_uploader/css/imaging_uploader.css',
+        ];
+    }
+
+    /**
      * Add Javascript dependencies
      *
      * @return array The list of Javascript files this page depends on
@@ -726,18 +738,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return [
             '/imaging_uploader/js/index.js',
             '/imaging_uploader/js/imaging_uploader_helper.js',
-        ];
-    }
-
-    /**
-     * Add CSS dependencies
-     *
-     * @return array The list of CSS files this page depends on
-     */
-    function getCSSDependencies(): array
-    {
-        return [
-            '/imaging_uploader/css/imaging_uploader.css',
         ];
     }
 

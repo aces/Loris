@@ -184,18 +184,6 @@ class Imaging_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/imaging_browser/js/imagingBrowserIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -204,6 +192,18 @@ class Imaging_Browser extends \DataFrameworkMenu
     {
         return [
             '/imaging_browser/css/imaging_browser.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/imaging_browser/js/imagingBrowserIndex.js',
         ];
     }
 }

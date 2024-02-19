@@ -191,18 +191,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/document_repository/js/docIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -211,6 +199,18 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     {
         return [
             '/document_repository/css/document_repository.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/document_repository/js/docIndex.js',
         ];
     }
 }

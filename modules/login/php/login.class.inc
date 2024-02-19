@@ -17,18 +17,6 @@ class Login extends \NDB_Page
     public $skipTemplate = true;
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/login/js/loginIndex.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -37,6 +25,18 @@ class Login extends \NDB_Page
     {
         return [
             '/login/css/login.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/login/js/loginIndex.js',
         ];
     }
 }

@@ -780,6 +780,29 @@ class NDB_PageTest extends TestCase
     }
 
     /**
+     * Test that getCSSDependencies returns the correct array of dependencies
+     *
+     * @covers NDB_Page::getAllCSSDependencies
+     * @return void
+     */
+    public function testGetCSSDependencies()
+    {
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($configMock);
+        $this->assertEquals(
+            [
+                '/bootstrap/css/bootstrap.min.css',
+                '/bootstrap/css/custom-css.css',
+                '/js/jquery/datepicker/datepicker.css'
+            ],
+            $this->_page->getAllCSSDependencies()
+        );
+    }
+
+    /**
      * Test that getJSDependencies returns the correct array of dependencies
      *
      * @covers NDB_Page::getAllJSDependencies
@@ -809,29 +832,6 @@ class NDB_PageTest extends TestCase
                 '/js/components/Help.js',
             ],
             $this->_page->getAllJSDependencies()
-        );
-    }
-
-    /**
-     * Test that getCSSDependencies returns the correct array of dependencies
-     *
-     * @covers NDB_Page::getAllCSSDependencies
-     * @return void
-     */
-    public function testGetCSSDependencies()
-    {
-        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        '@phan-var \NDB_Config $configMock';
-
-        $factory = NDB_Factory::singleton();
-        $factory->setConfig($configMock);
-        $this->assertEquals(
-            [
-                '/bootstrap/css/bootstrap.min.css',
-                '/bootstrap/css/custom-css.css',
-                '/js/jquery/datepicker/datepicker.css'
-            ],
-            $this->_page->getAllCSSDependencies()
         );
     }
 }

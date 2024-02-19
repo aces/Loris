@@ -138,19 +138,6 @@ class Dashboard extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return array_merge(
-            ['/dashboard/js/dashboard-helper.js'],
-            $this->widgetjs,
-        );
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -160,6 +147,19 @@ class Dashboard extends \NDB_Form
         return array_merge(
             ['/dashboard/css/dashboard.css'],
             $this->widgetcss,
+        );
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return array_merge(
+            ['/dashboard/js/dashboard-helper.js'],
+            $this->widgetjs,
         );
     }
 

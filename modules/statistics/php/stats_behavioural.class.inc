@@ -377,18 +377,6 @@ class Stats_Behavioural extends \NDB_Form
     }
 
     /**
-     * Add Javascript dependencies
-     *
-     * @return array The list of Javascript files this page depends on
-     */
-    function getJSDependencies(): array
-    {
-        return [
-            '/statistics/js/form_stats_behavioural.js',
-        ];
-    }
-
-    /**
      * Add CSS dependencies
      *
      * @return array The list of CSS files this page depends on
@@ -397,6 +385,18 @@ class Stats_Behavioural extends \NDB_Form
     {
         return [
             '/statistics/css/statistics.css',
+        ];
+    }
+
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/statistics/js/form_stats_behavioural.js',
         ];
     }
 }

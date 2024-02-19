@@ -817,6 +817,50 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     }
 
     /**
+     * Returns an ordered list of CSS dependencies that this page depends
+     * on. These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve CSS resources
+     */
+    function getAllCSSDependencies(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        $files = [
+            '/bootstrap/css/bootstrap.min.css',
+            '/bootstrap/css/custom-css.css',
+            '/js/jquery/datepicker/datepicker.css',
+        ];
+
+        $files = array_merge(
+            $files,
+            $this->getCSSDependencies()
+        );
+
+        $files = array_map(
+            fn($file) => $baseURL . $file,
+            $files
+        );
+
+        return $files;
+    }
+
+    /**
+     * Returns the ordered list of page-specific CSS dependencies that a
+     * specific page depends on. These will get loaded into the template in
+     * order, after the global Loris CSS dependencies.
+     *
+     * @return array The list of CSS dependencies. The Loris base URL
+     * is automatically prepended to each path.
+     */
+    function getCSSDependencies(): array
+    {
+        return [];
+    }
+
+    /**
      * Returns an ordered list of javascript dependencies that this page depends
      * on. These will get loaded into the template in order, so that
      * interdependent files can be included in the correct order.
@@ -880,50 +924,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      * is automatically prepended to each path.
      */
     function getJSDependencies(): array
-    {
-        return [];
-    }
-
-    /**
-     * Returns an ordered list of CSS dependencies that this page depends
-     * on. These will get loaded into the template in order, so that
-     * interdependent files can be included in the correct order.
-     *
-     * @return array of strings with URLs to retrieve CSS resources
-     */
-    function getAllCSSDependencies(): array
-    {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-
-        $files = [
-            '/bootstrap/css/bootstrap.min.css',
-            '/bootstrap/css/custom-css.css',
-            '/js/jquery/datepicker/datepicker.css',
-        ];
-
-        $files = array_merge(
-            $files,
-            $this->getCSSDependencies()
-        );
-
-        $files = array_map(
-            fn($file) => $baseURL . $file,
-            $files
-        );
-
-        return $files;
-    }
-
-    /**
-     * Returns the ordered list of page-specific CSS dependencies that a
-     * specific page depends on. These will get loaded into the template in
-     * order, after the global Loris CSS dependencies.
-     *
-     * @return array The list of CSS dependencies. The Loris base URL
-     * is automatically prepended to each path.
-     */
-    function getCSSDependencies(): array
     {
         return [];
     }
