@@ -21,7 +21,7 @@
 					<i class="{$status[item].icon|default:'far fa-square'}"></i>
 				</span>
 				<a
-					onclick="setStageAndUpdate('{$onclickValue}')"
+					onclick="sendUpdate('/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=' + '{$onclickValue}')"
 					style="cursor: pointer;"
 				>
 					{$status[item].label}
@@ -40,7 +40,12 @@
     				{if $send_to_dcc.set_submitted=='Check'}
                         		<span class="fa-li"><i class="{$send_to_dcc.icon|default:'far fa-square'}"></i></span><a href="{$baseurl}/timepoint_flag/check_timepoint_flag/?identifier={$sessionID}">{$send_to_dcc.reverse|default:"Send To DCC"}</a><br>
 	    			{else}
-                        	<span class="fa-li"><i class="{$send_to_dcc.icon|default:'far fa-square'}"></i></span><a href="?candID={$candID}&sessionID={$sessionID}&setSubmitted={$send_to_dcc.set_submitted}">{$send_to_dcc.reverse|default:"Send To DCC"}</a>
+						<a
+							onclick="sendUpdate('/instrument_list/?candID={$candID}&sessionID={$sessionID}&setSubmitted={$send_to_dcc.set_submitted}')"
+							style="cursor: pointer;"
+						>
+							{$send_to_dcc.reverse|default:"Send To DCC"}
+						</a>
     				{/if}
 			{else}
                         <span title='{$access.send_to_dcc_status_message}'><span class="fa-li"><i class="{$send_to_dcc.icon|default:'fas fa-times'}"></i></span>Send To DCC</span>
@@ -100,16 +105,15 @@
 	</ul>
 
 <script>
-	function setStageAndUpdate(stageLabel) {
-		var url = loris.BaseURL + "/instrument_list/?candID={$candID}&sessionID={$sessionID}&setStageUpdate=" + stageLabel;
-		try {
-			fetch(url, {}).then((response) => {
-				if (response.ok) {
-					window.location.reload(true);
-				}
-			})
-		} catch (e) {
-			console.error("An error occurred: " + e.message);
-		}
+function sendUpdate(suffix) {
+	try {
+		fetch(loris.BaseURL + suffix, {}).then((response) => {
+			if (response.ok) {
+				window.location.reload(true);
+			}
+		})
+	} catch (e) {
+		console.error("An error occurred: " + e.message);
 	}
+}
 </script>
