@@ -3,7 +3,7 @@
 -- ------------------------------------
 
 -- module
-INSERT INTO modules (Name, Active) VALUES ('roles_manager', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('roles_manager', 'N');
 
 -- add role table
 DROP TABLE IF EXISTS `roles`;
