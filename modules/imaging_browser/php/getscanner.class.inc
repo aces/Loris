@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class GetScannerData extends \NDB_Page implements RequestHandlerInterface
+class GetScanner extends \NDB_Page
 {
     /**
      * The database connection
@@ -37,6 +37,7 @@ class GetScannerData extends \NDB_Page implements RequestHandlerInterface
     ) : ResponseInterface {
         return $handler->handle($request);
     }
+
 
     /**
      * This acts as an Ajax enpoint that handles all action requests from the

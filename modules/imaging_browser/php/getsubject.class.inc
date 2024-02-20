@@ -13,7 +13,7 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class GetSubjectData extends \NDB_Page implements RequestHandlerInterface
+class GetSubject extends \NDB_Page
 {
     /**
      * The database connection
@@ -45,7 +45,7 @@ class GetSubjectData extends \NDB_Page implements RequestHandlerInterface
                     $session->getCenterID()
                 ))
                 && ($user->hasProject($session->getProject()->getId()));
-        } elseif ($candidate->getEntityType() == 'Human') {
+        } else if ($candidate->getEntityType() == 'Human') {
             return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',

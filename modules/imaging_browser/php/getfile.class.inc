@@ -13,7 +13,7 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class GetImageData extends \NDB_Page implements RequestHandlerInterface
+class GetFile extends \NDB_Page
 {
     /**
      * The database connection

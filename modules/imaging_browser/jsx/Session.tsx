@@ -1,4 +1,5 @@
-import React, {createContext, useState} from 'react';
+import {createContext, useEffect, useState} from 'react';
+import {createRoot} from 'react-dom/client';
 import Table from './SessionTable';
 import Image from './SessionImage';
 
@@ -17,7 +18,7 @@ const ScannerContext = createContext<ScannerState>(
 );
 
 interface ImagesProps {
-  fileIds: number[];
+  fileIDs: number[];
 }
 
 /**
@@ -26,7 +27,7 @@ interface ImagesProps {
  * @returns The React Element
  */
 function Images(props: ImagesProps) {
-  const count = props.fileIds.length;
+  const count = props.fileIDs.length;
   let title: string;
   switch (count) {
     case 0:
@@ -46,8 +47,8 @@ function Images(props: ImagesProps) {
         {title}
       </h3>
       <div style={{display: 'flex', flexWrap: 'wrap'}}>
-      {props.fileIds.map((fileId, key) => (
-        <Image key={key} fileId={fileId} />
+      {props.fileIDs.map((fileID, key) => (
+        <Image key={key} fileID={fileID} />
       ))}
       </div>
     </>
@@ -55,7 +56,6 @@ function Images(props: ImagesProps) {
 }
 
 interface SessionProps {
-  sessionID: number;
   fileIDs: number[];
 }
 
@@ -70,17 +70,68 @@ function Session(props: SessionProps) {
     <div style={{display: 'flex', flexDirection: 'column'}}>
       <ScannerContext.Provider value={scannerState}>
         <Table />
-        <Images fileIds={props.fileIDs} />
+        <Images fileIDs={props.fileIDs} />
       </ScannerContext.Provider>
     </div>
   );
 }
 
-const RSession = React.createFactory(Session);
+interface SessionWrapperProps {
+  sessionID: number;
+  output: string | null;
+  selected: string | null;
+}
 
-(window as any).RSession = RSession;
+/**
+ * View Session Wrapper component
+ *
+ * @returns The React element
+ */
+function SessionWrapper(props: SessionWrapperProps) {
+  const [fileIDs, setFileIDs] = useState<number[] | null>(null);
+  useEffect(() => {
+    let url = window.location.origin
+      + `/imaging_browser/getfiles?sessionID=${props.sessionID}`;
 
-export default RSession;
+    if (props.output !== null) {
+      url += `&output=${props.output}`;
+    }
+
+    if (props.selected !== null) {
+      url += `&selected=${props.selected}`;
+    }
+
+    fetch(url,
+      {credentials: 'same-origin'})
+      .then((response) => response.json())
+      .then((data) => setFileIDs(data.fileIDs));
+  }, [props]);
+
+  return fileIDs !== null
+    ? <Session fileIDs={fileIDs} />
+    : null;
+}
+
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const sessionID = params.get('sessionID');
+  const output = params.get('outputType');
+  const selected = params.get('selectedOnly');
+  if (sessionID === null) {
+    return;
+  }
+
+  createRoot(
+    document.getElementById('lorisworkspace') as HTMLElement
+  ).render(
+    <SessionWrapper
+      sessionID={parseInt(sessionID)}
+      output={output}
+      selected={selected}
+    />
+  );
+});
+
 export {
   ScannerContext,
 };

@@ -86,7 +86,7 @@ function Scanner() {
   useEffect(() => {
     if (scannerID !== null) {
       fetch(window.location.origin
-        + `/imaging_browser/getscannerdata?scannerID=${scannerID}`,
+        + `/imaging_browser/getscanner?scannerID=${scannerID}`,
         {credentials: 'same-origin'})
         .then((response) => response.json())
         .then((scanner) => setScanner(scanner));
@@ -115,7 +115,7 @@ function TableWrapper() {
 
   useEffect(() => {
     fetch(window.location.origin
-      + `/imaging_browser/getsubjectdata?sessionID=${sessionID}`,
+      + `/imaging_browser/getsubject?sessionID=${sessionID}`,
       {credentials: 'same-origin'})
       .then((response) => response.json())
       .then((subject) => setSubject(subject));

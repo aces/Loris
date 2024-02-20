@@ -6,7 +6,7 @@ import ImageButtons from './SessionImageButtons';
 import ImageHeaders from './SessionImageHeaders';
 
 interface ImagePanelHeaderProps {
-  fileId: number;
+  fileID: number;
   filename: string;
   qcStatus: QcStatus | null;
   bodyExpanded: boolean;
@@ -35,7 +35,7 @@ function ImagePanelHeader(props: ImagePanelHeaderProps) {
     <div className="panel-heading clearfix">
       <input
         type="checkbox"
-        data-file-id={props.fileId}
+        data-file-id={props.fileID}
         className="mripanel user-success"
       />
       <h3 className="panel-title" data-toggle="tooltip" title={props.filename}>
@@ -145,7 +145,7 @@ function ImagePanel(props: ImagePanelProps) {
     <div className="col-xs-12 col-md-6">
       <div className="panel panel-default">
         <ImagePanelHeader
-          fileId={props.image.FileID}
+          fileID={props.image.FileID}
           filename={props.image.Filename}
           qcStatus={props.image.QCStatus}
           bodyExpanded={!bodyExpanded}
@@ -158,7 +158,7 @@ function ImagePanel(props: ImagePanelProps) {
 }
 
 interface ImageWrapperProps {
-  fileId: number;
+  fileID: number;
 }
 
 /**
@@ -171,7 +171,7 @@ function ImageWrapper(props: ImageWrapperProps) {
   const [_, setScanner] = useContext(ScannerContext);
   useEffect(() => {
     fetch(window.location.origin
-      + `/imaging_browser/getimagedata?fileID=${props.fileId}`,
+      + `/imaging_browser/getfile?fileID=${props.fileID}`,
       {credentials: 'same-origin'})
       .then((response) => response.json())
       .then((image) => {

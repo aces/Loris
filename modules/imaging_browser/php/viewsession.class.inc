@@ -28,6 +28,8 @@ namespace LORIS\imaging_browser;
 
 class ViewSession extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     private \Database $_DB;
 
     /**
@@ -114,7 +116,6 @@ class ViewSession extends \NDB_Form
                 $this->_updateVisitStatus();
             }
 
-            $this->_setFilesData();
             $this->tpl_data['showFloatJIV'] = true;
 
             $file = $this->_DB->pselectOne(
@@ -147,53 +148,6 @@ class ViewSession extends \NDB_Form
                          $this->sessionID;
             }
         }
-    }
-
-    /**
-     * Sets files values
-     *
-     * @return NULL
-     */
-    function _setFilesData()
-    {
-        $extra_where_string = "";
-        if (!empty($_REQUEST['selectedOnly'])) {
-            $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
-        }
-        $args = ['SID' => $this->sessionID];
-        // To better support QC for CIVET output a couple of
-        // additional conditions have been put in...
-        if (!empty($_REQUEST['outputType'])) {
-            $outputType = urldecode($_REQUEST['outputType']);
-            if ($outputType=="processed") {
-                $extra_where_string .= " AND OutputType != 'native' ";
-            } elseif ($outputType=="native") {
-                $extra_where_string .= " AND OutputType='native'";
-            } elseif ($outputType=="skull_mask") {
-                $extra_where_string .= " AND (OutputType='skull_mask'
-                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
-            } else {
-                $extra_where_string .= " AND (OutputType=:outputType
-                    OR OutputType='linreg')";
-
-                $args["outputType"] = $outputType;
-            }
-        }
-        $files = $this->_DB->pselect(
-            "SELECT files.FileID, files.ScannerID FROM files
-             LEFT JOIN files_qcstatus as sel
-             on (files.FileID=sel.FileID)
-            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL
-            OR AcquisitionProtocolID not in (1, 2, 3, 52))
-            $extra_where_string
-            ORDER BY files.OutputType,
-                     files.AcquisitionProtocolID,
-                     files.File",
-            $args
-        );
-
-        $this->tpl_data['fileIDs']
-            = array_map(fn($file) => intval($file['FileID']), $files);
     }
 
     /**
@@ -645,5 +599,4 @@ class ViewSession extends \NDB_Form
             )
         );
     }
-
 }
