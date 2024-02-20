@@ -2,9 +2,10 @@
 
 ## Welcome page
 
-1. Assert that: `Instructions` panel, `Recent Qeuries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
-2. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
-3. `Recent Queries` panel
+1. Ensure the module loads only for a user that has the `dataquery_view` permission.
+2. Assert that: `Instructions` panel, `Recent Qeuries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
+3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
+4. `Recent Queries` panel
    1. If not queries are available, make some so they will be added to this section.
    2. Assert that: queries you made have their parameters correctly displayed (i.e. fields and filters).
    3. Assert that: `text filter` immediately filter the queries.
@@ -71,5 +72,29 @@
 
 ## Filters selection page
 
-## Shared queries
+1. Make sure no filter are already selected. The sentence `Currently querying for ALL candidates` should be displayed.
+2. MAke sure the blue notification saying `Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query.` is there.
+3. Make sure a preview result is displayed in the to-right hand corner.
+4. Make sure the `Add Condition` button triggers field select modal.
+   1. Add a field as a filter.
+   2. Assert that: the condition now appears in the filter list.
+   3. Assert that: `Add Condition` and `Import from CSV` buttons are now replaced by `Add "and" condition` and `Add "or" condition`.
+   4. Assert that: the top-right corner is updated.
+5. Make sure `Import from CSV` button feature an upload modal.
+   1. Assert that: sending something different than CSV ends with an `Invalid CSV` alert.
+   2. Test file import by creating and importing different files with the preset options (candidates vs. sessions, DCCID vs. PSCID, with or without headers).
+6. Ensureconditions are organized by making several queries with various operators (AND/OR) and depths (condition groups).
+7. Click on `Run query` button.
+
+
+## Run query page
+
+1. Assert that: the message `Query not yet run` is displayed when page loads.
+2. Assert that: changing the `header display format` dropdown immediately changes the table header.
+3. Assert that: changing the `Display visits as` dropdown immediately changes the table organization.
+4. Assert that: `Display visits as = inline values (no download)` has a `Display empty visits?` checkbox.
+5. Make sure the checkbox update the table.
+6. Assert that: the `Download table as CSV` button triggers the file download with the right information in it.
+7. Assert that: table pagination buttons work.
+8. Assert that: table maximum number of rows per page dropdown modifies the number of displayed rows.
 
