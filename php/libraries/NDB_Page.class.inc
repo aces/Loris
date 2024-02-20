@@ -867,7 +867,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      *
      * @return array of strings with URLs to retrieve JS resources
      */
-    function getAllJSDependencies()
+    function getAllJSDependencies(): array
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
