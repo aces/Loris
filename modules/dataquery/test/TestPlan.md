@@ -2,14 +2,12 @@
 
 ## Welcome page
 
-Make sure all displayed components are working as expected.
-
-1. `Instructions` panel, `Recent Qeuries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
-2. `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
+1. Assert that: `Instructions` panel, `Recent Qeuries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
+2. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
 3. `Recent Queries` panel
    1. If not queries are available, make some so they will be added to this section.
    2. Assert that: queries you made have their parameters correctly displayed (i.e. fields and filters).
-   3. Asset that: `text filter` immediately filter the queries.
+   3. Assert that: `text filter` immediately filter the queries.
    4. Assert that: clicking `Collapse queries` effectively collapse all queries.
    5. Make a mix of the following action on different queries: `Star` some queries, `Name` some queries, `Share` some queries, `Rerun` some queries.
    6. Assert that: starred queries have a yellow star, shared queries have a blue shared state.
@@ -29,6 +27,47 @@ Make sure all displayed components are working as expected.
    20. Assert that: clinking on any `study query` send you back to dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
 
 ## Fields selection page
+
+### No visits
+
+1. Select the `Candidate Identifiers` field category in the top dropdown bar.
+2. Assert that: default visits are loaded, fields for this category are loaded.
+3. Assert that: clicking on a field such as `CandID` or `PSCID` only greys the line **AND DOES NOT** add visit information on the same line.
+4. Assert that: clicking `Add all` button adds all displayed fields in the right column.
+5. Assert that: clicking `Remove all` button removes all selected fields from the right column.
+6. Assert that: clicking `Remove all` button another time with no selected fields does nothing.
+7. Enter some text in the fields search bar with `Filter within category` placeholder.
+8. Assert that: clicking `Add all` button only adds the displayed filtered fields in the right column.
+9. Assert that: clicking `Add all` button another time does nothing
+10. Remove all selected fields from right column.
+11. Remove text from fields filter bar.
+12. Click the `Add all` button.
+13. Assert that: clicking the `Clear` button in the `Selected Fields` column effectively clears all selected fields.
+14. Click the `Add all` button.
+15. Assert that: clicking the `trashbin icon` in the `Selected Fields` column effectively removes the selected field **AND** the active selection in the main table.
+16. Assert that: clicking some selected fields in the main table (grey-ish lines in the table) also remove them from the selected column (toggle interaction).
+
+### Visits
+
+1. Select the `Other parameters` field category in the top dropdown bar.
+2. Assert that: default visits are loaded, fields for this category are loaded.
+3. Assert that: clicking on a field such as `VisitLabel` or `Project` greys the line **AND** adds visit information on the same line.
+4. Assert that: removing visits from `Default Visits` allows to reselect them, either by clicking the right arrow, or by entering corresponding text in the text area.
+5. Make sure the `Sync with selected fields` is **NOT** checked out.
+6. Add all visits from `Default Visits` box.
+7. Click some fields in the list.
+8. Assert that: selected fields should have a visit selection box each.
+9. Assert that: all visits should be displayed in the field lines (same as those ni the `Default Visits` box).
+10. Assert that: all selected fields in the right column have all visits described.
+11. Remove some visits from `Default Visits` box.
+12. Click on other fields.
+13. Assert that: new field visits only reflects what the `Default Visits` box is showing.
+14. Assert that: new selected fields in the right column only have the newly default visits.
+15. Check `Sync with selected field` checkbox.
+16. Assert that: fields that were previously with all visits now are only with the selected visits in `Default Visits`.
+17. Make sure field visits are still updatable independantly (line by line).
+18. Make sure if `Default Visits` are changed, it affects all fields.
+
 
 ## Filters selection page
 
