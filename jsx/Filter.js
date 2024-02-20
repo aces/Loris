@@ -1,13 +1,15 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
+    CheckboxElement,
     DateElement,
-    TextboxElement,
-    FormElement,
     FieldsetElement,
     CheckboxElement,
     TimeElement,
+    FormElement,
+    NumericElement,
+    SelectElement,
+    TextboxElement,
 } from 'jsx/Form';
 
 /**

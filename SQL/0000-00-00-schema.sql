@@ -72,6 +72,13 @@ CREATE TABLE `language` (
 INSERT INTO language (language_code, language_label) VALUES
     ('en-CA', 'English');
 
+CREATE TABLE `sex` (
+  `Name` varchar(255) NOT NULL,
+  PRIMARY KEY `Name` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
+
+INSERT INTO sex (Name) VALUES ('Male'), ('Female'), ('Other');
+
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `UserID` varchar(255) NOT NULL default '',
@@ -151,7 +158,7 @@ CREATE TABLE `candidate` (
   `DoB` date DEFAULT NULL,
   `DoD` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
-  `Sex` enum('Male','Female','Other') DEFAULT NULL,
+  `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
   `RegistrationProjectID` int(10) unsigned NOT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
@@ -166,7 +173,7 @@ CREATE TABLE `candidate` (
   `flagged_other_status` enum('not_answered') DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
-  `ProbandSex` enum('Male','Female','Other') DEFAULT NULL,
+  `ProbandSex` varchar(255) DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -175,9 +182,13 @@ CREATE TABLE `candidate` (
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
+  KEY `FK_candidate_sex_1` (`Sex`),
+  KEY `FK_candidate_sex_2` (`ProbandSex`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE
+  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_sex_1` FOREIGN KEY (`Sex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_sex_2` FOREIGN KEY (`ProbandSex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `session` (

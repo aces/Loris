@@ -220,6 +220,7 @@ function getProbandInfoFields()
         'ageDifference'    => $ageDifference,
         'extra_parameters' => $extra_parameters,
         'parameter_values' => $parameter_values,
+        'sexOptions'       => \Utility::getSexList(),
     ];
 
     return $result;
