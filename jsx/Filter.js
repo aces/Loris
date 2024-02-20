@@ -4,7 +4,6 @@ import {
     CheckboxElement,
     DateElement,
     FieldsetElement,
-    CheckboxElement,
     TimeElement,
     FormElement,
     NumericElement,
