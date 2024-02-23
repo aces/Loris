@@ -63,9 +63,9 @@ class AcknowledgementsIndex extends Component {
         databaseProgramming: 'Database Programming',
         imagingProcessingAndEvaluation: 'Imaging Processing and Evaluation',
         geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis '
-                                             + 'and Biochemical Assays',
+          + 'and Biochemical Assays',
         randomizationAndPharmacyAllocation: 'Randomization '
-                                            + 'and Pharmacy Allocation',
+          + 'and Pharmacy Allocation',
         consultants: 'Consultants',
         lpCsfCollection: 'LP/CSF Collection',
       },
@@ -161,27 +161,27 @@ class AcknowledgementsIndex extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => {
-      if (resp.ok && resp.status === 200) {
-        swal.fire(
-          'Success!',
-          'Acknowledgement added.',
-          'success'
-        ).then((result) => {
-          if (result.value) {
-            this.closeModalForm();
-            this.fetchData();
-          }
-        });
-      } else {
-        resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      .then((resp) => {
+        if (resp.ok && resp.status === 200) {
+          swal.fire(
+            'Success!',
+            'Acknowledgement added.',
+            'success'
+          ).then((result) => {
+            if (result.value) {
+              this.closeModalForm();
+              this.fetchData();
+            }
+          });
+        } else {
+          resp.text().then((message) => {
+            swal.fire('Error!', message, 'error');
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   /**
@@ -195,8 +195,8 @@ class AcknowledgementsIndex extends Component {
     let parsed = '';
     if (data && data.includes(',')) {
       data = data.split(',');
-      for (let i=0; i<data.length; i++) {
-        if (i===0) {
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
           parsed = this.state[key][data[i]];
         } else {
           parsed = parsed + ', ' + this.state[key][data[i]];
@@ -354,7 +354,7 @@ class AcknowledgementsIndex extends Component {
             value={this.state.formData.addEndDate}
             maxYear={this.state.data.maxYear}
             minYear={this.state.formData.addStartDate
-                    || this.state.data.minYear}
+              || this.state.data.minYear}
             disabled={disableEndDate}
             required={requireEndDate}
             onUserInput={this.setFormData}
@@ -395,40 +395,50 @@ class AcknowledgementsIndex extends Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in acknowledgements.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in acknowledgements.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Ordering', show: true},
-      {label: 'Full Name', show: true, filter: {
-        name: 'fullName',
-        type: 'text',
-      }},
-      {label: 'Citation Name', show: true, filter: {
-        name: 'citationName',
-        type: 'text',
-      }},
+      {
+        label: 'Full Name', show: true, filter: {
+          name: 'fullName',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Citation Name', show: true, filter: {
+          name: 'citationName',
+          type: 'text',
+        },
+      },
       {label: 'Affiliations', show: true},
       {label: 'Degrees', show: true},
       {label: 'Roles', show: true},
-      {label: 'Start Date', show: true, filter: {
-        name: 'startDate',
-        type: 'date',
-      }},
-      {label: 'End Date', show: true, filter: {
-        name: 'endDate',
-        type: 'date',
-      }},
-      {label: 'Present', show: true, filter: {
-        name: 'present',
-        type: 'select',
-        options: options.presents,
-      }},
+      {
+        label: 'Start Date', show: true, filter: {
+          name: 'startDate',
+          type: 'date',
+        },
+      },
+      {
+        label: 'End Date', show: true, filter: {
+          name: 'endDate',
+          type: 'date',
+        },
+      },
+      {
+        label: 'Present', show: true, filter: {
+          name: 'present',
+          type: 'select',
+          options: options.presents,
+        },
+      },
     ];
     const actions = [
       {
@@ -468,7 +478,7 @@ window.addEventListener('load', () => {
   ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
-      submitURL={`${loris.BaseURL}/acknowledgements/`}
+      submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />
   );
