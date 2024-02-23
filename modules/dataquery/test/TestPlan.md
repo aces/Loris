@@ -13,9 +13,9 @@
    5. Make a mix of the following action on different queries: `Star` some queries, `Name` some queries, `Share` some queries, `Rerun` some queries.
    6. Assert that: starred queries have a yellow star, shared queries have a blue shared state.
    7. Assert that using the `Starred Only` checkbox filter only keep the starred one.
-   8. Assert that removing the `Starred Only` checkbox prints the same queries oringinally printed.
+   8. Assert that removing the `Starred Only` checkbox prints the same queries originally printed.
    9. Repeat 3.5. and 3.6. for `Shared Only`, `Named Only` and `No run times` checkboxes.
-   10. Assert that: mixing checkboxes returns the right query selection.
+   10. Assert that: mixing checkboxes returns the right query selection. Only queries that match all of the checked conditions should be displayed.
    11. Remove all pinned queries.
    12. Assert that: there is no `Study Queries` panel at the top of the page.
    13. `Pin` some queries.
@@ -33,7 +33,7 @@
 
 1. Select the `Candidate Identifiers` field category in the top dropdown bar.
 2. Assert that: default visits are loaded, fields for this category are loaded.
-3. Assert that: clicking on a field such as `CandID` or `PSCID` only greys the line **AND DOES NOT** add visit information on the same line.
+3. Assert that: clicking on a candidate-level field such as `CandID` or `PSCID` only highlights the line **AND DOES NOT** add visit information on the same line.
 4. Assert that: clicking `Add all` button adds all displayed fields in the right column.
 5. Assert that: clicking `Remove all` button removes all selected fields from the right column.
 6. Assert that: clicking `Remove all` button another time with no selected fields does nothing.
@@ -66,15 +66,15 @@
 14. Assert that: new selected fields in the right column only have the newly default visits.
 15. Check `Sync with selected field` checkbox.
 16. Assert that: fields that were previously with all visits now are only with the selected visits in `Default Visits`.
-17. Make sure field visits are still updatable independantly (line by line).
+17. Make sure field visits are still updatable independently (line by line).
 18. Make sure if `Default Visits` are changed, it affects all fields.
 
 
 ## Filters selection page
 
 1. Make sure no filter are already selected. The sentence `Currently querying for ALL candidates` should be displayed.
-2. MAke sure the blue notification saying `Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query.` is there.
-3. Make sure a preview result is displayed in the to-right hand corner.
+2. Make sure the blue notification saying `Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query.` is there.
+3. Make sure a preview of the number of candidates matched is displayed in the top-right hand corner.
 4. Make sure the `Add Condition` button triggers field select modal.
    1. Add a field as a filter.
    2. Assert that: the condition now appears in the filter list.
@@ -83,7 +83,7 @@
 5. Make sure `Import from CSV` button feature an upload modal.
    1. Assert that: sending something different than CSV ends with an `Invalid CSV` alert.
    2. Test file import by creating and importing different files with the preset options (candidates vs. sessions, DCCID vs. PSCID, with or without headers).
-6. Ensureconditions are organized by making several queries with various operators (AND/OR) and depths (condition groups).
+6. Ensure conditions are organized by making several queries with various operators (AND/OR) and depths (condition groups).
 7. Click on `Run query` button.
 
 
