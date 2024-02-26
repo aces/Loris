@@ -1,6 +1,6 @@
 # Imaging Quality Control - Test Plan
 1. Access Imaging Quality Control page, ensure that it renders.
-2. Make sure this module can be viewed if and only if the user has “Quality Control access” permission.
+2. Make sure this module can be viewed if and only if the user has “Imaging Quality Control: View Flagged Imaging Entries” (DB name: imaging_quality_control_view) permission.
 3. Change maximum rows per page. Ensure that the number of rows displayed changes correspondingly each time.
 4. Navigate through pages by selecting the page numbers at the top right of the result section and the bottom right of the result section.
 5. Navigate from first to last page & vice versa using the double arrows at the top right of the result section and the bottom right of the result section.
