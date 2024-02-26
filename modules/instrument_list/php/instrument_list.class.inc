@@ -297,23 +297,16 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->tpl_data['display']
             = array_merge($this->candidate->getData(), $this->timePoint->getData());
         // DoB to Derived Age
-        $dob_age=null;
-        // DoB to Derived Age
-        $dob       = $this->candidate->getData();
-        if ($dob['DoB'] !=null && isset($dob['DoB']) ) {
-            $dob_year  = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
-            $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
-            $dob_age   = $dob_year . " y / " . $dob_month . " m";
-        }       
+        $dob       = $this->candidate->getCandidateDoB();
+        $dob_year  = abs((date('Y', strtotime($dob)) - date('Y')));
+        $dob_month = abs((date('m', strtotime($dob)) - date('m')));
+        $dob_age   = $dob_year . " y / " . $dob_month . " m";
         $this->tpl_data['dob_age'] = $dob_age;
-
-        $edc_age=null;
-        $edc       = $this->candidate->getData();
-        if ($edc['EDC'] !=null && isset($edc['EDC']) ) {
-            $edc_year  = abs((date('Y', strtotime($edc['EDC'])) - date('Y')));
-            $edc_month = abs((date('m', strtotime($edc['EDC'])) - date('m')));
-            $edc_age   = $edc_year . " y / " . $edc_month . " m";
-        }       
+        // EDC to EDC Age
+        $edc       = $this->candidate->getCandidateEDC();
+        $edc_year  = abs((date('Y', strtotime($edc)) - date('Y')));
+        $edc_month = abs((date('m', strtotime($edc)) - date('m')));
+        $edc_age   = $edc_year . " y / " . $edc_month . " m";
         $this->tpl_data['edc_age'] = $edc_age;
     }
 

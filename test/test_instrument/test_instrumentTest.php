@@ -33,11 +33,26 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'UserID'                => 1,
-                'Entity_type'           => 'Human',
-                'Sex'                   => 'Female',
-                'DoB'                   => '2003-12-12',
-                'EDC'                   => '2003-12-12'
-            ]                  
+		        'Entity_type'           => 'Human',
+                'ExternalID' => NULL,
+                'DoB' => '2003-10-31',
+                'DoD' => NULL,
+                'EDC' => '2003-11-30',
+                'Sex' => 'Male',
+                'Ethnicity' => NULL,
+                'Active' => 'Y',
+                'Date_active' => '2016-01-23',
+                'RegisteredBy' => NULL,
+                'Date_registered' => '2016-01-23',
+                'flagged_caveatemptor' => 'false',
+                'flagged_reason' => NULL,
+                'flagged_other' => NULL,
+                'flagged_other_status' => NULL,
+                'Testdate' => '2019-06-20 12:10:04',
+                'Entity_type' => 'Human',
+                'ProbandSex' => NULL,
+                'ProbandDoB' => NULL
+	        ]
         );
         $this->DB->insert(
             'session',
@@ -241,4 +256,3 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         );
     }
 }
-
