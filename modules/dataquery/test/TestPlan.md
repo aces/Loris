@@ -80,11 +80,12 @@
    2. Assert that: the condition now appears in the filter list.
    3. Assert that: `Add Condition` and `Import from CSV` buttons are now replaced by `Add "and" condition` and `Add "or" condition`.
    4. Assert that: the top-right corner is updated.
-5. Make sure `Import from CSV` button feature an upload modal.
+5. Remove added conditions with the trashbin icon on the right.
+6. Make sure `Import from CSV` button feature an upload modal.
    1. Assert that: sending something different than CSV ends with an `Invalid CSV` alert.
    2. Test file import by creating and importing different files with the preset options (candidates vs. sessions, DCCID vs. PSCID, with or without headers).
-6. Ensure conditions are organized by making several queries with various operators (AND/OR) and depths (condition groups).
-7. Click on `Run query` button.
+7. Ensure conditions are organized by making several queries with various operators (AND/OR) and depths (condition groups).
+8. Click on `Run query` button.
 
 
 ## Run query page
