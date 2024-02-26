@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {NumericElement} from 'jsx/Form';
+import {
+    ButtonElement,
+    FormElement,
+    StaticElement,
+    SelectElement,
+    NumericElement,
+} from 'jsx/Form';
 
 /**
  * Battery Manager Form
