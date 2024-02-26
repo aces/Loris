@@ -3,7 +3,7 @@
 ## Welcome page
 
 1. Ensure the module loads only for a user that has the `dataquery_view` permission.
-2. Assert that: `Instructions` panel, `Recent Qeuries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
+2. Assert that: `Instructions` panel, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
 3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
 4. `Recent Queries` panel
    1. If not queries are available, make some so they will be added to this section.
