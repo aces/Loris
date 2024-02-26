@@ -18,7 +18,24 @@
    10. Assert that: mixing checkboxes returns the right query selection. Only queries that match all of the checked conditions should be displayed.
    11. Remove all pinned queries.
    12. Assert that: there is no `Study Queries` panel at the top of the page.
-   13. `Pin` some queries.
+   13. Click the `Pin` icon to pin some queries.
+      1. With and empty text in the `query name` text field, click the `Submit` button.
+      2. Assert that: the error message `Must provide a query name to pin query as.` is triggered.
+      3. Unchecking all checkboxes (i.e. `Pin Study Query` and `Pin Dashboard Summary`).
+      4. Assert that: clicking `Submit` triggers the error message `Must pin as study query or pin to dashboard.`.
+      5. Check the `Pin Study Query` checkbox and click the submit button.
+      6. Assert that: the query is now pinned at the top of the page in the `Study Queries` panel.
+      7. Go to LORIS main page by clicking the `LORIS` name in the top-left corner.
+      8. Assert that: the query is **NOT** displayed inside the right-side `Study Queries` panel.
+      9. Go back to the module.
+      10. Create a new named pinned query, only checking the `Pin Dashboard Summary` this time.
+      11. Assert that: the query is **NOT** pinned at the top of the page in the `Study Queries` panel.
+      12. Go to LORIS main page by clicking the `LORIS` name in the top-left corner.
+      13. Assert that: the query is displayed inside the right-side `Study Queries` panel.
+      14. Click the pinned query.
+      15. Assert that: the confirmation message `Query loaded` is displayed and query can immediately be executed.
+      16. Try pinning a query with both `Pin Study Query` and `Pin Dashboard Summary` options.
+      17. Assert that: both `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page are displayed.
    14. Assert that: the query is now pinned at the top of the page, in `Study Queries` panel.
    15. Go back to `LORIS main page`.
    16. Assert that: `starred queries` are available in the right side `Starred Queries` panel.
