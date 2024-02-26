@@ -84,9 +84,14 @@ class Charts extends \NDB_Page
         if (count($pathparts) != 2) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
+
         switch ($pathparts[1]) {
         case 'siterecruitment_pie':
             return $this->_handleSitePieData();
+        case 'agerecruitment_pie':
+            return $this->_handleAgePieData();
+        case 'ethnicity_pie':
+            return $this->_handleEthnicityPieData();
         case 'siterecruitment_bysex':
             return $this->_handleSiteSexBreakdown();
         case 'scans_bymonth':
@@ -105,20 +110,29 @@ class Charts extends \NDB_Page
      */
     private function _handleSitePieData()
     {
-        $DB = \NDB_Factory::singleton()->database();
-
-        $recruitmentBySiteData = [];
+        $params        = $this->_parseGetParameters();
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
+
+        $conditions = $this->_buildQueryConditions($params);
+
+        $DB = \NDB_Factory::singleton()->database();
+        $recruitmentBySiteData = [];
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $totalRecruitment = $DB->pselectOne(
                 "SELECT COUNT(c.CandID)
                 FROM candidate c
-                WHERE
-                c.RegistrationCenterID=:Site AND
-                c.Active='Y' AND
-                c.Entity_type='Human'",
+                {$conditions['cohortJoin']}
+                {$conditions['participantStatusJoin']}
+                WHERE c.RegistrationCenterID=:Site
+                AND c.Active='Y'
+                AND c.Entity_type='Human'
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}",
                 ['Site' => $siteID]
             );
 
@@ -137,31 +151,179 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteSexBreakdown()
     {
-        $DB            = \NDB_Factory::singleton()->database();
-        $sexData       = [];
+        $params        = $this->_parseGetParameters();
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
+        $conditions = $this->_buildQueryConditions($params);
+
+        $DB      = \NDB_Factory::singleton()->database();
+        $sexData = [];
+
         foreach ($list_of_sites as $siteID => $siteName) {
-            $sexData['labels'][] = $siteName;
-            $sexData['datasets']['female'][] = $DB->pselectOne(
+            $female_data = $DB->pselectOne(
                 "SELECT COUNT(c.CandID)
                 FROM candidate c
+                {$conditions['cohortJoin']}
+                {$conditions['participantStatusJoin']}
                 WHERE c.RegistrationCenterID=:Site
-                    AND c.Sex='female' AND c.Active='Y'
-                    AND c.Entity_type='Human'",
+                AND c.Sex='female' AND c.Active='Y'
+                AND c.Entity_type='Human'
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}",
                 ['Site' => $siteID]
             );
-            $sexData['datasets']['male'][]   = $DB->pselectOne(
+            $male_data   = $DB->pselectOne(
                 "SELECT COUNT(c.CandID)
                 FROM candidate c
-                WHERE c.RegistrationCenterID=:Site AND c.Sex='male' AND c.Active='Y'
-                AND c.Entity_type='Human'",
+                {$conditions['cohortJoin']}
+                {$conditions['participantStatusJoin']}
+                WHERE c.RegistrationCenterID=:Site
+                AND c.Sex='male' AND c.Active='Y'
+                AND c.Entity_type='Human'
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}",
                 ['Site' => $siteID]
             );
+            if ($male_data !== '0' && $female_data !== '0') {
+                $sexData['labels'][]           = $siteName;
+                $sexData['datasets']['male'][] = $male_data;
+                $sexData['datasets']['female'][] = $female_data;
+            }
         }
+
         return (new \LORIS\Http\Response\JsonResponse($sexData));
     }
+
+    /**
+     * Handle an incoming request for age pie data.
+     *
+     * @return ResponseInterface
+     */
+    private function _handleAgePieData()
+    {
+        $params = $this->_parseGetParameters();
+
+        $conditions = $this->_buildQueryConditions($params);
+
+        $DB = \NDB_Factory::singleton()->database();
+
+        $dates = $DB->pselect(
+            "SELECT DISTINCT c.CandID, c.DoB, c.Date_registered
+            FROM candidate c
+            {$conditions['cohortJoin']}
+            {$conditions['participantStatusJoin']}
+            WHERE c.DoB IS NOT NULL
+            AND c.DoB <= c.date_registered
+            AND c.Active='Y'
+            AND c.Entity_type='Human'
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}",
+            []
+        );
+
+        // Initialize an array to store the dynamic age splits
+        $ageSplits = [];
+
+        foreach ($dates as $_ => $value) {
+            // Note that age is calculated from date registered, not today
+            $ageOb = \Utility::calculateAge(
+                $value['DoB'],
+                $value['Date_registered']
+            );
+            $age   = $ageOb['year'];
+
+            // Determine the starting point of the age split (a multiple of 5)
+            $startOfSplit = intval(floor($age / 5) * 5);
+
+            // Check if the age split already exists in the array
+            if (!isset($ageSplits[$startOfSplit])) {
+                // If not, create a new entry with the starting age as the key
+                $ageSplits[$startOfSplit] = 0;
+            }
+
+            // Increment the count for the corresponding age split
+            ++$ageSplits[$startOfSplit];
+        }
+
+        // Convert the dynamic age splits into the desired format
+        $recruitmentByAgeData = [];
+        foreach ($ageSplits as $startOfSplit => $count) {
+            $endOfSplit = $startOfSplit + 4; // Adjust the age range as needed
+            $label      = $startOfSplit . '-' . $endOfSplit;
+            $recruitmentByAgeData[] = ["label" => $label, "total" => $count];
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData));
+    }
+
+    /**
+     * Handle an incoming request for ethnicity pie data.
+     *
+     * @return ResponseInterface
+     */
+    private function _handleEthnicityPieData()
+    {
+        $params = $this->_parseGetParameters();
+
+        $conditions = $this->_buildQueryConditions($params);
+
+        $DB = \NDB_Factory::singleton()->database();
+
+        $candidates = $DB->pselect(
+            "SELECT DISTINCT c.CandID, c.Ethnicity
+            FROM candidate c
+            {$conditions['cohortJoin']}
+            {$conditions['participantStatusJoin']}
+            WHERE c.Active='Y'
+            AND c.Entity_type='Human'
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}",
+            []
+        );
+
+        // Initialize an array to store the ethnicities
+        $ethnicities = [];
+
+        foreach ($candidates as $_ => $value) {
+            // Check if the ethnicity already exists in the array
+            if (!isset($ethnicities[$value["Ethnicity"]])) {
+                // If not, create a new entry with the ethnicity as the key
+                $ethnicities[$value["Ethnicity"]] = 0;
+            }
+
+            // Increment the count for the corresponding ethnicity
+            ++$ethnicities[$value["Ethnicity"]];
+        }
+
+        // Convert into the desired format
+        $recruitmentByEthnicityData = [];
+        foreach ($ethnicities as $id => $count) {
+            $id = str_replace("_", " ", $id);
+            $id = strtolower($id);
+            $id = ucwords($id);
+            if ($id == null) {
+                $id = "Unknown";
+            }
+            $label = $id;
+            $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($recruitmentByEthnicityData));
+    }
+
 
     /**
      * Handle an incoming request for monthly progression
@@ -170,8 +332,13 @@ class Charts extends \NDB_Page
      */
     private function _handleScansByMonth()
     {
-        $DB = \NDB_Factory::singleton()->database();
+        $params        = $this->_parseGetParameters();
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
+        $conditions = $this->_buildQueryConditions($params, true);
+
+        $DB       = \NDB_Factory::singleton()->database();
         $scanData = [];
         // Run a query to get all the data. Order matters to ensure that the
         // labels are calculated in the correct order.
@@ -182,13 +349,20 @@ class Charts extends \NDB_Page
             FROM files f
             LEFT JOIN parameter_file pf USING (FileID)
             LEFT JOIN session s ON (s.ID=f.SessionID)
+            {$conditions['participantStatusJoin']}
             JOIN parameter_type pt USING (ParameterTypeID)
             WHERE pt.Name='acquisition_date'
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}
             GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID, datelabel
             ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
             []
         );
 
+        // TODO: make this work as bar data
         // Create the labels.
         //
         // We want to ensure that every month label appear exactly once and
@@ -205,8 +379,6 @@ class Charts extends \NDB_Page
         $scanData['labels'] = array_keys($labels);
 
         // Massage the data into the appropriate format per site.
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = $user->getStudySites();
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = [
                 "name" => $siteName,
@@ -263,17 +435,29 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteLineData()
     {
+        $params        = $this->_parseGetParameters();
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
+
+        $conditions = $this->_buildQueryConditions($params);
+
         $DB = \NDB_Factory::singleton()->database();
 
-        $recruitmentData      = [];
-        $recruitmentStartDate = $DB->pselectOne(
-            "SELECT MIN(Date_registered) FROM candidate",
+        $recruitmentData  = [];
+        $recruitmentBound = $DB->pselect(
+            "SELECT MIN(c.Date_registered), MAX(c.Date_registered)
+            FROM candidate c
+            {$conditions['cohortJoin']}
+            WHERE c.Entity_type='Human'
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['visitQuery']}",
             []
         );
-        $recruitmentEndDate   = $DB->pselectOne(
-            "SELECT MAX(Date_registered) FROM candidate",
-            []
-        );
+
+        $recruitmentStartDate = $recruitmentBound[0]['MIN(c.Date_registered)'];
+        $recruitmentEndDate   = $recruitmentBound[0]['MAX(c.Date_registered)'];
 
         if ($recruitmentStartDate !== null
             && $recruitmentEndDate !== null
@@ -282,24 +466,152 @@ class Charts extends \NDB_Page
                 new \DateTimeImmutable($recruitmentStartDate),
                 new \DateTimeImmutable($recruitmentEndDate)
             );
+        } else {
+            $recruitmentData['labels'] = [];
         }
 
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = $user->getStudySites();
-
         foreach ($list_of_sites as $siteID => $siteName) {
-            if (!isset($recruitmentData['labels'])) {
-                continue;
-            }
             $recruitmentData['datasets'][] = [
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
                     $recruitmentData['labels'],
+                    $conditions['cohortJoin'],
+                    $conditions['participantStatusJoin'],
+                    $conditions['cohortQuery'],
+                    $conditions['projectQuery'],
+                    $conditions['participantStatusQuery']
                 ),
             ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentData);
+    }
+
+    /**
+     * Helper to parse the GET parameters from the incoming request.
+     *
+     * @return array
+     */
+    private function _parseGetParameters()
+    {
+        $selectedProjects = empty($_GET['selectedProjects'])
+        || $_GET['selectedProjects'] === 'null'
+        || $_GET['selectedProjects'] === 'undefined'
+        ? null : explode(",", $_GET['selectedProjects']);
+        $selectedCohorts  = empty($_GET['selectedCohorts'])
+        || $_GET['selectedCohorts'] === 'null'
+        || $_GET['selectedCohorts'] === 'undefined'
+        ? null : explode(",", $_GET['selectedCohorts']);
+        $selectedSites    = empty($_GET['selectedSites'])
+            || $_GET['selectedSites'] === 'null'
+            || $_GET['selectedSites'] === 'undefined'
+            ? null : explode(",", $_GET['selectedSites']);
+        $selectedVisits   = empty($_GET['selectedVisits'])
+            || $_GET['selectedVisits'] === 'null'
+            || $_GET['selectedVisits'] === 'undefined'
+            ? null : explode(",", $_GET['selectedVisits']);
+        $selectedParticipantStatus = empty(
+            $_GET['selectedParticipantStatus']
+        )
+                || $_GET['selectedParticipantStatus'] === 'null'
+                || $_GET['selectedParticipantStatus'] === 'undefined' ? null
+            : explode(
+                ",",
+                $_GET['selectedParticipantStatus']
+            );
+
+        return [
+            'selectedProjects'          => $selectedProjects,
+            'selectedCohorts'           => $selectedCohorts,
+            'selectedSites'             => $selectedSites,
+            'selectedVisits'            => $selectedVisits,
+            'selectedParticipantStatus' => $selectedParticipantStatus,
+        ];
+    }
+
+    /**
+     * Helper to generate query conditions for for incoming requests.
+     *
+     * @param array $params       The parameters from the incoming request.
+     * @param bool  $scansbymonth Whether or not the request is for scans by month.
+     *
+     * @return array
+     */
+    private function _buildQueryConditions(
+        $params,
+        $scansbymonth = false
+    ) {
+        $user = \NDB_Factory::singleton()->user();
+
+        $projectQuery = '';
+        $cohortQuery  = '';
+        $cohortJoin   = '';
+        $visitQuery   = '';
+        $PSJoin       = '';
+        $participantStatusQuery = '';
+
+        if (!is_null($params['selectedProjects'])) {
+            $projectString = "'" . implode("','", $params['selectedProjects']) . "'";
+            $projectQuery  = " AND c.RegistrationProjectID IN ({$projectString}) ";
+        }
+
+        if (!is_null($params['selectedCohorts'])) {
+            $cohortString = "'" . implode("','", $params['selectedCohorts']) . "'";
+            $cohortQuery  = " AND s.CohortID IN ({$cohortString}) ";
+            $cohortJoin   = "JOIN session s ON s.CandID=c.CandID";
+        }
+        if (!is_null($params['selectedSites'])) {
+            // Set site query if selected
+            $siteString = "'" . implode("','", $params['selectedSites']) . "'";
+            $siteQuery  = " AND c.RegistrationCenterID IN ({$siteString}) ";
+            if ($scansbymonth === true) {
+                $siteQuery = " AND s.CenterID IN ({$siteString}) ";
+            }
+        } else {
+            // If not selected, only take user sites
+            $centerIDs  = $user->getCenterIDs();
+            $centerList = "'" . implode("','", $centerIDs) . "'";
+            $siteQuery  = " AND c.RegistrationCenterID IN ({$centerList}) ";
+            if ($scansbymonth === true) {
+                $siteQuery = " AND s.CenterID IN ({$centerList}) ";
+            }
+        }
+        if (!is_null($params['selectedVisits'])) {
+            // Set visit query if visits selected
+            $visitString = "'" . implode("','", $params['selectedVisits']) . "'";
+            $visitQuery  = " AND s.Visit_label IN ({$visitString}) ";
+            // since they are the same, if visits are selected,
+            // then the cohort string is overwritten
+            $cohortJoin = "JOIN session s ON s.CandID=c.CandID";
+        }
+        if (!is_null($params['selectedParticipantStatus'])) {
+            $PSJoin = 'LEFT JOIN participant_status ps ON c.CandID=ps.CandID';
+            $participantStatusString = "'" . implode(
+                "','",
+                $params['selectedParticipantStatus']
+            ) . "'";
+            // Null participant status counts as Active because
+            // sometimes users do not update the participant_status tab
+            if (in_array('1', $params['selectedParticipantStatus'])) {
+                $participantStatusQuery = " AND (
+                    ps.participant_status IN ({$participantStatusString}) 
+                    OR ps.participant_status IS NULL
+                )";
+            } else {
+                $participantStatusQuery = " AND ps.participant_status
+                IN ({$participantStatusString}) ";
+            }
+        }
+
+        return [
+            'projectQuery'           => $projectQuery,
+            'cohortQuery'            => $cohortQuery,
+            'cohortJoin'             => $cohortJoin,
+            'visitQuery'             => $visitQuery,
+            'siteQuery'              => $siteQuery,
+            'participantStatusJoin'  => $PSJoin,
+            'participantStatusQuery' => $participantStatusQuery,
+        ];
     }
 
     /**
@@ -333,27 +645,50 @@ class Charts extends \NDB_Page
     /**
      * Helper to generate the data for the site recruitment line for $siteID.
      *
-     * @param int   $siteID The centerID to get data for.
-     * @param array $labels The list of labels on the chart to fill the data for.
+     * @param int    $siteID                 The centerID to get data for.
+     * @param array  $labels                 The list of labels on the chart
+     *                                       to fill the data for.
+     * @param String $cohortJoin             The join statement for cohort if needed
+     * @param String $PSJoin                 The join statement for
+     *                                       participantStatusJoin
+     *                                       if needed
+     * @param String $cohortQuery            The where statement for cohort if needed
+     * @param String $projectQuery           The where statement
+     *                                       for project if needed
+     * @param String $participantStatusQuery The where statement for
+     *                                       participantStatus if needed
      *
      * @return array
      */
-    private function _getSiteLineRecruitmentData($siteID, $labels)
-    {
+    private function _getSiteLineRecruitmentData(
+        $siteID,
+        $labels,
+        $cohortJoin,
+        $PSJoin,
+        $cohortQuery,
+        $projectQuery,
+        $participantStatusQuery
+    ) {
         $DB   = \NDB_Factory::singleton()->database();
         $data = [];
 
         foreach ($labels as $label) {
-            $month  = (strlen($label) == 6)
+            $month = (strlen($label) == 6)
                 ? substr($label, 0, 1) : substr($label, 0, 2);
-            $year   = substr($label, -4, 4);
+            $year  = substr($label, -4, 4);
+
             $data[] = $DB->pselectOne(
                 "SELECT COUNT(c.CandID)
                 FROM candidate c
+                {$cohortJoin}
+                {$PSJoin}
                 WHERE c.RegistrationCenterID=:Site
                 AND MONTH(c.Date_registered)=:Month
                 AND YEAR(c.Date_registered)=:Year
-                AND c.Entity_type='Human'",
+                AND c.Entity_type='Human'
+                {$cohortQuery}
+                {$projectQuery}
+                {$participantStatusQuery}",
                 [
                     'Site'  => $siteID,
                     'Month' => $month,
