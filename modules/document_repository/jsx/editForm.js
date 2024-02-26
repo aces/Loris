@@ -2,6 +2,14 @@
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    SelectElement,
+    ButtonElement,
+    FileElement,
+} from 'jsx/Form';
 /**
  * Document Edit Form
  *
