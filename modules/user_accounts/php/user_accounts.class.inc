@@ -77,9 +77,24 @@ class User_Accounts extends \DataFrameworkMenu
             'Y' => 'Yes',
             'N' => 'No',
         ];
+        // Get user
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+
+        // Without user_acounts_multisite permission, only show user sites
+        if ($user->hasPermission('user_accounts_multisite')) {
+            $sites = \Utility::getSiteList(false);
+        } else {
+            $sites = [];
+            foreach (\Utility::getSiteList(false) AS $centerID => $centerName) {
+                if ($user->hasCenter(new \CenterID($centerID))) {
+                    $sites[$centerID] = $centerName;
+                }
+            }
+        }
 
         return [
-            'sites'            => \Utility::getSiteList(false),
+            'sites'            => $sites,
             'projects'         => \Utility::getProjectList(),
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
