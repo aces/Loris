@@ -352,7 +352,6 @@ const AnnotationForm = ({
       // }
 
       const data = response.instance;
-      console.log(data);
 
       // TODO: Properly handle new event
       const hedTags = Array.from(data.hedTags).map((hedTag : HEDTag) => {
@@ -373,8 +372,6 @@ const AnnotationForm = ({
           AdditionalMembers: hedTag.AdditionalMembers,
         }
       });
-
-      const data = response.instance;
 
       const epochLabel = [null, 'n/a'].includes(data.instance.TrialType)
           ? null
