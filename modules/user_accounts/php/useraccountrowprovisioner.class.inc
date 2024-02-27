@@ -24,7 +24,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
             $siteLimitQuery = "LEFT JOIN user_psc_rel upsr2
                 ON (upsr2.CenterID=upsr.CenterID)
                 WHERE upsr2.UserID=:uid";
-            $params = ['uid' => $user->getId()];
+            $params         = ['uid' => $user->getId()];
         } else {
             $params = [];
         }
