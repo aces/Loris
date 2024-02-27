@@ -38,7 +38,7 @@ return [
         "php",
         "htdocs",
         "modules",
-        "src",
+	"src",
         "vendor",
         "test"
     ],

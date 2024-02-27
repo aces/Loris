@@ -3,7 +3,7 @@
 }
 
 .react-series-data-viewer-scoped .dropdown-menu li {
-  margin-top: 0;
+  margin: 0;
   padding: 0 10px;
 }
 
@@ -13,6 +13,38 @@
   margin-top: 0;
   width: 100%;
 }
+
+.checkbox-flex-label > div > input[type="checkbox"] {
+  vertical-align: top;
+}
+
+.checkbox-flex-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  justify-content: flex-end;
+}
+
+.btn-dropdown-toggle {
+  padding: 5px 10%;
+}
+
+.col-xs-12 > .btn-dropdown-toggle {
+  padding: 5px;
+  max-width: fit-content;
+}
+
+.col-xs-12 > .dropdown-menu {
+  width: max-content;
+  line-height: 14px;
+  padding: 0
+}
+
+.col-xs-12 > .dropdown-menu li {
+  margin: 0;
+  padding: 0;
+}
+
 
 .btn.btn-xs {
   font-size: 12px;
@@ -46,42 +78,51 @@ svg:not(:root) {
   overflow: clip;
 }
 
-.list-group-item {
+.annotation.list-group-item {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  padding: 0;
+  width: 100%;
 }
 
 .annotation {
   background: #fffae6;
-  border-left: 5px solid #ff6600;
+  border-left: 5px solid #8eecfa;
 }
 
 .epoch-details {
-  padding-right: 100px;
+  display: flex;
+  width: 100%;
+  padding: 10px 0;
 }
 
 .epoch-action {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
-  position: absolute;
-  right: 10px;
 }
 
 .epoch-tag {
-  padding: 5px;
+  padding: 10px;
   background: #e7e4e4;
-  border-left: 5px solid #797878;
+  word-wrap: break-word;
   width: 100%;
 }
 
-.epoch-tag p {
-  word-wrap: break-word;
-  width: 95%;
+.line-height-14 {
+  line-height: 14px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.flex-basis-45 {
+  flex-basis: 45%
 }
 
 .event-list .btn.btn-primary {
@@ -111,8 +152,9 @@ svg:not(:root) {
 
 .btn-zoom {
   margin: 0 auto 3px auto;
-  width: 50px;
+  width: 55px;
   text-align: center;
+  text-wrap: unset;
 }
 
 .col-xs-title {
@@ -139,7 +181,7 @@ svg:not(:root) {
 .electrode:hover circle {
   stroke: #064785;
   cursor: pointer;
-  fill: #E4EBF2
+  fill: #E4EBF2;
 }
 
 .electrode:hover text {
@@ -179,6 +221,10 @@ svg:not(:root) {
   vertical-align: top;
   position: relative;
   width: auto;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 /* Custom, iPhone Retina */

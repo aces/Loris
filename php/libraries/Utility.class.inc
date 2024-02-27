@@ -126,6 +126,23 @@ class Utility
     }
 
     /**
+     * Returns list of sex options in the database
+     *
+     * @return array An associative array of sex values.
+     */
+    static function getSexList(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $query = "SELECT Name FROM sex";
+
+        $result = $DB->pselectCol($query, []);
+
+        return array_combine($result, $result);
+    }
+
+    /**
      * Returns a list of sites in the database
      *
      * @param boolean $study_site if true only return study sites from psc
