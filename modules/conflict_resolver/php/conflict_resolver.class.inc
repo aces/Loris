@@ -42,20 +42,14 @@ class Conflict_Resolver extends \NDB_Page
     }
 
     /**
-     * {@inheritDoc}
+     * Add Javascript dependencies
      *
-     * @return array A list of javascript files url.
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/conflict_resolver/js/conflict_resolver.js',
-            ]
-        );
+        return [
+            '/conflict_resolver/js/conflict_resolver.js',
+        ];
     }
 }

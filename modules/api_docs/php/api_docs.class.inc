@@ -84,23 +84,14 @@ class API_Docs extends \NDB_Page
     }
 
     /**
-     * Add JS dependency
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-
-        $baseDeps = parent::getJSDependencies();
-
-        return array_merge(
-            $baseDeps,
-            [
-                $baseurl . '/api_docs/js/swagger-ui_custom.js',
-            ]
-        );
-
+        return [
+            '/api_docs/js/swagger-ui_custom.js',
+        ];
     }
 }

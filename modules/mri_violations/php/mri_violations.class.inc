@@ -161,39 +161,26 @@ class Mri_Violations extends \DataFrameworkMenu
     }
 
     /**
-     * Include additional JS files
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies() : array
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/mri_violations/js/mriViolationsIndex.js",
-            ]
-        );
+        return [
+            '/mri_violations/css/mri_violations.css',
+        ];
     }
 
     /**
-     * Include additional CSS files:
+     * Add Javascript dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/mri_violations/css/mri_violations.css",
-            ]
-        );
+        return [
+            '/mri_violations/js/mriViolationsIndex.js',
+        ];
     }
 }
-

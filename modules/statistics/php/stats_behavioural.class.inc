@@ -377,38 +377,26 @@ class Stats_Behavioural extends \NDB_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the statistics menu
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/statistics/js/form_stats_behavioural.js",
-            ]
-        );
+        return [
+            '/statistics/css/statistics.css',
+        ];
     }
 
     /**
-     * Include additional CSS files:
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/statistics/css/statistics.css"]
-        );
+        return [
+            '/statistics/js/form_stats_behavioural.js',
+        ];
     }
 }
-

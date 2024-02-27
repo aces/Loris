@@ -780,9 +780,32 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that getJSDependencies returns the correct array of dependencies
+     * Test that getAllCSSDependencies returns the correct array of dependencies
      *
-     * @covers NDB_Page::getJSDependencies
+     * @covers NDB_Page::getAllCSSDependencies
+     * @return void
+     */
+    public function testGetCSSDependencies()
+    {
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($configMock);
+        $this->assertEquals(
+            [
+                '/bootstrap/css/bootstrap.min.css',
+                '/bootstrap/css/custom-css.css',
+                '/js/jquery/datepicker/datepicker.css'
+            ],
+            $this->_page->getAllCSSDependencies()
+        );
+    }
+
+    /**
+     * Test that getAllJSDependencies returns the correct array of dependencies
+     *
+     * @covers NDB_Page::getAllJSDependencies
      * @return void
      */
     public function testGetJSDependencies()
@@ -808,30 +831,7 @@ class NDB_PageTest extends TestCase
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
             ],
-            $this->_page->getJSDependencies()
-        );
-    }
-
-    /**
-     * Test that getCSSDependencies returns the correct array of dependencies
-     *
-     * @covers NDB_Page::getCSSDependencies
-     * @return void
-     */
-    public function testGetCSSDependencies()
-    {
-        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        '@phan-var \NDB_Config $configMock';
-
-        $factory = NDB_Factory::singleton();
-        $factory->setConfig($configMock);
-        $this->assertEquals(
-            [
-                '/bootstrap/css/bootstrap.min.css',
-                '/bootstrap/css/custom-css.css',
-                '/js/jquery/datepicker/datepicker.css'
-            ],
-            $this->_page->getCSSDependencies()
+            $this->_page->getAllJSDependencies()
         );
     }
 }

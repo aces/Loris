@@ -83,18 +83,14 @@ class New_Profile extends \NDB_Form
     }
 
     /**
-     * Include additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
     function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/new_profile/js/NewProfileIndex.js']
-        );
+        return [
+            '/new_profile/js/NewProfileIndex.js'
+        ];
     }
 }

@@ -342,37 +342,27 @@ class ViewDetails extends \NDB_Form
     }
 
     /**
-     * Adds custom CSS for the viewdetails table styling.
+     * Add CSS dependencies
      *
-     * @return array of CSS to include in the page
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $depends = parent::getCSSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        return array_merge(
-            $depends,
-            [$baseURL . "/dicom_archive/css/dicom_archive.css"]
-        );
+        return [
+            '/dicom_archive/css/dicom_archive.css',
+        ];
     }
 
     /**
-     * Overrides base getJSDependencies() to add additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/dicom_archive/js/view_details_link.js",
-            ]
-        );
+        return [
+            '/dicom_archive/js/view_details_link.js',
+        ];
     }
 
     /**

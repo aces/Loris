@@ -138,41 +138,27 @@ class Dashboard extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. dashboard.css
+     * Add CSS dependencies
      *
-     * @return array of css to be included
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
         return array_merge(
-            $deps,
-            [$baseURL . "/dashboard/css/dashboard.css"],
+            ['/dashboard/css/dashboard.css'],
             $this->widgetcss,
         );
     }
 
     /**
-     * Add dependency on D3 and C3 javascript libraries
-     * for the pretty dashboards in the chart
+     * Add Javascript dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-
-        $baseDeps = parent::getJSDependencies();
-
         return array_merge(
-            $baseDeps,
-            [
-                $baseurl . '/dashboard/js/dashboard-helper.js',
-            ],
+            ['/dashboard/js/dashboard-helper.js'],
             $this->widgetjs,
         );
     }

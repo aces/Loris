@@ -191,44 +191,26 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. jQuery UI
-     *  2. document_repository.css
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/document_repository/css/document_repository.css",
-            ]
-        );
+        return [
+            '/document_repository/css/document_repository.css',
+        ];
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/document_repository/js/docIndex.js",
-            ]
-        );
+        return [
+            '/document_repository/js/docIndex.js',
+        ];
     }
-
 }
-
-

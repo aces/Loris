@@ -93,22 +93,14 @@ class Dicom_Archive extends \DataFrameworkMenu
     }
 
     /**
-     * Overrides base getJSDependencies() to add support for dicom specific
-     * React column formatters.
+     * Add Javascript dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/dicom_archive/js/dicom_archive.js",
-            ]
-        );
+        return [
+            '/dicom_archive/js/dicom_archive.js',
+        ];
     }
 }
-

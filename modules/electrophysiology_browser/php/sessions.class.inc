@@ -628,43 +628,27 @@ class Sessions extends \NDB_Page
     }
 
     /**
-     * Get JS Dependencies
+     * Add CSS dependencies
      *
-     * @return array of extra JS files that this page depends on
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies()
+    function getCSSDependencies(): array
     {
-        $depends = parent::getJSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = array_merge(
-            $depends,
-            [
-                $baseurl
-                . '/electrophysiology_browser/js/electrophysiologySessionView.js',
-            ]
-        );
-        return $depends;
+        return [
+            '/electrophysiology_browser/css/electrophysiology_browser.css',
+        ];
     }
 
     /**
-     * Get CSS Dependencies
+     * Add Javascript dependencies
      *
-     * @return array
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies()
+    function getJSDependencies(): array
     {
-        $depends = parent::getCSSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = array_merge(
-            $depends,
-            [
-                $baseurl
-                . '/electrophysiology_browser/css/electrophysiology_browser.css',
-            ]
-        );
-        return $depends;
+        return [
+            '/electrophysiology_browser/js/electrophysiologySessionView.js',
+        ];
     }
 
     /**

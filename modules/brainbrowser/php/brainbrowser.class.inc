@@ -50,51 +50,33 @@ class Brainbrowser extends \NDB_Page
     }
 
     /**
-     * Override base function to include brainbrowser javascript files
-     * and dependencies
+     * Add CSS dependencies
      *
-     * @return array of javascript files to be included
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-
-        $deps = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/brainbrowser/js/Brainbrowser.js",
-                $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
-                $baseURL . "/brainbrowser/js/three.min.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.config.js",
-                $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
-            ]
-        );
+        return [
+            '/css/loris-jquery/jquery-ui-1.10.4.custom.min.css',
+            '/brainbrowser/css/volume-viewer-demo.css',
+            '/brainbrowser/css/brainbrowser.css',
+        ];
     }
 
     /**
-     * Include additional CSS files:
-     *  1. jQuery UI
-     *  2. volume-viewer-demo.css
-     *  3. brainbrowser.css
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
-                $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
-                $baseURL . "/brainbrowser/css/brainbrowser.css",
-            ]
-        );
+        return [
+            '/brainbrowser/js/Brainbrowser.js',
+            '/brainbrowser/js/jquery.mousewheel.min.js',
+            '/brainbrowser/js/three.min.js',
+            '/brainbrowser/js/brainbrowser.volume-viewer.min.js',
+            '/brainbrowser/js/brainbrowser.config.js',
+            '/brainbrowser/js/brainbrowser.loris.js',
+        ];
     }
 }
-

@@ -315,20 +315,14 @@ class Instrument_Manager extends \DataFrameworkMenu
     }
 
     /**
-     * {@inheritDoc}
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/instrument_manager/js/instrumentManagerIndex.js",
-            ]
-        );
+        return [
+            '/instrument_manager/js/instrumentManagerIndex.js',
+        ];
     }
 }

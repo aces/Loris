@@ -17,36 +17,26 @@ class Login extends \NDB_Page
     public $skipTemplate = true;
 
     /**
-     * Include additional JS files
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/login/js/loginIndex.js',
-            ]
-        );
-    }
-    /**
-     * Include additional CSS files:
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/login/css/login.css']
-        );
+        return [
+            '/login/css/login.css',
+        ];
     }
 
+    /**
+     * Add Javascript dependencies
+     *
+     * @return array The list of Javascript files this page depends on
+     */
+    function getJSDependencies(): array
+    {
+        return [
+            '/login/js/loginIndex.js',
+        ];
+    }
 }

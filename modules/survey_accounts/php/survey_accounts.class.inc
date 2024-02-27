@@ -104,20 +104,14 @@ class Survey_Accounts extends \DataFrameworkMenu
     }
 
     /**
-     * {@inheritDoc}
+     * Add Javascript dependencies
      *
-     * @return array
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/survey_accounts/js/surveyAccountsIndex.js",
-            ]
-        );
+        return [
+            '/survey_accounts/js/surveyAccountsIndex.js'
+        ];
     }
 }

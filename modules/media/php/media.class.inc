@@ -162,38 +162,26 @@ class Media extends \DataFrameworkMenu
     }
 
     /**
-     * Include additional CSS files:
-     *  1. media.css
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies() : array
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/media/css/media.css"]
-        );
+        return [
+            '/media/css/media.css',
+        ];
     }
 
     /**
-     * Include additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/media/js/mediaIndex.js",
-            ]
-        );
+        return [
+            '/media/js/mediaIndex.js',
+        ];
     }
 }
-

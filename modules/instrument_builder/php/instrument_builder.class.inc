@@ -45,41 +45,29 @@ class Instrument_Builder extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. instrument_builder.css
+     * Add CSS dependencies
      *
-     * @return array of CSS to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/instrument_builder/css/instrument_builder.css"]
-        );
+        return [
+            '/instrument_builder/css/instrument_builder.css',
+        ];
     }
 
     /**
-     * Include additional JS files
+     * Add Javascript dependencies
      *
-     * @return array of JS to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = parent::getJSDependencies();
-        return array_merge(
-            $depends,
-            [
-                $baseurl . "/instrument_builder/js/instrument_builder.instrument.js",
-                $baseurl . "/instrument_builder/js/instrument_builder.rules.js",
-                $baseurl . "/instrument_builder/js/react.questions.js",
-                $baseurl . "/instrument_builder/js/react.instrument_builder.js",
-            ]
-        );
+        return [
+            '/instrument_builder/js/instrument_builder.instrument.js',
+            '/instrument_builder/js/instrument_builder.rules.js',
+            '/instrument_builder/js/react.questions.js',
+            '/instrument_builder/js/react.instrument_builder.js',
+        ];
     }
 }
-

@@ -85,21 +85,6 @@ class View_Project extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. media.js
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies() : array
-    {
-        $deps = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            []
-        );
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
@@ -117,20 +102,14 @@ class View_Project extends \NDB_Form
     }
 
     /**
-     * Include additional JS files:
-     *  1. editForm.js - reactified form to update media
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/publication/js/viewProjectIndex.js"]
-        );
+        return [
+            '/publication/js/viewProjectIndex.js',
+        ];
     }
-
 }

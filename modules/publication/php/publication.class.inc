@@ -252,39 +252,28 @@ class Publication extends \NDB_Menu_Filter_Form
         );
     }
 
-
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies() : array
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/publication/js/publicationIndex.js']
-        );
+        return [
+            '/publication/css/publication.css',
+        ];
     }
 
     /**
-     * Include additional CSS files:
-     *  imaging_uploader.css
+     * Add Javascript dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies() : array
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/publication/css/publication.css']
-        );
+        return [
+            '/publication/js/publicationIndex.js',
+        ];
     }
 
     /**
@@ -312,4 +301,3 @@ class Publication extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-

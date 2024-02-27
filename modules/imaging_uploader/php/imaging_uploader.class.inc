@@ -715,41 +715,32 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return $files;
     }
+
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getJSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/imaging_uploader/js/index.js",
-                $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
-            ]
-        );
+        return [
+            '/imaging_uploader/css/imaging_uploader.css',
+        ];
     }
+
     /**
-     * Include additional CSS files:
-     *  imaging_uploader.css
+     * Add Javascript dependencies
      *
-     * @return array of css to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getCSSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
-        );
+        return [
+            '/imaging_uploader/js/index.js',
+            '/imaging_uploader/js/imaging_uploader_helper.js',
+        ];
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json

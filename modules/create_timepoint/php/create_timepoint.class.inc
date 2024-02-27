@@ -77,22 +77,16 @@ class Create_Timepoint extends \NDB_Form
             )
         );
     }
+
     /**
-     * Get js Dependencies
+     * Add Javascript dependencies
      *
-     * @return array
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $depends = parent::getJSDependencies();
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = array_merge(
-            $depends,
-            [
-                $baseurl . '/create_timepoint/js/createTimepointIndex.js',
-            ]
-        );
-        return $depends;
+        return [
+            '/create_timepoint/js/createTimepointIndex.js',
+        ];
     }
 }

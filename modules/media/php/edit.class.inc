@@ -56,37 +56,27 @@ class Edit extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. media.js
+     * Add CSS dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of CSS files this page depends on
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/media/css/media.css"]
-        );
+        return [
+            '/media/css/media.css',
+        ];
     }
 
     /**
-     * Include additional JS files:
-     *  1. editForm.js - reactified form to update media
+     * Add Javascript dependencies
      *
-     * @return array of javascript to be inserted
+     * @return array The list of Javascript files this page depends on
      */
-    function getJSDependencies()
+    function getJSDependencies(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/media/js/editFormIndex.js"]
-        );
+        return [
+            '/media/js/editFormIndex.js'
+        ];
     }
 
     /**
@@ -100,5 +90,4 @@ class Edit extends \NDB_Form
     {
         return $user->hasPermission('media_write');
     }
-
 }

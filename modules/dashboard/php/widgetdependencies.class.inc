@@ -58,17 +58,6 @@ class WidgetDependencies
     }
 
     /**
-     * Return a list of javascript dependencies URLs which are required for the
-     * widget to load.
-     *
-     * @return string[]
-     */
-    public function getJSDependencies() : array
-    {
-        return $this->_js;
-    }
-
-    /**
      * Return a list of CSS dependencies which are required for the
      * widget to display correctly.
      *
@@ -77,5 +66,16 @@ class WidgetDependencies
     public function getCSSDependencies() : array
     {
         return $this->_css;
+    }
+
+    /**
+     * Return a list of javascript dependencies URLs which are required for the
+     * widget to load.
+     *
+     * @return string[]
+     */
+    public function getJSDependencies() : array
+    {
+        return $this->_js;
     }
 }
