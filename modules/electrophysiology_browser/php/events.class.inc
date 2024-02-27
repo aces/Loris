@@ -1,11 +1,13 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
+use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
- * Contains the Annotations class used for electrophysiological browser
+ * Contains the Events class used for electrophysiological browser
  *
  * PHP Version 7
  *
@@ -15,7 +17,7 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Annotations extends \NDB_Page
+class Events extends \NDB_Page
 {
     /**
      * Handle how to operate all the files.
@@ -32,6 +34,10 @@ class Annotations extends \NDB_Page
 
         switch ($request->getMethod()) {
         case 'GET':
+            // TODO: Get official server-side solution + Add to documentation
+            // set_time_limit(300);  // Increase request time limit to 5 minutes
+            // ini_set('memory_limit', '1G'); // Increase memory allocation limit
+
             $parameters = $request->getQueryParams();
             $sessionID  = $db->pselectOne(
                 'SELECT SessionID
@@ -59,7 +65,7 @@ class Annotations extends \NDB_Page
             }
 
             $physioFileID = intval($parameters['physioFileID']);
-            (new ElectrophysioAnnotations($physioFileID))->updateFiles();
+            (new ElectrophysioEvents($physioFileID))->updateFiles();
 
             $config       = \NDB_Factory::singleton()->config();
             $downloadpath = \Utility::appendForwardSlash(
@@ -73,12 +79,16 @@ class Annotations extends \NDB_Page
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo($downloadpath . $path)
             );
+
             return $downloader->handle(
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
-            $parameters = json_decode((string) $request->getBody(), true);
-            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
+            $parameters = json_decode((string)$request->getBody(), true);
+
+            if (!$user->hasPermission(
+                'electrophysiology_browser_edit_annotations'
+            )
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
@@ -89,53 +99,50 @@ class Annotations extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
-                ->delete(intval($parameters['instance_id']));
-
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
-            $parameters = json_decode((string) $request->getBody(), true);
-            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
+            // TODO: Better failure reporting
+            $parameters = json_decode((string)$request->getBody(), true);
+
+            if (!$user->hasPermission(
+                'electrophysiology_browser_edit_annotations'
+            )
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
-            if (!isset($parameters['physioFileID'])) {
+            if (!isset($parameters['physioFileID'])
+                || !isset($parameters['request_type'])
+            ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            $instance_data = $parameters['instance'];
-            // $metadata      = $parameters['metadata'];
-            // TODO: Figure out a better description modeled on other derivatives
-            $metadata = [
-                'description' => 'An annotation',
-                'sources'     => 'EEGNet LORIS',
-                'author'      => $user->getFullname()
-            ];
+            switch ($parameters['request_type']) {
+            case 'event_update':
+                $instance_data = $parameters['instance'];
+                // $metadata      = $parameters['metadata'];
+                // TODO: Figure out better description modeled on other derivatives
+                $metadata = [
+                    'description' => 'An event',
+                    'sources'     => 'EEGNet LORIS',
+                    'author'      => $user->getFullname()
+                ];
 
-            $instance_id  = $parameters['instance_id'] ?
-                 intval($parameters['instance_id']) :  null;
-            $parameter_id = $parameters['parameter_id'] ?? null;
+                $instance_id = $parameters['instance_id'] ?
+                    intval($parameters['instance_id']) : null;
 
-            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
-                ->update($instance_data, $metadata, $instance_id, $parameter_id);
+                $updated_instance = (
+                  new ElectrophysioEvents(intval($parameters['physioFileID']))
+                )->update($instance_data, $metadata, $instance_id);
 
-            // if new annotation, get instanceID
-            if (is_null($instance_id)) {
-                $instance_id = $db->pselectOne(
-                    "SELECT MAX(AnnotationInstanceID)
-                    FROM physiological_annotation_instance ai
-                    JOIN physiological_annotation_file af USING (AnnotationFileID)
-                    WHERE PhysiologicalFileID=:physioFileID
-                    ",
-                    ['physioFileID' => $parameters['physioFileID']]
-                );
+                if (count($updated_instance) > 0) {
+                    return (new \LORIS\Http\Response\JSON\OK(
+                        ['instance' => $updated_instance]
+                    ));
+                }
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
-
-            return (new \LORIS\Http\Response\JSON\OK(
-                ['instance_id' => $instance_id]
-            ));
-        default:
+            default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ["GET", "DELETE", "POST"]
             ));

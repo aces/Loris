@@ -327,37 +327,39 @@ export const TextboxElement = (props) => {
     }
     props.onUserInput(props.id, value);
   };
+
+  const {disabled, required} = props;
+  let requiredHTML = required ? <span className="text-danger">*</span> : null;
+  let errorMessage = null;
+  let elementClass = 'row form-group';
+
   /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for component.
    */
   return (
-    <>
+    <div className={elementClass}>
       {props.label &&
-        <label className="label" htmlFor={props.id}>
-          <b>
-            {props.label} {props.required ?
-              <span className="red">*</span> :
-              null
-            }
-            {props.help &&
-              <i className='fas fa-question-circle' data-tip={props.help}></i>
-            }
-          </b>
+        <label className="col-sm-7 control-label" htmlFor={props.id}>
+          {props.label}
+          {requiredHTML}
         </label>
       }
-      <input
-        type='text'
-        id={props.id}
-        name={props.name}
-        value={props.value}
-        onChange={handleChange}
-        className={props.readonly ? 'readonly' : null}
-        placeholder={props.placeholder}
-        readOnly={props.readonly}
-      />
-    </>
+      <div className="col-sm-12">
+        <input
+          type='text'
+          id={props.id}
+          name={props.name}
+          value={props.value}
+          onChange={handleChange}
+          className={props.readonly ? 'readonly' : null}
+          placeholder={props.placeholder}
+          readOnly={props.readonly}
+        />
+        {errorMessage}
+      </div>
+    </div>
   );
 };
 TextboxElement.defaultProps = {

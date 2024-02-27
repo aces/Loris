@@ -70,10 +70,12 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
       const index = payload;
       let newFilteredEpochs;
 
-      if (filteredEpochs.includes(index)) {
-        newFilteredEpochs = filteredEpochs.filter((i) => i !== index);
+      if (filteredEpochs.plotVisibility.includes(index)) {
+        newFilteredEpochs = filteredEpochs.plotVisibility.filter(
+          (i) => i !== index
+        );
       } else if (index >= 0 && index < epochs.length) {
-        newFilteredEpochs = filteredEpochs.slice();
+        newFilteredEpochs = filteredEpochs.plotVisibility.slice();
         newFilteredEpochs.push(index);
         newFilteredEpochs.sort();
       } else {
@@ -81,7 +83,10 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
       }
 
       return (dispatch) => {
-        dispatch(setFilteredEpochs(newFilteredEpochs));
+        dispatch(setFilteredEpochs({
+          plotVisibility: newFilteredEpochs,
+          columnVisibility: filteredEpochs.columnVisibility,
+        }));
       };
     })
   );
@@ -121,16 +126,9 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
  *
  * @param {Epoch[]} epochs - Array of epoch
  * @param {[number, number]} interval - Time interval to search
- * @param {string} epochType - Epoch type (Annotation|Event)
- * @param {boolean} withComments - Include only if has comments
  * @returns {Epoch[]} - Epoch[] in interval with epochType
  */
-export const getEpochsInRange = (
-  epochs,
-  interval,
-  epochType,
-  withComments = false,
-) => {
+export const getEpochsInRange = (epochs, interval) => {
   return [...Array(epochs.length).keys()].filter((index) =>
     (
       (isNaN(epochs[index].onset) && interval[0] === 0)
@@ -139,8 +137,6 @@ export const getEpochsInRange = (
         epochs[index].onset + epochs[index].duration > interval[0] &&
         epochs[index].onset < interval[1]
       )
-    ) &&
-    epochs[index].type === epochType &&
-    (!withComments || epochs[index].hed || epochs[index].comment)
+    )
   );
 };
