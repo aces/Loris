@@ -20,7 +20,14 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         // Get user
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
-
+        if (!$user->hasPermission('user_accounts_multisite')) {
+            $siteLimitQuery = "LEFT JOIN user_psc_rel upsr2
+                ON (upsr2.CenterID=upsr.CenterID)
+                WHERE upsr2.UserID=:uid";
+            $params = ['uid' => $user->getId()];
+        } else {
+            $params = [];
+        }
         parent::__construct(
             "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
                     GROUP_CONCAT(DISTINCT uprr.ProjectID) as projectIds,
@@ -33,11 +40,10 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
              FROM users u
              LEFT JOIN user_psc_rel upsr ON (upsr.UserID=u.ID)
              LEFT JOIN user_project_rel uprr ON (uprr.UserID=u.ID)
-             LEFT JOIN user_psc_rel upsr2 ON (upsr2.CenterID=upsr.CenterID)
-             WHERE upsr2.UserID=:uid
+             $siteLimitQuery
              GROUP BY u.ID
              ORDER BY u.UserID",
-            ['uid' => $user->getId()]
+            $params
         );
     }
 
