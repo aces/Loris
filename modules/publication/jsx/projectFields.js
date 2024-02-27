@@ -196,7 +196,7 @@ class ProjectFormFields extends React.Component {
     if (this.props.files) {
       this.props.files.forEach(function(f) {
         let downloadURL = loris.BaseURL
-                          + '/publication/ajax/FileDownload.php?File='
+                          + '/publication/files/'
                           + encodeURIComponent(f.Filename);
         let link = (
           <span>

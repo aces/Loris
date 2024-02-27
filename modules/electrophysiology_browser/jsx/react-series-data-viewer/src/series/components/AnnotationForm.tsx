@@ -106,14 +106,11 @@ const AnnotationForm = ({
     return (event[0] || event[0] === 0)
       && (event[1] || event[1] === 0)
       && event[0] <= event[1]
-      // TODO: Confine to domain
-      // && event[0] >= interval[0] && event[0] <= interval[1]
-      // && event[1] >= interval[0] && event[1] <= interval[1]
       && (
         newTags.some((tag) => tag.value !== '') ||
         deletedTagIDs.length > 0
       );
-  }
+  };
 
   /**
    *
@@ -239,11 +236,6 @@ const AnnotationForm = ({
    *
    */
   const handleReset = () => {
-    // Clear all fields
-    // setEvent(['', '']);
-    // setTimeSelection([null, null]);
-    // setLabel('');
-
     setNewTags([]);
     setDeletedTagIDs([]);
   };
@@ -252,7 +244,7 @@ const AnnotationForm = ({
    *
    */
   const handleDelete = () => {
-    // setIsDeleted(true);
+    setIsDeleted(true);
   };
 
   // Submit
@@ -347,6 +339,7 @@ const AnnotationForm = ({
         return response.json();
       }
       throw (response);
+
     }).then((response) => {
       setIsSubmitted(false);
 
@@ -381,11 +374,16 @@ const AnnotationForm = ({
         }
       });
 
+      const data = response.instance;
+
+      const epochLabel = [null, 'n/a'].includes(data.instance.TrialType)
+          ? null
+          : data.instance.TrialType;
       const newAnnotation : EpochType = {
         onset: parseFloat(data.instance.Onset),
         duration: parseFloat(data.instance.Duration),
         type: 'Event',
-        label: data.instance.EventValue,  // Unused
+        label: epochLabel ?? data.instance.EventValue,
         value: data.instance.EventValue,
         trialType: data.instance.TrialType,
         properties: data.extraColumns,
@@ -724,7 +722,6 @@ const AnnotationForm = ({
     return tagBadges;
   }
 
-
   return (
     <div
       className="panel panel-primary"
@@ -968,7 +965,7 @@ const AnnotationForm = ({
               </div>
             </div>
           </div>
-
+          
           <button
             type="submit"
             disabled={isSubmitted || !validate(event)}
@@ -983,15 +980,6 @@ const AnnotationForm = ({
           >
             Reset
           </button>
-          {/*{currentAnnotation &&*/}
-          {/*  <button*/}
-          {/*    type="button"*/}
-          {/*    onClick={handleDelete}*/}
-          {/*    className="btn btn-primary btn-xs"*/}
-          {/*  >*/}
-          {/*    Delete*/}
-          {/*  </button>*/}
-          {/*}*/}
           {annoMessage && (
             <div
               className="alert alert-success text-center"

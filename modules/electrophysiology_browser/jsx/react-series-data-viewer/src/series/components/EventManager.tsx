@@ -65,7 +65,6 @@ const EventManager = ({
   hedSchema,
   datasetTags,
 }: CProps) => {
-
   const [epochsInRange, setEpochsInRange] = useState(getEpochsInRange(epochs, interval));
   const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {

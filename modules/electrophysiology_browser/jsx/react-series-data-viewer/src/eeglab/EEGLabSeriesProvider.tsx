@@ -218,9 +218,9 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
           console.error('ERROR: EPOCH EXISTS');
         }
       });
-      return epochs;
+        return epochs;
     }).then((epochs) => {
-      const sortedEpochs = epochs
+        const sortedEpochs = epochs
         .flat()
         .sort(function(a, b) {
           return a.onset - b.onset;
@@ -239,7 +239,6 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         columnVisibility: [],
       }));
     });
-
 
     Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {

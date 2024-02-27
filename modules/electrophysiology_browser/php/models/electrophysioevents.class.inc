@@ -121,14 +121,6 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
-            //Get data from POST request
-            $metadata = [
-                'Description' => $metadata['description'],
-                'Sources'     => $metadata['sources'],
-                'Author'      => $metadata['author']
-            ];
-            error_log(json_encode($metadata));
-
             if (is_null($instance_id)) {
                 // TODO: Support Instance INSERT
                 $instance_id = 1;
@@ -141,7 +133,6 @@ class ElectrophysioEvents
 
             // TODO: Support Event Instance Insert
             if (!empty($eventFileID)) {
-
                 // TODO: VALIDATE HED
                 $deletedTagIDs = $instance_data['deleted_hed'];
                 $newTagIDs     = $instance_data['added_hed'];
@@ -173,7 +164,6 @@ class ElectrophysioEvents
                         ]
                     );
                 }
-
                 $db->update(
                     'physiological_event_file',
                     ['LastUpdate' => date("Y-m-d H:i:s")],
@@ -280,13 +270,8 @@ class ElectrophysioEvents
         $db = \NDB_Factory::singleton()->database();
 
         //Get data directory base path from Config
-        $dataDir = $db->pselectOne(
-            'SELECT Value
-            FROM Config AS config
-            INNER JOIN ConfigSettings AS c
-            ON c.Name=:name AND config.ConfigID=c.ID',
-            ['name' => 'dataDirBasepath']
-        );
+        $config  = \NDB_Factory::singleton()->config();
+        $dataDir = $config->getSetting("dataDirBasepath");
 
         $tsv = $db->pselect(
             "SELECT
@@ -527,6 +512,7 @@ class ElectrophysioEvents
                 ['LastWritten' => date("Y-m-d H:i:s")],
                 ['PhysiologicalFileID' => $this->_physioFileID]
             );
+
         }
     }
 
@@ -560,13 +546,10 @@ class ElectrophysioEvents
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $dataDir = $db->pselectOne(
-            'SELECT Value
-        FROM Config AS config
-        INNER JOIN ConfigSettings AS c
-        ON c.Name=:name AND config.ConfigID=c.ID',
-            ['name' => 'dataDirBasepath']
-        );
+        //Get data directory base path from Config
+        $config  = \NDB_Factory::singleton()->config();
+        $dataDir = $config->getSetting("dataDirBasepath");
+
         $archive_table_names = [
             'physiological_event_archive',
             'physiological_archive'
