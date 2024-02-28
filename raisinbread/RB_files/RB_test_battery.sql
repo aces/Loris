@@ -3,7 +3,7 @@ TRUNCATE TABLE `test_battery`;
 LOCK TABLES `test_battery` WRITE;
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (131,'aosi',1,2147483647,'Y','Visit',NULL,'V1',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (132,'aosi',1,4299,'Y','Visit',NULL,'V2',NULL,NULL,NULL);
-INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (133,'aosi',4300,99999,'Y','Visit',NULL,'V3',NULL,NULL,NULL);
+INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (133,'aosi',4300,36500,'Y','Visit',NULL,'V3',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (134,'radiology_review',1,2147483647,'Y','Visit',1,'V1',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (135,'radiology_review',1,2147483647,'Y','Visit',2,'V1',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (136,'radiology_review',1,2147483647,'Y','Visit',1,'V2',2,NULL,NULL);
