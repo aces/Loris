@@ -1,6 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `test_battery`;
 LOCK TABLES `test_battery` WRITE;
+-- AgeMaxDays maximum value is 99999
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (131,'aosi',1,36500,'Y','Visit',NULL,'V1',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (132,'aosi',1,4299,'Y','Visit',NULL,'V2',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (133,'aosi',4300,36500,'Y','Visit',NULL,'V3',NULL,NULL,NULL);
