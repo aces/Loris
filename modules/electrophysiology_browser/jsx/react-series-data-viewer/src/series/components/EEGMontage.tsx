@@ -300,7 +300,6 @@ const EEGMontage = (
           <div style={{height: '100%', position: 'relative'}}>
             {view3D ?
               <ResponsiveViewer
-                // @ts-ignore
                 mouseMove={dragged}
                 mouseDown={dragStart}
                 mouseUp={dragEnd}
@@ -311,7 +310,6 @@ const EEGMontage = (
               </ResponsiveViewer>
             :
               <ResponsiveViewer
-                // @ts-ignore
                 chunksURL={chunksURL}
               >
                 <Montage2D />
