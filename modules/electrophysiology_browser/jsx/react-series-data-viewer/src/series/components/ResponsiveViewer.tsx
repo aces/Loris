@@ -2,17 +2,18 @@ import * as R from 'ramda';
 import React, {FunctionComponent, MutableRefObject} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
+import {WithParentSizeProps} from "@visx/responsive/lib/enhancers/withParentSize";
 
 type CProps = {
-  ref: MutableRefObject<any>,
+  ref?: MutableRefObject<any>,
   parentWidth?: number,
   parentHeight?: number,
   mouseDown?: (_: any) => void,
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
   mouseLeave?: (_: any) => void,
-  children: any,
-  showOverflow: boolean,
+  children?: any,
+  showOverflow?: boolean,
   chunksURL: string,
 };
 
@@ -152,4 +153,4 @@ ResponsiveViewer.defaultProps = {
   },
 };
 
-export default withParentSize(ResponsiveViewer);
+export default withParentSize<CProps & WithParentSizeProps>(ResponsiveViewer);
