@@ -98,12 +98,14 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileInstrumentLink()
     {
-	    $this->setupPermissions(['superuser']);
+	            $this->setupPermissions(['superuser']);
 
-		$this->safeGet($this->url . "/candidate_profile/115788/");
-		$this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) );
+		    $this->safeGet($this->url . "/candidate_profile/115788/");
+		    $this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) );
 
-		$bodyText  = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+		            $bodyText
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            ->getText();
         $this->assertStringContainsString(
             "Behavioural Battery of Instruments",
             $bodyText
