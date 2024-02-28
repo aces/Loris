@@ -1136,7 +1136,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       ref={viewerRef}
-                      // @ts-ignore
                       mouseMove={useCallback((cursor: [number, number]) => {
                         setCursor({
                           cursorPosition: [cursor[0], cursor[1]],
