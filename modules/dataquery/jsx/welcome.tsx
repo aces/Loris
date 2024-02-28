@@ -57,6 +57,7 @@ function Welcome(props: {
         content: React.ReactElement,
         alwaysOpen: boolean,
         defaultOpen: boolean,
+        id: string,
     }[] = [];
     if (props.topQueries.length > 0) {
         panels.push({
@@ -82,6 +83,7 @@ function Welcome(props: {
                 ),
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p1',
         });
     }
     panels.push({
@@ -92,6 +94,7 @@ function Welcome(props: {
                      />,
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p2',
     });
     panels.push({
             title: 'Recent Queries',
@@ -120,6 +123,7 @@ function Welcome(props: {
               ),
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p3',
     });
 
     if (props.sharedQueries.length > 0) {
@@ -145,6 +149,7 @@ function Welcome(props: {
               ),
               alwaysOpen: false,
               defaultOpen: true,
+              id: 'p4',
         });
     }
 
