@@ -145,7 +145,7 @@ function NextSteps(props: {
               display: 'flex',
               alignItems: 'stretch',
               height: 120,
-              paddingRight : '14px',
+              paddingRight: '14px',
             }}>
               <div style={style}>
                 <h3>Next Steps</h3>
