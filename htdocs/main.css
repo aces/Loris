@@ -689,7 +689,7 @@ tr.directentry {
     z-index: 999;
     transition: all 0.6s ease 0s;
     width: 320px;
-    max-height: 700px;
+    max-height: 100vh;
 }
 
 .help-content h1 {
