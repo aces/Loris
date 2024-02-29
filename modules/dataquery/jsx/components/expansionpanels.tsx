@@ -16,6 +16,7 @@ const ExpansionPanels = (props: {
         content: React.ReactElement,
         defaultOpen?: boolean,
         alwaysOpen: boolean,
+        id: string,
     }[]
 }) => {
   return (
@@ -24,6 +25,7 @@ const ExpansionPanels = (props: {
       { props.panels.map((panel, index) => (
         <Panel
           key={index}
+          id={panel.id}
           title={panel.title}
           collapsed={panel.alwaysOpen}
           initCollapsed={panel.defaultOpen || props.alwaysOpen || true}>

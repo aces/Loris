@@ -94,6 +94,7 @@ type CProps = {
   setHighPassFilter: (_: string) => void,
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
+  setFilteredEpochs: (_: number[]) => void,
   setDatasetMetadata: (_: { limit: number }) => void,
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
@@ -134,6 +135,7 @@ type CProps = {
  * @param root0.setHighPassFilter
  * @param root0.setViewerWidth
  * @param root0.setViewerHeight
+ * @param root0.setFilteredEpochs
  * @param root0.setDatasetMetadata
  * @param root0.dragStart
  * @param root0.dragContinue
@@ -145,40 +147,41 @@ type CProps = {
  * @param root0.setHoveredChannels
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
- viewerHeight,
- viewerWidth,
- interval,
- setInterval,
- domain,
- amplitudeScale,
- rightPanel,
- timeSelection,
- setCursor,
- setRightPanel,
- chunksURL,
- channels,
- channelMetadata,
- hidden,
- epochs,
- filteredEpochs,
- activeEpoch,
- offsetIndex,
- setOffsetIndex,
- setAmplitudesScale,
- resetAmplitudesScale,
- setLowPassFilter,
- setHighPassFilter,
- setViewerWidth,
- setViewerHeight,
- setDatasetMetadata,
- dragStart,
- dragContinue,
- dragEnd,
- limit,
- setCurrentAnnotation,
- physioFileID,
- hoveredChannels,
- setHoveredChannels,
+  viewerHeight,
+  viewerWidth,
+  interval,
+  setInterval,
+  domain,
+  amplitudeScale,
+  rightPanel,
+  timeSelection,
+  setCursor,
+  setRightPanel,
+  chunksURL,
+  channels,
+  channelMetadata,
+  hidden,
+  epochs,
+  filteredEpochs,
+  activeEpoch,
+  offsetIndex,
+  setOffsetIndex,
+  setAmplitudesScale,
+  resetAmplitudesScale,
+  setLowPassFilter,
+  setHighPassFilter,
+  setViewerWidth,
+  setViewerHeight,
+  setFilteredEpochs,
+  setDatasetMetadata,
+  dragStart,
+  dragContinue,
+  dragEnd,
+  limit,
+  setCurrentAnnotation,
+  physioFileID,
+  hoveredChannels,
+  setHoveredChannels,
 }) => {
   if (channels.length === 0) return null;
 
@@ -1133,7 +1136,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       ref={viewerRef}
-                      // @ts-ignore
                       mouseMove={useCallback((cursor: [number, number]) => {
                         setCursor({
                           cursorPosition: [cursor[0], cursor[1]],

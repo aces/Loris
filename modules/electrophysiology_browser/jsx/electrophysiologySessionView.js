@@ -379,6 +379,9 @@ class ElectrophysiologySessionView extends Component {
                   hedSchema={hedSchema}
                   datasetTags={datasetTags}
                   physioFileID={this.state.database[i].file.id}
+                  samplingFrequency={
+                    this.state.database[i].file.summary[0].value
+                  }
                 >
                   <Panel
                     id='channel-viewer'

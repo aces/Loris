@@ -28,7 +28,7 @@ import {InfoIcon} from '../series/components/components';
 
 declare global {
   interface Window {
-    EEGLabSeriesProviderStore: Store;
+    EEGLabSeriesProviderStore: Store[]; // Store reference per recording
   }
 }
 
@@ -42,6 +42,7 @@ type CProps = {
   events: EventMetadata,
   physioFileID: number,
   limit: number,
+  samplingFrequency: number,
   children: React.ReactNode,
 };
 
@@ -66,8 +67,6 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
     epicMiddleware.run(rootEpic);
 
-    window.EEGLabSeriesProviderStore = this.store;
-
     const {
       chunksURL,
       epochsURL,
@@ -78,7 +77,13 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       events,
       physioFileID,
       limit,
+      samplingFrequency,
     } = props;
+    
+    if (!window.EEGLabSeriesProviderStore) {
+      window.EEGLabSeriesProviderStore = [];
+    }
+    window.EEGLabSeriesProviderStore[chunksURL] = this.store;
 
     /**
      *
@@ -104,6 +109,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
           });
       });
     });
+
     this.store.dispatch(setPhysioFileID(physioFileID));
     this.store.dispatch(setHedSchemaDocument(hedSchema));
     this.store.dispatch(setDatasetTags(formattedDatasetTags));
@@ -148,6 +154,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
               timeInterval,
               seriesRange,
               limit,
+              samplingFrequency,
             })
           );
           this.store.dispatch(setChannels(emptyChannels(
