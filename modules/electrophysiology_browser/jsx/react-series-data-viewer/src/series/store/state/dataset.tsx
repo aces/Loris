@@ -33,6 +33,7 @@ export type Action =
         timeInterval: [number, number],
         seriesRange: [number, number],
         limit: number,
+        samplingFrequency: string,
         offsetIndex: number,
       }
     };
@@ -42,6 +43,7 @@ export type State = {
   channelMetadata: ChannelMetadata[],
   offsetIndex: number,
   limit: number,
+  samplingFrequency: string,
   epochs: Epoch[],
   filteredEpochs: EpochFilter,
   activeEpoch: number | null,
@@ -72,6 +74,7 @@ export const datasetReducer = (
     physioFileID: null,
     offsetIndex: 1,
     limit: DEFAULT_MAX_CHANNELS,
+    samplingFrequency: '',
     shapes: [],
     validSamples: [],
     timeInterval: [0, 1],
