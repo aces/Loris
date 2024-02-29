@@ -84,13 +84,14 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       window.EEGLabSeriesProviderStore = [];
     }
     window.EEGLabSeriesProviderStore[chunksURL] = this.store;
-
+    
     /**
      *
      * @returns {void} - Confirmation dialog to prevent accidental page leave
      */
     window.onbeforeunload = function() {
-      const dataset = window.EEGLabSeriesProviderStore[chunksURL].getState().dataset;
+      const dataset = 
+          window.EEGLabSeriesProviderStore[chunksURL].getState().dataset;
       if ([...dataset.addedTags, ...dataset.deletedTags].length > 0) {
         return 'Are you sure you want to leave unsaved changes behind?';
       }
