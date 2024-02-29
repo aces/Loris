@@ -14,7 +14,8 @@ class Fields extends \NDB_Page
 {
     /**
      * Returns a list of instruments to use as the "Source From"
-     * filter options as JSON.
+     * filter options and the list of cohorts for the current
+     * user as JSON.
      *
      * @param ServerRequestInterface $request The incoming request
      *
@@ -22,8 +23,18 @@ class Fields extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // get cohorts
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
         return new \LORIS\Http\Response\JSON\OK(
-            ['sourceFrom' => \Utility::getAllInstruments()]
+            [
+                'sourceFrom' => \Utility::getAllInstruments(),
+                'cohorts'    => $cohorts
+            ]
         );
     }
 }
