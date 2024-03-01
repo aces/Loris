@@ -28,6 +28,8 @@ namespace LORIS\imaging_browser;
 
 class ViewSession extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     private \Database $_DB;
 
     /**
@@ -106,16 +108,13 @@ class ViewSession extends \NDB_Form
         $this->sessionID = $_REQUEST['sessionID'];
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
+            $this->tpl_data['sessionID'] = $this->sessionID;
             $user = \User::singleton();
             if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
-
             }
-            $this->_setFilesData();
-
-            $this->tpl_data['headerTable'] = $this->getHeaderTable();
 
             $this->tpl_data['showFloatJIV'] = true;
 
@@ -148,235 +147,6 @@ class ViewSession extends \NDB_Form
                 $this->FormAction = "/imaging_browser/viewSession/?sessionID=" .
                          $this->sessionID;
             }
-
-        }
-    }
-
-    /**
-     * Sets files values
-     *
-     * @return NULL
-     */
-    function _setFilesData()
-    {
-        $extra_where_string = "";
-        if (!empty($_REQUEST['selectedOnly'])) {
-            $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
-        }
-        $args = ['SID' => $this->sessionID];
-        // To better support QC for CIVET output a couple of
-        // additional conditions have been put in...
-        if (!empty($_REQUEST['outputType'])) {
-            $outputType = urldecode($_REQUEST['outputType']);
-            if ($outputType=="processed") {
-                $extra_where_string .= " AND OutputType != 'native' ";
-            } elseif ($outputType=="native") {
-                $extra_where_string .= " AND OutputType='native'";
-            } elseif ($outputType=="skull_mask") {
-                $extra_where_string .= " AND (OutputType='skull_mask'
-                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
-            } else {
-                $extra_where_string .= " AND (OutputType=:outputType
-                    OR OutputType='linreg')";
-
-                $args["outputType"] = $outputType;
-            }
-        }
-        $files = $this->_DB->pselect(
-            "SELECT files.FileID, files.ScannerID FROM files
-             LEFT JOIN files_qcstatus as sel
-             on (files.FileID=sel.FileID)
-            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL
-            OR AcquisitionProtocolID not in (1, 2, 3, 52))
-            $extra_where_string
-            ORDER BY files.OutputType,
-                     files.AcquisitionProtocolID,
-                     files.File",
-            $args
-        );
-
-        $this->tpl_data['files'] = [];
-
-        $timePoint = \TimePoint::singleton(
-            new \SessionID($this->sessionID),
-        );
-        $factory   = \NDB_Factory::singleton();
-        $baseurl   = $factory->settings()->getBaseURL();
-
-        foreach ($files as $fileRow) {
-            $FileObj = new \MRIFile(intval($fileRow['FileID']));
-            if (empty($scannerID)) {
-                $scannerID = $fileRow['ScannerID'];
-                if (!empty($scannerID)) {
-                    $query         = "SELECT CONCAT_WS(' ', Manufacturer, Model,".
-                             " Serial_number) FROM mri_scanner WHERE ID=:ScanID";
-                    $this->scanner = $this->_DB->pselectOne(
-                        $query,
-                        ['ScanID' => $scannerID]
-                    );
-                }
-            }
-
-            $FullFilename = $FileObj->getParameter('File') ?? '';
-            $FileID       = intval($fileRow['FileID']);
-            $Filename     = basename($FullFilename);
-            $APIFile      = $baseurl . "/api/v0.0.3/candidates/"
-                    . $timePoint->getCandID() . "/"
-                    . $timePoint->getVisitLabel()
-                    . "/images/"
-                    . $Filename;
-
-            $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
-                                         1 : 0;
-            $OutputType = $FileObj->getParameter('OutputType');
-            $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
-            $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
-            $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
-            $ProcDate            = $FileObj->getParameter(
-                'processing:processing_date'
-            );
-            $FileInsertDate      = $FileObj->getParameter('InsertTime');
-            $SeriesDescription   = $FileObj->getParameter('series_description');
-            $SeriesNumber        = $FileObj->getParameter('series_number');
-            $EchoTime            = number_format(
-                (float)$FileObj->getParameter('echo_time') * 1000,
-                2
-            );
-            $InversionTime       = number_format(
-                (float)$FileObj->getParameter('inversion_time') * 1000,
-                2
-            );
-            $RepetitionTime      = number_format(
-                (float)$FileObj->getParameter('repetition_time') * 1000,
-                2
-            );
-            $SliceThickness      = number_format(
-                intval($FileObj->getParameter('slice_thickness')),
-                2
-            );
-            $Time      = number_format(
-                intval($FileObj->getParameter('time')),
-                2
-            );
-            $ImageType = $FileObj->getParameter(
-                'dicominfo:image_type'
-            );
-            $PhaseEncodingDirection = $FileObj->getParameter(
-                'PhaseEncodingDirection'
-            );
-            $EchoNumber         = $FileObj->getParameter('echo_numbers');
-            $Comment            = $FileObj->getParameter('Comment');
-            $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
-            $TotalRejected      = $FileObj->getParameter(
-                'processing:total_rejected'
-            );
-            $SourceFile         = basename(
-                $FileObj->getParameter('processing:sourceFile') ?? ''
-            );
-            $Tool = $FileObj->getParameter('Tool');
-            $SlicewiseRejected     = $this->_getRejected(
-                $FileObj,
-                'slicewise'
-            );
-            $InterlaceRejected     = $this->_getRejected(
-                $FileObj,
-                'interlace'
-            );
-            $IntergradientRejected = $this->_getRejected(
-                $FileObj,
-                'intergradient'
-            );
-            $Xstep       = number_format(
-                (float)($FileObj->getParameter('xstep')),
-                2
-            );
-            $Ystep       = number_format(
-                (float)($FileObj->getParameter('ystep')),
-                2
-            );
-            $Zstep       = number_format(
-                (float)($FileObj->getParameter('zstep')),
-                2
-            );
-            $Selected    = $this->_getSelected(
-                (int) $FileObj->getParameter('FileID')
-            );
-            $QCStatus    = $FileObj->getParameter('QCStatus');
-            $QCDate      = $FileObj->getParameter('QCLastChangeTime');
-            $SNR         = $FileObj->getParameter('SNR');
-            $SeriesUID   = $FileObj->getParameter('SeriesUID');
-            $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
-            $XMLprotocol = $FileObj->getParameter('ProtocolFile');
-            $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
-            $NiiFile     = $FileObj->getParameter('check_nii_filename');
-            $BvalFile    = $FileObj->getParameter('check_bval_filename');
-            $BvecFile    = $FileObj->getParameter('check_bvec_filename');
-            $JsonFile    = $FileObj->getParameter('bids_json_file');
-            $OtherTimepoints = $this->_getFilesAcrossTimepoints(
-                (int)$FileObj->getParameter('SessionID'),
-                (int)$FileObj->getParameter('AcquisitionProtocolID')
-            );
-
-            $manualCaveatViolationsResolvedID
-                = $this->_getManualCaveatViolationsResolvedID($FileID);
-            $caveat = $manualCaveatViolationsResolvedID ? 1 : 0;
-            $foundProtocolViolations = $this->_getProtocolViolations($FileID);
-            $editableCaveat          = true;
-            if ($foundProtocolViolations) {
-                $caveat         = 1;
-                $editableCaveat = false;
-            }
-            $file = [
-                'FileID'                 => $FileID,
-                'Filename'               => $Filename,
-                'APIFile'                => $APIFile,
-                'FullFilename'           => $FullFilename,
-                'New'                    => $New,
-                'OutputType'             => $OutputType,
-                'AcquisitionProtocol'    => $AcquisitionProtocol,
-                'CoordinateSpace'        => $CoordinateSpace,
-                'AcquisitionDate'        => $AcquisitionDate,
-                'ProcDate'               => $ProcDate,
-                'FileInsertDate'         => $FileInsertDate,
-                'SeriesDescription'      => $SeriesDescription,
-                'SeriesNumber'           => $SeriesNumber,
-                'SeriesUID'              => $SeriesUID,
-                'EchoTime'               => $EchoTime,
-                'InversionTime'          => $InversionTime,
-                'RepetitionTime'         => $RepetitionTime,
-                'SliceThickness'         => $SliceThickness,
-                'Time'                   => $Time,
-                'ImageType'              => $ImageType,
-                'PhaseEncodingDirection' => $PhaseEncodingDirection,
-                'EchoNumber'             => $EchoNumber,
-                'Comment'                => $Comment,
-                'ProcessingPipeline'     => $ProcessingPipeline,
-                'TotalRejected'          => $TotalRejected,
-                'SourceFile'             => $SourceFile,
-                'Tool'                   => $Tool,
-                'SlicewiseRejected'      => $SlicewiseRejected,
-                'InterlaceRejected'      => $InterlaceRejected,
-                'IntergradientRejected'  => $IntergradientRejected,
-                'Xstep'                  => $Xstep,
-                'Ystep'                  => $Ystep,
-                'Zstep'                  => $Zstep,
-                'Selected'               => $Selected,
-                'QCStatus'               => $QCStatus,
-                'QCDate'                 => $QCDate,
-                'Caveat'                 => $caveat,
-                'SNR'                    => $SNR,
-                'XMLreport'              => $XMLreport,
-                'XMLprotocol'            => $XMLprotocol,
-                'NrrdFile'               => $NrrdFile,
-                'NiiFile'                => $NiiFile,
-                'BvalFile'               => $BvalFile,
-                'BvecFile'               => $BvecFile,
-                'JsonFile'               => $JsonFile,
-                'OtherTimepoints'        => $OtherTimepoints,
-                'EditableCaveat'         => $editableCaveat,
-            ];
-
-            $this->tpl_data['files'][] = $file;
         }
     }
 
@@ -408,85 +178,6 @@ class ViewSession extends \NDB_Form
         return $this->_DB->pselectOneInt($query, ['fileID' => $fileID]);
     }
 
-    /**
-     * Gets the ID of the record in table violations_resolved associated
-     * to the manual caveat set on a given file.
-     *
-     * @param $fileID int the ID of the record in table files.
-     *
-     * @return ?array array of IDs of the associated records in table
-     *              mri_violations_log or null if there is none.
-     */
-    function _getProtocolViolations(int $fileID): ?array
-    {
-        $query = "
-            SELECT mvl.LogID
-            FROM files f
-            JOIN mri_violations_log mvl
-              ON (mvl.MincFile = f.File)
-            WHERE f.FileID =:fileID
-            AND mvl.Header NOT LIKE 'Manual Caveat Set by %';
-        ";
-
-        return $this->_DB->pselect($query, ['fileID' => $fileID]);
-    }
-
-    /**
-     * Gets a rejected parameter according to its type
-     *
-     * @param \MRIFile $file file object
-     * @param string   $type type of the rejected
-     *
-     * @return ?string The parameter of the rejected
-     */
-    function _getRejected(\MRIFile $file, string $type): ?string
-    {
-        $array     = [];
-        $parameter = 'processing:' . $type . '_rejected';
-        if (preg_match(
-            "/(Directions)([^\(]+)(\(\d+\))/",
-            $file->getParameter($parameter) ?? '',
-            $array
-        )
-        ) {
-            $dirList = preg_split('/\,/', $array[2]);
-            if (count($dirList) > 1) {
-                sort($dirList);
-            }
-            return "Directions " . join(", ", $dirList) . " " . $array[3];
-        } else {
-            return $file->getParameter($parameter);
-        }
-    }
-    /**
-     * Gets the date according to the type
-     *
-     * @param \MRIFile $file file object
-     * @param string   $type type of the date
-     *
-     * @return int|string The date if exists, if not an empty string
-     */
-    function _getDate(\MRIFile $file, string $type)
-    {
-        $array = [];
-        if (preg_match(
-            "/(\d{4})-?(\d{2})-?(\d{2})/",
-            $file->getParameter($type) ?? '',
-            $array
-        )
-        ) {
-            return mktime(
-                12,
-                0,
-                0,
-                (int) $array[2],
-                (int) $array[3],
-                (int) $array[1]
-            );
-        } else {
-            return "";
-        }
-    }
     /**
      * Updates QCStatus in the form
      *
@@ -786,14 +477,13 @@ class ViewSession extends \NDB_Form
                 WHERE ID=:SID",
                 $params
             );
-
-            $updateSet       = [
+            $updateSet          = [
                 'MRIQCPending'        => $_POST['visit_pending'],
                 'MRIQCStatus'         => $_POST['visit_status'],
                 'MRICaveat'           => $_POST['visit_caveat'],
                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
             ];
-            $firstChangeTime = $this->_DB->pselectOne(
+            $firstChangeTime    = $this->_DB->pselectOne(
                 "SELECT MRIQCFirstChangeTime
                 FROM session
                 WHERE ID=:SID",
@@ -846,143 +536,6 @@ class ViewSession extends \NDB_Form
     }
 
     /**
-     * Gets candidate's scans with the same acquisitionID.
-     *
-     * @param int $initialFileID            the value of initialFileID
-     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
-     *
-     * @return string of FileIDs, comma separated
-     */
-    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID)
-    {
-
-        $selectResults = $this->_DB->pselect(
-            "SELECT FileID FROM files ".
-            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
-            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
-            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
-            [
-                'initialFileAcquisitionID' => $initialFileAcquisitionID,
-                'initialFileID'            => $initialFileID,
-            ]
-        );
-
-        $fileIDS = [];
-        foreach ($selectResults as $selectResult) {
-            $fileIDS[] = $selectResult['FileID'];
-        }
-        $fileIDString = implode(",", $fileIDS);
-        return $fileIDString;
-    }
-
-    /**
-     * Gets Selected status from files_qcstatus for a given FileID
-     *
-     * @param int $FileID the value of FileID
-     *
-     * @return ?string
-     */
-    function _getSelected($FileID): ?string
-    {
-
-        $selected = $this->_DB->pselectOne(
-            "SELECT Selected FROM files_qcstatus ".
-            "WHERE FileID =:FileID",
-            ['FileID' => $FileID]
-        );
-        return $selected;
-    }
-
-    /**
-     * Gets header table html
-     *
-     * @return string ($html of the header table)
-     */
-    function getHeaderTable()
-    {
-        $tpl_data            = [];
-        $tpl_data['subject'] = $this->getSubjectData();
-
-        if (!empty($_REQUEST['outputType'])) {
-            $tpl_data['outputType'] = urldecode($_REQUEST['outputType']);
-        }
-        $config = \NDB_Config::singleton();
-        if ($config->getSetting('useEDC') === 'true') {
-            $tpl_data['useEDC'] = true;
-        }
-
-        $smarty = new \Smarty_NeuroDB('imaging_browser');
-
-        $smarty->assign($tpl_data);
-        $html = $smarty->fetch("table_session_header.tpl");
-        return $html;
-    }
-    /**
-     * Populates data for the template
-     *
-     * @return array ($subjectData array with data)
-     */
-    function getSubjectData()
-    {
-        $timePoint = \TimePoint::singleton(
-            new \SessionID(strval($_REQUEST['sessionID']))
-        );
-
-        $subjectData = [];
-        $subjectData['sessionID']   = $_REQUEST['sessionID'];
-        $subjectData['CohortID']    = $timePoint->getCohortID();
-        $subjectData['CohortTitle'] = $timePoint->getData('CohortTitle');
-        $subjectData['visitLabel']  = $timePoint->getVisitLabel();
-        $subjectData['visitNo']     = $timePoint->getVisitNo();
-        $subjectData['site']        = $timePoint->getPSC();
-        $qcstatus = $this->_DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, MRICaveat
-            FROM session WHERE ID=:SID",
-            ['SID' => $_REQUEST['sessionID']]
-        );
-        if (is_null($qcstatus)) {
-            throw new \LorisException(
-                'Could not find QC status information for the supplied '
-                . 'session ID'
-            );
-        }
-        $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
-        $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
-        $subjectData['candid']       = $timePoint->getCandID();
-        $subjectData['scanner']      = $this->scanner;
-
-        $candidate            =& \Candidate::singleton($timePoint->getCandID());
-        $subjectData['pscid'] = $candidate->getPSCID();
-        $subjectData['dob']   = $candidate->getCandidateDoB();
-        $subjectData['edc']   = $candidate->getCandidateEDC();
-        $subjectData['sex']   = $candidate->getCandidateSex();
-
-        // This doesn't work.
-        //Need to find the proper way to get the TarchiveID.
-        //It should be per file, not per candidate. --Dave
-        $params     = [];
-        $EntityType = $candidate->getEntityType();
-        if ($EntityType == 'Scanner') {
-            $ID = ":PPSCID";
-            $params['PPSCID'] = $timePoint->getData('PSCID');
-        } else {
-            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-            $params['PPSCID']  = $candidate->getPSCID();
-            $params['PCandID'] = $timePoint->getCandID();
-            $params['PVL']     = $timePoint->getVisitLabel();
-        }
-        $tarchiveIDs = $this->_DB->pselect(
-            "SELECT TarchiveID
-            FROM tarchive
-            WHERE PatientName LIKE $ID",
-            $params
-        );
-        $subjectData['tarchiveids'] = $tarchiveIDs;
-        // Cache the data
-        return $subjectData;
-    }
-    /**
      * Gets control panel
      *
      * @return string ($controlPanel)
@@ -1008,7 +561,7 @@ class ViewSession extends \NDB_Form
             $depends,
             [
                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-                $baseurl . "/imaging_browser/js/ImagePanel.js",
+                $baseurl . "/imaging_browser/js/Session.js",
             ]
         );
         return $depends;
@@ -1046,5 +599,4 @@ class ViewSession extends \NDB_Form
             )
         );
     }
-
 }
