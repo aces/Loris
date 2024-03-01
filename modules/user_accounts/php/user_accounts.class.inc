@@ -82,16 +82,9 @@ class User_Accounts extends \DataFrameworkMenu
         $user    = $factory->user();
 
         // Without user_acounts_multisite permission, only show user sites
-        if ($user->hasPermission('user_accounts_multisite')) {
-            $sites = \Utility::getSiteList(false);
-        } else {
-            $sites = [];
-            foreach (\Utility::getSiteList(false) AS $centerID => $centerName) {
-                if ($user->hasCenter(new \CenterID($centerID))) {
-                    $sites[$centerID] = $centerName;
-                }
-            }
-        }
+        $sites = $user->hasPermission('user_accounts_multisite') ?
+            \Utility::getSiteList(false)
+            : $user->getSiteNamesList();
 
         return [
             'sites'            => $sites,

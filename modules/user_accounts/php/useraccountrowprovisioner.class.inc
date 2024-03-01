@@ -26,7 +26,8 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
                 WHERE upsr2.UserID=:uid";
             $params         = ['uid' => $user->getId()];
         } else {
-            $params = [];
+            $siteLimitQuery = '';
+            $params         = [];
         }
         parent::__construct(
             "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
