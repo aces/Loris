@@ -684,7 +684,7 @@ tr.directentry {
     border-top: none;
     border-width: 1px;
     position: absolute;
-    left: 0px;
+    left: -30px;
     overflow-y: auto;
     z-index: 999;
     transition: all 0.6s ease 0s;
