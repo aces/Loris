@@ -38,7 +38,7 @@ class Conflict_Resolver extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('conflict_resolver');
+        return $user->hasPermission('conflict_resolver') && ($user->hasPermission('data_dict_edit') || $user->hasPermission('data_dict_view'));
     }
 
     /**
