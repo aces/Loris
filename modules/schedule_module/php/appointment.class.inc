@@ -136,8 +136,12 @@ class Appointment extends \NDB_Page
     {
         $DB = $this->loris->getDatabaseConnection();
         if ($type == "DCCID" ) {
-            $c       = \Candidate::singleton(new CandID($id));
-                $res = ['PSCID'=>$c->getPSCID() ?? ''];
+         try {
+            $c   = \Candidate::singleton(new CandID($id));
+            $res = ['PSCID'=>$c->getPSCID() ?? ''];
+         } catch (\Exception $e) {
+           echo $e;
+         }
         } else {
             $candidate = $DB->pselectRow(
                 "
