@@ -7,6 +7,15 @@ import swal from 'sweetalert2';
 import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  SelectElement,
+  StaticElement,
+  FormElement,
+  TextboxElement,
+  ButtonElement,
+  TextareaElement,
+  FileElement,
+} from 'jsx/Form';
 
 /**
  * Issue add/edit form
@@ -26,7 +35,7 @@ class IssueForm extends Component {
     super(props);
 
     this.state = {
-      Data: [],
+      Data: {},
       formData: {},
       submissionResult: null,
       errorMessage: null,

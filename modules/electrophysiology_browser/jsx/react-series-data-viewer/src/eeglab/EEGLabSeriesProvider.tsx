@@ -18,22 +18,26 @@ import {
   setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {setElectrodes} from '../series/store/state/montage';
-import {AnnotationMetadata, EventMetadata} from '../series/store/types';
+import {
+    setCoordinateSystem,
+    setElectrodes,
+} from '../series/store/state/montage';
+import {EventMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
-    EEGLabSeriesProviderStore: Store;
+    EEGLabSeriesProviderStore: Store[]; // Store reference per recording
   }
 }
 
 type CProps = {
   chunksURL: string,
   electrodesURL: string,
+  coordSystemURL: string,
   events: EventMetadata,
-  annotations: AnnotationMetadata,
   physioFileID: number,
   limit: number,
+  samplingFrequency: number,
   children: React.ReactNode,
 };
 
@@ -58,16 +62,21 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     epicMiddleware.run(rootEpic);
 
-    window.EEGLabSeriesProviderStore = this.store;
-
     const {
       chunksURL,
       electrodesURL,
+      coordSystemURL,
       events,
-      annotations,
       physioFileID,
       limit,
+      samplingFrequency,
     } = props;
+
+    if (!window.EEGLabSeriesProviderStore) {
+      window.EEGLabSeriesProviderStore = [];
+    }
+
+    window.EEGLabSeriesProviderStore[chunksURL] = this.store;
 
     this.store.dispatch(setPhysioFileID(physioFileID));
 
@@ -95,74 +104,88 @@ class EEGLabSeriesProvider extends Component<CProps> {
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
-          const {channelMetadata, shapes, timeInterval, seriesRange} = json;
+          const {
+            channelMetadata,
+            shapes,
+            timeInterval,
+            seriesRange,
+            validSamples,
+          } = json;
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
               channelMetadata,
               shapes,
+              validSamples,
               timeInterval,
               seriesRange,
               limit,
+              samplingFrequency,
             })
           );
           this.store.dispatch(setChannels(emptyChannels(
-              Math.min(this.props.limit, channelMetadata.length),
-              1
+            Math.min(this.props.limit, channelMetadata.length),
+            1
           )));
           this.store.dispatch(setDomain(timeInterval));
           this.store.dispatch(setInterval(DEFAULT_TIME_INTERVAL));
         }
       }).then(() => {
-        return events.instances.map((instance) => {
-          const onset = parseFloat(instance.Onset);
-          const duration = parseFloat(instance.Duration);
-          const label = instance.TrialType && instance.TrialType !== 'n/a' ?
-            instance.TrialType : instance.EventValue;
-          const hed = instance.AssembledHED;
-          return {
-            onset: onset,
-            duration: duration,
-            type: 'Event',
-            label: label,
-            comment: null,
-            hed: hed,
-            channels: 'all',
-            annotationInstanceID: null,
-          };
-        });
-      }).then((events) => {
-        const epochs = events;
-        annotations.instances.map((instance) => {
-          const label = annotations.labels
-            .find((label) =>
-              label.AnnotationLabelID == instance.AnnotationLabelID
-            ).LabelName;
-          epochs.push({
-            onset: parseFloat(instance.Onset),
-            duration: parseFloat(instance.Duration),
-            type: 'Annotation',
-            label: label,
-            comment: instance.Description,
-            hed: null,
-            channels: 'all',
-            annotationInstanceID: instance.AnnotationInstanceID,
+        const epochs = [];
+        events.instances.map((instance) => {
+          const epochIndex =
+              epochs.findIndex((e) =>
+                  e.physiologicalTaskEventID ===
+                  instance.PhysiologicalTaskEventID
+              );
+
+          const extraColumns = Array.from(
+              events.extraColumns
+          ).filter((column) => {
+            return column.PhysiologicalTaskEventID ===
+                instance.PhysiologicalTaskEventID;
           });
-        });
+          if (epochIndex === -1) {
+            const epochLabel = [null, 'n/a'].includes(instance.TrialType)
+              ? null
+              : instance.TrialType;
+            epochs.push({
+              onset: parseFloat(instance.Onset),
+              duration: parseFloat(instance.Duration),
+              type: 'Event',
+              label: epochLabel ?? instance.EventValue,
+              value: instance.EventValue,
+              trialType: instance.TrialType,
+              properties: extraColumns,
+              hed: null,
+              channels: 'all',
+              physiologicalTaskEventID: instance.PhysiologicalTaskEventID,
+            });
+        } else {
+          console.error('ERROR: EPOCH EXISTS');
+        }
+      });
         return epochs;
-      }).then((epochs) => {
-        this.store.dispatch(
-          setEpochs(
-            epochs
-            .flat()
-            .sort(function(a, b) {
-              return a.onset - b.onset;
-            })
-          )
-        );
-        this.store.dispatch(setFilteredEpochs(epochs.map((_, index) => index)));
-      })
-    ;
+    }).then((epochs) => {
+        const sortedEpochs = epochs
+        .flat()
+        .sort(function(a, b) {
+          return a.onset - b.onset;
+        });
+
+      const timeInterval = this.store.getState().dataset.timeInterval;
+      this.store.dispatch(setEpochs(sortedEpochs));
+      this.store.dispatch(setFilteredEpochs({
+        plotVisibility: sortedEpochs.reduce((indices, epoch, index) => {
+          if (!(epoch.onset < 1 && epoch.duration >= timeInterval[1])) {
+            // Full-recording events not visible by default
+            indices.push(index);
+          }
+          return indices;
+        }, []),
+        columnVisibility: [],
+      }));
+    });
 
     Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {
@@ -177,6 +200,27 @@ class EEGLabSeriesProvider extends Component<CProps> {
             }))
           )
         );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    Promise.race(racers(fetchJSON, coordSystemURL))
+      .then( ({json, _}) => {
+        if (json) {
+          const {
+            EEGCoordinateSystem,
+            EEGCoordinateUnits,
+            EEGCoordinateSystemDescription,
+          } = json;
+          this.store.dispatch(
+            setCoordinateSystem({
+              name: EEGCoordinateSystem ?? 'Other',
+              units: EEGCoordinateUnits ?? 'm',
+              description: EEGCoordinateSystemDescription ?? 'n/a',
+            })
+          );
+        }
       })
       .catch((error) => {
         console.error(error);

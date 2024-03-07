@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  AnnotationMetadata,
   Epoch as EpochType,
   RightPanel,
 } from '../store/types';
@@ -12,7 +11,7 @@ import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
 import {setEpochs} from '../store/state/dataset';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-import {NumericElement, SelectElement, TextareaElement} from './Form';
+import {NumericElement, SelectElement, TextboxElement} from './Form';
 import swal from 'sweetalert2';
 
 type CProps = {
@@ -25,11 +24,9 @@ type CProps = {
   currentAnnotation: EpochType,
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
-  annotationMetadata: AnnotationMetadata,
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
-  domain: [number, number],
 };
 
 /**
@@ -47,7 +44,6 @@ type CProps = {
  * @param root0.toggleEpoch,
  * @param root0.updateActiveEpoch,
  * @param root0.interval
- * @param root0.domain
  * @param root0.toggleEpoch
  * @param root0.updateActiveEpoch
  */
@@ -60,11 +56,9 @@ const AnnotationForm = ({
   currentAnnotation,
   setCurrentAnnotation,
   physioFileID,
-  annotationMetadata,
   toggleEpoch,
   updateActiveEpoch,
   interval,
-  domain,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   const [event, setEvent] = useState<(number | string)[]>(
@@ -78,11 +72,7 @@ const AnnotationForm = ({
     currentAnnotation.label :
     null
   );
-  const [comment, setComment] = useState(
-    currentAnnotation ?
-    currentAnnotation.comment :
-    ''
-  );
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [annoMessage, setAnnoMessage] = useState('');
@@ -101,8 +91,6 @@ const AnnotationForm = ({
     (event[0] || event[0] === 0)
       && (event[1] || event[1] === 0)
       && event[0] <= event[1]
-      && event[0] >= interval[0] && event[0] <= interval[1]
-      && event[1] >= interval[0] && event[1] <= interval[1]
   );
 
   /**
@@ -161,14 +149,7 @@ const AnnotationForm = ({
   const handleLabelChange = (name, value) => {
     setLabel(value);
   };
-  /**
-   *
-   * @param name
-   * @param value
-   */
-  const handleCommentChange = (name, value) => {
-    setComment(value);
-  };
+
   /**
    *
    */
@@ -180,18 +161,14 @@ const AnnotationForm = ({
    *
    */
   const handleReset = () => {
-    // Clear all fields
-    setEvent(['', '']);
-    setTimeSelection([null, null]);
-    setLabel('');
-    setComment('');
+    // TODO: Clear all fields
   };
 
   /**
    *
    */
   const handleDelete = () => {
-    setIsDeleted(true);
+    // Not supported
   };
 
   // Submit
@@ -213,7 +190,7 @@ const AnnotationForm = ({
     }
 
     const url = window.location.origin +
-      '/electrophysiology_browser/annotations/';
+      '/electrophysiology_browser/events/';
 
     // get duration of annotation
     let startTime = event[0];
@@ -229,9 +206,10 @@ const AnnotationForm = ({
     // set body
     // instance_id = null for new annotations
     const body = {
+      request_type: 'event_update',
       physioFileID: physioFileID,
       instance_id: currentAnnotation ?
-        currentAnnotation.annotationInstanceID :
+        currentAnnotation.physiologicalTaskEventID :
         null,
       instance: {
         onset: startTime,
@@ -239,20 +217,7 @@ const AnnotationForm = ({
         label_name: label,
         label_description: label,
         channels: 'all',
-        description: comment,
       },
-    };
-
-    const newAnnotation : EpochType = {
-      onset: startTime,
-      duration: duration,
-      type: 'Annotation',
-      label: label,
-      comment: comment,
-      channels: 'all',
-      annotationInstanceID: currentAnnotation ?
-        currentAnnotation.annotationInstanceID :
-        null,
     };
 
     fetch(url, {
@@ -263,15 +228,31 @@ const AnnotationForm = ({
       if (response.ok) {
         return response.json();
       }
-    }).then((data) => {
+    }).then((response) => {
       setIsSubmitted(false);
 
       // if in edit mode, remove old annotation instance
       if (currentAnnotation !== null) {
         epochs.splice(epochs.indexOf(currentAnnotation), 1);
-      } else {
-        newAnnotation.annotationInstanceID = parseInt(data.instance_id);
       }
+
+      const data = response.instance;
+
+      const epochLabel = [null, 'n/a'].includes(data.instance.TrialType)
+          ? null
+          : data.instance.TrialType;
+      const newAnnotation : EpochType = {
+        onset: parseFloat(data.instance.Onset),
+        duration: parseFloat(data.instance.Duration),
+        type: 'Event',
+        label: epochLabel ?? data.instance.EventValue,
+        value: data.instance.EventValue,
+        trialType: data.instance.TrialType,
+        properties: data.extraColumns,
+        channels: 'all',
+        physiologicalTaskEventID: data.instance.PhysiologicalTaskEventID,
+      };
+
       epochs.push(newAnnotation);
       setEpochs(
         epochs
@@ -285,25 +266,27 @@ const AnnotationForm = ({
 
       // Display success message
       setAnnoMessage(currentAnnotation ?
-        'Annotation Updated!' :
-        'Annotation Added!');
+        'Event Updated!' :
+        'Event Added!');
       setTimeout(() => {
         setAnnoMessage(''); // Empty string will cause success div to hide
-
-        // If in edit mode, switch back to annotation panel
-        if (currentAnnotation !== null) {
-          setCurrentAnnotation(null);
-          setRightPanel('annotationList');
-        }
-      }, 3000);
+      }, 2000);
     }).catch((error) => {
       console.error(error);
       // Display error message
-      swal.fire(
-        'Error',
-        'Something went wrong!',
-        'error'
-      );
+      if (error.status === 401) {
+        swal.fire(
+          'Unauthorized',
+          'This action is not permitted.',
+          'error'
+        );
+      } else {
+        swal.fire(
+          'Error',
+          'Something went wrong!',
+          'error'
+        );
+      }
     });
   }, [isSubmitted]);
 
@@ -311,11 +294,11 @@ const AnnotationForm = ({
   useEffect(() => {
     if (isDeleted) {
       const url = window.location.origin
-                  + '/electrophysiology_browser/annotations/';
+                  + '/electrophysiology_browser/events/';
       const body = {
         physioFileID: physioFileID,
         instance_id: currentAnnotation ?
-          currentAnnotation.annotationInstanceID :
+          currentAnnotation.physiologicalTaskEventID :
           null,
       };
 
@@ -352,14 +335,14 @@ const AnnotationForm = ({
               // Display success message
               swal.fire(
                 'Success',
-                'Annotation Deleted!',
+                'Event Deleted!',
                 'success'
               );
 
               // If in edit mode, switch back to annotation panel
               if (currentAnnotation !== null) {
                 setCurrentAnnotation(null);
-                setRightPanel('annotationList');
+                setRightPanel('eventList');
               }
             }
           }).catch((error) => {
@@ -378,14 +361,6 @@ const AnnotationForm = ({
     }
   }, [isDeleted]);
 
-  let labelOptions = {};
-  annotationMetadata.labels.map((label) => {
-    labelOptions = {
-      ...labelOptions,
-      [label.LabelName]: label.LabelName,
-    };
-  });
-
   return (
     <div
       className="panel panel-primary"
@@ -399,30 +374,56 @@ const AnnotationForm = ({
             justifyContent: 'space-between',
           }}
       >
-        {currentAnnotation ? 'Edit' : 'Add'} Annotation
+        {currentAnnotation ? 'Edit' : 'Add'} Event
         <i
           className='glyphicon glyphicon-remove'
           style={{cursor: 'pointer'}}
           onClick={() => {
-            setRightPanel('annotationList');
+            setRightPanel('eventList');
             setCurrentAnnotation(null);
             setTimeSelection(null);
+            updateActiveEpoch(null);
           }}
         ></i>
       </div>
       <div className="panel-body">
         <div className="form-row no-gutters">
+          <TextboxElement
+            name="event-name"
+            id="event-name"
+            label={
+              <span>Event Name
+                <code style={{
+                  display: 'inline-block',
+                  position: 'absolute',
+                  backgroundColor: '#eff1f2',
+                  color: '#1f2329',
+                  fontWeight: 'normal',
+                  marginLeft: '10px',
+                }}>
+                  {
+                    currentAnnotation.label === currentAnnotation.trialType
+                      ? 'trial_type'
+                      : 'value'
+                  }
+                </code>
+              </span>
+            }
+            value={currentAnnotation ? currentAnnotation.label : ""}
+            required={true}
+            readonly={true}
+          />
           <NumericElement
             name="start-time"
             id="start-time"
             min={0}
-            max={Math.max(0, domain[1])}
             label="Start Time"
+            disabled={true}
             value={event
               ? Math.min(
-                parseFloat(event[0] ? event[0].toString() : '0'),
-                parseFloat(event[1] ? event[1].toString() : '0')
-              ).toString()
+                parseFloat(event[0] ? event[0].toString() : ''),
+                parseFloat(event[1] ? event[1].toString() : '')
+              )
               : ''
             }
             required={true}
@@ -432,57 +433,61 @@ const AnnotationForm = ({
             name="end-time"
             id="end-time"
             min={0}
-            max={Math.max(0, domain[1])}
             label="End Time"
+            disabled={true}
             value={event
               ? Math.max(
-                parseFloat(event[0] ? event[0].toString() : '0'),
-                parseFloat(event[1] ? event[1].toString() : '0')
-              ).toString()
+                parseFloat(event[0] ? event[0].toString() : ''),
+                parseFloat(event[1] ? event[1].toString() : '')
+              )
               : ''
             }
             required={true}
             onUserInput={handleEndTimeChange}
           />
-          <SelectElement
-            name="label"
-            id="label"
-            label="Label"
-            value={label}
-            options={labelOptions}
-            required={true}
-            onUserInput={handleLabelChange}
-          />
-          <TextareaElement
-            name="comment"
-            id="comment"
-            label="Comment"
-            value={comment}
-            onUserInput={handleCommentChange}
-          />
+          <div
+            className="row form-group"
+          >
+            {
+              currentAnnotation && currentAnnotation.properties.length > 0 && (
+                <>
+                  <label className="col-sm-12 control-label">
+                    Additional Columns
+                  </label>
+                  <div style={{margin: '15px'}}>
+                    {
+                      currentAnnotation.properties.map((property) => {
+                        return (
+                          <TextboxElement
+                            name="property-name"
+                            label={property.PropertyName}
+                            value={property.PropertyValue}
+                            required={false}
+                            readonly={true}
+                          />
+                        );
+                      })
+                    }
+                  </div>
+                </>
+              )
+            }
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitted || !validate(event)}
             onClick={handleSubmit}
-            className="btn btn-primary btn-xs"
+            className="btn btn-primary"
           >
             Submit
           </button>
           <button type="reset"
-            onClick={handleReset}
-            className="btn btn-primary btn-xs"
+                  onClick={handleReset}
+                  className="btn btn-primary"
           >
-            Clear
+            Reset
           </button>
-          {currentAnnotation &&
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="btn btn-primary btn-xs"
-            >
-              Delete
-            </button>
-          }
           {annoMessage && (
             <div
               className="alert alert-success text-center"
@@ -507,9 +512,10 @@ AnnotationForm.defaultProps = {
 
 export default connect(
   (state: RootState)=> ({
+    physioFileID: state.dataset.physioFileID,
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
-    filteredEpochs: state.dataset.filteredEpochs,
+    filteredEpochs: state.dataset.filteredEpochs.plotVisibility,
     currentAnnotation: state.currentAnnotation,
     interval: state.bounds.interval,
     domain: state.bounds.domain,

@@ -11,6 +11,15 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    TextareaElement,
+    TextElement,
+    NumericElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)

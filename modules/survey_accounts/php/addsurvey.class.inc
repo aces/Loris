@@ -164,8 +164,9 @@ class AddSurvey extends \NDB_Form
                 }
             }
         }
-
-        if ($_REQUEST['fire_away'] !== 'Create survey') {
+        if (!isset($_REQUEST['fire_away'])
+            || ($_REQUEST['fire_away'] !== 'Create survey')
+        ) {
             if (!filter_var(
                 $values['Email'],
                 FILTER_VALIDATE_EMAIL
@@ -250,8 +251,8 @@ class AddSurvey extends \NDB_Form
                 error_log($e->getMessage());
                 $this->tpl_data['success'] = false;
             }
+
         }
-        $this->tpl_data['success'] = true;
 
         if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
@@ -295,10 +296,10 @@ class AddSurvey extends \NDB_Form
         $this->addSelect(
             "Test_name",
             "Instrument",
-            \Utility::getDirectInstruments(),
-            [
-                'multiple' => 'multiple',
-            ]
+            array_merge(
+                ['' => ''],
+                \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
+            )
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");

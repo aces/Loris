@@ -28,29 +28,37 @@ export type Channel = {
 export type Epoch = {
   onset: number,
   duration: number,
-  type: 'Event' | 'Annotation',
+  type: 'Event',
   label: string,
-  comment?: string,
+  value: string,
+  trialType: string,
+  properties?: any[],
   hed?: string,
   channels: number[] | 'all',
-  annotationInstanceID?: number,
+  physiologicalTaskEventID?: number,
 };
+
+export type EpochFilter = {
+  plotVisibility: number[],
+  columnVisibility: number[],
+}
 
 export type EventMetadata = {
   instances: any[],
-}
-
-export type AnnotationMetadata = {
-  instances: any[],
-  labels: any[],
-  metadata: any[]
+  extraColumns: any[],
 }
 
 export type RightPanel =
   'annotationForm'
   | 'eventList'
-  | 'annotationList'
   | null;
+
+
+export type CoordinateSystem = {
+  name: string | 'Other',
+  units: string | 'm',
+  description: string | 'n/a'
+};
 
 export type Electrode = {
   name: string,
