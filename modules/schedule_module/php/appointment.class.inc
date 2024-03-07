@@ -140,7 +140,7 @@ class Appointment extends \NDB_Page
                 $c   = \Candidate::singleton(new CandID($id));
                 $res = ['PSCID'=>$c->getPSCID() ?? ''];
             } catch (\Exception $e) {
-                echo $e;
+                error_log($e->getMessage());
             }
         } else {
             $candidate = $DB->pselectRow(
