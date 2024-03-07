@@ -424,7 +424,7 @@ class Installer
         // new user, since the new user is also going to be used from
         // the same web server so should have the same address.
         $connectHost = $DB->PDO->query(
-            "SELECT Host FROM `mysql`.`user`
+            "SELECT Host FROM mysql.user
 		WHERE CONCAT(User, '@', Host)=CURRENT_USER"
         )->fetch(\PDO::FETCH_ASSOC);
 
@@ -439,7 +439,7 @@ class Installer
 
         $userExistsQ = $DB->prepare(
             "SELECT 'x' FROM mysql.user
-			WHERE user=:q_user AND host=:q_host"
+			WHERE User=:q_user AND Host=:q_host"
         );
         $userExistsQ->execute(
             [
