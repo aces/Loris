@@ -303,6 +303,54 @@ class StaticDataTable extends Component {
   getSortedRows() {
     const index = [];
 
+    // TODO: data column type check should probably be done once at init,
+    // to find which columns have mixed types.
+    // First pass to check if there is a mix of types in the values
+    const typesFound = [];
+    // is the current sorted column with mixed type?
+    let isMixedType = false;
+    // not the default column
+    if (this.state.SortColumn !== -1) {
+      // only push string or number types, rest is considered undefined
+      //
+      // break out of this loop once we encounter two mixed types:
+      // number and string inside the sorting column
+      for (let i = 0; i < this.props.Data.length; i += 1) {
+        // value
+        let val = this.props.Data[i][this.state.SortColumn] || undefined;
+
+        // check number
+        if (!isNaN(val) && typeof val !== 'object') {
+          // if string is found, mix of types, break
+          if (typesFound.indexOf('string') !== -1) {
+            isMixedType = true;
+            break;
+          }
+          // push only if not already in
+          if (typesFound.indexOf('number') === -1) {
+            typesFound.push('number');
+          }
+
+          // avoid string section
+          continue;
+        }
+
+        // check string
+        if (typeof val === 'string' || val instanceof String) {
+          // if number is found, mix of types, break
+          if (typesFound.indexOf('number') !== -1) {
+            isMixedType = true;
+            break;
+          }
+          // push only if not already in
+          if (typesFound.indexOf('string') === -1) {
+            typesFound.push('string');
+          }
+        }
+      }
+    }
+
+    //
     for (let i = 0; i < this.props.Data.length; i += 1) {
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
       // If SortColumn is equal to default No. column, set value to be
@@ -316,10 +364,12 @@ class StaticDataTable extends Component {
       if (val === '.') {
         // hack to handle non-existent items in DQT
         val = null;
-      } else if (isNumber) {
+      } else if (isNumber && !isMixedType) {
         // perform type conversion (from string to int/float)
         val = Number(val);
-      } else if (isString) {
+      } else if (isString || isMixedType) {
+        // in case of mixed types, force values to string.
+        val = String(val);
         // if string with text convert to lowercase
         val = val.toLowerCase();
       } else {
