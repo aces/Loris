@@ -303,7 +303,7 @@ class StaticDataTable extends Component {
   hasMixedTypes() {
     // TODO: data column type check should probably be done once at init,
     // meaning when receiving data, to find which columns have mixed types.
-    let typesFound = null;
+    let typeFound = null;
 
     // not the default column
     if (this.state.SortColumn === -1) {
@@ -328,13 +328,13 @@ class StaticDataTable extends Component {
       // check number
       if (!isNaN(val) && typeof val !== 'object') {
         // if string is found, mix of types, break
-        if (typesFound === 'string') {
+        if (typeFound === 'string') {
           isMixedType = true;
           break;
         }
         // register number only if not already in
-        if (typesFound == null) {
-          typesFound = 'number';
+        if (typeFound == null) {
+          typeFound = 'number';
         }
 
         // avoid string section
@@ -344,13 +344,13 @@ class StaticDataTable extends Component {
       // check string
       if (typeof val === 'string' || val instanceof String) {
         // if number is found, mix of types, break
-        if (typesFound === 'number') {
+        if (typeFound === 'number') {
           isMixedType = true;
           break;
         }
         // register string only if not already in
-        if (typesFound == null) {
-          typesFound = 'string';
+        if (typeFound == null) {
+          typeFound = 'string';
         }
       }
     }
