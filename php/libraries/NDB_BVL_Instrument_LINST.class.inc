@@ -390,7 +390,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 'Delimiter' => $this->_GUIDelimiter,
             ];
 
-            while (($line = fgets($fp, 4096)) !== false) {
+            // Buffer = 128KB
+            while (($line = fgets($fp, 131072)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
                 $this->LinstLines[] = $pieces;
 
