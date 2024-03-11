@@ -1,15 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import * as R from 'ramda';
 import {connect} from "react-redux";
-import {rootEpic, RootState} from "../store";
-import {SelectDropdown, CheckboxElement} from './Form';
-import {InfoIcon} from "./components";
+import {RootState} from "../store";
+import {SelectDropdown} from 'jsx/MultiSelectDropdown';
+import {CheckboxElement} from 'jsx/Form';
 import {HEDTag, HEDSchemaElement} from "../store/types";
 import {setAddedTags, setDatasetTags, setDeletedTags, setRelOverrides} from "../store/state/dataset";
 import swal from "sweetalert2";
 import {buildHEDString, getNthMemberTrailingBadgeIndex} from "../store/logic/filterEpochs";
 import {colorOrder} from "../../color";
-import {act} from "react-dom/test-utils";
 
 type CProps = {
   physioFileID: number,
@@ -939,10 +938,10 @@ const DatasetTagger = ({
   }
 
   const handleSchemaFieldClick = (key, action) => {
-    setActiveHEDSchemas({
-      ...activeHEDSchemas,
+    setActiveHEDSchemas(previouslyActive => ({
+      ...previouslyActive,
       [key]: action === 'check'
-    });
+    }));
   }
 
   const handleToggleAllSchemas = (action) => {
@@ -1072,7 +1071,7 @@ const DatasetTagger = ({
                   }}>
                   <CheckboxElement
                     name='toggle-long-hed'
-                    class='flex-basis-45'
+                    class='flex-basis-45 toggle-long-hed'
                     offset=''
                     label='Show long-form HED tags'
                     value={showLongFormHED}

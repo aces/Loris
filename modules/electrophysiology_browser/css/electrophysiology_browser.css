@@ -140,6 +140,14 @@ svg:not(:root) {
   display: inline-block;
 }
 
+.toggle-long-hed label > div {
+  padding-right: 10px !important;
+}
+
+.toggle-long-hed input[type='checkbox'] {
+  vertical-align: top;
+}
+
 .tag-hed-score {
   cursor: pointer;
 }
