@@ -310,9 +310,6 @@ class StaticDataTable extends Component {
       return false;
     }
 
-    // is the current sorted column with mixed type?
-    let isMixedType = false;
-
     // Only checks string or number types, others are considered undefined.
     // Break out of this loop once we encounter two mixed types:
     // number and string inside the sorted column.
@@ -329,8 +326,7 @@ class StaticDataTable extends Component {
       if (!isNaN(val) && typeof val !== 'object') {
         // if string is found, mix of types, break
         if (typeFound === 'string') {
-          isMixedType = true;
-          break;
+          return true;
         }
         // register number only if not already in
         if (typeFound == null) {
@@ -345,8 +341,7 @@ class StaticDataTable extends Component {
       if (typeof val === 'string' || val instanceof String) {
         // if number is found, mix of types, break
         if (typeFound === 'number') {
-          isMixedType = true;
-          break;
+          return true;
         }
         // register string only if not already in
         if (typeFound == null) {
@@ -354,7 +349,7 @@ class StaticDataTable extends Component {
         }
       }
     }
-    return isMixedType;
+    return false;
   }
 
   /**
