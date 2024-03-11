@@ -39,14 +39,12 @@ $(function() {
     $('.btn-remove').on('click', function(e) {
         e.preventDefault();
 
-        let options = $(this).parent().parent().children().prop('options');
-        let selectedIndex = $(this)
-                            .parent().parent().children()
-                            .prop('selectedIndex');
-        let selectedOption = options[selectedIndex].text;
-        let fieldName = $(this)
-                        .parent().parent().parent().parent().parent().children()
-                        .attr('data-original-title');
+        let selectedOption = $(this).parent().parent().children()
+                             .prop('value');
+
+        let fieldName      = $(this)
+                             .parent().parent().parent().parent().parent().children()
+                             .attr('data-original-title');
 
         swal.fire({
             text: 'Please confirm you want to delete the option "' +
