@@ -296,6 +296,68 @@ class StaticDataTable extends Component {
   }
 
   /**
+   * Get if the current sorting column has mixed types in its values.
+   *
+   * @return {bool} true if mixed types, else false.
+   */
+  hasMixedTypes() {
+    // TODO: data column type check should probably be done once at init,
+    // meaning when receiving data, to find which columns have mixed types.
+    let typesFound = null;
+
+    // not the default column
+    if (this.state.SortColumn === -1) {
+      return false;
+    }
+
+    // is the current sorted column with mixed type?
+    let isMixedType = false;
+
+    // Only checks string or number types, others are considered undefined.
+    // Break out of this loop once we encounter two mixed types:
+    // number and string inside the sorted column.
+    for (const row of this.props.Data) {
+      // cell value
+      let val = row[this.state.SortColumn];
+
+      // if null or undefined, go to the next iteration
+      if (val == null) {
+        continue;
+      }
+
+      // check number
+      if (!isNaN(val) && typeof val !== 'object') {
+        // if string is found, mix of types, break
+        if (typesFound === 'string') {
+          isMixedType = true;
+          break;
+        }
+        // register number only if not already in
+        if (typesFound == null) {
+          typesFound = 'number';
+        }
+
+        // avoid string section
+        continue;
+      }
+
+      // check string
+      if (typeof val === 'string' || val instanceof String) {
+        // if number is found, mix of types, break
+        if (typesFound === 'number') {
+          isMixedType = true;
+          break;
+        }
+        // register string only if not already in
+        if (typesFound == null) {
+          typesFound = 'string';
+        }
+      }
+    }
+    return isMixedType;
+  }
+
+  /**
    * Sort the rows according to the sort configuration
    *
    * @return {Object[]}
@@ -303,52 +365,8 @@ class StaticDataTable extends Component {
   getSortedRows() {
     const index = [];
 
-    // TODO: data column type check should probably be done once at init,
-    // to find which columns have mixed types.
-    // First pass to check if there is a mix of types in the values
-    const typesFound = [];
     // is the current sorted column with mixed type?
-    let isMixedType = false;
-    // not the default column
-    if (this.state.SortColumn !== -1) {
-      // only push string or number types, rest is considered undefined
-      //
-      // break out of this loop once we encounter two mixed types:
-      // number and string inside the sorting column
-      for (let i = 0; i < this.props.Data.length; i += 1) {
-        // value
-        let val = this.props.Data[i][this.state.SortColumn] || undefined;
-
-        // check number
-        if (!isNaN(val) && typeof val !== 'object') {
-          // if string is found, mix of types, break
-          if (typesFound.indexOf('string') !== -1) {
-            isMixedType = true;
-            break;
-          }
-          // push only if not already in
-          if (typesFound.indexOf('number') === -1) {
-            typesFound.push('number');
-          }
-
-          // avoid string section
-          continue;
-        }
-
-        // check string
-        if (typeof val === 'string' || val instanceof String) {
-          // if number is found, mix of types, break
-          if (typesFound.indexOf('number') !== -1) {
-            isMixedType = true;
-            break;
-          }
-          // push only if not already in
-          if (typesFound.indexOf('string') === -1) {
-            typesFound.push('string');
-          }
-        }
-      }
-    }
+    const isMixedType = this.hasMixedTypes();
 
     //
     for (let i = 0; i < this.props.Data.length; i += 1) {
