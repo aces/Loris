@@ -473,13 +473,13 @@ class Sessions extends \NDB_Page
         // Get the task's event data
         $events = new ElectrophysioEvents(
             $this->loris,
-            intval($physioFileID)
+            $physioFileID
         );
         $fileSummary['events'] = $events->getData();
 
         $datasetTags = new DatasetTags(
             $this->loris,
-            intval($physioFileID)
+            $physioFileID
         );
         $fileSummary['datasetTags'] = $datasetTags->getData();
 

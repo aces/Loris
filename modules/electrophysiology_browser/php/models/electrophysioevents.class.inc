@@ -286,14 +286,12 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $projectID = intval(
-            $db->pselectOne(
+        $projectID = $db->pselectOneInt(
                 'SELECT ProjectID FROM session AS s WHERE s.ID = (
                 SELECT SessionID FROM physiological_file
                 WHERE PhysiologicalFileID=:PFID
             )',
-                ['PFID' => $this->_physioFileID]
-            )
+            ['PFID' => $this->_physioFileID]
         );
 
         $json = $db->pselect(

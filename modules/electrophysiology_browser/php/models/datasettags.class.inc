@@ -36,19 +36,17 @@ class DatasetTags
         // TODO: Instead use schemas in project_schema_rel?
         $this->_hedSchema = $db->pselect(
             'SELECT * FROM hed_schema_nodes AS hsn
-                  LEFT JOIN hed_schema AS hs
-                  ON hsn.SchemaID = hs.ID',
+              LEFT JOIN hed_schema AS hs
+              ON hsn.SchemaID = hs.ID',
             []
         );
 
-        $this->_projectID = intval(
-            $db->pselectOne(
-                'SELECT ProjectID FROM session AS s WHERE s.ID = (
-                SELECT SessionID FROM physiological_file
-                WHERE PhysiologicalFileID=:PFID
-            )',
-                ['PFID' => $this->_physioFileID]
-            )
+        $this->_projectID = $db->pselectOneInt(
+              'SELECT ProjectID FROM session AS s WHERE s.ID = (
+              SELECT SessionID FROM physiological_file
+              WHERE PhysiologicalFileID=:PFID
+          )',
+          ['PFID' => $this->_physioFileID]
         );
     }
 
