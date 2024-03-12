@@ -22,13 +22,16 @@ class DatasetTags
     /**
      * Construct an Event object
      *
-     * @param integer $physioFileID Electrophysiological file ID
-     *                              to collect event data from
+     * @param \LORIS\LorisInstance $loris        The LORIS instance that the module
+     *                                           is serving.
+     * @param integer              $physioFileID Electrophysiological file ID
+     *                                           to collect event data from
      */
-    function __construct(int $physioFileID)
+    function __construct(\LORIS\LorisInstance $loris, int $physioFileID)
     {
+        $this->loris         = $loris;
         $this->_physioFileID = $physioFileID;
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         // TODO: Instead use schemas in project_schema_rel?
         $this->_hedSchema = $db->pselect(
@@ -57,7 +60,7 @@ class DatasetTags
      */
     function setData(): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $extraColumns = $db->pselect(
             'SELECT
@@ -203,10 +206,8 @@ class DatasetTags
         array $deletedTags,
         array $editedTags,
     ): array {
-
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = \User::singleton();
+        $db   = $this->loris->getDatabaseConnection();
 
         $addedTagIDs = [];
         if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
@@ -317,7 +318,7 @@ class DatasetTags
      */
     function deleteHEDTag(int $physiologicalTaskEventID, int $hedTagID): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db =  $this->loris->getDatabaseConnection();
 
         $physioFileID = $db->pselectone(
             'SELECT PhysiologicalFileID

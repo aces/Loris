@@ -151,7 +151,7 @@ class Sessions extends \NDB_Page
     function getSessionData($outputType)
     {
 
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $query = 'SELECT
                 DISTINCT(pf.SessionID)
@@ -222,7 +222,7 @@ class Sessions extends \NDB_Page
      */
     function getFilesData(string $outputType)
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileCollection = [];
         $params         = [];
@@ -262,11 +262,11 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
-        $physioFileObj   = new ElectrophysioFile($physioFileID);
+        $physioFileObj   = new ElectrophysioFile($this->loris, $physioFileID);
         $physioFile      = $physioFileObj->getParameter('FilePath');
         $modality        = $physioFileObj->getParameter('Modality');
         $modalityPrefix  = $modality === 'ieeg' ? 'iEEG' : 'EEG';
@@ -472,11 +472,13 @@ class Sessions extends \NDB_Page
 
         // Get the task's event data
         $events = new ElectrophysioEvents(
+            $this->loris,
             intval($physioFileID)
         );
         $fileSummary['events'] = $events->getData();
 
         $datasetTags = new DatasetTags(
+            $this->loris,
             intval($physioFileID)
         );
         $fileSummary['datasetTags'] = $datasetTags->getData();
@@ -562,7 +564,7 @@ class Sessions extends \NDB_Page
     {
         $physioFileID  = $physioFileObj->getParameter('PhysiologicalFileID');
         $physioFile    = $physioFileObj->getParameter('FilePath');
-        $db            = \NDB_Factory::singleton()->database();
+        $db            = $this->loris->getDatabaseConnection();
         $downloadLinks = [];
 
         $downloadLinks[] = [

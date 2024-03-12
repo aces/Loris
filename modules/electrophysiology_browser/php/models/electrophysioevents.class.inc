@@ -20,13 +20,14 @@ class ElectrophysioEvents
     /**
      * Construct an Event object
      *
-     * @param integer $physioFileID Electrophysiological file ID
-     *                              to collect event data from
+     * @param \LORIS\LorisInstance $loris        The LORIS instance
+     * @param integer              $physioFileID Electrophysiological file ID
      */
-    function __construct(int $physioFileID)
+    function __construct(\LORIS\LorisInstance $loris, int $physioFileID)
     {
+        $this->loris         = $loris;
         $this->_physioFileID = $physioFileID;
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $taskEvents = $db->pselect(
             'SELECT te.*
@@ -107,9 +108,8 @@ class ElectrophysioEvents
         ?int $instance_id,
     ): array {
 
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = \User::singleton();
+        $db   = $this->loris->getDatabaseConnection();
 
         if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
 
@@ -209,7 +209,7 @@ class ElectrophysioEvents
      */
     function deleteEvent(int $physiologicalTaskEventID): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db =  $this->loris->getDatabaseConnection();
 
         $physioFileID = $db->pselectone(
             'SELECT PhysiologicalFileID
@@ -237,7 +237,7 @@ class ElectrophysioEvents
      */
     function deleteHEDTag(int $physiologicalTaskEventID, int $hedTagID): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db =  $this->loris->getDatabaseConnection();
 
         $physioFileID = $db->pselectone(
             'SELECT PhysiologicalFileID
@@ -267,7 +267,7 @@ class ElectrophysioEvents
      */
     function updateFiles(): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db =  $this->loris->getDatabaseConnection();
 
         //Get data directory base path from Config
         $config  = \NDB_Factory::singleton()->config();
@@ -544,7 +544,7 @@ class ElectrophysioEvents
      */
     function _updateArchives(array $paths) : void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db =  $this->loris->getDatabaseConnection();
 
         //Get data directory base path from Config
         $config  = \NDB_Factory::singleton()->config();
