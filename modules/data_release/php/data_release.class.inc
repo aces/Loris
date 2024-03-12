@@ -24,7 +24,7 @@ namespace LORIS\data_release;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Data_Release extends \NDB_Menu_Filter
+class Data_Release extends \DataFrameworkMenu
 {
     public $AjaxModule   = true;
     public $skipTemplate = true;
@@ -47,55 +47,6 @@ class Data_Release extends \NDB_Menu_Filter
             ]
         );
     }
-
-    /**
-     * Setup all the class variables needed for the data release menu page
-     *
-     * @return void
-     */
-    function _setupVariables()
-    {
-        $user =& \User::singleton();
-        $DB   = $this->loris->getDatabaseConnection();
-
-        // set the class variables
-        $this->columns = [
-            'file_name AS fileName',
-            'IF(version is null or version ="","Unversioned", version) AS version',
-            'upload_date AS uploadDate',
-            'dr.id as dataReleaseID',
-        ];
-        $this->query   = " FROM data_release dr";
-
-        if (!$user->hasPermission("superuser")) {
-            $this->query .= " JOIN data_release_permissions drp 
-            ON (dr.id=drp.data_release_id) 
-            JOIN users u ON (u.ID=drp.userid) 
-            WHERE u.UserID=".$DB->quote($user->getUsername());
-        }
-
-        $this->group_by = '';
-        $this->order_by = 'uploadDate';
-    }
-
-    /**
-     * Create the form for the data release menu page
-     *
-     * @return void
-     **/
-    function setup()
-    {
-        parent::setup();
-
-        $db = $this->loris->getDatabaseConnection();
-
-        $this->fieldOptions = [
-            'users'     => $this->getUsersList($db),
-            'versions'  => $this->getVersionsList($db),
-            'filenames' => $this->getFilesList($db),
-        ];
-    }
-
 
     /**
      * Greps the list of users available in the users database table.
@@ -143,7 +94,7 @@ class Data_Release extends \NDB_Menu_Filter
      * @param \Database $DB database handle
      *
      * @return array $versionList Array of version names indexed by version
-     *                            name.
+     * name.
      */
     function getVersionsList(\Database $DB)
     {
@@ -245,6 +196,62 @@ class Data_Release extends \NDB_Menu_Filter
         }
 
         return $userFiles;
+    }
+
+    /**
+     * Function getFieldOptions
+     *
+     * @return array
+     */
+    protected function getFieldOptions() : array
+    {
+        $db = $this->loris->getDatabaseConnection();
+        return [
+            'users'     => $this->getUsersList($db),
+            'versions'  => $this->getVersionsList($db),
+            'filenames' => $this->getFilesList($db),
+        ];
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserSiteMatch filter.
+     *
+     * @return bool always false
+     */
+    public function useSiteFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new DataReleaseProvisioner();
     }
 
     /**
