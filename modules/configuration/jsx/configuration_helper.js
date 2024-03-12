@@ -42,9 +42,9 @@ $(function() {
         let selectedOption = $(this).parent().parent().children()
                              .prop('value');
 
-        let fieldName      = $(this)
-                             .parent().parent().parent().parent().parent().children()
-                             .attr('data-original-title');
+        let fieldName = $(this)
+                        .parent().parent().parent().parent().parent().children()
+                        .attr('data-original-title');
 
         swal.fire({
             text: 'Please confirm you want to delete the option "' +
