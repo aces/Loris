@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 namespace LORIS\electrophysiology_browser\Models;
 use DatabaseException;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * This object contains the methods to get
@@ -14,10 +15,13 @@ use DatabaseException;
  */
 class DatasetTags
 {
+    use LoggerAwareTrait;
+
     private int $_physioFileID;
-    private int $_projectID;
+    private ?int $_projectID;
     private array $_data = [];
     private array $_hedSchema;
+    private \LORIS\LorisInstance $loris;
 
     /**
      * Construct an Event object
@@ -29,6 +33,11 @@ class DatasetTags
      */
     function __construct(\LORIS\LorisInstance $loris, int $physioFileID)
     {
+        $loglevel     = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
         $this->loris         = $loris;
         $this->_physioFileID = $physioFileID;
         $db = $this->loris->getDatabaseConnection();
@@ -42,11 +51,11 @@ class DatasetTags
         );
 
         $this->_projectID = $db->pselectOneInt(
-              'SELECT ProjectID FROM session AS s WHERE s.ID = (
+            'SELECT ProjectID FROM session AS s WHERE s.ID = (
               SELECT SessionID FROM physiological_file
               WHERE PhysiologicalFileID=:PFID
           )',
-          ['PFID' => $this->_physioFileID]
+            ['PFID' => $this->_physioFileID]
         );
     }
 
@@ -214,14 +223,23 @@ class DatasetTags
             // TODO: FIRST RESOLVE RESOLVED TAGS [new field] -- assume all individual
 
             foreach ($deletedTags as $deletedTag) {
-                if (is_null($deletedTag['PairRelID'])) {
-                    $db->delete(
-                        'bids_event_dataset_mapping',
-                        ['ID'  => $deletedTag['ID']]
+                try {
+                    if (is_null($deletedTag['PairRelID'])) {
+                        $db->delete(
+                            'bids_event_dataset_mapping',
+                            ['ID' => $deletedTag['ID']]
+                        );
+                    } else {
+                        throw new \LorisException(
+                            "Tried deleting tag from " .
+                            "an undissolved group. Tag ID: {$deletedTag['ID']}"
+                        );
+                    }
+                } catch (\LorisException $le) {
+                    $this->logger->log(
+                        \Psr\Log\LogLevel::ERROR,
+                        "Failed to delete HED tag: {$le->getMessage()}"
                     );
-                } else {
-                    // TODO: Make sure all dissolved (front-end?)
-                    error_log($deletedTag['ID'] . ' not dissolved');
                 }
             }
 
@@ -285,9 +303,7 @@ class DatasetTags
                         [
                             'HasPairing'        => $editedTag['HasPairing'],
                             'AdditionalMembers' => $editedTag['AdditionalMembers'],
-                            'PairRelID'         => $editedTag['PairRelID']
-                        //              'TagValue' => $editedTag['TagValue'],
-                        //              'Description' => $editedTag['Description'],
+                            'PairRelID'         => $editedTag['PairRelID'],
                         ],
                         ['ID'  => $editedTag['ID']]
                     );
@@ -439,54 +455,64 @@ class DatasetTags
                 if (is_null($group_tag['pair_rel_id'])) {
                     $tag_string = $group_tag['name'] ?? 'n/a';
                 } else {
-                    if ($group_tag['has_pairing'] == 1) {
-                        if ($group_tag['additional_members'] > 0
-                            || strlen($subgroup_string) == 0
-                        ) {
-                            $comma_index     = $this
+                    try {
+                        if ($group_tag['has_pairing'] == 1) {
+                            if ($group_tag['additional_members'] > 0
+                                || strlen($subgroup_string) == 0
+                            ) {
+                                $comma_index     = $this
                                     ->getNthTrailingMemberCommaIndex(
                                         $tag_string,
                                         $group_tag['additional_members'] + (
-                                            strlen($subgroup_string) > 0 ? 0 : 1
+                                        strlen($subgroup_string) > 0 ? 0 : 1
                                         )
                                     );
-                            $tag_string      = '(' .
-                              (is_null($group_tag['id'])
-                                  ? ''
-                                  : ($group_tag['name'] . ', ')
-                              ) .
-                              (strlen($subgroup_string) > 0
-                                  ? "$subgroup_string, "
-                                  : ''
-                              ) .
-                              substr($tag_string, 0, $comma_index) . ')' .
-                              substr($tag_string, $comma_index);
-                            $subgroup_string = '';
-                        } else {
-                            if (is_null($group_tag['id'])) {
-                                if (strlen($subgroup_string) > 0) {
-                                    $subgroup_string = "($subgroup_string)";
-                                } else {
-                                    error_log('"UNEXPECTED" STATE');  // TODO: raise
-                                }
+                                $tag_string      = '(' .
+                                    (is_null($group_tag['id'])
+                                        ? ''
+                                        : ($group_tag['name'] . ', ')
+                                    ) .
+                                    (strlen($subgroup_string) > 0
+                                        ? "$subgroup_string, "
+                                        : ''
+                                    ) .
+                                    substr($tag_string, 0, $comma_index) . ')' .
+                                    substr($tag_string, $comma_index);
+                                $subgroup_string = '';
                             } else {
-                                if (strlen($subgroup_string) > 0) {
-                                    $subgroup_string
-                                        = '(' . $group_tag['name'] .
-                                        ", $subgroup_string)";
+                                if (is_null($group_tag['id'])) {
+                                    if (strlen($subgroup_string) > 0) {
+                                        $subgroup_string = "($subgroup_string)";
+                                    } else {
+                                        throw new \LorisException(
+                                            "Tag not found: " .
+                                            json_encode($group_tag)
+                                        );
+                                    }
                                 } else {
-                                    $tag_string
-                                        = '(' . $group_tag['name'] .
-                                        ", $tag_string)";
+                                    if (strlen($subgroup_string) > 0) {
+                                        $subgroup_string
+                                            = '(' . $group_tag['name'] .
+                                            ", $subgroup_string)";
+                                    } else {
+                                        $tag_string
+                                            = '(' . $group_tag['name'] .
+                                            ", $tag_string)";
+                                    }
                                 }
                             }
+                        } else {
+                            if (strlen($subgroup_string) > 0) {
+                                $tag_string = "$subgroup_string, $tag_string";
+                            }
+                            // Intentional overwrite
+                            $subgroup_string = $group_tag['name'];
                         }
-                    } else {
-                        if (strlen($subgroup_string) > 0) {
-                            $tag_string = "$subgroup_string, $tag_string";
-                        }
-                        // Intentional overwrite
-                        $subgroup_string = $group_tag['name'];
+                    } catch (\LorisException $le) {
+                        $this->logger->log(
+                            \Psr\Log\LogLevel::ERROR,
+                            "Fatal HED tag error: {$le->getMessage()}"
+                        );
                     }
                 }
             }
@@ -606,5 +632,4 @@ class DatasetTags
         }
         return $comma_index + 1;
     }
-
 }

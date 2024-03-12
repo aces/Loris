@@ -28,6 +28,8 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     private $_parameters   = [];
     private $_chunksURLs   = [];
     private $_splitFileIDs = [];
+    private \LORIS\LorisInstance $loris;
+
 
     /**
      * Construct a BIDSFile
@@ -174,6 +176,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
             'splitIndex'      => $index,
             'splitCount'      => intval($this->_fileData['SplitCount']),
             'splitPhysioFile' => new ElectrophysioFile(
+                $this->loris,
                 intval($this->_splitFileIDs[$index])
             ),
         ];

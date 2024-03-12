@@ -16,6 +16,7 @@ class ElectrophysioEvents
 {
     private int $_physioFileID;
     private array $_data;
+    private \LORIS\LorisInstance $loris;
 
     /**
      * Construct an Event object
@@ -354,7 +355,7 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
-            $datasetTags    = new DatasetTags($this->_physioFileID);
+            $datasetTags    = new DatasetTags($this->loris, $this->_physioFileID);
             $datasetHEDTags = $datasetTags->getData();
 
             // TODO: Make columns more dynamic

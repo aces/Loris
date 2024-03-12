@@ -66,7 +66,7 @@ class Events extends \NDB_Page
             }
 
             $physioFileID = intval($parameters['physioFileID']);
-            (new ElectrophysioEvents($physioFileID))->updateFiles();
+            (new ElectrophysioEvents($this->loris, $physioFileID))->updateFiles();
 
             $config       = \NDB_Factory::singleton()->config();
             $downloadpath = \Utility::appendForwardSlash(
@@ -133,7 +133,10 @@ class Events extends \NDB_Page
                     intval($parameters['instance_id']) : null;
 
                 $updated_instance = (
-                  new ElectrophysioEvents(intval($parameters['physioFileID']))
+                    new ElectrophysioEvents(
+                        $this->loris,
+                        intval($parameters['physioFileID'])
+                    )
                 )->update($instance_data, $metadata, $instance_id);
 
                 if (count($updated_instance) > 0) {
@@ -147,15 +150,10 @@ class Events extends \NDB_Page
                 $deleted_tags = $parameters['deleted_tags'];
                 $edited_tags  = $parameters['edited_tags'];
 
-                // TODO: Figure out a better description modeled on other derivatives
-                $metadata = [
-                    'description' => 'An event',
-                    'sources'     => 'EEGNet LORIS',
-                    'author'      => $user->getFullname()
-                ];
-                error_log(json_encode($metadata));
-
-                $dataset_tags = new DatasetTags(intval($parameters['physioFileID']));
+                $dataset_tags = new DatasetTags(
+                    $this->loris,
+                    intval($parameters['physioFileID'])
+                );
                 $idMapping    = $dataset_tags->update(
                     $added_tags,
                     $deleted_tags,

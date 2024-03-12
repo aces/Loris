@@ -48,8 +48,10 @@ class Split_Data extends \NDB_Page
             }
 
             return new \LORIS\Http\Response\JSON\OK(
-                (new ElectrophysioFile(intval($values['physioFileID'])))
-                    ->getSplitData(intval($values['splitIndex']))
+                (new ElectrophysioFile(
+                    $this->loris,
+                    intval($values['physioFileID'])
+                ))->getSplitData(intval($values['splitIndex']))
             );
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

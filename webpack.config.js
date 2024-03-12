@@ -239,13 +239,14 @@ let config = [
 ];
 
 const lorisModules = {
+  /*
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: [
     'issueTrackerIndex',
     'index',
     'CandidateIssuesWidget',
   ],
-  login: ['loginIndex'],
+  login: ['loginIndex'],/*
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
   candidate_parameters: [
@@ -290,7 +291,7 @@ const lorisModules = {
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
-  ],
+  ],/*
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
     'UploadForm',
@@ -308,7 +309,7 @@ const lorisModules = {
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
   mri_violations: ['mriViolationsIndex'],
-  user_accounts: ['userAccountsIndex'],
+  user_accounts: ['userAccountsIndex'],/*
   examiner: ['examinerIndex'],
   help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
@@ -322,7 +323,7 @@ const lorisModules = {
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
-  dashboard: ['welcome'],
+  dashboard: ['welcome'],*/
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
