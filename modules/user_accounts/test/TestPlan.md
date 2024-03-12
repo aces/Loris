@@ -41,8 +41,8 @@ When creating or editing a user: (subtest: edit_user)
 13. Check that if generating a new password for a user an email is sent to that user containing the new password (requires
     email server).
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change). [Automated]
-15. Verify that if the editor does not have permission 'User Accounts: View/Create/Edit User Accounts - All Sites' then the multi-select 
-    site field in both edit user page and the filters for the data table are populated with the editor's associated sites, otherwise all sites are displayed.
+15. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
+    the editor's associated sites, otherwise all sites are displayed.
 16. Check that if the 'Additional user information' entry is set to false in the Configuration module, fields Degree,
     Academic Position, Institution, Department, Street Address, City, State/Province, Country and FAX are not shown.
 17. Check that the 'Examiner At:' and 'Examiner Status' sections are available only if you have the 'Across all sites add and certify examiners'.

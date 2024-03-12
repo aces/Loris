@@ -77,17 +77,9 @@ class User_Accounts extends \DataFrameworkMenu
             'Y' => 'Yes',
             'N' => 'No',
         ];
-        // Get user
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-
-        // Without user_acounts_multisite permission, only show user sites
-        $sites = $user->hasPermission('user_accounts_multisite') ?
-            \Utility::getSiteList(false)
-            : $user->getSiteNamesList();
 
         return [
-            'sites'            => $sites,
+            'sites'            => \Utility::getSiteList(false),
             'projects'         => \Utility::getProjectList(),
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,

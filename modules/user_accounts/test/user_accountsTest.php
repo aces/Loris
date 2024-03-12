@@ -60,12 +60,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $password = new \Password($this->validPassword);
-
-        $permID = $this->DB->pselectOne(
-            "SELECT permID FROM permissions WHERE code='user_accounts_multisite'",
-            []
-        );
-
         $this->DB->insert(
             "users",
             [
@@ -99,15 +93,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 'ProjectID' => 1,
             ]
         );
-
-        $this->DB->insert(
-            "user_perm_rel",
-            [
-                'userID' => 999995,
-                'permID' => $permID,
-            ]
-        );
-
     }
 
     /**
@@ -521,7 +506,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
         $this->DB->delete("user_project_rel", ["UserID" => 999995]);
         $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
-        $this->DB->delete("user_perm_rel", ["userID" => 999995]);
         parent::tearDown();
     }
 }
