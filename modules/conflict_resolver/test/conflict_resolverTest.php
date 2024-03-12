@@ -97,7 +97,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->checkPagePermissions(
             '/conflict_resolver/',
             [
-                'conflict_resolver'
+                'conflict_resolver',
+                'data_dict_edit'
             ],
             "Conflict Resolver"
         );
