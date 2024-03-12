@@ -35,10 +35,9 @@ class DatasetTags
 
         // TODO: Instead use schemas in project_schema_rel?
         $this->_hedSchema = $db->pselect(
-            'SELECT * FROM hed_schema_nodes WHERE SchemaID IN (
-                SELECT ID FROM hed_schema
-                WHERE 1
-            )',
+            'SELECT * FROM hed_schema_nodes AS hsn
+                  LEFT JOIN hed_schema AS hs
+                  ON hsn.SchemaID = hs.ID',
             []
         );
 
