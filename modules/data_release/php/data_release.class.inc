@@ -225,8 +225,7 @@ class Data_Release extends \DataFrameworkMenu
     }
 
     /**
-     * Tells the base class that this page's provisioner can support the
-     * HasAnyPermissionOrUserSiteMatch filter.
+     * {@inheritDoc}
      *
      * @return ?array of site permissions or null
      */
