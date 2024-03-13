@@ -94,14 +94,14 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverPermission()
     {
-        $this->setupPermissions(["conflict_resolver","data_dict_edit","data_dict_view"]);
+        $permissionList = ["conflict_resolver","data_dict_edit","data_dict_view"];
+        $this->setupPermissions($permissionList);
         $this->safeGet($this->url . "/conflict_resolver/");
-        $bodyText = $this->safeFindElement( WebDriverBy::cssSelector("body"))->getText();
-          
-        $this->assertStringNotContainsString( "You do not have access to this page.", $bodyText);
-        $this->assertStringNotContainsString("An error occured while loading the page.", $bodyText );
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("An error occured while loading the page.", $bodyText);
         $this->resetPermissions();
-} 
+        } 
     /**
      * Tests clear button in the form
      * The form should refreash and the data should be gone.
