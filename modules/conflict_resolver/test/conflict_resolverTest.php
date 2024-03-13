@@ -101,7 +101,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->assertStringNotContainsString("An error occured while loading the page.", $bodyText);
         $this->resetPermissions();
-        } 
+    }
     /**
      * Tests clear button in the form
      * The form should refreash and the data should be gone.
