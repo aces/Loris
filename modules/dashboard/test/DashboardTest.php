@@ -428,7 +428,9 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             [
                 "conflict_resolver",
-                "access_all_profiles",
+		"access_all_profiles",
+		"data_dict_edit",
+		"data_dict_view",
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
