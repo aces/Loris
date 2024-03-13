@@ -352,6 +352,37 @@ class User extends UserPermissions implements
     }
 
     /**
+     * Returns all user's sites
+     *
+     * @return array
+     */
+    function getSites(): array
+    {
+        return array_map(
+            function ($centerID) {
+                return \Site::singleton($centerID);
+            },
+            $this->getCenterIDs()
+        );
+    }
+
+    /**
+     * Returns all user's sites in associative
+     * array (CenterID => CenterName)
+     *
+     * @return array
+     */
+    function getSiteNamesList(): array
+    {
+        $sites = [];
+        foreach ($this->getSites() as $site) {
+            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
+        }
+        return $sites;
+    }
+
+
+    /**
      * Returns all user's sites that are StudySites
      *
      * @return array
