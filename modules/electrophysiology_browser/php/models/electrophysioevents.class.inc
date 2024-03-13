@@ -276,19 +276,19 @@ class ElectrophysioEvents
 
         $tsv = $db->pselect(
             "SELECT
-        EventFileID   AS id,
-        FilePath      AS filePath,
-        ProjectID     AS projectID,
-        LastUpdate    AS lastUpdate,
-        LastWritten   AS lastWritten
-      FROM physiological_event_file
-      WHERE PhysiologicalFileID=:PFID
-      AND FileType='tsv'",
+            EventFileID   AS id,
+            FilePath      AS filePath,
+            ProjectID     AS projectID,
+            LastUpdate    AS lastUpdate,
+            LastWritten   AS lastWritten
+          FROM physiological_event_file
+          WHERE PhysiologicalFileID=:PFID
+          AND FileType='tsv'",
             ['PFID' => $this->_physioFileID]
         );
 
         $projectID = $db->pselectOneInt(
-                'SELECT ProjectID FROM session AS s WHERE s.ID = (
+            'SELECT ProjectID FROM session AS s WHERE s.ID = (
                 SELECT SessionID FROM physiological_file
                 WHERE PhysiologicalFileID=:PFID
             )',
@@ -297,23 +297,100 @@ class ElectrophysioEvents
 
         $json = $db->pselect(
             "SELECT
-        EventFileID   AS id,
-        FilePath      AS filePath,
-        LastUpdate    AS lastUpdate,
-        LastWritten   AS lastWritten
-      FROM physiological_event_file
-      WHERE (
-          PhysiologicalFileID=:PFID OR ProjectID=:PID
-      )
-      AND FileType='json'",
+            EventFileID   AS id,
+            FilePath      AS filePath,
+            LastUpdate    AS lastUpdate,
+            LastWritten   AS lastWritten
+          FROM physiological_event_file
+          WHERE (
+              PhysiologicalFileID=:PFID OR ProjectID=:PID
+          )
+          AND FileType='json'",
             [
                 'PFID' => $this->_physioFileID,
                 'PID'  => $projectID
             ]
         );
 
-        $tsvPath  = count($tsv) > 0 ? $dataDir . $tsv[0]['filePath'] : '';
-        $jsonPath = count($json) > 0 ? $dataDir . $json[0]['filePath'] : '';
+        $tsvPath  = count($tsv) > 0
+            ? \Utility::pathJoin(
+                $dataDir,
+                \Utility::resolvePath($tsv[0]['filePath'])
+            )
+            : '';
+        $jsonPath = count($json) > 0
+            ? \Utility::pathJoin(
+                $dataDir,
+                \Utility::resolvePath($json[0]['filePath'])
+            )
+            : '';
+
+        // Define paths for creation if either file don't exist
+        if (strlen($tsvPath) === 0 || strlen($jsonPath) === 0) {
+            $physioFilePath        = $db->pselectOne(
+                'SELECT FilePath
+                FROM physiological_file
+                WHERE PhysiologicalFileID=:PFID',
+                ['PFID' => $this->_physioFileID]
+            );
+            $indexOfLastUnderscore = strripos($physioFilePath, '_');
+            $sessionDirectory      = substr(
+                $physioFilePath,
+                0,
+                $indexOfLastUnderscore
+            );
+
+            if (strlen($tsvPath) === 0) {
+                $relativePath = $sessionDirectory . '_events.tsv';
+                $db->insert(
+                    'physiological_event_file',
+                    [
+                        'ProjectID'           => $projectID,
+                        'PhysiologicalFileID' => $this->_physioFileID,
+                        'FileType'            => 'tsv',
+                        'FilePath'            => $relativePath,
+                    ]
+                );
+                $tsvPath = \Utility::pathJoin(
+                    $dataDir,
+                    \Utility::resolvePath($relativePath)
+                );
+            }
+
+            if (strlen($jsonPath) === 0) {
+                // Second directory level: bids_imports/Dataset/
+                $datasetDirectory = substr(
+                    $sessionDirectory,
+                    0,
+                    strpos(
+                        $sessionDirectory,
+                        '/',
+                        strpos($sessionDirectory, '/') + 1
+                    )
+                );
+                $taskFound        = preg_match(
+                    '/sub-.+_(task-.+)_/',
+                    $physioFilePath,
+                    $matches
+                );
+                $relativePath     = $datasetDirectory . '/' .
+                    ($taskFound ? "$matches[1]_" : '') .
+                    'events.json';
+                $db->insert(
+                    'physiological_event_file',
+                    [
+                        'ProjectID'           => $projectID,
+                        'PhysiologicalFileID' => $this->_physioFileID,
+                        'FileType'            => 'json',
+                        'FilePath'            => $relativePath,
+                    ]
+                );
+                $jsonPath = \Utility::pathJoin(
+                    $dataDir,
+                    \Utility::resolvePath($relativePath)
+                );
+            }
+        }
 
         // Update files if files updated before database updated
         if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']
@@ -483,26 +560,12 @@ class ElectrophysioEvents
                 ];
             }
 
-            $eventsEncode = json_encode($eventsJSON, JSON_PRETTY_PRINT);
-            if (strlen($jsonPath) === 0) {
-                $tsvRelPath = $tsv[0]['filePath'];
-                $jsonPath   = substr($tsvRelPath, 0, strrpos($tsvRelPath, '.'))
-                    . '.json';
-                $db->insert(
-                    'physiological_event_file',
-                    [
-                        'ProjectID'           => $tsv[0]['projectID'],
-                        'PhysiologicalFileID' => $this->_physioFileID,
-                        'FileType'            => 'json',
-                        'FilePath'            => $jsonPath,
-                    ]
-                );
-            }
-            $jsonFile = fopen($jsonPath, 'w');
-            fwrite($jsonFile, $eventsEncode);
+            $encodedEvents = json_encode($eventsJSON, JSON_PRETTY_PRINT);
+            $jsonFile      = fopen($jsonPath, 'w');
+            fwrite($jsonFile, $encodedEvents);
             fclose($jsonFile);
 
-            //Update archives and create new hash
+            // Update archives and create new hash
             $this->_updateArchives([$tsvPath, $jsonPath]);
 
             // Update time that files were written to
@@ -511,7 +574,6 @@ class ElectrophysioEvents
                 ['LastWritten' => date("Y-m-d H:i:s")],
                 ['PhysiologicalFileID' => $this->_physioFileID]
             );
-
         }
     }
 
@@ -563,7 +625,10 @@ class ElectrophysioEvents
                 ['PFID' => $this->_physioFileID]
             );
 
-            $filepath = $dataDir . $filepath;
+            $filepath = \Utility::pathJoin(
+                $dataDir,
+                \Utility::resolvePath($filepath)
+            );
 
             $archive_file = new \PharData($filepath);
             foreach ($paths as $path) {
