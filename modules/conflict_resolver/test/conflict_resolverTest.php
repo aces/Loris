@@ -101,7 +101,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $bodyElement->getText();
         $accessError = "You do not have access to this page.";
         $this->assertStringNotContainsString($accessError, $bodyText);
-        $loadingError = "An error occured while loading the page."
+        $loadingError = "An error occured while loading the page.";
         $this->assertStringNotContainsString($loadingError, $bodyText);
         $this->resetPermissions();
     }
