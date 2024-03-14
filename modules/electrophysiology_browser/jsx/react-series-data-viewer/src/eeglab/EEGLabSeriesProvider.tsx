@@ -310,7 +310,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                 <div>
                   <a href='https://www.hedtags.org' target='_blank'>
                     <img
-                      src="/images/HED_logo.png"
+                      src="https://images.loris.ca/HED_logo.png"
                       style={{height: '46px'}}
                     />
                   </a>
