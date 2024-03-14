@@ -98,7 +98,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions($permissionList);
         $this->safeGet($this->url . "/conflict_resolver/");
         $bodyElement = $this->safeFindElement(WebDriverBy::cssSelector("body"));
-        $bodyText = $bodyElement->getText();
+        $bodyText    = $bodyElement->getText();
         $accessError = "You do not have access to this page.";
         $this->assertStringNotContainsString($accessError, $bodyText);
         $loadingError = "An error occured while loading the page.";

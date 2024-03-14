@@ -39,7 +39,8 @@ class Conflict_Resolver extends \NDB_Page
     function _hasAccess(\User $user) : bool
     {
         $hasConflictPerm = $user->hasPermission('conflict_resolver');
-        $hasDictPerms = $user->hasAnyPermission(['data_dict_edit', 'data_dict_view']);
+        $dictPerms       = ['data_dict_edit', 'data_dict_view'];
+        $hasDictPerms    = $user->hasAnyPermission($dictPerms);
         return $hasConflictPerm && $hasDictPerms;
     }
 
