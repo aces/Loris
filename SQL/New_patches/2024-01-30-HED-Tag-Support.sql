@@ -70,6 +70,8 @@ CREATE TABLE `bids_event_dataset_mapping` (
   `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
   `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
   PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_bids_event_dataset_mapping_pair` FOREIGN KEY (`PairRelID`)
+      REFERENCES `bids_event_dataset_mapping` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   INDEX idx_event_dataset_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
   CONSTRAINT `FK_project_id` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_dataset_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -89,6 +91,8 @@ CREATE TABLE `bids_event_file_mapping` (
    `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
    `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
    PRIMARY KEY (`ID`),
+   CONSTRAINT `FK_bids_event_file_mapping_pair` FOREIGN KEY (`PairRelID`)
+       REFERENCES `bids_event_file_mapping` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
    INDEX idx_event_file_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
    CONSTRAINT `FK_event_mapping_file_id` FOREIGN KEY (`EventFileID`) REFERENCES `physiological_event_file` (`EventFileID`) ON DELETE CASCADE ON UPDATE CASCADE,
    CONSTRAINT `FK_file_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
