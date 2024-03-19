@@ -235,6 +235,12 @@ class ElectrophysiologySessionView extends Component {
         events:
           dbEntry
           && dbEntry.file.events,
+        hedSchema:
+          dbEntry
+          && dbEntry.file.hedSchema,
+        datasetTags:
+          dbEntry
+          && dbEntry.file.datasetTags,
       }));
 
       this.setState({
@@ -334,6 +340,8 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs,
           epochsURL,
           events,
+          hedSchema,
+          datasetTags,
           electrodesURL,
           coordSystemURL,
         } = this.state.database[i];
@@ -368,6 +376,8 @@ class ElectrophysiologySessionView extends Component {
                   events={events}
                   electrodesURL={electrodesURL}
                   coordSystemURL={coordSystemURL}
+                  hedSchema={hedSchema}
+                  datasetTags={datasetTags}
                   physioFileID={this.state.database[i].file.id}
                   samplingFrequency={
                     this.state.database[i].file.summary[0].value

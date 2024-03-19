@@ -2,11 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
 import {
+  buildHEDString,
   getEpochsInRange,
+  getTagsForEpoch,
   toggleEpoch,
   updateActiveEpoch,
 } from '../store/logic/filterEpochs';
-import {Epoch as EpochType, EpochFilter, RightPanel} from '../store/types';
+import {Epoch as EpochType, EpochFilter, HEDTag, HEDSchemaElement, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
@@ -27,6 +29,8 @@ type CProps = {
   setFilteredEpochs: (_: EpochFilter) => void,
   interval: [number, number],
   viewerHeight: number,
+  hedSchema: HEDSchemaElement[],
+  datasetTags: any,
 };
 
 /**
@@ -43,6 +47,8 @@ type CProps = {
  * @param root0.setFilteredEpochs
  * @param root0.interval
  * @param root0.viewerHeight
+ * @param root0.hedSchema
+ * @param root0.datasetTags
  */
 const EventManager = ({
   epochs,
@@ -56,6 +62,8 @@ const EventManager = ({
   setFilteredEpochs,
   interval,
   viewerHeight,
+  hedSchema,
+  datasetTags,
 }: CProps) => {
   const [epochsInRange, setEpochsInRange] = useState(getEpochsInRange(epochs, interval));
   const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
@@ -82,7 +90,7 @@ const EventManager = ({
 
     if (updatedEpochs.length > 0) {
       setAllCommentsVisible(!updatedEpochs.some((epochIndex) => {
-        return epochs[epochIndex].properties.length > 0
+        return (epochs[epochIndex].properties.length > 0 || epochs[epochIndex].hed)
           && !filteredEpochs.columnVisibility.includes(epochIndex);
       }));
     } else {
@@ -96,7 +104,7 @@ const EventManager = ({
   const setCommentsInRangeVisibility = (visible) => {
     let commentIndices = [...filteredEpochs.columnVisibility];
     epochsInRange.forEach((epochIndex) => {
-      if (epochs[epochIndex].properties.length > 0) {
+      if (epochs[epochIndex].properties.length > 0 || epochs[epochIndex].hed) {
         if (visible && !filteredEpochs.columnVisibility.includes(epochIndex)) {
           commentIndices.push(epochIndex);
         } else if (!visible && filteredEpochs.columnVisibility.includes(epochIndex)) {
@@ -201,18 +209,28 @@ const EventManager = ({
           {epochsInRange.map((epochIndex) => {
             const epoch = epochs[epochIndex];
             const epochVisible = filteredEpochs.plotVisibility.includes(epochIndex);
+            const hedVisible = filteredEpochs.columnVisibility.includes(epochIndex);
 
             /**
              *
              */
             const handleCommentVisibilityChange = () => {
-              setFilteredEpochs({
-                plotVisibility: filteredEpochs.plotVisibility,
-                columnVisibility: [
-                  ...filteredEpochs.columnVisibility,
-                  epochIndex,
-                ]
-              });
+              if (!hedVisible) {
+                setFilteredEpochs({
+                  plotVisibility: filteredEpochs.plotVisibility,
+                  columnVisibility: [
+                    ...filteredEpochs.columnVisibility,
+                    epochIndex,
+                  ]
+                });
+              } else {
+                setFilteredEpochs({
+                  plotVisibility: filteredEpochs.plotVisibility,
+                  columnVisibility: filteredEpochs.columnVisibility.filter(
+                    (value) => value !== epochIndex
+                  )
+                });
+              }
             };
 
             /**
@@ -253,12 +271,17 @@ const EventManager = ({
                   <div
                     className="epoch-action col-xs-4"
                   >
-                    {(epoch.properties.length > 0) &&
+                    {(epoch.properties.length > 0 || epoch.hed) &&
                       <button
                         type="button"
-                        className={'btn btn-xs btn-primary'}
+                        className={(hedVisible ? '' : 'active ')
+                          + 'btn btn-xs btn-primary'}
                         onClick={() => handleCommentVisibilityChange()}
                       >
+                        <i className={
+                          'glyphicon glyphicon-tag'
+                          + (hedVisible ? 's' : '')
+                        }></i>
                       </button>
                     }
                     <button
@@ -285,7 +308,7 @@ const EventManager = ({
                     }
                   </div>
                 </div>
-                {epoch.properties.length > 0 &&
+                {(hedVisible && (epoch.properties.length > 0 || epoch.hed)) &&
                   <div className="epoch-tag">
                     {epoch.properties.length > 0 &&
                       <div><strong>Additional Columns: </strong>
@@ -294,6 +317,14 @@ const EventManager = ({
                             `${property.PropertyName}: ${property.PropertyValue}`
                           ).join(', ')
                         }
+                      </div>
+                    }
+                    {epoch.hed &&
+                      <div><strong>HED: </strong>
+                        {buildHEDString([
+                          ...epoch.hed,
+                          ...getTagsForEpoch(epoch, datasetTags, hedSchema),
+                        ]).join(', ')}
                       </div>
                     }
                   </div>
@@ -324,6 +355,8 @@ export default connect(
     rightPanel: state.rightPanel,
     interval: state.bounds.interval,
     viewerHeight: state.bounds.viewerHeight,
+    hedSchema: state.dataset.hedSchema,
+    datasetTags: state.dataset.datasetTags,
   }),
   (dispatch: (_: any) => void) => ({
     setCurrentAnnotation: R.compose(

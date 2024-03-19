@@ -96,3 +96,37 @@ export const Tick: React.FC<ITickProps> = ({tick, count}) => (
     </div>
   </div>
 );
+
+
+// *******************************************************
+// INFO ICON COMPONENT
+// *******************************************************
+interface IInfoIcon {
+  title: string;
+  url: string;
+}
+
+/**
+ *
+ * @param root0
+ * @param root0.title
+ * @param root0.url
+ */
+export const InfoIcon: React.FC<IInfoIcon> = ({
+  title,
+  url,
+}) => (
+  <a
+    href={url}
+    target="_blank"
+    style={{
+      cursor: 'help',
+      marginLeft: '5px',
+      color: '#A9A9A9',
+    }}
+    title={title}
+  >
+    <i className='glyphicon glyphicon-info-sign'/>
+  </a>
+);
+

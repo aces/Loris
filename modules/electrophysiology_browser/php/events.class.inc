@@ -2,6 +2,7 @@
 
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
@@ -65,7 +66,7 @@ class Events extends \NDB_Page
             }
 
             $physioFileID = intval($parameters['physioFileID']);
-            (new ElectrophysioEvents($physioFileID))->updateFiles();
+            (new ElectrophysioEvents($this->loris, $physioFileID))->updateFiles();
 
             $config       = \NDB_Factory::singleton()->config();
             $downloadpath = \Utility::appendForwardSlash(
@@ -132,7 +133,10 @@ class Events extends \NDB_Page
                     intval($parameters['instance_id']) : null;
 
                 $updated_instance = (
-                  new ElectrophysioEvents(intval($parameters['physioFileID']))
+                    new ElectrophysioEvents(
+                        $this->loris,
+                        intval($parameters['physioFileID'])
+                    )
                 )->update($instance_data, $metadata, $instance_id);
 
                 if (count($updated_instance) > 0) {
@@ -141,6 +145,24 @@ class Events extends \NDB_Page
                     ));
                 }
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
+            case 'dataset_tags':
+                $added_tags   = $parameters['added_tags'];
+                $deleted_tags = $parameters['deleted_tags'];
+                $edited_tags  = $parameters['edited_tags'];
+
+                $dataset_tags = new DatasetTags(
+                    $this->loris,
+                    intval($parameters['physioFileID'])
+                );
+                $idMapping    = $dataset_tags->update(
+                    $added_tags,
+                    $deleted_tags,
+                    $edited_tags
+                );
+
+                return (new \LORIS\Http\Response\JSON\OK(
+                    ['mapping' => $idMapping]
+                ));
             }
             default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

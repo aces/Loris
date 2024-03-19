@@ -14,6 +14,7 @@
  */
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
@@ -150,7 +151,7 @@ class Sessions extends \NDB_Page
     function getSessionData($outputType)
     {
 
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $query = 'SELECT
                 DISTINCT(pf.SessionID)
@@ -221,7 +222,7 @@ class Sessions extends \NDB_Page
      */
     function getFilesData(string $outputType)
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileCollection = [];
         $params         = [];
@@ -261,11 +262,11 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
-        $physioFileObj   = new ElectrophysioFile($physioFileID);
+        $physioFileObj   = new ElectrophysioFile($this->loris, $physioFileID);
         $physioFile      = $physioFileObj->getParameter('FilePath');
         $modality        = $physioFileObj->getParameter('Modality');
         $modalityPrefix  = $modality === 'ieeg' ? 'iEEG' : 'EEG';
@@ -471,9 +472,16 @@ class Sessions extends \NDB_Page
 
         // Get the task's event data
         $events = new ElectrophysioEvents(
-            intval($physioFileID)
+            $this->loris,
+            $physioFileID
         );
         $fileSummary['events'] = $events->getData();
+
+        $datasetTags = new DatasetTags(
+            $this->loris,
+            $physioFileID
+        );
+        $fileSummary['datasetTags'] = $datasetTags->getData();
 
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
@@ -485,6 +493,22 @@ class Sessions extends \NDB_Page
 
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
+
+        // TODO: Fetch all relevant ones and merge beforehand (project_schema_rel?)
+        $hedSchema = $db->pselect(
+            "SELECT node.ID as id,
+           node.ParentID as parentID,
+           node.SchemaID as schemaID,
+           node.Name as name,
+           node.LongName as longName,
+           node.Description as description,
+           hs.Name as schemaName
+           FROM hed_schema_nodes AS node
+           LEFT JOIN hed_schema AS hs ON (hs.ID = node.SchemaID)",
+            []
+        );
+
+        $fileSummary['hedSchema'] = $hedSchema;
 
         return $fileSummary;
     }
@@ -540,7 +564,7 @@ class Sessions extends \NDB_Page
     {
         $physioFileID  = $physioFileObj->getParameter('PhysiologicalFileID');
         $physioFile    = $physioFileObj->getParameter('FilePath');
-        $db            = \NDB_Factory::singleton()->database();
+        $db            = $this->loris->getDatabaseConnection();
         $downloadLinks = [];
 
         $downloadLinks[] = [
