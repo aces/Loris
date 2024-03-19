@@ -138,7 +138,8 @@ class Appointment extends \NDB_Page
         if ($type == "DCCID" ) {
             try {
                 $c   = \Candidate::singleton(new CandID($id));
-                $res = ['PSCID'=>$c->getPSCID() ?? ''];
+                $res['PSCID'] = $c->getPSCID() ?? '';
+                $res['DCCID'] = $id;
             } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
@@ -156,7 +157,7 @@ class Appointment extends \NDB_Page
                     "pscid" => $id,
                 ]
             );
-            $res       = ['DCCID'=>$candidate['CandID'] ?? ''];
+            $res['DCCID']=$candidate['CandID'] ?? '';
         }
 
         $sessionlist = $DB->pselect(
@@ -170,7 +171,7 @@ class Appointment extends \NDB_Page
     		CandID =:Id
     ",
             [
-                'Id' => $candidate['CandID'] ?? ''
+                'Id' => $res['DCCID'] ?? ''
             ]
         );
         $sessions    = [];
