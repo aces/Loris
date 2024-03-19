@@ -266,6 +266,7 @@ const lorisModules = {
     'openProfileForm',
     'candidateListIndex',
   ],
+  consent: ['consentIndex', 'consentEntry'],
   datadict: ['dataDictIndex'],
   dataquery: ['index'],
   data_release: [

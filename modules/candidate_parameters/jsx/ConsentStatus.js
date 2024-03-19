@@ -11,6 +11,7 @@ import {
   HeaderElement,
   SelectElement,
   DateElement,
+  TextareaElement,
 } from 'jsx/Form';
 
 /**
@@ -69,11 +70,14 @@ class ConsentStatus extends Component {
                         let cDate2 = cStatus + '_date2';
                         let cWithdrawal = cStatus + '_withdrawal';
                         let cWithdrawal2 = cStatus + '_withdrawal2';
+                        let cComment = cStatus + '_comment';
                         formData[cStatus] = data.consentStatuses[cStatus];
                         formData[cDate] = data.consentDates[cStatus];
                         formData[cDate2] = data.consentDates[cStatus];
                         formData[cWithdrawal] = data.withdrawals[cStatus];
                         formData[cWithdrawal2] = data.withdrawals[cStatus];
+                        formData[cComment] = data.comments[cStatus];
+
                         if (data.consentStatuses[cStatus] === 'yes' ||
                             data.consentStatuses[cStatus] === 'no'
                         ) {
@@ -277,6 +281,9 @@ class ConsentStatus extends Component {
             const consentStatus = info.consentStatus;
             const consentDate = info.date;
             const withdrawal = info.withdrawal;
+            const requestStatus = info.requestStatus;
+            const version = info.version;
+            const comment = info.Comment;
             const dateHistory = consentDate ? (
                 <span>
                    , <b>Date of Consent</b> to {consentDate}
@@ -285,6 +292,21 @@ class ConsentStatus extends Component {
             const withdrawalHistory = withdrawal ? (
                 <span>
                     , <b>Date of Consent Withdrawal</b> to {withdrawal}
+                </span>
+            ) : null;
+            const requestStatusHistory = requestStatus ? (
+                <span>
+                    , <b>Request Status</b> to {requestStatus}
+                </span>
+            ) : null;
+            const versionHistory = version ? (
+                <span>
+                    , <b>Version</b> to {version}
+                </span>
+            ) : null;
+            const commentHistory = comment ? (
+                <span>
+                    , <b>Comment</b> to {comment}
                 </span>
             ) : null;
 
@@ -299,6 +321,9 @@ class ConsentStatus extends Component {
                       {consentStatus}
                       {dateHistory}
                       {withdrawalHistory}
+                      {requestStatusHistory}
+                      {versionHistory}
+                      {commentHistory}
                     </p>
                 </div>
             );
@@ -315,7 +340,12 @@ class ConsentStatus extends Component {
                 >
                     {historyBtnLabel}
                 </button>
-                <div id='consent-history' className='collapse'>
+                <div id='consent-history'
+                    className={
+                        `collapse ${this.state.showHistory
+                        ? 'show' : ''}`
+                    }
+                >
                     {formattedHistory}
                 </div>
             </div>
@@ -373,10 +403,15 @@ class ConsentStatus extends Component {
         const consentDateConfirmationLabel = 'Confirmation Date of Response';
         const consentWithdrawal = consentName + '_withdrawal';
         const consentWithdrawal2 = consentName + '_withdrawal2';
+        const consentComment = consentName + '_comment';
         const consentWithdrawalLabel = 'Date of Withdrawal of Consent';
         const consentWithdrawalConfirmationLabel =
             'Confirmation Date of Withdrawal of Consent';
 
+        if (withdrawalDisabled) {
+            this.state.formData[consentWithdrawal] = null;
+            this.state.formData[consentWithdrawal2] = null;
+        }
         return (
             <div key={consentName}>
                 <HeaderElement
@@ -423,6 +458,14 @@ class ConsentStatus extends Component {
                     disabled={disabled || withdrawalDisabled}
                     required={withdrawalRequired}
                 />
+                <TextareaElement
+                    label="Comments"
+                    name={consentComment}
+                    value={this.state.formData[consentComment]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled}
+                    required={false}
+                />
                 <hr/>
             </div>
         );
@@ -460,12 +503,13 @@ class ConsentStatus extends Component {
                   id: consentID,
                   label: this.state.Data.consentGroups[consentID].Label,
               });
+
               return (
                   <TabPane key={consentID} TabId={consentID}>
                       <FormElement
                           name="consentStatus"
                           onSubmit={this.handleSubmit}
-                          class="col-md-9"
+                          class={this.props.adjustCol ? 'col-md-15':'col-md-9'}
                       >
                           <StaticElement
                             label="PSCID"
@@ -506,6 +550,7 @@ ConsentStatus.propTypes = {
     dataURL: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
     tabName: PropTypes.string,
+    adjustCol: PropTypes.bool,
 };
 
 export default ConsentStatus;
