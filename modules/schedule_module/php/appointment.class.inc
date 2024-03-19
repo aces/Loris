@@ -137,14 +137,14 @@ class Appointment extends \NDB_Page
         $DB = $this->loris->getDatabaseConnection();
         if ($type == "DCCID" ) {
             try {
-                $c   = \Candidate::singleton(new CandID($id));
+                $c            = \Candidate::singleton(new CandID($id));
                 $res['PSCID'] = $c->getPSCID() ?? '';
                 $res['DCCID'] = $id;
             } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
         } else {
-            $candidate = $DB->pselectRow(
+            $candidate    = $DB->pselectRow(
                 "
             SELECT 
                     * 
@@ -157,7 +157,7 @@ class Appointment extends \NDB_Page
                     "pscid" => $id,
                 ]
             );
-            $res['DCCID']=$candidate['CandID'] ?? '';
+            $res['DCCID'] = $candidate['CandID'] ?? '';
         }
 
         $sessionlist = $DB->pselect(
