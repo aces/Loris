@@ -33,10 +33,10 @@ class Dicoms
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *
-     * @param \Timepoint  $timepoint The timepoint to represent
-     * @param DicomTarDTO ...$dicoms An array of dicomtars
+     * @param \Timepoint              $timepoint The timepoint to represent
+     * @param array<int, DicomTarDTO> $dicoms    An array of dicomtars
      */
-    public function __construct(\Timepoint $timepoint, DicomTarDTO ...$dicoms)
+    public function __construct(\Timepoint $timepoint, array $dicoms)
     {
         $this->_timepoint = $timepoint;
         $this->_dicoms    = $dicoms;
@@ -53,12 +53,10 @@ class Dicoms
     private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
         return [
-            'Tarname'    => $dicom->getTarname(),
-            'SeriesInfo' => array_map(
-                [
-                    self::class,
-                    '_formatSeries'
-                ],
+            'ArchiveName' => $dicom->getTarname(),
+            'PatientName' => $dicom->getPatientname(),
+            'SeriesInfo'  => array_map(
+                [self::class, '_formatSeries'],
                 $dicom->getSeries()
             ),
         ];
@@ -104,8 +102,8 @@ class Dicoms
         );
 
         return [
-            'Meta'      => $meta,
-            'DicomTars' => $dicomtars,
+            'Meta'          => $meta,
+            'DicomArchives' => $dicomtars,
         ];
     }
 }

@@ -118,7 +118,7 @@ by the 3 letter site alias before attempting to pass this regex to a regular exp
 or it will result in false negatives.
 
 
-### 2.1 Single project 
+### 2.1 Single project
 
 ```
 GET /projects/$ProjectName
@@ -140,7 +140,7 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 }
 ```
 
-#### 2.1.1 Single project images  
+#### 2.1.1 Single project images
 ```
 GET /projects/$ProjectName/images/
 ```
@@ -172,7 +172,7 @@ ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
 We recommend using a format that includes timezone.
 
-#### 2.1.2 Single project instruments  
+#### 2.1.2 Single project instruments
 ```
 GET /projects/$ProjectName/instruments/
 ```
@@ -204,7 +204,7 @@ Will return a JSON object of the form:
 
 Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
 
-#### 2.1.3 Single project visits  
+#### 2.1.3 Single project visits
 ```
 GET /projects/$ProjectName/visits/
 ```
@@ -222,7 +222,7 @@ Will return a JSON object of the form:
 
 Where V1, V2, ... are the visits that may exist for this project
 
-#### 2.1.4 Single project candidates  
+#### 2.1.4 Single project candidates
 ```
 GET /projects/$ProjectName/candidates/
 ```
@@ -341,11 +341,11 @@ PSCID is only required if the generation type in the Loris config is set to
 "prompt".
 
 A response code of 201 Created will be returned on success, 409 Conflict if
-the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
-a site other than the list of sitenames the user is affiliated with, and a 400 
+the PSCID already exists, 403 Forbidden when the user is creating a candidate at
+a site other than the list of sitenames the user is affiliated with, and a 400
 Bad Request if any data provided is invalid (PSCID format, date format, sex
-something other than Male|Female|Other, invalid project name, invalid sitename, etc). 
-A successful POST request will return a CandidateObject for the newly created 
+something other than Male|Female|Other, invalid project name, invalid sitename, etc).
+A successful POST request will return a CandidateObject for the newly created
 candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
@@ -616,7 +616,7 @@ of the form:
 }
 ```
 
-A PUT to the same location will update the QC information. 
+A PUT to the same location will update the QC information.
 
 ### 4.3 Image Level Data
 ```
@@ -785,7 +785,7 @@ file (for instance, a 3D image will not have a time dimension.)
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
 ```
 
-This will return a JSON object with ALL headers for this acquisition. 
+This will return a JSON object with ALL headers for this acquisition.
 
 The JSON will be of the form:
 
@@ -825,90 +825,191 @@ The JSON object is of the form:
 
 ## 5.0 DICOM Data
 
-Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
-portion of the REST API namespace, but is defined in a separate section of this 
+Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit`
+portion of the REST API namespace, but is defined in a separate section of this
 document for clarity purposes.
 
 ### 5.1 Candidate DICOMs
+
 ```
-GET /candidates/$CandID/$Visit/dicoms
+GET /candidates/$CandID/$VisitLabel/dicoms
 ```
 
 A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
-all the raw DICOM data which have been acquired for that visit. It will return an 
+all the DICOM archives which have been acquired for that visit. It will return an
 object of the form:
 
 ```js
 {
     "Meta" : {
         "CandID" : $CandID,
-        "Visit" : $VisitLabel,
+        "Visit" : $Visit,
     },
-    "DicomTars" : 
-    [
+    "DicomArchives" : [
         {
-            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-            "Patientname" : "DCM123_123456_V1",
-            "SeriesInfo" :
-                [{
+            "ArchiveName" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+            "PatientName" : "DCM123_123456_V1",
+            "SeriesInfo" : [
+                {
                     "SeriesDescription" : "MPRAGE_ipat2",
-                    "SeriesNumber" : "2",
-                    "EchoTime" : "2.98",
-                    "RepetitionTime" : "2300",
-                    "InversionTime" : "900",
-                    "SliceThickness" : "1",
+                    "SeriesNumber" : 2,
+                    "EchoTime" : 2.98,
+                    "RepetitionTime" : 2300,
+                    "InversionTime" : 900,
+                    "SliceThickness" : 1,
                     "Modality" : "MR",
                     "SeriesUID" : "1.2.3.4.1107",
-                    },
-                    {
+                },
+                {
                     "SeriesDescription" : "BOLD Resting State",
-                    "SeriesNumber" : "5",
-                    "EchoTime" : "30",
-                    "RepetitionTime" : "2100",
+                    "SeriesNumber" : 5,
+                    "EchoTime" : 30,
+                    "RepetitionTime" : 2100,
                     "InversionTime" : NULL,
-                    "SliceThickness" : "3.5",
+                    "SliceThickness" : 3.5,
                     "Modality" : "MR",
                     "SeriesUID" : "3.4.5.6.1507",
-                }]
+                }
+            ]
         },
         {
-            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
-            "Patientname" : "DCM456_654321_V1",
-            "SeriesInfo" :
-                [{
-                "SeriesDescription" : "MPRAGE_ipat2",
-                "SeriesNumber" : "2",
-                "EchoTime" : "2.98",
-                "RepetitionTime" : "2300",
-                "InversionTime" : "900",
-                "SliceThickness" : "1",
-                "Modality" : "MR",
-                "SeriesUID" : "1.7.8.9.1296",
-                }]
+            "ArchiveName" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+            "PatientName" : "DCM456_654321_V1",
+            "SeriesInfo" : [
+                {
+                  "SeriesDescription" : "MPRAGE_ipat2",
+                  "SeriesNumber" : 2,
+                  "EchoTime" : 2.98,
+                  "RepetitionTime" : 2300,
+                  "InversionTime" : 900,
+                  "SliceThickness" : 1,
+                  "Modality" : "MR",
+                  "SeriesUID" : "1.7.8.9.1296",
+                }
+            ]
         }
-    ]    
+    ]
 }
 ```
 
-The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
+The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET
 scans, respectively.
 
-### 5.2 Tar Level Data
 ```
-GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
+POST /candidates/$CandID/$Visit/dicoms
 ```
 
-Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text 
+In addition to the uploaded file, the body of the POST request should contain a
+`json` form attribute containing the following keys and values:
+
+```js
+{
+    "CandID": $CandID,
+    "PSCID": $PSCID,
+    "Visit": $Visit,
+    "IsPhantom": boolean
+}
+```
+
+An optionnal header 'LORIS-Overwrite' with the value 'overwrite' can be used to
+overwrite an existing file.
+A successful request will be answered by a `303 See Other` response with its
+`Location` header pointing to the processes list of the new upload.
+(See 5.3 Tar Level processes)
+
+### 5.2 Tar Level Data
+
+This section describe how to upload DICOM studies and how to start and monitor
+`mri_upload` processes.
+DICOM studies that have been successfully uploaded and processed can be downloaded with
+the following `GET` request:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$ArchiveName
+```
+
+Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
-Only `GET` is currently supported.
+To get a list of the processes and their status for a given DICOM study previously uploaded use the following:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+The response contains all `mri_upload` attempts with the specified `$tarname`. And for
+each of them, a list of processes status.
+Response shape:
+
+```js
+{
+  "mri_uploads": [
+    {
+      "mri_upload_id": 123,
+      "processes": [
+        {
+          "END_TIME": "YYYY-MM-DD hh:mm:ss",
+          "EXIT_CODE": "0",
+          "ID": "1",
+          "PID": "24971",
+          "PROGRESS": "text"
+          "STATE": "SUCCESS|RUNNING|ERROR"
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+```
+
+** An empty `processes` array means that there has never been a process launched on
+that `mri_upload`.
+To start an `mri_upload` process on a previously uploaded DICOM study, a POST request
+containing the `MriUploadID` attribute in the request body should be sent.
+
+```
+POST /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+The request body must contain:
+
+```js
+{
+  "ProcessType": "mri_upload",
+  "MRIUploadID": 123
+}
+```
+
+Expected response: 202 Accepted with `Location` header pointing to the new process.
+To obtain a specific process state, use the following:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes/$processid
+```
+
+Response shape:
+```js
+{
+  "process_state": [
+    {
+      "END_TIME": "YYYY-MM-DD hh:mm:ss",
+      "EXIT_CODE": "0",
+      "ID": "1",
+      "PID": "24971",
+      "PROGRESS": "text",
+      "STATE": "SUCCESS|RUNNING|ERROR"
+    }
+  ]
+}
+```
 
 ## 6.0 Electrophysiology Recording Data
 
-The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the 
-REST API namespace, but is defined in a separate section of this document for 
-clarity purposes.  
+The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the
+REST API namespace, but is defined in a separate section of this document for
+clarity purposes.
 
 ### 6.1 Candidate Electrophysiology Recordings
 
@@ -953,7 +1054,7 @@ support to insert raw (or derivatives) data into LORIS.
 GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata
 ```
 
-This will return a JSON object with all metadata associated with the recording. It 
+This will return a JSON object with all metadata associated with the recording. It
 will return an object of the form:
 
 ```js
@@ -1105,10 +1206,10 @@ recording. It will return an object of the form:
 GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/channels
 ```
 
-Returns raw file with the appropriate MimeType headers for the channels file 
+Returns raw file with the appropriate MimeType headers for the channels file
 retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
-Only `GET` is currently supported.  
+Only `GET` is currently supported.
 
 #### 6.7.2 Download The BIDS File With Electrodes Information
 
@@ -1116,7 +1217,7 @@ Only `GET` is currently supported.
 GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/electrodes
 ```
 
-Returns raw file with the appropriate MimeType headers for the electrodes file 
+Returns raw file with the appropriate MimeType headers for the electrodes file
 retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
@@ -1127,7 +1228,7 @@ Only `GET` is currently supported.
 GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/events
 ```
 
-Returns raw file with the appropriate MimeType headers for the task events file 
+Returns raw file with the appropriate MimeType headers for the task events file
 retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
@@ -1168,7 +1269,7 @@ request. The JSON returned is of the form:
 }
 ```
 
-`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data.
 
 * Note that only the `Name` property is unique across all sites.
 
