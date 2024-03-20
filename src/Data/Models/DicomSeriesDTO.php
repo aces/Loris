@@ -49,10 +49,10 @@ class DicomSeriesDTO
      * @param ?int    $id             The TarchiveSeriesID
      * @param ?string $description    The SeriesDescription
      * @param ?int    $number         The SeriesNumber
-     * @param ?string $echotime       The EchoTime
-     * @param ?string $repetitiontime The RepetitionTime
-     * @param ?string $inversiontime  The InversionTime
-     * @param ?string $slicethickness The SliceThickness
+     * @param ?float $echotime       The EchoTime
+     * @param ?float $repetitiontime The RepetitionTime
+     * @param ?float $inversiontime  The InversionTime
+     * @param ?float $slicethickness The SliceThickness
      * @param ?string $modality       The Modality
      * @param ?string $seriesuid      The SeriesUID
      */
@@ -60,10 +60,10 @@ class DicomSeriesDTO
         ?int    $id,
         ?string $description,
         ?int    $number,
-        ?string $echotime,
-        ?string $repetitiontime,
-        ?string $inversiontime,
-        ?string $slicethickness,
+        ?float $echotime,
+        ?float $repetitiontime,
+        ?float $inversiontime,
+        ?float $slicethickness,
         ?string $modality,
         ?string $seriesuid
     ) {
@@ -111,7 +111,7 @@ class DicomSeriesDTO
     /**
      * Accessor for echotime
      *
-     * @return ?string
+     * @return ?float
      */
     public function getEchotime()
     {
@@ -121,7 +121,7 @@ class DicomSeriesDTO
     /**
      * Accessor for repetitiontime
      *
-     * @return ?string
+     * @return ?float
      */
     public function getRepetitiontime()
     {
@@ -131,7 +131,7 @@ class DicomSeriesDTO
     /**
      * Accessor for inversiontime
      *
-     * @return ?string
+     * @return ?float
      */
     public function getInversiontime()
     {
@@ -141,7 +141,7 @@ class DicomSeriesDTO
     /**
      * Accessor for slicethickness
      *
-     * @return ?string
+     * @return ?float
      */
     public function getSlicethickness()
     {
