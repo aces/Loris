@@ -82,6 +82,6 @@ class MediaFile implements \LORIS\Data\DataInstance,
      */
     public function getHideFile(): int
     {
-        return $this->DBRow['hideFile'];
+        return intval($this->DBRow['hideFile']);
     }
 }
