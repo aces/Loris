@@ -30,7 +30,7 @@ $parameterCount = 0;
 $pages          = [];
 foreach ($instruments as $instrument) {
     $catId = "";
-    $output = "":
+    $output = "";
     $items = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
