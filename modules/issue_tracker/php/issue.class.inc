@@ -47,6 +47,8 @@ class Issue extends \NDB_Form
                 [
                     'issue_tracker_reporter',
                     'issue_tracker_developer',
+                    'issue_tracker_all_issue',
+                    'issue_tracker_site_issue'
                 ]
             )
         ) {

@@ -43,6 +43,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             [
                 'issue_tracker_reporter',
                 'issue_tracker_developer',
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue'
             ]
         );
     }
@@ -105,7 +107,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $db      = $factory->database();
 
         //sites
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('access_all_profiles') || $user->hasPermission('issue_tracker_all_issue')) {
             $sites = \Utility::getSiteList();
         } else {
             // allow only to view own site data
