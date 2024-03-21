@@ -30,10 +30,10 @@ $parameterCount = 0;
 $pages          = [];
 foreach ($instruments as $instrument) {
     $catId = "";
+    $output = "":
     $items = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
-        $output  = "";
         $bits    = explode("{@}", trim($item));
         if (preg_match("/Examiner[0-9]*/", $bits[1])) {
             continue;
