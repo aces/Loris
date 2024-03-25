@@ -76,7 +76,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that the _construct function sets all variables correctly
      *
-     * @covers NDB_Page::_construct
+     * @covers NDB_Page::__construct
      * @return void
      */
     public function testConstruct()

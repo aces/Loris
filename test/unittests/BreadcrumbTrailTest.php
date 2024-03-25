@@ -50,7 +50,7 @@ class BreadcrumbTrailTest extends TestCase
      * @param string $c     The value to compare
      *
      * @dataProvider toStringProvider
-     * @covers       Breadcrumb::__toString
+     * @covers       \LORIS\BreadcrumbTrail::__toString
      * @return       void
      */
     public function testToString($data1, $data2, $c)

@@ -948,7 +948,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * Test that addYesNoElement adds an element and registers a XIN rule
      * if specified.
      *
-     * @covers NDB_BVL_Instrument::addYesNoElementWithRules
+     * @covers NDB_BVL_Instrument::addYesNoElement
      * @return void
      */
     function testAddYesNoElementWithRules()
