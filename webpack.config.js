@@ -235,7 +235,7 @@ let config = [
     resolve: resolve,
     module: mod,
     stats: 'errors-warnings',
-    cache: false,
+    cache: {type: 'filesystem'},
   },
 ];
 
