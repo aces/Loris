@@ -1042,7 +1042,7 @@ const DatasetTagger = ({
                   fontStyle: 'italic',
                 }}
               >
-                Select a Column Name to Add or View HED Tags
+                Select a Column Name and Value to Add or View HED Tags
               </div>
             )
           }
