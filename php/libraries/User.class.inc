@@ -122,12 +122,12 @@ class User extends UserPermissions implements
                     epr.pending_approval
                   FROM examiners e
                   JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.full_name=:fn
+                  WHERE e.userID=:uid
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             [
-                "fn" => $row['Real_name'],
+                "uid" => $row['ID'],
             ]
         );
 
@@ -350,6 +350,37 @@ class User extends UserPermissions implements
         ksort($site_list);
         return $site_list;
     }
+
+    /**
+     * Returns all user's sites
+     *
+     * @return array
+     */
+    function getSites(): array
+    {
+        return array_map(
+            function ($centerID) {
+                return \Site::singleton($centerID);
+            },
+            $this->getCenterIDs()
+        );
+    }
+
+    /**
+     * Returns all user's sites in associative
+     * array (CenterID => CenterName)
+     *
+     * @return array
+     */
+    function getSiteNamesList(): array
+    {
+        $sites = [];
+        foreach ($this->getSites() as $site) {
+            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
+        }
+        return $sites;
+    }
+
 
     /**
      * Returns all user's sites that are StudySites

@@ -349,6 +349,25 @@ class My_Preferences extends \NDB_Form
         $this->tpl_data['notification_rows'] = $notification_rows;
         //------------------------------------------------------------
 
+        $widgets = [];
+        $modules = $this->loris->getActiveModules();
+        foreach ($modules as $module) {
+            if ($module->hasAccess($user)) {
+                $mwidgets = $module->getWidgets(
+                    'userpreference',
+                    $user,
+                    [],
+                );
+                foreach ($mwidgets as $widget) {
+                    if (!($widget instanceof UserPreferenceWidget)) {
+                        continue;
+                    }
+                    $widgets[] = $widget;
+                }
+            }
+        }
+        $this->tpl_data['module_userpreference_widgets'] = $widgets;
+
         // unique key and password rules
         $this->form->addFormRule([&$this, '_validateMyPreferences']);
     }
@@ -468,6 +487,7 @@ class My_Preferences extends \NDB_Form
             [
                 $baseurl . '/js/passwordVisibility.js',
                 $baseurl . '/my_preferences/js/my_preferences_helper.js',
+                $baseurl . '/js/components/CSSGrid.js',
             ]
         );
     }

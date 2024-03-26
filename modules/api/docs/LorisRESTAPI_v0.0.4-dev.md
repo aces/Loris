@@ -462,9 +462,10 @@ Loris, or Approval has not occurred)
 ### 3.3 Candidate Instruments
 ```
 GET /candidates/$CandID/$VisitLabel/instruments
+POST /candidates/$CandID/$VisitLabel/instruments
 ```
 
-Will return a JSON object of the form:
+GET will return a JSON object of the form:
 
 ```js
 {
@@ -480,7 +481,10 @@ Where the instruments array represents the instruments that were administered fo
 candidate at that visit. InstrumentNames are the short names and the forms for them
 SHOULD all be retrievable through the `project` portion of the API.
 
-PUT / PATCH / POST are not currently supported for candidate instruments.
+POST accepts data of the same format. Any instruments in the Instrument key not currently in the visit test battery will be added to
+the battery.
+
+PUT / PATCH are not currently supported for candidate instruments.
 
 #### 3.3.1 The Candidate Instrument Data
 

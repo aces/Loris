@@ -37,3 +37,5 @@ class.
 Separate subpages manage the `project`, `cohort`, and
 `project_cohort_rel` tables for an administrator to be able to
 manage projects in LORIS without backend MySQL access.
+
+Another subpage manages the `diagnosis_evoution` table allowing for configuration of diagnosis evolution trajectories by an administrator in LORIS without backend MySQL access.

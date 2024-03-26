@@ -7,25 +7,30 @@ import {Group} from '@visx/group';
 import {colorOrder} from '../../color';
 
 const LineMemo = R.memoizeWith(
-  ({amplitudeScale, filters, channelIndex, traceIndex,
-     chunkIndex, isStacked, DCOffset, numChannels, numChunks}) =>
-    `${amplitudeScale},${filters.join('-')},`
+  ({amplitudeScale, interval, filters,
+     channelIndex, traceIndex, chunkIndex,
+     isStacked, DCOffset, numChannels,
+     numChunks, previousPoint,
+  }) =>
+    `${amplitudeScale},${interval.join('-')},${filters.join('-')},`
     + `${channelIndex}-${traceIndex}-${chunkIndex},`
-    + `${isStacked},${DCOffset},${numChannels},${numChunks}`,
+    + `${isStacked},${DCOffset},${numChannels},`
+    + `${numChunks},${previousPoint}`,
   ({
-     channelIndex,
-     traceIndex,
-     chunkIndex,
-     interval,
-     seriesRange,
-     amplitudeScale,
-     filters,
-     values,
-     isStacked,
-     DCOffset,
-     numChannels,
-     numChunks,
-     ...rest
+    channelIndex,
+    traceIndex,
+    chunkIndex,
+    interval,
+    seriesRange,
+    amplitudeScale,
+    filters,
+    values,
+    isStacked,
+    DCOffset,
+    numChannels,
+    numChunks,
+    previousPoint,
+    ...rest
    }) => {
     const scales = [
       scaleLinear()
@@ -36,12 +41,25 @@ const LineMemo = R.memoizeWith(
         .range([-0.5, 0.5]),
     ];
 
-    const points = values.map((value, i) =>
-      vec2.fromValues(
-        scales[0](
-          interval[0] + (i / values.length) * (interval[1] - interval[0])
-        ),
-        -(scales[1](value) - DCOffset)
+    const points = previousPoint === null
+      ? []
+      : [
+        vec2.fromValues(
+          scales[0](
+            interval[0] - (1 / values.length) * (interval[1] - interval[0])
+          ),
+          -(scales[1](previousPoint) - DCOffset)
+        )
+    ];
+
+    points.push(
+      ...values.map((value, i) =>
+        vec2.fromValues(
+          scales[0](
+            interval[0] + (i / values.length) * (interval[1] - interval[0])
+          ),
+          -(scales[1](value) - DCOffset)
+        )
       )
     );
 
@@ -77,6 +95,7 @@ type CProps = {
   withDCOffset: number,
   numChannels: number,
   numChunks: number,
+  previousPoint: number | null,
 };
 
 /**
@@ -95,22 +114,24 @@ type CProps = {
  * @param root0.withDCOffset
  * @param root0.numChannels
  * @param root0.numChunks
+ * @param root0.previousPoint
  */
 const LineChunk = ({
-   channelIndex,
-   traceIndex,
-   chunkIndex,
-   chunk,
-   seriesRange,
-   amplitudeScale,
-   scales,
-   physioFileID,
-   isHovered,
-   isStacked,
-   withDCOffset,
-   numChannels,
-   numChunks,
-   ...rest
+  channelIndex,
+  traceIndex,
+  chunkIndex,
+  chunk,
+  seriesRange,
+  amplitudeScale,
+  scales,
+  physioFileID,
+  isHovered,
+  isStacked,
+  withDCOffset,
+  numChannels,
+  numChunks,
+  previousPoint,
+  ...rest
  }: CProps) => {
   const {interval, values} = chunk;
 
@@ -133,7 +154,7 @@ const LineChunk = ({
       top={-p0[1]}
     >
       <Group
-        transform={'translate(' + p0[0] + ' 0)' +
+        transform={'translate(' + p0[0] + ' 0) ' +
           'scale(' + chunkLength + ' ' + chunkHeight + ')'
         }
       >
@@ -151,6 +172,7 @@ const LineChunk = ({
           DCOffset={withDCOffset}
           numChannels={numChannels}
           numChunks={numChunks}
+          previousPoint={previousPoint}
         />
       </Group>
     </Group>

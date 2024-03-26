@@ -10,5 +10,5 @@ Files can be downloaded containing only the recording signal, the events, or oth
 - EEG: the file containing the session recording data.    
 - Electrode info (tsv): contains electrode locations.    
 - Channels info (tsv): channel status and filter settings.
-- Events (tsv): events (both stimuli and responses) recorded during the session.   
-- Annotations (tsv): annotations (both stimuli and responses) recorded during the session.
+- Events (tsv): events (both stimuli and responses) recorded during the session.  
+

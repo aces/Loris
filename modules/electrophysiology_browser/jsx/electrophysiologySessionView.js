@@ -140,10 +140,6 @@ class ElectrophysiologySessionView extends Component {
                 file: '',
               },
               {
-                type: 'physiological_annotation_files',
-                file: '',
-              },
-              {
                 type: 'all_files',
                 file: '',
               },
@@ -152,8 +148,8 @@ class ElectrophysiologySessionView extends Component {
           chunksURL: null,
           epochsURL: null,
           electrodesURL: null,
+          coordSystemURL: null,
           events: null,
-          annotations: null,
           splitData: null,
         },
       ],
@@ -200,68 +196,79 @@ class ElectrophysiologySessionView extends Component {
         throw Error(resp.statusText);
       }
       return resp.json();
-    })
-        .then((data) => {
-          const database = data.database.map((dbEntry) => ({
-            ...dbEntry,
-            // EEG Visualization urls
-            chunksURLs:
-                dbEntry
-                && dbEntry.file.chunks_urls.map(
-                (url) =>
-                    loris.BaseURL
-                    + '/electrophysiology_browser/file_reader/?file='
-                    + url
-                ),
-            epochsURL:
-                dbEntry
-                && dbEntry.file?.epochsURL
-                && [loris.BaseURL
+    }).then((data) => {
+      const database = data.database.map((dbEntry) => ({
+        ...dbEntry,
+        // EEG Visualization urls
+        chunksURLs:
+            dbEntry
+            && dbEntry.file.chunks_urls.map(
+            (url) =>
+                loris.BaseURL
+                + '/electrophysiology_browser/file_reader/?file='
+                + url
+            ),
+        epochsURL:
+            dbEntry
+            && dbEntry.file?.epochsURL
+            && [loris.BaseURL
+              + '/electrophysiology_browser/file_reader/?file='
+              + dbEntry.file.epochsURL],
+        electrodesURL:
+            dbEntry
+            && dbEntry.file.downloads.map(
+              (group) =>
+                group.links['physiological_electrode_file']?.file
+                && loris.BaseURL
                   + '/electrophysiology_browser/file_reader/?file='
-                  + dbEntry.file.epochsURL],
-            electrodesURL:
-                dbEntry
-                && dbEntry.file.downloads.map(
-                  (group) =>
-                    group.links['physiological_electrode_file']?.file
-                    && loris.BaseURL
-                      + '/electrophysiology_browser/file_reader/?file='
-                      + group.links['physiological_electrode_file'].file
-              ),
-            events:
-              dbEntry
-              && dbEntry.file.events,
-            annotations:
-                dbEntry
-                && dbEntry.file.annotations,
-          }));
+                  + group.links['physiological_electrode_file'].file
+          ),
+        coordSystemURL:
+          dbEntry
+          && dbEntry.file.downloads.map(
+            (group) =>
+              group.links['physiological_coord_system_file']?.file
+              && loris.BaseURL
+              + '/electrophysiology_browser/file_reader/?file='
+              + group.links['physiological_coord_system_file'].file
+          ),
+        events:
+          dbEntry
+          && dbEntry.file.events,
+        hedSchema:
+          dbEntry
+          && dbEntry.file.hedSchema,
+        datasetTags:
+          dbEntry
+          && dbEntry.file.datasetTags,
+      }));
 
-          this.setState({
-            setup: {data},
-            isLoaded: true,
-            database: database,
-            patient: {
-              info: data.patient,
-            },
-          });
+      this.setState({
+        setup: {data},
+        isLoaded: true,
+        database: database,
+        patient: {
+          info: data.patient,
+        },
+      });
 
-          document.getElementById(
-              'nav_next'
-          ).href = dataURL + data.nextSession + outputTypeArg;
-          document.getElementById(
-              'nav_previous'
-          ).href = dataURL + data.prevSession + outputTypeArg;
-          if (data.prevSession !== '') {
-            document.getElementById('nav_previous').style.display = 'block';
-          }
-          if (data.nextSession !== '') {
-            document.getElementById('nav_next').style.display = 'block';
-          }
-        })
-        .catch((error) => {
-          this.setState({error: true});
-          console.error(error);
-        });
+      document.getElementById(
+          'nav_next'
+      ).href = dataURL + data.nextSession + outputTypeArg;
+      document.getElementById(
+          'nav_previous'
+      ).href = dataURL + data.prevSession + outputTypeArg;
+      if (data.prevSession !== '') {
+        document.getElementById('nav_previous').style.display = 'block';
+      }
+      if (data.nextSession !== '') {
+        document.getElementById('nav_next').style.display = 'block';
+      }
+    })
+    .catch((error) => {
+      this.setState({error: true});
+      console.error(error);
+    });
   }
 
   /**
@@ -333,8 +340,10 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs,
           epochsURL,
           events,
-          annotations,
+          hedSchema,
+          datasetTags,
           electrodesURL,
+          coordSystemURL,
         } = this.state.database[i];
         const file = this.state.database[i].file;
         const splitPagination = [];
@@ -365,9 +374,14 @@ class ElectrophysiologySessionView extends Component {
                   }
                   epochsURL={epochsURL}
                   events={events}
-                  annotations={annotations}
                   electrodesURL={electrodesURL}
+                  coordSystemURL={coordSystemURL}
+                  hedSchema={hedSchema}
+                  datasetTags={datasetTags}
                   physioFileID={this.state.database[i].file.id}
+                  samplingFrequency={
+                    this.state.database[i].file.summary[0].value
+                  }
                 >
                   <Panel
                     id='channel-viewer'
@@ -428,7 +442,6 @@ class ElectrophysiologySessionView extends Component {
                   }
                   <SeriesRenderer
                     physioFileID={this.state.database[i].file.id}
-                    annotationMetadata={annotations}
                   />
                   </Panel>
                   <div className='row'>

@@ -43,6 +43,7 @@ class CNV
             'Sites'    => $sites,
             'Cohorts'  => $cohorts,
             'Platform' => $platform_options,
+            'Sex'      => \Utility::getSexList(),
         ];
     }
 

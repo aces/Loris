@@ -282,11 +282,7 @@ class CandidateListIndex extends Component {
           name: 'sex',
           type: 'select',
           hide: this.state.hideFilter,
-          options: {
-            'Male': 'Male',
-            'Female': 'Female',
-            'Other': 'Other',
-          },
+          options: options.Sex,
         },
       },
       {

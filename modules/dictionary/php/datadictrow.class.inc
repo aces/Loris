@@ -64,7 +64,6 @@ class DataDictRow implements \LORIS\Data\DataInstance,
             'datascope'          => $scope,
             'type'               => $this->getDataType(),
             'cardinality'        => $this->getCardinality(),
-            'visits'             => $this->visits,
         ];
 
         $itype = $this->item->getDataType();

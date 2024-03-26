@@ -1592,6 +1592,7 @@ class LorisForm
         $checked  = '';
         $value    = '';
         $disabled = '';
+        $required = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
@@ -1601,6 +1602,9 @@ class LorisForm
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
+        if (isset($el['required'])) {
+            $required = 'required';
+        }
         /// XXX: There seems to be a problem when using &nbsp; to separate the
         //  checkbox from the label. Both Firefox and Chrome will still put a
         //  linebreak between the space and the checkbox. Instead, we wrap use
@@ -1609,7 +1613,7 @@ class LorisForm
         //  label it's still allowed to have linebreaks.
         return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\""
             . " type=\"checkbox\" $checked $value "
-            . "$disabled/>"
+            . "$disabled $required/>"
             . " </span>$el[label]";
     }
 

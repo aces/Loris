@@ -25,7 +25,7 @@ If age is not a critical factor in study timepoint scheduling, define `Min` and 
 The `visit` table lists all the timepoints. This table must be populated with visit labels for the proper functioning of LORIS. To populate with timepoints insert information as follows:
 
 ```sql
-INSERT INTO visit (VisitName) VALUES ('V1');
+INSERT INTO visit (VisitName,VisitLabel) VALUES ('V1','V1');
 ```
 
 ### API

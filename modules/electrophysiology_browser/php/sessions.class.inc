@@ -14,10 +14,10 @@
  */
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
-use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
@@ -50,7 +50,7 @@ class Sessions extends \NDB_Page
     {
         return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site'))
+                    && $user->hasPermission('electrophysiology_browser_view_site'))
             ) && $user->hasProject($this->timepoint->getProject()->getId()));
     }
 
@@ -151,7 +151,7 @@ class Sessions extends \NDB_Page
     function getSessionData($outputType)
     {
 
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $query = 'SELECT
                 DISTINCT(pf.SessionID)
@@ -164,8 +164,8 @@ class Sessions extends \NDB_Page
               WHERE
                 s.Active = "Y"
                 AND pf.FileType IN ('.
-                '"bdf", "cnt", "edf", "set", "vhdr", "vsm", "archive"'.
-                ') ORDER BY pf.SessionID';
+            '"bdf", "cnt", "edf", "set", "vhdr", "vsm", "archive"'.
+            ') ORDER BY pf.SessionID';
 
         $response = [];
 
@@ -222,7 +222,7 @@ class Sessions extends \NDB_Page
      */
     function getFilesData(string $outputType)
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileCollection = [];
         $params         = [];
@@ -262,11 +262,11 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
-        $physioFileObj   = new ElectrophysioFile($physioFileID);
+        $physioFileObj   = new ElectrophysioFile($this->loris, $physioFileID);
         $physioFile      = $physioFileObj->getParameter('FilePath');
         $modality        = $physioFileObj->getParameter('Modality');
         $modalityPrefix  = $modality === 'ieeg' ? 'iEEG' : 'EEG';
@@ -292,12 +292,12 @@ class Sessions extends \NDB_Page
             $fileSummary['summary'],
             array_map(
                 fn($channel) =>
-                    [
-                        'name'  => $channel.' Channel Count',
-                        'value' => $physioFileObj->getParameter(
-                            $channel.'ChannelCount'
-                        ),
-                    ],
+                [
+                    'name'  => $channel.' Channel Count',
+                    'value' => $physioFileObj->getParameter(
+                        $channel.'ChannelCount'
+                    ),
+                ],
                 $channels
             )
         );
@@ -460,13 +460,6 @@ class Sessions extends \NDB_Page
 
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
-        $fileSummary['epochsURL']   = $db->pselectOne(
-            "SELECT FilePath
-            FROM physiological_event_file
-            WHERE PhysiologicalFileID=:physioFileID
-            AND FileType='tsv'",
-            ['physioFileID' => $physioFileID]
-        );
 
         $fileOutput = $db->pselectone(
             'SELECT pot.OutputTypeName
@@ -477,27 +470,45 @@ class Sessions extends \NDB_Page
             ['PFID' => $physioFileID]
         );
 
-        // Get the annotation data
-        $annotations = new ElectrophysioAnnotations(
-            intval($physioFileID)
-        );
-        $fileSummary['annotations'] = $annotations->getData();
-
-        // Get the task events data
+        // Get the task's event data
         $events = new ElectrophysioEvents(
-            intval($physioFileID)
+            $this->loris,
+            $physioFileID
         );
         $fileSummary['events'] = $events->getData();
 
-        $fileSummary['epochsURL']   = $db->pselectOne(
+        $datasetTags = new DatasetTags(
+            $this->loris,
+            $physioFileID
+        );
+        $fileSummary['datasetTags'] = $datasetTags->getData();
+
+        $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
             FROM physiological_event_file
             WHERE PhysiologicalFileID=:physioFileID
             AND FileType='tsv'",
             ['physioFileID' => $physioFileID]
         );
+
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
+
+        // TODO: Fetch all relevant ones and merge beforehand (project_schema_rel?)
+        $hedSchema = $db->pselect(
+            "SELECT node.ID as id,
+           node.ParentID as parentID,
+           node.SchemaID as schemaID,
+           node.Name as name,
+           node.LongName as longName,
+           node.Description as description,
+           hs.Name as schemaName
+           FROM hed_schema_nodes AS node
+           LEFT JOIN hed_schema AS hs ON (hs.ID = node.SchemaID)",
+            []
+        );
+
+        $fileSummary['hedSchema'] = $hedSchema;
 
         return $fileSummary;
     }
@@ -553,7 +564,7 @@ class Sessions extends \NDB_Page
     {
         $physioFileID  = $physioFileObj->getParameter('PhysiologicalFileID');
         $physioFile    = $physioFileObj->getParameter('FilePath');
-        $db            = \NDB_Factory::singleton()->database();
+        $db            = $this->loris->getDatabaseConnection();
         $downloadLinks = [];
 
         $downloadLinks[] = [
@@ -583,28 +594,37 @@ class Sessions extends \NDB_Page
         // Metadata
 
         $queries = [
-            'physiological_channel'            => 'physiological_channel_file',
-            'physiological_event_archive'      => 'physiological_event_files',
-            'physiological_annotation_archive' => 'physiological_annotation_files',
-            'physiological_archive'            => 'all_files',
+            'physiological_electrode'     => 'physiological_electrode_file',
+            'physiological_coord_system'  => 'physiological_coord_system_file',
+            'physiological_channel'       => 'physiological_channel_file',
+            'physiological_event_archive' => 'physiological_event_files',
+            'physiological_archive'       => 'all_files',
         ];
 
         $labels = [
-            'physiological_electrode_file'   => 'Electrodes',
-            'physiological_channel_file'     => 'Channels',
-            'physiological_event_files'      => 'Events',
-            'physiological_annotation_files' => 'Annotations',
-            'all_files'                      => 'All Files',
+            'physiological_electrode_file'    => 'Electrodes',
+            'physiological_coord_system_file' => 'Coordinate System',
+            'physiological_channel_file'      => 'Channels',
+            'physiological_event_files'       => 'Events',
+            'all_files'                       => 'All Files',
         ];
 
         foreach ($queries as $query_key => $query_value) {
+            // TODO: Revisit logic if we plan to support multiple electrode spaces
             if ($query_key == 'physiological_electrode') {
                 // electrode filepath linked to coordinate system
-                $query_statement = "SELECT DISTINCT e.FilePath
-                    FROM physiological_coord_system_electrode_rel AS r,
-                        physiological_electrode AS e
-                    WHERE r.PhysiologicalElectrodeID = e.PhysiologicalElectrodeID
-                        AND r.PhysiologicalFileID=:PFID";
+                $query_statement = "SELECT DISTINCT (FilePath)
+                        FROM physiological_electrode
+                        JOIN physiological_coord_system_electrode_rel
+                            USING (PhysiologicalElectrodeID)
+                        WHERE PhysiologicalFileID=:PFID";
+            } else if ($query_key == 'physiological_coord_system') {
+                // coordinate system json
+                $query_statement = "SELECT DISTINCT (FilePath)
+                          FROM physiological_coord_system
+                          JOIN physiological_coord_system_electrode_rel
+                              USING (PhysiologicalCoordSystemID)
+                          WHERE PhysiologicalFileID=:PFID";
             } else {
                 // others metadata
                 $query_statement = "SELECT DISTINCT FilePath
@@ -627,29 +647,6 @@ class Sessions extends \NDB_Page
                     'label' => $labels[$query_value],
                 ];
             }
-        }
-
-        // Electrodes
-        $file_name = 'physiological_electrode_file';
-        // TODO: If we plan to support multiple electrode spaces
-        // the LIMIT logic should be revisited
-        $query_statement = "SELECT DISTINCT(FilePath)
-                            FROM physiological_electrode
-                            JOIN physiological_coord_system_electrode_rel
-                                USING (PhysiologicalElectrodeID)
-                            WHERE PhysiologicalFileID=:PFID
-                            LIMIT 1";
-        $query_statement = $db->pselect(
-            $query_statement,
-            ['PFID' => $physioFileID]
-        );
-
-        $downloadLinks[$file_name] = [
-            'file'  => '',
-            'label' => $labels[$file_name],
-        ];
-        if (count($query_statement) > 0) {
-            $downloadLinks[$file_name]['file'] = $query_statement[0]['FilePath'];
         }
         return $downloadLinks;
     }

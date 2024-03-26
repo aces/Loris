@@ -162,8 +162,9 @@ class AddSurvey extends \NDB_Form
                 ];
             }
         }
-
-        if ($_REQUEST['fire_away'] !== 'Create survey') {
+        if (!isset($_REQUEST['fire_away'])
+            || ($_REQUEST['fire_away'] !== 'Create survey')
+        ) {
             if (!filter_var(
                 $values['Email'],
                 FILTER_VALIDATE_EMAIL
@@ -241,11 +242,11 @@ class AddSurvey extends \NDB_Form
                     'CommentID'       => $commentID,
                 ]
             );
+            $this->tpl_data['success'] = true;
         } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
-        $this->tpl_data['success'] = true;
 
         if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
@@ -291,7 +292,7 @@ class AddSurvey extends \NDB_Form
             "Instrument",
             array_merge(
                 ['' => ''],
-                \Utility::getDirectInstruments()
+                \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
             )
         );
         $this->addBasicText("Email", "Email address");

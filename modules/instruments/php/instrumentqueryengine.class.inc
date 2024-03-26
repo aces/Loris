@@ -326,8 +326,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
         /* see https://github.com/phan/phan/issues/4746
-         * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
-            . join('),(', iterator_to_array($candidates))
+         * @phan-suppress-next-line PhanParamSpecial1 */
+            . join('),(', $candidates)
             . ')';
 
         $q = $DB->prepare($insertstmt);
@@ -408,10 +408,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     // Go through each field and put the data in the right
                     // index if applicable.
                     $data = $instrData->current();
-                    foreach ($data as $key => $val) {
-                        $candidateData[$key][] = $val;
+                    foreach ($data as $fieldkey=> $sessionobjs) {
+                        foreach ($sessionobjs as $sessionID => $val) {
+                            assert(!isset($candidateData[$fieldkey][$sessionID]));
+                            $candidateData[$fieldkey][$sessionID] = $val;
+                        }
                     }
-                    // $candidateData = array_merge($candidateData, $data);
                     $instrData->next();
                     $instCandidate = $instrData->key();
                 }
@@ -451,8 +453,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     if (!isset($candData[$dict->getName()])) {
                         $candData[$dict->getName()] = [];
                     }
-                    $candData[$dict->getName()][]
-                        = $loadedInstrument->getDictionaryValue($dict);
+                    $sid = $loadedInstrument->getSessionID();
+                    $candData[$dict->getName()][$sid->__toString()] = [
+                        'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                        'SessionID'  => $sid->__toString(),
+                        'value'      => $loadedInstrument->getDictionaryValue($dict),
+                    ];
                 }
             }
             yield "$iCandID" => $candData;

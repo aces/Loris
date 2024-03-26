@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  TextareaElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Participant status component

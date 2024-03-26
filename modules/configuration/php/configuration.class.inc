@@ -67,7 +67,7 @@ class Configuration extends \NDB_Form
             'Ym'  => 'Ym (EX: 2015-12)'
         ];
 
-        $instruments     = \Utility::getAllInstruments();
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $instruments[''] = '';
 
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();

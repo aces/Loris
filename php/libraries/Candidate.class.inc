@@ -98,7 +98,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
+            c.Active, u1.Real_name as RegisteredBy, 
+            c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -624,6 +625,40 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
+     * Returns the way that the DoB should be displayed for this
+     * candidate to a user on the frontend.
+     *
+     * @return ?array{label:string,value:string}
+     */
+    function getDisplayDoB(): ?array
+    {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $dobFormat = $config->getSetting('dobFormat');
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
+        switch ($dobFormat) {
+        case 'Ym':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m'),
+            ];
+        case 'Ymd':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m-d'),
+            ];
+        default:
+            throw new Exception("Unhandled DoB format: $dobFormat");
+        }
+    }
+
+    /**
      * Returns the expect date of confinement (due date)
      * of this candidate.
      *
@@ -1039,6 +1074,79 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
         return $res['Description'] ?? '';
     }
+
+    /**
+     * Returns the candidate's latest diagnosis defined by
+     * the configured diagnosis trajectory. Based on input, can return
+     * the confirmed or unconfirmed latest diagnosis. A confirmed
+     * diagnosis is one that has been pulled from a session that has
+     * Approval = 'Pass'
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return array|null JSON of the candidate's latest diagnosis
+     *                    as depicted by the configured diagnosis
+     *                    evolution ordering.
+     */
+    function getLatestDiagnosis(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) : ?array {
+        $DB = \NDB_Factory::singleton()->database();
+
+        // Define where clauses
+        $whereConfirmed = $isConfirmed ?
+            " AND Confirmed='Y'" : "";
+
+        $latestDx = $DB->pselectRow(
+            "SELECT DxEvolutionID,
+                ProjectID,
+                CandID,
+                Name,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM diagnosis_evolution 
+            JOIN candidate_diagnosis_evolution_rel USING (DxEvolutionID)
+            WHERE OrderNumber IN (
+                SELECT MAX(orderNumber) AS OrderNumber 
+                FROM diagnosis_evolution de2
+                JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+                WHERE CandID=:candID
+                AND ProjectID=:projID"
+                . $whereConfirmed .
+            " )
+            AND CandID=:candID
+            AND ProjectID=:projID"
+            . $whereConfirmed,
+            [
+                'candID' => $this->getCandID(),
+                'projID' => $projectID
+            ]
+        );
+
+        return $latestDx ?? null;
+    }
+
+    /**
+     * Returns the DxEvolutionID for which the latest diagnosis
+     * of the specified project is based on.
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return string|null the DxEvolutionID that LatestDiagnosis is based on
+     */
+    function getLatestDiagnosisSource(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) {
+        $latestDx = $this->getLatestDiagnosis($projectID, $isConfirmed);
+        return $latestDx['DxEvolutionID'] ?? null;
+    }
+
     /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation

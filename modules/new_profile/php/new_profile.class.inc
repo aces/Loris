@@ -46,14 +46,11 @@ class New_Profile extends \NDB_Form
         $ageMin    = $config->getSetting('ageMin');
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
-        $sex       = [
-            'Male'   => 'Male',
-            'Female' => 'Female',
-            'Other'  => 'Other',
-        ];
-        $pscidSet  = "false";
-        $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
-        $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
+        $sex       = \Utility::getSexList();
+
+        $pscidSet = "false";
+        $minYear  = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
+        $maxYear  = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getCenterIDs();

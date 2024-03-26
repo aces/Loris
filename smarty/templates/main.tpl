@@ -27,12 +27,14 @@
             {$study_title}
         </title>
         <script type="text/javascript">
+          let breadcrumbsRoot;
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              ReactDOM.createRoot(
+              breadcrumbsRoot = ReactDOM.createRoot(
                 document.getElementById("breadcrumbs")
-              ).render(
+              );
+              breadcrumbsRoot.render(
                 React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL

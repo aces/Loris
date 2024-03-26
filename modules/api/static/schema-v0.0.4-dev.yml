@@ -404,6 +404,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_4'
+    post:
+      tags:
+        - Instruments
+      summary: Add instruments the the visit test battery
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inline_response_200_4'
+      responses:
+        '200':
+          description: The battery was successfully updated. Returns the new battery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
   '/candidates/{id}/{visit}/instruments/{instrument}':
     get:
       tags:

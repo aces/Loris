@@ -501,11 +501,28 @@ function editConsentStatusFields(\Database $db)
                 ) { // Withdrawing from 'yes' status required consent date
                     // and withdrawal date
                     $validated = true;
+                } else if ($oldStatus === 'not_applicable' && !empty($date)
+                    && empty($withdrawal)
+                ) { // Add N/A option
+                    $validated = true;
                 } else {
                     http_response_code(400);
                     echo('Data failed validation. Resolve errors and try again.');
                     return;
                 }
+            }
+            break;
+        case 'not_applicable':
+            // If status is N/A, date is not required.
+            if (empty($date) && empty($withdrawal)
+                && ($oldStatus !== 'yes' || $oldStatus !== 'no')
+            ) {
+                $validated = true;
+            } else {
+                http_response_code(400);
+                echo('Answering not applicable to a consent type
+                      does not require a date of consent.');
+                return;
             }
             break;
         default:

@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['8.1', '8.2']
+        php: ['8.1', '8.2', '8.3']
     steps:
       - uses: actions/checkout@v2
 
@@ -104,7 +104,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2']
+        php: ['8.1', '8.2', '8.3']
         apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
     - uses: actions/checkout@v2
@@ -167,9 +167,8 @@ jobs:
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-04-Help.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
-        find raisinbread/instruments/instrument_sql -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        find raisinbread/instruments/instrument_sql -name *.sql -not -name 9999-99-99-drop_instrument_tables.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-
     - name: Source instrument schemas
       run: |
         find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
@@ -210,7 +209,7 @@ jobs:
         fail-fast: false
         matrix:
             testsuite: ['integration']
-            php: ['8.1','8.2']
+            php: ['8.1','8.2', '8.3']
             ci_node_index: [0,1,2,3]
 
             include:
@@ -221,10 +220,14 @@ jobs:
               php: '8.1'
             - testsuite: 'static'
               php: '8.2'
+            - testsuite: 'static'
+              php: '8.3'
             - testsuite: 'unit'
               php: '8.1'
             - testsuite: 'unit'
               php: '8.2'
+            - testsuite: 'unit'
+              php: '8.3'
 
     steps:
     - uses: actions/checkout@v2

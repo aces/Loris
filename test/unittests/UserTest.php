@@ -105,6 +105,7 @@ class UserTest extends TestCase
      * @var array
      */
     private $_examinerInfo = [0 => ['full_name' => 'John Doe',
+        'userID'      => '1',
         'examinerID'  => 1,
         'radiologist' => 1
     ]

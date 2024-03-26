@@ -188,6 +188,7 @@ function getProjectData($db, $user, $id) : array
         $datePublication = htmlspecialchars_decode($result['datePublication'] ?? '');
         $journal         = htmlspecialchars_decode($result['journal'] ?? '');
         $link            = htmlspecialchars_decode($result['link'] ?? '');
+
         $publishingStatus = htmlspecialchars_decode(
             $result['publishingStatus']
             ?? ''

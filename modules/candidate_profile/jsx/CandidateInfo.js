@@ -136,7 +136,7 @@ export class CandidateInfo extends Component {
             },
             {
                 label: subprojlabel,
-                value: cohorts,
+                value: cohorts.join(', '),
             },
             {
                 label: 'Site',

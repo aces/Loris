@@ -28,11 +28,7 @@ class Sex implements \JsonSerializable
     /* @var string */
     public $value;
 
-    private const VALID_VALUES = array(
-                                  'Male',
-                                  'Female',
-                                  'Other',
-                                 );
+    private $validValues = [];
 
     /**
      * Calls validate() immediately.
@@ -43,10 +39,12 @@ class Sex implements \JsonSerializable
      */
     public function __construct(string $value)
     {
-        if (!self::validate($value)) {
+        $this->validValues = \Utility::getSexList();
+
+        if (!self::validate($value, $this->validValues)) {
             throw new \DomainException(
                 'The value is not valid. Must be one of: '
-                . implode(', ', self::VALID_VALUES)
+                . implode(', ', array_values($this->validValues))
             );
         }
         $this->value = $value;
@@ -55,13 +53,14 @@ class Sex implements \JsonSerializable
     /**
      * Ensures that the value is well-formed.
      *
-     * @param string $value The value to be validated
+     * @param string $value      The value to be validated
+     * @param array  $laidValues The restricted optional values of $value
      *
      * @return bool True if the value format is valid
      */
-    public static function validate(string $value): bool
+    public static function validate(string $value, array $validValues): bool
     {
-        return in_array($value, self::VALID_VALUES, true);
+        return in_array($value, array_values($validValues), true);
     }
 
     /**

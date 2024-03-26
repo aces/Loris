@@ -57,6 +57,7 @@ class Methylation
                 'genotyping_platform',
                 'Name'
             ),
+            'Sex'             => \Utility::getSexList(),
         ];
     }
 

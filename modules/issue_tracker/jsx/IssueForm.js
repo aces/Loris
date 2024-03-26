@@ -14,6 +14,7 @@ import {
   TextboxElement,
   ButtonElement,
   TextareaElement,
+  FileElement,
 } from 'jsx/Form';
 
 /**
@@ -34,7 +35,7 @@ class IssueForm extends Component {
     super(props);
 
     this.state = {
-      Data: [],
+      Data: {},
       formData: {},
       submissionResult: null,
       errorMessage: null,

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
  * Note this is only used in DQT
  * For generic SelectDropdown, see Select in Form.js
  */
-class SelectField extends Component {
+export class SelectField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -64,7 +64,7 @@ SelectField.propTypes = {
 /**
  * Search Field React component
  */
-class SearchField extends Component {
+export class SearchField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -127,7 +127,7 @@ SearchField.propTypes = {
 /**
  * Select Dropdown React component
  */
-class SelectDropdown extends Component {
+export class SelectDropdown extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
