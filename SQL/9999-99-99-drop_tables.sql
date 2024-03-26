@@ -191,6 +191,9 @@ DROP TABLE IF EXISTS `tarchive`;
 DROP TABLE IF EXISTS `hrrt_archive_files`;
 DROP TABLE IF EXISTS `hrrt_archive`;
 
+DROP TABLE IF EXISTS `appointment`;
+DROP TABLE IF EXISTS `appointment_type`;
+
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
