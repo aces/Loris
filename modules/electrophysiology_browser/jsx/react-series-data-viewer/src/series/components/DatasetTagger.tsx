@@ -1153,7 +1153,7 @@ const DatasetTagger = ({
                       flexBasis: '87.5%',
                     }}>
                     <textarea
-                      placeholder='Enter description (coming soon)'
+                      placeholder='n/a'
                       style={{
                         minWidth: '47vw',
                         maxWidth: '47vw',
