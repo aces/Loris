@@ -973,9 +973,14 @@ const AnnotationForm = ({
           >
             Submit
           </button>
-          <button type="reset"
-                  onClick={handleReset}
-                  className="btn btn-primary"
+          <button
+            type="reset"
+            disabled={
+              newTags.length === 0 &&
+              deletedTagIDs.length === 0
+            }
+            onClick={handleReset}
+            className="btn btn-primary"
           >
             Reset
           </button>
