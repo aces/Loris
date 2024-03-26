@@ -493,6 +493,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
+
         $issueID = intval($values['issueID']);
 
         $issueValues['lastUpdatedBy'] = $user->getUserName();
@@ -527,7 +528,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         if (!empty($issueID)) {
-            $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
+            try {
+                $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
+            } catch (\Exception $ex) {
+                return new \LORIS\Http\Response\JSON\InternalServerError();
+            }
         } else {
             $issueValues['reporter']    = $user->getUsername();
             $issueValues['dateCreated'] = date('Y-m-d H:i:s');
