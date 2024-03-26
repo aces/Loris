@@ -13,6 +13,8 @@ $(window).resize(function(){
 });
 
 $(document).ready(function () {
+
+    $('#email_survey').attr('disabled','disabled');
     // Handles cases where there was an error on the page and we're resubmitting
     var email2 = $("input[name=Email2]").val();
     var email  = $("input[name=Email]").val();
@@ -20,14 +22,12 @@ $(document).ready(function () {
       if (email.length > 0 && email2.length > 0 && email == email2)
       {
               $('#email_survey').removeAttr('disabled');
-      } else {
-              $('#email_survey').attr('disabled','disabled');
       }
     }
     // Reset Test_name so that the template can be loaded by ajax below
     $("select[name=Test_name]").val("");
 
-    $('#Email2').change (function() {
+    $('#Email, #Email2').change (function() {
             var email2 = $("input[name=Email2]").val();
             var email  = $("input[name=Email]").val();
             if (email.length > 0 && email2.length > 0 )
@@ -39,7 +39,10 @@ $(document).ready(function () {
                 $('#create_survey').removeAttr('disabled');
                 $('#email_survey').attr('disabled','disabled');
             }
-
+            if (email.length > 0 && email2.length > 0 && email !== email2)
+            {
+                $("#email-error").show().html("Emails do not match");
+            }
             } );
     $("#emailData").click(function(){
         $("<input>").attr({
@@ -64,7 +67,7 @@ $(document).ready(function () {
                 pscid: $("input[name=PSCID]").val(),
                 VL: $("select[name=VL]").val(),
                 TN: $("select[name=Test_name]").val(),
-                Email: $("input[name=Email").val(),
+                Email: $("input[name=Email]").val(),
                 Email2: $("input[name=Email2]").val()
             },
             function(result) {
@@ -77,6 +80,8 @@ $(document).ready(function () {
                     $("#email-error").html(result.error_msg);
                 }
                 else {
+                    // Reset Error messages when all good
+                    $("#email-error").html('');
                     $("#emailModal").modal();
                 }
             }
