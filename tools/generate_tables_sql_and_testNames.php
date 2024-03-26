@@ -29,9 +29,9 @@ $tblCount       = 0;
 $parameterCount = 0;
 $pages          = [];
 foreach ($instruments as $instrument) {
-    $catId = "";
+    $catId  = "";
     $output = "";
-    $items = explode("\n", trim($instrument));
+    $items  = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
