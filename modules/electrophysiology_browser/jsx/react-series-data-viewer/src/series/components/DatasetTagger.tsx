@@ -529,7 +529,10 @@ const DatasetTagger = ({
 
   const buildColumnNames = () => {
     return columnOptions.filter((column) => {
-      return column.value !== 'channels'; // Removed until recognized
+      return column.value !== 'channels' // Removed until recognized
+        && column.field_values.filter((value) => {
+          return !['', 'n/a'].includes(value);  // Column has real values
+        }).length > 0
     }).map((column) => {
       const columnName = column.value;
       const columnIsDirty = isDirty(columnName, '');
@@ -991,18 +994,6 @@ const DatasetTagger = ({
               <option></option>
               {buildColumnNames()}
             </select>
-            {/*<SelectElement*/}
-            {/*  name={'select_column'}*/}
-            {/*  id={'select_column'}*/}
-            {/*  label={''}*/}
-            {/*  value={activeColumnName}*/}
-            {/*  options={columnOptions}*/}
-            {/*  emptyOption={true}*/}
-            {/*  required={false}*/}
-            {/*  sortByValue={false}*/}
-            {/*  noMargins={true}*/}
-            {/*  onUserInput={handleColumnValueChange}*/}
-            {/*/>*/}
           </div>
           <div style={{ fontWeight: 'bold', }}>Column Values</div>
           <select
