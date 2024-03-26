@@ -843,8 +843,8 @@ const AnnotationForm = ({
             className="row form-group"
           >
             <label
-              className="col-sm-4 control-label"
-              style={{lineHeight: '50px'}}>
+              className="col-sm-6 control-label"
+              style={{lineHeight: '25px'}}>
               HED
               <InfoIcon
                 title='Click this icon to view the HED SCORE schema'
@@ -858,7 +858,9 @@ const AnnotationForm = ({
               }}
             >
               {
-                currentAnnotation && currentAnnotation.hed && (
+                currentAnnotation && currentAnnotation.hed &&
+                getTagsForEpoch(currentAnnotation, datasetTags, hedSchema)
+                  .length > 0 && (
                   <>
                     <div style={{clear: 'both'}}>Dataset</div>
                     {
@@ -962,7 +964,7 @@ const AnnotationForm = ({
               </div>
             </div>
           </div>
-          
+
           <button
             type="submit"
             disabled={isSubmitted || !validate(event)}
