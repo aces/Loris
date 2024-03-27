@@ -148,7 +148,7 @@ class NewProfileIndex extends React.Component {
                   edcDate: null,
                   edcDateConfirm: null,
                   pscid: null,
-                  site:  this.state.formData.site,
+                  site: this.state.formData.site,
                   dobDate: null,
                   dobDateConfirm: null,
                   sex: null,
