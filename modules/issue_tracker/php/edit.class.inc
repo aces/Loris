@@ -110,7 +110,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                 = $this->formatUserInformation($a_row['UserID']);
         }
 
-
         foreach ($inactive_users_expanded as $u_row) {
             $inactive_users[$u_row['UserID']]
                 = $this->formatUserInformation($u_row['UserID']);
@@ -510,7 +509,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $validateValues[$vField] = $values[$vField];
             }
         }
-
 
         $issueID = intval($values['issueID']);
 
