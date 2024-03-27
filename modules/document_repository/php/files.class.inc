@@ -315,14 +315,14 @@ class Files extends \NDB_Page
         $body = $request->getParsedBody();
         if (!is_array($body)) {
             throw new \LorisException("Expected parsed body to be an array");
-	}
+        }
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
             exit;
         }
-	$category = $body['category']; // required
+        $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger(strval($category))) {
             // $category is a string representation of an ID, and so should be
             // at least equal to zero.
