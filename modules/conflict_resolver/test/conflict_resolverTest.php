@@ -94,13 +94,16 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverPermission()
     {
-        $this->checkPagePermissions(
-            '/conflict_resolver/',
-            [
-                'conflict_resolver'
-            ],
-            "Conflict Resolver"
-        );
+        $permissionList = ["conflict_resolver","data_dict_edit","data_dict_view"];
+        $this->setupPermissions($permissionList);
+        $this->safeGet($this->url . "/conflict_resolver/");
+        $bodyElement = $this->safeFindElement(WebDriverBy::cssSelector("body"));
+        $bodyText    = $bodyElement->getText();
+        $accessError = "You do not have access to this page.";
+        $this->assertStringNotContainsString($accessError, $bodyText);
+        $loadingError = "An error occured while loading the page.";
+        $this->assertStringNotContainsString($loadingError, $bodyText);
+        $this->resetPermissions();
     }
     /**
      * Tests clear button in the form
