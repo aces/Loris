@@ -154,8 +154,17 @@ class ServerProcessLauncher
             $mriUploadId,
             $sourceLocation
         );
-        return $this->_launch($mriUploadProcess);
+
+        $dbprocessid = $this->_launch($mriUploadProcess);
+
+        $this->getDatabaseProvider()->getDatabase()->insert(
+            'mri_upload_server_processes_rel',
+            [
+                'mri_upload_id' => $mriUploadId,
+                'process_id'    => $dbprocessid,
+            ]
+        );
+
+        return $dbprocessid;
     }
 }
-
-
