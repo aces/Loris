@@ -316,19 +316,17 @@ class Files extends \NDB_Page
         if (!is_array($body)) {
             throw new \LorisException("Expected parsed body to be an array");
         }
-
-        $category = $body['category']; // required
-        if (!\Utility::valueIsPositiveInteger($category)) {
-            // $category is a string representation of an ID, and so should be
-            // at least equal to zero.
-            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
-        }
-
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
             exit;
+        }
+        $category = $body['category']; // required
+        if (!\Utility::valueIsPositiveInteger(strval($category))) {
+            // $category is a string representation of an ID, and so should be
+            // at least equal to zero.
+            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
         }
 
         $uploadedFiles = is_array($uploadedFiles)
