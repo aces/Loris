@@ -1,15 +1,15 @@
 import Loader from 'Loader';
 import swal from 'sweetalert2';
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  SelectElement,
-  DateElement,
-  TextboxElement,
-  FormElement,
-  ButtonElement,
-  FieldsetElement,
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    ButtonElement,
+    FieldsetElement,
 } from 'jsx/Form';
 
 /**
@@ -44,7 +44,7 @@ class NewProfileIndex extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -54,11 +54,11 @@ class NewProfileIndex extends React.Component {
    */
   fetchData() {
     return fetch(this.props.dataURL,
-      { credentials: 'same-origin' })
+      {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ configData: data.fieldOptions }))
+      .then((data) => this.setState({configData: data.fieldOptions}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
       });
   }
   /**
@@ -74,7 +74,7 @@ class NewProfileIndex extends React.Component {
     if (formData.dobDate !== formData.dobDateConfirm) {
       swal.fire('Error!', 'Date of Birth fields must match', 'error');
     } else if (this.state.configData['edc'] === 'true' &&
-      (formData.edcDate !== formData.edcDateConfirm)
+         (formData.edcDate !== formData.edcDateConfirm)
     ) {
       swal.fire('Error!', 'EDC fields must match', 'error');
     } else {
@@ -116,7 +116,7 @@ class NewProfileIndex extends React.Component {
     }
 
     // disable button to prevent form resubmission.
-    this.setState({ submitDisabled: true });
+    this.setState({submitDisabled: true});
 
     fetch(this.props.submitURL, {
       method: 'POST',
@@ -124,72 +124,72 @@ class NewProfileIndex extends React.Component {
       credentials: 'same-origin',
       body: JSON.stringify(candidateObject),
     })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            swal.fire({
-              type: 'success',
-              title: 'New Candidate Created',
-              html: 'DCCID: ' + data.CandID + ' '
-                + 'PSCID: ' + data.PSCID + ' ',
-              confirmButtonText: 'Access Profile',
-              // Repurpose "cancel" as "recruit another candidate".
-              // Use the same colour for both buttons, since one
-              // isn't more "right" than the other.
-              showCancelButton: true,
-              cancelButtonColor: '#3085d6',
-              cancelButtonText: 'Recruit another candidate',
-            }).then((result) => {
-              if (result.value === true) {
-                window.location.href = '/' + data.CandID;
-              } else {
-                this.setState({
-                  formData: {
-                    edcDate: null,
-                    edcDateConfirm: null,
-                    pscid: null,
-                    site: this.state.formData.site,
-                    dobDate: null,
-                    dobDateConfirm: null,
-                    sex: null,
-                    project: null,
-                  },
-                  submitDisabled: false,
-                });
-              }
-            });
-          })
-            .catch((error) => {
-              swal.fire({
-                type: 'error',
-                title: 'Error!',
-                text: error,
+    .then((resp) => {
+      if (resp.ok && resp.status === 201) {
+        resp.json().then((data) => {
+          swal.fire({
+            type: 'success',
+            title: 'New Candidate Created',
+            html: 'DCCID: ' + data.CandID + ' '
+                  + 'PSCID: ' + data.PSCID + ' ',
+            confirmButtonText: 'Access Profile',
+            // Repurpose "cancel" as "recruit another candidate".
+            // Use the same colour for both buttons, since one
+            // isn't more "right" than the other.
+            showCancelButton: true,
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Recruit another candidate',
+          }).then((result) => {
+            if (result.value === true) {
+              window.location.href = '/' + data.CandID;
+            } else {
+              this.setState({
+                formData: {
+                  edcDate: null,
+                  edcDateConfirm: null,
+                  pscid: null,
+                  site:  this.state.formData.site,
+                  dobDate: null,
+                  dobDateConfirm: null,
+                  sex: null,
+                  project: null,
+                },
+                submitDisabled: false,
               });
-              console.error(error);
-            });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({ submitDisabled: false });
-            swal.fire('Error!', message.error, 'error');
-          }).catch((error) => {
-            swal.fire({
-              type: 'error',
-              title: 'Error!',
-              text: error,
-            });
-            console.error(error);
+            }
           });
-        }
-      })
-      .catch((error) => {
-        swal.fire({
-          type: 'error',
-          title: 'Error!',
-          text: error,
+        } )
+        .catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
         });
-        console.error(error);
+      } else {
+        resp.json().then((message) => {
+          // enable button for form resubmission.
+          this.setState({submitDisabled: false});
+          swal.fire('Error!', message.error, 'error');
+        }).catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
+        });
+      }
+    })
+    .catch((error) => {
+      swal.fire({
+        type: 'error',
+        title: 'Error!',
+        text: error,
       });
+      console.error(error);
+    });
   }
 
   /**
@@ -202,7 +202,7 @@ class NewProfileIndex extends React.Component {
     let formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
 
-    this.setState({ formData: formData });
+    this.setState({formData: formData});
   }
 
   /**
@@ -218,7 +218,7 @@ class NewProfileIndex extends React.Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader />;
+      return <Loader/>;
     }
     let edc = null;
     let pscid = null;
@@ -237,97 +237,97 @@ class NewProfileIndex extends React.Component {
       edc =
         <div>
           <DateElement
-            name="edcDate"
-            label="Expected Date of Confinement"
-            minYear={minYear}
-            maxYear={this.state.configData.maxYear}
-            dateFormat={dateFormat}
-            onUserInput={this.setFormData}
-            value={this.state.formData.edcDate}
-            required={true}
+            name = "edcDate"
+            label = "Expected Date of Confinement"
+            minYear = {minYear}
+            maxYear = {this.state.configData.maxYear}
+            dateFormat = {dateFormat}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.edcDate}
+            required = {true}
           />
           <DateElement
-            name="edcDateConfirm"
-            label="Confirm EDC"
-            minYear={minYear}
-            maxYear={this.state.configData.maxYear}
-            dateFormat={dateFormat}
-            onUserInput={this.setFormData}
-            value={this.state.formData.edcDateConfirm}
-            required={true}
+            name = "edcDateConfirm"
+            label = "Confirm EDC"
+            minYear = {minYear}
+            maxYear = {this.state.configData.maxYear}
+            dateFormat = {dateFormat}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.edcDateConfirm}
+            required = {true}
           />
         </div>;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       pscid =
         <TextboxElement
-          name="pscid"
-          label="PSCID"
-          onUserInput={this.setFormData}
-          value={this.state.formData.pscid}
-          required={true}
+          name = "pscid"
+          label = "PSCID"
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.pscid}
+          required = {true}
         />;
     }
     if (this.state.configData.site && this.state.configData.site.length !== 0) {
       site =
         <SelectElement
-          name="site"
-          label="Site"
-          options={this.state.configData.site}
-          onUserInput={this.setFormData}
-          value={this.state.formData.site}
-          required={true}
+          name = "site"
+          label = "Site"
+          options = {this.state.configData.site}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.site}
+          required = {true}
         />;
     }
     const profile = (
       <FormElement
-        name="newProfileForm"
-        onSubmit={this.handleSubmit}
+        name = "newProfileForm"
+        onSubmit = {this.handleSubmit}
       >
         <DateElement
-          name="dobDate"
-          label="Date of Birth"
-          minYear={minYear}
-          maxYear={dobMaxYear}
-          dateFormat={dateFormat}
-          onUserInput={this.setFormData}
-          value={this.state.formData.dobDate}
-          required={requireBirthDate}
+          name = "dobDate"
+          label = "Date of Birth"
+          minYear = {minYear}
+          maxYear = {dobMaxYear}
+          dateFormat = {dateFormat}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.dobDate}
+          required = {requireBirthDate}
         />
         <DateElement
-          name="dobDateConfirm"
-          label="Date of Birth Confirm"
-          minYear={minYear}
-          maxYear={dobMaxYear}
-          dateFormat={dateFormat}
-          onUserInput={this.setFormData}
-          value={this.state.formData.dobDateConfirm}
-          required={requireBirthDate}
+          name = "dobDateConfirm"
+          label = "Date of Birth Confirm"
+          minYear = {minYear}
+          maxYear = {dobMaxYear}
+          dateFormat = {dateFormat}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.dobDateConfirm}
+          required = {requireBirthDate}
         />
         {edc}
         <SelectElement
-          name="sex"
-          label="Sex"
-          options={this.state.configData.sex}
-          onUserInput={this.setFormData}
-          value={this.state.formData.sex}
-          required={true}
+          name = "sex"
+          label = "Sex"
+          options = {this.state.configData.sex}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.sex}
+          required = {true}
         />
         {site}
         {pscid}
         <SelectElement
-          name="project"
-          label="Project"
-          options={this.state.configData.project}
-          onUserInput={this.setFormData}
-          value={this.state.formData.project}
-          required={true}
+          name = "project"
+          label = "Project"
+          options = {this.state.configData.project}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.project}
+          required = {true}
         />
         <ButtonElement
-          name="fire_away"
-          label="Create"
-          id="button"
-          type="submit"
+          name = "fire_away"
+          label = "Create"
+          id = "button"
+          type = "submit"
           disabled={this.state.submitDisabled}
         />
       </FormElement>
@@ -349,9 +349,9 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <NewProfileIndex
-      dataURL={`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL={`${loris.BaseURL}/api/v0.0.3/candidates/`}
-      hasPermission={loris.userHasPermission}
+      dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
+      submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
+      hasPermission = {loris.userHasPermission}
     />
   );
 });
