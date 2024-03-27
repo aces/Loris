@@ -98,7 +98,7 @@ class Statistics_Site extends \NDB_Menu
     {
 
         //SITES
-
+        $projectID = new \ProjectID(strval($projectID));
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
