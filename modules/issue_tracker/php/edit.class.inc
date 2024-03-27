@@ -209,13 +209,30 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ]
             );
 
+            // Extract userID from issue description.
+            // Without doing that, "user fullname (userid)" is used instead.
+            $issueAssigneeUserID = null;
+            if (!is_null($issueData['assignee'])
+                && !empty($issueData['assignee'])
+            ) {
+                $parPos = strpos($issueData['assignee'], '(');
+                if ($parPos !== false) {
+                    $issueAssigneeUserID = substr(
+                        $issueData['assignee'],
+                        $parPos+1,
+                        -1
+                    );
+                }
+            }
             // Add current assignee in assignees dropdown even if not active
-            if (!isset($assignees[$issueData['assignee']])) {
-                $assignees[$issueData['assignee']] = $db->pselectOne(
+            if (isset($issueAssigneeUserID)
+                && !isset($assignees[$issueAssigneeUserID])
+            ) {
+                $assignees[$issueAssigneeUserID] = $db->pselectOne(
                     "SELECT Real_name FROM users
                     WHERE UserID=:userID",
                     [
-                        'userID' => $issueData['assignee']
+                        'userID' => $issueAssigneeUserID
                     ]
                 );
             }
@@ -527,7 +544,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         if (!empty($issueID)) {
-            $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
+            try {
+                $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
+            } catch (\Exception $ex) {
+                return new \LORIS\Http\Response\JSON\InternalServerError();
+            }
         } else {
             $issueValues['reporter']    = $user->getUsername();
             $issueValues['dateCreated'] = date('Y-m-d H:i:s');
