@@ -9,6 +9,6 @@ Files can be downloaded containing only the recording signal, the events, or oth
 - All files (tgz): a compressed folder containing all the recording data as well as the metadata for the EEG scan session.
 - EEG: the file containing the session recording data.    
 - Electrode info (tsv): contains electrode locations.    
-- Channels info (tsv): channel status and filter settings.    
-- Events (tsv): events (both stimuli and responses) recorded during the session.   
+- Channels info (tsv): channel status and filter settings.
+- Events (tsv): events (both stimuli and responses) recorded during the session.  
 

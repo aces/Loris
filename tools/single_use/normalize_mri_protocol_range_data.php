@@ -24,8 +24,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
-require_once 'Utility.class.inc';
 
 // set default arguments
 $printToSQL = false;
@@ -37,10 +35,8 @@ if (!empty($argv[1]) && $argv[1] == "tosql") {
     $printToSQL = true;
 }
 
-function split_ranges($table_name, $printToSQL, $output)
+function split_ranges($table_name, $printToSQL, $output, $DB)
 {
-    $DB = \Database::singleton();
-
     // get all "ID" values from the mri_protocol table
     $mp_idx = $DB->pselect("SELECT ID FROM $table_name", []);
     $idx    = [];
@@ -102,7 +98,7 @@ function split_ranges($table_name, $printToSQL, $output)
 
 $tables_to_normalize = ["mri_protocol", "mri_protocol_checks"];
 foreach ($tables_to_normalize as $table) {
-    split_ranges($table, $printToSQL, $output);
+    split_ranges($table, $printToSQL, $output, $loris->getDatabaseConnection());
 }
 $filename = __DIR__ . "/../../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
 if ($printToSQL) {

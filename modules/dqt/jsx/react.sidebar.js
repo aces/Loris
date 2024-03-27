@@ -59,6 +59,10 @@ class Sidebar extends Component {
     );
   }
 }
+Sidebar.propTypes = {
+  Name: PropTypes.string,
+  children: PropTypes.node,
+};
 
 /**
  * FieldsSidebar Component
@@ -125,6 +129,7 @@ class FieldsSidebar extends Component {
 FieldsSidebar.propTypes = {
   Fields: PropTypes.array,
   Criteria: PropTypes.object,
+  resetQuery: PropTypes.func,
 };
 
 FieldsSidebar.defaultProps = {

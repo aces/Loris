@@ -19,15 +19,13 @@ if (isset($argv[1]) && $argv[1] === "confirm") {
     $confirm = true;
 }
 
-$db = \Database::singleton();
-
 // Find CandIDs where there are multiple first visits
-$query_candID = "SELECT CandID 
-                  FROM `session` 
-                  WHERE VisitNo=1 
-                  GROUP BY CandID 
+$query_candID = "SELECT CandID
+                  FROM `session`
+                  WHERE VisitNo=1
+                  GROUP BY CandID
                   HAVING COUNT(CandID) > 1";
-$candIDs      = $db->pselect($query_candID, []);
+$candIDs      = $DB->pselect($query_candID, []);
 
 if (empty($candIDs)) {
     echo "No multiple first visits.\n";
@@ -36,12 +34,12 @@ if (empty($candIDs)) {
         // Order session IDs by date of visit
         echo "Multiple first visits detected for CandID $entry[CandID]\n";
         $candID          = $entry['CandID'];
-        $query_sessionID = "SELECT ID, VisitNo 
-                            FROM `session` 
-                            WHERE CandID=:candID 
+        $query_sessionID = "SELECT ID, VisitNo
+                            FROM `session`
+                            WHERE CandID=:candID
                             ORDER BY Date_visit";
         $where           = ['candID' => $candID];
-        $sessionIDs      = $db->pselect($query_sessionID, $where);
+        $sessionIDs      = $DB->pselect($query_sessionID, $where);
 
         // Reset visit number in order of date of visit
         $visitNo = 1;
@@ -51,7 +49,7 @@ if (empty($candIDs)) {
             $set       = ['VisitNo' => $visitNo];
             $where_sessionID = ['ID' => $sessionID];
             if ($confirm) {
-                $db->update('session', $set, $where_sessionID);
+                $DB->update('session', $set, $where_sessionID);
             }
             $visitNo++;
         }

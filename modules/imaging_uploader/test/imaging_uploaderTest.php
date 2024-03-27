@@ -50,7 +50,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "UploadID",
+            "label"    => "Upload ID",
             "selector" => "#dynamictable > thead",
         ],
         [
@@ -70,15 +70,15 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "UploadLocation",
+            "label"    => "Upload Location",
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "UploadDate",
+            "label"    => "Upload Date",
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "UploadedBy",
+            "label"    => "Uploaded By",
             "selector" => "#dynamictable > thead",
         ],
         [
@@ -86,11 +86,11 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "Number Of MincCreated",
+            "label"    => "Number Of Files Created",
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "Number Of MincInserted",
+            "label"    => "Number Of Files Inserted",
             "selector" => "#dynamictable > thead",
         ],
     ];
@@ -193,27 +193,23 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingUploaderFilterClearForm()
     {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-
         $this->safeGet($this->url . '/imaging_uploader/');
 
         $this->safeFindElement(
-            WebDriverBy::name("CandID")
+            WebDriverBy::name("candID")
         )->sendKeys("test");
 
         $this->safeFindElement(
-            WebDriverBy::name("PSCID")
+            WebDriverBy::name("pSCID")
         )->sendKeys("test");
 
-        $this->safeFindElement(
-            WebDriverBy::name("reset")
-        )->click();
+        $this->webDriver->navigate()->refresh();
 
         $bodyText1 = $this->safeFindElement(
-            WebDriverBy::name("CandID")
+            WebDriverBy::name("candID")
         )->getText();
         $bodyText2 = $this->safeFindElement(
-            WebDriverBy::name("PSCID")
+            WebDriverBy::name("pSCID")
         )->getText();
 
          $this->assertEquals('', $bodyText1);
@@ -240,8 +236,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function _testPageUIs($url,$uis)
     {
-            $this->markTestSkipped("This method isn't working properly on travis.");
-            $this->safeGet($this->url . '/imaging_uploader/');
+        $this->safeGet($this->url . '/imaging_uploader/');
         if ($url == "/imaging_uploader/#upload") {
             $this->safeFindElement(
                 WebDriverBy::ID("tab-upload")
@@ -249,10 +244,9 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         }
 
         foreach ($uis as $ui ) {
-            $location = $ui['selector'];
-            $text     = $this->webDriver->executescript(
-                "return document.querySelector('$location').textContent"
-            );
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($ui['selector'])
+            )->getText();
             $this->assertStringContainsString($ui['label'], $text);
         }
     }

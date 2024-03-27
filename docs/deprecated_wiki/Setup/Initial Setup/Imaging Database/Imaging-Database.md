@@ -238,7 +238,6 @@ In cases where a subject was scanned in two scanner sessions within a single stu
 
 Troubleshooting notes: 
 * `/data/$PROJ` directory and subdirectories must be readable and executable by the Apache linux user.
-* If [`showDatabaseQueries`](Behavioural-Database#showdatabasequeries) is enabled, image volumes will not display properly in the Imaging Browser.
 * Verify the Configuration module (_Paths_) `MINC files` setting is `/data/$PROJ/data/`. 
 
 ### 8) Quality Control within the Imaging Browser

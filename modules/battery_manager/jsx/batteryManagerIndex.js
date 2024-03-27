@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +6,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
 import swal from 'sweetalert2';
+import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';
 
@@ -125,6 +127,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Active':
         switch (value) {
           case 'Y':
@@ -132,6 +135,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Change Status':
         return '';
       case 'Edit Metadata':
@@ -383,7 +387,6 @@ class BatteryManagerIndex extends Component {
           title={modalTitle}
           show={add || edit}
           onClose={this.closeForm}
-          onSubmit={handleSubmit}
           throwWarning={Object.keys(test).length !== 0}
         >
           <BatteryManagerForm
@@ -392,6 +395,7 @@ class BatteryManagerIndex extends Component {
             options={options}
             add={add}
             errors={errors}
+            handleSubmit={handleSubmit}
           />
         </Modal>
       </div>
@@ -477,7 +481,7 @@ class BatteryManagerIndex extends Component {
       } else if (test.ageMaxDays < 0) {
         errors.ageMaxDays = 'This field must be 0 or greater';
       }
-      if (test.ageMinDays > test.ageMaxDays) {
+      if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
         errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
         errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
       }
@@ -501,12 +505,13 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

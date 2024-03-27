@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  DateElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Candidate date of death component
@@ -77,6 +83,7 @@ class CandidateDOD extends Component {
       return <Loader/>;
     }
 
+    let dateFormat = this.state.data.dodFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dod_edit')) {
@@ -108,6 +115,7 @@ class CandidateDOD extends Component {
           <DateElement
             label='Date Of Death:'
             name='dod'
+            dateFormat={dateFormat}
             value={this.state.formData.dod}
             onUserInput={this.setFormData}
             disabled={disabled}

@@ -84,7 +84,7 @@ class Module extends \Module
 
         switch ($type) {
         case 'usertasks':
-            $url = 'assignee=' . $user->getUsername() . '&status=acknowledged&'.
+            $url = 'assignee=' . $user->getFullname() . '&status=acknowledged&'.
                    'status=assigned&status=feedback&status=new&status=resolved';
             return [
                 new \LORIS\dashboard\TaskQueryWidget(

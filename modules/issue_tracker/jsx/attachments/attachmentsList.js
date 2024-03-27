@@ -11,6 +11,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * React component used to display
@@ -102,7 +103,7 @@ class AttachmentsList extends Component {
    */
   displayAttachmentOptions(deleteData, item) {
     if (this.props.userHasPermission
-      || this.state.attachments.whoami === item.user) {
+      || this.props.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
@@ -152,6 +153,15 @@ class AttachmentsList extends Component {
   }
 
   /**
+   * Sets event target src to null
+   *
+   * @param {object} event
+   */
+  displayNone(event) {
+    event.target.src = null;
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -187,6 +197,7 @@ class AttachmentsList extends Component {
     );
 
     let attachmentsRows = [];
+    let regexImg = /image/;
     for (const key in this.state.attachments) {
       if (this.state.attachments.hasOwnProperty(key)) {
         const item = this.state.attachments[key];
@@ -205,7 +216,26 @@ class AttachmentsList extends Component {
               </div>
               <div className='col-md-8'>
                 <div className='col-md-1'><b>File: </b></div>
-                <div className='col-md-11'><i>{item.file_name}</i></div>
+                <div className='col-md-11'>
+                  <i>{item.file_name}</i>
+                  {regexImg.test(item.mime_type) ?
+                    (<img
+                      src={this.props.baseURL +
+                      '/issue_tracker/Attachment' +
+                      '?ID=' + item.ID +
+                      '&file_hash=' + item.file_hash +
+                      '&issue=' + this.props.issue +
+                      '&filename=' + item.file_name +
+                      '&mime_type=' + item.mime_type
+                      }
+                      width='100%'
+                      height='100%'
+                      onError={this.displayNone}
+                    >
+                    </img>) :
+                    null
+                  }
+                </div>
               </div>
             </div>
             <div className='row'>
@@ -246,6 +276,8 @@ AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
+  userHasPermission: PropTypes.bool,
+  whoami: PropTypes.string.isRequired,
 };
 AttachmentsList.defaultProps = {
   attachments: [],

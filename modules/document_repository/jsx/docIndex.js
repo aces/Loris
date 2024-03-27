@@ -7,6 +7,10 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {CheckboxElement} from 'jsx/Form';
 
 /**
  * Doc index component
@@ -170,6 +174,8 @@ class DocIndex extends React.Component {
       case 'File Name':
         let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
+                          + encodeURIComponent(row['Uploaded By'])
+                          + '/'
                           + encodeURIComponent(row['File Name']);
         result = <td>
           <a
@@ -425,15 +431,20 @@ class DocIndex extends React.Component {
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <div className="page-document">
-    <DocIndex
-      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-    </div>,
+  createRoot(
     document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-document">
+      <DocIndex
+        dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />
+    </div>
   );
 });

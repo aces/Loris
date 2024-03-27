@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -75,7 +76,6 @@ class DataDictIndex extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -213,15 +213,17 @@ class DataDictIndex extends Component {
 }
 
 DataDictIndex.propTypes = {
-    dataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
+  fieldsURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-      <DataDictIndex
-        dataURL={`${loris.BaseURL}/datadict/?format=binary`}
-        fieldsURL={`${loris.BaseURL}/datadict/fields`}
-      />,
-      document.getElementById('lorisworkspace')
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
+    <DataDictIndex
+      dataURL={`${loris.BaseURL}/datadict/?format=binary`}
+      fieldsURL={`${loris.BaseURL}/datadict/fields`}
+    />
   );
 });

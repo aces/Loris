@@ -52,6 +52,8 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
             $module = $row['Module'];
             $cat    = $row['Category'];
 
+            $qe = $module->getQueryEngine();
+
             foreach ($cat->getItems() as $item) {
                 $name   = $item->getName();
                 $status = 'Unchanged';
@@ -66,12 +68,14 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                     $status = 'Empty';
                 }
 
+                $visits = $qe->getVisitList($cat, $item);
                 $dict[] = $this->getInstance(
                     $module,
                     $cat,
                     $item,
                     $desc,
                     $status,
+                    $visits,
                 );
             }
         }
@@ -90,6 +94,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *                                   table
      * @param string         $desc       The overridden description of the item
      * @param string         $descstatus The status of the description override
+     * @param ?[]string      $visits     The visits for session scoped variables
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
@@ -98,8 +103,9 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         Category $cat,
         DictionaryItem $item,
         string $desc,
-        string $descstatus
+        string $descstatus,
+        array $visits,
     ) : \LORIS\Data\DataInstance {
-        return new DataDictRow($module, $cat, $item, $desc, $descstatus);
+        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits);
     }
 }

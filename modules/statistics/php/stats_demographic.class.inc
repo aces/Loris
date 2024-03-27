@@ -103,7 +103,7 @@ class Stats_Demographic extends \NDB_Form
             htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
-        $smarty = new \Smarty_neurodb('statistics');
+        $smarty = new \Smarty_NeuroDB('statistics');
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;

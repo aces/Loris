@@ -1,5 +1,13 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  SelectElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * View project component
@@ -175,7 +183,7 @@ class ViewProject extends React.Component {
     let toReturn = [];
     files.forEach(function(f) {
       let download = loris.BaseURL
-                     + '/publication/ajax/FileDownload.php?File='
+                     + '/publication/files/'
                      + f.Filename;
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
@@ -557,5 +565,9 @@ class ViewProject extends React.Component {
     );
   }
 }
+ViewProject.propTypes = {
+  action: PropTypes.string,
+  DataURL: PropTypes.string,
+};
 
 export default ViewProject;

@@ -158,10 +158,6 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-02'"
         );
-        $scanDone = $this->safeFindElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
         $Cohort = $this->safeFindElement(
             WebDriverBy::Name("CohortID")
@@ -196,10 +192,6 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-        $scanDone = $this->safeFindElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
         $Cohort = $this->safeFindElement(
             WebDriverBy::Name("CohortID")

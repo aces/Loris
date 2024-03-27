@@ -17,8 +17,8 @@ require_once __DIR__ . '/../generic_includes.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__."/../../project/config.xml");
-$config = NDB_Config::singleton();
-$db = $DB;
+$config   = NDB_Config::singleton();
+$db       = $DB;
 $database = $config->getSetting('database');
 
 $base = $config->getSetting('base');

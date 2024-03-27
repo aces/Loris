@@ -6,7 +6,7 @@
    [Manual Testing]
 3. Check that the comments for a category are displayed properly as a tooltip.
    [Manual Testing]
-4. Upload a file.
+4. Upload one file. Upload multiple files at once.
    [Manual Testing]
 5. User is able to delete a file if they have the "Delete files in Document Repository" permission or is the super user.
    [Manual Testing]
@@ -29,13 +29,13 @@
    [Manual Testing]
 14. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-15. Visit the My Preferences module and enable notifications for the document_repository.
+15. Visit the "My Preferences" module and enable notifications for the document_repository.
     Make sure that you are notified for the follow changes:
        - Addition, deletion or modification of a file (by a user other than yourself)
        - Addition of a category (by a user other than yourself)
     [Manual Testing]
 16. Try uploading a file that exceeds the max upload limit. Ensure that an error message occurs
-    when the server has detected that the file is too large.
+    when the server has detected that the file is too large. Do this again, with multiple files at once, to ensure proper individual error reporting for all files.
     [Manual Testing]
 
 ### Widget registration on the dashboard page

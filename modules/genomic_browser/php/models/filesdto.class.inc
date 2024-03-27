@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace LORIS\genomic_browser\Models;
 
+use \LORIS\Data\DataInstance;
+
 /**
  * A FilesDTO represents an Files in the genomic browser module.
  * It is doing the mapping between the profile table columns
@@ -16,9 +18,9 @@ namespace LORIS\genomic_browser\Models;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
-class FilesDTO implements \LORIS\Data\DataInstance
+class FilesDTO implements DataInstance
 {
     /**
      * The GenomicFileID

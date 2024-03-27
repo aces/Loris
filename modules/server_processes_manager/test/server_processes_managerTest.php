@@ -80,6 +80,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString('Cannot continue', $bodyText);
         $this->resetPermissions();
+        $this->restoreConfigSetting("mriCodePath");
     }
 
     /**
@@ -90,7 +91,6 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithoutPermissionRead()
     {
-        // This function sets mriCodePath for all future functions
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->setupPermissions([""]);
         $this->safeGet($this->url . "/server_processes_manager/");
@@ -102,6 +102,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             $bodyText
         );
         $this->resetPermissions();
+        $this->restoreConfigSetting("mriCodePath");
     }
     /**
      * Tests that the page does not load if the user does not have correct
@@ -111,6 +112,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithPermission()
     {
+        $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->safeFindElement(
@@ -125,6 +127,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             $bodyText
         );
         $this->resetPermissions();
+        $this->restoreConfigSetting("mriCodePath");
     }
 
     /**
@@ -134,6 +137,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testPageUIs()
     {
+        $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->safeGet($this->url . "/server_processes_manager/");
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->safeFindElement(
@@ -141,6 +145,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             )->getText();
             $this->assertStringContainsString($key, $text);
         }
+        $this->restoreConfigSetting("mriCodePath");
     }
     /**
      * Testing React filter in this page.
@@ -149,6 +154,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testFilters()
     {
+        $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->safeGet($this->url . "/server_processes_manager/");
         $this->_filterTest(
             self::$pid,
@@ -171,6 +177,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'admin',
             '51'
         );
+        $this->restoreConfigSetting("mriCodePath");
     }
 }
 

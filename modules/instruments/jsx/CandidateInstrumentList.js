@@ -1,4 +1,6 @@
 import VisitInstrumentList from './VisitInstrumentList';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * A CandidateInstrumentList provides a list of instruments for
@@ -32,5 +34,11 @@ function CandidateInstrumentList(props) {
         {visits}
         </div>;
 }
+CandidateInstrumentList.propTypes = {
+  Visits: PropTypes.array,
+  BaseURL: PropTypes.string,
+  Candidate: PropTypes.object,
+  VisitMap: PropTypes.object,
+};
 
 export default CandidateInstrumentList;

@@ -173,8 +173,8 @@ class NDB_ConfigTest extends TestCase
     }
 
     /**
-     * Test getSettingFromDB() method. Given any of (database,sandbox,
-     * showDatabaseQueries), it will return null.
+     * Test getSettingFromDB() method. Given any of (database,sandbox),
+     * it will return null.
      * If database class exists and the dabase returns 'AllowMultiple' => '0',
      * 'ParentID' => 'test', this method should return a non-null value.
      *
@@ -185,7 +185,6 @@ class NDB_ConfigTest extends TestCase
     {
         $this->assertNull($this->_config->getSettingFromDB("database"));
         $this->assertNull($this->_config->getSettingFromDB("sandbox"));
-        $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
             ->willReturn(true);

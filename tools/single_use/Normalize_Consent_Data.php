@@ -25,7 +25,7 @@
 require_once __DIR__ . '/../generic_includes.php';
 
 $config = \NDB_Config::singleton();
-$db     =& \Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 
 // Specify current database
 $database = $config->getSetting('database');

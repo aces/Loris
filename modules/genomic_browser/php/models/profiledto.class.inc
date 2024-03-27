@@ -7,10 +7,13 @@
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 
 namespace LORIS\genomic_browser\Models;
+
+use \LORIS\Data\DataInstance;
+use \LORIS\StudyEntities\SiteHaver;
 
 /**
  * A ProfileDTO represents an profile in the genomic browser module.
@@ -25,9 +28,9 @@ namespace LORIS\genomic_browser\Models;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
-class ProfileDTO implements \LORIS\Data\DataInstance
+class ProfileDTO implements DataInstance, SiteHaver
 {
 
     /**
@@ -146,20 +149,20 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     /**
      * Returns the CenterID for this row
      *
-     * @return integer The CenterID
+     * @return \CenterID The CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return (int) $this->_centerID;
+        return new \CenterID(strval($this->_centerID));
     }
 
     /**
      * Returns the ProjectID for this row
      *
-     * @return integer The ProjectID
+     * @return \ProjectID The ProjectID
      */
-    public function getProjectID(): int
+    public function getProjectID(): \ProjectID
     {
-        return (int) $this->_projectID;
+        return new \ProjectID(strval($this->_projectID));
     }
 }

@@ -63,7 +63,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     public function testCreateFeedbackTypeWithInvalidName()
     {
-        $this->expectException('LorisException');
+        $this->expectException('InvalidArgumentException');
         $this->_feedbackObj->createFeedbackType("");
     }
 

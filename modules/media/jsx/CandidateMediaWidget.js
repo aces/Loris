@@ -1,3 +1,6 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * React component for a widget on the candidate dashboard
  * displaying the media associated with the candidate.
@@ -24,5 +27,9 @@ function CandidateMediaWidget(props) {
     }
     return <div className="list-group">{files}</div>;
 }
+CandidateMediaWidget.propTypes = {
+  BaseURL: PropTypes.string,
+  Files: PropTypes.array,
+};
 
 export default CandidateMediaWidget;

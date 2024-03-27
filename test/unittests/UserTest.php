@@ -105,6 +105,7 @@ class UserTest extends TestCase
      * @var array
      */
     private $_examinerInfo = [0 => ['full_name' => 'John Doe',
+        'userID'      => '1',
         'examinerID'  => 1,
         'radiologist' => 1
     ]
@@ -260,17 +261,7 @@ class UserTest extends TestCase
      * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
-    /**
-     * Test double for Database object for hasLoggedIn method
-     *
-     * @note This is needed for User::hasLoggedIn because it declares and uses
-     *       the database differently than other methods in the User class.
-     *       This can be changed when the rest of the User class updates how it
-     *       declares its database. - Alexandra Livadas
-     *
-     * @var NDB_Factory
-     */
-    private $_mockFactory;
+
     /**
      * Maps config names to values
      * Used to set behaviour of NDB_Config test double
@@ -289,14 +280,7 @@ class UserTest extends TestCase
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $database          = $this->_configMock->getSetting('database');
-        $this->_dbMock     = $this->_factory->database(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
-            true
-        );
+        $this->_dbMock     = $this->_factory->database();
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
         $mockdb     = $this->getMockBuilder('Database')->getMock();
@@ -304,12 +288,8 @@ class UserTest extends TestCase
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
 
-        $this->_mockDB      = $mockdb;
-        $this->_mockConfig  = $mockconfig;
-        $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($this->_dbMock);
-
-        $this->_factory->setConfig($this->_mockConfig);
+        $this->_mockDB     = $mockdb;
+        $this->_mockConfig = $mockconfig;
 
         $this->_userInfoComplete       = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
@@ -332,6 +312,7 @@ class UserTest extends TestCase
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
     }
 
@@ -344,6 +325,7 @@ class UserTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+        $this->_factory->database()->closeConnection();
         $this->_factory->reset();
     }
 
@@ -359,7 +341,6 @@ class UserTest extends TestCase
      */
     public function testFactoryRetrievesUserInfo()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
@@ -642,6 +623,7 @@ class UserTest extends TestCase
         $newUserInfo           = $this->_userInfo;
         $newUserInfo['ID']     = 2;
         $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
         \User::insert($newUserInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('968776', $this->_otherUser->getUsername());
@@ -655,6 +637,14 @@ class UserTest extends TestCase
      */
     public function testUpdate()
     {
+        // Insert the user so that it can be updated.
+        $newUserInfo           = $this->_userInfo;
+        $newUserInfo['ID']     = 2;
+        $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
+        \User::insert($newUserInfo);
+
+        // Test the update.
         $this->_otherUser = \User::factory('968776');
         $newInfo          = ['ID' => '3'];
         $this->_otherUser->update($newInfo);
@@ -678,6 +668,9 @@ class UserTest extends TestCase
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $mockConfig = &$this->_mockConfig;
+
+        $this->_factory->setConfig($mockConfig);
+
         '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
         $mockConfig->expects($this->any())
             ->method('settingEnabled')
@@ -713,6 +706,9 @@ class UserTest extends TestCase
         $this->_mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
+
+        $mockConfig = &$this->_mockConfig;
+        $this->_factory->setConfig($mockConfig);
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
@@ -1132,7 +1128,7 @@ class UserTest extends TestCase
         $loris = new \LORIS\LorisInstance(
             $this->_dbMock,
             new \NDB_Config(),
-            [],
+            [__DIR__ . "/../../modules"],
         );
         $this->assertEquals(
             $this->_user->getPermissionsVerbose($loris),

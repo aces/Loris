@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -109,7 +110,7 @@ class CandidateListIndex extends Component {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('hide', hideFilter);
     history.replaceState(history.state, '', `?${searchParams.toString()}`);
-  };
+  }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -132,10 +133,10 @@ class CandidateListIndex extends Component {
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>comment</td>;
+        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
         default: return <td>None</td>;
       }
     }
@@ -200,7 +201,7 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'select',
+          type: 'multiselect',
           options: options.visitlabel,
         },
       },
@@ -209,7 +210,7 @@ class CandidateListIndex extends Component {
         show: true,
         filter: {
           name: 'site',
-          type: 'select',
+          type: 'multiselect',
           options: options.site,
         },
       },
@@ -218,7 +219,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'cohort',
-          type: 'select',
+          type: 'multiselect',
           options: options.cohort,
         },
       },
@@ -267,21 +268,25 @@ class CandidateListIndex extends Component {
         },
       },
       {
+        'label': 'Date of registration',
+        'show': true,
+        'filter': {
+          name: 'Date_registered',
+          type: 'date',
+        },
+      },
+      {
         label: 'Sex',
         show: true,
         filter: {
           name: 'sex',
           type: 'select',
           hide: this.state.hideFilter,
-          options: {
-            'Male': 'Male',
-            'Female': 'Female',
-            'Other': 'Other',
-          },
+          options: options.Sex,
         },
       },
       {
-        'label': 'VisitCount',
+        'label': 'Visit Count',
         'show': true,
         'filter': {
           name: 'visitCount',
@@ -298,10 +303,10 @@ class CandidateListIndex extends Component {
           hide: this.state.hideFilter,
           options: {
             '0': 'None',
-            '1': 'opened',
-            '2': 'answered',
-            '3': 'closed',
-            '4': 'comment',
+            '1': 'Opened',
+            '2': 'Answered',
+            '3': 'Closed',
+            '4': 'Comment',
           },
         },
       },
@@ -379,17 +384,20 @@ class CandidateListIndex extends Component {
 CandidateListIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  betaProfileLink: PropTypes.string,
+  baseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
       betaProfileLink={args['betaprofile']}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

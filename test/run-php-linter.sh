@@ -19,7 +19,7 @@ join_by() {
 }
 
 fix=false
-if has_param '-f' "$@"; then
+if has_param '--fix' "$@"; then
     echo "Fix mode set to true"
     fix=true
 fi

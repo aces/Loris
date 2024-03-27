@@ -104,14 +104,13 @@ class MediaTest extends LorisIntegrationTest
      */
     function testVisitAndEditLink()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and Router get along better'
-        );
         $this->safeGet($this->url . "/media/");
+
         // click the Visit Label link
-        $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
-            " > td:nth-child(4) > a').click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a'
+            )
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
@@ -119,10 +118,12 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringContainsString("TimePoint", $text);
 
         $this->safeGet($this->url . "/media/");
+
         // click the Edit link
-        $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
-            " > td:nth-child(12) > a').click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) button'
+            )
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
@@ -131,7 +132,7 @@ class MediaTest extends LorisIntegrationTest
 
     }
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
      * @param string  $element The input element loaction
      * @param string  $table   The first row location in the table

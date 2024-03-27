@@ -21,7 +21,7 @@ class DownloadPanel extends Component {
       downloads: this.props.downloads,
       physioFileID: this.props.physioFileID,
       annotationsAction: loris.BaseURL
-          + '/electrophysiology_browser/annotations',
+        + '/electrophysiology_browser/events',
       outputType: this.props.outputType,
     };
   }
@@ -54,33 +54,29 @@ class DownloadPanel extends Component {
                   maxWidth: '250px',
                   margin: '0 auto',
                 }
-              }>
-                {panel.links.map((download, j) => {
+                }>
+                {Object.entries(panel.links).map(([type, download], j) => {
                   const disabled = (download.file === '');
 
-                  // Hide the download in this particular case
-                  // It does not make sense to display Not Available for FDT files
-                  if (disabled && download.type === 'physiological_fdt_file') {
-                    return null;
-                  }
-
-                  return (
-                    <div
-                      key={j}
-                      className={'form-group'}
-                    >
+                  // Ignore physiological_coord_system_file
+                  return type !== 'physiological_coord_system_file'
+                    ? (
                       <div
-                        className='col-xs-6'
-                        style={{
-                          color: '#074785',
-                          fontWeight: 'bold',
-                          lineHeight: '30px',
-                          verticalAlign: 'middle',
-                          paddingLeft: 0,
-                        }}
-                      >{download.label}</div>
-                      {disabled
-                        ? <a
+                        key={j}
+                        className={'form-group'}
+                      >
+                        <div
+                          className='col-xs-6'
+                          style={{
+                            color: '#074785',
+                            fontWeight: 'bold',
+                            lineHeight: '30px',
+                            verticalAlign: 'middle',
+                            paddingLeft: 0,
+                          }}
+                        >{download.label}</div>
+                        {disabled
+                          ? <a
                             className='btn disabled col-xs-6'
                             style={{
                               color: '#b3b3b3',
@@ -89,26 +85,28 @@ class DownloadPanel extends Component {
                               margin: 0,
                             }}
                           >Not Available</a>
-                        : <a
+                          : <a
                             className='btn btn-primary download col-xs-6'
                             href={
-                              (download.type ==
-                              'physiological_annotation_files' ||
-                              download.type == 'all_files') ?
+                              (type ==
+                                'physiological_event_files' ||
+                                type == 'all_files') ?
                                 this.state.annotationsAction
                                 + '?physioFileID=' + this.state.physioFileID
                                 + '&filePath=' + download.file
                                 : '/mri/jiv/get_file.php?file=' + download.file
                             }
                             target='_blank'
-                            download={this.state.downloads[0].file}
                             style={{
                               margin: 0,
                             }}
-                          >Download</a>
-                      }
-                    </div>
-                  );
+                          >
+                            Download
+                          </a>
+                        }
+                      </div>
+                    )
+                    : null;
                 })}
               </div>
             );
@@ -118,7 +116,7 @@ class DownloadPanel extends Component {
                 <Panel
                   id={this.props.id + '-' + i}
                   title={panelName}
-                  initCollapsed={i === 0 ? false : true}
+                  initCollapsed={i !== 0}
                   key={i}
                   parentId={this.props.id + '-group'}
                 >
@@ -138,6 +136,9 @@ class DownloadPanel extends Component {
 
 DownloadPanel.propTypes = {
   downloads: PropTypes.array,
+  physioFileID: PropTypes.number,
+  outputType: PropTypes.string,
+  id: PropTypes.string,
 };
 
 DownloadPanel.defaultProps = {

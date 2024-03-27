@@ -12,31 +12,31 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../vendor/autoload.php";
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
 
 $xml_file = __DIR__ . "/../../project/config.xml";
 $iterator = new SimpleXmlIterator($xml_file, null, true);
 
-iterate($iterator, null);
+iterate($iterator, null, $lorisInstance->getDatabaseConnection());
 
 /**
  * Iterate over the config xml
  *
  * @param SimpleXmlIterator $iterator  xml iterator
  * @param string            $parentKey parent of the current value of the iterator
+ * @param Database          $DB        LORIS Database connection
  *
  * @return void
  */
-function iterate($iterator, $parentKey)
+function iterate($iterator, $parentKey, $DB)
 {
-    $db = Database::singleton();
+    global $lorisInstance;
+    $db = $lorisInstance->getDatabaseConnection();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
         $current = $iterator->current();
         $name    = $iterator->key();
         if ($iterator->hasChildren()) {
-            iterate($current, $name);
+            iterate($current, $name, $DB);
         } else { // Else it is a leaf
             // If a key by that name exists, get its ID
             $configID = $db->pselectone(
@@ -56,7 +56,7 @@ function iterate($iterator, $parentKey)
                 );
                 if ($parentKey==$dbParentKey) {
                     // Insert into the DB
-                    processLeaf($name, $current, $configID);
+                    processLeaf($name, $current, $configID, $DB);
                 }
             }
         }
@@ -66,15 +66,15 @@ function iterate($iterator, $parentKey)
 /**
  * Insert a value into the Config table
  *
- * @param string $name     name of the config field
- * @param string $value    value of the config field
- * @param int    $configID ID of the config field
+ * @param string   $name     name of the config field
+ * @param string   $value    value of the config field
+ * @param int      $configID ID of the config field
+ * @param Databsae $db       Loris database connection
  *
  * @return void
  */
-function processLeaf($name, $value, $configID)
+function processLeaf($name, $value, $configID, $db)
 {
-    $db            = Database::singleton();
     $allowMultiple = $db->pselectone(
         "SELECT AllowMultiple 
          FROM ConfigSettings 

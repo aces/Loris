@@ -36,6 +36,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function setUp(): void
     {
+        $this->skipSelenium = true;
         parent::setUp();
 
         $this->_version = 'v0.0.4-dev';
@@ -196,17 +197,6 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             'Accept'        => 'application/json'
         ];
         $this->headers = $headers;
-    }
-
-    /**
-     * Used to test login
-     *
-     * @return void
-     */
-    function testLoginSuccess()
-    {
-        $this->assertArrayHasKey('Authorization', $this->headers);
-        $this->assertArrayHasKey('Accept', $this->headers);
     }
 
     /**

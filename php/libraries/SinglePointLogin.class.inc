@@ -178,8 +178,9 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = isset($headers['Authorization'])
-                         ? $headers['Authorization']
+        $headers    = array_change_key_case($headers, CASE_LOWER);
+        $authHeader = isset($headers['authorization'])
+                         ? $headers['authorization']
                          : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
@@ -214,7 +215,6 @@ class SinglePointLogin
 
         $sharedKey = $config->getSetting("JWTKey");
 
-        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode(
                 $token,
@@ -252,6 +252,16 @@ class SinglePointLogin
     ): bool {
 
         $this->_lastError = '';
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $maxDaysInactive = $config->getSetting("UserMaximumDaysInactive");
+        if (!empty($maxDaysInactive) && is_numeric($maxDaysInactive)) {
+            $maxDaysInactive = intval($maxDaysInactive);
+        } else {
+            $maxDaysInactive = null;
+        }
 
          ///////////////////////////
          ///initialization/////
@@ -356,7 +366,8 @@ class SinglePointLogin
             }
 
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -401,7 +412,7 @@ class SinglePointLogin
                 && ($currentDay < strtotime($row['active_from']))
             ) {
                 $this->_lastError = "Your account is not active yet."
-                    ." According to our records it will be active from 
+                    ." According to our records it will be active from
             {$row['active_from']}"
                 . " Please contact your project administrator";
                 return false;
@@ -416,7 +427,8 @@ class SinglePointLogin
                 return false;
             }
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -600,7 +612,7 @@ class SinglePointLogin
 
         $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
-                  FROM user_login_history 
+                  FROM user_login_history
                   WHERE UserID = :username";
 
         $row = $DB->pselectRow($query, ['username' => $username]);
@@ -625,5 +637,20 @@ class SinglePointLogin
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set the User to be the currently logged
+     * in user for this session.
+     *
+     * @param \User $user The user to login.
+     *
+     * @return void
+     */
+    function setLoggedInUser(\User $user) : void
+    {
+        $this->_username = $user->getUsername();
+        $this->setState();
+        $_SESSION['State']->setProperty('login', $this);
     }
 }

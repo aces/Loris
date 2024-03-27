@@ -50,9 +50,9 @@ class Flags
     public function toArray(): array
     {
         $instrumentname = $this->_instrument->testName;
-        $instrumentdata = $this->_instrument->getInstanceData();
+        $commentid      = $this->_instrument->getCommentID() ?? '';
 
-        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
+        $isDDE = strpos($commentid, 'DDE_') === 0;
 
         $meta = [
             'Candidate'  => $this->_timepoint->getCandID(),

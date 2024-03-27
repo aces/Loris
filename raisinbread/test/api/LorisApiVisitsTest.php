@@ -15,6 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Simon Pelletier <simon.pelletier@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiVisitsTest extends LorisApiAuthenticatedTest
 {
@@ -65,7 +66,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Battery']),
+            gettype($candidatesVisitArray['Meta']['Cohort']),
             'string'
         );
         $this->assertSame(
@@ -89,7 +90,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Cohort', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Stages', $candidatesVisitArray);
         $this->assertArrayHasKey(
@@ -118,7 +119,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "High Yeast",
+            'Cohort' => "High Yeast",
             'Project' => "Rye",
         ];
         $response = $this->client->request(
@@ -171,7 +172,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => "115788",
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
@@ -195,7 +196,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Montreal",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(

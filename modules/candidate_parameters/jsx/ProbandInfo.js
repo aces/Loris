@@ -1,6 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  ButtonElement,
+  DateElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Proband Info Component.
@@ -16,11 +24,7 @@ class ProbandInfo extends Component {
     super(props);
 
     this.state = {
-      sexOptions: {
-        Male: 'Male',
-        Female: 'Female',
-        Other: 'Other',
-      },
+      sexOptions: {},
       Data: [],
       formData: {},
       updateResult: null,
@@ -66,6 +70,7 @@ class ProbandInfo extends Component {
           formData: formData,
           Data: data,
           isLoaded: true,
+          sexOptions: data.sexOptions,
         });
       },
       error: (error) => {

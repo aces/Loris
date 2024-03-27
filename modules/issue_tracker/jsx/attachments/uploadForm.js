@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  ButtonElement,
+  TextareaElement,
+  FileElement,
+} from 'jsx/Form';
 
 /**
  * Issue Upload Attachment Form

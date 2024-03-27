@@ -184,6 +184,7 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
+        $this->tpl_data['candidate'] = $this->candidate;
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
         $this->tpl_data['stage']     = \Utility::getStageUsingCandID(

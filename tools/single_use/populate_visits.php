@@ -34,12 +34,15 @@ class VisitsPopulator
      * Constructor function. Instantiates references to database and
      * config class.
      *
+     * @param \Database $DB The database to populate visits on
+     *
      * @return VisitsPopulator
      */
-    function __construct()
+    function __construct(\Database $DB)
     {
-        $this->DB     = \Database::singleton();
+        $this->DB     = $DB;
         $this->Config = \NDB_Config::singleton();
+
     }
 
     /**
@@ -161,7 +164,7 @@ class VisitsPopulator
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
 if (!class_exists('UnitTestCase')) {
-    $Runner = new VisitsPopulator();
+    $Runner = new VisitsPopulator($lorisInstance->getDatabaseConnection());
     $Runner->run();
 }
 

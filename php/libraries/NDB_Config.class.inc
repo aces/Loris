@@ -269,7 +269,6 @@ class NDB_Config
         switch ($name) {
         case 'database':
         case 'sandbox':
-        case 'showDatabaseQueries':
             return null;
         }
 

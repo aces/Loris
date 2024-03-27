@@ -45,8 +45,7 @@ class CandidateTest extends TestCase
     private $_candidate;
 
     /**
-     * NDB_Factory used in tests for methods that use
-     * Database::singleton()
+     * NDB_Factory used in tests for methods that use the database
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  NDB_Factory
@@ -54,8 +53,7 @@ class CandidateTest extends TestCase
     private $_factoryForDB;
 
     /**
-     * NDB_Config used in tests for methods that use
-     * Database::singleton()
+     * NDB_Config used in tests.
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  \NDB_Config
@@ -63,8 +61,7 @@ class CandidateTest extends TestCase
     private $_config;
 
     /**
-     * Database used in tests for methods that use
-     * Database::singleton()
+     * Database used in tests
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  \Database
@@ -89,7 +86,7 @@ class CandidateTest extends TestCase
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     * @phan-var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -133,7 +130,7 @@ class CandidateTest extends TestCase
         ];
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        $dbMock     = $this->getMockBuilder('\Database')->getMock();
 
         '@phan-var \NDB_Config $configMock';
         '@phan-var \Database $dbMock';
@@ -160,8 +157,7 @@ class CandidateTest extends TestCase
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
-
-        $this->_candidate = new Candidate();
+        $this->_candidate     = new Candidate();
     }
 
     /**
@@ -186,7 +182,7 @@ class CandidateTest extends TestCase
      */
     public function testSelectRetrievesCandidateInfo()
     {
-        //$this->_setUpTestDoublesForSelectCandidate();
+        $this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock
             ->method('pselect')
             ->willReturn(
@@ -561,11 +557,12 @@ class CandidateTest extends TestCase
      */
     public function testGetValidCohortsReturnsAListOfCohorts()
     {
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohorts = [
             ['CohortID' => 1],
             ['CohortID' => 2]
         ];
-        //$this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -625,6 +622,8 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
     {
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohort = [
             [
                 'CohortID' => 1,
@@ -668,6 +667,8 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsNull()
     {
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
         $cohort = [];
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -837,6 +838,8 @@ class CandidateTest extends TestCase
      */
     public function testGetSessionIDForExistingVisit()
     {
+        $this->_setUpTestDoublesForSelectCandidate();
+
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -1369,13 +1372,17 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
+
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
     }
 
     /**
      * Set up mock database and config information
-     * This is only necessary to test the functions that use Database::singleton()
+     * This is only necessary to test the functions that use
+     * the database.
      *
      * @return void
      */

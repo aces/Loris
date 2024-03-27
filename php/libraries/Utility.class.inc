@@ -126,6 +126,23 @@ class Utility
     }
 
     /**
+     * Returns list of sex options in the database
+     *
+     * @return array An associative array of sex values.
+     */
+    static function getSexList(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $query = "SELECT Name FROM sex";
+
+        $result = $DB->pselectCol($query, []);
+
+        return array_combine($result, $result);
+    }
+
+    /**
      * Returns a list of sites in the database
      *
      * @param boolean $study_site if true only return study sites from psc
@@ -1019,5 +1036,42 @@ class Utility
             }
         }
         return $formData;
+    }
+
+    /**
+     * Update the candidate_diagnosis_evolution_rel diagnosis confirmation status
+     *
+     * @param SessionID $sessionID  The sessionID that has been approved
+     * @param bool      $isApproved Specifies if session approval is set to pass
+     *
+     * @return void
+     */
+    static function updateDiagnosisConfirmationStatus(
+        SessionID $sessionID,
+        bool $isApproved
+    ) : void {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $status  = $isApproved ? 'Y' : 'N';
+
+        $dxToUpdate = $DB->pselect(
+            "SELECT cde.CandID, cde.DxEvolutionID
+            FROM candidate_diagnosis_evolution_rel cde 
+            JOIN diagnosis_evolution de USING (DxEvolutionID)
+            JOIN session s ON (cde.CandID=s.CandID AND s.Visit_label=de.visitLabel)
+            WHERE s.ID=:sid",
+            ['sid' => $sessionID]
+        );
+
+        foreach ($dxToUpdate as $row) {
+            $DB->update(
+                'candidate_diagnosis_evolution_rel',
+                ['Confirmed' => $status],
+                [
+                    'CandID'        => $row['CandID'],
+                    'DxEvolutionID' => $row['DxEvolutionID']
+                ]
+            );
+        }
     }
 }

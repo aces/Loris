@@ -20,19 +20,21 @@ class VisitImporter extends DataImporter
      * @param SplFileInfo  $dataFile     A path to the CSV data file.
      * @param ?SplFileInfo $excludedFile a file containing candidates to be
      *                                   excluded from import.
+     * @param Database     $DB           A database connection to LORIS
      *
      * @return void
      */
     public function __construct(
         SplFileInfo $mappingFile,
         SplFileInfo $dataFile,
-        ?SplFileInfo $excludedFile = null
+        ?SplFileInfo $excludedFile = null,
+        Database $DB
     ) {
         $this->table = 'session';
 
         // Get existing sessions so that there is a way to distinguish between
         // when to build UPDATE vs. INSERT statements.
-        $result = \Database::singleton()->pselect(
+        $result = $DB->pselect(
             'SELECT CandID,Visit_label FROM session',
             []
         );

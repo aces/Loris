@@ -45,6 +45,7 @@ export const channelsReducer = (
           state
         );
       }
+      break;
     }
     case SET_CHANNELS: {
       return action.payload;

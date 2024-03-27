@@ -19,6 +19,7 @@ type CProps = {
   mouseY: number,
   setHidden: (_: number[]) => void,
   physioFileID: number,
+  chunksURL: string,
 };
 
 /**
@@ -31,6 +32,7 @@ const EEGMontage = (
   {
     electrodes,
     physioFileID,
+    chunksURL,
   }: CProps) => {
   if (electrodes.length === 0) return null;
 
@@ -135,23 +137,21 @@ const EEGMontage = (
     );
   };
 
+  let ALSOrientation = false;
+  let headRatio = 1;
+  let montageRadius = 100;
+
+  // === This value may need to be adjusted
+  //     if not automatically computed (see below)
+  let headRadius = 1;
+  // ===
+
   // Find the enclosing rectangle
   const bb = boundingBox(
     electrodes.map(
       (electrode) => electrode.position.slice(0, 2)
     )
   );
-
-  let ALSOrientation = false;
-  let headRadius = 1;
-  let headRatio = 1;
-  let montageRadius = 100;
-
-  // === Those values may need to be adjusted
-  //     depending on the coord space/net used
-  const scale3D = 10;
-  const scale2D = 5;
-  // ===
 
   if (bb.length > 0) {
     // Determine if the points are in an ALS or RAS coordinate system
@@ -163,13 +163,10 @@ const EEGMontage = (
     // with the radius of the enclosing sphere
     headRadius = Math.max(bbw, bbh)/2;
     headRatio = Math.max(bbw, bbh) / Math.min(bbw, bbh);
-    montageRadius = stereographicProjection(
-      headRadius,
-      0,
-      0,
-      headRadius
-    )[0] * scale2D;
   }
+
+  const scale3D = montageRadius / headRadius;
+  const scale2D = montageRadius / stereographicProjection(headRadius, 0, 0, headRadius)[0];
 
   electrodes.map((electrode) => {
     let electrodeCoords = electrode.position.slice();
@@ -303,16 +300,18 @@ const EEGMontage = (
           <div style={{height: '100%', position: 'relative'}}>
             {view3D ?
               <ResponsiveViewer
-                // @ts-ignore
                 mouseMove={dragged}
                 mouseDown={dragStart}
                 mouseUp={dragEnd}
                 mouseLeave={dragEnd}
+                chunksURL={chunksURL}
               >
                 <Montage3D />
               </ResponsiveViewer>
             :
-              <ResponsiveViewer>
+              <ResponsiveViewer
+                chunksURL={chunksURL}
+              >
                 <Montage2D />
               </ResponsiveViewer>
             }
@@ -345,6 +344,7 @@ const EEGMontage = (
 EEGMontage.defaultProps = {
   montage: [],
   hidden: [],
+  chunksURL: '',
 };
 
 export default connect(
@@ -352,6 +352,7 @@ export default connect(
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
     physioFileID: state.dataset.physioFileID,
+    chunksURL: state.dataset.chunksURL,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

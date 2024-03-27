@@ -74,12 +74,13 @@ window.addEventListener('load', () => {
     }
 
     function displayCards(cards) {
-        ReactDOM.render(
+        ReactDOM.createRoot(
+            document.getElementById('candidatedashboard')
+        ).render(
             React.createElement(
                 lorisjs.CSSGrid.default,
                 { Cards: cards }
-            ),
-            document.getElementById('candidatedashboard')
+            )
         );
     }
 

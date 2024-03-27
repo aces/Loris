@@ -33,7 +33,7 @@ When creating or editing a user: (subtest: edit_user)
 11. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
     Save. Check that an email is sent to the user with the new password. 
     Check that after logging in, the user is immediately asked to update his/her password.
-12. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
+12. Check that if creating a new user and selecting "Send email to user" an email is sent to him/her (requires email server). Also check that when a new
     user is logging in for the first time he/she is asked to change his/her password.
     1. Check that when creating a new user, leading and trailing spaces in the username are stripped.
     2. Check that you can create a new user with name 00 (double zero).
@@ -61,7 +61,7 @@ When creating or editing a user: (subtest: edit_user)
     without saving any changes to the user profile.
 28. Check that if config setting 'Enable "Pwned Password" check' is set to 'Yes', then validation to make sure that the password
     entered (both for add user and edit user pages) has not been pwned is done. Also check that disabling this setting disables the 
-    validation. Example of a pwned password: AKAX89Wn
+    validation. Example of a pwned password: ji32k7au4a83
 29. Check that a 'Reject user' button will be available on the edit user page if the editee is a user whose account is awaiting approval and the editee
     has not yet logged in.
 30. Edit a user that fits the conditions listed above and reject it. Make sure that the user has been removed from the database and does not show up in

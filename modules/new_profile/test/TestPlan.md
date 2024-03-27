@@ -6,7 +6,9 @@
    [Manual Testing]
 3. Ensure that you get an error if dates don't match (both DoB and EDC).
    [Automation Testing]
-4. Ensure that you get an error if any field is missing.
+4. Ensure that you get an error if any field is missing and you have config setting
+useEDC turned off. If you have useEDC turned on, ensure all fields are required,
+except the DoB, which is optional in that case.
    [Manual Testing]
 5. Ensure that when the logged-in user has only 1 site affiliation, the site
 dropdown shows only one site and it is already selected.

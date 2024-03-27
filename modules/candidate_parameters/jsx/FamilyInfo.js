@@ -171,7 +171,7 @@ class FamilyInfo extends Component {
         // remove from list of candidates because it can only be added once
         delete candidateList[candID];
       }
-    };
+    }
 
     let alertMessage = '';
     let alertClass = 'alert text-center hide';

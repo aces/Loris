@@ -280,6 +280,12 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] < 0) {
             $errors[] = 'Maximum age must be greater than 0.';
         }
+        if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] > 99999) {
+             $errors[] = 'Maximum age must be less than 99999.';
+        }
+        if (isset($test->row['ageMinDays']) && $test ->row['ageMinDays'] > 99999) {
+             $errors[] = 'Minimum age must be less than 99999';
+        }
         if ($test->row['ageMaxDays'] < $test->row['ageMinDays']) {
             $errors[] = 'Maximum age must be greater than minimum age.';
         }

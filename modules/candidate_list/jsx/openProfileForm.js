@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {TextboxElement, ButtonElement, FormElement} from 'jsx/Form';
 
 /**
  * Open Profile Form
@@ -154,5 +156,8 @@ class OpenProfileForm extends Component {
     );
   }
 }
+OpenProfileForm.propTypes = {
+  betaProfileLink: PropTypes.string,
+};
 
 export default OpenProfileForm;

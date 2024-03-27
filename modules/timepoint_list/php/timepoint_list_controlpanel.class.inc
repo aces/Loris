@@ -80,7 +80,7 @@ Class TimePoint_List_ControlPanel extends \Candidate
         $settings = $factory->settings();
         $this->tpl_data['baseurl'] = $settings->getBaseURL();
 
-        $smarty = new \Smarty_neurodb('timepoint_list');
+        $smarty = new \Smarty_NeuroDB('timepoint_list');
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("timepoint_list_controlpanel.tpl");
         return $html;

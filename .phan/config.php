@@ -30,13 +30,15 @@ return [
     "unused_variable_detection" => true,
     "suppress_issue_types" => [
         "PhanUnusedPublicNoOverrideMethodParameter",
+        // Until phan/phan#4746 is fixed
+        "PhanTypeMismatchArgumentInternal"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
         "php",
         "htdocs",
         "modules",
-        "src",
+	"src",
         "vendor",
         "test"
     ],

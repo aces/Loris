@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -150,7 +151,7 @@ class UserAccountsIndex extends Component {
     const fields = [
       {label: 'Site', show: true, filter: {
         name: 'site',
-        type: 'select',
+        type: 'multiselect',
         options: options.sites,
       }},
       {label: 'Project', show: true, filter: {
@@ -209,11 +210,12 @@ UserAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <UserAccountsIndex
       dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

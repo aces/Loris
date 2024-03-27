@@ -7,10 +7,12 @@
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 
 namespace LORIS\genomic_browser\Models;
+
+use \LORIS\Data\DataInstance;
 
 /**
  * A GwasDTO represents an GWAS in the genomic browser module.
@@ -25,9 +27,9 @@ namespace LORIS\genomic_browser\Models;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
-class GwasDTO implements \LORIS\Data\DataInstance
+class GwasDTO implements DataInstance
 {
     /**
      * The SNP_ID

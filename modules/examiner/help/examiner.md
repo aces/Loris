@@ -6,4 +6,4 @@ To add a new examiner, enter their name, select their site, and specify whether 
 
 To search for an existing examiner, use the *Selection Filter* section to narrow the results displayed in the table below.
 
-Click on any examiner’s name to add, view, or modify their certification status. Any changes will be tracked in the Change Log below. 
+If the use of certification is enabled, click on any examiner’s name to add, view, or modify their certification status. Any changes will be tracked in the Change Log below. 

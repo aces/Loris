@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
@@ -131,6 +131,7 @@ trait LorisFormDictionaryImpl
                 $t = new \LORIS\Data\Types\StringType(255);
                 break;
             case 'header':
+            case 'hidden':
                 continue 2;
             default:
                 throw new \LorisException(
@@ -142,7 +143,8 @@ trait LorisFormDictionaryImpl
                 $label,
                 $scope,
                 $t,
-                $card
+                $card,
+                $element['name'],
             );
         }
         return $items;

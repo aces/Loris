@@ -1,6 +1,11 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Publication upload form component
@@ -284,5 +289,10 @@ class PublicationUploadForm extends React.Component {
     );
   }
 }
+PublicationUploadForm.propTypes = {
+  DataURL: PropTypes.string,
+  action: PropTypes.string,
+  editMode: PropTypes.bool,
+};
 
 export default PublicationUploadForm;

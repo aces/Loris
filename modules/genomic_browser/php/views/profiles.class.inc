@@ -41,6 +41,7 @@ class Profiles
         $this->_formElement = [
             'Sites'   => $sites,
             'Cohorts' => $cohorts,
+            'Sex'     => \Utility::getSexList(),
         ];
     }
 

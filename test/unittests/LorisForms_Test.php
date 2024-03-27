@@ -1336,7 +1336,7 @@ class LorisForms_Test extends TestCase
         $this->form->addCheckbox("abc", "Hello", []);
         $this->assertEquals(
             "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
-            "type=\"checkbox\"   /> </span>Hello",
+            "type=\"checkbox\"    /> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }
@@ -1358,7 +1358,7 @@ class LorisForms_Test extends TestCase
         $this->assertEquals(
             "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
             "type=\"checkbox\" checked=\"checked\"" .
-            " value=\"value1\" disabled/> </span>Hello",
+            " value=\"value1\" disabled /> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }

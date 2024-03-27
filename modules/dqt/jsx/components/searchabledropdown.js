@@ -156,6 +156,7 @@ SearchableDropdown.propTypes = {
   errorMessage: PropTypes.string,
   placeHolder: PropTypes.string,
   onUserInput: PropTypes.func,
+  sortByValue: PropTypes.bool,
 };
 SearchableDropdown.defaultProps = {
   name: '',

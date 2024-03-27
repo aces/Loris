@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -328,17 +329,18 @@ class DataDictIndex extends Component {
     );
   }
 }
-
 DataDictIndex.propTypes = {
-    dataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-      <DataDictIndex
-        dataURL={`${loris.BaseURL}/dictionary/?format=json`}
-        BaseURL={loris.BaseURL}
-      />,
-      document.getElementById('lorisworkspace')
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
+    <DataDictIndex
+      dataURL={`${loris.BaseURL}/dictionary/?format=json`}
+      BaseURL={loris.BaseURL}
+    />
   );
 });

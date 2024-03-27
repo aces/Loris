@@ -86,7 +86,10 @@ class DirectDataEntryMainPage
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
             $config,
-            []
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
         );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
@@ -103,10 +106,16 @@ class DirectDataEntryMainPage
             throw new Exception("Data has already been submitted.", 403);
         }
 
-        $instrumentObj  = \NDB_BVL_Instrument::factory(
+        $instrumentObj = \NDB_BVL_Instrument::factory(
             $this->loris,
             $this->TestName,
         );
+
+        $user = \User::singleton();
+        if ($instrumentObj->_hasAccess($user) !== true) {
+            throw new \Exception("Permission denied", 403);
+        }
+
         $subtests       = $instrumentObj->getSubtestList();
         $this->NumPages = count($subtests) + 1;
 
@@ -235,7 +244,7 @@ class DirectDataEntryMainPage
 
         $this->tpl_data['workspace'] = $e->getMessage();
         $this->tpl_data['complete']  = false;
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
 
@@ -371,7 +380,7 @@ class DirectDataEntryMainPage
             $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
         }
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
     }

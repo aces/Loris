@@ -31,7 +31,6 @@
  */
 
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
 
 $table_array = [
     'MRICandidateErrors'  => [
@@ -84,7 +83,7 @@ $table_array = [
     ]
 ];
 
-iterate($table_array);
+iterate($table_array, $lorisInstance->getDatabaseConnection());
 
 /**
  * iterate through the array of tables to look for orphan entries
@@ -93,7 +92,7 @@ iterate($table_array);
  *
  * @return nothing
  */
-function iterate($table_array)
+function iterate($table_array, $db)
 {
     foreach ($table_array as &$table_fields) {
         $table1 = $table_fields['table1'];
@@ -104,7 +103,7 @@ function iterate($table_array)
         $select_all = createSelect($table1, $table2, $FK1, $FK2, '*');
         $select_IDs = createSelect($table1, $table2, $FK1, $FK2, $FK1);
 
-        main($select_all, $table1, $FK1, $select_IDs);
+        main($select_all, $table1, $FK1, $select_IDs, $db);
     }
 }
 
@@ -142,10 +141,10 @@ function createSelect($table1, $table2, $FK1, $FK2, $select_fields)
  *
  * @return nothing
  */
-function main($select_all_query, $table_name, $FK_field, $select_ID_query)
+function main($select_all_query, $table_name, $FK_field, $select_ID_query, $db)
 {
     // get the list of orphans to be displayed in the terminal
-    $orphan_list = selectOrphan($select_all_query);
+    $orphan_list = selectOrphan($select_all_query, $db);
 
     // if no entries found, return to continue to the next table
     if (empty($orphan_list) ) {
@@ -173,7 +172,7 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
 
     // if user wants to delete orphan entries, back it back in a text file
     if (preg_match("/^y$/i", $delete_answer)) {
-        backupEntries($select_ID_query, $table_name, $FK_field);
+        backupEntries($select_ID_query, $table_name, $FK_field, $db);
     }
 
     // clean up the table $table_name based on answer provided by the user
@@ -181,9 +180,9 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         $table_name,
         $FK_field,
         $select_ID_query,
-        $delete_answer
+        $delete_answer,
+        $db,
     );
-
 }
 
 /**
@@ -193,10 +192,8 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
  *
  * @return array result of the select query
  */
-function selectOrphan($query)
+function selectOrphan($query, $db)
 {
-    $db = Database::singleton();
-
     $result = $db->pselect($query, []);
 
     return $result;
@@ -253,12 +250,12 @@ function askToDelete($table_name, $FK_field)
  *
  * @return nothing
  */
-function backupEntries($selectID, $table_name, $FK_field)
+function backupEntries($selectID, $table_name, $FK_field, $db)
 {
     // grep the IDs to backup from the database based on query stored in
     // $selectID. This will be given as an argument to mysqldump using
     // --where option
-    $IDs   = generateIdList($selectID, $FK_field);
+    $IDs   = generateIdList($selectID, $FK_field, $db);
     $where = $FK_field . " IN (" . $IDs . ")";
 
     // create directory where the back up will go if it does not exist yet
@@ -313,7 +310,7 @@ function backupEntries($selectID, $table_name, $FK_field)
  *
  * @return nothing
  */
-function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
+function cleanTable($table_name, $FK_field, $selectID, $delete_answer, $db)
 {
     // grep the IDs to delete from the database based on query stored in
     // $selectID
@@ -333,7 +330,6 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
                   WHERE $FK_field IN ($IDs)";
     }
 
-    $db = Database::singleton(); // database connection
     $db->run($query); // run query
 }
 
@@ -345,11 +341,8 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
  *
  * @return string $IDs string of concatenated IDs found
  */
-function generateIdList($selectIDs, $FK_field)
+function generateIdList($selectIDs, $FK_field, $db)
 {
-    //database connection
-    $db = Database::singleton();
-
     // grep the IDs to delete from the database based on selectIDs
     // stored in $selectID
     $result = $db->pselect($selectIDs, []);

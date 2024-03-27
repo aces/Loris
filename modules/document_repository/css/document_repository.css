@@ -5,3 +5,9 @@
 .tool:hover + .tip {
    visibility: visible;
 }
+
+.upload-response {
+  max-height: 400px;
+  overflow-y: scroll;
+  text-align: left;
+}

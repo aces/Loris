@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Markdown from 'jsx/Markdown';
 
 /**
  * React component used to display a button and a collapsible list
@@ -49,7 +51,7 @@ class CommentList extends Component {
       const item = changes[key];
       const textItems = Object.keys(item.data).map(function(index, j) {
         if (index == 'comment') {
-            comment = <div style={{marginTop: '1em'}}>
+            comment = <div className='history-comment'>
               <Markdown content={item.data[index]} />
             </div>;
             return;
@@ -104,5 +106,8 @@ class CommentList extends Component {
     );
   }
 }
+CommentList.propTypes = {
+  commentHistory: PropTypes.array,
+};
 
 export default CommentList;

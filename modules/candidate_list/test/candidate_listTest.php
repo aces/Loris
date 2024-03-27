@@ -33,7 +33,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
     static $cohort         = 'select[name="cohort"]';
-    static $advancedFilter = "div:nth-child(2) > .btn:nth-child(1)";
+    static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
@@ -278,7 +278,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$feedback,
             self::$display,
             self::$clearFilter,
-            "closed",
+            "Closed",
             '11 rows'
         );
         $this->_filterTest(

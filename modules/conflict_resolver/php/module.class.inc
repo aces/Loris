@@ -60,10 +60,10 @@ class Module extends \Module
         $path = trim($request->getURI()->getPath(), "/");
         switch ($path) {
         case 'unresolved':
-            $handler = new Endpoints\Unresolved();
+            $handler = new Endpoints\Unresolved($this->loris);
             break;
         case 'resolved':
-            $handler = new Endpoints\Resolved();
+            $handler = new Endpoints\Resolved($this->loris);
             break;
         default:
             return parent::handle($request);

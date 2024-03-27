@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {TabPane, Tabs} from 'jsx/Tabs';
@@ -65,10 +66,11 @@ GenomicBrowser.propTypes = {
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <GenomicBrowser
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

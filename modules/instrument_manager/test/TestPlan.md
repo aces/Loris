@@ -20,3 +20,6 @@ Then alter the linst file so that it doesn't exactly match the instrument table 
 Check that function CheckTable performs the appropriate checks (catches these discrepancies) on the instrument builder files and validates them properly - 
 eg "Table Valid" column is valid when instrument fields match up and "Pages Valid" is valid when subpages are valid.
    [Manual Testing]
+9. With a user who has the `instrument_manager_write` permission, click the button in the `Permission Required` column. A modal should popup where you can edit the permissions.
+   - Check that modifying the permissions saves the new permissions.
+   - Check that a user can access that instruments if and only if they has that permission.

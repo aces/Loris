@@ -27,18 +27,6 @@ use \Psr\Http\Message\ResponseInterface;
 class API_Docs extends \NDB_Page
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool whether the user has access
-     */
-    public function hasAccess(\User $user): bool
-    {
-        return $user->hasPermission('api_docs');
-    }
-
-    /**
      * This handler populates tmp_data before calling display on itself.
      *
      * The `schema_urls` template variable is meant to provide a value to the

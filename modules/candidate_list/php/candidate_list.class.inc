@@ -69,9 +69,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
-        // Relying on a side-effect of the the server process module to autoload
-        // its namespace.
-        \Module::factory($this->loris, 'candidate_parameters');
+        $this->loris->getModule('candidate_parameters')->registerAutoloader();
 
         // create user object
         $factory = \NDB_Factory::singleton();
@@ -121,6 +119,7 @@ class Candidate_List extends \DataFrameworkMenu
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
+            'Sex'               => \Utility::getSexList(),
         ];
     }
 

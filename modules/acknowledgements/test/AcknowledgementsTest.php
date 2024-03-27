@@ -180,7 +180,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/acknowledgements/");
         $this->safeFindElement(
-            WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
+            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
         )->click();
         //insert ordering
         $this->safeFindElement(

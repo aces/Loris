@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -8,7 +9,6 @@ import Modal from 'Modal';
 import UploadFileForm from './uploadFileForm';
 import AddPermissionForm from './addPermissionForm';
 import ManagePermissionsForm from './managePermissionsForm';
-
 
 /**
  * Data Release
@@ -118,9 +118,6 @@ class DataReleaseIndex extends Component {
             </td>
           );
         }
-        break;
-      case 'Version':
-        result = <td>{cell || 'Unversioned'}</td>;
         break;
     }
     return result;
@@ -273,12 +270,13 @@ DataReleaseIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DataReleaseIndex
       dataURL={`${loris.BaseURL}/data_release/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 

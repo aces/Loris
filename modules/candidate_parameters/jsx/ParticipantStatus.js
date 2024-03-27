@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  TextareaElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Participant status component
@@ -124,7 +131,7 @@ class ParticipantStatus extends Component {
           </div>
         );
       }
-    };
+    }
 
     let disabled = true;
     let updateButton = null;
@@ -145,6 +152,16 @@ class ParticipantStatus extends Component {
         if (participantStatus && required.indexOf(participantStatus) > -1) {
             subOptions = this.state.Data.parentIDs[participantStatus];
             suboptionsRequired = true;
+        }
+
+        let commentsRequired = false;
+        let statusOpts = this.state.Data.statusOptions;
+        if (
+          statusOpts &&
+          statusOpts[participantStatus] !== 'Active' &&
+          statusOpts[participantStatus] !== 'Complete'
+        ) {
+          commentsRequired = true;
         }
 
         let formattedHistory = [];
@@ -246,7 +263,7 @@ class ParticipantStatus extends Component {
             onUserInput={this.setFormData}
             ref="reasonSpecify"
             disabled={disabled}
-            required={false}
+            required={commentsRequired}
             />
             {updateButton}
             {formattedHistory}

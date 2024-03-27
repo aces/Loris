@@ -2,10 +2,15 @@
 <phpunit
         bootstrap="bootstrap.php"
         verbose="true"
+        testdox="true"
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
+        </testsuite>
+
+        <testsuite name='LorisAPITests'>
+            <directory>../raisinbread/test/api/</directory>
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
@@ -13,7 +18,6 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../raisinbread/test/api/</directory>
             <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -31,6 +35,7 @@
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
             <directory>../modules/electrophysiology_browser/test/</directory>
+            <directory>../modules/electrophysiology_uploader/test/</directory>	    
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
@@ -47,7 +52,8 @@
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/my_preferences/test/</directory>
             <directory>../modules/new_profile/test/</directory>
-            <directory>../modules/next_stage/test/</directory>
+	    <directory>../modules/next_stage/test/</directory>
+	    <directory>../modules/publication/test/</directory>
             <directory>../modules/server_processes_manager/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>

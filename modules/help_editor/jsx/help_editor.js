@@ -1,6 +1,8 @@
 import FilterableDataTable from 'FilterableDataTable';
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * Help Editor Archive Page.
@@ -38,7 +40,7 @@ class HelpEditor extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true})); ;
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -128,11 +130,12 @@ HelpEditor.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <HelpEditor
       Module="help_editor"
       dataURL={loris.BaseURL + '/help_editor/?format=json'}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

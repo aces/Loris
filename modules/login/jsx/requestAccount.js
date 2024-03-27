@@ -2,6 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    StaticElement,
+    SelectElement,
+    TextboxElement,
+    EmailElement,
+    CheckboxElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Request account form.
@@ -153,7 +162,7 @@ class RequestAccount extends Component {
           name={'requestAccount'}
           action={''}
           id={'form'}
-          fileUpload={'false'}
+          fileUpload={false}
           onSubmit={this.handleSubmit}
         >
           <StaticElement
@@ -261,6 +270,10 @@ RequestAccount.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
   data: PropTypes.object,
+
+  defaultFirstName: PropTypes.string,
+  defaultLastName: PropTypes.string,
+  defaultEmail: PropTypes.string,
 };
 
 export default RequestAccount;

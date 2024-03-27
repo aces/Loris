@@ -1,5 +1,5 @@
 #sidebar-content {
-    padding-left: 25px;
+    padding-left: 20px;
 }
 
 .wrapper {
@@ -9,13 +9,12 @@
 
 #sidebar-wrapper {
     margin-left: -200px;
-    margin-top: 50px;
     left: 200px;
     width: 200px;
     top: 0;
     background: #E4EBF2;
     border: 1px solid #C3D5DB;
-    position: fixed;
+    position: absolute;
     height: 100%;
     overflow-y: auto;
     z-index: 999;
@@ -128,7 +127,7 @@
     }
 
     .wrapper.active #sidebar-wrapper {
-        left: 200px;
+        left: -15px;
         width: 200px;
         transition: all 0.4s ease 0s;
     }

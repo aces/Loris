@@ -42,13 +42,16 @@ interface QueryEngine
      * Retrieve the data for a given list of DictionaryItems from this
      * engine's data dictionary and a given list of CandIDs.
      *
+     * The returned value is a type where the key is the CandID (as
+     * a string) and the value is a DataInstance.
+     *
      * If visits is declared, only include data for those visits labels.
      *
      * @param DictionaryItem[] $items Data points to retrieve
      * @param CandID[] $candidates    Candidates to retrieve data for
      * @param ?string[] $visits       Visit labels to restrict data to
      *
-     * @return DataInstance[]
+     * @return iterable<string, DataInstance>
      */
     public function getCandidateData(array $items, iterable $candidates, ?array $visitlist) : iterable;
 

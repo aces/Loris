@@ -38,6 +38,11 @@ if ($openedthreadcount === 0) {
     exit;
 }
 
-header("HTTP/1.1 204 No Content");
+
+header("Content-Type: application/json");
+print json_encode(
+    ['status' => 'success']
+);
+
 exit;
 

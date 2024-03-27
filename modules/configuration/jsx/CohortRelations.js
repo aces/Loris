@@ -1,5 +1,6 @@
 /* exported RCohortRelations */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Cohort Relations React Component
@@ -40,6 +41,10 @@ class CohortRelations extends Component {
         );
   }
 }
+
+CohortRelations.propTypes = {
+  Relations: PropTypes.array,
+};
 
 let RCohortRelations = React.createFactory(CohortRelations);
 

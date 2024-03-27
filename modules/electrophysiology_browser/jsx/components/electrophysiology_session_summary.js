@@ -77,6 +77,7 @@ class SummaryPanel extends Component {
 
 SummaryPanel.propTypes = {
   data: PropTypes.array,
+  id: PropTypes.string,
 };
 
 SummaryPanel.defaultProps = {

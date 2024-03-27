@@ -12,7 +12,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
-
+import {
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    SelectElement,
+    DateElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 /**
  * Media Edit Form component
  */
@@ -183,7 +191,10 @@ class MediaEditForm extends Component {
             ref='hideFile'
             value={this.state.formData.hideFile}
           />
-          <ButtonElement label='Update File'/>
+          <ButtonElement
+            label='Update File'
+            onUserInput = {() => {}}
+          />
         </FormElement>
       </div>
     );
@@ -251,6 +262,7 @@ class MediaEditForm extends Component {
 MediaEditForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  fetchData: PropTypes.func,
 };
 
 export default MediaEditForm;

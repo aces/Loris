@@ -13,7 +13,6 @@ import PropTypes from 'prop-types';
 const divStyle = {
   marginLeft: '20px',
   fontSize: '110%',
-  fontFamily: 'verdana, sans-serif',
   color: '#034785',
   cursor: 'pointer',
 };

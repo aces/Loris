@@ -56,6 +56,11 @@ table.fancytable th {
     text-align: center;
 }
 
+table.fancytable td {
+    vertical-align: top;
+    text-align: center;
+}
+
 table.fancytable th:hover, table.listColorCoded th:hover {
     /*background: #efefef; */
     background: #1c70b6;
@@ -77,10 +82,11 @@ table.fancytable th:hover, table.listColorCoded th:hover {
     background-color: #FFFFCC !important;
 }
 
-.sex_male{
+.sex_male {
     background-color: #CCFFFF !important;
 }
-.sex_female{
+
+.sex_female {
     background-color: #FFCCE5 !important;
 }
 

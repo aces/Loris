@@ -56,12 +56,12 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 // path to config file
 $configFile = dirname(__FILE__) . "/../project/config.xml";
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/generic_includes.php";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$db = \Database::singleton();
+$db = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
@@ -210,7 +210,7 @@ case 'add_instrument':
     // add a missing instrument (sessionID and test name are checked inside the
     // function)
     try {
-        $success = addInstrument($sessionID, $testName);
+        $success = addInstrument($sessionID, $testName, $lorisInstance);
     } catch (LorisException $e) {
         fwrite(
             STDERR,
@@ -232,9 +232,21 @@ case 'fix_date':
     // empty
     try {
         if (!empty($sessionID)) {
-            $success = fixDate($candID, $dateType, $newDate, $sessionID);
+            $success = fixDate(
+                $candID,
+                $dateType,
+                $newDate,
+                $sessionID,
+                $lorisInstance->getDatabaseConnection()
+            );
         } else {
-            $success = fixDate($candID, $dateType, $newDate);
+            $success = fixDate(
+                $candID,
+                $dateType,
+                $newDate,
+                null,
+                $lorisInstance->getDatabaseConnection()
+            );
         }
     } catch (LorisException $e) {
         fwrite(
@@ -364,14 +376,15 @@ function printUsage()
  * the function checks the args, add the instrument (if valid), creates a bvl
  * feedback, writes a log and displays the message
  *
- * @param int    $sessionID of the timepoint
- * @param string $testName  of the instrument to add to the battery
+ * @param int                  $sessionID of the timepoint
+ * @param string               $testName  of the instrument to add to the battery
+ * @param \LORIS\LorisInstance $loris     The LorisInstance object
  *
  * @return void
  *
  * @throws LorisException
  */
-function addInstrument($sessionID, $testName)
+function addInstrument($sessionID, $testName, $loris)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
@@ -387,7 +400,7 @@ function addInstrument($sessionID, $testName)
         throw new LorisException("SessionID and Test name must be provided");
     }
 
-    $db =& Database::singleton();
+    $db = $loris->getDatabaseConnection();
 
     // create timepoint object
     $timePoint =& TimePoint::singleton(new \SessionID(strval($sessionID)));
@@ -467,16 +480,17 @@ function addInstrument($sessionID, $testName)
  * the function checks the args, updates the date, write the log (print) and
  * prints msg on the screen
  *
- * @param int    $candID    The candID
- * @param string $dateType  of the date to change
- * @param string $newDate   in format YYYY-MM-DD
- * @param ?int   $sessionID the sessionID
+ * @param int      $candID    The candID
+ * @param string   $dateType  of the date to change
+ * @param string   $newDate   in format YYYY-MM-DD
+ * @param ?int     $sessionID the sessionID
+ * @param Database $db        The database connection
  *
  * @return void
  *
  * @throws LorisException
  */
-function fixDate($candID, $dateType, $newDate, $sessionID = null)
+function fixDate($candID, $dateType, $newDate, $sessionID, $db)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
@@ -486,8 +500,6 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
             . " does not exist. Please create it and then retry the script.\n"
         );
     }
-
-    $db =& Database::singleton();
 
     // check the args
     if (empty($dateType)
@@ -527,10 +539,17 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
         // feedback object
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
 
+        //get thread feedback type
+        $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
+        if (empty($threadFeedbackType)) {
+            //create thread feedback type "Other", if it does not exist
+            $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
+        }
+
         // add the new thread
         $success = $feedback->createThread(
             'profile',
-            '5',
+            $threadFeedbackType,
             "The date of $dateType has been changed to $newDate.",
             'N'
         );
@@ -589,10 +608,17 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
             $sID
         );
 
+        //get thread feedback type
+        $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
+        if (empty($threadFeedbackType)) {
+            //create thread feedback type "Other", if it does not exist
+            $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
+        }
+
         // add the new thread
         $success = $feedback->createThread(
             'visit',
-            '5',
+            $threadFeedbackType,
             "The date of $dateType has been changed to $newDate.",
             'N'
         );
@@ -665,13 +691,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     $cohortID = $timePoint->getCohortID();
 
     // define the date of birth to use (dob or edc)
-    if (($dateType=='dob' && $cohortID==1)
-        || ($dateType=='edc' && $cohortID==2)
-    ) {
-        $dateBirth = $newDate;
-    } else {
-        $dateBirth = $timePoint->getEffectiveDateOfBirth();
-    }
+    $dateBirth = $timePoint->getEffectiveDateOfBirth();
 
     // check if the timepoint is started before attempting to make changes to it
     if ($timePoint->getCurrentStage() == 'Not Started'

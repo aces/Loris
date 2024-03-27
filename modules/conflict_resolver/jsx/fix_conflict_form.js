@@ -4,6 +4,7 @@
  */
 import {Component} from 'react';
 import PropTypes from 'prop-types';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * The fix FixConflictForm renders a <form> within a <td>. The form as a select

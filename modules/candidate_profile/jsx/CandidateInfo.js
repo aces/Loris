@@ -136,7 +136,7 @@ export class CandidateInfo extends Component {
             },
             {
                 label: subprojlabel,
-                value: cohorts,
+                value: cohorts.join(', '),
             },
             {
                 label: 'Site',
@@ -209,4 +209,5 @@ CandidateInfo.propTypes = {
   Candidate: PropTypes.object.isRequired,
   Visits: PropTypes.array.isRequired,
   VisitMap: PropTypes.object.isRequired,
+  ExtraCandidateInfo: PropTypes.array,
 };

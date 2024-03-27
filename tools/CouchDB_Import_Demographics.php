@@ -1,20 +1,6 @@
 #!/usr/bin/env php
 <?php
-/**
- * Imports demographics to CouchDB
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 /**
  * Imports demographics to CouchDB
  *
@@ -26,13 +12,16 @@ require_once 'Database.class.inc';
  */
 class CouchDBDemographicsImporter
 {
-    var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
     // this is just in an instance variable to make
     // the code a little more readable.
     var $Dictionary = [
+        'Date_registered'  => [
+            'Description' => 'Date of Registration',
+            'Type'        => 'date'
+        ],
         'DoB'              => [
             'Description' => 'Date of Birth',
             'Type'        => 'date'
@@ -59,7 +48,7 @@ class CouchDBDemographicsImporter
         ],
         'Sex'              => [
             'Description' => 'Candidate\'s biological sex',
-            'Type'        => "enum('Male', 'Female', 'Other')"
+            'Type'        => "varchar(255)"
         ],
         'Site'             => [
             'Description' => 'Site that this visit took place at',
@@ -180,7 +169,8 @@ class CouchDBDemographicsImporter
     {
         $config = \NDB_Config::singleton();
 
-        $fieldsInQuery = "SELECT c.DoB,
+        $fieldsInQuery = "SELECT c.Date_registered,
+                                c.DoB,
                                 c.DoD,
                                 c.CandID,
                                 c.PSCID,
@@ -239,13 +229,13 @@ class CouchDBDemographicsImporter
                         c.Sex,
                         s.Current_stage,
                         Failure,
-                        c.RegistrationProjectID,
-                        CEF,
-                        CEF_reason,
-                        CEF_comment,
-                        pc_comment.Value,
-                        pso.Description,
-                        ps.participant_suboptions,
+                        c.RegistrationProjectID, 
+                        CEF, 
+                        CEF_reason, 
+                        CEF_comment, 
+                        pc_comment.Value, 
+                        pso.Description, 
+                        ps.participant_suboptions, 
                         ps.reason_specify";
 
         // If proband fields are being used, add proband information into the
@@ -287,6 +277,36 @@ class CouchDBDemographicsImporter
                             $cField.DateWithdrawn";
             }
         }
+
+        // Latest Diagnosis by project
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectAlias = \Project::getProjectFromID(
+                new \ProjectID(strval($projectID))
+            )->getAlias();
+            $latestProjDx = "latestDiagnosis_$projectAlias";
+
+            $fieldsInQuery .= ", 
+                $latestProjDx.Diagnosis AS $latestProjDx";
+            $tablesToJoin  .= "
+                LEFT JOIN (
+                    SELECT cde.CandID, Diagnosis 
+                    FROM candidate_diagnosis_evolution_rel cde
+                    JOIN diagnosis_evolution de USING (DxEvolutionID)
+                    JOIN (
+                        SELECT cde2.CandID, MAX(OrderNumber) AS OrderNumber 
+                        FROM diagnosis_evolution de2
+                        JOIN candidate_diagnosis_evolution_rel cde2 
+                        USING (DxEvolutionID)
+                        WHERE de2.ProjectID=$projectID
+                        GROUP BY CandID
+                        ) AS maxOrderNumber ON (maxOrderNumber.CandID=cde.CandID 
+                            AND maxOrderNumber.OrderNumber=de.OrderNumber)
+                    WHERE ProjectID=$projectID
+                ) AS $latestProjDx ON ($latestProjDx.CandID=c.CandID)";
+            $groupBy       .= ", $latestProjDx.Diagnosis";
+        }
+
         $whereClause = " WHERE s.Active='Y' AND c.Active='Y' "
                        ."AND c.Entity_type != 'Scanner'";
 
@@ -306,7 +326,7 @@ class CouchDBDemographicsImporter
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"]    = [
                 'Description' => 'Proband\'s biological sex',
-                'Type'        => "enum('Male','Female', 'Other')"
+                'Type'        => "varchar(255)"
             ];
             $this->Dictionary["Age_difference"] = [
                 'Description' => 'Age difference between the candidate and ' .
@@ -352,6 +372,18 @@ class CouchDBDemographicsImporter
                     'Type'        => "date",
                 ];
             }
+        }
+
+        // Update data dictionary for latest diagnosis by project
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectAlias = \Project::getProjectFromID($projectID)->getAlias();
+            $fieldName    = "latestDiagnosis_" . $projectAlias;
+
+            $this->Dictionary[$fieldName] = [
+                'Description' => "Latest Diagnosis for $project",
+                'Type'        => "text"
+            ];
         }
     }
 

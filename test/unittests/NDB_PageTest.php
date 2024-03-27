@@ -795,7 +795,7 @@ class NDB_PageTest extends TestCase
         $this->assertEquals(
             [
                 '/js/jquery/jquery-1.11.0.min.js',
-                '/js/helpHandler.js',
+                '/js/loris-scripts.js',
                 '/js/modernizr/modernizr.min.js',
                 '/js/polyfills.js',
                 '/vendor/js/react/react.production.min.js',
@@ -806,8 +806,7 @@ class NDB_PageTest extends TestCase
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
                 '/js/util/queryString.js',
-                '/js/components/Form.js',
-                '/js/components/Markdown.js'
+                '/js/components/Help.js',
             ],
             $this->_page->getJSDependencies()
         );

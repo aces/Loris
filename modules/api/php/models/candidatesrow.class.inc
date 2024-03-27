@@ -61,14 +61,13 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         $obj = [
-            'CandID'    => $this->_candid,
-            'Project'   => $this->_projectname,
-            'ProjectID' => $this->_projectid,
-            'PSCID'     => $this->_pscid,
-            'Site'      => $this->_sitename,
-            'EDC'       => $this->_edc,
-            'DoB'       => $this->_dob,
-            'Sex'       => $this->_sex,
+            'CandID'  => $this->_candid,
+            'Project' => $this->_projectname,
+            'PSCID'   => $this->_pscid,
+            'Site'    => $this->_sitename,
+            'EDC'     => $this->_edc,
+            'DoB'     => $this->_dob,
+            'Sex'     => $this->_sex,
         ];
 
         return $obj;

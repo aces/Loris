@@ -55,8 +55,8 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     i.title,
                     m.name as module,
                     i.category,
-                    i.reporter,
-                    i.assignee,
+                    CONCAT(uReporter.First_name, ' ', uReporter.Last_name),
+                    CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name),
                     i.status,
                     i.priority,
                     i.centerID as centerId,
@@ -78,6 +78,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = w.issueID AND w.userID=:username)
             LEFT JOIN issues_comments ic
               ON (i.issueID = ic.issueID)
+            JOIN users uReporter
+              ON (i.reporter = uReporter.UserID)
+            LEFT JOIN users uAssignee
+              ON (i.assignee = uAssignee.UserID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
             ['username' => $userID]

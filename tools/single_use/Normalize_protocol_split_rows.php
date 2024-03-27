@@ -43,9 +43,8 @@ function cartesian($input)
     return $result;
 }
 
-function split_commas($table_name)
+function split_commas($table_name, $DB)
 {
-    $DB = \Database::singleton();
     // Get the list of unique IDs from the table
     $rows         = $DB->pselect("SELECT * FROM ".$table_name."", []);
     $total_commas = 0;
@@ -81,5 +80,5 @@ function split_commas($table_name)
 
 $tables_to_normalize = ["mri_protocol", "mri_protocol_checks"];
 foreach ($tables_to_normalize as $table) {
-    split_commas($table);
+    split_commas($table, $lorisInstance->getDatabaseConnection());
 }
