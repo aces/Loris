@@ -90,7 +90,7 @@ modulePlugins.push(
   })
 );
 
-if (EEGVisEnabled !== 'true') {
+if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
   modulePlugins.push(
     new IgnorePlugin({
       resourceRegExp: /react-series-data-viewer/,
@@ -235,6 +235,7 @@ let config = [
     resolve: resolve,
     module: mod,
     stats: 'errors-warnings',
+    cache: {type: 'filesystem'},
   },
 ];
 
