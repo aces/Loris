@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import {
+    StaticElement,
     FormElement,
     PasswordElement,
     ButtonElement,
