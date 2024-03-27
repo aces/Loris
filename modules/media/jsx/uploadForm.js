@@ -351,10 +351,12 @@ class MediaUploadForm extends Component {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = 'Upload error!';
         if (xhr.response) {
-          const resp = JSON.parse(xhr.response);
-          if (resp.message) {
-            msg = resp.message;
+          if (xhr.statusText) {
+            msg = JSON.stringify(xhr.statusText);
           }
+        }
+        if (xhr.status === 413) {
+           msg = JSON.stringify('File too large!');
         }
 
         this.setState({
