@@ -40,6 +40,14 @@
             </structure>
         </PSCID>
 
+        <ParticipantID>
+            <generation>random</generation>
+            <structure>
+                <seq type="static">PARTICIPANT</seq>
+                <seq type="numeric" length="6" min='100000' max='999999'/>
+            </structure>
+        </ParticipantID>
+
         <ExternalID>
             <generation>random</generation>
             <structure>
