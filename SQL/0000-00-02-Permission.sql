@@ -132,13 +132,120 @@ INSERT INTO `permissions` VALUES
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2'),
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit','2'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
-    (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2');
+    (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
+    (65,'roles_view','Roles Entries - View',(SELECT ID FROM modules WHERE Name='roles_manager'),'View',2),
+    (66,'roles_edit','Roles Entries - Edit',(SELECT ID FROM modules WHERE Name='roles_manager'),'Create/Edit',2),
+    (67,'roles_assign','Roles Entries - Assign',(SELECT ID FROM modules WHERE Name='roles_manager'),'Edit',2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
   FROM users u JOIN permissions p
   WHERE u.userid = 'admin'
   ORDER BY p.permID;
+
+-- add role table
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+  `RoleID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Code` varchar(255) NOT NULL DEFAULT '',
+  `Name` varchar(255) NOT NULL DEFAULT '',
+  `Description` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`RoleID`),
+  UNIQUE KEY `Code` (`Code`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+INSERT INTO `roles` (`RoleID`, `Code`, `Name`, `Description`)
+VALUES
+  (1,'administrator', 'Administrator', 'An administrator. Has access to everything, no restrictions.'),
+  (2,'data_entry', 'Data Entry', 'Interact with user data such as instruments, users and timepoints.'),
+  (3,'data_analysis', 'Data Analysis', 'Query data through DQT and dictionnary.'),
+  (4,'data_release', 'Data Release', 'Interact with data release files.'),
+  (5,'coordinator', 'Coordinator', 'Resolve instrument data conflicts.'),
+  (6,'imaging', 'Imaging', 'Access imaging data.'),
+  (7,'scheduling', 'Scheduling', 'Schedule participants and surveys.'),
+  (8,'issue_reporter', 'Issue reporter', 'Report issues.');
+
+-- add role-permission rel table
+DROP TABLE IF EXISTS `role_permission_rel`;
+CREATE TABLE `role_permission_rel` (
+  `RoleID` int(10) unsigned NOT NULL default '0',
+  `permID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`RoleID`,`permID`),
+  CONSTRAINT `FK_role_permission_rel_2`
+  FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_role_permission_rel_1`
+  FOREIGN KEY (`RoleID`)
+    REFERENCES `roles` (`RoleID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- administrator role has all permissions.
+INSERT INTO `role_permission_rel` (`permID`,`RoleID`)
+  SELECT permID, (
+    SELECT RoleID FROM roles WHERE Code = 'administrator'
+  )
+  FROM permissions;
+-- other roles, select permissions
+INSERT INTO `role_permission_rel` (`RoleID`,`permID`)
+VALUES
+  -- data_entry
+  (2, (SELECT permID FROM permissions WHERE code = 'user_accounts')),
+  (2, (SELECT permID FROM permissions WHERE code = 'user_accounts_multisite')),
+  (2, (SELECT permID FROM permissions WHERE code = 'access_all_profiles')),
+  (2, (SELECT permID FROM permissions WHERE code = 'data_entry')),
+  -- data_analysis
+  (3, (SELECT permID FROM permissions WHERE code = 'data_dict_view')),
+  (3, (SELECT permID FROM permissions WHERE code = 'dataquery_view')),
+  -- data_release
+  (4, (SELECT permID FROM permissions WHERE code = 'data_release_view')),
+  (4, (SELECT permID FROM permissions WHERE code = 'data_release_upload')),
+  (4, (SELECT permID FROM permissions WHERE code = 'data_release_edit_file_access')),
+  -- coordinator
+  (5, (SELECT permID FROM permissions WHERE code = 'user_accounts')),
+  (5, (SELECT permID FROM permissions WHERE code = 'user_accounts_multisite')),
+  (5, (SELECT permID FROM permissions WHERE code = 'access_all_profiles')),
+  (5, (SELECT permID FROM permissions WHERE code = 'data_entry')),
+  (5, (SELECT permID FROM permissions WHERE code = 'conflict_resolver')),
+  -- imaging - own site
+  (6, (SELECT permID FROM permissions WHERE code = 'imaging_browser_view_site')),
+  (6, (SELECT permID FROM permissions WHERE code = 'dicom_archive_view_allsites')),
+  (6, (SELECT permID FROM permissions WHERE code = 'imaging_browser_phantom_ownsite')),
+  (6, (SELECT permID FROM permissions WHERE code = 'electrophysiology_browser_view_site')),
+  (6, (SELECT permID FROM permissions WHERE code = 'violated_scans_view_ownsite')),
+  (6, (SELECT permID FROM permissions WHERE code = 'imaging_quality_control_view')),
+  -- scheduling
+  (7, (SELECT permID FROM permissions WHERE code = 'survey_accounts_view')),
+  -- issue_reporter
+  (8, (SELECT permID FROM permissions WHERE code = 'issue_tracker_reporter'));
+
+-- add role-user rel table
+DROP TABLE IF EXISTS `user_role_rel`;
+CREATE TABLE `user_role_rel` (
+  `RoleID` int(10) unsigned NOT NULL default '0',
+  `userID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`RoleID`,`userID`),
+  CONSTRAINT `FK_user_role_rel_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_role_rel_2`
+  FOREIGN KEY (`RoleID`)
+    REFERENCES `roles` (`RoleID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- administrator user has administrator role.
+INSERT INTO `user_role_rel` (`RoleID`,`userID`)
+VALUES (
+  (SELECT ID FROM users WHERE UserID = 'admin'),
+  (SELECT RoleID FROM roles WHERE Code = 'administrator')
+);
 
 -- permissions for each notification module
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
