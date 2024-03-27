@@ -98,9 +98,9 @@ class Statistics_Site extends \NDB_Menu
     {
 
         //SITES
-
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
+        $projectID = new \ProjectID(strval($projectID));
+        $factory   = \NDB_Factory::singleton();
+        $user      = $factory->user();
 
         if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
