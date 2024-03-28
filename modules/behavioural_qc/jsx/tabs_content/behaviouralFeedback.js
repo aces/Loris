@@ -129,6 +129,8 @@ class BehaviouralFeedback extends Component {
                      rowData['sessionID'];
           bvlLevel ='Visit : ' + rowData['Visit'];
         }
+        // Open feedback panel
+        bvlLink += '&showFeedback=true';
         reactElement = (
           <td>
             <a href={bvlLink}>{bvlLevel}</a>
