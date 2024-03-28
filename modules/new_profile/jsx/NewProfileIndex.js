@@ -143,10 +143,7 @@ class NewProfileIndex extends React.Component {
             if (result.value === true) {
               window.location.href = '/' + data.CandID;
             } else {
-              this.setState({
-                formData: {},
-                submitDisabled: false,
-              });
+              window.location.href = '/new_profile/';
             }
           });
         } )
