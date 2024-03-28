@@ -138,7 +138,7 @@ function uploadPublication() : void
         showPublicationError($e->getMessage(), 500);
     }
 
-    notify($pubID, 'submission');
+    notify($pubID, 'submission', $_POST['baseURL']);
 }
 
 /**
@@ -431,7 +431,7 @@ function cleanup(int $pubID) : void
  *
  * @return void
  */
-function notify($pubID, $type) : void
+function notify($pubID, $type, $baseURL) : void
 {
     $acceptedTypes = [
         'submission',
@@ -464,12 +464,11 @@ function notify($pubID, $type) : void
         );
         throw new \LorisException('Invalid publication ID specified.');
     }
-    $url = \NDB_Factory::singleton()->settings()->getBaseURL();
 
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
     $emailData['User']        = $user->getFullname();
-    $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['URL']         = $baseURL . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
     $Notifier = new \NDB_Notifier(
         "publication",
@@ -511,6 +510,8 @@ function notify($pubID, $type) : void
  */
 function editProject() : void
 {
+
+    error_log(print_r($_POST, true));
     $db = \NDB_Factory::singleton()->database();
     $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
@@ -618,10 +619,10 @@ function editProject() : void
     processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        notify($id, 'review');
+        notify($id, 'review', $_POST['baseURL']);
     } else {
         // otherwise send edit email
-        notify($id, 'edit');
+        notify($id, 'edit', $_POST['baseURL']);
     }
     if (!empty($toUpdate)) {
         $db->update(
