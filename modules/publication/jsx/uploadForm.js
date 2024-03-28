@@ -92,7 +92,7 @@ class PublicationUploadForm extends React.Component {
       // File is being removed
       if (this.state.formData[formElement]) {
         numFiles -= 1;
-        this.setState({ numFiles: numFiles });
+        this.setState({numFiles: numFiles});
       }
     }
     this.setFormData(formElement, value);
