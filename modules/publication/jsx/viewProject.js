@@ -103,13 +103,16 @@ class ViewProject extends React.Component {
         });
         return;
       }
+      let projectKey = Object.keys(data.projectOptions).find(
+          key => data.projectOptions[key] === data.project
+        );
 
       response.json().then(
         (data) => {
           let formData = {
             title: data.title,
             description: data.description,
-            project: data.project,
+            project: projectKey,
             publishingStatus: data.publishingStatus,
             datePublication: data.datePublication,
             journal: data.journal,
