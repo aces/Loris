@@ -510,7 +510,6 @@ function notify($pubID, $type, $baseURL) : void
  */
 function editProject() : void
 {
-
     $db = \NDB_Factory::singleton()->database();
     $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
