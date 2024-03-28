@@ -15,6 +15,9 @@ and ensure that the project proposal page is now accessible.
 5. Fill out all the fields in the form and try to submit. Make sure you have
 a corresponding directory to the directory specified in Config if you are 
 attempting a file upload. Try submitting without filling in required fields.
+6. Try adding a file to upload, and then adding another file to upload. Next, 
+select browse in the second file that was uploaded, but cancel the file. The
+file should be removed, and no extra "File to upload" fields should be added.
 6. Login under one of the accounts you specified under the 
 "Users with Edit Permission" and access the project page and make edits to 
 the proposal.
