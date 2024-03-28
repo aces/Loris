@@ -689,6 +689,7 @@ tr.directentry {
     transition: all 0.6s ease 0s;
     width: 320px;
     max-height: 100vh;
+    padding-bottom: calc(1em + 30px);
 }
 
 .help-content h1 {
