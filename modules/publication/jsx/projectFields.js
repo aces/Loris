@@ -182,7 +182,7 @@ class ProjectFormFields extends React.Component {
             console.error(error);
           });
         }
-      });
+      }.bind(this));
   }
 
   /**
