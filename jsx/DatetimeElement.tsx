@@ -174,7 +174,8 @@ export default function DatetimeElement(props: DatetimeElementProps) {
    * @param e The React event.
    */
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const newValue = formatDatetime(value, e.target.value.replace(/[- :]/g, ''));
+    const rawValue = e.target.value.replace(/[- :]/g, '');
+    const newValue = formatDatetime(value, rawValue);
     if (newValue === null) {
       return;
     }
