@@ -75,7 +75,8 @@ class Examiner extends \DataFrameworkMenu
 
           $useCertification = ($this->useCertification == 1) ? true : false;
 
-        $user = \User::singleton();
+        $user  = \User::singleton();
+        $sites = [];
         if ($user->hasAnyPermission(
             [
                 'superuser',
