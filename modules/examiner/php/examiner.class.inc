@@ -86,9 +86,8 @@ class Examiner extends \DataFrameworkMenu
         ) {
             $sites = \Utility::getSiteList(false);
         } else {
-            $sites = $user->getCenterIDs();
+            $sites = $user->getStudySites();
         }
-        $sites = $user->getStudySites();
         return [
             'sites'            => $sites,
             'radiologists'     => $yesNoOptions,
