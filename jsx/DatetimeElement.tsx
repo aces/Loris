@@ -54,8 +54,7 @@ function listPick<T>(list: T[], indexes: number[]) {
  * @returns The formatted new value, or `null` if the new value is invalid
  */
 function formatDatetime(oldDatetime: string, newDatetime: string) {
-  let i = 0;
-  while (i < newDatetime.length) {
+  for (let i = 0; i < newDatetime.length; i++) {
     // Check that the new value is no longer than the format.
     // This check is done inside the loop because the value might grow during
     // formatting.
@@ -78,8 +77,6 @@ function formatDatetime(oldDatetime: string, newDatetime: string) {
         return null;
       }
     }
-
-    i++;
   }
 
   // If a character was added, add a special character if it is expected from
