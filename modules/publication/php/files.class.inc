@@ -65,7 +65,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
             ["file" => $file]
         );
 
-        $db      =  $this->loris->getDatabaseConnection();
+        $db    =  $this->loris->getDatabaseConnection();
         $title = $db->pselectOne(
             "SELECT Title " .
             "FROM publication " .
@@ -75,12 +75,14 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
             ['file' => $file]
         );
 
-        $config  = \NDB_Factory::singleton()->config();
+        $config      = \NDB_Factory::singleton()->config();
         $projectName = $config->getSetting('prefix') ?? 'LORIS';
 
-        $downloadNotifier->notify([
-            'Title'       => $title,
-            'ProjectName' => $projectName,
-        ]);
+        $downloadNotifier->notify(
+            [
+                'Title'       => $title,
+                'ProjectName' => $projectName,
+            ]
+        );
     }
 }
