@@ -20,6 +20,7 @@ changes in the following format: PR #1234***
 - Fix examiner site display (PR #8967)
 - bvl_feedback updates in real-time (PR #8966)
 - DoB and DoD format respected in candidate parameters (PR #9001)
+- Fix delete file in upload (PR #9181)
 - Fix profile level feedback display in behavioural QC module (PR #9192)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
