@@ -20,7 +20,7 @@ changes in the following format: PR #1234***
 - Fix examiner site display (PR #8967)
 - bvl_feedback updates in real-time (PR #8966)
 - DoB and DoD format respected in candidate parameters (PR #9001)
-- While proposing a project or editing a project in publications module, prevent indefinate "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
