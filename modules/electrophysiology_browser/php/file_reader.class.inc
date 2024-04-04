@@ -38,12 +38,16 @@ class File_Reader extends \NDB_Page
             $filename = urldecode(basename($file));
             $path     = dirname($file);
 
-            $downloader = new \LORIS\FilesDownloadHandler(
-                new \SPLFileInfo($downloadpath . $path)
-            );
-            return $downloader->handle(
-                $request->withAttribute('filename', $filename)
-            );
+            try {
+                $downloader = new \LORIS\FilesDownloadHandler(
+                    new \SPLFileInfo($downloadpath . $path)
+                );
+                return $downloader->handle(
+                    $request->withAttribute('filename', $filename)
+                );
+            } catch (\Exception $e) {
+                return new \LORIS\Http\Response\JSON\NotFound();
+            }
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ["GET"]
