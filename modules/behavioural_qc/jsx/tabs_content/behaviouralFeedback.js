@@ -130,7 +130,7 @@ class BehaviouralFeedback extends Component {
           bvlLevel ='Visit : ' + rowData['Visit'];
         } else {
           bvlLink = this.props.baseURL +
-                     '/' + rowData['DCCID']
+                     '/' + rowData['DCCID'];
           bvlLevel ='Profile : ' + rowData['PSCID'];
         }
         reactElement = (
