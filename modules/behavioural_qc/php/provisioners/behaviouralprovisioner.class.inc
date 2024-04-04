@@ -31,7 +31,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 s.Visit_label AS _visit,
                 COALESCE(s.ProjectID, ca.RegistrationProjectID) AS _project,
                 s.CohortID AS _cohort,
-                psc.CenterID AS _site,
+                COALESCE(psc.CenterID, psc2.CenterID) AS _site,
 	            fb.FeedbackID AS _feedbackID,
 	            fb.SessionID AS _sessionID,
 	            fb.CommentID AS _commentID,
