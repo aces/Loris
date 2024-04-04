@@ -128,6 +128,10 @@ class BehaviouralFeedback extends Component {
                      '&sessionID=' +
                      rowData['sessionID'];
           bvlLevel ='Visit : ' + rowData['Visit'];
+        } else {
+          bvlLink = this.props.baseURL +
+                     '/' + rowData['DCCID']
+          bvlLevel ='Profile : ' + rowData['PSCID'];
         }
         reactElement = (
           <td>
