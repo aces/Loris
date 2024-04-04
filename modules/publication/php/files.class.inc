@@ -49,4 +49,38 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     {
         return "/files/";
     }
+
+    /**
+     * Send a notification for the download.
+     *
+     * @param string $file The filename being downloaded
+     *
+     * @return void
+     */
+    protected function doDownloadNotification($file)
+    {
+        $downloadNotifier = new \NDB_Notifier(
+            $this->Module->getName(),
+            "download",
+            ["file" => $file]
+        );
+
+        $db      =  $this->loris->getDatabaseConnection();
+        $title = $db->pselectOne(
+            "SELECT Title " .
+            "FROM publication " .
+            "JOIN publication_upload ".
+            "USING (PublicationID) " .
+            "WHERE Filename=:file",
+            ['file' => $file]
+        );
+
+        $config  = \NDB_Factory::singleton()->config();
+        $projectName = $config->getSetting('prefix') ?? 'LORIS';
+
+        $downloadNotifier->notify([
+            'Title'       => $title,
+            'ProjectName' => $projectName,
+        ]);
+    }
 }
