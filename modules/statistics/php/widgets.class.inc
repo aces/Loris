@@ -65,14 +65,23 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $totalScans  = $this->_getTotalRecruitment($db);
+        $recruitmentRaw = $db->pselect("SELECT
+                COUNT(*) as Count,
+                c.Sex as Sex,
+                c.RegistrationProjectID as ProjectID
+             FROM candidate c
+                 WHERE c.Active='Y' AND c.Entity_type='Human'
+                 AND c.RegistrationCenterID <> 1
+             GROUP BY c.Sex, c.RegistrationProjectID",
+        []);
+        $totalScans  = $this->_getTotalRecruitment($recruitmentRaw);
         $recruitment = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
                 "Overall Recruitment",
                 $recruitmentTarget,
                 $totalScans,
-                $db,
+                $recruitmentRaw,
             )
         ];
 
@@ -89,8 +98,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $projectID,
                 $projectInfo['Name'],
                 $projectInfo['recruitmentTarget'],
-                $this->getTotalRecruitmentByProject($db, $projectID),
-                $db
+                $this->getTotalRecruitmentByProject($recruitmentRaw, $projectID),
+                $recruitmentRaw
             );
         }
 
@@ -115,14 +124,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return int
      */
-    private function _getTotalRecruitment(\Database $DB): int
+    private function _getTotalRecruitment(array $rawData): int
     {
-        return $DB->pselectOneInt(
-            "SELECT COUNT(*) FROM candidate c
-             WHERE c.Active='Y' AND c.Entity_type='Human'
-             AND c.RegistrationCenterID <> 1",
-            []
-        ) ?? 0;
+        $sum = 0;
+        foreach ($rawData as $row) {
+            $sum += intval($row['Count']);
+        }
+        return $sum;
     }
 
     /**
@@ -144,7 +152,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $title,
         $recruitmentTarget,
         $totalRecruitment,
-        \Database $db
+        $rawData
     ): array {
         $rv = [
             'total_recruitment' => $totalRecruitment,
@@ -156,17 +164,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $rv['recruitment_target'] = $recruitmentTarget;
         if ($ID == 'overall') {
-            $totalFemales = $this->_getTotalSex($db, "Female");
+            $totalFemales = $this->_getTotalSex($rawData, "Female");
         } else {
-            $totalFemales = $this->getTotalSexByProject($db, "Female", intval($ID));
+            $totalFemales = $this->getTotalSexByProject($rawData, "Female", intval($ID));
         }
         $rv['female_total']   = $totalFemales;
         $rv['female_percent']
             = round($totalFemales / $recruitmentTarget * 100);
         if ($ID == 'overall') {
-            $totalMales = $this->_getTotalSex($db, "Male");
+            $totalMales = $this->_getTotalSex($rawData, "Male");
         } else {
-            $totalMales = $this->getTotalSexByProject($db, "Male", intval($ID));
+            $totalMales = $this->getTotalSexByProject($rawData, "Male", intval($ID));
         }
         $rv['male_total']   = $totalMales;
         $rv['male_percent']
@@ -192,15 +200,15 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return int
      */
-    private function _getTotalSex(\Database $db, string $sex) : int
+    private function _getTotalSex(array $rawdata, string $sex) : int
     {
-        return $db->pselectOneInt(
-            "SELECT COUNT(c.CandID)
-            FROM candidate c
-            WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
-            AND c.RegistrationCenterID <> 1",
-            ['sex' => $sex]
-        ) ?? 0;
+        $sum = 0;
+        foreach($rawdata as $row) {
+            if ($row['Sex'] == $sex) {
+                $sum += intval($row['Count']);
+            }
+        }
+        return $sum;
     }
 
     /**
@@ -214,18 +222,15 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return int
      */
-    function getTotalSexByProject(\Database $DB, string $sex, int $projectID) : int
+    function getTotalSexByProject(array $raw, string $sex, int $projectID) : int
     {
-        return $DB->pselectOneInt(
-            "SELECT COUNT(c.CandID)
-            FROM candidate c
-            WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
-            AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
-            [
-                'sex' => $sex,
-                'PID' => "$projectID",
-            ]
-        ) ?? 0;
+        $sum = 0;
+        foreach($raw as $row) {
+            if ($row['Sex'] == $sex && $row['ProjectID'] == $projectID) {
+                $sum += intval($row['Count']);
+            }
+        }
+        return $sum;
     }
 
     /**
@@ -237,17 +242,15 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return int
      */
-    function getTotalRecruitmentByProject(\Database $db, int $projectID): int
+    function getTotalRecruitmentByProject(array $data, int $projectID): int
     {
-        return $db->pselectOneInt(
-            "SELECT COUNT(*)
-             FROM candidate c
-             WHERE c.Active='Y'
-              AND c.RegistrationProjectID=:PID
-              AND c.Entity_type='Human'
-              AND c.RegistrationCenterID <> 1",
-            ['PID' => "$projectID"]
-        ) ?? 0;
+        $sum = 0;
+        foreach($data as $row) {
+            if (intval($row['ProjectID']) == $projectID) {
+                $sum += intval($row['Count']);
+            }
+        }
+        return $sum;
     }
 
     /**
