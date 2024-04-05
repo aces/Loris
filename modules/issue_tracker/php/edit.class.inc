@@ -133,26 +133,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // can't set to closed if not developer.
-        if ($user->hasPermission('issue_tracker_developer')) {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-                'closed'       => 'Closed',
-            ];
-        } else {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-            ];
-        }
-
         $priorities = [
             'low'       => 'Low',
             'normal'    => 'Normal',
@@ -262,8 +242,38 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
         $issueData['comment'] = null;
+        $reporter = $db->pselectOne("SELECT reporter FROM issues WHERE issueID=:issueid",array('issueid' => $issueID));
+        $CenterID = $user->getCenterIDs();
+        $sites = $user->getStudySites();
 
-        $isOwnIssue = $issueData['reporter'] == $user->getUsername();
+        $isOwnIssue = $reporter == $user->getUsername();
+        $isSiteIssue = $user->hasPermission('issue_tracker_site_issue') && in_array($issueData['centerID'],$CenterID);
+
+        // can't set to closed if not developer.
+        if ($user->hasPermission('issue_tracker_developer') || 
+            $user->hasPermission('issue_tracker_all_issue') ||
+            $isSiteIssue ||
+            $isOwnIssue
+           ) {
+            $statuses = [
+                'new'          => 'New',
+                'acknowledged' => 'Acknowledged',
+                'assigned'     => 'Assigned',
+                'feedback'     => 'Feedback',
+                'resolved'     => 'Resolved',
+                'closed'       => 'Closed',
+            ];
+        } else {
+            $statuses = [
+                'new'          => 'New',
+                'acknowledged' => 'Acknowledged',
+                'assigned'     => 'Assigned',
+                'feedback'     => 'Feedback',
+                'resolved'     => 'Resolved',
+            ];
+        }
+
+       // $isOwnIssue = $issueData['reporter'] == $user->getUsername();
 
         $result = [
             'assignees'         => $assignees,
@@ -275,6 +285,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             'modules'           => $modules,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
+            'isSiteIssue'       => $isSiteIssue,
+            'canEditAllIssue'  => $user->hasPermission(
+                'issue_tracker_all_issue',
+            ),
             'hasEditPermission' => $user->hasPermission(
                 'issue_tracker_developer'
             ),
@@ -1051,7 +1065,9 @@ class Edit extends \NDB_Page implements ETagCalculator
     function _hasAccess(\User $user) : bool
     {
         return $user->hasPermission('issue_tracker_reporter')
-            || $user->hasPermission('issue_tracker_developer');
+            || $user->hasPermission('issue_tracker_developer')
+            || $user->hasPermission('issue_tracker_all_issue')
+            || $user->hasPermission('issue_tracker_site_issue');
     }
 
     /**
