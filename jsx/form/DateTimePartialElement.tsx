@@ -150,7 +150,7 @@ interface DateTimePartialElementProps {
  * @param props The props of the component
  * @returns The corresponding React element
  */
-export default function DateTimePartialElement(props: DateTimePartialElementProps) {
+function DateTimePartialElement(props: DateTimePartialElementProps) {
   const onUserInput = props.onUserInput !== undefined
     ? props.onUserInput
     : () => console.warn('onUserInput() callback is not set');
@@ -228,3 +228,5 @@ export default function DateTimePartialElement(props: DateTimePartialElementProp
     </div>
   );
 }
+
+export default DateTimePartialElement;
