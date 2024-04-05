@@ -140,14 +140,12 @@ class NewProfileIndex extends React.Component {
             cancelButtonColor: '#3085d6',
             cancelButtonText: 'Recruit another candidate',
           }).then((result) => {
-            if (result.value === true) {
-              window.location.href = '/' + data.CandID;
-            } else {
-              this.setState({
-                formData: {},
-                submitDisabled: false,
-              });
-            }
+            // Go to the candidate profile or reload the page, depending
+            // on whether the user clicked on 'Access Profile' or
+            // 'Recruit another candidate' respectively
+            window.location.href = result.value === true
+                ? window.location.href = '/' + data.CandID
+                : window.location.href;
           });
         } )
         .catch((error) => {

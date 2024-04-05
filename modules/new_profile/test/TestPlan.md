@@ -31,4 +31,5 @@ have the current day as the maximum possible value to choose.
 10. Change date format from 'YMd' to 'YM' in the Configuration module
 and repeat steps 4 to 6 while asserting that database values being
 saved are correct.
+11. As a user with only one site affiliation, fill the form with valid values and create a new user. When the popup indicating that the creation succeeded is displayed, click on 'Recruit another candidate'. Ensure that when the page reloads, the user's (unique) site is selected.
    [Manual Testing]
