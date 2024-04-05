@@ -10,7 +10,7 @@ import {
     SelectElement,
     TextboxElement,
 } from 'jsx/Form';
-import DatetimeElement from 'jsx/DatetimeElement';
+import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 
 /**
  * Filter component
@@ -101,7 +101,7 @@ function Filter(props) {
             element = <DateElement/>;
             break;
           case 'datetime':
-            element = <DatetimeElement />;
+            element = <DateTimePartialElement />;
             break;
           case 'checkbox':
             element = <CheckboxElement/>;
