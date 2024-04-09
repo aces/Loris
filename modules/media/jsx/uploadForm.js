@@ -369,7 +369,7 @@ class MediaUploadForm extends Component {
 
     xhr.addEventListener('error', () => {
       console.error(xhr.status + ': ' + xhr.statusText);
-      let msg = xhr.response && JSON.parse(xhr.response).message;
+      let msg = xhr.response && JSON.parse(xhr.response).message
         ? JSON.parse(xhr.response).message;
         : 'Upload error!';
       this.setState({
