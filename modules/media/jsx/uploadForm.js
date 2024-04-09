@@ -352,7 +352,7 @@ class MediaUploadForm extends Component {
         let msg = 'Upload error!';
         if (xhr.response) {
           if (xhr.statusText) {
-            msg = JSON.stringify(xhr.statusText);
+            msg = JSON.parse(xhr.response).message;
           }
         }
         if (xhr.status === 413) {
@@ -369,8 +369,8 @@ class MediaUploadForm extends Component {
 
     xhr.addEventListener('error', () => {
       console.error(xhr.status + ': ' + xhr.statusText);
-      let msg = xhr.response && xhr.response.message
-        ? xhr.response.message
+      let msg = xhr.response && JSON.parse(xhr.response).message;
+        ? JSON.parse(xhr.response).message;
         : 'Upload error!';
       this.setState({
         errorMessage: msg,
