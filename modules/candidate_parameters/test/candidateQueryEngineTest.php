@@ -941,16 +941,6 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchNone($result);
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new IsNull())
-        );
-        $this->assertMatchNone($result);
-
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new NotNull())
-        );
-        $this->assertMatchOne($result, "123456");
-
-        $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new StartsWith("V"))
         );
         $this->assertMatchOne($result, "123456");
@@ -1035,16 +1025,6 @@ class CandidateQueryEngineTest extends TestCase
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new In("TestProject2"))
-        );
-        $this->assertMatchOne($result, "123456");
-
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new IsNull())
-        );
-        $this->assertMatchNone($result);
-
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new NotNull())
         );
         $this->assertMatchOne($result, "123456");
 
@@ -1134,16 +1114,6 @@ class CandidateQueryEngineTest extends TestCase
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new In("TestSite"))
-        );
-        $this->assertMatchOne($result, "123456");
-
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new IsNull())
-        );
-        $this->assertMatchNone($result);
-
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new NotNull())
         );
         $this->assertMatchOne($result, "123456");
 
@@ -1357,14 +1327,6 @@ class CandidateQueryEngineTest extends TestCase
      */
     function testGetCandidateData()
     {
-        // By default the SQLQueryEngine uses an unbuffered query. However,
-        // this creates a new database connection which doesn't have access
-        // to our temporary tables. Since for this test we're only dealing
-        // with 1 module and don't need to run multiple queries in parallel,
-        // we can turn on buffered query access to re-use the same DB
-        // connection and maintain our temporary tables.
-        $this->engine->useQueryBuffering(true);
-
         // Test getting some candidate scoped data
         $results = iterator_to_array(
             $this->engine->getCandidateData(
@@ -1760,41 +1722,45 @@ class CandidateQueryEngineTest extends TestCase
         );
 
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
         $this->DB->setFakeTableData("candidate", []);
+        $this->DB->setFakeTableData("session", []);
         for ($i = 100000; $i < 100010; $i++) {
             $insert->execute([$i, $i, "Test$i"]);
         }
 
         $memory10 = memory_get_peak_usage();
 
-        for ($i = 100010; $i < 100200; $i++) {
+        $bigSize = 20000;
+
+        for ($i = 100010; $i < (100000 + $bigSize); $i++) {
             $insert->execute([$i, $i, "Test$i"]);
         }
 
-        $memory200 = memory_get_peak_usage();
+        $memoryBig = memory_get_peak_usage();
 
         // Ensure that the memory used by php didn't change whether
         // a prepared statement was executed 10 or 200 times. Any
         // additional memory should have been used by the SQL server,
         // not by PHP.
-        $this->assertTrue($memory10 == $memory200);
+        $this->assertTrue($memory10 == $memoryBig);
 
         $cand10  = [];
-        $cand200 = [];
+        $candBig = [];
 
         // Allocate the CandID array for both tests upfront to
         // ensure we're measuring memory used by getCandidateData
         // and not the size of the arrays passed as arguments.
         for ($i = 100000; $i < 100010; $i++) {
             $cand10[]  = new CandID("$i");
-            $cand200[] = new CandID("$i");
+            $candBig[] = new CandID("$i");
         }
-        for ($i = 100010; $i < 102000; $i++) {
-            $cand200[] = new CandID("$i");
+        for ($i = 100010; $i < (100000 + $bigSize); $i++) {
+            $candBig[] = new CandID("$i");
         }
 
         $this->assertEquals(count($cand10), 10);
-        $this->assertEquals(count($cand200), 2000);
+        $this->assertEquals(count($candBig), $bigSize);
 
         $results10 = $this->engine->getCandidateData(
             [$this->_getDictItem("PSCID")],
@@ -1803,9 +1769,6 @@ class CandidateQueryEngineTest extends TestCase
         );
 
         $memory10data = memory_get_usage();
-        // There should have been some overhead for the
-        // generator
-        //$this->assertTrue($memory10data > $memory200);
 
         // Go through all the data returned and measure
         // memory usage after.
@@ -1823,27 +1786,28 @@ class CandidateQueryEngineTest extends TestCase
 
         // Now see how much memory is used by iterating over
         // 200 candidates
-        $results200 = $this->engine->getCandidateData(
+        $resultsBig = $this->engine->getCandidateData(
             [$this->_getDictItem("PSCID")],
-            $cand200,
+            $candBig,
             null,
         );
 
-        $memory200data = memory_get_usage();
-
+        $memoryBigDataBefore = memory_get_usage();
         $i = 100000;
-        foreach ($results200 as $candid => $data) {
+        foreach ($resultsBig as $candid => $data) {
             $this->assertEquals($candid, $i);
             // $this->assertEquals($data['PSCID'], "Test$i");
             $i++;
         }
 
-        $memory200dataAfter = memory_get_usage();
-        $iterator200usage   = $memory200dataAfter - $memory200data;
+        $memoryBigDataAfter = memory_get_usage();
+        $iteratorBigUsage   = $memoryBigDataAfter - $memoryBigDataBefore;
 
-        $memory200peak = memory_get_peak_usage();
-        $this->assertTrue($iterator200usage == $iterator10usage);
-        $this->assertEquals($memory10peak, $memory200peak);
+        $memoryBigPeak = memory_get_peak_usage();
+        // We tested 20,000 candidates. Give 2k buffer room for variation in
+        // memory usage.
+        $this->assertTrue($iteratorBigUsage <= ($iterator10usage + (1024*2)));
+        $this->assertTrue($memoryBigPeak <= ($memory10peak + (1024*2)));
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
     }
 

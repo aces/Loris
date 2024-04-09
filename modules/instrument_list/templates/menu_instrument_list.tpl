@@ -3,6 +3,7 @@
   <!-- column headings -->
   <thead>
   <tr class="info">
+    {assign var="DoB" value=$candidate->getDisplayDoB()}
     <th>
       Derived Age
     </th>
@@ -12,10 +13,21 @@
     <th>
       Biological Sex
     </th>
-    {if $display.ProjectTitle != ""}
+    {if $display.ProjectTitle == $display.ProjectName && $display.ProjectName != ""}
       <th>
         Project
       </th>
+    {else}
+      {if $display.ProjectTitle != ""}
+        <th>
+          Candidate Registration Project
+        </th>
+      {/if}
+      {if $display.ProjectName != ""}
+        <th>
+          Timepoint Project
+        </th>
+      {/if}
     {/if}
     {foreach from=$display.DisplayParameters item=value key=name}
       <th>
@@ -63,10 +75,21 @@
     <td>
       {$display.Sex}
     </td>
-    {if $display.ProjectTitle != ""}
+    {if $display.ProjectName != "" && $display.ProjectName == $display.ProjectTitle}  
       <td>
-        {$display.ProjectTitle}
+        {$display.ProjectName}
       </td>
+    {else}
+      {if $display.ProjectTitle != ""}  
+        <td>
+          {$display.ProjectTitle}
+        </td>
+      {/if}
+      {if $display.ProjectName != ""}  
+        <td>
+          {$display.ProjectName}
+        </td>
+      {/if}
     {/if}
     {foreach from=$display.DisplayParameters item=value key=name}
       <td>
