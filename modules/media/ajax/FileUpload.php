@@ -119,7 +119,7 @@ function uploadFile()
     // If required fields are not set, show an error
     if (empty($_POST)) {
         echo showMediaError("File too large!", 413);
-	return;
+	    return;
     }
 
     if (!isset($pscid, $visit)) {
