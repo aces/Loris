@@ -117,12 +117,9 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (empty($_FILES)) {
-        echo showMediaError(
-            "File could not be uploaded successfully.
-            Please contact the administrator.",
-            400
-        );
+    if (empty($_POST)) {
+        echo showMediaError("File too large!", 413);
+	return;
     }
 
     if (!isset($pscid, $visit)) {
