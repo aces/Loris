@@ -240,6 +240,12 @@ class DocUploadForm extends Component {
                     'error'
                 );
               }
+              if (resp.status == 400) {
+                swal.fire('Something went wrong',
+                    JSON.parse(resp.response).message,
+                    'error'
+                );
+              }	  
           }
         }).catch((error) => {
           console.error(error);
