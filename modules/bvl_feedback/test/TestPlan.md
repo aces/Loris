@@ -13,8 +13,8 @@
  * Feedback Threads
 5. Click on the chevron arrow on each section and make sure it toggles open/closed.
 6. Type something in the 'New profile level feedback' text box and choose a 'Feedback Type' from the dropdown. Click 'Create thread'.
-7. Make sure that the thread was inserted the `feedback_bvl_thread` table, with `Feedback_level` 'profile' and the correct `Feedback_type`.
-   Also make sure that an appropriate `feedback_bvl_entry` was created, with `FeedbackID` being equal to the created thread's `FeedbackID`.
+7. Make sure that the thread was inserted in the `feedback_bvl_thread` table, with `Feedback_level`: 'profile' and the correct `Feedback_type`.
+   Also make sure that an appropriate `feedback_bvl_entry` was created that references the thread's `FeedbackID`.
 8. 'Open Thread Summary' and 'Feedback Threads' should update with the submitted thread.
  * Open Thread Summary
     * QC class should be what page the feedback was submitted on (i.e. profile, instrument)
