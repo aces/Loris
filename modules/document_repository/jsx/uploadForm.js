@@ -245,7 +245,7 @@ class DocUploadForm extends Component {
                     JSON.parse(resp.response).message,
                     'error'
                 );
-              }	  
+              }
           }
         }).catch((error) => {
           console.error(error);
