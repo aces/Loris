@@ -51,11 +51,13 @@ $parameter_types = [];
 $instrumentParameterTypeCategoryIDs = [];
 $instrumentParameterTypeIDs         = [];
 
-
 $parameter_types = $DB->pselectColWithIndexKey(
-    "Select Name, ParameterTypeID from parameter_type",
+    "SELECT
+        CONCAT(`Name`, '-', `SourceFrom`) AS paramkey,
+        ParameterTypeID
+    FROM parameter_type",
     [],
-    "Name"
+    "paramkey"
 );
 
 // 2 query to clear all old parameter_type data associated to instruments.
@@ -205,11 +207,12 @@ foreach ($instruments AS $instrument) {
                 "Queryable"   => "1",
             ];
 
+            $key = "$Name-$testname";
             // Check if the same element existed in the parameter_type table
             // before deleting the data.
-            if (array_key_exists($Name, $parameter_types)) {
+            if (array_key_exists($key, $parameter_types)) {
                 //If element existed, reuse the same id
-                $ParameterTypeID = $parameter_types[$Name];
+                $ParameterTypeID = $parameter_types[$key];
                 $query_params["ParameterTypeID"] = $ParameterTypeID;
             } else {
                 //If it's new set it to empty string
@@ -265,8 +268,9 @@ foreach ($instruments AS $instrument) {
         "Queryable"   => "1",
     ];
 
-    if (array_key_exists($Name, $parameter_types)) {
-        $ParameterTypeID = $parameter_types[$Name];
+    $key = "$Name-$testname";
+    if (array_key_exists($key, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$key];
         $query_params["ParameterTypeID"] = $ParameterTypeID;
     } else {
         $ParameterTypeID = "";
@@ -309,8 +313,9 @@ foreach ($instruments AS $instrument) {
         "Queryable"   => "1",
     ];
 
-    if (array_key_exists($Name, $parameter_types)) {
-        $ParameterTypeID = $parameter_types[$Name];
+    $key = "$Name-$testname";
+    if (array_key_exists($key, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$key];
         $query_params["ParameterTypeID"] = $ParameterTypeID;
     } else {
         $ParameterTypeID = "";
