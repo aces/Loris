@@ -144,7 +144,7 @@ class NewProfileIndex extends React.Component {
             // on whether the user clicked on 'Access Profile' or
             // 'Recruit another candidate' respectively
             window.location.href = result.value === true
-                ? window.location.href = '/' + data.CandID
+                ? '/' + data.CandID
                 : window.location.href;
           });
         } )
