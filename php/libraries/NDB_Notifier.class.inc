@@ -86,7 +86,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
             $notifierID  = $this->notifier->getId();
-            $senderName  = $this->notifier->getUsername();
+            $senderName  = $this->notifier->getFullname();
             $senderEmail = $this->notifier->getEmail();
             $this->tpl_data['notified_user'] = $name;
             $this->tpl_data['notifier_user'] = "$senderName <$senderEmail>";
