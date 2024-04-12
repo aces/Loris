@@ -538,12 +538,11 @@ abstract class SQLQueryEngine implements QueryEngine
         );"
         );
 
-        $insertstmt = "INSERT INTO $tablename VALUES (:CandID)";
 
-        $q = $DB->prepare($insertstmt);
-        foreach ($candidates as $candidate) {
-            $q->execute(['CandID' => $candidate]);
-        }
+        $insertstmt = "INSERT INTO $tablename VALUES"
+                . " (" . join('),(', $candidates) . ')';
+        $q          = $DB->prepare($insertstmt);
+        $q->execute([]);
     }
 
     protected $useBufferedQuery = true;
