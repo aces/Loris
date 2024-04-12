@@ -76,7 +76,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
              GROUP BY c.Sex, c.RegistrationProjectID",
             []
         );
-        $totalScans     = $this->_getTotalRecruitment($recruitmentRaw);
+        $totalScans     = array_sum(array_column($recruitmentRaw, 'Count'));
         $recruitment    = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
@@ -117,22 +117,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
 
         return $this->_cache;
-    }
-
-    /**
-     * Gets the total count of candidates associated with a specific project
-     *
-     * @param array $rawData The raw, grouped data from the database
-     *
-     * @return int
-     */
-    private function _getTotalRecruitment(array $rawData): int
-    {
-        $sum = 0;
-        foreach ($rawData as $row) {
-            $sum += intval($row['Count']);
-        }
-        return $sum;
     }
 
     /**
