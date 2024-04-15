@@ -289,6 +289,7 @@ function DefineFilters(props: {
                                     0
                                 );
                                 setModalGroup(newquery);
+                                setDeleteItemIndex(null);
                             }}
                             onMouseEnter={() => setDeleteItemIndex(0)}
                             onMouseLeave={() => setDeleteItemIndex(null)}

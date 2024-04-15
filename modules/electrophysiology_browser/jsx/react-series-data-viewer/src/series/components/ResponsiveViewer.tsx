@@ -1,24 +1,24 @@
 import * as R from 'ramda';
-import React, {FunctionComponent, MutableRefObject} from 'react';
+import React, {FunctionComponent} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
+import {WithParentSizeProps} from "@visx/responsive/lib/enhancers/withParentSize";
 
 type CProps = {
-  ref: MutableRefObject<any>,
   parentWidth?: number,
   parentHeight?: number,
   mouseDown?: (_: any) => void,
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
   mouseLeave?: (_: any) => void,
-  children: any,
-  showOverflow: boolean,
+  children?: any,
+  showOverflow?: boolean,
+  chunksURL: string,
 };
 
 /**
  *
  * @param root0
- * @param root0.ref
  * @param root0.parentWidth
  * @param root0.parentHeight
  * @param root0.mouseDown
@@ -27,9 +27,9 @@ type CProps = {
  * @param root0.mouseLeave
  * @param root0.children
  * @param root0.showOverflow
+ * @param root0.chunksURL
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
-  ref,
   parentWidth,
   parentHeight,
   mouseDown,
@@ -37,7 +37,8 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
-  showOverflow
+  showOverflow,
+  chunksURL,
 }) => {
   /**
    *
@@ -51,7 +52,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 
   const layers = React.Children.toArray(children).map(provision);
 
-  const domain = window.EEGLabSeriesProviderStore.getState().bounds.domain;
+  const domain = window.EEGLabSeriesProviderStore[chunksURL]?.getState().bounds.domain;
   const amplitude = [0, 1];
   const eventScale = [
     scaleLinear()
@@ -149,4 +150,4 @@ ResponsiveViewer.defaultProps = {
   },
 };
 
-export default withParentSize(ResponsiveViewer);
+export default withParentSize<CProps & WithParentSizeProps>(ResponsiveViewer);
