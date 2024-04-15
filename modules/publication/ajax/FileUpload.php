@@ -426,8 +426,8 @@ function cleanup(int $pubID) : void
 /**
  * Send out email notifications for project submission
  *
- * @param int    $pubID publication ID
- * @param string $type  The notification type i.e., submission|edit|review
+ * @param int    $pubID   publication ID
+ * @param string $type    The notification type i.e., submission|edit|review
  * @param string $baseURL the base URL of the loris site
  *
  * @return void
