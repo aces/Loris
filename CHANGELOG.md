@@ -518,3 +518,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)
