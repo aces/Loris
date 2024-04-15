@@ -17,7 +17,6 @@
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Message\StreamInterface;
-use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 /**
  * A DataFrameworkMenu is a type of menu (filterable data table)
@@ -175,15 +174,17 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      * middleware
      */
     public function process(
-            ServerRequestInterface $request,
-            RequestHandlerInterface $handler
-            ) : ResponseInterface {
-                $response = parent::process($request, $handler);
-                if (($request->getQueryParams()['format'] ?? '') === 'binary') {
-                    return (new \LORIS\Middleware\Compression())->process($request, $handler);
-                } else {
-                    return parent::process($request, $handler);
-                }
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        if (($request->getQueryParams()['format'] ?? '') === 'binary') {
+            return (new \LORIS\Middleware\Compression())->process(
+                $request,
+                $handler
+            );
+        } else {
+            return parent::process($request, $handler);
+        }
     }
 
     /**
