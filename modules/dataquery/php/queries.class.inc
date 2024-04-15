@@ -76,10 +76,13 @@ class Queries extends \NDB_Page
         ) === 1
         ) {
             $queryID = intval($pieces[1]);
-            return (new \LORIS\dataquery\endpoints\queries\query\Run(
-                $this->loris,
-                $queryID
-            ))->handle($request);
+            return (new \LORIS\Middleware\Compression())->process(
+                $request,
+                new \LORIS\dataquery\endpoints\queries\query\Run(
+                    $this->loris,
+                    $queryID
+                )
+            );
         }
         if (preg_match(
             "/queries\/([0-9]+)\/count$/",

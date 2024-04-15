@@ -13,7 +13,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Compression implements MiddlewareInterface, MiddlewareChainer
+class Compression implements MiddlewareInterface
 {
     use MiddlewareChainerMixin;
 
@@ -32,7 +32,7 @@ class Compression implements MiddlewareInterface, MiddlewareChainer
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $response = $this->next->process($request, $handler);
+        $response = $handler->handle($request);
         // $request->getHeader is returning one comma separated string. This
         // doesn't match my reading of PSR7, but it's what we've got to work with.
         if (strpos($request->getHeader("Accept-Encoding")[0] ?? '', 'gzip') === false) {
