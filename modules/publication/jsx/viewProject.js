@@ -105,7 +105,6 @@ class ViewProject extends React.Component {
       }
 
       response.json().then(
-        
         (data) => {
           let formData = {
             title: data.title,

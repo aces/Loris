@@ -145,7 +145,8 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, p.project as project, pr.Name as projectName, datePublication, '.
+    $query  = 'SELECT Title, Description, ' .
+        'p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
