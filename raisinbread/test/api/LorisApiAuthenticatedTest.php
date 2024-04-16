@@ -236,9 +236,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             ],
         );
         $this->DB->delete("flag", ['ID' => '999999']);
-        $this->DB->delete("test_names", ['ID' => '999999']);
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
+        $this->DB->delete("test_names", ['ID' => '999999']);
 
         $set = [
             'Value' => $this->originalJwtKey
