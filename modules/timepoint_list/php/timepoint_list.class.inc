@@ -82,6 +82,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candidate'] = $candidate->getData();
         // convert DoB date to age and months and rename it to Derived Age
         $dob = $candidate->getData();
+        error_log(print_r($dob,true));
         if (strtotime($dob) !== false) {
 
             $dob_year  = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
