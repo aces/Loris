@@ -101,7 +101,12 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
                 $this->setupPermissions(['superuser']);
 
         $this->safeGet($this->url . "/candidate_profile/115788/");
-        $this->safeClick(WebDriverBy::cssSelector('#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)'));
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#card0 > div > div > div >'.
+                ' dl > div:nth-child(9) > dd > div > a:nth-child(1)'
+            )
+        );
 
                     $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
