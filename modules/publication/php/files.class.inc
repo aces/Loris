@@ -1,4 +1,9 @@
 <?php
+
+// @phan-file-suppress PhanUnusedProtectedMethodParameter
+// Suppressed due to false-positive for doDownloadNotification function
+// Unused parameter $file required to match parent signature
+
 namespace LORIS\publication;
 
 /**
@@ -53,14 +58,10 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     /**
      * Send a notification for the download.
      *
-     * Next line suppressed due to false-positive
-     * Unused parameter $file required to match parent signature
-     *
      * @param string $file The filename being downloaded
      *
      * @return void
-     *
-     * @phan-suppress-next-line PhanUnusedProtectedMethodParameter */
+     */
     protected function doDownloadNotification($file)
     {
         // Not implemented for this module
