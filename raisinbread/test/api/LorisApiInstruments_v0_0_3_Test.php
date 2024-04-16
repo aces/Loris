@@ -19,8 +19,8 @@ require_once __DIR__ . "/LorisApiAuthenticated_v0_0_3_Test.php";
  */
 class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
 {
-    protected $instrumentTest = "testtest";
-    protected $candidTest     = "115788";
+    protected $instrumentTest = "bmi";
+    protected $candidTest     = "900000";
     protected $visitTest      = "V1";
 
     /**
