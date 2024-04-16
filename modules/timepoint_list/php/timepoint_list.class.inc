@@ -82,8 +82,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candidate'] = $candidate->getData();
         // convert DoB date to age and months and rename it to Derived Age
         $dob = $candidate->getData();
-        error_log(print_r($dob,true));
-        if (strtotime($dob) !== false) {
+        if (strtotime($dob['DoB']) !== false) {
 
             $dob_year  = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
             $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
@@ -93,7 +92,7 @@ class Timepoint_List extends \NDB_Menu
 
         // convert EDC date to age and months and rename it to EDC Age
         $edc = $candidate->getData();
-        if (strtotime($edc) !== false) {
+        if (strtotime($edc['EDC']) !== false) {
 
                 $edc_year  = abs((date('Y', strtotime($edc['EDC'])) - date('Y')));
                 $edc_month = abs((date('m', strtotime($edc['EDC'])) - date('m')));
