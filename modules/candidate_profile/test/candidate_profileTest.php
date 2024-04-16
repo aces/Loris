@@ -108,9 +108,8 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
             )
         );
 
-                    $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-                        ->getText();
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            ->getText();
         $this->assertStringContainsString(
             "Behavioural Battery of Instruments",
             $bodyText
