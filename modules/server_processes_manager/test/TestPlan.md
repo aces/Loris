@@ -23,4 +23,4 @@ This test plan should be executed by someone with decent knowledge of the MRI up
    When the process finishes (when the exit code file contains something), verify that all the process files
    have been deleted from `/tmp` if and only if the exit code is zero.
 
-- Note: If the page doesn't load add the following path `/opt/Loris-MRI/bin/mri/` to the LORIS-MRI code path in configuration module.
+- Note: If the page doesn't load the LORIS-MRI code path should be set in configuration module.
