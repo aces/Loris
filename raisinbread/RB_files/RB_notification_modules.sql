@@ -10,5 +10,6 @@ INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_a
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (7,'publication','submission','N','notifier_publication_submission.tpl','Publication: Submission Received');
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (8,'publication','review','N','notifier_publication_review.tpl','Publication: Proposal has been reviewed');
 INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (9,'publication','edit','N','notifier_publication_edit.tpl','Publication: Proposal has been edited');
+INSERT INTO `notification_modules` (`id`, `module_name`, `operation_type`, `as_admin`, `template_file`, `description`) VALUES (10, 'publication', 'download', 'N', 'notifier_publication_download.tpl', 'Publication: File Downloaded');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
