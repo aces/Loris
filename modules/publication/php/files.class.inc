@@ -60,8 +60,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
      *
      * @return void
      *
-     * @phan-suppress-next-line PhanUnusedProtectedMethodParameter
-     */
+     * @phan-suppress-next-line PhanUnusedProtectedMethodParameter */
     protected function doDownloadNotification($file)
     {
         // Not implemented for this module
