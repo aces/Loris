@@ -1,12 +1,14 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
-    DateElement,
-    TextboxElement,
-    FormElement,
-    FieldsetElement,
     CheckboxElement,
+    DateElement,
+    FieldsetElement,
+    TimeElement,
+    FormElement,
+    NumericElement,
+    SelectElement,
+    TextboxElement,
 } from 'jsx/Form';
 
 /**
@@ -96,6 +98,9 @@ function Filter(props) {
             break;
           case 'date':
             element = <DateElement/>;
+            break;
+          case 'time':
+            element = <TimeElement/>;
             break;
           case 'checkbox':
             element = <CheckboxElement/>;

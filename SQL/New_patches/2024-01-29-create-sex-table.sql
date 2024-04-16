@@ -3,7 +3,7 @@ CREATE TABLE `sex` (
   PRIMARY KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
 
-INSERT INTO sex (Sex) VALUES ('Male'), ('Female'), ('Other');
+INSERT INTO sex (Name) VALUES ('Male'), ('Female'), ('Other');
 
 ALTER TABLE candidate
   MODIFY COLUMN sex varchar(255) DEFAULT NULL,

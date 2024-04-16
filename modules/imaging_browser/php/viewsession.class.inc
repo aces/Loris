@@ -119,17 +119,6 @@ class ViewSession extends \NDB_Form
 
             $this->tpl_data['showFloatJIV'] = true;
 
-            $file = $this->_DB->pselectOne(
-                "SELECT File FROM files f
-                JOIN session s
-                ON (s.ID=f.SessionID)
-                WHERE s.ID=:sid AND FileType='obj'",
-                ['sid' => $this->sessionID]
-            );
-            if (!empty($file)) {
-                $this->tpl_data['show3DViewer'] = true;
-            }
-
             $this->tpl_data['status_options']    = [
                 ''     => '&nbsp;',
                 'Pass' => 'Pass',

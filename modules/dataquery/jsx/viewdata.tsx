@@ -4,7 +4,7 @@ import {useState, useEffect, ReactNode} from 'react';
 import fetchDataStream from 'jslib/fetchDataStream';
 
 import DataTable from 'jsx/DataTable';
-import {SelectElement} from 'jsx/Form';
+import {SelectElement, CheckboxElement} from 'jsx/Form';
 import {APIQueryField, APIQueryObject} from './types';
 import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
@@ -18,13 +18,9 @@ type JSONString = string;
 type SessionRowCell = {
     VisitLabel: string;
     value?: string
-    values?: string[]
+    values?: {[keyid: string]: string}
 };
 
-type KeyedValue = {
-    value: string;
-    key: string;
-}
 
 /**
  * Convert a piece of data from JSON to the format to be displayed
@@ -278,6 +274,7 @@ function ViewData(props: {
         props.fields,
         props.fulldictionary
     );
+    const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
 
     let queryTable;
     if (queryData.loading) {
@@ -324,6 +321,7 @@ function ViewData(props: {
                             visitOrganization,
                             props.fields,
                             props.fulldictionary,
+                            emptyVisits,
                         )
                     }
                     hide={
@@ -345,6 +343,17 @@ function ViewData(props: {
         }
     }
 
+    const emptyCheckbox = (visitOrganization === 'inline' ?
+          <CheckboxElement
+             name="emptyvisits"
+             value={emptyVisits}
+             label="Display empty visits?"
+             onUserInput={
+                 (name: string, value: boolean) =>
+                     setEmptyVisits(value)
+             }
+         />
+         : <div />);
     return <div>
         <SelectElement
             name='headerdisplay'
@@ -381,6 +390,7 @@ function ViewData(props: {
             }
             sortByValue={false}
           />
+          {emptyCheckbox}
          {queryTable}
     </div>;
 }
@@ -438,7 +448,8 @@ function organizeData(
                             }
                             const cellobj: any = JSON.parse(candidaterow[i]);
                             for (const session in cellobj) {
-                                if (!cellobj.hasOwnProperty(session)) {
+                                if (!cellobj.hasOwnProperty(session)
+                                   || session === 'keytype') {
                                     continue;
                                 }
                                 const vl: string = cellobj[session].VisitLabel;
@@ -474,10 +485,34 @@ function organizeData(
                               dataRow.push(null);
                               break;
                             case 1:
-                              if (typeof values[0].value === 'undefined') {
+                              switch (dictionary.cardinality) {
+                              case 'many':
+                                if (typeof values[0].values === 'undefined') {
                                   dataRow.push(null);
-                              } else {
+                                } else {
+                                    const thevalues = values[0].values;
+                                    // I don't think this if statement should be required because of the
+                                    // above if statement, but without it typescript gives an error
+                                    // about Object.keys on possible type undefined.
+                                    if (!thevalues) {
+                                        dataRow.push(null);
+                                    } else {
+                                      const mappedVals = Object.keys(thevalues)
+                                        .map(
+                                            (key) => key + '=' + thevalues[key]
+                                        )
+                                        .join(';');
+                                      dataRow.push(mappedVals);
+                                    }
+                                }
+                                break;
+                              default:
+                                if (typeof values[0].value === 'undefined') {
+                                  dataRow.push(null);
+                                } else {
                                   dataRow.push(values[0].value);
+                                }
+                                break;
                               }
                               break;
                             default:
@@ -617,25 +652,47 @@ function expandLongitudinalCells(
         if (!displayedVisits) {
             displayedVisits = [];
         }
-        const values = displayedVisits.map((visit) => {
+        let celldata: {[sessionid: string]: SessionRowCell};
+        try {
+            celldata = JSON.parse(value || '{}');
+        } catch (e) {
+            // This can sometimes happen when we go between Cross-Sectional
+            // and Longitudinal and the data is in an inconsistent state
+            // between renders, so instead of throwing an error (which crashes
+            // the whole app), we just log to the console and return null.
+            console.error('Internal error parsing: "' + value + '"');
+            return null;
+        }
+        const values = displayedVisits.map((visit): string|null => {
             if (!value) {
                 return null;
             }
-            try {
-                const data = JSON.parse(value);
-                for (const session in data) {
-                    if (data[session].VisitLabel == visit) {
-                        return data[session].value;
+            for (const session in celldata) {
+                if (celldata[session].VisitLabel == visit) {
+                    const thissession: SessionRowCell = celldata[session];
+                    switch (fielddict.cardinality) {
+                    case 'many':
+                        if (thissession.values === undefined) {
+                            return null;
+                        }
+                        const thevalues = thissession.values;
+                        return Object.keys(thevalues)
+                           .map( (key) => key + '=' + thevalues[key])
+                           .join(';');
+                    default:
+                       if (thissession.value !== undefined) {
+                           return thissession.value;
+                       }
+                       throw new Error('Value was undefined');
                     }
                 }
-                return null;
-            } catch (e) {
-                throw new Error('Internal error');
             }
+            return null;
         });
         return values;
     }
 }
+
 /**
  * Return a cell formatter specific to the options chosen
  *
@@ -644,13 +701,17 @@ function expandLongitudinalCells(
  *                                     option selected
  * @param {array} fields - The fields selected
  * @param {array} dict - The full dictionary
- * @returns {function} - the appropriate column formatter for this data organization
+ * @param {boolean} displayEmptyVisits - Whether visits with
+                                 no data should be displayed
+ * @returns {function} - the appropriate column formatter for
+                         this data organization
  */
 function organizedFormatter(
     resultData: string[][],
     visitOrganization: VisitOrgType,
     fields: APIQueryField[],
-    dict: FullDictionary
+    dict: FullDictionary,
+    displayEmptyVisits: boolean
 ) {
     let callback;
     switch (visitOrganization) {
@@ -693,15 +754,26 @@ function organizedFormatter(
             if (fielddict === null) {
                 return null;
             }
-            if (fielddict.scope == 'candidate'
-                    && fielddict.cardinality != 'many') {
+            if (fielddict.scope == 'candidate') {
                 if (cell === '') {
                     return <td><i>(No data)</i></td>;
                 }
-
-                return <TableCell data={cell} />;
+                switch (fielddict.cardinality) {
+                case 'many':
+                    return <td><i>(Not implemented)</i></td>;
+                case 'single':
+                case 'unique':
+                case 'optional':
+                    return <TableCell data={cell} />;
+                default:
+                    return (<td>
+                        <i>(Internal Error. Unhandled cardinality:
+                            {fielddict.cardinality})
+                        </i>
+                    </td>);
+                }
             }
-            let val;
+            let val: React.ReactNode;
             if (fielddict.scope == 'session') {
                 let displayedVisits: string[];
                 if (fields[fieldNo] && fields[fieldNo].visits) {
@@ -711,13 +783,107 @@ function organizedFormatter(
                 } else {
                     // All visits
                     if (fielddict.visits) {
-                        displayedVisits = fielddict.visits;
+                       displayedVisits = fielddict.visits;
                     } else {
-                        displayedVisits = [];
+                       displayedVisits = [];
                     }
                 }
+                switch (fielddict.cardinality) {
+                case 'many':
+                    val = displayedVisits.map((visit): React.ReactNode => {
+                        let hasdata = false;
+                        /**
+                         * Map the JSON string from the cell returned by the
+                         * API to a string to display to the user in the
+                         * frontend for this visit.
+                         *
+                         * @param {string} visit - The visit being displayed
+                         * @param {string} cell - The raw cell value
+                         * @returns {string|null} - the display string
+                         */
+                        const visitval = (visit: string, cell: string) => {
+                            if (cell === '') {
+                                return null;
+                            }
 
-                val = displayedVisits.map((visit) => {
+                            try {
+                                const json = JSON.parse(cell);
+                                for (const sessionid in json) {
+                                    if (json[sessionid].VisitLabel == visit) {
+                                        const values = json[sessionid].values;
+                                        return (<dl>{
+                                            Object.keys(values).map(
+                                                (keyid: string):
+                                                  React.ReactNode => {
+                                                    let val = values[keyid];
+                                                    if (val === null) {
+                                                        return;
+                                                    }
+                                                    const ftyp = fielddict.type;
+                                                    if (ftyp == 'URI') {
+                                                        val = (
+                                                            <a href={val}>
+                                                                {val}
+                                                            </a>
+                                                        );
+                                                    }
+                                                    hasdata = true;
+                                                    return (
+                                                        <div style={{
+                                                            margin: '1ex',
+                                                          }}>
+                                                            <dt>{keyid}</dt>
+                                                            <dd>{val}</dd>
+                                                        </div>
+                                                    );
+                                                })
+                                        }
+                                        </dl>);
+                                    }
+                                }
+                                return null;
+                            } catch (e) {
+                                console.error(e);
+                                return <i>(Internal error)</i>;
+                            }
+                        };
+                        let theval = visitval(visit, cell);
+                        if (!displayEmptyVisits && !hasdata) {
+                            return <div key={visit} />;
+                        }
+                        if (theval === null) {
+                            theval = <i>(No data)</i>;
+                        }
+                        return (<div key={visit} style={
+                                        {
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'start',
+                                            flexGrow: 1,
+                                            flexShrink: 1,
+                                            flexBasis: 0,
+                                            borderBottom: 'thin dotted black',
+                                        }
+                                }>
+                                   <div style={
+                                            {
+                                                fontWeight: 'bold',
+                                                padding: '1em',
+                                            }
+                                        }
+                                    >{visit}
+                                    </div>
+                                   <div style={
+                                        {padding: '1em'}
+                                    }>
+                                        {theval}
+                                    </div>
+                        </div>);
+                    });
+                    break;
+                default:
+                    val = displayedVisits.map((visit) => {
+                    let hasdata = false;
                     /**
                      * Maps the JSON value from the session to a list of
                      * values to display to the user
@@ -729,26 +895,35 @@ function organizedFormatter(
                      */
                     const visitval = (visit: string, cell: string) => {
                         if (cell === '') {
-                            return <i>(No data)</i>;
+                            return null;
                         }
                         try {
                             const json = JSON.parse(cell);
                             for (const sessionid in json) {
                                 if (json[sessionid].VisitLabel == visit) {
-                                    if (fielddict.cardinality === 'many') {
-                                        return valuesList(
-                                            json[sessionid].values
-                                        );
-                                    } else {
-                                        return json[sessionid].value;
+                                    hasdata = true;
+                                    if (json[sessionid].value === true) {
+                                        return 'True';
+                                    } else if (
+                                        json[sessionid].value === false
+                                    ) {
+                                        return 'False';
                                     }
+                                    return json[sessionid].value;
                                 }
                             }
                         } catch (e) {
                             return <i>(Internal error)</i>;
                         }
-                        return <i>(No data)</i>;
+                        return null;
                     };
+                    let theval = visitval(visit, cell);
+                    if (!displayEmptyVisits && !hasdata) {
+                        return <div key={visit} />;
+                    }
+                    if (theval === null) {
+                        theval = <i>(No data)</i>;
+                    }
                     return (<div key={visit} style={
                                     {
                                         display: 'flex',
@@ -771,12 +946,11 @@ function organizedFormatter(
                                <div style={
                                     {padding: '1em'}
                                 }>
-                                    {visitval(visit, cell)}
+                                    {theval}
                                 </div>
                             </div>);
                 });
-            } else {
-                return <td>FIXME: {cell}</td>;
+                }
             }
             const value = (<div style={
                 {
@@ -856,21 +1030,6 @@ function getDictionary(
         return null;
     }
     return dict[fieldobj.module][fieldobj.category][fieldobj.field];
-}
-
-/**
- * Return a cardinality many values field as a list
- *
- * @param {object} values - values object with keys as id
- * @returns {React.ReactElement} - The values in an HTML list
- */
-function valuesList(values: KeyedValue[]) {
-    const items = Object.values(values).map((val) => {
-        return <li key={val.key}>{val.value}</li>;
-    });
-    return (<ul>
-        {items}
-    </ul>);
 }
 
 type VisitOrgType = 'raw' | 'inline' | 'longitudinal' | 'crosssection';

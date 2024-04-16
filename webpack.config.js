@@ -90,7 +90,7 @@ modulePlugins.push(
   })
 );
 
-if (EEGVisEnabled !== 'true') {
+if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
   modulePlugins.push(
     new IgnorePlugin({
       resourceRegExp: /react-series-data-viewer/,
@@ -235,6 +235,7 @@ let config = [
     resolve: resolve,
     module: mod,
     stats: 'errors-warnings',
+    cache: {type: 'filesystem'},
   },
 ];
 
@@ -321,6 +322,7 @@ const lorisModules = {
   statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
+  schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
 };
