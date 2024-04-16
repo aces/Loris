@@ -33,7 +33,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'UserID'                => 1,
-		        'Entity_type'           => 'Human',
+                'Entity_type'           => 'Human',
                 'ExternalID'            => null,
                 'DoB'                   => '2003-10-31',
                 'DoD'                   => null,
@@ -52,7 +52,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'Entity_type'           => 'Human',
                 'ProbandSex'            => null,
                 'ProbandDoB'            => null
-	        ]
+            ]
         );
         $this->DB->insert(
             'session',
