@@ -110,6 +110,7 @@ class ViewProject extends React.Component {
             title: data.title,
             description: data.description,
             project: data.project,
+            projectName: data.projectName,
             publishingStatus: data.publishingStatus,
             datePublication: data.datePublication,
             journal: data.journal,
@@ -304,7 +305,7 @@ class ViewProject extends React.Component {
         <StaticElement
           name="project"
           label="Project"
-          text={this.state.formData.project}
+          text={this.state.formData.projectName}
         />
         <StaticElement
           name="publishingStatus"
