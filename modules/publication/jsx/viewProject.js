@@ -54,7 +54,11 @@ class ViewProject extends React.Component {
       );
       return;
     }
-    let formData = this.state.formData;
+    let formData = {
+      ...this.state.formData,
+      baseURL: loris.BaseURL,
+    };
+
     let formObj = new FormData();
     for (let key in formData) {
       if (formData.hasOwnProperty(key) && formData[key] !== '') {
