@@ -52,11 +52,11 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
 
     /**
      * Send a notification for the download.
-     * 
+     *
      * @param string $file The filename being downloaded
      *
      * @return void
-     * 
+     *
      * @phan-suppress-next-line PhanUnusedProtectedMethodParameter
      * Next line suppressed due to false-positive
      * Unused parameter $file required to match parent signature
