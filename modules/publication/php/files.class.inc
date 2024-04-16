@@ -53,15 +53,14 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     /**
      * Send a notification for the download.
      *
+     * Next line suppressed due to false-positive
+     * Unused parameter $file required to match parent signature
+     *
      * @param string $file The filename being downloaded
      *
      * @return void
-     *
-     * @phan-suppress-next-line PhanUnusedProtectedMethodParameter
-     * Next line suppressed due to false-positive
-     * Unused parameter $file required to match parent signature
      */
-    protected function doDownloadNotification($file)
+    protected function doDownloadNotification($file) // @phan-suppress-current-line PhanUnusedProtectedMethodParameter
     {
         // Not implemented for this module
     }
