@@ -81,18 +81,24 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
         // convert DoB date to age and months and rename it to Derived Age
-        $dob       = $candidate->getData();
-        $dob_year  = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
-        $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
-        $dob_age   = $dob_year . " y / " . $dob_month . " m";
-        $this->tpl_data['dob_age'] = $dob_age;
-        // convert EDC date to age and months and rename it to EDC Age
-        $edc       = $candidate->getData();
-        $edc_year  = abs((date('Y', strtotime($edc['EDC'])) - date('Y')));
-        $edc_month = abs((date('m', strtotime($edc['EDC'])) - date('m')));
-        $edc_age   = $edc_year . " y / " . $edc_month . " m";
-        $this->tpl_data['edc_age'] = $edc_age;
+        $dob = $candidate->getData();
+        if (strtotime($dob) !== false) {
 
+            $dob_year  = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
+            $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
+            $dob_age   = $dob_year . " y / " . $dob_month . " m";
+            $this->tpl_data['dob_age'] = $dob_age;
+        }
+
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (strtotime($edc) !== false) {
+
+                $edc_year  = abs((date('Y', strtotime($edc['EDC'])) - date('Y')));
+                $edc_month = abs((date('m', strtotime($edc['EDC'])) - date('m')));
+                $edc_age   = $edc_year . " y / " . $edc_month . " m";
+                $this->tpl_data['edc_age'] = $edc_age;
+        }
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
         $user     = \User::singleton();
