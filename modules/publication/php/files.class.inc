@@ -59,6 +59,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
      * @param string $file The filename being downloaded
      *
      * @return void
+     *
      * @phan-suppress-next-line PhanUnusedProtectedMethodParameter
      */
     protected function doDownloadNotification($file)
