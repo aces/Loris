@@ -621,6 +621,7 @@ class Database implements LoggerAwareInterface
         $this->trackChanges($table, [], $wherestr, 'D');
 
         $this->_printQuery($query);
+error_log(print_r($query,true));
         $result = $this->_PDO->exec($query);
         if ($result === false) {
             throw new DatabaseException(
