@@ -49,4 +49,16 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     {
         return "/files/";
     }
+
+    /**
+     * Send a notification for the download.
+     *
+     * @param string $file The filename being downloaded
+     *
+     * @return void
+     */
+    protected function doDownloadNotification($file)
+    {
+        // Not implemented for this module
+    }
 }
