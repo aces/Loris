@@ -21,6 +21,7 @@ changes in the following format: PR #1234***
 - bvl_feedback updates in real-time (PR #8966)
 - DoB and DoD format respected in candidate parameters (PR #9001)
 - Fix delete file in upload (PR #9181)
+- Fix profile level feedback display in behavioural QC module (PR #9192)
 - While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
@@ -518,3 +519,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)

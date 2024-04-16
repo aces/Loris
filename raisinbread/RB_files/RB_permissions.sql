@@ -14,14 +14,14 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (12,'examiner_view','Add and Certify Examiners - Own Sites',17,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (13,'examiner_multisite','Add and Certify Examiners - All Sites',17,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (17,'conflict_resolver','Resolve Conflicts',9,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (18,'data_dict_view','Parameter Type Descriptions',13,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (18,'data_dict_view','Parameter Type Descriptions',46,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (19,'violated_scans_view_allsites','Violated Scans - All Sites',30,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (22,'config','Settings',8,'View/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (23,'imaging_browser_view_site','Imaging Scans - Own Sites',20,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (24,'imaging_browser_view_allsites','Imaging Scans - All Sites',20,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (25,'dicom_archive_view_allsites','DICOMs - All Sites',15,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (28,'instrument_builder','Instrument Forms',23,'Create/Edit',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (29,'data_dict_edit','Parameter Type Descriptions',13,'Edit',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (29,'data_dict_edit','Parameter Type Descriptions',46,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (31,'candidate_parameter_view','Candidate Information',7,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (32,'candidate_parameter_edit','Candidate Information',7,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (33,'genomic_browser_view_site','Genomic Data - Own Sites',18,'View',2);
@@ -64,5 +64,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'api_docs','LORIS API Manual',45,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'electrophysiology_browser_edit_annotations','Annotations',41,'Create/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (72,'monitor_eeg_uploads','Monitor EEG uploads',47,'Create/Edit',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (73,'schedule_module','Schedule Module: edit and delete appointment',48,'View/Create/Edit',2);
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
