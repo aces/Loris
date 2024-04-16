@@ -392,13 +392,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->tpl_data['timePoint'] = $timePoint->getData();
         // convert DoB And EDC date to years and months
         // DoB to Derived Age
-        $dob       = $this->candidate->getCandidateDoB();
+        $dob       = $candidate->getCandidateDoB();
         $dob_year  = abs((date('Y', strtotime($dob)) - date('Y')));
         $dob_month = abs((date('m', strtotime($dob)) - date('m')));
         $dob_age   = $dob_year . " y / " . $dob_month . " m";
         $this->tpl_data['dob_age'] = $dob_age;
         // EDC to EDC Age
-        $edc       = $this->candidate->getCandidateEDC();
+        $edc       = $candidate->getCandidateEDC();
         $edc_year  = abs((date('Y', strtotime($edc)) - date('Y')));
         $edc_month = abs((date('m', strtotime($edc)) - date('m')));
         $edc_age   = $edc_year . " y / " . $edc_month . " m";
