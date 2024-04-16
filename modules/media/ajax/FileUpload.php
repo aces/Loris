@@ -217,7 +217,7 @@ function uploadFile()
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("File too Large!", 500);
     }
 }
 
