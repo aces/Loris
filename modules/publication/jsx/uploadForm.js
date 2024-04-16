@@ -160,7 +160,7 @@ class PublicationUploadForm extends React.Component {
     }
     let formData = {
       ...this.state.formData,
-      baseURL: loris.BaseURL
+      baseURL: loris.BaseURL,
     };
 
     let formObj = new FormData();
