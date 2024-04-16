@@ -22,6 +22,7 @@ changes in the following format: PR #1234***
 - DoB and DoD format respected in candidate parameters (PR #9001)
 - Fix delete file in upload (PR #9181)
 - Fix profile level feedback display in behavioural QC module (PR #9192)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
