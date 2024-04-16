@@ -145,13 +145,15 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, p.project as project, datePublication, '.
+    $query  = 'SELECT Title, Description, p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
         'LEFT JOIN publication_collaborator pc '.
         'ON p.LeadInvestigatorID = pc.PublicationCollaboratorID '.
+        'LEFT JOIN Project pr '.
+        'ON p.project = pr.ProjectID '.
         'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
@@ -197,6 +199,7 @@ function getProjectData($db, $user, $id) : array
             'title'                 => $title,
             'description'           => $description,
             'project'               => $result['project'],
+            'projectName'           => $result['projectName'],
             'datePublication'       => $datePublication,
             'journal'               => $journal,
             'link'                  => $link,
