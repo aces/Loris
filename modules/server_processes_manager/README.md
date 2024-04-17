@@ -55,12 +55,7 @@ module and the ability to view the information for all processes.
 ## Configurations
 
 The following configurations affect the load of the server_processes_manager module:
-
- - /opt/Loris-MRI/bin/mri/
-
-    - This setting displays the Page of the `server_processes_manager` module.
-        
-        - To display the module you need to add the LORIS-MRI code path in the configuration module.
+ - The `LORIS-MRI code` path of the `Imaging Pipeline` tab in the configuration module must be set for the `server_processes_manager` module to load.
 
 ## Interactions with LORIS
 
