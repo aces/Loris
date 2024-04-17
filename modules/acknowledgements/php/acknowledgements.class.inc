@@ -93,28 +93,28 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             if ($values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
-            $affiliations = is_array($values['addAffiliations']) ?
+            $affils  = is_array($values['addAffiliations']) ?
                 implode(', ', $values['addAffiliations']) :
                 $values['addAffiliations'];
-            $degrees      = is_array($values['addDegrees']) ?
+            $degs    = is_array($values['addDegrees']) ?
                 implode(', ', $values['addDegrees']) :
                 $values['addDegrees'];
-            $roles        = is_array($values['addRoles']) ?
+            $roles   = is_array($values['addRoles']) ?
                 implode(', ', $values['addRoles']) :
                 $values['addRoles'];
-            $results      = [
+            $results = [
                 'ordering'      => $values['addOrdering'],
                 'full_name'     => $values['addFullName'],
                 'citation_name' => $values['addCitationName'],
-                'affiliations'  => $affiliations,
-                'degrees'       => $degrees,
-                'roles'         => $roles,
+                'affiliations'  => implode(',', array_filter(explode(',', $affils))),
+                'degrees'       => implode(',', array_filter(explode(',', $degs))),
+                'roles'         => implode(',', array_filter(explode(',', $roles))),
                 'start_date'    => $values['addStartDate'],
                 'end_date'      => $values['addEndDate'],
                 'present'       => $values['addPresent'],
             ];
 
-            $DB->insert('acknowledgements', $results);
+            $DB->insertIgnore('acknowledgements', $results);
             unset($values);
 
             header("Location: {$baseurl}/acknowledgements/", true, 303);
