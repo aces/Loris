@@ -351,10 +351,12 @@ class MediaUploadForm extends Component {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = 'Upload error!';
         if (xhr.response) {
-          const resp = JSON.parse(xhr.response);
-          if (resp.message) {
-            msg = resp.message;
+          if (xhr.statusText) {
+            msg = JSON.parse(xhr.response).message;
           }
+        }
+        if (xhr.status === 413) {
+           msg = JSON.stringify('File too large!');
         }
 
         this.setState({
@@ -367,8 +369,8 @@ class MediaUploadForm extends Component {
 
     xhr.addEventListener('error', () => {
       console.error(xhr.status + ': ' + xhr.statusText);
-      let msg = xhr.response && xhr.response.message
-        ? xhr.response.message
+      let msg = xhr.response && JSON.parse(xhr.response).message
+        ? JSON.parse(xhr.response).message
         : 'Upload error!';
       this.setState({
         errorMessage: msg,

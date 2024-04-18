@@ -676,19 +676,23 @@ tr.directentry {
     border: none;
 }
 
+.help-container {
+    position: static;
+}
+
 .help-content {
     background: #E4EBF2;
     border-style: solid;
     border-color: #246EB6;
     border-top: none;
     border-width: 1px;
-    position: fixed;
-    right: 0;
+    position: absolute;
+    left: 0;
     overflow-y: auto;
     z-index: 999;
     transition: all 0.6s ease 0s;
     width: 320px;
-    max-height: 100vh;
+    max-height: calc(100vh - 100px);
 }
 
 .help-content h1 {

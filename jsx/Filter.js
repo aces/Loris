@@ -4,6 +4,7 @@ import {
     CheckboxElement,
     DateElement,
     FieldsetElement,
+    TimeElement,
     FormElement,
     NumericElement,
     SelectElement,
@@ -97,6 +98,9 @@ function Filter(props) {
             break;
           case 'date':
             element = <DateElement/>;
+            break;
+          case 'time':
+            element = <TimeElement/>;
             break;
           case 'checkbox':
             element = <CheckboxElement/>;

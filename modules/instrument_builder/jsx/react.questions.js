@@ -19,6 +19,7 @@ import {
     TextElement,
     NumericElement,
     ButtonElement,
+    StaticElement,
 } from 'jsx/Form';
 
 /**
