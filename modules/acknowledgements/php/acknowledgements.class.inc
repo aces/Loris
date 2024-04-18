@@ -114,7 +114,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                 'present'       => $values['addPresent'],
             ];
 
-            $DB->insertIgnore('acknowledgements', $results);
+            $DB->insert('acknowledgements', $results);
             unset($values);
 
             header("Location: {$baseurl}/acknowledgements/", true, 303);
