@@ -52,12 +52,13 @@ $instrumentParameterTypeCategoryIDs = [];
 $instrumentParameterTypeIDs         = [];
 
 $parameter_types = $DB->pselectColWithIndexKey(
-    "SELECT
-        CONCAT(`Name`, '-', `SourceFrom`) AS paramkey,
-        ParameterTypeID
-    FROM parameter_type",
+    "SELECT pt.Name, pt.ParameterTypeID
+    FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+    WHERE ptc.Type = 'Instrument'",
     [],
-    "paramkey"
+    "Name"
 );
 
 // 2 query to clear all old parameter_type data associated to instruments.
@@ -207,12 +208,11 @@ foreach ($instruments AS $instrument) {
                 "Queryable"   => "1",
             ];
 
-            $key = "$Name-$testname";
             // Check if the same element existed in the parameter_type table
             // before deleting the data.
-            if (array_key_exists($key, $parameter_types)) {
+            if (array_key_exists($Name, $parameter_types)) {
                 //If element existed, reuse the same id
-                $ParameterTypeID = $parameter_types[$key];
+                $ParameterTypeID = $parameter_types[$Name];
                 $query_params["ParameterTypeID"] = $ParameterTypeID;
             } else {
                 //If it's new set it to empty string
@@ -268,9 +268,8 @@ foreach ($instruments AS $instrument) {
         "Queryable"   => "1",
     ];
 
-    $key = "$Name-$testname";
-    if (array_key_exists($key, $parameter_types)) {
-        $ParameterTypeID = $parameter_types[$key];
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
         $query_params["ParameterTypeID"] = $ParameterTypeID;
     } else {
         $ParameterTypeID = "";
@@ -313,9 +312,8 @@ foreach ($instruments AS $instrument) {
         "Queryable"   => "1",
     ];
 
-    $key = "$Name-$testname";
-    if (array_key_exists($key, $parameter_types)) {
-        $ParameterTypeID = $parameter_types[$key];
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
         $query_params["ParameterTypeID"] = $ParameterTypeID;
     } else {
         $ParameterTypeID = "";
