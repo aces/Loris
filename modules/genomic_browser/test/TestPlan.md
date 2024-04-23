@@ -44,7 +44,7 @@ The following permissions should be available in the database
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.
-- The Datatable that appears in the Profiles, CNV, SNP and Methylation tabs should only contaon data having the same site(s) as this user's site(s).
+- The Datatable that appears in the Profiles, CNV, SNP and Methylation tabs should only contain data having the same site(s) as this user's site(s).
 
 ***
 #### For a user with genomic_data_manager and one of genomic_browser_view_site or genomic_browser_view_allsites
