@@ -388,6 +388,17 @@ class NDB_Config
     }
 
     protected $settingCache = [];
+
+    /**
+     * Clears the settings cache.
+     *
+     * @return void
+     */
+    public function clearCache()
+    {
+        $this->settingCache = [];
+    }
+
     /**
      * Gets a setting by name
      *
