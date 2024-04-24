@@ -66,15 +66,10 @@ class AddExaminer extends \NDB_Page
 
         // check for site permissions
         $user = \User::singleton();
-        if (!$user->hasAnyPermission(
-            [
-                'superuser',
-                'examiner_multisite',
-            ]
-        )
+        if (!$user->hasAnyPermission('examiner_multisite')
             && !in_array($siteID, $user->getCenterIDs())
         ) {
-            return  new \LORIS\Http\Response\JSON\Conflict(
+            return new \LORIS\Http\Response\JSON\Forbidden(
                 'Permission denied: You cannot assign examiner to this Site.'
             );
         };
