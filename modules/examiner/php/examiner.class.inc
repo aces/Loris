@@ -76,13 +76,7 @@ class Examiner extends \DataFrameworkMenu
           $useCertification = ($this->useCertification == 1) ? true : false;
 
         $user = \User::singleton();
-        if ($user->hasAnyPermission(
-            [
-                'superuser',
-                'examiner_multisite',
-            ]
-        )
-        ) {
+        if ($user->hasPermission('examiner_multisite')) {
             $sites = \Utility::getSiteList(false);
         } else {
             $sites = $user->getStudySites();
