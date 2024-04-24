@@ -2564,7 +2564,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Clear data out of the flag table's Data column
-        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
+        $db->update('flag', ['DataID'=>null], ['CommentID' => $this->commentID]);
         $this->_setRequiredElementsCompletedFlag('N');
 
         $prepQ = $db->prepare(
