@@ -1151,7 +1151,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Exclusion'                   => null,
                 'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
-                'Data'                        => null
+                'DataID'                      => null
             ]
         );
     }
