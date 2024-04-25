@@ -15,6 +15,7 @@ changes in the following format: PR #1234***
 
 #### Updates and Improvements
 - Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+- Add Project filter for "My tasks" counts in dashboard (PR #9220)
 
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
