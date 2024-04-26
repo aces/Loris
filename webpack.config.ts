@@ -283,7 +283,8 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
 // Transform the mapping of LORIS modules to a mapping of webpack entry points.
 const entries = Object.fromEntries(
   Object.entries(lorisModules)
-    .map(([name, files]) => makeModuleEntries(name, files).flat())
+    .map(([name, files]) => makeModuleEntries(name, files))
+    .flat()
 );
 
 const config: webpack.Configuration = {
