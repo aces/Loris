@@ -42,6 +42,7 @@ function cellValue(data: string) {
         return data;
     }
 }
+
 /**
  * Renders a single table cell value, converting from JSON string to
  * normal string if necessary.
@@ -52,6 +53,42 @@ function cellValue(data: string) {
  */
 function TableCell(props: {data: string}) {
     return <td>{cellValue(props.data)}</td>;
+}
+
+enum EnumDisplayTypes {
+    EnumLabel,
+    EnumValue
+}
+
+function DisplayValue(props: {value: any, dictionary: FieldDictionary, enumDisplay: EnumDisplayTypes}) {
+    let display = props.value;
+    switch(props.enumDisplay) {
+    case EnumDisplayTypes.EnumLabel:
+        if (props.dictionary.labels && props.dictionary.options) {
+                for(let i = 0; i < props.dictionary.options.length; i++) {
+                    if (props.dictionary.options[i] == props.value) {
+                        display= props.dictionary.labels[i];
+                        break;
+                    }
+                }
+            }
+        break;
+    }
+
+    if (props.value === true) {
+        return 'True';
+    } else if (props.value === false) {
+        return 'False';
+    }
+
+    if (props.dictionary.type == 'URI') {
+        display = (
+                <a href={props.value}>
+                {display}
+                </a>
+                );
+    }
+    return display;
 }
 
 /**
@@ -266,6 +303,7 @@ function ViewData(props: {
         = useState<VisitOrgType>('inline');
     const [headerDisplay, setHeaderDisplay]
         = useState<HeaderDisplayType>('fieldnamedesc');
+    const [enumDisplay, setEnumDisplay] = useState<EnumDisplayTypes>(EnumDisplayTypes.EnumLabel);
     const queryData = useRunQuery(props.fields, props.filters, props.onRun);
     const organizedData = useDataOrganization(
         queryData,
@@ -322,6 +360,7 @@ function ViewData(props: {
                             props.fields,
                             props.fulldictionary,
                             emptyVisits,
+                            enumDisplay,
                         )
                     }
                     hide={
@@ -387,6 +426,27 @@ function ViewData(props: {
             onUserInput={
                 (name: string, value: VisitOrgType) =>
                     setVisitOrganization(value)
+            }
+            sortByValue={false}
+          />
+        <SelectElement
+            name='enumdisplay'
+            options={{
+                'labels': 'Labels',
+                'values': 'Values',
+            }}
+            label='Display options as'
+            value={enumDisplay == EnumDisplayTypes.EnumLabel ? 'labels' : 'values'}
+            multiple={false}
+            emptyOption={false}
+            onUserInput={
+                (name: string, value: string) => {
+                    if (value == 'labels') {
+                        setEnumDisplay(EnumDisplayTypes.EnumLabel);
+                    } else {
+                        setEnumDisplay(EnumDisplayTypes.EnumValue);
+                    }
+                }
             }
             sortByValue={false}
           />
@@ -711,7 +771,8 @@ function organizedFormatter(
     visitOrganization: VisitOrgType,
     fields: APIQueryField[],
     dict: FullDictionary,
-    displayEmptyVisits: boolean
+    displayEmptyVisits: boolean,
+    enumDisplay: EnumDisplayTypes,
 ) {
     let callback;
     switch (visitOrganization) {
@@ -819,21 +880,13 @@ function organizedFormatter(
                                                     if (val === null) {
                                                         return;
                                                     }
-                                                    const ftyp = fielddict.type;
-                                                    if (ftyp == 'URI') {
-                                                        val = (
-                                                            <a href={val}>
-                                                                {val}
-                                                            </a>
-                                                        );
-                                                    }
                                                     hasdata = true;
                                                     return (
                                                         <div style={{
                                                             margin: '1ex',
                                                           }}>
                                                             <dt>{keyid}</dt>
-                                                            <dd>{val}</dd>
+                                                            <dd><DisplayValue value={val} dictionary={fielddict} enumDisplay={enumDisplay} /></dd>
                                                         </div>
                                                     );
                                                 })
@@ -902,14 +955,10 @@ function organizedFormatter(
                             for (const sessionid in json) {
                                 if (json[sessionid].VisitLabel == visit) {
                                     hasdata = true;
-                                    if (json[sessionid].value === true) {
-                                        return 'True';
-                                    } else if (
-                                        json[sessionid].value === false
-                                    ) {
-                                        return 'False';
-                                    }
-                                    return json[sessionid].value;
+                                    return <DisplayValue
+                                              value={json[sessionid].value}
+                                              dictionary={fielddict}
+                                              enumDisplay={enumDisplay} />;
                                 }
                             }
                         } catch (e) {
