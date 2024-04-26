@@ -193,6 +193,7 @@ plugins.push(new CopyPlugin({
       globOptions: {
         ignore: ['react.profiling.min.js'],
       },
+      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
       filter: async (path) => {
         const file = (path.split('\\').pop() as any).split('/').pop();
         const keep = [
@@ -206,6 +207,7 @@ plugins.push(new CopyPlugin({
       from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
       to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
       force: true,
+      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
       filter: async (path) => {
         const file = (path.split('\\').pop() as any).split('/').pop();
         const keep = [
@@ -231,8 +233,11 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 }
 
 /**
- * Return the entry points of a LORIS module, in the form of a list of tuples
- * mapping each entry name (exemple 'login/loginIndex') to its webpack entry.
+ * Get the webpack entries of a given module, which is described by its name
+ * and its entry points.
+ *
+ * @returns A list of two-element tuples mapping each entry name (exemple
+ * 'login/loginIndex') to its webpack entry.
  */
 function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
@@ -245,8 +250,6 @@ function makeModuleEntries(moduleName: string, files: string[]) {
     filename: basePath + 'js/' + fileName + '.js',
   }]));
 }
-
-console.log(process.env.target);
 
 // Only build the given target module if there is one in the current
 // environment.
@@ -265,6 +268,7 @@ if (target) {
 // Add entries for project overrides.
 if (fs.existsSync('./project/webpack-project.config.js')) {
   const projectModules: { [x: string]: string[] }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     = require('./project/webpack-project.config.js');
 
   for (const [moduleName, files] of Object.entries(projectModules)) {
