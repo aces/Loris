@@ -645,6 +645,7 @@ function organizedMapper(
             if (value === null) {
                 return '';
             }
+
             return cellValue(value);
         };
     case 'longitudinal':
@@ -1079,11 +1080,28 @@ function organizedFormatter(
          * @param {string} cell - The raw cell value returned by the API.
          * @returns {React.ReactElement} - The table cell for this cell.
          */
-        callback = (label: string, cell: JSONString): ReactNode => {
+        callback = (
+            label: string,
+            cell: string,
+            row: TableRow,
+            headers: string[],
+            fieldNo: number
+        ): ReactNode => {
             if (cell === null) {
                 return <td><i>No data for visit</i></td>;
             }
-            return <TableCell data={cell} />;
+            if (fieldNo == 0) {
+                // automatically added Visit column
+                return <TableCell data={cell} />;
+            }
+
+            const fieldobj = fields[fieldNo-1];
+            const fielddict = getDictionary(fieldobj, dict);
+            console.log(fielddict, fieldobj, cell);
+
+            return fielddict === null
+                ? <TableCell data={cell} />
+                : <td><DisplayValue value={cellValue(cell)} dictionary={fielddict} enumDisplay={enumDisplay} /></td>;
         };
         return callback;
     }
