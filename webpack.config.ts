@@ -1,7 +1,7 @@
 import cp from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import webpack, { DefinePlugin, IgnorePlugin } from 'webpack';
+import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
@@ -12,7 +12,7 @@ let lorisModules: { [x: string]: string[] } = {
   login: ['loginIndex'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
-  candidate_parameters: ['CandidateParameters', 'ConsentWidget',],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget'],
   configuration: [
     'CohortRelations',
     'configuration_helper',
@@ -216,11 +216,11 @@ plugins.push(new CopyPlugin({
       },
     },
   ],
-}))
+}));
 
 plugins.push(new DefinePlugin({
   EEG_VIS_ENABLED: EEGVisEnabled,
-}))
+}));
 
 if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
   plugins.push(
@@ -238,7 +238,7 @@ function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
   const basePath = fs.existsSync(`./project/modules/${moduleName}`)
     ? `./project/modules/${moduleName}`
-    : `./modules/${moduleName}/`
+    : `./modules/${moduleName}/`;
 
   return files.map((fileName) => ([moduleName + '/' + fileName, {
     import: basePath + 'jsx/' + fileName,
@@ -254,7 +254,7 @@ const target = process.env.target;
 if (target) {
   if (target in lorisModules) {
     lorisModules = {
-      [target]: lorisModules[target]
+      [target]: lorisModules[target],
     };
   } else {
     console.error(`Target module '${target}' not found.`);
@@ -290,7 +290,7 @@ const config: webpack.Configuration = {
     Breadcrumbs: './jsx/Breadcrumbs.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
-    ...entries
+    ...entries,
   },
   output: {
     path: __dirname,
@@ -298,13 +298,13 @@ const config: webpack.Configuration = {
     library: ['lorisjs', '[name]'],
     libraryTarget: 'window',
   },
-  externals: { react: 'React', 'react-dom': 'ReactDOM' },
+  externals: {'react': 'React', 'react-dom': 'ReactDOM'},
   devtool: 'source-map',
   plugins,
   optimization,
   resolve,
   module,
   stats: 'errors-only',
-}
+};
 
 export default config;
