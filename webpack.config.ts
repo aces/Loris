@@ -195,7 +195,7 @@ plugins.push(new CopyPlugin({
       },
       /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
       filter: async (path) => {
-        const file = (path.split('\\').pop() as any).split('/').pop();
+        const file = path.split(/\\|\//).pop() as string;
         const keep = [
           'react.development.js',
           'react.production.min.js',
@@ -209,7 +209,7 @@ plugins.push(new CopyPlugin({
       force: true,
       /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
       filter: async (path) => {
-        const file = (path.split('\\').pop() as any).split('/').pop();
+        const file = path.split(/\\|\//).pop() as string;
         const keep = [
           'react-dom.development.js',
           'react-dom.production.min.js',
