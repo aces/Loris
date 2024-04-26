@@ -661,17 +661,21 @@ function organizedMapper(
             if (cells === null) {
                 return null;
             }
-            return cells.map( (val: string|null): string => {
-                if (val === null) {
+            return cells.map( (cell: LongitudinalExpansion): string => {
+                if (cell.value === null) {
                     return '';
                 }
-                return cellValue(val);
+                return cellValue(cell.value);
             });
         };
     default: return (): string => 'error';
     }
 }
 
+type LongitudinalExpansion = {
+    value: string|null,
+    dictionary: FieldDictionary
+}
 /**
  * Takes a longitudinal cell with n visits and convert it to
  * n cells to be displayed in the longitudinal display, for either
@@ -681,8 +685,8 @@ function organizedMapper(
  * @param {number} fieldNo - the raw index of the field
  * @param {array} fields - The fields selected
  * @param {array} dict - The full dictionary
- * @returns {(string|null[])|null} - Expanded array of cells mapped
- *     to display value. Null in an array of (string|null)[] implies
+ * @returns {(LongitudinalExpansion)|null} - Expanded array of cells mapped
+ *     to display value. Null in an array of LongitudinalExpansion[] implies
  *     the cell has no data. null being returned directly implies that
  *     there are no table cells to be added based on this data.
  */
@@ -691,7 +695,7 @@ function expandLongitudinalCells(
     fieldNo: number,
     fields: APIQueryField[],
     dict: FullDictionary
-): (string|null)[]|null {
+): LongitudinalExpansion[]|null {
     // We added num fields * num visits headers, but
     // resultData only has numFields rows. For each row
     // we add multiple table cells for the number of visits
@@ -713,7 +717,7 @@ function expandLongitudinalCells(
         if (fielddict.cardinality == 'many') {
             throw new Error('Candidate cardinality many not implemented');
         }
-        return [value];
+        return [{value: value, dictionary: fielddict}];
     case 'session':
         let displayedVisits: string[];
         if (fieldobj.visits) {
@@ -740,9 +744,9 @@ function expandLongitudinalCells(
             console.error('Internal error parsing: "' + value + '"');
             return null;
         }
-        const values = displayedVisits.map((visit): string|null => {
+        const values = displayedVisits.map((visit): LongitudinalExpansion => {
             if (!value) {
-                return null;
+                return {value: null, dictionary: fielddict};
             }
             for (const session in celldata) {
                 if (celldata[session].VisitLabel == visit) {
@@ -750,21 +754,21 @@ function expandLongitudinalCells(
                     switch (fielddict.cardinality) {
                     case 'many':
                         if (thissession.values === undefined) {
-                            return null;
+                            return {value: null, dictionary: fielddict};
                         }
                         const thevalues = thissession.values;
-                        return Object.keys(thevalues)
+                        return {value: Object.keys(thevalues)
                            .map( (key) => key + '=' + thevalues[key])
-                           .join(';');
+                           .join(';'), dictionary: fielddict};
                     default:
                        if (thissession.value !== undefined) {
-                           return thissession.value;
+                           return {value: thissession.value, dictionary: fielddict};
                        }
                        throw new Error('Value was undefined');
                     }
                 }
             }
-            return null;
+            return {value: null, dictionary: fielddict};
         });
         return values;
     }
@@ -1064,11 +1068,12 @@ function organizedFormatter(
             if (cells === null) {
                 return null;
             }
-            return <>{cells.map((val: string|null) => {
-                if (val === null) {
+            return <>{cells.map((cell: LongitudinalExpansion) => {
+                if (cell.value === null) {
                     return <td><i>(No data)</i></td>;
                 }
-                return <TableCell data={val} />;
+
+                return <td><DisplayValue value={cellValue(cell.value)} dictionary={cell.dictionary} enumDisplay={enumDisplay} /></td>;
             })}</>;
         };
         return callback;
