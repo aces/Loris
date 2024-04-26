@@ -60,12 +60,25 @@ enum EnumDisplayTypes {
     EnumValue
 }
 
-function DisplayValue(props: {value: any, dictionary: FieldDictionary, enumDisplay: EnumDisplayTypes}) {
+/**
+ * Returns the value to display for a field.
+ *
+ * @param {object} props - React props
+ * @param {any} props.value - the value to be formatted
+ * @param {FieldDictionary} props.dictionary - The field's dictionary
+ * @param {EnumDisplayTypes} props.enumDisplay - The format to display enums
+ * @returns {React.ReactElement} - the mapped value
+ */
+function DisplayValue(props: {
+    value: any,
+    dictionary: FieldDictionary,
+    enumDisplay: EnumDisplayTypes}
+) {
     let display = props.value;
-    switch(props.enumDisplay) {
+    switch (props.enumDisplay) {
     case EnumDisplayTypes.EnumLabel:
         if (props.dictionary.labels && props.dictionary.options) {
-                for(let i = 0; i < props.dictionary.options.length; i++) {
+                for (let i = 0; i < props.dictionary.options.length; i++) {
                     if (props.dictionary.options[i] == props.value) {
                         display= props.dictionary.labels[i];
                         break;
@@ -303,7 +316,8 @@ function ViewData(props: {
         = useState<VisitOrgType>('inline');
     const [headerDisplay, setHeaderDisplay]
         = useState<HeaderDisplayType>('fieldnamedesc');
-    const [enumDisplay, setEnumDisplay] = useState<EnumDisplayTypes>(EnumDisplayTypes.EnumLabel);
+    const [enumDisplay, setEnumDisplay]
+        = useState<EnumDisplayTypes>(EnumDisplayTypes.EnumLabel);
     const queryData = useRunQuery(props.fields, props.filters, props.onRun);
     const organizedData = useDataOrganization(
         queryData,
@@ -436,7 +450,9 @@ function ViewData(props: {
                 'values': 'Values',
             }}
             label='Display options as'
-            value={enumDisplay == EnumDisplayTypes.EnumLabel ? 'labels' : 'values'}
+            value={enumDisplay == EnumDisplayTypes.EnumLabel
+                ? 'labels'
+                : 'values'}
             multiple={false}
             emptyOption={false}
             onUserInput={
@@ -763,6 +779,8 @@ function expandLongitudinalCells(
  * @param {array} dict - The full dictionary
  * @param {boolean} displayEmptyVisits - Whether visits with
                                  no data should be displayed
+ * @param {EnumDisplayTypes} enumDisplay - The format to display
+                                           enum values
  * @returns {function} - the appropriate column formatter for
                          this data organization
  */
@@ -876,17 +894,28 @@ function organizedFormatter(
                                             Object.keys(values).map(
                                                 (keyid: string):
                                                   React.ReactNode => {
-                                                    let val = values[keyid];
+                                                    const val = values[keyid];
                                                     if (val === null) {
                                                         return;
                                                     }
                                                     hasdata = true;
+                                                    // Workarounds for line length
+                                                    const f = fielddict;
+                                                    const e = enumDisplay;
+                                                    const dval = (
+                                                        <DisplayValue
+                                                           value={val}
+                                                           dictionary={f}
+                                                           enumDisplay={e}
+                                                         />
+                                                    );
+
                                                     return (
                                                         <div style={{
                                                             margin: '1ex',
                                                           }}>
                                                             <dt>{keyid}</dt>
-                                                            <dd><DisplayValue value={val} dictionary={fielddict} enumDisplay={enumDisplay} /></dd>
+                                                            <dd>{dval}</dd>
                                                         </div>
                                                     );
                                                 })
