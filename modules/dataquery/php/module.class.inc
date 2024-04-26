@@ -37,7 +37,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool (Alpha)";
+        return "Data Query Tool (Beta)";
     }
 
     /**
