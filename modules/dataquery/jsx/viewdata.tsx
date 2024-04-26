@@ -13,8 +13,6 @@ import getDictionaryDescription from './getdictionarydescription';
 
 type TableRow = (string|null)[];
 
-type JSONString = string;
-
 type SessionRowCell = {
     VisitLabel: string;
     value?: string
@@ -762,7 +760,10 @@ function expandLongitudinalCells(
                            .join(';'), dictionary: fielddict};
                     default:
                        if (thissession.value !== undefined) {
-                           return {value: thissession.value, dictionary: fielddict};
+                           return {
+                             value: thissession.value,
+                             dictionary: fielddict,
+                           };
                        }
                        throw new Error('Value was undefined');
                     }
@@ -1073,7 +1074,12 @@ function organizedFormatter(
                     return <td><i>(No data)</i></td>;
                 }
 
-                return <td><DisplayValue value={cellValue(cell.value)} dictionary={cell.dictionary} enumDisplay={enumDisplay} /></td>;
+                return (<td>
+                            <DisplayValue
+                                value={cellValue(cell.value)}
+                                dictionary={cell.dictionary}
+                                enumDisplay={enumDisplay} />
+                    </td>);
             })}</>;
         };
         return callback;
@@ -1081,8 +1087,11 @@ function organizedFormatter(
         /**
          * Callback that organizes data cross-sectionally
          *
-         * @param {string} label - The label for the column
-         * @param {string} cell - The raw cell value returned by the API.
+         * @param {string} label - The header label
+         * @param {string} cell - the JSON value of the cell
+         * @param {string[]} row - the entire row
+         * @param {string[]} headers - the headers for the table
+         * @param {number} fieldNo - The field number of this cell
          * @returns {React.ReactElement} - The table cell for this cell.
          */
         callback = (
@@ -1102,11 +1111,16 @@ function organizedFormatter(
 
             const fieldobj = fields[fieldNo-1];
             const fielddict = getDictionary(fieldobj, dict);
-            console.log(fielddict, fieldobj, cell);
 
             return fielddict === null
                 ? <TableCell data={cell} />
-                : <td><DisplayValue value={cellValue(cell)} dictionary={fielddict} enumDisplay={enumDisplay} /></td>;
+                : (<td>
+                    <DisplayValue
+                        value={cellValue(cell)}
+                        dictionary={fielddict}
+                        enumDisplay={enumDisplay}
+                    />
+                  </td>);
         };
         return callback;
     }
