@@ -248,7 +248,7 @@ function makeModuleEntries(moduleName: string, files: string[]) {
     import: basePath + 'jsx/' + fileName,
     filename: basePath + 'js/' + fileName + '.js',
     library: {
-      name: ['lorisjs', moduleName, '[name]'],
+      name: ['lorisjs', moduleName, fileName],
       type: 'window',
     },
   }]));
