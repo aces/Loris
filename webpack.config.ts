@@ -247,6 +247,7 @@ function makeModuleEntries(moduleName: string, files: string[]) {
   return files.map((fileName) => ([moduleName + '/' + fileName, {
     import: basePath + 'jsx/' + fileName,
     filename: basePath + 'js/' + fileName + '.js',
+    library: ['lorisjs', moduleName, '[name]'],
   }]));
 }
 
@@ -319,9 +320,11 @@ configs.push({
 configs.push({
   entry: {
     electrophysiology_browser: {
-      import: './modules/electrophysiology_browser/jsx/electrophysiologySessionView',
-      filename: './modules/electrophysiology_browser/js/electrophysiologySessionView.js',
-    }
+      import: './modules/electrophysiology_browser/'
+        + 'jsx/electrophysiologySessionView',
+      filename: './modules/electrophysiology_browser/'
+        + 'js/electrophysiologySessionView.js',
+    },
   },
   output: {
     path: __dirname,
