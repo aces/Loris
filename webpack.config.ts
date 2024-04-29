@@ -254,20 +254,6 @@ function makeModuleEntries(moduleName: string, files: string[]) {
   }]));
 }
 
-// Only build the given target module if there is one in the current
-// environment.
-const target = process.env.target;
-if (target) {
-  if (target in lorisModules) {
-    lorisModules = {
-      [target]: lorisModules[target],
-    };
-  } else {
-    console.error(`Target module '${target}' not found.`);
-    process.exit(1);
-  }
-}
-
 // Add entries for project overrides.
 if (fs.existsSync('./project/webpack-project.config.js')) {
   const projectModules: { [x: string]: string[] }
@@ -280,6 +266,20 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
     } else {
       lorisModules[moduleName] = files;
     }
+  }
+}
+
+// Only build the given target module if there is one in the current
+// environment.
+const target = process.env.target;
+if (target) {
+  if (target in lorisModules) {
+    lorisModules = {
+      [target]: lorisModules[target],
+    };
+  } else {
+    console.error(`Target module '${target}' not found.`);
+    process.exit(1);
   }
 }
 
