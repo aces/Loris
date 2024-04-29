@@ -1,6 +1,5 @@
 {
     "extends": "../../../../tsconfig",
-    "module": "es6",
     "compilerOptions": {
         "strict": false
     }
