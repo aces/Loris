@@ -45,7 +45,6 @@ let lorisModules: { [x: string]: string[] } = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
-    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
@@ -287,7 +286,9 @@ const entries = Object.fromEntries(
     .flat()
 );
 
-const config: webpack.Configuration = {
+const configs: webpack.Configuration[] = [];
+
+configs.push({
   entry: {
     PaginationLinks: './jsx/PaginationLinks.js',
     StaticDataTable: './jsx/StaticDataTable.js',
@@ -309,7 +310,33 @@ const config: webpack.Configuration = {
   optimization,
   resolve,
   module,
-  stats: 'errors-only',
-};
+  stats: 'errors-warnings',
+  cache: {type: 'filesystem'},
+});
 
-export default config;
+// FIXME: For some reason, the electrophysiology session view only compiles if
+// it uses a separate (although possibly identical) configuration.
+configs.push({
+  entry: {
+    electrophysiology_browser: {
+      import: './modules/electrophysiology_browser/jsx/electrophysiologySessionView',
+      filename: './modules/electrophysiology_browser/js/electrophysiologySessionView.js',
+    }
+  },
+  output: {
+    path: __dirname,
+    filename: './htdocs/js/components/[name].js',
+    library: ['lorisjs', '[name]'],
+    libraryTarget: 'window',
+  },
+  externals: {'react': 'React', 'react-dom': 'ReactDOM'},
+  devtool: 'source-map',
+  plugins,
+  optimization,
+  resolve,
+  module,
+  stats: 'errors-warnings',
+  cache: {type: 'filesystem'},
+});
+
+export default configs;
