@@ -315,7 +315,6 @@ configs.push({
   resolve,
   module,
   stats: 'errors-warnings',
-  cache: {type: 'filesystem'},
 });
 
 // HACK: For some reason, the electrophysiology session view only compiles if
@@ -351,7 +350,6 @@ if (!target || target === 'electrophysiology_browser') {
     resolve,
     module,
     stats: 'errors-warnings',
-    cache: {type: 'filesystem'},
   });
 }
 
