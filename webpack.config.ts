@@ -320,37 +320,39 @@ configs.push({
 
 // FIXME: For some reason, the electrophysiology session view only compiles if
 // it uses a separate (although possibly identical) configuration.
-configs.push({
-  entry: {
-    electrophysiology_browser: {
-      import: './modules/electrophysiology_browser/'
-        + 'jsx/electrophysiologySessionView',
-      filename: './modules/electrophysiology_browser/'
-        + 'js/electrophysiologySessionView.js',
-      library: {
-        name: [
-          'lorisjs',
-          'electrophysiology_browser',
-          'electrophysiologySessionView',
-        ],
-        type: 'window',
+if (!target || target === 'electrophysiology_browser') {
+  configs.push({
+    entry: {
+      electrophysiology_browser: {
+        import: './modules/electrophysiology_browser/'
+          + 'jsx/electrophysiologySessionView',
+        filename: './modules/electrophysiology_browser/'
+          + 'js/electrophysiologySessionView.js',
+        library: {
+          name: [
+            'lorisjs',
+            'electrophysiology_browser',
+            'electrophysiologySessionView',
+          ],
+          type: 'window',
+        },
       },
     },
-  },
-  output: {
-    path: __dirname,
-    filename: './htdocs/js/components/[name].js',
-    library: ['lorisjs', '[name]'],
-    libraryTarget: 'window',
-  },
-  externals: {'react': 'React', 'react-dom': 'ReactDOM'},
-  devtool: 'source-map',
-  plugins,
-  optimization,
-  resolve,
-  module,
-  stats: 'errors-warnings',
-  cache: {type: 'filesystem'},
-});
+    output: {
+      path: __dirname,
+      filename: './htdocs/js/components/[name].js',
+      library: ['lorisjs', '[name]'],
+      libraryTarget: 'window',
+    },
+    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
+    devtool: 'source-map',
+    plugins,
+    optimization,
+    resolve,
+    module,
+    stats: 'errors-warnings',
+    cache: {type: 'filesystem'},
+  });
+}
 
 export default configs;
