@@ -5,7 +5,7 @@ import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
-// An object mapping each LORIS module to its their entry points.
+// An object mapping each LORIS module to its entry points.
 let lorisModules: { [x: string]: string[] } = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
@@ -318,7 +318,7 @@ configs.push({
   cache: {type: 'filesystem'},
 });
 
-// FIXME: For some reason, the electrophysiology session view only compiles if
+// HACK: For some reason, the electrophysiology session view only compiles if
 // it uses a separate (although possibly identical) configuration.
 if (!target || target === 'electrophysiology_browser') {
   configs.push({
