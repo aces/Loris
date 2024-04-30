@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
+
+import Papa from 'papaparse';
+import {toLinst} from './redcap2linst.js';
+import {addMetaDataFields} from './redcap2linst.js';
+
+import JSZip from 'jszip';
+
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -21,35 +28,60 @@ class LoadPane extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      disabled: true,
+      REDCapFile: null,
+      LINSTFile: null,
+      disabledLINST: true,
+      disabledREDCap: true,
       // This is used to alert the user if the file was
       // loaded successfully or there was an error with
       // the loading.
       alert: '',
     };
-    this.chooseFile = this.chooseFile.bind(this);
+    this.chooseFileLINST = this.chooseFileLINST.bind(this);
+    this.chooseFileREDCap = this.chooseFileREDCap.bind(this);
     this.setAlert = this.setAlert.bind(this);
     this.resetAlert = this.resetAlert.bind(this);
     this.loadFile = this.loadFile.bind(this);
+    this.loadCSV = this.loadCSV.bind(this);
+    this.convertRedcap = this.convertRedcap.bind(this);
   }
 
   /**
-   * Choose file
+   * Choose LINST file
    * Indicates to the state which file has been chosen
    *
    * @param {object} e - Event object
    */
-  chooseFile(e) {
+  chooseFileLINST(e) {
     let value = e.target.files[0];
     this.setState({
-      file: value,
-      disabled: true,
+      LINSTFile: value,
+      disabledLINST: true,
       alert: '',
     });
     if (value) {
-      this.setState({disabled: false});
+      this.setState({disabledLINST: false});
     }
   }
+
+  /**
+   * Choose REDCap file
+   * Indicates to the state which file has been chosen
+   *
+   * @param {object} e - Event object
+   */
+  chooseFileREDCap(e) {
+    let value = e.target.files[0];
+    this.setState({
+      REDCapFile: value,
+      disabledREDCap: true,
+      alert: '',
+    });
+    if (value) {
+      this.setState({disabledREDCap: false});
+    }
+  }
+
   /**
    * Sets the alert to the specified type.
    *
@@ -82,7 +114,103 @@ class LoadPane extends Component {
       success: this.props.loadCallback,
       error: this.setAlert,
     };
-    Instrument.load(this.state.file, callback);
+    Instrument.load(this.state.LINSTFile, callback);
+  }
+
+  /**
+   * Loads and parses specified REDCap CSV file
+   *
+   */
+  loadCSV() {
+    this.setState({
+      disabledREDCap: true,
+    });
+    if (this.state.REDCapFile &&
+        this.state.REDCapFile.name.split('.')[1] === 'csv'
+    ) {
+      Papa.parse(this.state.REDCapFile, {
+        skipEmptyLines: true,
+        complete: this.convertRedcap,
+      });
+    } else {
+      this.setAlert('typeError');
+    }
+  }
+
+  /**
+   * Handles converting parsed REDCap CSV to LINST
+   *
+   * @param result
+   */
+  convertRedcap(result) {
+    if (result.errors.length) {
+      // Set alert for first error only
+      this.setAlert('syntaxError', result.errors[0].message);
+    } else {
+      // Declare the success and error callbacks
+      let callback = {
+        success: this.props.loadCallback,
+        error: this.setAlert,
+      };
+      const instruments = {};
+      const records = result.data;
+      // remove headers from records
+      records.shift();
+      // go through records
+      records.map((row, index) => {
+        const inst = row[1];
+        if ((inst in instruments) === false) {
+          instruments[inst] = [];
+        }
+        const linstFormat = toLinst(
+          row[3],
+          row[0],
+          row[4],
+          row[5],
+          callback
+        );
+        if (linstFormat !== '') {
+          instruments[inst].push(linstFormat);
+        }
+      });
+      Object.keys(instruments).map((inst) => {
+        instruments[inst] = addMetaDataFields(inst, instruments[inst]);
+      });
+      this.downloadData(instruments);
+      this.setAlert('downloaded');
+    }
+  }
+
+  /**
+   * Format the instrument lisnt files into a ZIP folder
+   * and download the data
+   *
+   * @param instruments
+   */
+  downloadData(instruments) {
+    // Form array with {'instrument_name': 'instrument_linst'}
+    let zip = new JSZip();
+    Object.keys(instruments).map((inst) => {
+      const filename = inst + '.linst';
+      const linst = instruments[inst];
+      // const blob = new Blob([linst.join('')], {type: 'text/plain;base64'});
+      zip.file(filename, linst.join(''));
+    });
+    zip.generateAsync({type: 'blob'}).then((blob) => {
+      const date = new Date().toISOString();
+      const element = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      element.href = url;
+      element.download = 'linst_instruments_' + date + '.zip';
+      element.style.display = 'none';
+      // add element to the document so that it can be clicked
+      // this is needed to download in firefox
+      document.body.appendChild(element);
+      element.click();
+      // remove the element once it has been clicked
+      document.body.removeChild(element);
+      URL.revokeObjectURL(url);
+    });
   }
 
   /**
@@ -106,6 +234,14 @@ class LoadPane extends Component {
           class: 'alert alert-success alert-dismissible',
         };
         break;
+      case 'downloaded':
+        alert = {
+          message: 'Success!',
+          details: 'Instruments Downloaded',
+          display: 'block',
+          class: 'alert alert-success alert-dismissible',
+        };
+        break;
       case 'typeError':
         alert = {
           message: 'Error!',
@@ -122,35 +258,65 @@ class LoadPane extends Component {
           class: 'alert alert-danger alert-dismissible',
         };
         break;
+      case 'syntaxError':
+        alert = {
+          message: 'Error!',
+          details: this.state.alertMessage,
+          display: 'block',
+          class: 'alert alert-danger alert-dismissible',
+        };
+        break;
       default:
         break;
     }
     return (
-      <TabPane Title='Load Instrument' {...this.props}>
-        <div className='col-sm-6 col-xs-12'>
-          <div id='load_alert'
-               style={{display: alert.display}}
-               className={alert.class}
-               role='alert'
-          >
-            <button type='button' className='close' onClick={this.resetAlert}>
-              <span aria-hidden='true'>&times;</span>
-            </button>
-            <strong>{alert.message}</strong><br/>
-            {alert.details}
+      <TabPane Title='Load Instrument or Convert from REDCap' {...this.props}>
+        <div style={{display: 'flex', flexFlow: 'column wrap'}}>
+          <div>
+            <div id='load_alert'
+                 style={{display: alert.display}}
+                 className={alert.class}
+                 role='alert'
+            >
+              <button type='button' className='close' onClick={this.resetAlert}>
+                <span aria-hidden='true'>&times;</span>
+              </button>
+              <strong>{alert.message}</strong><br/>
+              {alert.details}
+            </div>
+            <h4>Load LINST instrument</h4>
+            <input
+              className='fileUpload'
+              type='file'
+              id='instfile'
+              accept=".linst"
+              onChange={this.chooseFileLINST}
+            />
+            <input
+              className='btn btn-primary spacingTop'
+              type='button' id='loadLINST'
+              value='Load LINST Instrument'
+              disabled={this.state.disabledLINST}
+              onClick={this.loadFile}
+            />
           </div>
-          <input
-            className='fileUpload'
-            type='file' id='instfile'
-            onChange={this.chooseFile}
-          />
-          <input
-            className='btn btn-primary spacingTop'
-            type='button' id='load'
-            value='Load Instrument'
-            disabled={this.state.disabled}
-            onClick={this.loadFile}
-          />
+          <div>
+            <h4>Convert REDCap CSV to LINST & Download</h4>
+            <input
+              className='fileUpload'
+              type='file'
+              id='redcap'
+              accept=".csv"
+              onChange={this.chooseFileREDCap}
+            />
+            <input
+              className='btn btn-primary spacingTop'
+              type='button' id='loadCSV'
+              value='Convert REDCap CSV'
+              disabled={this.state.disabledREDCap}
+              onClick={this.loadCSV}
+            />
+          </div>
         </div>
       </TabPane>
     );
