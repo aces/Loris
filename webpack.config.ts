@@ -241,7 +241,7 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
   const basePath = fs.existsSync(`./project/modules/${moduleName}`)
-    ? `./project/modules/${moduleName}`
+    ? `./project/modules/${moduleName}/`
     : `./modules/${moduleName}/`;
 
   return files.map((fileName) => ([moduleName + '/' + fileName, {
