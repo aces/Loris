@@ -42,11 +42,11 @@ class Timepoint_List extends \NDB_Menu
     function _hasAccess(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
-	// check user permissions
-	if ($user->hasPermission('candidate_edit') || $user->hasPermission('superuser')) {
-          $this->EditBTN = 1;
-	}		
-	return $user->hasPermission('access_all_profiles')
+        // check user permissions
+        if ($user->hasPermission('candidate_edit') || $user->hasPermission('superuser')) {
+                 $this->EditBTN = 1;
+        }
+        return $user->hasPermission('access_all_profiles')
             || $candidate->isAccessibleBy($user);
     }
 
@@ -72,9 +72,9 @@ class Timepoint_List extends \NDB_Menu
         }
         if ($method == 'POST') {
             return $this->handlePost($request);
-	}
-	$queryparams = $request->getQueryParams();
-	if ($method == 'GET' && isset($_GET['projectID'])) {
+        }
+        $queryparams = $request->getQueryParams();
+        if ($method == 'GET' && isset($_GET['projectID'])) {
             return $this->handleGET($_GET['projectID']);
         }
         $this->candID = new CandID($request->getAttribute('CandID'));
@@ -148,9 +148,8 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentDate']
                 =   $timePoint->getCurrentDate();
 
-	    // get meta cohort info
-	   $this->tpl_data['timePoints'][$x]['metaCohorts']  =json_encode(['Fresh','Ettt']);
-
+            // get meta cohort info
+            $this->tpl_data['timePoints'][$x]['metaCohorts'] =json_encode(['Fresh','Ettt']);
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
@@ -209,9 +208,9 @@ class Timepoint_List extends \NDB_Menu
                     $this->tpl_data['timePoints'][$x]['outcomeDate']
                         = $timePoint->$getDateMethod();
                 }
-	    }
+            }
 
-              $this->tpl_data['timePoints'][$x]['projectID']=$timePoint->getProjectID() ;
+              $this->tpl_data['timePoints'][$x]['projectID'] =$timePoint->getProjectID();
             $x++;
         } // end list
 
@@ -227,8 +226,8 @@ class Timepoint_List extends \NDB_Menu
 
         } // end list
 
-	$this->tpl_data['actions'] = $this->getActionButtons();
-	$this->tpl_data['edit'] = $this->EditBTN;
+        $this->tpl_data['actions'] = $this->getActionButtons();
+        $this->tpl_data['edit']    = $this->EditBTN;
     }
     /**
      * Determining Previous Stage
@@ -297,50 +296,53 @@ class Timepoint_List extends \NDB_Menu
             )
         );
     }
-// handle archive a visitlabel 
-    protected function handleDelete(ServerRequestInterface $request): ResponseInterface{
-$body = $request->getBody();
-$jsonBody = json_decode($body, true);
-$id = $jsonBody['sessionID'];
+    // handle archive a visitlabel
+    protected function handleDelete(ServerRequestInterface $request): ResponseInterface
+    {
+        $body     = $request->getBody();
+        $jsonBody = json_decode($body, true);
+        $id       = $jsonBody['sessionID'];
 
-            $set       = ['Active' => 'N'];
-$where_sessionID = ['ID' => $id];
+            $set         = ['Active' => 'N'];
+        $where_sessionID = ['ID' => $id];
         $DB = \NDB_Factory::singleton()->database();
 
                 $DB->update('session', $set, $where_sessionID);
 
-	    return new \LORIS\Http\Response\JSON\OK(
-                ['success' =>'successfully archived']
-            );
+        return new \LORIS\Http\Response\JSON\OK(
+            ['success' =>'successfully archived']
+        );
     }
-// handle edit profile 
-    protected function handlePost(ServerRequestInterface $request): ResponseInterface{
-      $body = $request->getBody();
-      $jsonBody = json_decode($body, true);
-      $id = $jsonBody['sessionID'];
-      $date = $jsonBody['date']; 
-      $subproject = $jsonBody['subProjectID'];
-      $set       = ['Date_visit' => $date,
-                    'CohortID' =>$subproject
-                   ];
-      $where_sessionID = ['ID' => $id];
+    // handle edit profile
+    protected function handlePost(ServerRequestInterface $request): ResponseInterface
+    {
+        $body       = $request->getBody();
+        $jsonBody   = json_decode($body, true);
+        $id         = $jsonBody['sessionID'];
+        $date       = $jsonBody['date'];
+        $subproject = $jsonBody['subProjectID'];
+        $set        = ['Date_visit' => $date,
+            'CohortID'   =>$subproject
+        ];
+        $where_sessionID = ['ID' => $id];
         $DB = \NDB_Factory::singleton()->database();
 
         $DB->update('session', $set, $where_sessionID);
-    
+
             return new \LORIS\Http\Response\JSON\OK(
                 ['success' =>'successfully updated']
             );
     }
-// handle get getCohortsForProject json to js 
-    protected function handleGet($projectID): ResponseInterface{
+    // handle get getCohortsForProject json to js
+    protected function handleGet($projectID): ResponseInterface
+    {
 
-	    $cohortlist = \Utility::getCohortsForProject(
-                    new \ProjectID(strval($projectID))
-                );
-	    return new \LORIS\Http\Response\JSON\OK(
-		    $cohortlist
-            );
-    }    
+        $cohortlist = \Utility::getCohortsForProject(
+            new \ProjectID(strval($projectID))
+        );
+        return new \LORIS\Http\Response\JSON\OK(
+            $cohortlist
+        );
+    }
 }
 
