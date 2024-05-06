@@ -43,7 +43,9 @@ class Timepoint_List extends \NDB_Menu
     {
         $candidate = \Candidate::singleton($this->candID);
         // check user permissions
-        if ($user->hasPermission('candidate_edit') || $user->hasPermission('superuser')) {
+        if ($user->hasPermission('candidate_edit')
+            || $user->hasPermission('superuser')
+        ) {
                  $this->EditBTN = 1;
         }
         return $user->hasPermission('access_all_profiles')
@@ -149,7 +151,9 @@ class Timepoint_List extends \NDB_Menu
                 =   $timePoint->getCurrentDate();
 
             // get meta cohort info
-            $this->tpl_data['timePoints'][$x]['metaCohorts'] =json_encode(['Fresh','Ettt']);
+            $this->tpl_data['timePoints'][$x]['metaCohorts'] =json_encode(
+                ['Fresh','Ettt']
+            );
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
@@ -209,8 +213,8 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
-
-              $this->tpl_data['timePoints'][$x]['projectID'] =$timePoint->getProjectID();
+              $id = 'projectID';
+              $this->tpl_data['timePoints'][$x][$id] =$timePoint->getProjectID();
             $x++;
         } // end list
 
@@ -296,7 +300,13 @@ class Timepoint_List extends \NDB_Menu
             )
         );
     }
-    // handle archive a visitlabel
+    /**
+     * Handle archive a visitlabel
+     *
+     * @param RequestHandlerInterface $request The PSR15 handler.
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
     protected function handleDelete(ServerRequestInterface $request): ResponseInterface
     {
         $body     = $request->getBody();
@@ -313,7 +323,13 @@ class Timepoint_List extends \NDB_Menu
             ['success' =>'successfully archived']
         );
     }
-    // handle edit profile
+    /**
+     * Handle handlePost
+     *
+     * @param RequestHandlerInterface $request The PSR15 handler.
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
     protected function handlePost(ServerRequestInterface $request): ResponseInterface
     {
         $body       = $request->getBody();
@@ -333,7 +349,13 @@ class Timepoint_List extends \NDB_Menu
                 ['success' =>'successfully updated']
             );
     }
-    // handle get getCohortsForProject json to js
+    /**
+     * Handle get getCohortsForProject
+     *
+     * @param String $projectID projectID
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
     protected function handleGet($projectID): ResponseInterface
     {
 
@@ -345,4 +367,3 @@ class Timepoint_List extends \NDB_Menu
         );
     }
 }
-
