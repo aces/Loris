@@ -307,8 +307,9 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return \LORIS\Http\Response\JSON\OK
      */
-    protected function handleDelete(ServerRequestInterface $request): ResponseInterface
-    {
+    protected function handleDelete(
+        ServerRequestInterface $request
+    ): ResponseInterface {
         $body     = $request->getBody();
         $jsonBody = json_decode($body, true);
         $id       = $jsonBody['sessionID'];
