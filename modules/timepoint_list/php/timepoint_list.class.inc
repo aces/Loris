@@ -310,8 +310,8 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request
     ): ResponseInterface {
         $body     = $request->getBody();
-	$jsonBody = json_decode($body, true);
-	$id       = null;
+        $jsonBody = json_decode($body, true);
+        $id       = null;
         if (is_array($jsonBody) && array_key_exists('sessionID', $jsonBody)) {
             $id = $jsonBody['sessionID'];
         }
