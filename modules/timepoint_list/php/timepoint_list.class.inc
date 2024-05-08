@@ -75,7 +75,6 @@ class Timepoint_List extends \NDB_Menu
         if ($method == 'POST') {
             return $this->handlePost($request);
         }
-        $queryparams = $request->getQueryParams();
         if ($method == 'GET' && isset($_GET['projectID'])) {
             return $this->handleGET($_GET['projectID']);
         }
@@ -303,7 +302,7 @@ class Timepoint_List extends \NDB_Menu
     /**
      * Handle archive a visitlabel
      *
-     * @param RequestHandlerInterface $request The PSR15 handler.
+     * @param ServerRequestInterface $request The PSR15 ServerRequestInterface.
      *
      * @return \LORIS\Http\Response\JSON\OK
      */
@@ -312,9 +311,10 @@ class Timepoint_List extends \NDB_Menu
     ): ResponseInterface {
         $body     = $request->getBody();
         $jsonBody = json_decode($body, true);
-        $id       = $jsonBody['sessionID'];
-
-            $set         = ['Active' => 'N'];
+        if (is_array($jsonBody) && array_key_exists('sessionID', $jsonBody)) {
+            $id = $jsonBody['sessionID'];
+        }
+        $set = ['Active' => 'N'];
         $where_sessionID = ['ID' => $id];
         $DB = \NDB_Factory::singleton()->database();
 
@@ -333,19 +333,31 @@ class Timepoint_List extends \NDB_Menu
      */
     protected function handlePost(ServerRequestInterface $request): ResponseInterface
     {
-        $body       = $request->getBody();
-        $jsonBody   = json_decode($body, true);
-        $id         = $jsonBody['sessionID'];
-        $date       = $jsonBody['date'];
-        $subproject = $jsonBody['subProjectID'];
-        $set        = ['Date_visit' => $date,
-            'CohortID'   =>$subproject
+        $body     = $request->getBody();
+        $jsonBody = json_decode($body, true);
+        // Check if $jsonBody is an array before accessing its keys
+        $id = $date = $subproject = null;
+        if (is_array($jsonBody)) {
+            // Check and assign values if the keys exist in $jsonBody
+            $id         = $jsonBody['sessionID'] ?? null;
+            $date       = $jsonBody['date'] ?? null;
+            $subproject = $jsonBody['subProjectID'] ?? null;
+        }
+
+        // Prepare data for database update
+        $set = [
+            'Date_visit' => $date,
+            'CohortID'   => $subproject
         ];
-        $where_sessionID = ['ID' => $id];
-        $DB = \NDB_Factory::singleton()->database();
 
-        $DB->update('session', $set, $where_sessionID);
+        // Ensure $id is not null before proceeding with the database update
+        if ($id !== null) {
+            $where_sessionID = ['ID' => $id];
+            $DB = \NDB_Factory::singleton()->database();
 
+            // Perform the database update
+            $DB->update('session', $set, $where_sessionID);
+        }
             return new \LORIS\Http\Response\JSON\OK(
                 ['success' =>'successfully updated']
             );
