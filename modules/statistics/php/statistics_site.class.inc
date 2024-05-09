@@ -98,8 +98,8 @@ class Statistics_Site extends \NDB_Menu
     {
 
         //SITES
-        $factory   = \NDB_Factory::singleton();
-        $user      = $factory->user();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
         if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
@@ -183,13 +183,16 @@ class Statistics_Site extends \NDB_Menu
      *
      * @return ?string
      */
-    function _completeCount(?\CenterID $centerID, ?\ProjectID $projectID, string $instrument): ?string
-    {
+    function _completeCount(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ): ?string {
 
         $this->_checkCriteria($centerID, $projectID);
         $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
-            "SELECT count(distinct s.CandID)  FROM 
+            "SELECT COUNT(DISTINCT s.CandID)  FROM 
                 flag f
                     JOIN session s ON (s.ID=f.SessionID)
                     JOIN candidate c ON (c.CandID=s.CandID)
@@ -216,12 +219,19 @@ class Statistics_Site extends \NDB_Menu
      *
      * @return array
      */
-    function _getResults(?\CenterID $centerID, ?\ProjectID $projectID, string $instrument)
-    {
+    function _getResults(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
-            "SELECT DISTINCT s.CandID, f.SessionID, f.CommentID, c.PSCID, s.Visit_label
+            "SELECT DISTINCT s.CandID,
+                f.SessionID,
+                f.CommentID,
+                c.PSCID,
+                s.Visit_label
                 FROM flag f
                     JOIN session s ON (s.ID=f.SessionID)
                     JOIN candidate c ON (c.CandID=s.CandID)
