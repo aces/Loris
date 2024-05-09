@@ -58,11 +58,9 @@ class New_Profile extends \NDB_Form
 
         // Get projects for the select dropdown
         $projList = [];
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $projectID => $projectName) {
-            $projList[$projectID] = $projectName;
+        foreach ($user->getProjects() as $project) {
+            $projList[$project->getName()] = $project->getName();
         }
-        $project = $projList ?? null;
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -78,7 +76,7 @@ class New_Profile extends \NDB_Form
             'sex'       => $sex,
             'pscidSet'  => $pscidSet,
             'site'      => $site,
-            'project'   => $project,
+            'project'   => $projList,
         ];
     }
 
