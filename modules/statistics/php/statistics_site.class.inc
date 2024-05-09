@@ -89,8 +89,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
      *
      * @return void
      */
