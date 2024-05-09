@@ -83,6 +83,13 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
+            "user_project_rel",
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '7777',
+            ]
+        );
+        $this->DB->insert(
             "candidate",
             [
                 'CandID'                => '999888',
