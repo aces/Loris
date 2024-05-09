@@ -210,8 +210,8 @@ const studyProgressionCharts = async () => {
     },
     spline: {
       interpolation: {
-        type: 'monotone'
-      }
+        type: 'monotone',
+      },
     },
     legend: {
       show: false,
@@ -289,8 +289,8 @@ const studyProgressionCharts = async () => {
     },
     spline: {
       interpolation: {
-        type: 'monotone'
-      }
+        type: 'monotone',
+      },
     },
     legend: {
       show: false,
