@@ -4,6 +4,7 @@ import path from 'path';
 import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 // An object mapping each LORIS module to its entry points.
 let lorisModules: { [x: string]: string[] } = {
@@ -174,7 +175,7 @@ const module: webpack.ModuleOptions = {
       use: [
         {
           loader: 'ts-loader',
-          options: {onlyCompileBundledFiles: true},
+          options: {onlyCompileBundledFiles: true, transpileOnly: true},
         },
       ],
     },
@@ -183,6 +184,7 @@ const module: webpack.ModuleOptions = {
 
 const plugins: webpack.WebpackPluginInstance[] = [];
 
+plugins.push(new ForkTsCheckerWebpackPlugin());
 plugins.push(new CopyPlugin({
   patterns: [
     {
