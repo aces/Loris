@@ -213,15 +213,9 @@ foreach ($testNames as $test) {
         );
 
         // call the score function
-        $oldRecord = $DB->pselectRow(
-            "SELECT * FROM $instrumentTable WHERE CommentID=:cid",
-            ['cid' => $record['CommentID']]
-        );
+        $oldRecord = $instrument->getInstanceData();
         $success   = $instrument->score();
-        $newRecord = $DB->pselectRow(
-            "SELECT * FROM $instrumentTable WHERE CommentID=:cid",
-            ['cid' => $record['CommentID']]
-        );
+        $newRecord = $instrument->getInstanceData();
         unset($oldRecord['Testdate']);
         unset($newRecord['Testdate']);
         $diff = array_diff_assoc($oldRecord, $newRecord);
