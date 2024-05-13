@@ -3227,20 +3227,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instantiable are returned, invalid instruments will not appear in this list.
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     * @param String               $Visit_label The visit label to get the DDE for
+     *                                         if null, all DDE instruments are returned
      *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
+    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris, String $Visit_label=null) : array
     {
-        $config = $loris->getConfiguration();
+        $DB = $loris->getDatabaseConnection();
 
         $instrumentNamesList = self::getInstrumentNamesList($loris);
 
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
-
+        if (empty($Visit_label)) {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled=true",
+                []
+            ); 
+        } else {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled=true
+                AND Visit_label = :Visit_label",
+                ['Visit_label' => $Visit_label]
+            );
+        }
+        
         $instrumentNames = [];
         foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $doubleDataEntryInstruments, true)) {
@@ -3251,6 +3264,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // sort array by instrument name for modules that rely on ordering
         asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
+        error_log('done');
         return $instrumentNames;
     }
 

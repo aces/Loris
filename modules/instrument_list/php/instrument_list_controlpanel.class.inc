@@ -168,10 +168,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $batteryList = $battery->getBatteryVerbose();
 
                 // Get the list of DDE instruments
-                $config         =& \NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting(
-                    'DoubleDataEntryInstruments'
-                );
+                $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($this->loris, $this->getData('Visit_label')));
 
                 // clear the unresolved conflicts for all the instruments
                 foreach ($batteryList as $instrument) {
@@ -234,10 +231,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
                 // Get the list of DDE instruments
-                $config         =& \NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting(
-                    'DoubleDataEntryInstruments'
-                );
+                $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($this->loris, $this->getData('Visit_label')));
 
                 // detect conflicts for all the instruments
 
@@ -370,8 +364,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         = \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($this->loris, $this->getData('Visit_label')));
 
         // loop the list and check the Data Entry status
         $ddeConflictDetected = false;
@@ -580,8 +573,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($this->loris, $this->getData('Visit_label')));
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;
@@ -677,7 +669,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($this->loris, $this->getData('Visit_label')));
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;

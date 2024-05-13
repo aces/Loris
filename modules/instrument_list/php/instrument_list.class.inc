@@ -210,6 +210,7 @@ class Instrument_List extends \NDB_Menu_Filter
             $prevSubgroup = null;
 
             $i = 0;
+            error_log('here0');
             foreach ($listOfInstruments as $instrument) {
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
@@ -246,8 +247,13 @@ class Instrument_List extends \NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['commentID'] = $ins;
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
+                    $this->loris,
+                    $this->timePoint->getVisitLabel(),
                     $instrument['Test_name']
                 );
+
+                error_log(print_r($ins, true));
+
                 $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
 
                 $ins = $instrument['DDECommentID'];

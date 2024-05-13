@@ -23,8 +23,13 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     function __construct()
     {
         $config         =& \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         $db = \NDB_Factory::singleton()->database();
+        $lorisInstance = new \LORIS\LorisInstance(
+            $db,
+            $config,
+            [__DIR__ . "/../../"]
+        );
+        $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance, null));
         for ($i=0; $i<count($ddeInstruments); ++$i) {
             $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
         }

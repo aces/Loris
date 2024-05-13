@@ -74,8 +74,6 @@ if ($opts['r']!=null) {
 /**
  * Initialization
  */
-$config         = NDB_Config::singleton();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $dataDir        = "logs";
 $diff           = null;
 $commentids     = [];

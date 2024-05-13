@@ -203,7 +203,7 @@ class NDB_BVL_Battery
         }
 
         // get SessionID, UserID
-        $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
+        $query = "SELECT ID as SessionID, UserID, Visit_label FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
@@ -221,12 +221,15 @@ class NDB_BVL_Battery
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
+        $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument($loris, $sessionData['Visit_label'], $testName);
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
             $DB->insert($obj->table, ['CommentID' => $commentID]);
 
             // insert the dde into the test table
-            $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+            if ($DDEEnabled) {
+                $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+            }
         }
 
         // insert into the flag table
@@ -241,15 +244,17 @@ class NDB_BVL_Battery
         );
 
         // insert the dde into the flag table
-        $DB->insert(
-            'flag',
-            [
-                'SessionID' => $sessionData['SessionID'],
-                'Test_name' => $testName,
-                'CommentID' => $ddeCommentID,
-                'UserID'    => $sessionData['UserID'],
-            ]
-        );
+        if ($DDEEnabled) {
+            $DB->insert(
+                'flag',
+                [
+                    'SessionID' => $sessionData['SessionID'],
+                    'Test_name' => $testName,
+                    'CommentID' => $ddeCommentID,
+                    'UserID'    => $sessionData['UserID'],
+                ]
+            );
+        }
 
         return $commentID ?? '';
     } // end addInstrument()
@@ -344,6 +349,7 @@ class NDB_BVL_Battery
                            Sub_group,
                            Subgroup_order,
                            isDirectEntry";
+
         if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
@@ -354,7 +360,7 @@ class NDB_BVL_Battery
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-
+        
         // return all the data selected
         return $rows;
     }
@@ -364,19 +370,21 @@ class NDB_BVL_Battery
      * Checks if a test_name has double data entry enabled in the config
      * for this Loris instance.
      *
-     * @param string $instrumentName The test_name that we want to know if
-     *                               we're using DDE for.
+     * @param \LORIS\LorisInstance $loris          The LORIS instance to check
+     * @param string               $instrumentName The test_name that we want to know if
+     *                                             we're using DDE for.
      *
      * @return boolean true if double data entry is enabled for this instrument
      */
-    static function isDoubleDataEntryEnabledForInstrument($instrumentName)
+    static function isDoubleDataEntryEnabledForInstrument(\LORIS\LorisInstance $loris, String $Visit_label, String $instrumentName)
     {
-
-        $config =& NDB_Config::singleton();
         $doubleDataEntryInstruments
-            = $config->getSetting("DoubleDataEntryInstruments");
+            = NDB_BVL_Instrument::getDDEInstrumentNamesList($loris, $Visit_label);
+        $ans = in_array($instrumentName, array_keys($doubleDataEntryInstruments));
 
-        return in_array($instrumentName, $doubleDataEntryInstruments);
+        error_log($Visit_label);
+        error_log(print_r($doubleDataEntryInstruments, true));
+        return $ans;
     }
 
     /**
