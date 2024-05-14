@@ -74,9 +74,9 @@ if ($opts['r']!=null) {
 /**
  * Initialization
  */
-$dataDir        = "logs";
-$diff           = null;
-$commentids     = [];
+$dataDir    = "logs";
+$diff       = null;
+$commentids = [];
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();

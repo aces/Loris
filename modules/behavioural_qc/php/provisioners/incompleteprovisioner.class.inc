@@ -22,27 +22,13 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
      */
     function __construct()
     {
-        $config         =& \NDB_Config::singleton();
-        $db = \NDB_Factory::singleton()->database();
+        $config        =& \NDB_Config::singleton();
+        $db            = \NDB_Factory::singleton()->database();
         $lorisInstance = new \LORIS\LorisInstance(
             $db,
             $config,
             [__DIR__ . "/../../"]
         );
-        $ddeInstruments = array_keys(\NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance, null));
-        for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
-        }
-        $where = "
-                AND (f.commentid NOT LIKE 'DDE_%')
-            ";
-        if (count($ddeInstruments) > 0) {
-            $ddeInstruments = implode(',', $ddeInstruments);
-            $where          = "
-                AND (f.test_name IN ($ddeInstruments) OR
-                f.commentid NOT LIKE 'DDE_%')
-            ";
-        }
         parent::__construct(
             "
             SELECT DISTINCT
@@ -64,13 +50,20 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 JOIN candidate c ON (c.candid = s.candid)
                 JOIN test_names t ON (t.Test_name = f.Test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
+                JOIN test_battery ON (
+                    t.Test_name = test_battery.Test_name
+                    AND test_battery.Visit_label = s.Visit_label
+                )
             WHERE
                 s.Active = 'Y'
                 AND c.Active = 'Y'
                 AND coalesce(f.data_entry, 'In Progress') = 'In Progress'
                 AND psc.Centerid != '1'
                 AND c.Entity_type != 'Scanner'
-                $where
+                AND (
+                    test_battery.DoubleDataEntryEnabled = 1
+                    OR f.commentid NOT LIKE 'DDE_%'
+                )
             ORDER BY
 	            f.commentid
             ",

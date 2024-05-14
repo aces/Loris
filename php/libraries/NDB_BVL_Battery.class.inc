@@ -202,9 +202,9 @@ class NDB_BVL_Battery
             throw new \LorisException("Invalid instrument");
         }
 
-        // get SessionID, UserID
-        $query = "SELECT ID as SessionID, UserID, Visit_label FROM session WHERE ID=:SID";
-        $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
+        // get SessionID, UserID, Visit_label
+        $query = "SELECT ID, UserID, Visit_label FROM session WHERE ID=:s";
+        $rows  = $DB->pselect($query, ['s' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -221,7 +221,11 @@ class NDB_BVL_Battery
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
-        $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument($loris, $sessionData['Visit_label'], $testName);
+        $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
+            $loris,
+            $sessionData['Visit_label'],
+            $testName
+        );
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
             $DB->insert($obj->table, ['CommentID' => $commentID]);
@@ -236,7 +240,7 @@ class NDB_BVL_Battery
         $DB->insert(
             'flag',
             [
-                'SessionID' => $sessionData['SessionID'],
+                'SessionID' => $sessionData['ID'],
                 'Test_name' => $testName,
                 'CommentID' => $commentID,
                 'UserID'    => $sessionData['UserID'],
@@ -248,7 +252,7 @@ class NDB_BVL_Battery
             $DB->insert(
                 'flag',
                 [
-                    'SessionID' => $sessionData['SessionID'],
+                    'SessionID' => $sessionData['ID'],
                     'Test_name' => $testName,
                     'CommentID' => $ddeCommentID,
                     'UserID'    => $sessionData['UserID'],
@@ -360,30 +364,32 @@ class NDB_BVL_Battery
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-        
+
         // return all the data selected
         return $rows;
     }
-
 
     /**
      * Checks if a test_name has double data entry enabled in the config
      * for this Loris instance.
      *
      * @param \LORIS\LorisInstance $loris          The LORIS instance to check
-     * @param string               $instrumentName The test_name that we want to know if
-     *                                             we're using DDE for.
+     * @param string               $Visit_label    The Visit_label that we want to
+     *                                             check if DDE is enabled for.
+     * @param string               $instrumentName The test_name that we want to
+     *                                             check if DDE is enabled for.
      *
      * @return boolean true if double data entry is enabled for this instrument
      */
-    static function isDoubleDataEntryEnabledForInstrument(\LORIS\LorisInstance $loris, String $Visit_label, String $instrumentName)
-    {
+    static function isDoubleDataEntryEnabledForInstrument(
+        \LORIS\LorisInstance $loris,
+        String $Visit_label,
+        String $instrumentName
+    ) : bool {
         $doubleDataEntryInstruments
             = NDB_BVL_Instrument::getDDEInstrumentNamesList($loris, $Visit_label);
         $ans = in_array($instrumentName, array_keys($doubleDataEntryInstruments));
 
-        error_log($Visit_label);
-        error_log(print_r($doubleDataEntryInstruments, true));
         return $ans;
     }
 

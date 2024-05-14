@@ -3226,15 +3226,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
-     * @param String               $Visit_label The visit label to get the DDE for
-     *                                         if null, all DDE instruments are returned
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to get DDE from
+     * @param String               $Visit_label The visit label to get the DDE for if
+     *                                          null all DDE instruments are returned
      *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris, String $Visit_label=null) : array
-    {
+    static function getDDEInstrumentNamesList(
+        \LORIS\LorisInstance $loris,
+        String $Visit_label=null
+    ) : array {
         $DB = $loris->getDatabaseConnection();
 
         $instrumentNamesList = self::getInstrumentNamesList($loris);
@@ -3244,7 +3246,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "SELECT Test_name FROM test_battery
                 WHERE DoubleDataEntryEnabled=true",
                 []
-            ); 
+            );
         } else {
             $doubleDataEntryInstruments = $DB->pselectCol(
                 "SELECT Test_name FROM test_battery
@@ -3253,7 +3255,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['Visit_label' => $Visit_label]
             );
         }
-        
+
         $instrumentNames = [];
         foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $doubleDataEntryInstruments, true)) {
@@ -3264,7 +3266,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // sort array by instrument name for modules that rely on ordering
         asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
-        error_log('done');
         return $instrumentNames;
     }
 
