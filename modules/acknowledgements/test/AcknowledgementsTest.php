@@ -222,7 +222,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 	$this->safeGet($this->url . "/acknowledgements/");
 	
 	$this->assertFalse($this->safeFindElement(
-            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
+            WebDriverBy::Name("addOrdering")
         ));
     }
 }
