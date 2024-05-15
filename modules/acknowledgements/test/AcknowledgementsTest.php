@@ -212,26 +212,20 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that, adding a new record, then this record appears on the page.
+     * Tests that, can't find Add Acknowledgement button on the page if
+     * user doesn't have acknowledgements_edit permission
      *
      * @return void
      */
     function testCantAddNewRecord()
     {
-	$elementExist = false;    
 	$this->setupPermissions(["acknowledgements_view"]);
 	$this->safeGet($this->url . "/acknowledgements/");
-        try {
-		// Attempt to find the element
-        $this->safeFindElement(
-            WebDriverBy::Name("addOrdering")
-        )->sendKeys(self::$newData['ordering']); 
-        $elementExist = true;
-        // If the element is found, perform some actions
-        } catch (NoSuchElementException $e) {
-        $elementExist = false;
-        }	
-	$this->assertFalse($elementExist);
+        $pagetext = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsNotString("Add Acknowledgement", $pagetext);
+
     }
 }
 
