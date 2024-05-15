@@ -251,8 +251,5 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Success!", $bodyText);
     }
-
-            $this->setupPermissions(["dicom_archive_view_allsites"]);
-
 }
 
