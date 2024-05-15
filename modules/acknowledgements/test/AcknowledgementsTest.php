@@ -218,12 +218,18 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testCantAddNewRecord()
     {
+	$elementExist = false;    
 	$this->setupPermissions(["acknowledgements_view"]);
 	$this->safeGet($this->url . "/acknowledgements/");
-	
-	$this->assertFalse($this->safeFindElement(
-            WebDriverBy::Name("addOrdering")
-        ));
+        try {
+        // Attempt to find the element
+        $element = $driver->findElement(WebDriverBy::Name('addOrdering'));
+        $elementExist = true;
+        // If the element is found, perform some actions
+        } catch (NoSuchElementException $e) {
+        $elementExist = false;
+        }	
+	$this->assertFalse($elementExist);
     }
 }
 
