@@ -67,7 +67,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function setUp(): void
     {
-        parent::setUp();
+	    parent::setUp();
+	
+        $this->setUpConfigSetting("citation_policy", "citation policy test text");
+    
         $this->DB->insert(
             "acknowledgements",
             self::$testData
@@ -82,6 +85,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown(): void
     {
+        $this->restoreConfigSetting("citation_policy");	    
         $this->DB->delete("acknowledgements", ['ID' => '999']);
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
@@ -266,6 +270,20 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
         $this->assertStringContainsString("Are You Sure?", $bodyText);
+    }
+    /**
+     * Tests that, can't find Add Acknowledgement button on the page if
+     * user doesn't have acknowledgements_edit permission
+     *
+     * @return void
+     */
+    function testCantAddNewRecord()
+    {
+        $this->safeGet($this->url . "/acknowledgements/");
+        $pagetext = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("citation policy test text", $pagetext);
     }
 }
 
