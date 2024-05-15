@@ -281,7 +281,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/acknowledgements/");
         $pagetext = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#citationPolicy")
         )->getText();
         $this->assertStringContainsString("citation policy test text", $pagetext);
     }
