@@ -210,5 +210,49 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Success!", $bodyText);
     }
+
+    /**
+     * Tests that, adding a new record, then this record appears on the page.
+     *
+     * @return void
+     */
+    function testCantAddNewRecord()
+    {
+	$this->setupPermissions(["acknowledgements_view"]);
+        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
+        )->click();
+        //insert ordering
+        $this->safeFindElement(
+            WebDriverBy::Name("addOrdering")
+        )->sendKeys(self::$newData['ordering']);
+        //insert Full name
+        $this->safeFindElement(
+            WebDriverBy::Name("addFullName")
+        )->sendKeys(self::$newData['full_name']);
+        //insert Citation name
+        $this->safeFindElement(
+            WebDriverBy::Name("addCitationName")
+        )->sendKeys(self::$newData['citation_name']);
+        $this->safeFindElement(
+            WebDriverBy::Name("addStartDate")
+        )->sendKeys(self::$newData['start_date']);
+        $el_dropdown = new WebDriverSelect(
+            $this->safeFindElement(WebDriverBy::Name("addPresent"))
+        );
+        $el_dropdown->selectByVisibleText("Yes");
+        //expecting to find the value,after clicking save button
+        $this->safeFindElement(
+            WebDriverBy::cssSelector('button[name="fire_away"]')
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertStringContainsString("Success!", $bodyText);
+    }
+
+            $this->setupPermissions(["dicom_archive_view_allsites"]);
+
 }
 
