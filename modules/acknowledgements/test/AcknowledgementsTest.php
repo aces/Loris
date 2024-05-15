@@ -222,8 +222,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 	$this->setupPermissions(["acknowledgements_view"]);
 	$this->safeGet($this->url . "/acknowledgements/");
         try {
-        // Attempt to find the element
-        $element = $driver->findElement(WebDriverBy::Name('addOrdering'));
+		// Attempt to find the element
+        $this->safeFindElement(
+            WebDriverBy::Name("addOrdering")
+        )->sendKeys(self::$newData['ordering']); 
         $elementExist = true;
         // If the element is found, perform some actions
         } catch (NoSuchElementException $e) {
