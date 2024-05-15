@@ -277,7 +277,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testCantAddNewRecord()
+    function testConfigSettingPolicy()
     {
         $this->safeGet($this->url . "/acknowledgements/");
         $pagetext = $this->safeFindElement(
