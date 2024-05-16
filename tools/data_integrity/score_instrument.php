@@ -113,12 +113,14 @@ if (strtolower($test_name) != 'all') {
 }
 
 // check that the $test_name is a valid instrument
+$qparams = [];
 if ($test_name== 'all') {
     $query = "SELECT Test_name FROM test_names";
 } else {
-    $query = "SELECT Test_name FROM test_names WHERE Test_name = :tnm";
+    $query          = "SELECT Test_name FROM test_names WHERE Test_name = :tnm";
+    $qparams['tnm'] = $test_name;
 }
-$testNames = $DB->pselect($query, ['tnm' => $test_name]);
+$testNames = $DB->pselect($query, $qparams);
 
 // if nothing is returned than the instrument DNE
 if (!is_array($testNames) || count($testNames)==0) {
