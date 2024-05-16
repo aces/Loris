@@ -92,7 +92,6 @@ class ConflictDetector
     {
         $db = \NDB_Factory::singleton()->database();
         foreach ($diffResult as $diffLine) {
-            print_r($diffLine);
             $db->replace('conflicts_unresolved', $diffLine);
         }
 
