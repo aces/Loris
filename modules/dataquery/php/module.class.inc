@@ -17,7 +17,9 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
+        $dictionary = $this->loris->getModule("dictionary");
+        return parent::hasAccess($user) && $user->hasPermission('dataquery_view')
+            && $dictionary->hasAccess($user);
     }
 
     /**
