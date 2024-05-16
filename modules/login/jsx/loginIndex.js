@@ -136,9 +136,11 @@ class Login extends Component {
       })
       .then((response) => {
         if (response.ok) {
-          response.json().then((data) => {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
+          response.json().then(() => {
+            // Redirect if there is a "redirect" param, refresh the page otherwise
+            window.location.href = this.props.redirect !== null
+              ? this.props.redirect
+              : window.location.origin;
           });
         } else {
           response.json().then((data) => {
@@ -337,6 +339,7 @@ Login.propTypes = {
   defaultRequestFirstName: PropTypes.string,
   defaultRequestLastName: PropTypes.string,
   defaultRequestEmail: PropTypes.string,
+  redirect: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
@@ -353,6 +356,7 @@ window.addEventListener('load', () => {
       defaultRequestFirstName={getParam('firstname', '')}
       defaultRequestLastName={getParam('lastname', '')}
       defaultRequestEmail={getParam('email', '')}
+      redirect={getParam('redirect', null)}
       module={'login'}
     />
   );

@@ -584,7 +584,10 @@ function SelectedFieldList(props: {
             onMouseEnter={() => setRemovingIdx(i)}
             onMouseLeave={() => setRemovingIdx(null)}>
             <i
-                className="fas fa-trash-alt" onClick={() => removeField(item)}
+                className="fas fa-trash-alt" onClick={() => {
+                    removeField(item);
+                    setRemovingIdx(null);
+                }}
                 style={{cursor: 'pointer'}} />
         </div>
       </div>);

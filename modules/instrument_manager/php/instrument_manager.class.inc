@@ -227,10 +227,21 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $db    = $this->loris->getDatabaseConnection();
-        $perms = $db->pselectCol("SELECT code FROM permissions", []);
+        $db          = $this->loris->getDatabaseConnection();
+        $perms       = $db->pselectCol("SELECT code FROM permissions", []);
+        $instruments = $db->pselectCol("SELECT Test_name FROM test_names", []);
+        $visits      = [];
+        foreach ($instruments as $instrument) {
+            $visits[$instrument] = $db->pselectCol(
+                "SELECT distinct Visit_label
+                FROM test_battery
+                WHERE Test_name=:v_instrument",
+                [':v_instrument' => $instrument]
+            );
+        }
         return [
             'allPermissionCodes' => $perms,
+            'visitLabels'        => $visits,
             'writable'           => $this->canWriteFiles(),
             'caninstall'         => $this->isAdminUserConfigured()
         ];
