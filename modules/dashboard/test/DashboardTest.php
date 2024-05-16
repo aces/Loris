@@ -145,7 +145,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -180,7 +180,7 @@ class DashboardTest extends LorisIntegrationTest
                 'ResolutionTimestamp' => '2015-11-03 16:21:49',
                 'User1'               => 'Null',
                 'User2'               => 'Null',
-                'TableName'           => 'Test',
+                'TestName'            => 'Test',
                 'ExtraKey1'           => 'NULL',
                 'ExtraKey2'           => 'NULL',
                 'FieldName'           => 'TestTestTest',
@@ -194,7 +194,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -258,7 +258,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->delete(
             "files_qcstatus",
@@ -316,7 +316,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->update(
             "Config",
