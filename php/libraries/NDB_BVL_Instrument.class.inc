@@ -2077,7 +2077,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = [
-                        'TableName'      => $this->table,
+                        'TestName'       => $this->testName,
                         'ExtraKeyColumn' => null,
                         'ExtraKey1'      => ' ',
                         'ExtraKey2'      => ' ',

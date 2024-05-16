@@ -92,6 +92,7 @@ class ConflictDetector
     {
         $db = \NDB_Factory::singleton()->database();
         foreach ($diffResult as $diffLine) {
+            print_r($diffLine);
             $db->replace('conflicts_unresolved', $diffLine);
         }
 
@@ -110,7 +111,7 @@ class ConflictDetector
     function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = [
-            'TableName'      => $diffLine['TableName'],
+            'testName'       => $diffLine['TestName'],
             'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
             'ExtraKey1'      => $diffLine['ExtraKey1'],
             'ExtraKey2'      => $diffLine['ExtraKey2'],
