@@ -132,6 +132,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($currentStage, ['Visit', 'Screening'])
             && $currentStatus != 'In Progress'
         ) {
+            $config = \NDB_Config::singleton();
+
             // Send to DCC - set Submitted to Y
             $this->setData(
                 [
