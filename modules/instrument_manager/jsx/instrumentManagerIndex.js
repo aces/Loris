@@ -30,7 +30,7 @@ class InstrumentManagerIndex extends Component {
       error: false,
       isLoaded: false,
       modifyPermissions: false,
-      modifyDDE: false
+      modifyDDE: false,
     };
 
    this.fetchData = this.fetchData.bind(this);
@@ -70,7 +70,10 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'Permission Required' || column === 'Double Data Entry Visits') {
+    if (
+      column === 'Permission Required'
+      || column === 'Double Data Entry Visits'
+    ) {
       const clickHandler = (row) => {
         return () => {
           if (column === 'Permission Required') {
@@ -211,7 +214,6 @@ class InstrumentManagerIndex extends Component {
                 ? this.state.modifyPermissions
                 : this.state.modifyDDE),
             }).then((response) => {
-              console.log(this.state.modifyDDE)
               if (!response.ok) {
                 console.error(response.status);
                 throw new Error('Could not modify');
@@ -276,7 +278,6 @@ class InstrumentManagerIndex extends Component {
     }
     let ddeModal = null;
     if (this.state.modifyDDE !== false) {
-
         ddeModal = (<Modal
             title={'Edit Double Data Entry Visits for '
                 + this.state.modifyDDE.instrument}
@@ -290,18 +291,24 @@ class InstrumentManagerIndex extends Component {
             <div
               style={{
                 paddingBottom: '100px',
-                marginBottom: '100px'
+                marginBottom: '100px',
               }}
             >
               <p>Select the visits that should have Double Data Entry for&nbsp;
               {this.state.modifyDDE.instrument} in the dropdown below.
               </p>
               <ModalSelect
-                codes={this.state.data.fieldOptions.visitLabels[this.state.modifyDDE.instrument]}
+                codes={
+                  this.state.data.fieldOptions.visitLabels[
+                    this.state.modifyDDE.instrument
+                  ]
+                }
                 selected={this.state.modifyDDE.visits}
                 instrument={this.state.modifyDDE.instrument}
                 modifySelected={(newselected) => {
-                    this.setState({modifyDDE: {...this.state.modifyDDE, visits: newselected}});
+                    this.setState({
+                      modifyDDE: {...this.state.modifyDDE, visits: newselected},
+                    });
                 }}
             />
             </div>
@@ -406,6 +413,8 @@ function ModalSelect(props) {
 ModalSelect.propTypes = {
     codes: PropTypes.array,
     formElement: PropTypes.string,
+    selected: PropTypes.array,
+    modifySelected: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
