@@ -243,7 +243,6 @@ class Instrument_List extends \NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['commentID'] = $ins;
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
-                    $this->loris,
                     $this->timePoint->getVisitLabel(),
                     $instrument['Test_name']
                 );

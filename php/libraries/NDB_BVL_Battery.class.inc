@@ -222,7 +222,6 @@ class NDB_BVL_Battery
         $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
         $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
-            $loris,
             $sessionData['Visit_label'],
             $testName
         );
@@ -373,24 +372,46 @@ class NDB_BVL_Battery
      * Checks if a test_name has double data entry enabled in the config
      * for this Loris instance.
      *
-     * @param \LORIS\LorisInstance $loris          The LORIS instance to check
-     * @param string               $Visit_label    The Visit_label that we want to
-     *                                             check if DDE is enabled for.
-     * @param string               $instrumentName The test_name that we want to
-     *                                             check if DDE is enabled for.
+     * @param string               $Visit_label The Visit_label that we want to
+     *                                          check if DDE is enabled for.
+     * @param string               $Test_name   The test_name that we want to
+     *                                          check if DDE is enabled for.
      *
      * @return boolean true if double data entry is enabled for this instrument
      */
     static function isDoubleDataEntryEnabledForInstrument(
-        \LORIS\LorisInstance $loris,
         String $Visit_label,
-        String $instrumentName
+        String $Test_name
     ) : bool {
-        $doubleDataEntryInstruments
-            = NDB_BVL_Instrument::getDDEInstrumentNamesList($loris, $Visit_label);
-        $ans = in_array($instrumentName, array_keys($doubleDataEntryInstruments));
-
+        $DB = \NDB_Factory::singleton()->database();
+        $ans = $DB->pselectOneInt('
+            SELECT DoubleDataEntryEnabled
+            FROM test_battery
+            WHERE Visit_label=:Visit_label
+            AND Test_name=:Test_name',
+            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]);
         return $ans;
+    }
+
+    /**
+     * Get the visits with DDE enabled for an instrument
+     *
+     * @param string $Test_name   The test_name that we want to
+     *                                          find DDE visits for.
+     *
+     * @return array with the Visit_labels
+     */
+    static function getDDEVisitsForInstrument(
+        String $Test_name
+    ) : array {
+        $DB = \NDB_Factory::singleton()->database();
+        return $DB->pselectCol(
+            "SELECT DISTINCT Visit_label
+            FROM test_battery
+            WHERE Test_name=:Test_name
+            AND DoubleDataEntryEnabled = 1",
+            [':Test_name' => $Test_name]
+        );
     }
 
     /**

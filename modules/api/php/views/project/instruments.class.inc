@@ -67,7 +67,7 @@ class Instruments
             $item      = [
                 'Fullname'               => $instrument->getFullname(),
                 'Subgroup'               => $instrument->getSubgroupname(),
-                'DoubleDataEntryEnabled' => $instrument->isDDE(),
+                'DoubleDataEntryVisits' => $instrument->getddeVisits(),
             ];
 
             if (!is_null($shortname)) {
