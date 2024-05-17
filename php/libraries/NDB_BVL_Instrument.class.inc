@@ -3227,7 +3227,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instantiable are returned, invalid instruments will not appear in this list.
      *
      * @param \LORIS\LorisInstance $loris       The LORIS instance to get DDE from
-     * @param String               $Visit_label The visit label to get the DDE for if
+     * @param ?string              $Visit_label The visit label to get the DDE for if
      *                                          null all DDE instruments are returned
      *
      * @return array

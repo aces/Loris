@@ -570,9 +570,18 @@ class Utility
     {
         error_log(
             "LORIS Deprecation Warning: The getAllDDEInstruments() function of
-            the Utility class has been deprecated. This function does not load the
-            most accurate Full_name value and should be replaced by
-            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+            the Utility class has been deprecated. This function should be replaced
+            by getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
+        $DB            = \NDB_Factory::singleton()->Database();
+        $config        =& NDB_Config::singleton();
+        $lorisinstance = new \LORIS\LorisInstance(
+            $DB,
+            $config,
+            [
+                __DIR__ . "/../../../project/modules",
+                __DIR__ . "/../../",
+            ],
         );
         return \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance);
     }

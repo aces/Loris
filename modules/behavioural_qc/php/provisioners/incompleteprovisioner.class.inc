@@ -22,13 +22,6 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
      */
     function __construct()
     {
-        $config        =& \NDB_Config::singleton();
-        $db            = \NDB_Factory::singleton()->database();
-        $lorisInstance = new \LORIS\LorisInstance(
-            $db,
-            $config,
-            [__DIR__ . "/../../"]
-        );
         parent::__construct(
             "
             SELECT DISTINCT
