@@ -575,7 +575,7 @@ class Utility
         );
         $DB            = \NDB_Factory::singleton()->Database();
         $config        =& NDB_Config::singleton();
-        $lorisinstance = new \LORIS\LorisInstance(
+        $lorisInstance = new \LORIS\LorisInstance(
             $DB,
             $config,
             [
