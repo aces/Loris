@@ -65,8 +65,8 @@ class Instruments
         foreach ($this->_instruments as $instrument) {
             $shortname = $instrument->getShortname();
             $item      = [
-                'Fullname'               => $instrument->getFullname(),
-                'Subgroup'               => $instrument->getSubgroupname(),
+                'Fullname'              => $instrument->getFullname(),
+                'Subgroup'              => $instrument->getSubgroupname(),
                 'DoubleDataEntryVisits' => $instrument->getddeVisits(),
             ];
 
