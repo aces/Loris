@@ -78,7 +78,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     /**
      * Accessor for ddeVisits.
      *
-     * @return bool
+     * @return array
      */
     public function getddeVisits(): array
     {

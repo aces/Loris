@@ -390,7 +390,7 @@ class NDB_BVL_Battery
             WHERE Visit_label=:Visit_label
             AND Test_name=:Test_name',
             ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
-        );
+        ) == 1 ? true : false;
         return $ans;
     }
 
