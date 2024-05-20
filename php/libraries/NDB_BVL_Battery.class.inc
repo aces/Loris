@@ -372,10 +372,10 @@ class NDB_BVL_Battery
      * Checks if a test_name has double data entry enabled in the config
      * for this Loris instance.
      *
-     * @param string               $Visit_label The Visit_label that we want to
-     *                                          check if DDE is enabled for.
-     * @param string               $Test_name   The test_name that we want to
-     *                                          check if DDE is enabled for.
+     * @param string $Visit_label The Visit_label that we want to
+     *                            check if DDE is enabled for.
+     * @param string $Test_name   The test_name that we want to
+     *                            check if DDE is enabled for.
      *
      * @return boolean true if double data entry is enabled for this instrument
      */
@@ -383,21 +383,22 @@ class NDB_BVL_Battery
         String $Visit_label,
         String $Test_name
     ) : bool {
-        $DB = \NDB_Factory::singleton()->database();
-        $ans = $DB->pselectOneInt('
-            SELECT DoubleDataEntryEnabled
+        $DB  = \NDB_Factory::singleton()->database();
+        $ans = $DB->pselectOneInt(
+            'SELECT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
             AND Test_name=:Test_name',
-            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]);
+            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
+        );
         return $ans;
     }
 
     /**
      * Get the visits with DDE enabled for an instrument
      *
-     * @param string $Test_name   The test_name that we want to
-     *                                          find DDE visits for.
+     * @param string $Test_name The test_name that we want to
+     *                          find DDE visits for.
      *
      * @return array with the Visit_labels
      */
