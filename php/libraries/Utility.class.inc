@@ -584,8 +584,8 @@ class Utility
             []
         );
         $instruments    = [];
-        foreach ($ddeInstruments as $Test_name => $Full_name) {
-            $instruments[$Test_name] = $Full_name;
+        foreach ($ddeInstruments as $instrument) {
+            $instruments[$instrument['Test_name']] = $instrument['Full_name'];
         }
         return $instruments;
     }
