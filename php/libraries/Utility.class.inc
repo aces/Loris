@@ -574,27 +574,16 @@ class Utility
             most accurate Full_name value and should be replaced by
             getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
-        $DB = $loris->getDatabaseConnection();
-
-        $instrumentNamesList = \NDB_BVL_Instrument::getInstrumentNamesList($loris);
-
-        $doubleDataEntryInstruments = $DB->pselectCol(
-            "SELECT DISTINCT Test_name FROM test_battery
-            WHERE DoubleDataEntryEnabled=true",
-            []
+        $Factory = \NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+        $config  = $Factory->config();
+        $loris   = new \LORIS\LorisInstance(
+            $DB,
+            $config,
+            [__DIR__ . "/../../project/modules", __DIR__ . "/../../modules"]
         );
 
-        $instrumentNames = [];
-        foreach ($instrumentNamesList as $testName => $fullName) {
-            if (in_array($testName, $doubleDataEntryInstruments, true)) {
-                $instrumentNames[$testName] = $fullName;
-            }
-        }
-
-        // sort array by instrument name for modules that rely on ordering
-        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
-
-        return $instrumentNames;
+        return \NDB_BVL_Instrument::getDDEInstrumentNamesList($loris);
     }
 
     /**
