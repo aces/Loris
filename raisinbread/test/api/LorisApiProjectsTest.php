@@ -473,7 +473,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             gettype(
                 $projectsInstrArray['Instruments']['aosi']['DoubleDataEntryVisits']
             ),
-            'boolean'
+            'array'
         );
 
         $this->assertArrayHasKey(

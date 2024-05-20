@@ -583,7 +583,7 @@ class Utility
             WHERE DoubleDataEntryEnabled = 1",
             []
         );
-        $instruments = [];
+        $instruments    = [];
         foreach ($ddeInstruments as $Test_name => $Full_name) {
             $instruments[$Test_name] = $Full_name;
         }
