@@ -576,14 +576,13 @@ class Utility
         );
         $Factory = \NDB_Factory::singleton();
         $DB      = $Factory->Database();
-        $config  = $Factory->config();
-        $loris   = new \LORIS\LorisInstance(
-            $DB,
-            $config,
-            [__DIR__ . "/../../project/modules", __DIR__ . "/../../modules"]
+        return $DB->pselect(
+            "SELECT DISTINCT test_battery.Test_name, Full_name
+            FROM test_battery
+            JOIN test_names ON test_battery.Test_name = test_names.Test_name
+            WHERE DoubleDataEntryEnabled = 1",
+            []
         );
-
-        return \NDB_BVL_Instrument::getDDEInstrumentNamesList($loris);
     }
 
     /**
