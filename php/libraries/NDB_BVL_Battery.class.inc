@@ -385,7 +385,7 @@ class NDB_BVL_Battery
     ) : bool {
         $DB  = \NDB_Factory::singleton()->database();
         $ans = $DB->pselectOneInt(
-            'SELECT DoubleDataEntryEnabled
+            'SELECT DISTINCT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
             AND Test_name=:Test_name',
