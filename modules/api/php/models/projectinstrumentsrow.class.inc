@@ -34,13 +34,11 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $shortname = $row['shortname'] ?? null;
-
-        $this->_shortname    = $shortname;
+        $this->_shortname    = $row['shortname'] ?? null;
         $this->_fullname     = $row['fullname'] ?? null;
         $this->_subgroupname = $row['subgroupname'] ?? null;
         $this->_ddeVisits    = \NDB_BVL_Battery::getDDEVisitsForInstrument(
-            $shortname
+            $this->_shortname
         );
 
     }
