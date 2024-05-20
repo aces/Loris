@@ -576,13 +576,18 @@ class Utility
         );
         $Factory = \NDB_Factory::singleton();
         $DB      = $Factory->Database();
-        return $DB->pselect(
+        $ddeInstruments = $DB->pselect(
             "SELECT DISTINCT test_battery.Test_name, Full_name
             FROM test_battery
             JOIN test_names ON test_battery.Test_name = test_names.Test_name
             WHERE DoubleDataEntryEnabled = 1",
             []
         );
+        $instruments = [];
+        foreach ($ddeInstruments as $Test_name => $Full_name) {
+            $instruments[$Test_name] = $Full_name;
+        }
+        return $instruments;
     }
 
     /**
