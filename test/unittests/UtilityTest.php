@@ -419,7 +419,6 @@ class UtilityTest extends TestCase
                 'Full_name' => 'full_name2'
             ]
         ];
-        $doubleDataEntryInstruments = ['test_name2'];
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
