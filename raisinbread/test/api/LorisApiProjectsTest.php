@@ -471,7 +471,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         );
         $this->assertSame(
             gettype(
-                $projectsInstrArray['Instruments']['aosi']['DoubleDataEntryEnabled']
+                $projectsInstrArray['Instruments']['aosi']['DoubleDataEntryVisits']
             ),
             'boolean'
         );
