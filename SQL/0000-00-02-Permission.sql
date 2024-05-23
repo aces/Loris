@@ -33,6 +33,7 @@ CREATE TABLE `permissions` (
       'View/Create/Edit',
       'Create/Edit',
       'Edit/Upload',
+      'Edit/Upload/Delete',
       'Edit/Upload/Hide'),
   `categoryID` int(10) NOT NULL DEFAULT '2',
   PRIMARY KEY (`permID`),
