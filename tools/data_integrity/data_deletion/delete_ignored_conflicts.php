@@ -146,10 +146,10 @@ function defaultIgnoreColumns()
         }
     } else {
         foreach ($this->defaultFields as $field) {
-            $defaultQuery  = "SELECT TableName, FieldName, Value1, Value2
+            $defaultQuery  = "SELECT TestName, FieldName, Value1, Value2
           FROM conflicts_unresolved WHERE FieldName = '$field'";
             $defaultColumn = $db->pselectOne($defaultQuery, []);
-            echo "TableName, FieldName, Value1, Value2: ";
+            echo "TestName, FieldName, Value1, Value2: ";
             print_r($defaultColumn);
             echo "\n";
         }
@@ -172,17 +172,17 @@ function ignoreColumn($instrument, $instrumentFields)
     if ($this->confirm) {
         foreach ($instrumentFields as $field => $instr) {
             $query   = "DELETE FROM conflicts_unresolved 
-                WHERE TableName = '$instrument' AND FieldName = '$field'";
+                WHERE TestName = '$instrument' AND FieldName = '$field'";
             $changes = $db->run($query);
             echo $changes . "\n";
         }
     } else {
         foreach ($instrumentFields as $field => $instr) {
-            $query        = "SELECT TableName, FieldName, Value1, Value2 
+            $query        = "SELECT TestName, FieldName, Value1, Value2 
                 FROM conflicts_unresolved 
-                WHERE TableName = '$instrument' AND FieldName = '$field'";
+                WHERE TestName = '$instrument' AND FieldName = '$field'";
             $ignoreColumn = $db->pselectOne($query, []);
-            echo "TableName, FieldName, Value1, Value2: ";
+            echo "TestName, FieldName, Value1, Value2: ";
             print_r($ignoreColumn);
             echo  "\n";
         }
