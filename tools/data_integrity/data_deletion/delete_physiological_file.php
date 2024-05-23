@@ -241,7 +241,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         FROM physiological_parameter_file as ppf
         LEFT JOIN parameter_type as pt USING (ParameterTypeID)
         WHERE PhysiologicalFileID=:pfid
-        AND pt.Name = "electrophyiology_chunked_dataset_path"',
+        AND pt.Name = "electrophysiology_chunked_dataset_path"',
         ['pfid' => $physioFileID]
     );
     print_r($chunks);
