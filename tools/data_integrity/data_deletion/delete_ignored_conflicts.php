@@ -94,7 +94,7 @@ if (isset($instruments)) {
             echo "No DDE ignore fields found for " . $instrument . "\n";
         }
         if (!$instrumentSpecified) {
-            defaultIgnoreColumns($instrument, $defaultFields, $confirm);
+            defaultIgnoreColumns($defaultFields, $confirm);
         }
         ignoreColumn($instrument, $instrumentFields, $confirm);
     }
@@ -112,9 +112,12 @@ if ($confirm === false) {
  * Prints the default ignore columns to be removed
  * Removes the fields if confirmation is set
  *
+ * @param array $defaultFields The fields for the instrument
+ * @param bool  $confirm       True if data should be deleted
+ *
  * @return void
  */
-function defaultIgnoreColumns($testName, $defaultFields, $confirm)
+function defaultIgnoreColumns($defaultFields, $confirm)
 {
     $db = \NDB_Factory::singleton()->database();
 
@@ -149,6 +152,7 @@ function defaultIgnoreColumns($testName, $defaultFields, $confirm)
  *
  * @param string $instrument       The name of the instrument
  * @param array  $instrumentFields The fields for the instrument
+ * @param bool   $confirm          True if data should be deleted
  *
  * @return void
  */
@@ -167,7 +171,10 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
             $query        = "SELECT TestName, FieldName, Value1, Value2 
                 FROM conflicts_unresolved 
                 WHERE TestName = :tn AND FieldName = :field";
-            $ignoreColumn = $db->pselect($query, ['tn' => $instrument, 'field' => $field]);
+            $ignoreColumn = $db->pselect(
+                $query,
+                ['tn' => $instrument, 'field' => $field]
+            );
             if ($ignoreColumn) {
                 echo "TestName, FieldName, Value1, Value2: \n";
                 foreach ($ignoreColumn AS $key => $conflicts) {
