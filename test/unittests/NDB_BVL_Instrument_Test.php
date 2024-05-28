@@ -1624,7 +1624,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->diff($otherInstrument),
             [
                 [
-                    'TestName'       => 'medical_history',
+                    'TestName'       => 'Test',
                     'ExtraKeyColumn' => null,
                     'ExtraKey1'      => ' ',
                     'ExtraKey2'      => ' ',
