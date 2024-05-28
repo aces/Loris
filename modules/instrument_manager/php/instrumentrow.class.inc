@@ -61,6 +61,12 @@ class InstrumentRow implements \LORIS\Data\DataInstance
                 $row['Permissions_Required'],
             );
         }
+        if ($row['DDE_Visits'] !== null) {
+            $row['DDE_Visits'] = explode(
+                ',',
+                $row['DDE_Visits'],
+            );
+        }
 
         $this->DBRow = $row;
     }

@@ -25,7 +25,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     private $_shortname;
     private $_fullname;
     private $_subgroupname;
-    private $_isDDE;
+    private $_ddeVisits;
 
     /**
      * Create a new ProjectImagesRow.
@@ -34,17 +34,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $shortname      = $row['shortname'] ?? null;
-        $ddeinstruments = array_keys(\Utility::getAllDDEInstruments());
-
-        $this->_shortname    = $shortname;
+        $this->_shortname    = $row['shortname'] ?? null;
         $this->_fullname     = $row['fullname'] ?? null;
         $this->_subgroupname = $row['subgroupname'] ?? null;
-        $this->_isDDE        = in_array(
-            $shortname,
-            $ddeinstruments,
-            true
+        $this->_ddeVisits    = \NDB_BVL_Battery::getDDEVisitsForInstrument(
+            $this->_shortname
         );
+
     }
 
     /**
@@ -78,13 +74,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Accessor for isDDE.
+     * Accessor for ddeVisits.
      *
-     * @return bool
+     * @return array
      */
-    public function isDDE(): bool
+    public function getddeVisits(): array
     {
-        return $this->_isDDE;
+        return $this->_ddeVisits;
     }
 
     /**
@@ -98,7 +94,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
             'shortname' => $this->_shortname,
             'fullname'  => $this->_fullname,
             'subgroup'  => $this->_subgroupname,
-            'ddeenable' => $this->_isDDE,
+            'ddevisits' => $this->_ddeVisits,
         ];
     }
 }

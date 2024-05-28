@@ -202,9 +202,9 @@ class NDB_BVL_Battery
             throw new \LorisException("Invalid instrument");
         }
 
-        // get SessionID, UserID
-        $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
-        $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
+        // get SessionID, UserID, Visit_label
+        $query = "SELECT ID, UserID, Visit_label FROM session WHERE ID=:s";
+        $rows  = $DB->pselect($query, ['s' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -221,19 +221,25 @@ class NDB_BVL_Battery
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
+        $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
+            $sessionData['Visit_label'],
+            $testName
+        );
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
             $DB->insert($obj->table, ['CommentID' => $commentID]);
 
             // insert the dde into the test table
-            $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+            if ($DDEEnabled) {
+                $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+            }
         }
 
         // insert into the flag table
         $DB->insert(
             'flag',
             [
-                'SessionID' => $sessionData['SessionID'],
+                'SessionID' => $sessionData['ID'],
                 'Test_name' => $testName,
                 'CommentID' => $commentID,
                 'UserID'    => $sessionData['UserID'],
@@ -241,15 +247,17 @@ class NDB_BVL_Battery
         );
 
         // insert the dde into the flag table
-        $DB->insert(
-            'flag',
-            [
-                'SessionID' => $sessionData['SessionID'],
-                'Test_name' => $testName,
-                'CommentID' => $ddeCommentID,
-                'UserID'    => $sessionData['UserID'],
-            ]
-        );
+        if ($DDEEnabled) {
+            $DB->insert(
+                'flag',
+                [
+                    'SessionID' => $sessionData['ID'],
+                    'Test_name' => $testName,
+                    'CommentID' => $ddeCommentID,
+                    'UserID'    => $sessionData['UserID'],
+                ]
+            );
+        }
 
         return $commentID ?? '';
     } // end addInstrument()
@@ -344,6 +352,7 @@ class NDB_BVL_Battery
                            Sub_group,
                            Subgroup_order,
                            isDirectEntry";
+
         if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
@@ -359,24 +368,51 @@ class NDB_BVL_Battery
         return $rows;
     }
 
-
     /**
      * Checks if a test_name has double data entry enabled in the config
      * for this Loris instance.
      *
-     * @param string $instrumentName The test_name that we want to know if
-     *                               we're using DDE for.
+     * @param string $Visit_label The Visit_label that we want to
+     *                            check if DDE is enabled for.
+     * @param string $Test_name   The test_name that we want to
+     *                            check if DDE is enabled for.
      *
      * @return boolean true if double data entry is enabled for this instrument
      */
-    static function isDoubleDataEntryEnabledForInstrument($instrumentName)
-    {
+    static function isDoubleDataEntryEnabledForInstrument(
+        String $Visit_label,
+        String $Test_name
+    ) : bool {
+        $DB  = \NDB_Factory::singleton()->database();
+        $ans = $DB->pselectOneInt(
+            'SELECT DISTINCT DoubleDataEntryEnabled
+            FROM test_battery
+            WHERE Visit_label=:Visit_label
+            AND Test_name=:Test_name',
+            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
+        ) == 1 ? true : false;
+        return $ans;
+    }
 
-        $config =& NDB_Config::singleton();
-        $doubleDataEntryInstruments
-            = $config->getSetting("DoubleDataEntryInstruments");
-
-        return in_array($instrumentName, $doubleDataEntryInstruments);
+    /**
+     * Get the visits with DDE enabled for an instrument
+     *
+     * @param string $Test_name The test_name that we want to
+     *                          find DDE visits for.
+     *
+     * @return array with the Visit_labels
+     */
+    static function getDDEVisitsForInstrument(
+        String $Test_name
+    ) : array {
+        $DB = \NDB_Factory::singleton()->database();
+        return $DB->pselectCol(
+            "SELECT DISTINCT Visit_label
+            FROM test_battery
+            WHERE Test_name=:Test_name
+            AND DoubleDataEntryEnabled = 1",
+            [':Test_name' => $Test_name]
+        );
     }
 
     /**
