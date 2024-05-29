@@ -192,8 +192,12 @@ class MediaTest extends LorisIntegrationTest
              $bodyText = $this->safeFindElement(
                 WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2)")
 	     )->getText();
-                    $this->assertEquals("MTL001_V1_aosi.txt", $bodyText);
-		  
+                    $this->assertEquals("DCC090_V1_bmi.txt", $bodyText);
+            $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(3)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(3)")
+             )->getText();
+                    $this->assertEquals("DCC090", $bodyText);		  
 
     }    
 }
