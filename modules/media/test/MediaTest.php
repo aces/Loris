@@ -198,7 +198,26 @@ class MediaTest extends LorisIntegrationTest
                 WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(3)")
              )->getText();
                     $this->assertEquals("DCC090", $bodyText);		  
-
+            $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(4)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(4)")
+             )->getText();
+		  $this->assertEquals("V1", $bodyText);
+            $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(5)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(5)")
+             )->getText();
+                  $this->assertEquals("", $bodyText);		  
+            $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(6)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(6)")
+             )->getText();
+		  $this->assertEquals("", $bodyText); 
+            $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(7)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(7)")
+             )->getText();
+                  $this->assertEquals("Data Coordinating Center", $bodyText);		  
     }    
 }
 
