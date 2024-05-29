@@ -184,5 +184,17 @@ class MediaTest extends LorisIntegrationTest
             );
         $this->assertEquals("", $inputText);
     }
+    function testBrowseTab()
+    {
+	          $this->safeGet($this->url . "/media/");
+  
+	    $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child(2)"));
+             $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2)")
+	     )->getText();
+                    $this->assertEquals("MTL001_V1_aosi.txt", $bodyText);
+		  
+
+    }    
 }
 
