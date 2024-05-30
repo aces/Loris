@@ -88,7 +88,7 @@ function uploadFile()
     $db     = \NDB_Factory::singleton()->database();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
-    if (!$user->hasPermission('media_read')) {
+    if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
         exit;
     }
