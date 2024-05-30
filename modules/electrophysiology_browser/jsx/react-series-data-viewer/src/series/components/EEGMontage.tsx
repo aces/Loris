@@ -53,8 +53,7 @@ const EEGMontage = (
   const scatter3D = [];
   const scatter2D = [];
   const startAngle = 0;
-  const color = '#000000';
-
+      
   const point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
