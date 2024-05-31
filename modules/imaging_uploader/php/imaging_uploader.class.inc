@@ -181,6 +181,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                              . 'This indicates an incorrect or non-'
                              . "existent MRI pipeline setup\n";
                     $this->addLaunchFailureNotification(
+                        $db,
                         $message,
                         $this->mri_upload_id
                     );
@@ -201,12 +202,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Adds a record in table notification_spool indicating that the
      * MRI pipeline could not be launched successfully.
      *
+     * @param $db       database object.
      * @param $message  reason for the launch failure.
      * @param $uploadID ID of the upload that the pipeline was meant to process.
      *
      * @return void.
      */
-    function addLaunchFailureNotification($message, $uploadID)
+    function addLaunchFailureNotification($db, $message, $uploadID)
     {
         $notificationTypeID = $db->pselectOne(
             "SELECT NotificationTypeID

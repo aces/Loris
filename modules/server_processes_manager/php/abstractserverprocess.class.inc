@@ -176,11 +176,11 @@ abstract class AbstractServerProcess
     /**
      * Mutator for field $_id.
      *
-     * @param $id new value for field $_id.
+     * @param int $id new value for field $_id.
      *
      * @return void.
      */
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->_id = $id;
     }
@@ -273,9 +273,7 @@ abstract class AbstractServerProcess
             $this->getStderrFile(),
             $this->getExitCodeFile()
         );
-        error_log("*** before start");
         $process->start();
-        error_log("*** after start");
 
         //-------------------------
         // Store PID and start time
@@ -323,13 +321,11 @@ abstract class AbstractServerProcess
     public function getExitCode()
     {
         if ($this->isRunning()) {
-               error_log("**** Process is running so returning null");
                return null;
         }
 
         // Check if class attribute is set
         if (!is_null($this->_exitCode)) {
-               error_log("**** exit code is set so returning it");
                return $this->_exitCode;
         }
 
@@ -337,7 +333,6 @@ abstract class AbstractServerProcess
         // attributes are up to date
         $this->_syncTaskProperties();
 
-        error_log("**** Returning " . $this->_exitCode);
         return $this->_exitCode;
     }
 
@@ -426,7 +421,6 @@ abstract class AbstractServerProcess
         ) {
             $exitCode = 'unknown';
         } else {
-            error_log("**** exit code file exists");
             //-----------------------------------------------------
             // Read the exitCodeFile and fetch the unique number
             // written in there
@@ -438,7 +432,6 @@ abstract class AbstractServerProcess
             );
 
             if ($tailReturnCode != 0) {
-                error_log("**** Failed to retrieve exit code");
                 $errorMessage
                     = "Failed to retrieve exit code of process with pid "
                       . $this->getPid() . " in "
@@ -448,7 +441,6 @@ abstract class AbstractServerProcess
             }
 
             if (count($tailOutput) != 1) {
-                error_log("**** Invalid exit code file content");
                 $errorMessage
                     = "Invalid exit code file content (pid = "
                       . $this->getPid() . "): found "
@@ -458,15 +450,12 @@ abstract class AbstractServerProcess
             }
 
             if (!is_numeric($tailOutput[0])) {
-                error_log("**** Invalid exist code file content (non-num)");
                 $errorMessage
                     = "Invalid exit code file content (pid = "
                       . $this->getPid() . "): $tailOutput[0]";
                 error_log($errorMessage);
                 throw new \UnexpectedValueException($errorMessage);
             }
-
-            error_log("**** Setting exit code to " . $tailOutput[0]);
 
             $exitCode = $tailOutput[0];
         }
@@ -491,7 +480,6 @@ abstract class AbstractServerProcess
                // Problem with the exit code file: end time is unknown (null)
             $endTime = null;
         }
-        error_log("**** Hello!!!!");
         $exitText = $this->computeExitText($exitCode, $endTime);
 
         $this->_exitCode = $exitCode;
@@ -499,7 +487,6 @@ abstract class AbstractServerProcess
         $this->_endTime  = $endTime;
 
         foreach ($this->_processSyncListeners as $listener) {
-            error_log("**** calling processSynced");
             $listener->processSynced($this);
         }
 
@@ -508,7 +495,6 @@ abstract class AbstractServerProcess
         // required to do so
         //------------------------------------------------------------------
         if ($this->deleteProcessFiles()) {
-            error_log("*** deleting process files");
             if (file_exists($this->getStdoutFile())) {
                 unlink($this->getStdoutFile())
                     || error_log("Failed to delete file " . $this->getStdoutFile());

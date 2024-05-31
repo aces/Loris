@@ -74,9 +74,9 @@ class ServerProcessLauncher
      * Records in the database the information associated to a process that was
      * just started.
      *
-     * @param AbstractServerProcess $process the process that was just started
+     * @param AbstractServerProcess $process the process that was just started.
      *
-     * @return int the ID of the record inserted in table server_processes.
+     * @return void.
      *
      * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
@@ -154,15 +154,15 @@ class ServerProcessLauncher
      * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
      * @param string $sourceLocation location of the MRI file
      *
-     * @return AbstractServewrProcess the launched MRI process.
+     * @return AbstractServerProcess the launched MRI process.
      */
     public function mriUpload($mriUploadId, $sourceLocation)
     {
-        $mriUploadProcess           = new MriUploadServerProcess(
+        $mriUploadProcess            = new MriUploadServerProcess(
             $mriUploadId,
             $sourceLocation
         );
-        $this->_processesLaunched[] = $mriUploadProcess;
+        $this->_processesMonitored[] = $mriUploadProcess;
 
         // Add this process to the list of monitored process:
         // this will ensure we get notified when its _syncTaskProperties method
@@ -184,7 +184,7 @@ class ServerProcessLauncher
     public function processSynced($process)
     {
         // Ensure the process is indeed a process that is monitored
-        if (in_array($process, $this->_processesLaunched)) {
+        if (in_array($process, $this->_processesMonitored)) {
             try {
                 $setValues = [
                     'exit_text' => $process->getExitText(),
