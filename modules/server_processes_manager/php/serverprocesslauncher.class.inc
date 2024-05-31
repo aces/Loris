@@ -114,7 +114,7 @@ class ServerProcessLauncher
             ]
         );
 
-        $process->setId($db->lastInsertID);
+        $process->setId(intval($db->lastInsertID));
     }
 
     /**
