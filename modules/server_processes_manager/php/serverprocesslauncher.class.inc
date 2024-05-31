@@ -38,6 +38,12 @@ class ServerProcessLauncher
     private $_databaseProvider;
 
     /**
+     * List of processes that should notify this class when their _syncTaskProperties
+     * are run.
+     */
+    private $_processesMonitored = [];
+
+    /**
      * Accessor for field $_databaseProvider
      *
      * @return IDatabaseProvider value of field $_databaseProvider
@@ -70,7 +76,8 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process the process that was just started
      *
-     * @return string
+     * @return int the ID of the record inserted in table server_processes.
+     *
      * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
      */
@@ -107,7 +114,7 @@ class ServerProcessLauncher
             ]
         );
 
-        return $db->lastInsertID;
+        $process->setId($db->lastInsertID);
     }
 
     /**
@@ -116,7 +123,7 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process process to launch.
      *
-     * @return ?int ID of the process saved in the database.
+     * @return void.
      *
      * @throws \LorisException if the process cannot be launched successfully.
      */
@@ -124,19 +131,21 @@ class ServerProcessLauncher
     {
         $process->execute();
 
-        // Wait one second before checking the exit code: if the command is invalid
+        // If we get here, it means that the process started successfully
+        // Save it to the database
+        $this->_saveProcess($process);
+
+        // Wait two seconds before checking the exit code: if the command is invalid
         // this will give enough time for the process to die and we can get the
-        // exit code (otherwise the check happens too soon and the process is
+        // exit code, otherwise the check happens too soon and the process is
         // considered to be "still running" (i.e. exit code undefined yet)
-        sleep(1);
+        sleep(2);
 
         if ($process->getExitCode() == self::CANNOT_EXECUTE_EXIT_CODE) {
             throw new \LorisException(
                 "Cannot run command " . $process->getShellCommand()
             );
         }
-
-        return intval($this->_saveProcess($process));
     }
 
     /**
@@ -145,16 +154,55 @@ class ServerProcessLauncher
      * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
      * @param string $sourceLocation location of the MRI file
      *
-     * @return ?int ID (in the database) of the launched process or null
-     *             if the process could not be run
+     * @return AbstractServewrProcess the launched MRI process.
      */
     public function mriUpload($mriUploadId, $sourceLocation)
     {
-        $mriUploadProcess = new MriUploadServerProcess(
+        $mriUploadProcess           = new MriUploadServerProcess(
             $mriUploadId,
             $sourceLocation
         );
-        return $this->_launch($mriUploadProcess);
+        $this->_processesLaunched[] = $mriUploadProcess;
+
+        // Add this process to the list of monitored process:
+        // this will ensure we get notified when its _syncTaskProperties method
+        // is executed
+        $mriUploadProcess->addProcessSyncListener($this);
+        $this->_launch($mriUploadProcess);
+
+        return $mriUploadProcess;
+    }
+
+    /**
+     * This method gets called when one of the processes in list
+     * _processesMonitored executes its _syncTaskProperties method.
+     *
+     * @param $process the process that called its _syncTaskProperties method.
+     *
+     * @return void.
+     */
+    public function processSynced($process)
+    {
+        // Ensure the process is indeed a process that is monitored
+        if (in_array($process, $this->_processesLaunched)) {
+            try {
+                $setValues = [
+                    'exit_text' => $process->getExitText(),
+                    'exit_code' => $process->getExitCode(),
+                    'end_time'  => $process->getEndTime()
+                ];
+                $this->getDatabaseProvider()->getDatabase()->update(
+                    'server_processes',
+                    $setValues,
+                    ['id' => $process->getId()]
+                );
+            } catch (\DatabaseException $exception) {
+                error_log(
+                    "Failed to update task (pid=" . $process->getPid() . ") status: "
+                    . $exception->getMessage()
+                );
+            }
+        }
     }
 }
 

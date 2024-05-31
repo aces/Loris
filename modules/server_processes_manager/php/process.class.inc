@@ -152,7 +152,7 @@ class Process
         // exit code in $_exitCodeFile
         $this->_pid = intval(
             exec(
-                "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
+                "(bash -c \"$mainCmd\"; $getExitCodeCmd) > /dev/null 2> /dev/null & "
                 . " echo $!",
                 $execOutput,
                 $returnStatus
