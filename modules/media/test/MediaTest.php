@@ -59,9 +59,36 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );
+	);
+        $this->assertStringNotContainsString("Edit Metadata", $text);
+
         $this->resetPermissions();
     }
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testLoadsWithPermissionRead()
+    {
+        $this->setupPermissions(["media_write"]);
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+	);
+        $this->assertStringContainsString("Edit Metadata", $text);	
+        $this->resetPermissions();
+    }
+    /**    
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -184,24 +211,45 @@ class MediaTest extends LorisIntegrationTest
             );
         $this->assertEquals("", $inputText);
     }
-function testBrowseTab()
-{
-    $this->safeGet($this->url . "/media/");
-    
-    $this->checkColumn(2, "DCC090_V1_bmi.txt");
-    $this->checkColumn(3, "DCC090");
-    $this->checkColumn(4, "V1");
-    $this->checkColumn(5, "");
-    $this->checkColumn(6, "");
-    $this->checkColumn(7, "Data Coordinating Center");
-    $this->checkColumn(8, "Pumpernickel");
-}
+    /**
+     * Testing Browse tab and coulumn clicking
+     *
+     * @return void
+     */
+    function testBrowseTab()
+    {
+        $this->safeGet($this->url . "/media/");
 
-function checkColumn($columnNumber, $expectedText)
-{
-    $this->safeClick(WebDriverBy::cssSelector("#dynamictable > thead > tr > th:nth-child($columnNumber)"));
-    $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1) > td:nth-child($columnNumber)"))->getText();
-    $this->assertEquals($expectedText, $bodyText);
-}
+        $this->checkColumn(2, "DCC090_V1_bmi.txt");
+        $this->checkColumn(3, "DCC090");
+        $this->checkColumn(4, "V1");
+        $this->checkColumn(5, "");
+        $this->checkColumn(6, "");
+        $this->checkColumn(7, "Data Coordinating Center");
+        $this->checkColumn(8, "Pumpernickel");
+    }
+    /**
+     * Test Browse tab and coulumn clicking-middleware
+     *
+     * @param string $columnNumber columnNumber
+     * @param string $expectedText expectedText
+     *
+     * @return void
+     */
+    function checkColumn($columnNumber, $expectedText)
+    {
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable > thead > tr > th:nth-child($columnNumber)"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr:nth-child(1)".
+                " > td:nth-child($columnNumber)"
+            )
+        )->getText();
+            $this->assertEquals($expectedText, $bodyText);
+    }
 }
 
