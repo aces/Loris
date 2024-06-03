@@ -70,7 +70,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                            LEFT JOIN parameter_type as pt USING (ParameterTypeID)
                          WHERE
                           PhysiologicalFileID=:PFID
-                          AND pt.Name <> 'electrophyiology_chunked_dataset_path'";
+                          AND pt.Name <> 'electrophysiology_chunked_dataset_path'";
         $parameterRaw = $db->pselect($query, ['PFID' => $physiologicalFileID]);
 
         foreach ($parameterRaw AS $row) {
@@ -118,7 +118,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                     WHERE PhysiologicalFileID IN ("
                     . join(',', $this->_splitFileIDs)
                     . ")
-                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+                      AND pt.Name = 'electrophysiology_chunked_dataset_path'";
             $this->_chunksURLs = $db->pselectCol($query, []);
         } else {
             $this->_fileData['SplitCount'] = 'n/a';
@@ -127,7 +127,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                     FROM physiological_parameter_file as ppf
                       LEFT JOIN parameter_type as pt USING (ParameterTypeID)
                     WHERE PhysiologicalFileID=:PFID
-                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+                      AND pt.Name = 'electrophysiology_chunked_dataset_path'";
             $this->_chunksURLs = $db->pselectCol(
                 $query,
                 ['PFID' => $physiologicalFileID]
