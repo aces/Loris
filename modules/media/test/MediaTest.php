@@ -59,10 +59,10 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-	);
+        );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#dynamictable > thead > tr")
-        )->getText();	
+        )->getText();
         $this->assertStringNotContainsString("Edit Metadata", $bodyText);
 
         $this->resetPermissions();
@@ -87,14 +87,14 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-	);
+        );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#dynamictable > thead > tr")
-        )->getText();	
-        $this->assertStringContainsString("Edit Metadata", $bodyText);	
+        )->getText();
+        $this->assertStringContainsString("Edit Metadata", $bodyText);
         $this->resetPermissions();
     }
-    /**    
+    /**
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
