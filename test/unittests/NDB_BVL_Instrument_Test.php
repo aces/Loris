@@ -1624,7 +1624,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->diff($otherInstrument),
             [
                 [
-                    'TableName'      => 'medical_history',
+                    'TestName'       => 'Test',
                     'ExtraKeyColumn' => null,
                     'ExtraKey1'      => ' ',
                     'ExtraKey2'      => ' ',
@@ -1652,7 +1652,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $conflicts_data = [
             [
                 'ConflictID'     => '123',
-                'TableName'      => '',
+                'TestName'       => '',
                 'ExtraKeyColumn' => null,
                 'ExtraKey1'      => '',
                 'ExtraKey2'      => '',

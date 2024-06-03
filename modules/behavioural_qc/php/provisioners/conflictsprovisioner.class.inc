@@ -28,7 +28,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
   	          s.CandID AS _candID,
   	          ca.PSCID AS _pscID,
   	          c.FieldName AS _fieldName,
-  	          c.TableName AS _tableName,
+  	          c.TestName AS _testName,
   	          t.full_name AS _test_name_display,
   	          s.visit_label AS _visit,
               s.ProjectID AS _project,

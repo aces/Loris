@@ -1204,7 +1204,7 @@ INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN 
 
 CREATE TABLE `conflicts_unresolved` (
   `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
-  `TableName` varchar(255) NOT NULL,
+  `TestName` varchar(255) NOT NULL,
   `ExtraKeyColumn` varchar(255) DEFAULT NULL,
   `ExtraKey1` varchar(255) NOT NULL,
   `ExtraKey2` varchar(255) NOT NULL,
@@ -1222,7 +1222,7 @@ CREATE TABLE `conflicts_resolved` (
   `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `User1` varchar(255) DEFAULT NULL,
   `User2` varchar(255) DEFAULT NULL,
-  `TableName` varchar(255) NOT NULL,
+  `TestName` varchar(255) NOT NULL,
   `ExtraKeyColumn` varchar(255) DEFAULT NULL,
   `ExtraKey1` varchar(255) NOT NULL DEFAULT '',
   `ExtraKey2` varchar(255) NOT NULL DEFAULT '',

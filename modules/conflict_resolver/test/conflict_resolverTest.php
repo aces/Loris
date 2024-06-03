@@ -72,7 +72,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $this->DB->insert(
                 "conflicts_unresolved",
                 [
-                    'TableName'  => 'radiology_review',
+                    'TestName'   => 'radiology_review',
                     'FieldName'  => 'Scan_done',
                     'CommentId1' => '475906DCC4222142111524502652',
                     'Value1'     => 'yes',
