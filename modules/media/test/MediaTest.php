@@ -60,7 +60,7 @@ class MediaTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
 	);
-        $this->assertStringNotContainsString("Edit Metadata", $text);
+        $this->assertStringNotContainsString("Edit Metadata", $bodyText);
 
         $this->resetPermissions();
     }
@@ -85,7 +85,7 @@ class MediaTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
 	);
-        $this->assertStringContainsString("Edit Metadata", $text);	
+        $this->assertStringContainsString("Edit Metadata", $bodyText);	
         $this->resetPermissions();
     }
     /**    
