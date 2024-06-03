@@ -237,7 +237,7 @@ class MediaTest extends LorisIntegrationTest
     /**
      * Test Browse tab and coulumn clicking-middleware
      *
-     * @param string $columnNumber columnNumber
+     * @param int $columnNumber columnNumber
      * @param string $expectedText expectedText
      *
      * @return void
