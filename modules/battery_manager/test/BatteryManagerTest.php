@@ -100,5 +100,48 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testLoadsWithPermissionEdit()
+    {
+        $this->setupPermissions(["battery_manager_edit"]);
+        $this->safeGet($this->url . "/battery_manager/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > thead > tr")
+        )->getText();
+        $this->assertStringContainsString(
+            "Change Status",
+            $bodyText
+        );
+        $this->assertStringContainsString(
+            "Edit Metadata",
+            $bodyText
+	);
+        $this->safeClick(
+		WebDriverBy::cssSelector(
+	     "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"		
+            )
+	);
+        $bodyText = $this->safeFindElement(
+		WebDriverBy::cssSelector("#lorisworkspace > div >".
+		" div:nth-child(2) > div > div:nth-child(1)")
+	)->getText();
+        $this->assertStringContainsString(
+            "Edit Test",
+            $bodyText
+        );
 
+        $this->resetPermissions();
+    }
 }
