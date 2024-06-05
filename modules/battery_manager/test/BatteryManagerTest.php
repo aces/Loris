@@ -161,7 +161,7 @@ class BatteryManagerTest extends LorisIntegrationTest
 	);
         $select  = $this->safeFindElement(
             WebDriverBy::cssSelector("select[name='testName']")
-        );
+        );sleep(1);
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("AOSI");	
          $this->safeFindElement(
