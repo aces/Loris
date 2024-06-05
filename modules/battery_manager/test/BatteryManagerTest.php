@@ -68,7 +68,18 @@ class BatteryManagerTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
-        $this->resetPermissions();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > thead > tr")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "Change Status",
+            $bodyText
+	);
+        $this->assertStringNotContainsString(
+            "Edit Metadata",
+            $bodyText
+	);
+        $this->resetPermissions();	
     }
     /**
      * Tests that the page does not load if the user does not have correct
