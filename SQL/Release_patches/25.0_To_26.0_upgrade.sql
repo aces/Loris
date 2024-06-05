@@ -399,3 +399,49 @@ SELECT 'Running: SQL/Archive/26.0/2024-04-18-acknowledgements-size-constraints.s
 ALTER TABLE acknowledgements MODIFY affiliations TEXT DEFAULT NULL;
 ALTER TABLE acknowledgements MODIFY degrees TEXT DEFAULT NULL;
 ALTER TABLE acknowledgements MODIFY roles TEXT DEFAULT NULL;
+SELECT 'Running: SQL/Archive/26.0/2024-05-16-conflict-resolver-use-testname.sql';
+
+ALTER TABLE conflicts_resolved
+	CHANGE `TableName` `TestName` varchar(255) NOT NULL;
+
+ALTER TABLE conflicts_unresolved
+	CHANGE `TableName` `TestName` varchar(255) NOT NULL;
+
+SELECT 'Running: SQL/Archive/26.0/2024-05-17-rename-chunked-eeg-path.sql';
+
+-- Rename parameter_type name
+UPDATE parameter_type
+    SET Name="electrophysiology_chunked_dataset_path"
+    WHERE Name="electrophyiology_chunked_dataset_path";
+
+SELECT 'Running: SQL/Archive/26.0/2024-06-04-rename_media_write_permission.sql';
+
+-- Renames media_write front display name.
+ALTER TABLE
+    `permissions`
+MODIFY COLUMN
+    `action` enum(
+        'View',
+        'Create',
+        'Edit',
+        'Download',
+        'Upload',
+        'Delete',
+        'View/Create',
+        'View/Edit',
+        'View/Download',
+        'View/Upload',
+        'View/Create/Edit',
+        'Create/Edit',
+        'Edit/Upload',
+        'Edit/Upload/Delete',
+        'Edit/Upload/Hide'
+    )
+AFTER `moduleID`;
+
+UPDATE
+    `permissions`
+SET
+    `action` = 'Edit/Upload/Hide'
+WHERE
+    `code` = 'media_write';
