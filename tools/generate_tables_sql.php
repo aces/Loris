@@ -94,6 +94,12 @@ foreach ($instruments as $instrument) {
             case "radio":
                 $bits[0] = enumizeOptions($bits[3], $table = [], $bits[1]);
                 break;
+            case "numeric":
+                // without this option, default MySQL is simply numeric
+                // which is traduced to "decimal(10,0)"
+                // which truncates the floating point part.
+                $bits[0] = "decimal(14,4)";
+                break;
             case "select":
                 $bits[0]   = enumizeOptions(
                     $bits[3] ?? null,
