@@ -14,15 +14,17 @@ class DataIteratorBinaryStream implements StreamInterface
     protected $position;
     protected $eof;
     protected $rowgen;
+    protected $rowCallback;
 
     protected \Traversable $rows;
 
-    public function __construct(\Traversable $data)
+    public function __construct(\Traversable $data, ?callable $rowcallback = null)
     {
-        $this->position = 0;
-        $this->rows     = $data;
-        $this->rowgen   = $this->rowGenerator();
-        $this->eof      = false;
+        $this->position    = 0;
+        $this->rows        = $data;
+        $this->rowgen      = $this->rowGenerator();
+        $this->eof         = false;
+        $this->rowCallback = $rowcallback;
     }
     /**
      * Reads all data from the stream into a string, from the beginning to end.
@@ -191,8 +193,12 @@ class DataIteratorBinaryStream implements StreamInterface
         $row = $this->rowgen->current();
         $this->rowgen->next();
 
-        $rowArray        = array_values(json_decode(json_encode($row), true));
-        $rowVal          = join(chr(0x1e), $rowArray) . chr(0x1f);
+        $rowArray = array_values(json_decode(json_encode($row), true));
+        $rowVal   = join(chr(0x1e), $rowArray) . chr(0x1f);
+
+        if ($this->rowCallback) {
+            call_user_func($this->rowCallback, $this->rowgen->key(), $rowArray, $rowVal, !($this->rowgen->valid()));
+        }
         $this->position += strlen($rowVal);
 
         return $rowVal;
@@ -229,8 +235,8 @@ class DataIteratorBinaryStream implements StreamInterface
 
     private function rowGenerator()
     {
-        foreach ($this->rows as $row) {
-            yield $row;
+        foreach ($this->rows as $key => $row) {
+            yield $key => $row;
         }
     }
 }
