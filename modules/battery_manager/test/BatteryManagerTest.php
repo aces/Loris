@@ -145,7 +145,7 @@ class BatteryManagerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
-    /**
+   /**
      * Tests that the page does not load if the user does not have correct
      * permissions
      *
@@ -156,63 +156,50 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/battery_manager/");
         $this->safeClick(
                 WebDriverBy::cssSelector(
-             "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"
+"#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
-	);
-        $select  = $this->safeFindElement(
-            WebDriverBy::cssSelector("select[name='testName']")
-        );sleep(1);
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("AOSI");	
+        );
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(2) > div > div > select > option:nth-child(2)"
+            )
+        );
+
          $this->safeFindElement(
             WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(3) > div > div > input")
-	 )->sendKeys('1');
+         )->clear()->sendKeys('0');
          $this->safeFindElement(
             WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(4) > div > div > input")
-	 )->sendKeys('1');
-         $select  = $this->safeFindElement(
-            WebDriverBy::cssSelector("select[name='stage']")
+         )->clear()->sendKeys('1');
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(5) > div > div > select > option:nth-child(7)"
+            )
         );
-        $element = new WebDriverSelect($select);
-	$element->selectByVisibleText("Visit");
-
-        $select  = $this->safeFindElement(
-            WebDriverBy::cssSelector("select[name='visitLabel']")
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(6) > div > div > select > option:nth-child(2)"
+            )
         );
-        $element = new WebDriverSelect($select);
-	$element->selectByVisibleText("V1");
-
-        $select  = $this->safeFindElement(
-            WebDriverBy::cssSelector("select[name='centerId']")
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(7) > div > div > select > option:nth-child(5)"
+            )
         );
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("Montreal");	
-
-         $select  = $this->safeFindElement(
-            WebDriverBy::cssSelector("select[name='firstVisit']")
-        );
-        $element = new WebDriverSelect($select);
-	$element->selectByVisibleText("Yes");
-
-        $this->safeFindElement(
-            WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(10) > div > div > input")
-        )->sendKeys('1');
 
         $this->safeClick(
                 WebDriverBy::cssSelector(
-	"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(11) > div > div > button"       
-		)
-	);
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(11) > div > div > button"
+                )
+        );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
         $this->assertStringContainsString(
             "Submission successful!",
             $bodyText
-        );	
+        );
     }
-
-
 
 
 
