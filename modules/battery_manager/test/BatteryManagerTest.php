@@ -201,7 +201,50 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
     }
 
+   /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testAddNew()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#default-panel > div > div > div.table-header > div > div > div:nth-child(2) > button:nth-child(1)"       
+		)
+        );
+        $this->safeClick(
+		WebDriverBy::cssSelector(
+			"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(2) > div > div > select > option:nth-child(2)"
+            )
+        );
 
+         $this->safeFindElement(
+            WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(3) > div > div > input")
+         )->clear()->sendKeys('0');
+         $this->safeFindElement(
+            WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(4) > div > div > input")
+         )->clear()->sendKeys('1');
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(5) > div > div > select > option:nth-child(7)"
+            )
+        );
+        $this->safeClick(
+                WebDriverBy::cssSelector(
+"#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(11) > div > div > button"
+                )
+ );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+        );
+    }
 
 
 }
