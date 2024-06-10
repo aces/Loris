@@ -277,13 +277,13 @@ class BatteryManagerTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/battery_manager/");
         $this->safeClick(
-	    WebDriverBy::cssSelector(
-               "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > button"
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > button"
             )
-	);
+        );
         $this->assertStringContainsString(
             "Submission successful!",
             $bodyText
-	);
-    }	
+        );
+    }
 }
