@@ -310,7 +310,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$instrument,
             self::$display,
             self::$clearFilter,
-            'BMI',
+            'bmi',
             '7 row'
         );
         $this->_filterTest(
