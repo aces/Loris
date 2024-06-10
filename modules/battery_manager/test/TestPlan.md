@@ -43,7 +43,7 @@ Test Battery.
 
 ### New Test Button
 
-**Testing add functionality**
+**Testing add functionality**  [Automation Testing]
 Click the "New Test" button in the upper right corner of the data table.
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
@@ -87,7 +87,7 @@ Click the "New Test" button in the upper right corner of the data table.
 
 ### Edit window
 
-**Testing edit (activate/deactivate/add) functionality**
+**Testing edit (activate/deactivate/add) functionality**  [Automation Testing]
   1. Check that you cannot edit an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
   3. Check that you can only enter positive numbers (including 0) in Instrument order.

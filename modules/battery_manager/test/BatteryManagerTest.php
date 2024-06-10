@@ -267,6 +267,22 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
-
-
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testActivebtn()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(
+	    WebDriverBy::cssSelector(
+               "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > button"
+            )
+	);
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+	);	
 }
