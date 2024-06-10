@@ -284,5 +284,6 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->assertStringContainsString(
             "Submission successful!",
             $bodyText
-	);	
+	);
+    }	
 }
