@@ -29,12 +29,12 @@ require_once __DIR__ .
 class BatteryManagerTest extends LorisIntegrationTest
 {
     //Filter locations
-    static $instrument   = 'select[name="testName"]';
-    static $minimumAge   = 'input[name="minimumAge"]';
-    static $maximumAge   = 'input[name="maximumAge"]';
+    static $instrument = 'select[name="testName"]';
+    static $minimumAge = 'input[name="minimumAge"]';
+    static $maximumAge = 'input[name="maximumAge"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
-    static $clearFilter = '.nav-tabs a';	
+    static $clearFilter = '.nav-tabs a';
     /**
      * Tests that, when loading the BatteryManager module, some
      * text appears in the body.
@@ -327,5 +327,5 @@ class BatteryManagerTest extends LorisIntegrationTest
             '0',
             '1 row'
         );
-    }    
+    }
 }
