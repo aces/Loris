@@ -17,7 +17,8 @@
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='LorisModuleIntegrationTests'>
+	<testsuite name='LorisModuleIntegrationTests'>
+	    <directory>../modules/battery_manager/test/</directory>
         </testsuite>
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
