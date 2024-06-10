@@ -8,7 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 26.0 (Release Date: ????-??-??)
+## LORIS 26.0 (Release Date: 2024-06-13)
 ### Core
 #### Features
 - Add OpenID Connect authorization support to LORIS (PR #8255)
@@ -26,7 +26,7 @@ changes in the following format: PR #1234***
 - While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
 - Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
 
-## LORIS 25.0 (Release Date: ????-??-??)
+## LORIS 25.0 (Release Date: 2023-07-17)
 ### Core
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
