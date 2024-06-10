@@ -28,6 +28,14 @@ require_once __DIR__ .
  */
 class BatteryManagerTest extends LorisIntegrationTest
 {
+    //Filter locations
+    static $instrument   = '#battery_manager_filter > div > div > fieldset >'+
+		'div:nth-child(3) > div > div > select > option:nth-child(3)';
+    static $minimumAge   = 'input[name="minimumAge"]';
+    static $maximumAge   = 'input[name="maximumAge"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';	
     /**
      * Tests that, when loading the BatteryManager module, some
      * text appears in the body.
@@ -289,4 +297,36 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
+    /**
+     * Tests filter in the form
+     * The form should refreash and the data should be gone.
+     *
+     * @return void
+     */
+    function testFilter()
+    {
+        $this->safeGet($this->url . "/datadict/");
+        //testing data from RBdata.sql
+        $this->_filterTest(
+            self::$instrument,
+            self::$display,
+            self::$clearFilter,
+            'BMI',
+            '7 row'
+        );
+        $this->_filterTest(
+            self::$minimumAge,
+            self::$display,
+            self::$clearFilter,
+            '0',
+            '0 row'
+        );
+        $this->_filterTest(
+            self::$maximumAge,
+            self::$display,
+            self::$clearFilter,
+            '0',
+            '1 row'
+        );
+    }    
 }
