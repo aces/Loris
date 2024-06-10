@@ -325,7 +325,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             '0',
-            '1 row'
+            '0 row'
         );
     }
 }
