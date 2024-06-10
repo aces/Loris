@@ -304,7 +304,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testFilter()
     {
-        $this->safeGet($this->url . "/datadict/");
+        $this->safeGet($this->url . "/battery_manager/");
         //testing data from RBdata.sql
         $this->_filterTest(
             self::$instrument,
