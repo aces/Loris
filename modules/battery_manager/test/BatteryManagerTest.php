@@ -281,6 +281,9 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > button"
             )
         );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
         $this->assertStringContainsString(
             "Submission successful!",
             $bodyText
