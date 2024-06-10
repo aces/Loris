@@ -29,7 +29,7 @@ require_once __DIR__ .
 class BatteryManagerTest extends LorisIntegrationTest
 {
     //Filter locations
-    static $instrument   = '#battery_manager_filter > div > div > fieldset >'+
+    static $instrument   = '#battery_manager_filter > div > div > fieldset >'.
 		'div:nth-child(3) > div > div > select > option:nth-child(3)';
     static $minimumAge   = 'input[name="minimumAge"]';
     static $maximumAge   = 'input[name="maximumAge"]';
