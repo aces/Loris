@@ -82,33 +82,45 @@ class Behavioural_QCTest extends LorisIntegrationTest
      */
     public function testlinks(): void
     {
-	$this->safeGet($this->url . "/behavioural_qc/");
+        $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a")
-	)->getAttribute('href');
-        // check 	Instrument link
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(2) > a"
+            )
+        )->getAttribute('href');
+        // check     Instrument link
         $this->assertStringContainsString(
             "radiology_review/?candID=300001",
             $bodyText
-	);
+        );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(3) > a")
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(3) > a"
+            )
         )->getAttribute('href');
         // check        Instrument link
         $this->assertStringContainsString(
             "300001",
             $bodyText
-	);
+        );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a")
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(4) > a"
+            )
         )->getAttribute('href');
         // check        Instrument link
         $this->assertStringContainsString(
             "676061",
             $bodyText
-        );	
+        );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(5) > a")
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(5) > a"
+            )
         )->getAttribute('href');
         // check        Instrument link
         $this->assertStringContainsString(
