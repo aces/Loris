@@ -85,7 +85,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
 	$this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a")
-	)->get_attribute('href');
+	)->getAttribute('href');
         // check 	Instrument link
         $this->assertStringContainsString(
             "radiology_review/?candID=300001",
