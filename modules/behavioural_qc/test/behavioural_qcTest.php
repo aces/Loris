@@ -91,6 +91,29 @@ class Behavioural_QCTest extends LorisIntegrationTest
             "radiology_review/?candID=300001",
             $bodyText
 	);
-		
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(3) > a")
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "676061",
+            $bodyText
+	);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a")
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "676061",
+            $bodyText
+        );	
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(" #dynamictable > tbody > tr:nth-child(1) > td:nth-child(5) > a")
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "instrument_list/?candID=676061",
+            $bodyText
+        );
     }
 }
