@@ -75,4 +75,21 @@ class Behavioural_QCTest extends LorisIntegrationTest
             "Behavioural Quality Control"
         );
     }
+    /**
+     * Tests that link to correct directions
+     *
+     * @return void
+     */
+    public function testlinks(): void
+    {
+	$this->safeGet($this->url . "/behavioural_qc/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1)")
+	)->getText();
+        // check 	Instrument link
+        $this->assertStringContainsString(
+            "radiology_review/?candID=300001",
+            $bodyText
+        );	
+    }
 }
