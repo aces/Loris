@@ -43,7 +43,7 @@ foreach ($allIssueIDsWithComments as $issueID) {
         ["issue_id" => $issueID]
     );
     if (!$existingDescription) {
-        $comments = $DB->pselect(
+        $comments    = $DB->pselect(
             "SELECT issueComment
             FROM issues_comments ic
             WHERE ic.issueID = :issue_id
