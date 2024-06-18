@@ -167,7 +167,6 @@ class IssueForm extends Component {
     );
 
     let header;
-    let description;
     if (!this.state.isNewIssue) {
       header = (
         <div className='row'>
