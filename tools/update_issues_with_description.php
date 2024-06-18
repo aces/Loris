@@ -43,7 +43,7 @@ foreach ($allIssueIDsWithComments as $issueID) {
         ["issue_id" => $issueID]
     );
     if (!$existingDescription) {
-        $description = $DB->pselectOne(
+        $comments = $DB->pselect(
             "SELECT issueComment
             FROM issues_comments ic
             WHERE ic.issueID = :issue_id
@@ -51,11 +51,14 @@ foreach ($allIssueIDsWithComments as $issueID) {
             LIMIT 1",
             ['issue_id' => $issueID]
         );
-        $DB->update(
-            "issues",
-            ["description" => $description],
-            ["issueID" => $issueID]
-        );
+        $description = $comments ? $comments[0]['issueComment'] : null;
+        if ($description !== null) {
+            $DB->update(
+                "issues",
+                ["description" => $description],
+                ["issueID" => $issueID]
+            );
+        }
     }
 }
 
