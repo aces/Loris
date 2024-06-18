@@ -16,9 +16,8 @@ import {
     DateElement,
     TextboxElement,
     TextareaElement,
-    TextElement,
     NumericElement,
-    ButtonElement,
+    StaticElement,
 } from 'jsx/Form';
 
 /**

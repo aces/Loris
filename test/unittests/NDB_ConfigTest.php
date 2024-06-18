@@ -96,6 +96,7 @@ class NDB_ConfigTest extends TestCase
     {
         parent::setUp();
         $this->_config = FakeConfig::singleton();
+        $this->_config->clearCache();
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $dbMock     = $this->getMockBuilder('Database')->getMock();

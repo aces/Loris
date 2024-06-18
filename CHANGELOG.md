@@ -15,6 +15,7 @@ changes in the following format: PR #1234***
 
 #### Updates and Improvements
 - Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+- Add Project filter for "My tasks" counts in dashboard (PR #9220)
 
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
@@ -22,6 +23,8 @@ changes in the following format: PR #1234***
 - DoB and DoD format respected in candidate parameters (PR #9001)
 - Fix delete file in upload (PR #9181)
 - Fix profile level feedback display in behavioural QC module (PR #9192)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core

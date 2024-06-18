@@ -8,7 +8,6 @@ import {
     TextareaElement,
     SelectElement,
     ButtonElement,
-    FileElement,
 } from 'jsx/Form';
 /**
  * Document Edit Form

@@ -99,7 +99,7 @@ class NewProfileIndex extends React.Component {
 
     let candidateObject = {
       'Candidate': {
-        'Project': configData.project[formData.project],
+        'Project': formData.project,
         // 'PSCID' : conditionally included below
         // 'EDC' : conditionally included below
         'DoB': formData.dobDate,

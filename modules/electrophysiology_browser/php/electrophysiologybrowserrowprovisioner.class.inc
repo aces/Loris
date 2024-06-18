@@ -32,14 +32,14 @@ class ElectrophysiologyBrowserRowProvisioner
     extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create an ElectrophyiologyBrowserRowProvisioner, which gets rows for the
+     * Create an ElectrophysiologyBrowserRowProvisioner, which gets rows for the
      * electrophysiology browser menu table.
      */
     function __construct()
     {
 
         parent::__construct(
-            "SELECT 
+            "SELECT
               psc.Name                                  AS Site,
               c.PSCID                                   AS PSCID,
               c.CandID                                  AS DCCID,
@@ -57,10 +57,10 @@ class ElectrophysiologyBrowserRowProvisioner
               LEFT JOIN candidate c USING (CandID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
               LEFT JOIN Project     ON (s.ProjectID=Project.ProjectID)
-              LEFT JOIN physiological_output_type pot 
+              LEFT JOIN physiological_output_type pot
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
-              AND s.Active='Y' 
+              AND s.Active='Y'
               AND pf.FileType IN (
                 SELECT type FROM ImagingFileTypes
                 WHERE

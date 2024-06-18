@@ -2077,7 +2077,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = [
-                        'TableName'      => $this->table,
+                        'TestName'       => $this->testName,
                         'ExtraKeyColumn' => null,
                         'ExtraKey1'      => ' ',
                         'ExtraKey2'      => ' ',
@@ -2380,7 +2380,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID(),
+                'CandID'        => $this->getCandID()->__toString(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
@@ -2491,9 +2491,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidate's CandID
      *
-     * @return string|null The candidate's CandID
+     * @return ?CandID The candidate's CandID
      */
-    function getCandID() : ?string
+    function getCandID() : ?CandID
     {
         $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
@@ -2505,7 +2505,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
-        return $candID;
+        if ($candID === null) {
+            return null;
+        }
+        return new CandID($candID);
 
     }
 

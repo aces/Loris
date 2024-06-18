@@ -80,14 +80,14 @@
   <tr>
     <th>md5sum of Archive</th>
     <td>
-      <pre><br><b>{$archive.md5sumArchive}</pre>
-      </b></td>
+      <pre><b>{$archive.md5sumArchive}</b></pre>
+    </td>
   </tr>
   <tr>
     <th>md5sum of Dicom unzipped</th>
-    <td><br><b>
-        <pre>{$archive.md5sumDicomOnly}</pre>
-      </b></td>
+    <td>
+      <pre><b>{$archive.md5sumDicomOnly}</b></pre>
+    </td>
   </tr>
   <tr>
     <th class="valign-top">Series</th>
