@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import Breadcrumbs from 'jsx/Breadcrumbs';
+import {Tabs} from '../nextsteps';
 
 // Declared in smarty main.tpl
 declare const breadcrumbsRoot: any;
@@ -12,8 +13,8 @@ declare const loris: any;
  * @param {function} setActiveTab - set the state on click
  */
 function useBreadcrumbs(
-    activeTab: string,
-    setActiveTab: (newtab: string) => void
+    activeTab: Tabs,
+    setActiveTab: (newtab: Tabs) => void
 ) {
     // update breadcrumbs breadcrumbs
     useEffect(() => {
@@ -28,13 +29,13 @@ function useBreadcrumbs(
                  */
                 onClick: (e: React.MouseEvent) => {
                     e.preventDefault();
-                    setActiveTab('Info');
+                    setActiveTab(Tabs.Info);
                 },
             },
         ];
-        if (activeTab == 'DefineFields'
-                || activeTab == 'DefineFilters'
-                || activeTab == 'ViewData') {
+        if (activeTab == Tabs.Fields
+                || activeTab == Tabs.Filters
+                || activeTab == Tabs.Data) {
             breadcrumbs.push({
                 text: 'Define Fields',
                 /**
@@ -45,12 +46,12 @@ function useBreadcrumbs(
                  */
                 onClick: (e) => {
                     e.preventDefault();
-                    setActiveTab('DefineFields');
+                    setActiveTab(Tabs.Fields);
                 },
             });
         }
-        if (activeTab == 'DefineFilters'
-                || activeTab == 'ViewData') {
+        if (activeTab == Tabs.Filters
+                || activeTab == Tabs.Data) {
             breadcrumbs.push({
                 text: 'Define Filters',
                 /**
@@ -61,12 +62,12 @@ function useBreadcrumbs(
                  */
                 onClick: (e) => {
                     e.preventDefault();
-                    setActiveTab('DefineFilters');
+                    setActiveTab(Tabs.Filters);
                 },
             });
         }
 
-        if (activeTab == 'ViewData') {
+        if (activeTab == Tabs.Data) {
             breadcrumbs.push({
                 text: 'View Data',
                 /**
@@ -77,7 +78,7 @@ function useBreadcrumbs(
                  */
                 onClick: (e) => {
                     e.preventDefault();
-                    setActiveTab('ViewData');
+                    setActiveTab(Tabs.Data);
                 },
             });
         }
