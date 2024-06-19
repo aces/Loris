@@ -7,6 +7,7 @@ import DefineFilters from './definefilters';
 import DefineFields from './definefields';
 import ViewData from './viewdata';
 
+import {Tabs} from './nextsteps';
 import NextSteps from './nextsteps';
 
 import useBreadcrumbs from './hooks/usebreadcrumbs';
@@ -72,7 +73,7 @@ function DataQueryApp(props: {
     queryAdmin: boolean,
     username: string
 }) {
-    const [activeTab, setActiveTab] = useState('Info');
+    const [activeTab, setActiveTab] = useState<Tabs>(Tabs.Info);
     useBreadcrumbs(activeTab, setActiveTab);
 
     const [queries, reloadQueries, queryActions]
@@ -142,7 +143,7 @@ function DataQueryApp(props: {
     };
 
     switch (activeTab) {
-        case 'Info':
+        case Tabs.Info:
             content = <Welcome
                         loadQuery={loadQuery}
                         recentQueries={queries.recent}
@@ -161,12 +162,12 @@ function DataQueryApp(props: {
                         mapModuleName={mapModuleName}
                         mapCategoryName={mapCategoryName}
                         fulldictionary={fulldictionary}
-                        onContinue={() => setActiveTab('DefineFields')}
+                        onContinue={() => setActiveTab(Tabs.Fields)}
 
                         queryAdmin={props.queryAdmin}
                     />;
             break;
-        case 'DefineFields':
+        case Tabs.Fields:
             content = <DefineFields allCategories={categories}
                 displayedFields={activeCategory.currentDictionary}
 
@@ -193,7 +194,7 @@ function DataQueryApp(props: {
                 fulldictionary={fulldictionary}
                />;
             break;
-        case 'DefineFilters':
+        case Tabs.Filters:
             content = <DefineFilters
                 fields={selectedFields}
                 module={activeCategory.module}
@@ -219,7 +220,7 @@ function DataQueryApp(props: {
                 mapCategoryName={mapCategoryName}
             />;
             break;
-        case 'ViewData':
+        case Tabs.Data:
             content = <ViewData
                 fields={selectedFields}
                 filters={query}
@@ -236,6 +237,7 @@ function DataQueryApp(props: {
         <div>{content}</div>
         <NextSteps page={activeTab} fields={selectedFields}
             filters={query}
+	    extrasteps={ {} }
             changePage={
                 (page) => setActiveTab(page)
         }/>

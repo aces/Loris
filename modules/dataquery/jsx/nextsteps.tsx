@@ -3,6 +3,18 @@ import {APIQueryField} from './types';
 import {ButtonElement} from 'jsx/Form';
 import {QueryGroup} from './querydef';
 
+
+export enum Tabs {
+	Info,
+	Fields,
+	Filters,
+	Data,
+};
+
+interface TabSteps{
+    [tab: string]: string
+}
+
 /**
  * Next steps options for query navigation
  *
@@ -16,9 +28,10 @@ import {QueryGroup} from './querydef';
 function NextSteps(props: {
     fields: APIQueryField[]
     filters: QueryGroup,
-    page: string,
-    changePage: (newpage: string) => void,
-}) {
+    page: Tabs,
+    changePage: (newpage: Tabs) => void,
+    extrasteps: TabSteps,
+}) : React.ReactElement {
     const [expanded, setExpanded] = useState(true);
     const steps: React.ReactElement[] = [];
 
@@ -31,7 +44,7 @@ function NextSteps(props: {
         ? 'Modify Filters'
         : 'Add Filters';
     switch (props.page) {
-    case 'Info':
+    case Tabs.Info:
         if (canRun) {
             // A previous query was loaded, it can be either
             // modified or run
@@ -39,19 +52,19 @@ function NextSteps(props: {
                     label={fieldLabel}
                     columnSize='col-sm-12'
                     key='fields'
-                    onUserInput={() => props.changePage('DefineFields')}
+                    onUserInput={() => props.changePage(Tabs.Fields)}
             />);
             steps.push(<ButtonElement
                     label={filterLabel}
                     columnSize='col-sm-12'
                     key='filters'
-                    onUserInput={() => props.changePage('DefineFilters')}
+                    onUserInput={() => props.changePage(Tabs.Filters)}
             />);
             steps.push(<ButtonElement
                     label='Run Query'
                     columnSize='col-sm-12'
                     key='runquery'
-                    onUserInput={() => props.changePage('ViewData')}
+                    onUserInput={() => props.changePage(Tabs.Data)}
             />);
         } else {
             // No query loaded, must define fields
@@ -59,54 +72,54 @@ function NextSteps(props: {
                     label={fieldLabel}
                     columnSize='col-sm-12'
                     key='fields'
-                    onUserInput={() => props.changePage('DefineFields')}
+                    onUserInput={() => props.changePage(Tabs.Fields)}
             />);
         }
         break;
-    case 'DefineFields':
+    case Tabs.Fields:
         steps.push(<ButtonElement
                 label={filterLabel}
                 columnSize='col-sm-12'
                 key='filters'
-                onUserInput={() => props.changePage('DefineFilters')}
+                onUserInput={() => props.changePage(Tabs.Filters)}
         />);
         if (canRun) {
             steps.push(<ButtonElement
                     label='Run Query'
                     columnSize='col-sm-12'
                     key='runquery'
-                    onUserInput={() => props.changePage('ViewData')}
+                    onUserInput={() => props.changePage(Tabs.Data)}
             />);
         }
         break;
-    case 'DefineFilters':
+    case Tabs.Filters:
         if (canRun) {
             steps.push(<ButtonElement
                     label='Run Query'
                     key='runquery'
                     columnSize='col-sm-12'
-                    onUserInput={() => props.changePage('ViewData')}
+                    onUserInput={() => props.changePage(Tabs.Data)}
             />);
         }
         steps.push(<ButtonElement
                 label={fieldLabel}
                 key='fields'
                 columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFields')}
+                onUserInput={() => props.changePage(Tabs.Fields)}
         />);
         break;
-    case 'ViewData':
+    case Tabs.Data:
         steps.push(<ButtonElement
                 label={fieldLabel}
                 key='fields'
                 columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFields')}
+                onUserInput={() => props.changePage(Tabs.Fields)}
         />);
         steps.push(<ButtonElement
                 label={filterLabel}
                 key='filters'
                 columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFilters')}
+                onUserInput={() => props.changePage(Tabs.Filters)}
         />);
         break;
     }
