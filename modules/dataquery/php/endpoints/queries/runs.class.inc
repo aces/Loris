@@ -9,8 +9,9 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Handles requests to queries under the /queries/runs endpoint of
- * to get a list of this user's queryRuns. May also be
- * the dataquery module.
+ * to get a list of this user's queryRuns. May also be used for the
+ * /queries/$queryid/run endpoint to get a list of runs for a particular
+ * query if the queryid attribute is set on the request.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
