@@ -5,8 +5,9 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Handles requests to queries under the /queries/* endpoint of
- * the dataquery module.
+ * Handles requests to queries under the /widgets endpoint of
+ * the dataquery module to return a list of widgets requested
+ * by other modules.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -52,12 +53,10 @@ class Widgets extends \NDB_Page
             );
             foreach ($mwidgets as $widget) {
                 assert($widget instanceof ActionWidget);
-                // de-duplicate widgets from the same javascript source
                 $widgets[] = [
                     "label"    => $widget->label,
                     "tab"      => $widget->tab,
                     "callback" => $widget->jscallback,
-
                 ];
             }
         }
