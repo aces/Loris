@@ -1,5 +1,4 @@
 import {createRoot} from 'react-dom/client';
-
 import {useState} from 'react';
 
 import Welcome from './welcome';
@@ -11,6 +10,7 @@ import NextSteps from './nextsteps';
 
 import useBreadcrumbs from './hooks/usebreadcrumbs';
 import useVisits from './hooks/usevisits';
+import useWidgets from './hooks/usewidgets';
 import useQuery from './hooks/usequery';
 import {useSharedQueries, useLoadQueryFromURL} from './hooks/usesharedqueries';
 
@@ -72,7 +72,8 @@ function DataQueryApp(props: {
     queryAdmin: boolean,
     username: string
 }) {
-    const [activeTab, setActiveTab] = useState('Info');
+    const [activeTab, setActiveTab] = useState<Tabs>(Tabs.Info);
+    const extrasteps = useWidgets();
     useBreadcrumbs(activeTab, setActiveTab);
 
     const [queries, reloadQueries, queryActions]
@@ -236,6 +237,7 @@ function DataQueryApp(props: {
         <div>{content}</div>
         <NextSteps page={activeTab} fields={selectedFields}
             filters={query}
+            extrasteps={extrasteps}
             changePage={
                 (page) => setActiveTab(page)
         }/>
