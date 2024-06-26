@@ -72,7 +72,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 s.ProjectID as Project,
                 s.CohortID as Cohort,
                 MincFile,
-                mri_scan_type.Scan_type,
+                mri_scan_type.Name as ScanType,
                 'Protocol Violation',
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
@@ -81,7 +81,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log
             LEFT JOIN mri_scan_type
-            ON (mri_scan_type.ID=mri_violations_log.Scan_type)
+            ON (mri_scan_type.ID=mri_violations_log.MriScanTypeID)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID
             AND violations_resolved.TypeTable='mri_violations_log')

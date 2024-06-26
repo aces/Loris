@@ -1144,15 +1144,15 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->once())->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
+                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
                 )
             )
             ->willReturn(
                 [0 => ['ID' => 123,
-                    'Scan_type' => 'scan 1'
+                    'Name' => 'scan 1'
                 ],
                     1 => ['ID' => 234,
-                        'Scan_type' => 'scan 2'
+                        'Name' => 'scan 2'
                     ]
                 ]
             );

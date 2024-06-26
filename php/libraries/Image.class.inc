@@ -55,7 +55,7 @@ class Image
                      SELECT
                        f.File as filelocation,
                        f.OutputType as outputtype,
-                       mst.Scan_type as acquisitionprotocol,
+                       mst.Name as acquisitionprotocol,
                        FileType as filetype,
                        s.CenterID as centerid,
                        c.Entity_type as entitytype
@@ -66,7 +66,7 @@ class Image
                      LEFT JOIN candidate c
                        ON (s.CandID = c.CandID)
                      LEFT JOIN mri_scan_type mst
-                       ON (mst.ID = f.AcquisitionProtocolID)
+                       ON (mst.ID = f.MriScanTypeID)
                      WHERE f.FileID = :v_fileid
                     ',
                     ['v_fileid' => $fileid]

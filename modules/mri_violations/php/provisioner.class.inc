@@ -85,7 +85,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        s.ProjectID AS Project,
                        s.CohortID AS Cohort,
                        MincFile,
-                       mri_scan_type.Scan_type,
+                       mri_scan_type.Name,
                        'Protocol Violation',
                        SeriesUID,
                        md5(
@@ -103,7 +103,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        mrl.CandID AS CandID,
                        c.PSCID AS PSCID
                 FROM mri_violations_log AS mrl
-                LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.Scan_type)
+                LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.MriScanTypeID)
                 LEFT JOIN violations_resolved ON (
                       violations_resolved.ExtID=mrl.LogID
                   AND violations_resolved.TypeTable='mri_violations_log'
@@ -114,7 +114,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
                 GROUP BY PatientName, TimeRun, Project, Cohort, MincFile,
-                  Scan_type, SeriesUID, Site, hash, Resolved, TarchiveID,
+                  Name, SeriesUID, Site, hash, Resolved, TarchiveID,
                   CandID, PSCID, PhaseEncodingDirection, EchoTime, EchoNumber
               UNION
                   SELECT PatientName,

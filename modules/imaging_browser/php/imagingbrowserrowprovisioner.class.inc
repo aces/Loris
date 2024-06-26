@@ -73,14 +73,14 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+                        DISTINCT MriScanTypeID))>0 ";
                     $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+                        DISTINCT MriScanTypeID))";
                 } else {
                     $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+                        DISTINCT MriScanTypeID))>0 ";
                     $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+                        DISTINCT MriScanTypeID))";
                 }
                 $isFirst = false;
             }
@@ -159,7 +159,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
                 MIN(files_qcstatus.QCStatus+0) as $qc[$key]
               FROM files
               JOIN files_qcstatus USING (FileID)
-              WHERE files.AcquisitionProtocolID= $key
+              WHERE files.MriScanTypeID= $key
                 AND files_qcstatus.QCStatus IN (1, 2)
               GROUP BY files.SessionID) $pass[$key]
                 ON ($pass[$key].SessionID=f.SessionID
@@ -196,7 +196,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $NewDataSubquery as New_Data,
               GROUP_CONCAT(DISTINCT OutputType) as Links,
               s.ID as sessionID,
-              GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
+              GROUP_CONCAT(mst.Name) as sequenceType,
               $PendingNewquery as pending,
               s.CenterID as CenterID,
               c.Entity_type as entityType,
@@ -208,8 +208,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID)
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-              LEFT JOIN mri_scan_type modality ON
-                (f.AcquisitionProtocolID=modality.ID)
+              LEFT JOIN mri_scan_type mst ON
+                (f.MriScanTypeID=mst.ID)
               $left_joins
             WHERE
               s.Active = 'Y' AND

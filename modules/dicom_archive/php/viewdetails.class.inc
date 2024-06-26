@@ -259,7 +259,7 @@ class ViewDetails extends \NDB_Form
     function _setProtocols()
     {
         try {
-            $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
+            $query           = "SELECT MriScanTypeID, TR_min, TR_max, TE_min, TE_max,
                 TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, []);
@@ -293,7 +293,7 @@ class ViewDetails extends \NDB_Form
                     $protocol['slice_thickness_max']
                 ))
             ) {
-                return $this->_getProtocolNameFromID($protocol['Scan_type']);
+                return $this->_getProtocolNameFromID($protocol['MriScanTypeID']);
             }
         }
         return "Unknown";
@@ -338,9 +338,9 @@ class ViewDetails extends \NDB_Form
     function _getProtocolNameFromID($id): string
     {
         try {
-            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+            $query = "SELECT Name FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, ['ID' => $id]);
-            return $array['Scan_type'] ?? 'Unknown';
+            return $array['Name'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }

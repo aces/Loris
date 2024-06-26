@@ -104,11 +104,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 FROM files f
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (c.CandID=s.CandID)
-                    JOIN mri_scan_type mst ON (mst.ID=f.AcquisitionProtocolID)
+                    JOIN mri_scan_type mst ON (mst.ID=f.MriScanTypeID)
                 WHERE
                     c.Active='Y' AND
                     s.Active='Y' AND
-                    mst.Scan_type=:scantype AND
+                    mst.Name=:scantype AND
                     c.Entity_Type='Human'
                 ORDER BY s.Visit_label",
                 ['scantype' => $item->getModality()],
@@ -149,9 +149,9 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             if (str_ends_with($item->getName(), "_file")) {
                 return "(SELECT File FROM files as files2
                             JOIN mri_scan_type
-                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                                ON (files2.MriScanTypeID=mri_scan_type.ID)
                             WHERE files2.FileID=files.FileID
-                                AND mri_scan_type.Scan_type='{$modality}')";
+                                AND mri_scan_type.Name='{$modality}')";
             } else if (str_ends_with($item->getName(), "_url")) {
                 return "(SELECT CONCAT(
                             \"$this->baseURL\",
@@ -159,13 +159,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                             c.CandID,
                             \"/\",
                             s.Visit_label,
-                            \"/images/\", 
+                            \"/images/\",
                             SUBSTRING_INDEX(files.File, '/', -1)
                             ) FROM files as files2
                             JOIN mri_scan_type
-                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                                ON (files2.MriScanTypeID=mri_scan_type.ID)
                             WHERE files2.FileID=files.FileID
-                                AND mri_scan_type.Scan_type='{$modality}')";
+                                AND mri_scan_type.Name='{$modality}')";
             }
         }
         if ($item instanceof QCDictionaryItem) {
@@ -173,13 +173,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
-            return "(SELECT QCStatus FROM files_qcstatus 
+            return "(SELECT QCStatus FROM files_qcstatus
                         JOIN files as files2
                         JOIN mri_scan_type
-                            ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                            ON (files2.MriScanTypeID=mri_scan_type.ID)
                         WHERE files_qcstatus.FileID=files.FileID
                             AND files2.FileID=files.FileID
-                            AND mri_scan_type.Scan_type='{$modality}')";
+                            AND mri_scan_type.Name='{$modality}')";
         }
 
         throw new \DomainException("Invalid field " . $item->getName());

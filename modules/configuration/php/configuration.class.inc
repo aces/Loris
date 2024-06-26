@@ -52,13 +52,13 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
-            "SELECT Scan_type
+            "SELECT Name
              FROM mri_scan_type",
             []
         );
         $scan_types = ['' => ''];
         foreach ($scans as $type) {
-            $val = $type['Scan_type'];
+            $val = $type['Name'];
             $scan_types[$val] = $val;
         }
 
@@ -107,8 +107,8 @@ class Configuration extends \NDB_Form
         $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );

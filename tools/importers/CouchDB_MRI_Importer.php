@@ -195,10 +195,10 @@ class CouchDBMRIImporter
     {
         return "SELECT $whatToSelect "
              . 'FROM files f '
-             . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
+             . 'LEFT JOIN mri_scan_type msc ON (f.MriScanTypeID=msc.ID) '
              . 'LEFT JOIN files_qcstatus fqs USING (FileID) '
              . 'WHERE f.SessionID=s.ID '
-             . "AND msc.Scan_type='$scanType' "
+             . "AND msc.Name='$scanType' "
              . 'AND fqs.selected=\'true\'';
     }
 
@@ -464,11 +464,11 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID
+            "SELECT DISTINCT msc.Name as ScanType, f.MriScanTypeID
              FROM mri_scan_type msc
-             JOIN files f ON msc.ID= f.AcquisitionProtocolID
+             JOIN files f ON msc.ID= f.MriScanTypeID
              JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
-             ORDER BY f.AcquisitionProtocolID",
+             ORDER BY f.MriScanTypeID",
             []
         );
 
