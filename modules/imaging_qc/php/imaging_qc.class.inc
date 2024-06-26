@@ -116,7 +116,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                       *
                   FROM
                       tarchive_series ts
-                  LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
+                  LEFT JOIN mri_protocol mp ON mp.MriScanTypeID=".$acqID."
                   WHERE
                       ts.TarchiveID = t.TarchiveID
                       AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
@@ -158,7 +158,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.AcquisitionProtocolID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."
+        (mvl.CandID = s.CandID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";

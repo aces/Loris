@@ -574,21 +574,25 @@ class ViewSession extends \NDB_Form
                     $insertSet['PhaseEncodingDirection'] = $file->getParameter(
                         'PhaseEncodingDirection'
                     );
-                    $insertSet['EchoTime']    = $file->getParameter('echo_time');
-                    $insertSet['EchoNumber']  = $file->getParameter('echo_numbers');
-                    $insertSet['TarchiveID']  = $file->getParameter(
+                    $insertSet['EchoTime']      = $file->getParameter('echo_time');
+                    $insertSet['EchoNumber']    = $file->getParameter(
+                        'echo_numbers'
+                    );
+                    $insertSet['TarchiveID']    = $file->getParameter(
                         'TarchiveSource'
                     );
-                    $insertSet['MincFile']    = $file->getParameter('File');
-                    $insertSet['PatientName'] = $file->getParameter('patient_name');
-                    $insertSet['CandID']      = $candid;
-                    $insertSet['Visit_label'] = $visit_label;
-                    $insertSet['CheckID']     = null;
-                    $insertSet['Scan_type']   = $file->getParameter(
+                    $insertSet['MincFile']      = $file->getParameter('File');
+                    $insertSet['PatientName']   = $file->getParameter(
+                        'patient_name'
+                    );
+                    $insertSet['CandID']        = $candid;
+                    $insertSet['Visit_label']   = $visit_label;
+                    $insertSet['CheckID']       = null;
+                    $insertSet['MriScanTypeID'] = $file->getParameter(
                         'AcquisitionProtocolID'
                     );
-                    $insertSet['Severity']    = 'warning';
-                    $insertSet['Header']      = 'Manual Caveat Set by '
+                    $insertSet['Severity']      = 'warning';
+                    $insertSet['Header']        = 'Manual Caveat Set by '
                         . $user->getUsername();
 
                     // The TimeRun column is really the time at which the

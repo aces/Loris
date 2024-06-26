@@ -102,7 +102,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        mrl.CandID AS CandID,
                        c.PSCID AS PSCID
                 FROM mri_violations_log AS mrl
-                LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.Scan_type)
+                LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.MriScanTypeID)
                 LEFT JOIN violations_resolved ON (
                       violations_resolved.ExtID=mrl.LogID
                   AND violations_resolved.TypeTable='mri_violations_log'

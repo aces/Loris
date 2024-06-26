@@ -43,7 +43,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              SELECT
                s.CandID as Candidate,
                c.PSCID as PSCID,
-               c.Entity_type as Entity_type, 
+               c.Entity_type as Entity_type,
                s.Visit_label as Visit,
                s.Date_visit as Visit_date,
                s.CenterID as CenterID,

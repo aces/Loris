@@ -106,8 +106,8 @@ class Configuration extends \NDB_Form
         $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );

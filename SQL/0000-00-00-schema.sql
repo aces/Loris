@@ -643,7 +643,7 @@ CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `CenterID` integer unsigned DEFAULT NULL,
   `ScannerID` int(10) unsigned DEFAULT NULL,
-  `Scan_type` int(10) unsigned NOT NULL default '0',
+  `MriScanTypeID` int(10) unsigned NOT NULL,
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
   `TE_min` DECIMAL(10,4) DEFAULT NULL,
@@ -675,11 +675,12 @@ CREATE TABLE `mri_protocol` (
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
   CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_mri_protocol_scan_type` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,MriScanTypeID,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
    (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
@@ -753,7 +754,7 @@ INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol ch
 
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `ValidMin` decimal(10,4) DEFAULT NULL,
@@ -761,9 +762,9 @@ CREATE TABLE `mri_protocol_checks` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY (`Scan_type`),
-  CONSTRAINT `FK_mriProtocolChecks_ScanType`
-    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
+  KEY (`MriScanTypeID`),
+  CONSTRAINT `FK_mri_protocol_checks_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -968,7 +969,7 @@ CREATE TABLE `mri_violations_log` (
   `CandID` int(6) DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `CheckID` int(11) DEFAULT NULL,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `Value` varchar(255) DEFAULT NULL,
@@ -980,6 +981,8 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violations_log_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -308,7 +308,7 @@ class Stats_MRI extends \NDB_Form
         $Scan_type_results = $DB->pselect(
             "SELECT mst.ID, mst.Scan_type
               FROM mri_scan_type mst
-                JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+                JOIN mri_protocol mp ON (mst.ID=mp.MriScanTypeID)",
             []
         );
 

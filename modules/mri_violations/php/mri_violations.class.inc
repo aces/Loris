@@ -93,9 +93,9 @@ class Mri_Violations extends \DataFrameworkMenu
              LEFT JOIN mri_protocol_group mpg
                  ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
              LEFT JOIN mri_scan_type as s
-                 ON p.Scan_type=s.ID
+                 ON p.MriScanTypeID=s.ID
              LEFT JOIN psc site ON (p.CenterID=site.CenterID)
-             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+             ORDER BY mpg.MriProtocolGroupID ASC, p.MriScanTypeID ASC",
             []
         );
         return [
