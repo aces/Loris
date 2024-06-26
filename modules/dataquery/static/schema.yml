@@ -143,6 +143,16 @@ paths:
                 $ref: '#/components/schemas/QueryResults'              
         '500':
           description: Something went wrong on the server running the query
+    get:
+      description: |- 
+        Return a list of summarizing previous runs of this query
+      responses:
+        '200':
+          description: Successfully operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRunList'
   /queries/{QueryID}/count:      
     parameters:
     - name: QueryID
@@ -171,8 +181,6 @@ paths:
   /queries/{QueryID}/run/{QueryRunID}: 
     description: |-
       Returns the cached results of a previously run query
-      
-      Note: This endpoint is aspirational.
     parameters:
     - name: QueryID
       in: path
