@@ -139,12 +139,12 @@ class ImagingQueryEngineTest extends TestCase
             "mri_scan_type",
             [
                 [
-                    'ID'        => 98,
-                    'Scan_type' => 'ScanType1',
+                    'ID'   => 98,
+                    'Name' => 'ScanType1',
                 ],
                 [
-                    'ID'        => 99,
-                    'Scan_type' => 'ScanType2',
+                    'ID'   => 99,
+                    'Name' => 'ScanType2',
                 ],
             ]
         );
@@ -153,28 +153,28 @@ class ImagingQueryEngineTest extends TestCase
             "files",
             [
                 [
-                    'FileID'                => 1,
-                    'SessionID'             => 1,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file'
+                    'FileID'        => 1,
+                    'SessionID'     => 1,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file'
                 ],
                 [
-                    'FileID'                => 2,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file1'
+                    'FileID'        => 2,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file1'
                 ],
                 [
-                    'FileID'                => 3,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file2'
+                    'FileID'        => 3,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file2'
                 ],
                 [
-                    'FileID'                => 4,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 99,
-                    'File'                  => 'test/Scantype2'
+                    'FileID'        => 4,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 99,
+                    'File'          => 'test/Scantype2'
                 ],
             ]
         );
