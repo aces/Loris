@@ -4,7 +4,6 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -116,7 +115,6 @@ class IssueForm extends Component {
     let lastUpdatedByValue;
     let dateCreated;
     let submitButtonValue;
-    let commentLabel;
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
@@ -132,7 +130,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = 'No-one!';
       dateCreated = 'Sometime Soon!';
       submitButtonValue = 'Submit Issue';
-      commentLabel = 'Description';
       attachmentFileElement = (
         <FileElement
           name='file'
@@ -148,7 +145,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
-      commentLabel = 'New Comment';
       attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
@@ -171,7 +167,6 @@ class IssueForm extends Component {
     );
 
     let header;
-    let description;
     if (!this.state.isNewIssue) {
       header = (
         <div className='row'>
@@ -209,16 +204,6 @@ class IssueForm extends Component {
           </div>
         </div>
       );
-
-      const descr = <Markdown content={this.state.issueData.desc} />;
-      description = (
-        <StaticElement
-          name='description'
-          label='Description'
-          ref='description'
-          text={descr}
-        />
-      );
     }
 
     return (
@@ -247,7 +232,14 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             required={true}
           />
-          {description}
+          <TextareaElement
+            name='description'
+            label='Description'
+            onUserInput={this.setFormData}
+            value={this.state.formData.description}
+            disabled={!hasEditPermission}
+            required={false}
+          />
           <SelectElement
             name='assignee'
             label='Assignee'
@@ -341,12 +333,16 @@ class IssueForm extends Component {
             multiple={true}
             value={this.state.formData.othersWatching}
           />
-          <TextareaElement
-            name='comment'
-            label={commentLabel}
-            onUserInput={this.setFormData}
-            value={this.state.formData.comment}
-          />
+          {!this.state.isNewIssue ?
+            <TextareaElement
+              name='comment'
+              hidden={true}
+              label='New Comment'
+              onUserInput={this.setFormData}
+              value={this.state.formData.comment}
+            />
+            :null
+          }
           {attachmentFileElement}
           <ButtonElement label={submitButtonValue}/>
           {attachmentUploadBtn}
