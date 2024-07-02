@@ -111,7 +111,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                 'roles'         => implode(',', array_filter(explode(',', $roles))),
                 'start_date'    => $values['addStartDate'],
                 'end_date'      => $values['addEndDate'],
-                'present'       => $values['addPresent'],
             ];
 
             $DB->insert('acknowledgements', $results);
@@ -139,7 +138,12 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             'roles',
             'start_date',
             'end_date',
-            'present',
+            "IF(
+                COALESCE(
+                    NOW() BETWEEN start_date AND end_date, true),
+                    'Yes',
+                    'No'
+                ) AS present",
         ];
         $this->query        = " FROM acknowledgements WHERE 1=1";
         $this->group_by     = '';
