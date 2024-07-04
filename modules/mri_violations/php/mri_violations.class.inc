@@ -82,7 +82,7 @@ class Mri_Violations extends \DataFrameworkMenu
         $protocols = $db->pselect(
             "SELECT p.ID, mpg.Name as 'Protocol Group',
                     site.Name as Center_name, ScannerID,
-                    s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+                    s.Name as scan_type_name, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
                     zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,

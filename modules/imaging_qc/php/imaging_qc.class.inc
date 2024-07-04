@@ -59,13 +59,13 @@ class Imaging_QC extends \NDB_Menu_Filter
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
         $all_scan_types_2d = $db->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri",
+            "SELECT ID, Name FROM mri_scan_type mri",
             []
         );
 
         $all_scan_types = [];
         foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
+            $type = $row['Name'];
             $all_scan_types[$row['ID']] = $type;
         }
 
@@ -156,7 +156,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
-        fi.AcquisitionProtocolID=".$acqID.")
+        fi.MriScanTypeID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
         (mvl.CandID = s.CandID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
@@ -284,7 +284,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
-                "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
+                "SELECT ID FROM mri_scan_type WHERE Name=:scan_type",
                 $query_params
             );
             if (substr("$scan_type", 0, 2) == "t1") {

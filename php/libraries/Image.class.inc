@@ -65,7 +65,7 @@ class Image
                      LEFT JOIN candidate c
                        ON (s.CandID = c.CandID)
                      LEFT JOIN mri_scan_type mst
-                       ON (mst.ID = f.AcquisitionProtocolID)
+                       ON (mst.ID = f.MriScanTypeID)
                      WHERE f.FileID = :v_fileid
                     ',
                     ['v_fileid' => $fileid]

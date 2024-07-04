@@ -50,13 +50,13 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
                p.Name as Site,
                f.InsertTime as InsertTime,
                f.File as File,
-               mst.Scan_type as ScanType,
+               mst.Name as ScanType,
                qc.QCStatus as QC_status,
                qc.Selected as Selected
              FROM
                files f
              LEFT JOIN mri_scan_type mst
-               ON (mst.ID = f.AcquisitionProtocolID)
+               ON (mst.ID = f.MriScanTypeID)
              LEFT JOIN session s
                ON (f.SessionID = s.ID)
              LEFT JOIN candidate c

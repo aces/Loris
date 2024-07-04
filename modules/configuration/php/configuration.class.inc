@@ -51,13 +51,13 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
-            "SELECT Scan_type
+            "SELECT Name
              FROM mri_scan_type",
             []
         );
         $scan_types = ['' => ''];
         foreach ($scans as $type) {
-            $val = $type['Scan_type'];
+            $val = $type['Name'];
             $scan_types[$val] = $val;
         }
 
