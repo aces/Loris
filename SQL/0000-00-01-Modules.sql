@@ -17,6 +17,7 @@ INSERT INTO modules (Name, Active) VALUES ('candidate_parameters', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('candidate_profile', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('configuration', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('conflict_resolver', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('consent', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('create_timepoint', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dashboard', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('data_release', 'Y');
