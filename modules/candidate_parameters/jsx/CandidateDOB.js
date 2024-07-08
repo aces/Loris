@@ -85,6 +85,7 @@ class CandidateDOB extends Component {
         return <Loader/>;
     }
 
+    let dateFormat = this.state.data.dobFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dob_edit')) {
@@ -116,6 +117,7 @@ class CandidateDOB extends Component {
           <DateElement
             label='Date Of Birth:'
             name='dob'
+            dateFormat={dateFormat}
             value={this.state.formData.dob}
             onUserInput={this.setFormData}
             disabled={disabled}

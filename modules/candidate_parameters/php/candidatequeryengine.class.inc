@@ -4,6 +4,7 @@ namespace LORIS\candidate_parameters;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
 use LORIS\Data\Dictionary\DictionaryItem;
+use LORIS\Data\Types\Enumeration;
 
 /**
  * A CandidateQueryEngine providers a QueryEngine interface to query
@@ -54,6 +55,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             "Demographics",
             "Candidate Demographics",
         );
+        $sexList      = array_keys(\Utility::getSexList());
+        $t            = new Enumeration(...$sexList);
         $demographics = $demographics->withItems(
             [
                 new DictionaryItem(
@@ -74,7 +77,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "Sex",
                     "Candidate's biological sex",
                     $candscope,
-                    new \LORIS\Data\Types\Enumeration('Male', 'Female', 'Other'),
+                    $t,
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
@@ -193,9 +196,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         case 'PSCID':
             return 'c.PSCID';
         case 'Site':
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable('LEFT JOIN psc site ON (s.CenterID=site.CenterID)');
-            $this->addWhereClause("s.Active='Y'");
             return 'site.Name';
         case 'RegistrationSite':
             $this->addTable(
@@ -212,11 +216,12 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         case 'EDC':
             return 'c.EDC';
         case 'Project':
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable(
                 'LEFT JOIN Project proj ON (s.ProjectID=proj.ProjectID)'
             );
-            $this->addWhereClause("s.Active='Y'");
 
             return 'proj.Name';
         case 'RegistrationProject':
@@ -226,17 +231,18 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
             return 'rproj.Name';
         case 'Cohort':
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             $this->addTable(
                 'LEFT JOIN cohort cohort'
                 .' ON (s.CohortID=cohort.CohortID)'
             );
-            $this->addWhereClause("s.Active='Y'");
-
             return 'cohort.title';
         case 'VisitLabel':
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addWhereClause("s.Active='Y'");
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
             return 's.Visit_label';
         case 'EntityType':
             return 'c.Entity_type';
@@ -254,18 +260,35 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - The LORIS dictionary item
+     *
+     * @return string
+     */
+    protected function getCorrespondingKeyField(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) {
+        // There are no cardinality::many fields in this query engine, so this
+        // should never get called
+        throw new \Exception(
+            "Unhandled Cardinality::MANY field " . $item->getName()
+        );
+    }
 
     /**
      * {@inheritDoc}
      *
-     * @param string $fieldname A field name
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item - The LORIS dictionary item
      *
      * @return string
      */
-    protected function getCorrespondingKeyField($fieldname)
-    {
-        // There are no cardinality::many fields in this query engine, so this
-        // should never get called
-        throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
+    public function getCorrespondingKeyFieldType(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : string {
+        throw new \Exception(
+            "Unhandled Cardinality::MANY field " . $item->getName()
+        );
     }
 }

@@ -145,7 +145,8 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, pr.Name as project, datePublication, '.
+    $query  = 'SELECT Title, Description, ' .
+        'p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
@@ -188,6 +189,7 @@ function getProjectData($db, $user, $id) : array
         $datePublication = htmlspecialchars_decode($result['datePublication'] ?? '');
         $journal         = htmlspecialchars_decode($result['journal'] ?? '');
         $link            = htmlspecialchars_decode($result['link'] ?? '');
+
         $publishingStatus = htmlspecialchars_decode(
             $result['publishingStatus']
             ?? ''
@@ -198,6 +200,7 @@ function getProjectData($db, $user, $id) : array
             'title'                 => $title,
             'description'           => $description,
             'project'               => $result['project'],
+            'projectName'           => $result['projectName'],
             'datePublication'       => $datePublication,
             'journal'               => $journal,
             'link'                  => $link,

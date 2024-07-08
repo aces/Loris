@@ -29,11 +29,11 @@ $tblCount       = 0;
 $parameterCount = 0;
 $pages          = [];
 foreach ($instruments as $instrument) {
-    $catId = "";
-    $items = explode("\n", trim($instrument));
+    $catId  = "";
+    $output = "";
+    $items  = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
-        $output  = "";
         $bits    = explode("{@}", trim($item));
         if (preg_match("/Examiner[0-9]*/", $bits[1])) {
             continue;
@@ -87,6 +87,11 @@ foreach ($instruments as $instrument) {
                 $bits[0] = "varchar(255)";
             } elseif ($bits[0] == "static") {
                 $bits[0] = "varchar(255)";
+            } elseif ($bits[0] == "numeric") {
+                // without this option, default MySQL is simply numeric
+                // which is traduced to "decimal(10,0)"
+                // which truncates the floating point part.
+                $bits[0] = "decimal(14,4)";
             }
 
             $output .= "`$bits[1]` $bits[0] default NULL,\n";

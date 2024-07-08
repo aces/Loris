@@ -72,6 +72,13 @@ CREATE TABLE `language` (
 INSERT INTO language (language_code, language_label) VALUES
     ('en-CA', 'English');
 
+CREATE TABLE `sex` (
+  `Name` varchar(255) NOT NULL,
+  PRIMARY KEY `Name` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
+
+INSERT INTO sex (Name) VALUES ('Male'), ('Female'), ('Other');
+
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `UserID` varchar(255) NOT NULL default '',
@@ -151,7 +158,7 @@ CREATE TABLE `candidate` (
   `DoB` date DEFAULT NULL,
   `DoD` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
-  `Sex` enum('Male','Female','Other') DEFAULT NULL,
+  `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
   `RegistrationProjectID` int(10) unsigned NOT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
@@ -166,7 +173,7 @@ CREATE TABLE `candidate` (
   `flagged_other_status` enum('not_answered') DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
-  `ProbandSex` enum('Male','Female','Other') DEFAULT NULL,
+  `ProbandSex` varchar(255) DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -175,9 +182,13 @@ CREATE TABLE `candidate` (
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
+  KEY `FK_candidate_sex_1` (`Sex`),
+  KEY `FK_candidate_sex_2` (`ProbandSex`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE
+  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_sex_1` FOREIGN KEY (`Sex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_sex_2` FOREIGN KEY (`ProbandSex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `session` (
@@ -1193,7 +1204,7 @@ INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN 
 
 CREATE TABLE `conflicts_unresolved` (
   `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
-  `TableName` varchar(255) NOT NULL,
+  `TestName` varchar(255) NOT NULL,
   `ExtraKeyColumn` varchar(255) DEFAULT NULL,
   `ExtraKey1` varchar(255) NOT NULL,
   `ExtraKey2` varchar(255) NOT NULL,
@@ -1211,7 +1222,7 @@ CREATE TABLE `conflicts_resolved` (
   `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `User1` varchar(255) DEFAULT NULL,
   `User2` varchar(255) DEFAULT NULL,
-  `TableName` varchar(255) NOT NULL,
+  `TestName` varchar(255) NOT NULL,
   `ExtraKeyColumn` varchar(255) DEFAULT NULL,
   `ExtraKey1` varchar(255) NOT NULL DEFAULT '',
   `ExtraKey2` varchar(255) NOT NULL DEFAULT '',
@@ -1510,6 +1521,7 @@ CREATE TABLE `issues` (
   `centerID` integer unsigned DEFAULT NULL,
   `candID` int(6) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
   PRIMARY KEY (`issueID`),
   KEY `fk_issues_1` (`reporter`),
   KEY `fk_issues_2` (`assignee`),
@@ -1531,7 +1543,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID','watching') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -2100,9 +2112,9 @@ CREATE TABLE `acknowledgements` (
   `ordering` varchar(255) DEFAULT NULL,
   `full_name` varchar(255) DEFAULT NULL,
   `citation_name` varchar(255) DEFAULT NULL,
-  `affiliations` varchar(255) DEFAULT NULL,
-  `degrees` varchar(255) DEFAULT NULL,
-  `roles` varchar(255) DEFAULT NULL,
+  `affiliations` text DEFAULT NULL,
+  `degrees` text DEFAULT NULL,
+  `roles` text DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `present` enum('Yes', 'No') DEFAULT NULL,
@@ -2278,7 +2290,7 @@ CREATE TABLE `consent` (
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
@@ -2294,7 +2306,7 @@ CREATE TABLE `candidate_consent_history` (
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no') DEFAULT NULL,
+  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2318,6 +2330,32 @@ CREATE TABLE `visit_project_cohort_rel` (
   CONSTRAINT FK_visit_project_cohort_rel_ProjectCohortRelID FOREIGN KEY (`ProjectCohortRelID`)
     REFERENCES `project_cohort_rel`(`ProjectCohortRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Diagnosis Evolution
+CREATE TABLE `diagnosis_evolution` (
+  `DxEvolutionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) DEFAULT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `visitLabel` varchar(255) DEFAULT NULL,
+  `instrumentName` varchar(255) DEFAULT NULL,
+  `sourceField` varchar(255) DEFAULT NULL,
+  `orderNumber` int(10) unsigned DEFAULT NULL,
+  CONSTRAINT `PK_diagnosis_evolution` PRIMARY KEY (`DxEvolutionID`),
+  CONSTRAINT `UK_diagnosis_evolution_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `FK_diagnosis_evolution_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_diagnosis_evolution_instrumentName` FOREIGN KEY (`instrumentName`) REFERENCES `test_names` (`Test_name`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_diagnosis_evolution_rel` (
+  `CandID` int(6) NOT NULL,
+  `DxEvolutionID` int(10) unsigned NOT NULL,
+  `Diagnosis` text DEFAULT NULL,
+  `Confirmed` enum('Y', 'N') DEFAULT NULL,
+  `LastUpdate` datetime NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+  CONSTRAINT `PK_candidate_diagnosis_evolution_rel` PRIMARY KEY (`CandID`, `DxEvolutionID`),
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_DxEvolutionID` FOREIGN KEY (`DxEvolutionID`) REFERENCES `diagnosis_evolution` (`DxEvolutionID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Publication Status
 CREATE TABLE `publication_status` (
@@ -2505,3 +2543,29 @@ CREATE TABLE dataquery_study_queries_rel (
     FOREIGN KEY (PinnedBy) REFERENCES users(ID),
     CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
 );
+
+CREATE TABLE `appointment_type` (
+  `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
+  `Name` varchar(32) NOT NULL,
+  PRIMARY KEY (`AppointmentTypeID`),
+  UNIQUE KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `appointment_type` (`AppointmentTypeID`, `Name`) VALUES
+(3, 'Behavioral'),
+(2, 'Blood Collection'),
+(1, 'MRI');
+
+CREATE TABLE `appointment` (
+  `AppointmentID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `SessionID` int(10) UNSIGNED NOT NULL,
+  `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
+  `StartsAt` datetime NOT NULL,
+  PRIMARY KEY (`AppointmentID`),
+  KEY `AppointmentTypeID` (`AppointmentTypeID`),
+  KEY `SessionID` (`SessionID`),
+  CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+  CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

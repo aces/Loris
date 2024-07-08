@@ -1,13 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
-    DateElement,
-    TextboxElement,
-    FormElement,
-    FieldsetElement,
     CheckboxElement,
+    DateElement,
+    FieldsetElement,
+    TimeElement,
+    FormElement,
+    NumericElement,
+    SelectElement,
+    TextboxElement,
 } from 'jsx/Form';
+import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 
 /**
  * Filter component
@@ -45,8 +48,8 @@ function Filter(props) {
     const {fields} = JSON.parse(JSON.stringify(props));
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
-    const exactMatch = (!(type === 'text' || type === 'date'));
-
+    const exactMatch = (!(type === 'text' || type === 'date'
+      || type === 'datetime'));
     if (value === null || value === '' ||
       (value.constructor === Array && value.length === 0) ||
       (type === 'checkbox' && value === false)) {
@@ -97,8 +100,14 @@ function Filter(props) {
           case 'date':
             element = <DateElement/>;
             break;
+          case 'datetime':
+            element = <DateTimePartialElement />;
+            break;
           case 'checkbox':
             element = <CheckboxElement/>;
+            break;
+          case 'time':
+            element = <TimeElement/>;
             break;
           default:
             element = <TextboxElement/>;

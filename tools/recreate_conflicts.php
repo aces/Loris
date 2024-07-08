@@ -46,7 +46,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 $action = $argv[1];
 
 if ($action=='all') {
-    $allInstruments = Utility::getAllInstruments();
+    $allInstruments = NDB_BVL_Instrument::getInstrumentNamesList($lorisInstance);
     $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
     $allInstruments = [$action => $action];

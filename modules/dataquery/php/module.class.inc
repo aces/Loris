@@ -17,7 +17,9 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
+        $dictionary = $this->loris->getModule("dictionary");
+        return parent::hasAccess($user) && $user->hasPermission('dataquery_view')
+            && $dictionary->hasAccess($user);
     }
 
     /**
@@ -37,7 +39,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool (Alpha)";
+        return "Data Query Tool (Beta)";
     }
 
     /**

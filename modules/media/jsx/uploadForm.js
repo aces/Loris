@@ -120,13 +120,13 @@ class MediaUploadForm extends Component {
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
           {};
-          const visitErrMsg = visits && visits.length === 0 ?
-            'No visits available for this candidate' :
-            '';
-          const instErrMsg = instruments && instruments.length === 0 ?
-            'No instruments available for this visit' :
-            '';
-          return (
+    const visitErrMsg = visits && visits.length === 0 ?
+      'No visits available for this candidate' :
+      '';
+    const instErrMsg = instruments && instruments.length === 0 ?
+      'No instruments available for this visit' :
+      '';
+    return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
           <FormElement
@@ -172,6 +172,7 @@ class MediaUploadForm extends Component {
               ref='instrument'
               required={false}
               value={this.state.formData.instrument}
+              autoSelect={false}
               disabled={this.state.formData.pscid == null}
             />
             <DateElement
@@ -351,10 +352,12 @@ class MediaUploadForm extends Component {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = 'Upload error!';
         if (xhr.response) {
-          const resp = JSON.parse(xhr.response);
-          if (resp.message) {
-            msg = resp.message;
+          if (xhr.statusText) {
+            msg = JSON.parse(xhr.response).message;
           }
+        }
+        if (xhr.status === 413) {
+           msg = JSON.stringify('File too large!');
         }
 
         this.setState({
@@ -367,8 +370,8 @@ class MediaUploadForm extends Component {
 
     xhr.addEventListener('error', () => {
       console.error(xhr.status + ': ' + xhr.statusText);
-      let msg = xhr.response && xhr.response.message
-        ? xhr.response.message
+      let msg = xhr.response && JSON.parse(xhr.response).message
+        ? JSON.parse(xhr.response).message
         : 'Upload error!';
       this.setState({
         errorMessage: msg,

@@ -20,7 +20,6 @@ import {FlattenedField, FlattenedQuery, VisitOption} from './types';
  * @param {FlattenedQuery[]} props.topQueries - List of top queries to display pinned to the top of the tab
  * @param {FlattenedQuery[]} props.sharedQueries - List of queries shared with the current user
  * @param {function} props.onContinue - Callback when the "Continue" button is called in the welcome message
- * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
  * @param {boolean} props.queryAdmin - True if the current user can pin study queries
  * @param {function} props.reloadQueries - Reload the list of queries from the server
  * @param {function} props.loadQuery - Load a query to replace the active query
@@ -58,6 +57,7 @@ function Welcome(props: {
         content: React.ReactElement,
         alwaysOpen: boolean,
         defaultOpen: boolean,
+        id: string,
     }[] = [];
     if (props.topQueries.length > 0) {
         panels.push({
@@ -83,6 +83,7 @@ function Welcome(props: {
                 ),
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p1',
         });
     }
     panels.push({
@@ -93,6 +94,7 @@ function Welcome(props: {
                      />,
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p2',
     });
     panels.push({
             title: 'Recent Queries',
@@ -121,6 +123,7 @@ function Welcome(props: {
               ),
             alwaysOpen: false,
             defaultOpen: true,
+            id: 'p3',
     });
 
     if (props.sharedQueries.length > 0) {
@@ -146,6 +149,7 @@ function Welcome(props: {
               ),
               alwaysOpen: false,
               defaultOpen: true,
+              id: 'p4',
         });
     }
 
@@ -169,6 +173,7 @@ function Welcome(props: {
  * @param {object} props - React props
  * @param {FlattenedQuery[]} props.queries - The list of queries to show in the list
  * @param {boolean} props.queryAdmin - True if the current user can pin study queries
+ * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
  * @param {boolean} props.defaultCollapsed - True if the queries should default to be collapsed
  * @param {function} props.starQuery - Function that will star a query
  * @param {function} props.unstarQuery - Function that will unstar a query
@@ -679,6 +684,7 @@ function Pager(props: {
  * @param {function} props.setNameModalID - Function that will set the queryID to show a name modal for
  * @param {boolean} props.showFullQueryDefault - True if the query should be expanded by default
  * @param {boolean} props.queryAdmin - True if the admin query options (ie. pin query) should be shown
+ * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
  * @param {function} props.setAdminModalID - Function that will set the queryID to show an admin modal for
  * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
  * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name

@@ -54,7 +54,11 @@ class ViewProject extends React.Component {
       );
       return;
     }
-    let formData = this.state.formData;
+    let formData = {
+      ...this.state.formData,
+      baseURL: loris.BaseURL,
+    };
+
     let formObj = new FormData();
     for (let key in formData) {
       if (formData.hasOwnProperty(key) && formData[key] !== '') {
@@ -110,6 +114,7 @@ class ViewProject extends React.Component {
             title: data.title,
             description: data.description,
             project: data.project,
+            projectName: data.projectName,
             publishingStatus: data.publishingStatus,
             datePublication: data.datePublication,
             journal: data.journal,
@@ -183,7 +188,7 @@ class ViewProject extends React.Component {
     let toReturn = [];
     files.forEach(function(f) {
       let download = loris.BaseURL
-                     + '/publication/ajax/FileDownload.php?File='
+                     + '/publication/files/'
                      + f.Filename;
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
@@ -304,7 +309,7 @@ class ViewProject extends React.Component {
         <StaticElement
           name="project"
           label="Project"
-          text={this.state.formData.project}
+          text={this.state.formData.projectName}
         />
         <StaticElement
           name="publishingStatus"
@@ -436,9 +441,17 @@ class ViewProject extends React.Component {
    */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
-    if (!this.state.formData[formElement]) {
-      numFiles += 1;
-      this.setState({numFiles: numFiles});
+    if (value) {
+      if (!this.state.formData[formElement]) {
+        numFiles += 1;
+        this.setState({numFiles: numFiles});
+      }
+    } else {
+      // File is being removed
+      if (this.state.formData[formElement]) {
+        numFiles -= 1;
+        this.setState({numFiles: numFiles});
+      }
     }
     this.setFormData(formElement, value);
   }

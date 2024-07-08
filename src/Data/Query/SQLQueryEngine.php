@@ -94,7 +94,8 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    abstract protected function getCorrespondingKeyField($fieldname);
+    abstract protected function getCorrespondingKeyField(\LORIS\Data\Dictionary\DictionaryItem $field);
+    abstract public function getCorrespondingKeyFieldType(\LORIS\Data\Dictionary\DictionaryItem $item) : string;
 
     /**
      * {@inheritDoc}
@@ -159,41 +160,24 @@ abstract class SQLQueryEngine implements QueryEngine
         // Always required for candidateCombine
         $fields = ['c.CandID'];
 
-        $DBSettings = $this->loris->getConfiguration()->getSetting("database");
+        $DB = $this->loris->getDatabaseConnection();
 
-        if (!$this->useBufferedQuery) {
-            $DB = new \PDO(
-                "mysql:host=$DBSettings[host];"
-                ."dbname=$DBSettings[database];"
-                ."charset=UTF8",
-                $DBSettings['username'],
-                $DBSettings['password'],
-            );
-            if ($DB->setAttribute(
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
-                false
-            ) == false
-            ) {
-                throw new \DatabaseException("Could not use unbuffered queries");
-            };
+        $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
 
-            $this->createTemporaryCandIDTablePDO(
-                $DB,
-                "searchcandidates",
-                $candidates,
-            );
-        } else {
-            $DB = $this->loris->getDatabaseConnection();
-            $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
-        }
+        $DB->setBuffering($this->useBufferedQuery);
+
 
         $sessionVariables = false;
+        $keyFields        = [];
         foreach ($items as $dict) {
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
-                . $dict->getName();
+                . "`{$dict->getName()}`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
+            }
+            if ($dict->getCardinality()->__toString() === "many") {
+                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `{$dict->getName()}:key`";
             }
         }
 
@@ -205,6 +189,10 @@ abstract class SQLQueryEngine implements QueryEngine
                 $fields[] = 's.ID as SessionID';
             }
         }
+        if (!empty($keyFields)) {
+            $fields = array_merge($fields, $keyFields);
+        }
+
         $query  = 'SELECT ' . join(', ', $fields) . ' FROM';
         $query .= ' ' . $this->getTableJoins();
 
@@ -221,9 +209,12 @@ abstract class SQLQueryEngine implements QueryEngine
             }
             $query .= 'AND s.Visit_label IN (' . join(",", $inset) . ')';
         }
+        $whereCond = $this->getWhereConditions();
+        if (!empty($whereCond)) {
+            $query .= ' AND ' . $this->getWhereConditions();
+        }
         $query .= ' ORDER BY c.CandID';
-
-        $rows = $DB->prepare($query);
+        $rows   = $DB->prepare($query);
 
         $result = $rows->execute($prepbindings);
 
@@ -231,7 +222,14 @@ abstract class SQLQueryEngine implements QueryEngine
             throw new \Exception("Invalid query $query");
         }
 
-        return $this->candidateCombine($items, $rows);
+        // Yield the generator ourself, so that when it's done we can restore the
+        // buffered query attribute
+        foreach ($this->candidateCombine($items, $rows) as $candid => $val) {
+            yield $candid => $val;
+        };
+
+        // Restore the default now that the generator has finished yielding.
+        $DB->setBuffering($this->useBufferedQuery, true);
     }
 
     /**
@@ -287,7 +285,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    protected function sqlValue(Criteria $criteria, array &$prepbindings) : string
+    protected function sqlValue(DictionaryItem $dict, Criteria $criteria, array &$prepbindings) : string
     {
         static $i = 1;
 
@@ -314,7 +312,12 @@ abstract class SQLQueryEngine implements QueryEngine
         }
 
         $prepname = ':val' . $i++;
-        $prepbindings[$prepname] = $criteria->getValue();
+        if ($dict->getDataType() instanceof \LORIS\Data\Types\BooleanType) {
+            $val = $criteria->getValue();
+            $prepbindings[$prepname] = !empty($val) && $val !== "false";
+        } else {
+            $prepbindings[$prepname] = $criteria->getValue();
+        }
 
         if ($criteria instanceof StartsWith) {
             return "CONCAT($prepname, '%')";
@@ -363,11 +366,13 @@ abstract class SQLQueryEngine implements QueryEngine
      * Adds a where clause to the query based on converting Criteria
      * to SQL.
      */
-    protected function addWhereCriteria(string $fieldname, Criteria $criteria, array &$prepbindings)
+    protected function addWhereCriteria(DictionaryItem $dict, Criteria $criteria, array &$prepbindings)
     {
+
+        $fieldname     = $this->getFieldNameFromDict($dict);
         $this->where[] = $fieldname . ' '
             . $this->sqlOperator($criteria) . ' '
-            . $this->sqlValue($criteria, $prepbindings);
+            . $this->sqlValue($dict, $criteria, $prepbindings);
     }
 
     /**
@@ -407,7 +412,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return <string,DataInstance>
      */
-    protected function candidateCombine(iterable $dict, iterable $rows)
+    protected function candidateCombine(iterable $dict, iterable &$rows)
     {
         $lastcandid = null;
         $candval    = [];
@@ -440,7 +445,6 @@ abstract class SQLQueryEngine implements QueryEngine
                             // Assert that the VisitLabel and SessionID are the same.
                             assert($candval[$fname][$SID]['VisitLabel'] == $row['VisitLabel']);
                             assert($candval[$fname][$SID]['SessionID'] == $row['SessionID']);
-
                             if ($field->getCardinality()->__toString() !== "many") {
                                 // It's not cardinality many, so ensure it's the same value. The
                                 // Query may have returned multiple rows with the same value as
@@ -449,16 +453,17 @@ abstract class SQLQueryEngine implements QueryEngine
                                 assert($candval[$fname][$SID]['value'] == $row[$fname]);
                             } else {
                                 // It is cardinality many, so append the value.
-                                // $key = $this->getCorrespondingKeyField($fname);
-                                $key = $row[$fname . ':key'];
-                                $val = [
-                                        'key'   => $key,
-                                        'value' => $row[$fname],
-                                       ];
-                                if (isset($candval[$fname][$SID]['values'][$key])) {
-                                    assert($candval[$fname][$SID]['values'][$key]['value'] == $row[$fname]);
-                                } else {
-                                    $candval[$fname][$SID]['values'][$key] = $val;
+                                // A null val in a cardinality many column means the row came from a left join
+                                // and shouldn't be included (as opposed to a cardinality:optional where it
+                                // means that the value was the value null)
+                                $key = $row[$field->getName() . ':key'];
+                                $val = $this->displayValue($field, $row[$fname]);
+                                if ($key !== null && $val !== null) {
+                                    if (isset($candval[$fname][$SID]['values']['key'])) {
+                                        assert($candval[$fname][$SID]['values']['key'] == $val);
+                                    } else {
+                                        $candval[$fname][$SID]['values'][$key] = $val;
+                                    }
                                 }
                             }
                         } else {
@@ -468,20 +473,27 @@ abstract class SQLQueryEngine implements QueryEngine
                                 $candval[$fname][$SID] = [
                                                           'VisitLabel' => $row['VisitLabel'],
                                                           'SessionID'  => $row['SessionID'],
-                                                          'value'      => $row[$fname],
+                                                          'value'      => $this->displayValue($field, $row[$fname]),
                                                          ];
                             } else {
                                 // It is many, so use an array
-                                $key = $row[$fname . ':key'];
-                                $val = [
-                                        'key'   => $key,
-                                        'value' => $row[$fname],
-                                       ];
-                                $candval[$fname][$SID] = [
-                                                          'VisitLabel' => $row['VisitLabel'],
-                                                          'SessionID'  => $row['SessionID'],
-                                                          'values'     => [$key => $val],
-                                                         ];
+                                $key = $row[$field->getName() . ':key'];
+                                $val = $this->displayValue($field, $row[$fname]);
+                                // A null val in a cardinality many column means the row came from a left join
+                                // and shouldn't be included (as opposed to a cardinality:optional where it
+                                // means that the value was the value null)
+                                if ($key !== null && $val !== null) {
+                                    $candval[$fname]['keytype'] = $this->getCorrespondingKeyFieldtype($field);
+
+                                    // This is just to get around PHPCS complaining about line
+                                    // length.
+                                    $sarray = [
+                                               'VisitLabel' => $row['VisitLabel'],
+                                               'SessionID'  => $row['SessionID'],
+                                               'values'     => [$key => $val],
+                                              ];
+                                    $candval[$fname][$SID] = $sarray;
+                                }
                             }
                         }
                     }
@@ -500,11 +512,21 @@ abstract class SQLQueryEngine implements QueryEngine
         }
     }
 
+    private function displayValue(DictionaryItem $field, mixed $value) : mixed
+    {
+        // MySQL queries turn boolean columns into 0/1, so if it's a boolean dictionary
+        // item we need to convert it back to true/false
+        if ($field->getDataType() instanceof \LORIS\Data\Types\BooleanType) {
+            return !empty($value);
+        }
+        return $value;
+    }
+
     /**
      * Create a temporary table containing the candIDs from $candidates using the
      * LORIS database connection $DB.
      */
-    protected function createTemporaryCandIDTable(\Database $DB, string $tablename, array $candidates)
+    protected function createTemporaryCandIDTable(\Database $DB, string $tablename, array &$candidates)
     {
         // Put candidates into a temporary table so that it can be used in a join
         // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
@@ -515,45 +537,15 @@ abstract class SQLQueryEngine implements QueryEngine
             CandID int(6)
         );"
         );
-        $insertstmt = "INSERT INTO $tablename VALUES (" . join('),(', $candidates) . ')';
+
+
+        $insertstmt = "INSERT INTO $tablename VALUES"
+                . " (" . join('),(', $candidates) . ')';
         $q          = $DB->prepare($insertstmt);
         $q->execute([]);
     }
 
-    /**
-     * Create a temporary table containing the candIDs from $candidates on the PDO connection
-     * $PDO.
-     *
-     * Note:LORIS Database connections and PDO connections do not share temporary tables.
-     */
-    protected function createTemporaryCandIDTablePDO($PDO, string $tablename, array $candidates)
-    {
-        $query  = "DROP TEMPORARY TABLE IF EXISTS $tablename";
-        $result = $PDO->exec($query);
-
-        if ($result === false) {
-            throw new \DatabaseException(
-                "Could not run query $query"
-            );
-        }
-
-        $query  = "CREATE TEMPORARY TABLE $tablename (
-            CandID int(6)
-        );";
-        $result = $PDO->exec($query);
-
-        if ($result === false) {
-            throw new \DatabaseException(
-                "Could not run query $query"
-            );
-        }
-
-        $insertstmt = "INSERT INTO $tablename VALUES (" . join('),(', $candidates) . ')';
-        $q          = $PDO->prepare($insertstmt);
-        $q->execute([]);
-    }
-
-    protected $useBufferedQuery = false;
+    protected $useBufferedQuery = true;
 
     /**
      * Enable or disable MySQL query buffering by PHP. Disabling query
@@ -584,14 +576,13 @@ abstract class SQLQueryEngine implements QueryEngine
     ) {
         $dict = $term->dictionary;
         $this->addWhereCriteria(
-            $this->getFieldNameFromDict($dict),
+            $dict,
             $term->criteria,
             $prepbindings
         );
 
         if ($visitlist != null) {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addWhereClause("s.Active='Y'");
+            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {

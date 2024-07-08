@@ -159,4 +159,21 @@ class Issue extends \NDB_Form
         // the ajax/EditIssue.php hack.
         return parent::handle($request);
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Issue',
+                "/issue_tracker/issue/$this->issueID"
+            )
+        );
+    }
 }

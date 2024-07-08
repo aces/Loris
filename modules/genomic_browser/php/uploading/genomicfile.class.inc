@@ -468,8 +468,10 @@ class Genomicfile
     function setFullPath(&$fileToUpload) : void
     {
         $config           = \NDB_Config::singleton();
-        $genomic_data_dir = rtrim($config->getSetting('GenomicDataPath'), '/')
-            . '/genomic_uploader/';
+        $genomic_data_dir = rtrim(
+            $config->getSetting('GenomicDataPath'),
+            '/'
+        ) . '/';
 
         $fileToUpload->full_path = $genomic_data_dir
             . $fileToUpload->file_name;
