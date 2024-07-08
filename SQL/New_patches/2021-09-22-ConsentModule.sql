@@ -62,8 +62,8 @@ CREATE TABLE `direct_consent_history` (
 
 -- Add permissions for view + edit
 INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
-  ('consent_view', 'View consent module', (SELECT ID FROM modules WHERE Name='consent'),'View','2'),
-  ('consent_edit', 'Edit consent module', (SELECT ID FROM modules WHERE Name='consent'),'Edit','2');
+  ('consent_view', 'Consent module', (SELECT ID FROM modules WHERE Name='consent'),'View','2'),
+  ('consent_edit', 'Consent module', (SELECT ID FROM modules WHERE Name='consent'),'Edit','2');
 
 -- Switch DateGiven / DateWithdrawn to datetimes instead of date
 -- Allows for timestamp of consent given by participant
