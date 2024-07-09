@@ -70,9 +70,9 @@ class DeleteCategory extends \NDB_Page
         if (!$this->categoryHasFiles($request)
             && !$this->categoryHasSubcategory($request)
         ) {
-            $DB->run(
-                "DELETE FROM document_repository_categories
-                    WHERE id=$category_id"
+            $DB->delete(
+                'document_repository_categories',
+                ['id' => $category_id]
             );
 
             return new \LORIS\Http\Response\JSON\OK();
