@@ -233,7 +233,10 @@ export class FieldsetElement extends Component {
 FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
-  legend: PropTypes.string,
+  legend: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]),
   children: PropTypes.node,
 };
 
@@ -594,7 +597,7 @@ export class SelectElement extends Component {
     }
 
     if (this.props.placeholder !== '') {
-      optionList.unshift(<option value={''} selected={true}>
+      optionList.unshift(<option value={''}>
         {this.props.placeholder}
       </option>);
     }
@@ -1523,21 +1526,6 @@ export class DateElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    // Check if props minYear and maxYear are valid values if supplied
-    let minYear = this.props.minYear;
-    let maxYear = this.props.maxYear;
-    if (this.props.minYear === '' || this.props.minYear === null) {
-      minYear = '1000';
-    }
-    if (this.props.maxYear === '' || this.props.maxYear === null) {
-      maxYear = '9999';
-    }
   }
 
   /**

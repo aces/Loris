@@ -13,9 +13,18 @@ changes in the following format: PR #1234***
 #### Features
 - Add OpenID Connect authorization support to LORIS (PR #8255)
 
+#### Updates and Improvements
+- Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+- Add Project filter for "My tasks" counts in dashboard (PR #9220)
+
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
 - bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
+- Fix delete file in upload (PR #9181)
+- Fix profile level feedback display in behavioural QC module (PR #9192)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
@@ -513,3 +522,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)

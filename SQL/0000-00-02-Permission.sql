@@ -33,7 +33,8 @@ CREATE TABLE `permissions` (
       'View/Create/Edit',
       'Create/Edit',
       'Edit/Upload',
-      'Edit/Upload/Delete'),
+      'Edit/Upload/Delete',
+      'Edit/Upload/Hide'),
   `categoryID` int(10) NOT NULL DEFAULT '2',
   PRIMARY KEY (`permID`),
   UNIQUE KEY `code` (`code`),
@@ -102,7 +103,7 @@ INSERT INTO `permissions` VALUES
     (31,'acknowledgements_edit','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'Edit','2'),
     (32,'dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),'View/Download','2'),
     (33,'genomic_data_manager','Genomic Files',(SELECT ID FROM modules WHERE Name='genomic_browser'),'Upload','2'),
-    (34,'media_write','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'Edit/Upload/Delete','2'),
+    (34,'media_write','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'Edit/Upload/Hide','2'),
     (35,'media_read','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'View/Download','2'),
     (36,'issue_tracker_reporter', 'Create/Edit Own Issues and Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
     (37,'issue_tracker_developer', 'Close/Edit/Re-assign/Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
@@ -130,11 +131,12 @@ INSERT INTO `permissions` VALUES
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2'),
-    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit','2'),
+    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', '2'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
-    (65,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
-    (66,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
+    (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
+    (66,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
+    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

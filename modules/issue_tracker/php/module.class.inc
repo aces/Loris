@@ -96,6 +96,7 @@ class Module extends \Module
                      . $DB->quote($user->getUsername()),
                     '',
                     '',
+                    '',
                     $baseURL . "/issue_tracker/?$url",
                     "issue_tracker"
                 )
