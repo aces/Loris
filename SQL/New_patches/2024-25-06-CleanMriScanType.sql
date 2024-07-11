@@ -1,13 +1,3 @@
--- Add unique constraints on table that benefit from them
-
-ALTER TABLE `mri_protocol_group_target`
-  ADD CONSTRAINT `UK_mri_protocol_group_target`
-    UNIQUE (`ProjectID`, `CohortID`, `Visit_label`);
-
-ALTER TABLE `mri_scan_type`
-  ADD CONSTRAINT `UK_mri_scan_type_name`
-    UNIQUE KEY `Name` (`Name`);
-
 -- Rename foreign key fields for consistency
 
 ALTER TABLE `mri_scan_type`
@@ -24,6 +14,16 @@ ALTER TABLE `mri_violations_log`
 
 ALTER TABLE `files`
   RENAME COLUMN `AcquisitionProtocolID` TO `MriScanTypeID`;
+
+-- Add unique constraints on table that benefit from them
+
+ALTER TABLE `mri_protocol_group_target`
+  ADD CONSTRAINT `UK_mri_protocol_group_target`
+    UNIQUE (`ProjectID`, `CohortID`, `Visit_label`);
+
+ALTER TABLE `mri_scan_type`
+  ADD CONSTRAINT `UK_mri_scan_type_name`
+    UNIQUE KEY `Name` (`Name`);
 
 -- Drop suspicious default
 
