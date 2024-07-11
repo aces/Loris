@@ -99,8 +99,8 @@ class Statistics_Mri_Site extends Statistics_Site
             []
         );
 
-        $where      = "WHERE (";
-        $counter    = 1;
+        $where   = "WHERE (";
+        $counter = 1;
         foreach (array_values($scan_types) as $scan) {
             foreach (array_values($scan) as $label) {
                 if ($counter < sizeof($scan_types)) {
