@@ -2,23 +2,22 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    SelectElement,
-    ButtonElement,
+  FormElement,
+  ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
- * Category Creation Form
+ * Document Delete category Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to create a category
+ * to delete a category
  *
- * @author Shen Wang
+ * @author Rolando Acosta
  * @version 1.0.0
- */
-class DocCategoryForm extends React.Component {
+ *
+ * */
+class DeleteDocCategoryForm extends React.Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -36,7 +35,6 @@ class DocCategoryForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.uploadFile = this.uploadFile.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
@@ -49,8 +47,7 @@ class DocCategoryForm extends React.Component {
 
   /**
    * Fetch data
-   *
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -70,81 +67,63 @@ class DocCategoryForm extends React.Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (<Loader/>);
     }
 
     let disabled = true;
-    let addButton = null;
+    let deleteButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
-        disabled = false;
-        addButton = <ButtonElement label="Add Category"/>;
+      disabled = false;
+      deleteButton = <ButtonElement label="Delete Category"/>;
     }
 
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
           <FormElement
-            name="docUpload"
-            fileUpload={true}
+            name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>Add a category</h3><br/>
-            <TextboxElement
-              name="categoryName"
-              label="Category Name"
+            <h3>Delete a category</h3><br/>
+            <SelectElement
+              name="categoryID"
+              label="Category Name:"
+              options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
-              value={this.state.formData.categoryName}
-            />
-            <SelectElement
-              name="parentId"
-              label="Parent"
-              options={this.state.data.fieldOptions.fileCategories}
-              onUserInput={this.setFormData}
-              disabled={disabled}
               hasError={false}
-              value={this.state.formData.parentId}
+              value={this.state.formData.categoryID}
             />
-            <TextareaElement
-              name="comments"
-              label="Comments"
-              onUserInput={this.setFormData}
-              disabled={disabled}
-              value={this.state.formData.comments}
-            />
-            {addButton}
+            {deleteButton}
           </FormElement>
         </div>
       </div>
     );
   }
 
-  /**
-   * *******************************************************************************
+  /** *******************************************************************************
    *                      ******     Helper methods     *******
-   ********************************************************************************
-   */
+   *********************************************************************************/
+
 
   /**
    * Handle form submission
-   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
-    this.uploadFile();
+    this.deleteCategory();
   }
 
-  /**
-   * Uploads the file to the server
+  /*
+   * Delete the Category.
    */
-  uploadFile() {
-    // Set form data and upload the media file
+  deleteCategory() {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -152,38 +131,46 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
       body: formObj,
-    })
-    .then((resp) => {
-      if (resp.ok) {
-        this.props.refreshPage();
-        this.fetchData();
-        // refresh the upload page
-        this.props.newCategoryState();
+    }).then(async (response) => {
+      if (!response.ok) {
+        const body = await response.json();
+        let msg;
+        if (body && body.error) {
+            msg = body.error;
+        } else if (response.statusText) {
+            msg = response.statusText;
+        } else {
+            msg = 'Delete error!';
+        }
         this.setState({
-          formData: {}, // reset form data after successful file upload
+          errorMessage: msg,
         });
-        swal.fire('Category Successfully Added!', '', 'success');
+        swal.fire(msg, '', 'error');
+        console.error(msg);
       } else {
-        resp.json().then((data) => {
-          swal.fire('Could not add category!', data.error, 'error');
-        }).catch((error) => {
-          console.error(error);
-          swal.fire(
-            'Unknown Error!',
-            'Please report the issue or contact your administrator.',
-            'error'
-          );
-        });
+          swal.fire({
+            text: 'Delete Successful!',
+            title: '',
+            type: 'success',
+          }).then(function() {
+            window.location.assign('/document_repository');
+          });
       }
+    }).catch( (error) => {
+      let msg = error.message ? error.message : 'Delete error!';
+      this.setState({
+        errorMessage: msg,
+        uploadProgress: -1,
+      });
+      swal.fire(msg, '', 'error');
+      console.error(error);
     });
   }
-
   /**
    * Set the form data based on state values of child elements/componenets
    *
@@ -198,11 +185,9 @@ class DocCategoryForm extends React.Component {
   }
 }
 
-DocCategoryForm.propTypes = {
+DeleteDocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
-  refreshPage: PropTypes.func,
-  newCategoryState: PropTypes.func,
 };
 
-export default DocCategoryForm;
+export default DeleteDocCategoryForm;

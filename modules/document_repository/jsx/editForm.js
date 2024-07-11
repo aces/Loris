@@ -9,6 +9,7 @@ import {
     SelectElement,
     ButtonElement,
 } from 'jsx/Form';
+
 /**
  * Document Edit Form
  *
@@ -84,6 +85,9 @@ class DocEditForm extends React.Component {
       );
     }
 
+    let categoryDisabled =
+      !loris.userHasPermission('document_repository_categories');
+
     return (
         <div>
         <FormElement
@@ -99,7 +103,7 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               hasError={false}
               required={true}
-              disabled={true}
+              disabled={categoryDisabled}
               value={this.state.docData.category}
             />
             <SelectElement
@@ -137,6 +141,17 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               value={this.state.docData.comments}
             />
+            {
+              loris.userHasPermission('document_repository_hidden') &&
+                (<SelectElement
+                  name="hiddenFile"
+                  label="Restrict access to the file?"
+                  options={this.state.data.hiddenFile}
+                  sortByValue={false}
+                  onUserInput={this.setFormData}
+                  value={this.state.docData.hiddenFile}
+                />)
+            }
             <TextboxElement
               name="version"
               label="Version"
