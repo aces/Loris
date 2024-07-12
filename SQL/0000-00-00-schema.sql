@@ -530,7 +530,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 
 CREATE TABLE `mri_scan_type` (
   `ID` int(11) unsigned NOT NULL auto_increment,
-  `Name` text NOT NULL,
+  `Name` VARCHAR(255) NOT NULL,
   PRIMARY KEY  (`ID`),
   CONSTRAINT `UK_mri_scan_type_name` UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
@@ -587,7 +587,7 @@ CREATE TABLE `files` (
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
-  KEY `outputtype` (`OutputType`),
+  KEY `outputtype` (`OutqszputType`),
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
   KEY `ScanIndex` (`MriScanTypeID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
