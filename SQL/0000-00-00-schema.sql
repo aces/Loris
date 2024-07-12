@@ -587,7 +587,7 @@ CREATE TABLE `files` (
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
-  KEY `outputtype` (`OutqszputType`),
+  KEY `outputtype` (`OutputType`),
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
   KEY `ScanIndex` (`MriScanTypeID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
