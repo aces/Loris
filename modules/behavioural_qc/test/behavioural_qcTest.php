@@ -124,7 +124,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         )->getAttribute('href');
         // check        Instrument link
         $this->assertStringContainsString(
-            "instrument_list/?candID=676061",
+            "instrument_list/?candID=300001",
             $bodyText
         );
     }
