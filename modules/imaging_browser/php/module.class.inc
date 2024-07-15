@@ -93,7 +93,7 @@ class Module extends \Module
 
             $scansummary = $DB->pselect(
                 "SELECT s.Visit_label,
-                    mst.Name as Scan_type,
+                    mst.Name as ScanType,
                     COALESCE(fqc.QCStatus, '') as QC,
                     COUNT(*) as nfiles
                  FROM files f JOIN session s ON (s.ID=f.sessionID)

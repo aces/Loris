@@ -95,7 +95,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $DB = $this->loris->getDatabaseConnection();
 
         $scan_types = $DB->pselect(
-            "SELECT Name AS Scan_type from mri_scan_type",
+            "SELECT Name AS ScanType from mri_scan_type",
             []
         );
 

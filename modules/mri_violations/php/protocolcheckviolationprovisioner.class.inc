@@ -22,7 +22,7 @@ class ProtocolCheckViolationProvisioner
                 l.PatientName,
                 l.CandID,
                 l.Visit_label,
-                m.Name AS Scan_type,
+                m.Name AS ScanType,
                 mpcg.Name,
                 l.Severity,
                 l.Header,
