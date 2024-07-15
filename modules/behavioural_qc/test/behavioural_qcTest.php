@@ -113,7 +113,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         )->getAttribute('href');
         // check        Instrument link
         $this->assertStringContainsString(
-            "676061",
+            "300001",
             $bodyText
         );
         $bodyText = $this->safeFindElement(
