@@ -201,7 +201,7 @@ function ProtocolViolationModal(props) {
           curgroup.push(<tr>
               <td>{protocol['Center_name']}</td>
               <td>{protocol['ScannerID']}</td>
-              <td>{protocol['Scan_type']}</td>
+              <td>{protocol['ScanType']}</td>
               <td colSpan="11">
                 Series Description Regex:
                   <span style={{fontWeight: 'bold'}}>
@@ -214,7 +214,7 @@ function ProtocolViolationModal(props) {
           curgroup.push(<tr>
             <td>{protocol['Center_name']}</td>
             <td>{protocol['ScannerID']}</td>
-            <td>{protocol['Scan_type']}</td>
+            <td>{protocol['ScanType']}</td>
             <td>{showRange(protocol['TR_min'], protocol['TR_max'])}</td>
             <td>{showRange(protocol['TE_min'], protocol['TE_max'])}</td>
             <td>{showRange(protocol['TI_min'], protocol['TI_max'])}</td>
