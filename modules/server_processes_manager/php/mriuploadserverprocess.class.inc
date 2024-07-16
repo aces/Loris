@@ -51,25 +51,25 @@ class MriUploadServerProcess extends AbstractServerProcess
     private $_sourceLocation;
 
     /**
-     * Root of the MRI files directory.
+     * The value of MRICodePath config setting.
      *
      * @var string
      */
     private $_mriCodePath;
 
     /**
-     * Path of the environment file (relative to $_mriCodePath).
-     *
-     * @var string
-     */
-    private $_environmentFile;
-
-    /**
-     * Path of the prod file (relative to $_mriCodePath/dicom-archive/.loris-mri).
+     * The value of MriConfigFile config setting.
      *
      * @var string
      */
     private $_prodFile;
+
+    /**
+     * The value of EnvironmentFile config setting.
+     *
+     * @var string
+     */
+    private $_environmentFile;
 
     /**
      * Builds a new MriUploadServerProcess
@@ -98,7 +98,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         $config =& \NDB_Config::singleton();
         if (is_null($config)) {
             throw new \RuntimeException(
-                "Cannot construct MriUploadTask: unable to instantiate 
+                "Cannot construct MriUploadTask: unable to instantiate
                  configuration object"
             );
         }

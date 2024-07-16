@@ -122,6 +122,7 @@ DROP TABLE IF EXISTS `parameter_type_category`;
 DROP TABLE IF EXISTS `parameter_type`;
 
 DROP TABLE IF EXISTS `media`;
+DROP TABLE IF EXISTS `mri_upload_server_processes_rel`;
 DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;
