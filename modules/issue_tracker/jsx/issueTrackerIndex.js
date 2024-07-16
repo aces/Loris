@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import IssueTrackerDetailView from './IssueTrackerDetailView';
 
 /**
  * Issue Tracker Index component
@@ -20,10 +21,12 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
+      view: 'table', // 'table' for FilterableDataTable, 'detail' for IssueTrackerDetailView
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.toggleView = this.toggleView.bind(this);
   }
 
   /**
@@ -50,6 +53,15 @@ class IssueTrackerIndex extends Component {
         console.error(error);
       });
   }
+
+  /**
+   * Toggle between table and detail view
+   */
+  toggleView() {
+    this.setState(prevState => ({
+      view: prevState.view === 'table' ? 'detail' : 'table',
+    }));
+}
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -261,16 +273,34 @@ class IssueTrackerIndex extends Component {
     const actions = [
       {label: 'New Issue', action: addIssue},
     ];
-
+    console.log(this.state.data.data)
     return (
-      <FilterableDataTable
-        name="issuesTracker"
-        data={this.state.data.data}
-        fields={fields}
-        filterPresets={filterPresets}
-        actions={actions}
-        getFormattedCell={this.formatColumn}
-      />
+      <div>
+      <div className="view-toggle">
+        <button onClick={this.toggleView}>
+          {this.state.view === 'table' ? 'Switch to Detail View' : 'Switch to Table View'}
+        </button>
+      </div>
+      {this.state.view === 'table' ? (
+        <FilterableDataTable
+          name="issuesTracker"
+          data={this.state.data.data}
+          fields={fields}
+          filterPresets={filterPresets}
+          actions={actions}
+          getFormattedCell={this.formatColumn}
+        />
+      ) : (
+<IssueTrackerDetailView 
+  issues={this.state.data.data}
+  options={{
+    priorities: this.state.data.fieldOptions.priorities,
+    statuses: this.state.data.fieldOptions.statuses,
+    categories: this.state.data.fieldOptions.categories,
+  }}
+/>
+      )}
+    </div>
     );
   }
 }
