@@ -1611,7 +1611,7 @@ CREATE TABLE `parameter_type` (
   `SourceField` text,
   `SourceFrom` VARCHAR(255),
   `SourceCondition` text,
-  `Queryable` tinyint(1) default '1',
+  `Queryable` tinyint(1) default 1,
   `IsFile` tinyint(1) default 0,
   PRIMARY KEY  (`ParameterTypeID`),
   KEY `name` (`Name`),
