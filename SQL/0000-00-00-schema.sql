@@ -285,7 +285,7 @@ CREATE TABLE `instrument_subtests` (
 
 CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
-  `SessionID` int(10) unsigned NOT NULL default '0',
+  `SessionID` int(10) unsigned NOT NULL,
   `Test_name` varchar(255) NOT NULL default '',
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
