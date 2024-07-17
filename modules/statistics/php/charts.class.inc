@@ -126,7 +126,7 @@ class Charts extends \NDB_Page
 
             $recruitmentBySiteData[] = [
                 "label" => $siteName,
-                "total" => intval($data[$siteID]) ?? 0,
+                "total" => intval($data[$siteID] ?? 0),
             ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentBySiteData);
