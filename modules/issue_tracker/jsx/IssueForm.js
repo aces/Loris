@@ -284,6 +284,15 @@ class IssueForm extends Component {
             sortByValue={false}
           />
           <SelectElement
+            name='instrument'
+            label='Instrument'
+            emptyOption={true}
+            options={this.state.Data.instruments}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.instrument}
+          />
+          <SelectElement
             name='category'
             label='Category'
             emptyOption={true}
