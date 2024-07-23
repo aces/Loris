@@ -189,6 +189,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $modules[$key] = $m->getLongName();
         }
 
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
+
         // Now get issue values
         $issueData = $this->getIssueData(null, $user);
         if (!empty($values['issueID'])
@@ -271,6 +273,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priorities'        => $priorities,
             'categories'        => $categories,
             'modules'           => $modules,
+            'instruments'       => $instruments,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
             'hasEditPermission' => $user->hasPermission(
@@ -423,6 +426,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'visitLabel'    => null,
             'category'      => null,
             'lastUpdatedBy' => null,
+            'instrument'    => null,
         ];
     }
 
@@ -584,6 +588,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'description',
             'category',
             'module',
+            'instrument',
         ];
         $fieldsToValidateFirst = [
             'PSCID',
