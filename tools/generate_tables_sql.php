@@ -47,6 +47,12 @@ foreach ($instruments as $instrument) {
             continue;
         }
         switch ($bits[0]) {
+        // No SQL generated for these cases.
+        case "testname":
+        case "title":
+        case "header":
+            continue 2;
+
         // generate the CREATE TABLE syntax
         case "table":
             $tablename = $bits[1];
@@ -64,11 +70,6 @@ foreach ($instruments as $instrument) {
                 . "ON UPDATE CURRENT_TIMESTAMP,\n";
 
             break;
-
-        // no SQL need be generated.
-        case "title":
-        case "header":
-            continue 2;
 
         // generate specific column definitions for specific types of HTML elements
         default:
