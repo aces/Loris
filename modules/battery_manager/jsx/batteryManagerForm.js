@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+    ButtonElement,
+    FormElement,
+    StaticElement,
+    SelectElement,
+    NumericElement,
+} from 'jsx/Form';
 
 /**
  * Battery Manager Form
@@ -15,7 +22,7 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors} = this.props;
+    const {test, options, setTest, add, errors, handleSubmit} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -44,7 +51,10 @@ class BatteryManagerForm extends Component {
     };
 
     return (
-      <FormElement>
+      <FormElement
+        name="battery_manager_form"
+        onSubmit={handleSubmit}
+      >
         <StaticElement
           label="Note"
           text={renderHelpText()}
@@ -64,8 +74,8 @@ class BatteryManagerForm extends Component {
           name="ageMinDays"
           label="Minimum age (days)"
           onUserInput={setTest}
-          min="0"
-          max="99999"
+          min={0}
+          max={99999}
           required={true}
           value={test.ageMinDays}
           errorMessage={errors.ageMinDays}
@@ -75,8 +85,8 @@ class BatteryManagerForm extends Component {
           name="ageMaxDays"
           label="Maximum age (days)"
           onUserInput={setTest}
-          min="0"
-          max="99999"
+          min={0}
+          max={99999}
           required={true}
           value={test.ageMaxDays}
           errorMessage={errors.ageMaxDays}
@@ -131,9 +141,12 @@ class BatteryManagerForm extends Component {
           label="Instrument Order"
           onUserInput={setTest}
           required={false}
-          min="0"
-          max="127" // max value allowed by default column type of instr_order
+          min={0}
+          max={127} // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
+        />
+         <ButtonElement
+          label="Submit"
         />
       </FormElement>
     );
@@ -146,6 +159,7 @@ BatteryManagerForm.propTypes = {
   options: PropTypes.object.isRequired,
   add: PropTypes.bool,
   errors: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default BatteryManagerForm;

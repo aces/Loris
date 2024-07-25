@@ -135,6 +135,7 @@ class Module extends \Module
                         AND s.Active='Y' AND c.Active='Y'",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . "/statistics/statistics_site/",
                     ""
                 ),
@@ -156,5 +157,15 @@ class Module extends \Module
             ];
         }
         return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new InstrumentQueryEngine($this->loris);
     }
 }

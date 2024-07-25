@@ -6,6 +6,13 @@ import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    ButtonElement,
+    CheckboxElement,
+    SelectElement,
+    FormElement,
+    TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Examiner Module Page.
@@ -116,8 +123,8 @@ class ExaminerIndex extends Component {
           }
         });
       } else {
-        resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
+        resp.json().then((message) => {
+          swal.fire('Error!', message.error, 'error');
         });
       }
     })
@@ -319,8 +326,9 @@ ExaminerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
       submitURL={`${loris.BaseURL}/examiner/addExaminer`}

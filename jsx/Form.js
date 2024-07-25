@@ -1,8 +1,3 @@
-/* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, PasswordElement, DateElement, DateTimeElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
-CheckboxElement, ButtonElement, LorisElement
-*/
-
 /**
  * This file contains React components for Loris form elements.
  *
@@ -24,7 +19,7 @@ import PropTypes from 'prop-types';
  * Note that if both are passed `this.props.formElements` is displayed first.
  *
  */
-class FormElement extends Component {
+export class FormElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -174,7 +169,7 @@ FormElement.defaultProps = {
  * The form elements can be passed by nesting Form components directly inside <FieldsetElement></FieldsetElement>.
  *
  */
-class FieldsetElement extends Component {
+export class FieldsetElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -238,7 +233,10 @@ class FieldsetElement extends Component {
 FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
-  legend: PropTypes.string,
+  legend: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]),
   children: PropTypes.node,
 };
 
@@ -251,7 +249,7 @@ FieldsetElement.defaultProps = {
  * Search Component
  * React wrapper for a searchable dropdown
  */
-class SearchableDropdown extends Component {
+export class SearchableDropdown extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -464,7 +462,7 @@ SearchableDropdown.defaultProps = {
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-class SelectElement extends Component {
+export class SelectElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -509,18 +507,20 @@ class SelectElement extends Component {
    * @param {object} e - Event
    */
   handleChange(e) {
-    let value = e.target.value;
+    let value = null;
     let options = e.target.options;
     const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple && numOfOptions > 1) {
+    if (this.props.multiple) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
         }
       }
+    } else {
+      value = e.target.value;
     }
 
     this.props.onUserInput(this.props.name, value);
@@ -597,7 +597,7 @@ class SelectElement extends Component {
     }
 
     if (this.props.placeholder !== '') {
-      optionList.unshift(<option value={''} selected={true}>
+      optionList.unshift(<option value={''}>
         {this.props.placeholder}
       </option>);
     }
@@ -700,7 +700,7 @@ SelectElement.defaultProps = {
  *    a normal dropdown select
  * 3: Without options, input is a normal, free text input
  */
-class TagsElement extends Component {
+export class TagsElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1000,7 +1000,7 @@ TagsElement.defaultProps = {
  * Textarea Component
  * React wrapper for a <textarea> element.
  */
-class TextareaElement extends Component {
+export class TextareaElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1092,7 +1092,7 @@ TextareaElement.defaultProps = {
  * Textbox Component
  * React wrapper for a <input type="text"> element.
  */
-class TextboxElement extends Component {
+export class TextboxElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1225,7 +1225,7 @@ TextboxElement.defaultProps = {
  * EmailElement Component
  * React wrapper for a <input type="email"> element.
  */
-class EmailElement extends Component {
+export class EmailElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1357,7 +1357,7 @@ EmailElement.defaultProps = {
  * Password Component
  * React wrapper for a <input type="password"> element.
  */
-class PasswordElement extends Component {
+export class PasswordElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1518,7 +1518,7 @@ PasswordElement.defaultProps = {
  * Date Component
  * React wrapper for a <input type="date"> element.
  */
-class DateElement extends Component {
+export class DateElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1526,40 +1526,6 @@ class DateElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    // Check if props minYear and maxYear are valid values if supplied
-    let minYear = this.props.minYear;
-    let maxYear = this.props.maxYear;
-    if (this.props.minYear === '' || this.props.minYear === null) {
-      minYear = '1000';
-    }
-    if (this.props.maxYear === '' || this.props.maxYear === null) {
-      maxYear = '9999';
-    }
-    let monthInputs = $('input[type=month][name=' + this.props.name+']');
-    monthInputs.datepicker({
-      dateFormat: 'yy-mm',
-      changeMonth: true,
-      changeYear: true,
-      yearRange: minYear + ':' + maxYear,
-      constrainInput: true,
-      onChangeMonthYear: (y, m, d) => {
-        // Update date in the input field
-        $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
-      },
-      onSelect: (dateText, picker) => {
-        this.props.onUserInput(this.props.name, dateText);
-      },
-    });
-    monthInputs.attr('placeholder', 'yyyy-mm');
-    monthInputs.on('keydown paste', (e) => {
-      e.preventDefault();
-    });
   }
 
   /**
@@ -1669,8 +1635,8 @@ DateElement.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
-  maxYear: PropTypes.string,
-  minYear: PropTypes.string,
+  maxYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  minYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -1700,7 +1666,7 @@ DateElement.defaultProps = {
  * Time Component
  * React wrapper for a <input type="time"> element.
  */
-class TimeElement extends Component {
+export class TimeElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1796,7 +1762,7 @@ TimeElement.defaultProps = {
  * DateTime Component
  * React wrapper for a <input type="datetime-local"> element.
  */
-class DateTimeElement extends Component {
+export class DateTimeElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1892,7 +1858,7 @@ DateTimeElement.defaultProps = {
  * Numeric Component
  * React wrapper for a <input type="number"> element.
  */
-class NumericElement extends Component {
+export class NumericElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1995,9 +1961,9 @@ NumericElement.defaultProps = {
 
 /**
  * File Component
- * React wrapper for a simple or 'multiple' <select> element.
+ * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
-class FileElement extends Component {
+export class FileElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2014,8 +1980,10 @@ class FileElement extends Component {
    */
   handleChange(e) {
     // Send current file to parent component
-    const file = e.target.files[0] ? e.target.files[0] : '';
-    this.props.onUserInput(this.props.name, file);
+    const files = e.target.files
+      ? (this.props.allowMultiple ? e.target.files : e.target.files[0])
+      : '';
+    this.props.onUserInput(this.props.name, files);
   }
 
   /**
@@ -2027,6 +1995,7 @@ class FileElement extends Component {
     const required = this.props.required ? 'required' : null;
 
     let fileName = undefined;
+
     if (this.props.value) {
       switch (typeof this.props.value) {
         case 'string':
@@ -2034,7 +2003,12 @@ class FileElement extends Component {
           break;
 
         case 'object':
-          fileName = this.props.value.name;
+          if (this.props.value instanceof FileList) {
+            const files = this.props.value;
+            fileName = Array.from(files).map((file) => file.name).join(', ');
+          } else {
+            fileName = this.props.value.name;
+          }
           break;
 
         default:
@@ -2106,6 +2080,7 @@ class FileElement extends Component {
     } else {
         classSz = 'col-sm-12';
     }
+
     return (
       <div className={elementClass}>
         {labelHTML}
@@ -2127,6 +2102,7 @@ class FileElement extends Component {
                   name={this.props.name}
                   onChange={this.handleChange}
                   required={required}
+                  multiple={this.props.allowMultiple}
                 />
               </div>
             </div>
@@ -2148,6 +2124,7 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  allowMultiple: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -2160,6 +2137,7 @@ FileElement.defaultProps = {
   id: null,
   disabled: false,
   required: false,
+  allowMultiple: false,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {
@@ -2182,7 +2160,7 @@ FileElement.defaultProps = {
  * />
  * ```
  */
-class StaticElement extends Component {
+export class StaticElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2209,9 +2187,9 @@ class StaticElement extends Component {
       <div className="row form-group">
         {label}
         <div className={this.props.class}>
-          <p className={this.props.textClass}>
+          <div className={this.props.textClass}>
             {this.props.text}
-          </p>
+          </div>
         </div>
       </div>
     );
@@ -2241,7 +2219,7 @@ StaticElement.defaultProps = {
  * Used to display a header element with specific level (1-6) as part of a form
  *
  */
-class HeaderElement extends Component {
+export class HeaderElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2282,7 +2260,7 @@ HeaderElement.defaultProps = {
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
-class LinkElement extends Component {
+export class LinkElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2331,7 +2309,7 @@ LinkElement.defaultProps = {
  * Checkbox Component
  * React wrapper for a <input type="checkbox"> element.
  */
-class CheckboxElement extends React.Component {
+export class CheckboxElement extends React.Component {
   /**
    * @constructor
    */
@@ -2431,7 +2409,7 @@ CheckboxElement.defaultProps = {
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-class ButtonElement extends Component {
+export class ButtonElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2468,7 +2446,7 @@ class ButtonElement extends Component {
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
-            {this.props.label}
+            {this.props.disabled ? 'Uploading...' : this.props.label}
           </button>
         </div>
       </div>
@@ -2504,7 +2482,7 @@ ButtonElement.defaultProps = {
  * React wrapper for <button> element that is used for Call to Actions, usually
  * outside the context of forms.
  */
- class CTA extends Component {
+export class CTA extends Component {
   /**
    * Renders the React component.
    *
@@ -2538,7 +2516,7 @@ ButtonElement.defaultProps = {
 /**
  * Generic form element.
  */
-class LorisElement extends Component {
+export class LorisElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2632,7 +2610,7 @@ LorisElement.propTypes = {
  *     male: 'Male',
  *   }
  */
-class RadioElement extends React.Component {
+export class RadioElement extends React.Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2793,7 +2771,7 @@ RadioElement.defaultProps = {
  * Slider Component
  * React wrapper for a <input type='range'> element.
  */
-class SliderElement extends React.Component {
+export class SliderElement extends React.Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2933,30 +2911,6 @@ SliderElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
-
-window.FormElement = FormElement;
-window.FieldsetElement = FieldsetElement;
-window.SelectElement = SelectElement;
-window.TagsElement = TagsElement;
-window.SearchableDropdown = SearchableDropdown;
-window.TextareaElement = TextareaElement;
-window.TextboxElement = TextboxElement;
-window.EmailElement = EmailElement;
-window.PasswordElement = PasswordElement;
-window.DateElement = DateElement;
-window.TimeElement = TimeElement;
-window.DateTimeElement = DateTimeElement;
-window.NumericElement = NumericElement;
-window.FileElement = FileElement;
-window.StaticElement = StaticElement;
-window.HeaderElement = HeaderElement;
-window.LinkElement = LinkElement;
-window.SliderElement = SliderElement;
-window.CheckboxElement = CheckboxElement;
-window.RadioElement = RadioElement;
-window.ButtonElement = ButtonElement;
-window.CTA = CTA;
-window.LorisElement = LorisElement;
 
 export default {
   FormElement,

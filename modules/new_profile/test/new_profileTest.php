@@ -85,13 +85,13 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         // send a key to sex
         $sexElement = $this->safeFindElement(WebDriverBy::Name('sex'));
         $sexOption  = new WebDriverSelect($sexElement);
-        $sexOption->selectByValue("male");
+        $sexOption->selectByValue("Male");
         $sexElement = $this->safeFindElement(WebDriverBy::Name('site'));
         $sexOption  = new WebDriverSelect($sexElement);
         $sexOption->selectByValue("1");
         $sexElement = $this->safeFindElement(WebDriverBy::Name('project'));
         $sexOption  = new WebDriverSelect($sexElement);
-        $sexOption->selectByValue("1");
+        $sexOption->selectByValue("Pumpernickel");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector($this->dateTaken)

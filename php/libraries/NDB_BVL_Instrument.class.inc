@@ -4,6 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -298,6 +299,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $base . "project/instruments/$instrument.meta"
             );
         }
+        // Set DataEntryType to normal or DirectEntry
+        if (isset($_REQUEST['key'])) {
+            $obj->DataEntryType = 'DirectEntry';
+        } else {
+            $obj->DataEntryType = 'normal';
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -438,10 +445,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
-        if (isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal';
+        if ($this->DataEntryType === 'normal') {
             // These are required for Save Data to work properly, but not when it's
             // a direct data entry page
             $this->addHidden(
@@ -558,6 +562,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $this->form->process([&$this, '_saveValues'], true);
             $this->score();
             $this->updateRequiredElementsCompletedFlag();
+            $this->propagateData();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -839,7 +844,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->instanceData = $newData;
     }
 
-
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
@@ -849,7 +853,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields(): void
     {
-        $config      = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
@@ -863,7 +869,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
@@ -1378,10 +1384,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dictionary = $this->getDataDictionary();
 
         foreach ($dictionary as $item) {
-            // The Field name to compare to in the data dictionary is
-            // prefixed with the testname
-            $dictionaryFieldName = $this->testName."_".$field;
-            if ($dictionaryFieldName === $item->getName()) {
+            if ($field === $item->fieldname) {
                 return $allValues[$field];
             }
         }
@@ -1390,7 +1393,28 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
+    /**
+     * Gets the value of a field $field for this instrument for a
+     * DictionaryItem that was retrieved from getDataDictionary.
+     *
+     * This differs from getFieldValue in that getFieldValue takes
+     * a string and validates that it is in the dictionary in O(n)
+     * time while getDictionaryValue assumes the DictionaryItem
+     * exists and returns the value in O(1) time.
+     *
+     * @param DictionaryItem $field The field to get from this instrument
 
+     * @return mixed
+     */
+    function getDictionaryValue(DictionaryItem $field)
+    {
+        $allValues = $this->getInstanceData();
+        $fieldName = substr($field->getName(), strlen($this->testName)+1);
+
+        return $allValues[$fieldName] ?? '';
+    }
+
+    private ?SessionID $sessionID;
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
@@ -1398,22 +1422,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getSessionID(): ?SessionID
     {
-
-        $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $result = \NDB_Factory::singleton()->database()->pselectOne(
-            $query,
-            [
-                'CID' => $this->getCommentID(),
-            ]
-        );
-
-        if (empty($result)) {
-            return null;
+        if (empty($this->sessionID)) {
+            $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+            $result = \NDB_Factory::singleton()->database()->pselectOne(
+                $query,
+                [
+                    'CID' => $this->getCommentID(),
+                ]
+            );
+            if (empty($result)) {
+                return null;
+            }
+            $this->sessionID = new SessionID($result);
         }
-
-        return (new SessionID($result));
+        return $this->sessionID;
     }
 
+    private ?string $visitLabel = null;
     /**
      * Gets the VisitLabel for the timepoint for this instrument.
      *
@@ -1421,7 +1446,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getVisitLabel(): string
     {
-        return \TimePoint::singleton($this->getSessionID())->getVisitLabel();
+        if ($this->visitLabel === null) {
+            $this->visitLabel = \TimePoint::singleton(
+                $this->getSessionID()
+            )->getVisitLabel();
+        }
+        return $this->visitLabel;
     }
 
     /**
@@ -2047,7 +2077,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = [
-                        'TableName'      => $this->table,
+                        'TestName'       => $this->testName,
                         'ExtraKeyColumn' => null,
                         'ExtraKey1'      => ' ',
                         'ExtraKey2'      => ' ',
@@ -2063,6 +2093,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Return the diffs
         return $diff;
+    }
+
+
+    /**
+     * Get the default instance data which consists of all field names
+     * in the dictionary and a null value.
+     *
+     * @return array
+     */
+    protected function defaultInstanceData()
+    {
+        $val        = [];
+        $dictionary = $this->getDataDictionary();
+
+        foreach ($dictionary as $item) {
+            $val[$item->fieldname] = null;
+        }
+        return $val;
     }
 
     /**
@@ -2085,14 +2133,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $this->getCommentID()]
             );
 
-            $this->instanceData = json_decode($jsondata, true) ?? [];
+            $this->instanceData = json_decode(
+                $jsondata ?? '',
+                true
+            ) ?? $this->defaultInstanceData();
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
                 ['CID' => $this->getCommentID()]
             );
+            // This is only included because it's the primary key. JSON
+            // data does not include it. Unset so that the two types are
+            // consistent. Places that need the commentID should be using
+            // NDB_BVL_Instrument->getCommentID()
+            unset($defaults['CommentID']);
 
-            $this->instanceData = $defaults ?? [];
+            $this->instanceData = $defaults ?? $this->defaultInstanceData();
         }
         return $this->instanceData;
     }
@@ -2161,10 +2217,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $prepBindings[]      = ":cid$i";
             $prepValues["cid$i"] = $commentID;
         }
+        if ($i === 0) {
+            return [];
+        }
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
-                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
+                "SELECT SessionID,
+                        CommentID,
+                        session.Visit_Label as VisitLabel,
+                        Data
+                    FROM flag
+                        JOIN session ON (session.ID=flag.SessionID)
+                    WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2173,10 +2238,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
+                    $newinst->visitLabel   = $row['VisitLabel'];
+                    $newinst->sessionID    = new SessionID($row['SessionID']);
                     $newinst->instanceData = json_decode(
-                        $row['Data'],
+                        $row['Data'] ?? '{}',
                         true,
-                    ) ?? [];
+                    ) ?? $this->defaultInstanceData();
 
                     return $newinst;
                 },
@@ -2184,7 +2251,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $defaults = $db->pselect(
-                "SELECT * FROM $this->table WHERE CommentID IN ("
+                "SELECT flag.CommentID as CommentID,
+                        session.Visit_Label as VisitLabel,
+                        session.ID as SessionID, t.*
+                 FROM $this->table t
+                    JOIN flag ON (t.CommentID=flag.CommentID)
+                    JOIN session ON (flag.SessionID=session.ID)
+                 WHERE t.CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2192,12 +2265,133 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 function ($row) {
                     $newinst = clone $this;
 
-                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID($row['SessionID']);
+                    unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
+
                     $newinst->instanceData = $row;
 
                     return $newinst;
                 },
                 $defaults
+            );
+        }
+    }
+
+    /**
+     * Calls all functions which propagate data to other sources.
+     *
+     * @return void
+     */
+    function propagateData()
+    {
+        if (strpos($this->getCommentID(), "DDE") === false) {
+            $this->propagateLatestDiagnosisData();
+        }
+    }
+
+    /**
+     * Checks if current instrument contains a diagnosis track
+     * and determines whether it is the latest diagnosis. If so,
+     * it propagates the data to the LatestDiagnosis field in the
+     * candidate table.
+     *
+     * @return void
+     */
+    function propagateLatestDiagnosisData()
+    {
+        // if the instrument is not part of a configured Dx Tracjectory; return
+        $dxEvolutionID = $this->getConfiguredDiagnosisTrajectory();
+        if (is_null($dxEvolutionID)) {
+            return;
+        }
+
+        // Update candidate's diagnosis evolution
+        $this->updateCandidateDiagnosisEvolution($dxEvolutionID);
+    }
+
+    /**
+     * Determines whether this instrument is part of a configured
+     * diagnosis trajectory.
+     *
+     * @return string|null The DxEvolutionID of this instrument's configured
+     *                      diagnosis trajectory.
+     */
+    function getConfiguredDiagnosisTrajectory()
+    {
+        $DB        = $this->loris->getDatabaseConnection();
+        $timepoint = \TimePoint::singleton($this->getSessionID());
+
+        // Check if there is a diagnosis trajectory defined
+        // for this instrument with current session's visit & project
+        $dxEvolutionID = $DB->pselectOne(
+            "SELECT DxEvolutionID FROM diagnosis_evolution
+            WHERE instrumentName=:tn 
+            AND ProjectID=:pid 
+            AND visitLabel=:vl",
+            [
+                'tn'  => $this->testName,
+                'pid' => $timepoint->getProjectID(),
+                'vl'  => $this->getVisitLabel()
+            ]
+        );
+
+        return $dxEvolutionID ?? null;
+    }
+
+    /**
+     * Determines whether the candidate's latest diagnosis should be updated.
+     * If so, it returns an array containing the source and new diagnosis.
+     *
+     * @param string $dxEvolutionID The ID of configured Diagnsosis Trajectory
+     *                              for this instrument & session.
+     *
+     * @return void
+     */
+    function updateCandidateDiagnosisEvolution(string $dxEvolutionID) : void
+    {
+        $DB        = $this->loris->getDatabaseConnection();
+        $timepoint = \TimePoint::singleton($this->getSessionID());
+
+        // Get the fields that correspond to a configured diagnosis
+        $sourceFields = $DB->pselectOne(
+            "SELECT sourceField 
+            FROM diagnosis_evolution
+            WHERE DxEvolutionID=:dxEvID",
+            ['dxEvID' => $dxEvolutionID]
+        );
+
+        $this->instanceData = null;
+        $instrumentData     = $this->getInstanceData();
+        $sourceFields       = explode(",", $sourceFields);
+
+        $diagnosis = [];
+        foreach ($sourceFields as $fieldName) {
+            // None of the diagnosis components should be empty
+            // If so, the latest diagnosis should not be updated.
+            if (!isset($instrumentData[$fieldName])) {
+                continue;
+            }
+            $diagnosis[$fieldName] = $instrumentData[$fieldName];
+        }
+
+        if (!empty($diagnosis)) {
+            $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
+
+            $set = [
+                'CandID'        => $this->getCandID()->__toString(),
+                'DxEvolutionID' => $dxEvolutionID,
+                'Diagnosis'     => json_encode($diagnosis),
+                'Confirmed'     => $confirmed
+            ];
+
+            // Diagnosis is formatted as JSON and ensures that this is safe.
+            // If we use the safe wrapper, HTML encoding the quotation marks
+            // will make it invalid JSON.
+            $DB->unsafeInsertOnDuplicateUpdate(
+                'candidate_diagnosis_evolution_rel',
+                $set
             );
         }
     }
@@ -2292,6 +2486,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['CID' => $CommentID]
         );
         return $pscid;
+    }
+
+    /**
+     * Get the candidate's CandID
+     *
+     * @return ?CandID The candidate's CandID
+     */
+    function getCandID() : ?CandID
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $candID = $db->pselectOne(
+            "SELECT c.CandID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        if ($candID === null) {
+            return null;
+        }
+        return new CandID($candID);
+
     }
 
     /**

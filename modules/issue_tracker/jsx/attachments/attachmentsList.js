@@ -11,6 +11,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * React component used to display
@@ -102,7 +103,7 @@ class AttachmentsList extends Component {
    */
   displayAttachmentOptions(deleteData, item) {
     if (this.props.userHasPermission
-      || this.state.attachments.whoami === item.user) {
+      || this.props.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
@@ -154,7 +155,7 @@ class AttachmentsList extends Component {
   /**
    * Sets event target src to null
    *
-   * @param {Object} event
+   * @param {object} event
    */
   displayNone(event) {
     event.target.src = null;
@@ -276,6 +277,7 @@ AttachmentsList.propTypes = {
   baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
   userHasPermission: PropTypes.bool,
+  whoami: PropTypes.string.isRequired,
 };
 AttachmentsList.defaultProps = {
   attachments: [],

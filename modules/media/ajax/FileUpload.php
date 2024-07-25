@@ -117,12 +117,9 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (empty($_FILES)) {
-        echo showMediaError(
-            "File could not be uploaded successfully.
-            Please contact the administrator.",
-            400
-        );
+    if (empty($_POST)) {
+        echo showMediaError("File too large!", 413);
+        return;
     }
 
     if (!isset($pscid, $visit)) {
@@ -220,7 +217,7 @@ function uploadFile()
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("File too Large!", 500);
     }
 }
 
@@ -349,7 +346,7 @@ function getUploadFields()
         $mediaData   = $db->pselectRow(
             "SELECT " .
             "m.session_id as sessionID, " .
-            "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
+            "c.PSCID as pscid, " .
             "Visit_label as visitLabel, " .
             "instrument, " .
             "CenterID as forSite, " .
@@ -358,9 +355,10 @@ function getUploadFields()
             "file_name as fileName, " .
             "hide_file as hideFile, " .
             "language_id as language," .
-            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
-            "WHERE m.id = $idMediaFile",
-            []
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID 
+                LEFT JOIN candidate c ON (c.CandID=s.CandID) " .
+            "WHERE m.id = :mediaId",
+            ['mediaId' => $idMediaFile]
         );
     }
 

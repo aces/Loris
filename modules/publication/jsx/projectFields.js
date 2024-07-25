@@ -1,6 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
+import {
+  StaticElement,
+  TagsElement,
+  FileElement,
+  ButtonElement,
+  TextareaElement,
+  TextboxElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Email element component
@@ -153,8 +163,8 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    }).then(function(willDelete) {
-        if (willDelete) {
+    }).then((result) => {
+        if (result.value) {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
@@ -186,7 +196,7 @@ class ProjectFormFields extends React.Component {
     if (this.props.files) {
       this.props.files.forEach(function(f) {
         let downloadURL = loris.BaseURL
-                          + '/publication/ajax/FileDownload.php?File='
+                          + '/publication/files/'
                           + encodeURIComponent(f.Filename);
         let link = (
           <span>

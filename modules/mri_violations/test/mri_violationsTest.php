@@ -386,12 +386,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
-        // Raisin bread has 173 unresolved violated scans. We are adding three
-        // in setup(): one resolved, and two unresolved. The total
-        // number of unresolved violations is thus 175
+        // Raisin bread has 169 unique unresolved violated scans. We are adding
+        // three in setup(): one resolved, and two unresolved. The total
+        // number of unresolved violations is thus 172
         $this->_testMytaskPanelAndLink(
             ".mri_violations",
-            "175",
+            "172",
             "- MRI Violated Scans"
         );
         $this->resetPermissions();

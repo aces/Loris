@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import React, {FunctionComponent} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
+import {WithParentSizeProps} from "@visx/responsive/lib/enhancers/withParentSize";
 
 type CProps = {
   parentWidth?: number,
@@ -10,7 +11,9 @@ type CProps = {
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
   mouseLeave?: (_: any) => void,
-  children: any,
+  children?: any,
+  showOverflow?: boolean,
+  chunksURL: string,
 };
 
 /**
@@ -23,6 +26,8 @@ type CProps = {
  * @param root0.mouseUp
  * @param root0.mouseLeave
  * @param root0.children
+ * @param root0.showOverflow
+ * @param root0.chunksURL
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
   parentWidth,
@@ -32,6 +37,8 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
+  showOverflow,
+  chunksURL,
 }) => {
   /**
    *
@@ -45,7 +52,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 
   const layers = React.Children.toArray(children).map(provision);
 
-  const domain = window.EEGLabSeriesProviderStore.getState().bounds.domain;
+  const domain = window.EEGLabSeriesProviderStore[chunksURL]?.getState().bounds.domain;
   const amplitude = [0, 1];
   const eventScale = [
     scaleLinear()
@@ -89,7 +96,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflow: 'hidden'}}
+      style={{overflowY: showOverflow ? 'visible' : 'hidden'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(
@@ -143,4 +150,4 @@ ResponsiveViewer.defaultProps = {
   },
 };
 
-export default withParentSize(ResponsiveViewer);
+export default withParentSize<CProps & WithParentSizeProps>(ResponsiveViewer);

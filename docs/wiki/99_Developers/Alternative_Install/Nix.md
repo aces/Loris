@@ -2,8 +2,8 @@
 
 ## Overview 
 
-As of the latest development branch (to be LORIS 24.0), LORIS includes a
-configuration file for [nix-shell](https://nixos.org/manual/nix/stable/#sec-nix-shell)
+As of LORIS 24.0, LORIS includes a configuration file for 
+[nix-shell](https://nixos.org/manual/nix/stable/#sec-nix-shell)
 of [NixOS/the Nix package manager](https://nixos.org/). This allows Nix users to
 quickly set up an appropriate development environment with all LORIS development
 dependencies installed in the user's path.

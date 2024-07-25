@@ -1,10 +1,8 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-      const app = document.getElementById('app');
-      const root = ReactDOM.createRoot(
+      ReactDOM.createRoot(
           document.getElementById('lorisworkspace')
-      );
-      root.render(
+      ).render(
           React.createElement(RHelpEditorForm, {
             title:      "{$title}",
             content:    `{$content}`,

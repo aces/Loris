@@ -80,6 +80,7 @@ class Module extends \Module
                          AND s.CenterID <> 1",
                     'imaging_browser_view_allsites',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . "/imaging_browser/?pendingNew=N&pendingNew=P",
                     "new-scans"
                 )
@@ -120,5 +121,15 @@ class Module extends \Module
             ];
         }
         return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new QueryEngine($this->loris);
     }
 }

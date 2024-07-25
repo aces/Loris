@@ -281,8 +281,9 @@ IssueTrackerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <IssueTrackerIndex
       dataURL={`${loris.BaseURL}/issue_tracker/?format=json`}
       hasPermission={loris.userHasPermission}

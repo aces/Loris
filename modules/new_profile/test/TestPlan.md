@@ -6,7 +6,9 @@
    [Manual Testing]
 3. Ensure that you get an error if dates don't match (both DoB and EDC).
    [Automation Testing]
-4. Ensure that you get an error if any field is missing.
+4. Ensure that you get an error if any field is missing and you have config setting
+useEDC turned off. If you have useEDC turned on, ensure all fields are required,
+except the DoB, which is optional in that case.
    [Manual Testing]
 5. Ensure that when the logged-in user has only 1 site affiliation, the site
 dropdown shows only one site and it is already selected.
@@ -23,10 +25,11 @@ get an error if an invalid PSCID entered (and not if a valid PSCID is entered).
    [Automation Testing]
 9. Go to the Configuration module and change the "Minimum candidate age" value,
 ensure that "Date of Birth" and "Date of Birth Confirm" fields
-properly reflects the changes. If no value is entered, this two fields should
+properly reflects the changes. Note that the minimum and maximum possible birth years are calculated based on 'StartYear' and 'EndYear' rather than the current date, so it is possible to create a candidate with an age which is *currently* outside of the specified range. For context, check the setup() function in the new profile php class. If no value is entered, this two fields should
 have the current day as the maximum possible value to choose.
    [Manual Testing]
 10. Change date format from 'YMd' to 'YM' in the Configuration module
 and repeat steps 4 to 6 while asserting that database values being
 saved are correct.
+11. As a user with only one site affiliation, fill the form with valid values and create a new user. When the popup indicating that the creation succeeded is displayed, click on 'Recruit another candidate'. Ensure that when the page reloads, the user's (unique) site is selected.
    [Manual Testing]

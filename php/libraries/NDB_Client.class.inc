@@ -126,13 +126,16 @@ class NDB_Client
             . "default-src 'self' 'unsafe-inline'; "
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
-            . "img-src 'self' data:; "
+            . "img-src 'self' https://images.loris.ca data:; "
             . "frame-ancestors 'none'; "
             . "form-action 'self'; "
             . $config_additions
         );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
+
+        // Lax is required for third party login to maintain the State, otherwise
+        // it gets lost after the redirect.
         $sessionOptions['cookie_samesite'] = "Lax";
 
         // API Detect

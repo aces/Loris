@@ -1,0 +1,13 @@
+.violation-description-list {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.violation-description-list > div {
+  margin: 0 5px;
+}
+
+.violation-description-list > div:not(:nth-child(-n+2)) > dd {
+  overflow-wrap: anywhere;
+}

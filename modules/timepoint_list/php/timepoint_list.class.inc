@@ -80,6 +80,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['cand']      = $candidate;
 
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
@@ -99,15 +100,12 @@ class Timepoint_List extends \NDB_Menu
             },
             $listOfSessionIDs,
         );
-
-        if ($user->hasPermission('access_all_profiles') === false) {
-            $listOfTimePoints = array_filter(
-                $listOfTimePoints,
-                function ($timePoint) use ($user) {
-                    return $timePoint->isAccessibleBy($user);
-                }
-            );
-        }
+        $listOfTimePoints = array_filter(
+            $listOfTimePoints,
+            function ($timePoint) use ($user) {
+                return $timePoint->isAccessibleBy($user);
+            }
+        );
 
         /*
          * List of visits

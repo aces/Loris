@@ -199,8 +199,9 @@ ImagingBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingBrowserIndex
       dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
     />

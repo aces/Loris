@@ -12,7 +12,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
-
+import {
+    FormElement,
+    TextareaElement,
+    SelectElement,
+    DateElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 /**
  * Media Edit Form component
  */
@@ -183,7 +190,10 @@ class MediaEditForm extends Component {
             ref='hideFile'
             value={this.state.formData.hideFile}
           />
-          <ButtonElement label='Update File'/>
+          <ButtonElement
+            label='Update File'
+            onUserInput = {() => {}}
+          />
         </FormElement>
       </div>
     );

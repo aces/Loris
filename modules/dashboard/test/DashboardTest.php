@@ -83,6 +83,13 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
+            "user_project_rel",
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
+            ]
+        );
+        $this->DB->insert(
             "candidate",
             [
                 'CandID'                => '999888',
@@ -121,6 +128,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'        => '111',
                 'Test_name' => 'TestName11111111111',
+                'Sub_group' => 1,
             ]
         );
         $this->DB->insert(
@@ -137,7 +145,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -172,7 +180,7 @@ class DashboardTest extends LorisIntegrationTest
                 'ResolutionTimestamp' => '2015-11-03 16:21:49',
                 'User1'               => 'Null',
                 'User2'               => 'Null',
-                'TableName'           => 'Test',
+                'TestName'            => 'Test',
                 'ExtraKey1'           => 'NULL',
                 'ExtraKey2'           => 'NULL',
                 'FieldName'           => 'TestTestTest',
@@ -186,7 +194,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -250,7 +258,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->delete(
             "files_qcstatus",
@@ -308,12 +316,23 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->update(
             "Config",
             ["Value" => null],
             ["ConfigID" => 48]
+        );
+        $user_id = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:test_user_id",
+            ["test_user_id" => 'testUser1']
+        );
+        $this->DB->delete(
+            "user_project_rel",
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
+            ]
         );
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
@@ -405,7 +424,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "10",
+            "4",
             "- Imaging Browser"
         );
         $this->resetPermissions();
@@ -428,12 +447,14 @@ class DashboardTest extends LorisIntegrationTest
             [
                 "conflict_resolver",
                 "access_all_profiles",
+                "data_dict_edit",
+                "data_dict_view"
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "574",
+            "570",
             "- Conflict Resolver"
         );
         $this->resetPermissions();
@@ -510,7 +531,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
-            "2",
+            "1",
             "- User Accounts"
         );
         $this->resetPermissions();

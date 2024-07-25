@@ -112,7 +112,11 @@ class SurveyAccountsIndex extends Component {
         options: options.instruments,
       }},
       {label: 'URL', show: true},
-      {label: 'Status', show: true},
+      {label: 'Status', show: true, filter: {
+        name: 'Status',
+        type: 'select',
+        options: options.statusOptions,
+      }},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
@@ -140,8 +144,9 @@ SurveyAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <SurveyAccountsIndex
       dataURL={`${loris.BaseURL}/survey_accounts/?format=json`}
     />

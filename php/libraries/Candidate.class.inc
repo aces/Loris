@@ -19,6 +19,7 @@ define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
 define('DOB_INVALID', 7);
+define('EDC_INVALID', 8);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -97,7 +98,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
+            c.Active, u1.Real_name as RegisteredBy, 
+            c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -256,6 +258,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -268,24 +271,58 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $PSCIDSettings = $config->getSetting('PSCID');
         $useEDC        = $config->getSetting('useEDC');
 
-        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
-            throw new \LorisException(
-                "EDC must be specified",
-                EDC_NOT_SPECIFIED
-            );
+        // Get expected format from config
+        $dobFormat = $config->getSetting('dobFormat');
+        $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
+
+        if (($useEDC === '1' || $useEDC === 'true')) {
+            if (empty($edc)) {
+                throw new \LorisException(
+                    "EDC must be specified",
+                    EDC_NOT_SPECIFIED
+                );
+            } else {
+                // Check valid format
+                $edcDate = DateTime::createFromFormat($dobFormat, $edc);
+                if ($edcDate === false) {
+                    throw new InvalidArgumentException(
+                        "EDC is invalid (expected format: YYYY-MM-DD)",
+                        EDC_INVALID
+                    );
+                }
+
+                // Add day as mid of the month if Y-m dob format
+                // This allows insert into sql candidate table
+                if ($dobFormat === '!Y-m') {
+                    $edc .= '-15';
+                }
+            }
         }
+
         if (empty($dateOfBirth)) {
-            throw new InvalidArgumentException(
-                "Date of Birth must be specified",
-                DOB_NOT_SPECIFIED
-            );
-        }
-        $dob = DateTime::createFromFormat('!Y-m-d', $dateOfBirth);
-        if ($dob === false) {
-            throw new InvalidArgumentException(
-                "Date of Birth is invalid (expected format: YYYY-MM-DD)",
-                DOB_INVALID
-            );
+            // DoB not required if useEDC is on
+            if (!($useEDC === '1' || $useEDC === 'true')) {
+                throw new InvalidArgumentException(
+                    "Date of Birth must be specified",
+                    DOB_NOT_SPECIFIED
+                );
+            } else {
+                $dateOfBirth = null;
+            }
+        } else {
+            $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+            if ($dob === false) {
+                throw new InvalidArgumentException(
+                    "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                    DOB_INVALID
+                );
+            }
+
+            // Add day as mid of the month if Y-m dob format
+            // This allows insert into sql candidate table
+            if ($dobFormat === '!Y-m') {
+                $dateOfBirth .= '-15';
+            }
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -294,6 +331,25 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid uniqueness
+            $existing = $db->pselectOne(
+                'SELECT
+                  COUNT(*)
+                 FROM candidate
+                 WHERE PSCID = :v_pscid
+                 GROUP BY
+                   PSCID
+                ',
+                ['v_pscid' => $PSCID]
+            );
+
+            if ($existing > 0) {
+                throw new \ConflictException(
+                    "PSCID must be unique",
+                    PSCID_NOT_UNIQUE
                 );
             }
 
@@ -566,6 +622,40 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     function getCandidateDoB(): ?string
     {
         return $this->candidateInfo["DoB"];
+    }
+
+    /**
+     * Returns the way that the DoB should be displayed for this
+     * candidate to a user on the frontend.
+     *
+     * @return ?array{label:string,value:string}
+     */
+    function getDisplayDoB(): ?array
+    {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $dobFormat = $config->getSetting('dobFormat');
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
+        switch ($dobFormat) {
+        case 'Ym':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m'),
+            ];
+        case 'Ymd':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m-d'),
+            ];
+        default:
+            throw new Exception("Unhandled DoB format: $dobFormat");
+        }
     }
 
     /**
@@ -984,6 +1074,79 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
         return $res['Description'] ?? '';
     }
+
+    /**
+     * Returns the candidate's latest diagnosis defined by
+     * the configured diagnosis trajectory. Based on input, can return
+     * the confirmed or unconfirmed latest diagnosis. A confirmed
+     * diagnosis is one that has been pulled from a session that has
+     * Approval = 'Pass'
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return array|null JSON of the candidate's latest diagnosis
+     *                    as depicted by the configured diagnosis
+     *                    evolution ordering.
+     */
+    function getLatestDiagnosis(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) : ?array {
+        $DB = \NDB_Factory::singleton()->database();
+
+        // Define where clauses
+        $whereConfirmed = $isConfirmed ?
+            " AND Confirmed='Y'" : "";
+
+        $latestDx = $DB->pselectRow(
+            "SELECT DxEvolutionID,
+                ProjectID,
+                CandID,
+                Name,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM diagnosis_evolution 
+            JOIN candidate_diagnosis_evolution_rel USING (DxEvolutionID)
+            WHERE OrderNumber IN (
+                SELECT MAX(orderNumber) AS OrderNumber 
+                FROM diagnosis_evolution de2
+                JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+                WHERE CandID=:candID
+                AND ProjectID=:projID"
+                . $whereConfirmed .
+            " )
+            AND CandID=:candID
+            AND ProjectID=:projID"
+            . $whereConfirmed,
+            [
+                'candID' => $this->getCandID(),
+                'projID' => $projectID
+            ]
+        );
+
+        return $latestDx ?? null;
+    }
+
+    /**
+     * Returns the DxEvolutionID for which the latest diagnosis
+     * of the specified project is based on.
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return string|null the DxEvolutionID that LatestDiagnosis is based on
+     */
+    function getLatestDiagnosisSource(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) {
+        $latestDx = $this->getLatestDiagnosis($projectID, $isConfirmed);
+        return $latestDx['DxEvolutionID'] ?? null;
+    }
+
     /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
