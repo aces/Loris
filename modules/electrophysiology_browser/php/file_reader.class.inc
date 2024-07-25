@@ -36,11 +36,15 @@ class File_Reader extends \NDB_Page
         case "GET":
             $file     = $request->getQueryParams()['file'] ?? null;
             $filename = urldecode(basename($file));
-            $path     = dirname($file);
+            $path     = $downloadpath . dirname($file);
+            $fileinfo = new \SPLFileInfo($path);
 
-            $downloader = new \LORIS\FilesDownloadHandler(
-                new \SPLFileInfo($downloadpath . $path)
-            );
+            if (!$fileinfo->isDir()) {
+                return new \LORIS\Http\Response\JSON\NotFound();
+            }
+
+            $downloader = new \LORIS\FilesDownloadHandler($fileinfo);
+
             return $downloader->handle(
                 $request->withAttribute('filename', $filename)
             );
