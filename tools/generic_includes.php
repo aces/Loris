@@ -24,6 +24,7 @@ $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 $config        = NDB_Config::singleton();
+$DB            = NDB_Factory::singleton()->database();
 $lorisInstance = new \LORIS\LorisInstance(
     $DB,
     $config,
@@ -32,4 +33,3 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
-$DB            = $lorisInstance->getDatabaseConnection();
