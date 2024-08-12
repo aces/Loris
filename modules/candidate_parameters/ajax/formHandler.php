@@ -481,23 +481,22 @@ function editConsentStatusFields(\Database $db)
             // Giving 'no' status requires consent date and empty withdrawal date if
             // record does not already exist
             if (!$recordExists) {
-                if (empty($withdrawal)) {
+                if (!empty($date) && empty($withdrawal)) {
                     $validated = true;
                 } else {
                     http_response_code(400);
                     echo('Answering no to a consent type for the first time
-                          does not require a date of withdrawal.');
+                          requires only the date of consent.');
                     return;
                 }
             } else { // If no status stays no or record existed as NULL
                     // consent date required and withdrawal date unchanged
-                if (($oldStatus === null || $oldStatus === 'no')
+                if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
                     && ((empty($oldWithdrawal) && empty($withdrawal))
                     || (!empty($oldWithdrawal) && !empty($withdrawal)))
                 ) {
                     $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($withdrawal)
-                    || $oldStatus === 'not_applicable' && empty($withdrawal)
                 ) {
                     // Withdrawing from 'yes' status required consent date
                     // and withdrawal date

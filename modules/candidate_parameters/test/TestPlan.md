@@ -56,8 +56,7 @@
         * No error 
         * Make sure they update properly in the front-end and backend
         * The date fields should be disabled
-    * Consent to Study = No
-    	* No error (date field is optional)
+    * Consent to Study = No  (error: must enter Date of 'No' Consent)
     * Consent to Study = Yes (error: must enter Date of 'Yes' Consent)
     * Consent to Study = Yes/No; Date of Consent = random date
         * Error: must enter Confirmation Date of Consent
