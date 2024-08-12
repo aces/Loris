@@ -496,9 +496,9 @@ function editConsentStatusFields(\Database $db)
                     || (!empty($oldWithdrawal) && !empty($withdrawal)))
                 ) {
                     $validated = true;
-                } else if ($oldStatus === 'yes' && !empty($withdrawal)
-                ) {
-                    // Withdrawing from 'yes' status required consent date
+                } else if ($oldStatus === 'yes' && !empty($date)
+                    && !empty($withdrawal)
+                ) { // Withdrawing from 'yes' status required consent date
                     // and withdrawal date
                     $validated = true;
                 } else if ($oldStatus === 'not_applicable' && !empty($date)
