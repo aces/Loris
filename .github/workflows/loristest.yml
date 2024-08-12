@@ -48,6 +48,11 @@ jobs:
           name: lorisjs
           path: lorisjs.tar.gz
 
+      # Run the services in the background
+      - name: Start Docker Containers
+        run: |
+          docker-compose -f docker-compose.yml up -d
+
   buildphp:
     runs-on: ubuntu-latest
     strategy:
