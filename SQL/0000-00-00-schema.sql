@@ -1543,7 +1543,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
