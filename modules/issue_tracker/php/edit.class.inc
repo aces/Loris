@@ -607,9 +607,15 @@ class Edit extends \NDB_Page implements ETagCalculator
 
             // Add new watchers (if any)
             $usersWatching = explode(',', $values['othersWatching']);
+            // If the assignee is watching, add them
+            if ($values['watching'] == 'Yes'
+                && $issueValues['assignee'] == $user->getUsername()) {
+                $usersWatching[] = $issueValues['assignee'];
+            }
+
             foreach ($usersWatching as $usersWatching) {
                 if ($usersWatching) {
-                    $db->insert(
+                    $db->replace(
                         'issues_watching',
                         [
                             'userID'  => $usersWatching,
