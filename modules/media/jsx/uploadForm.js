@@ -120,13 +120,13 @@ class MediaUploadForm extends Component {
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
           {};
-          const visitErrMsg = visits && visits.length === 0 ?
-            'No visits available for this candidate' :
-            '';
-          const instErrMsg = instruments && instruments.length === 0 ?
-            'No instruments available for this visit' :
-            '';
-          return (
+    const visitErrMsg = visits && visits.length === 0 ?
+      'No visits available for this candidate' :
+      '';
+    const instErrMsg = instruments && instruments.length === 0 ?
+      'No instruments available for this visit' :
+      '';
+    return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
           <FormElement
@@ -172,6 +172,7 @@ class MediaUploadForm extends Component {
               ref='instrument'
               required={false}
               value={this.state.formData.instrument}
+              autoSelect={false}
               disabled={this.state.formData.pscid == null}
             />
             <DateElement

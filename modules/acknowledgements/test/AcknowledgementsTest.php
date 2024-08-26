@@ -11,7 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverSelect;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -68,6 +67,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
+
+        $this->setUpConfigSetting("citation_policy", "citation policy test text");
+
         $this->DB->insert(
             "acknowledgements",
             self::$testData
@@ -82,6 +84,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown(): void
     {
+        $this->restoreConfigSetting("citation_policy");
         $this->DB->delete("acknowledgements", ['ID' => '999']);
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
@@ -92,8 +95,32 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testAcknowledgementsDoespageLoad()
+    function testAcknowledgementsDoespageLoadWithView()
     {
+        $this->setupPermissions(["acknowledgements_view"]);
+        $this->safeGet($this->url . "/acknowledgements/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Acknowledgements", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
+    /**
+     * Tests that, when loading the Acknowledgements module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testAcknowledgementsDoespageLoadwithEdit()
+    {
+        $this->setupPermissions(["acknowledgements_edit"]);
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -168,47 +195,39 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             self::$testData['present'],
-            "31"
+            "30"
         );
     }
+
     /**
-     * Tests that, adding a new record, then this record appears on the page.
+     * Tests that, can't find Add Acknowledgement button on the page if
+     * user doesn't have acknowledgements_edit permission
      *
      * @return void
      */
-    function testAddNewRecord()
+    function testCantAddNewRecord()
+    {
+        $this->setupPermissions(["acknowledgements_view"]);
+        $this->safeGet($this->url . "/acknowledgements/");
+        $pagetext = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString("Add Acknowledgement", $pagetext);
+
+    }
+    /**
+     * Tests that, can't find Add Acknowledgement button on the page if
+     * user doesn't have acknowledgements_edit permission
+     *
+     * @return void
+     */
+    function testConfigSettingPolicy()
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
-        )->click();
-        //insert ordering
-        $this->safeFindElement(
-            WebDriverBy::Name("addOrdering")
-        )->sendKeys(self::$newData['ordering']);
-        //insert Full name
-        $this->safeFindElement(
-            WebDriverBy::Name("addFullName")
-        )->sendKeys(self::$newData['full_name']);
-        //insert Citation name
-        $this->safeFindElement(
-            WebDriverBy::Name("addCitationName")
-        )->sendKeys(self::$newData['citation_name']);
-        $this->safeFindElement(
-            WebDriverBy::Name("addStartDate")
-        )->sendKeys(self::$newData['start_date']);
-        $el_dropdown = new WebDriverSelect(
-            $this->safeFindElement(WebDriverBy::Name("addPresent"))
-        );
-        $el_dropdown->selectByVisibleText("Yes");
-        //expecting to find the value,after clicking save button
-        $this->safeFindElement(
-            WebDriverBy::cssSelector('button[name="fire_away"]')
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
+        $pagetext = $this->safeFindElement(
+            WebDriverBy::cssSelector("#citationPolicy")
         )->getText();
-        $this->assertStringContainsString("Success!", $bodyText);
+        $this->assertStringContainsString("citation policy test text", $pagetext);
     }
 }
 

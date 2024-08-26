@@ -87,6 +87,11 @@ foreach ($instruments as $instrument) {
                 $bits[0] = "varchar(255)";
             } elseif ($bits[0] == "static") {
                 $bits[0] = "varchar(255)";
+            } elseif ($bits[0] == "numeric") {
+                // without this option, default MySQL is simply numeric
+                // which is traduced to "decimal(10,0)"
+                // which truncates the floating point part.
+                $bits[0] = "decimal(14,4)";
             }
 
             $output .= "`$bits[1]` $bits[0] default NULL,\n";

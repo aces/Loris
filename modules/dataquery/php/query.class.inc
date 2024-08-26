@@ -248,11 +248,11 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $cname = $item['category'];
                 $fname = $item['fieldname'];
                 $this->_populateModuleDictCache($mname);
-                if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+                if (!isset(self::$moduleDictCache[$mname][$cname][$fname])) {
                     // This query references a field that no longer exist.
                     throw new \OutOfBoundsException();
                 }
-                $usedDicts[] = $this->moduleDictCache[$mname][$cname][$fname];
+                $usedDicts[] = self::$moduleDictCache[$mname][$cname][$fname];
             }
         }
         return $usedDicts;
@@ -386,7 +386,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Entries are of the form
      *     $cache[modulename][categoryname][fieldname]= DictionaryItem
      */
-    private $moduleDictCache = [];
+    private static $moduleDictCache = [];
 
     /**
      * Populate $this->moduleDictCache for a module.
@@ -397,7 +397,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      */
     private function _populateModuleDictCache(string $mname) : void
     {
-        if (isset($this->moduleDictCache[$mname])) {
+        if (isset(self::$moduleDictCache[$mname])) {
             return;
         }
         $module = $this->loris->getModule($mname);
@@ -406,13 +406,13 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($moduleDict as $category) {
             $cname = $category->getName();
             foreach ($category->getItems() as $cfield) {
-                if (!isset($this->moduleDictCache[$mname])) {
-                    $this->moduleDictCache[$mname] = [];
+                if (!isset(self::$moduleDictCache[$mname])) {
+                    self::$moduleDictCache[$mname] = [];
                 }
-                if (!isset($this->moduleDictCache[$mname][$cname])) {
-                    $this->moduleDictCache[$mname][$cname] = [];
+                if (!isset(self::$moduleDictCache[$mname][$cname])) {
+                    self::$moduleDictCache[$mname][$cname] = [];
                 }
-                $this->moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
+                self::$moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
             }
         }
     }
@@ -449,12 +449,12 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $fname = $field['field'];
 
             $this->_populateModuleDictCache($mname);
-            if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+            if (!isset(self::$moduleDictCache[$mname][$cname][$fname])) {
                 // This query references a field that no longer exist.
                 throw new \OutOfBoundsException();
             }
-            assert(isset($this->moduleDictCache[$mname][$cname][$fname]));
-            $fields[] = $this->moduleDictCache[$mname][$cname][$fname];
+            assert(isset(self::$moduleDictCache[$mname][$cname][$fname]));
+            $fields[] = self::$moduleDictCache[$mname][$cname][$fname];
         }
         assert($this->data !== null);
         assert(count($fields) == count($this->data['fields']));

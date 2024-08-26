@@ -91,7 +91,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $sexOption->selectByValue("1");
         $sexElement = $this->safeFindElement(WebDriverBy::Name('project'));
         $sexOption  = new WebDriverSelect($sexElement);
-        $sexOption->selectByValue("1");
+        $sexOption->selectByValue("Pumpernickel");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector($this->dateTaken)

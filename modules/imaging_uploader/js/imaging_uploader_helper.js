@@ -129,7 +129,7 @@ function UploadProgress() {
             return UploadProgress.PIPELINE_STATUS_UNKNOWN;
         }
 
-        if(this._progressFromServer.inserting == null) {
+        if(this._progressFromServer.inserting == '') {
             return UploadProgress.PIPELINE_STATUS_NOT_STARTED;
         }
 

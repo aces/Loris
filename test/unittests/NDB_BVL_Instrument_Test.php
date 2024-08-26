@@ -1151,7 +1151,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Exclusion'                   => null,
                 'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
-                'Data'                        => null
+                'DataID'                      => null
             ]
         );
     }
@@ -1624,7 +1624,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->diff($otherInstrument),
             [
                 [
-                    'TableName'      => 'medical_history',
+                    'TestName'       => 'Test',
                     'ExtraKeyColumn' => null,
                     'ExtraKey1'      => ' ',
                     'ExtraKey2'      => ' ',
@@ -1652,7 +1652,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $conflicts_data = [
             [
                 'ConflictID'     => '123',
-                'TableName'      => '',
+                'TestName'       => '',
                 'ExtraKeyColumn' => null,
                 'ExtraKey1'      => '',
                 'ExtraKey2'      => '',
