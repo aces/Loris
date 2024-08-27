@@ -8,14 +8,10 @@ const IssueCard = React.memo(function IssueCard({
   statuses,
   priorities,
   categories,
+  baseURL,
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedIssue, setEditedIssue] = useState({
-    title: issue[1],
-    status: issue[6],
-    priority: issue[7],
-    category: issue[3] || ''
-  });
+  const [editedIssue, setEditedIssue] = useState({...issue});
 
   const handleInputChange = (field, value) => {
     setEditedIssue(prev => ({
@@ -28,24 +24,28 @@ const IssueCard = React.memo(function IssueCard({
     e.preventDefault();
 
     if (!editedIssue.title.trim()) {
-      swal.fire({
-        title: 'Error!',
-        text: 'Title cannot be empty',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+      showAlertMessage('error', 'Title cannot be empty');
       return;
     }
 
     const formData = new FormData();
 
-    formData.append('issueID', issue[0]);
-    formData.append('title', editedIssue.title);
-    formData.append('status', editedIssue.status);
-    formData.append('priority', editedIssue.priority);
-    // formData.append('category', editedIssue.category);
+    // Append all fields to the form data
+    Object.entries(editedIssue).forEach(([key, value]) => {
+      formData.append(key, value === null ? "null" : value);
+    });
 
-    fetch(`${loris.BaseURL}/issue_tracker/Edit/?issueID=${issue[0]}`, {
+    // Check if there are any changes
+    const hasChanges = Object.entries(editedIssue).some(([key, value]) => 
+      value !== issue[key]
+    );
+
+    if (!hasChanges) {
+      showAlertMessage('info', 'No changes were made');
+      return;
+    }
+
+    fetch(`${loris.BaseURL}/issue_tracker/Edit/`, {
       method: 'POST',
       body: formData,
     }).then((response) => {
@@ -56,22 +56,21 @@ const IssueCard = React.memo(function IssueCard({
       }
       return response.json();
     }).then((data) => {
-      swal.fire({
-        title: 'Success!',
-        text: 'Issue updated successfully',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
-      onUpdate(issue[0], editedIssue);
+      showAlertMessage('success', 'Issue updated successfully');
+      onUpdate(issue.issueID, editedIssue);
       setIsEditing(false);
     }).catch((error) => {
       console.error('Error:', error);
-      swal.fire({
-        title: 'Error!',
-        text: error.message || 'Failed to update issue',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+      showAlertMessage('error', error.message || 'Failed to update issue');
+    });
+  };
+
+  const showAlertMessage = (type, message) => {
+    swal.fire({
+      title: type === 'success' ? 'Success!' : 'Error!',
+      text: message,
+      icon: type,
+      confirmButtonText: 'OK'
     });
   };
 
@@ -79,7 +78,7 @@ const IssueCard = React.memo(function IssueCard({
     <div className="issue-card">
       <div className="issue-header">
         <h3>
-          <a href={`/issue/${issue[0]}`}>Issue ID: {issue[0]}</a>
+          <a href={`${loris.BaseURL}/issue_tracker/issue/${issue.issueID}`}>Issue ID: {issue.issueID}</a>
         </h3>
       </div>
       <form onSubmit={handleSubmit}>
@@ -91,7 +90,7 @@ const IssueCard = React.memo(function IssueCard({
               onChange={(e) => handleInputChange('title', e.target.value)}
             />
           ) : (
-            <h4>{issue[1]}</h4>
+            <h4>{issue.title}</h4>
           )}
         </div>
         <div className="issue-controls">
@@ -125,8 +124,22 @@ const IssueCard = React.memo(function IssueCard({
           </select>
         </div>
         <div className="issue-description">
-          <p>{issue[2]}</p>
+          {isEditing ? (
+            <textarea
+              value={editedIssue.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+            />
+          ) : (
+            <p>{issue.description}</p>
+          )}
         </div>
+        {/* <div className="issue-assignee">
+          <p>Assignee: {issue.assignee}</p>
+        </div>
+        <div className="issue-dates">
+          <p>Created: {issue.dateCreated}</p>
+          <p>Last Updated: {issue.lastUpdate}</p>
+        </div> */}
         {isEditing ? (
           <>
             <button type="submit">Update Issue</button>
@@ -141,11 +154,31 @@ const IssueCard = React.memo(function IssueCard({
 });
 
 IssueCard.propTypes = {
-  issue: PropTypes.array.isRequired,
+  issue: PropTypes.shape({
+    issueID: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    reporter: PropTypes.string.isRequired,
+    assignee: PropTypes.string,
+    status: PropTypes.string.isRequired,
+    priority: PropTypes.string.isRequired,
+    module: PropTypes.string,
+    dateCreated: PropTypes.string.isRequired,
+    lastUpdate: PropTypes.string,
+    lastUpdatedBy: PropTypes.string,
+    sessionID: PropTypes.string,
+    centerID: PropTypes.string,
+    candID: PropTypes.string,
+    category: PropTypes.string,
+    instrument: PropTypes.string,
+    description: PropTypes.string,
+    PSCID: PropTypes.string,
+    visitLabel: PropTypes.string
+  }).isRequired,
   onUpdate: PropTypes.func.isRequired,
   statuses: PropTypes.object.isRequired,
   priorities: PropTypes.object.isRequired,
   categories: PropTypes.object.isRequired,
+  baseURL: PropTypes.string.isRequired,
 };
 
 export default IssueCard;

@@ -3,26 +3,51 @@ import PropTypes from 'prop-types';
 import IssueCard from './IssueCard';
 import '../css/issue_card.css';
 
-function IssueTrackerDetailView({ issues, options, baseURL }) {
+function IssueTrackerDetailView({ options }) {
+  const [issues, setIssues] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriorities, setSelectedPriorities] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [activeTab, setActiveTab] = useState('category');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const priorities = options.priorities || {};
   const statuses = options.statuses || {};
-  const categories = options.categories || {}; // Use categories from options
+  const categories = options.categories || {};
+
+  useEffect(() => {
+    fetchIssues();
+  }, []);
 
   useEffect(() => {
     filterIssues();
   }, [selectedCategories, selectedPriorities, selectedStatuses, issues]);
 
+  async function fetchIssues() {
+    try {
+      const response = await fetch(`${loris.BaseURL}/issue_tracker/Edit/?debug=true`, {
+        credentials: 'include', // This ensures cookies are sent with the request
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setIssues(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching issues:', error);
+      setError('Failed to fetch issues. Please try again later.');
+      setIsLoading(false);
+    }
+  }
+
   function filterIssues() {
     setFilteredIssues(issues.filter(issue => 
-      (selectedCategories.length === 0 || selectedCategories.includes(issue[3])) && // Update index to 3 for category
-      (selectedPriorities.length === 0 || selectedPriorities.includes(issue[7])) &&
-      (selectedStatuses.length === 0 || selectedStatuses.includes(issue[6]))
+      (selectedCategories.length === 0 || selectedCategories.includes(issue.category)) &&
+      (selectedPriorities.length === 0 || selectedPriorities.includes(issue.priority)) &&
+      (selectedStatuses.length === 0 || selectedStatuses.includes(issue.status))
     ));
   }
 
@@ -36,26 +61,23 @@ function IssueTrackerDetailView({ issues, options, baseURL }) {
 
   function handleIssueUpdate(issueId, updatedIssue) {
     const updatedIssues = issues.map(issue => {
-      if (issue[0] === issueId) {
-        return [
-          issue[0],
-          updatedIssue.title,
-          issue[2], // module remains unchanged
-          updatedIssue.category,
-          issue[4], // reporter remains unchanged
-          issue[5], // assignee remains unchanged
-          updatedIssue.status,
-          updatedIssue.priority,
-          ...issue.slice(8)
-        ];
+      if (issue.issueID === issueId) {
+        return { ...issue, ...updatedIssue };
       }
       return issue;
     });
 
-    setFilteredIssues(updatedIssues);
+    setIssues(updatedIssues);
   }
 
-  
+  if (isLoading) {
+    return <div>Loading issues...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div className="issue-tracker-detail-view">
       <div className="filter-tabs">
@@ -101,7 +123,7 @@ function IssueTrackerDetailView({ issues, options, baseURL }) {
       <div className="issues-list">
         {filteredIssues.map(issue => (
           <IssueCard 
-            key={issue[0]} 
+            key={issue.issueID} 
             issue={issue} 
             onUpdate={handleIssueUpdate}
             statuses={statuses}
@@ -115,7 +137,6 @@ function IssueTrackerDetailView({ issues, options, baseURL }) {
 }
 
 IssueTrackerDetailView.propTypes = {
-  issues: PropTypes.arrayOf(PropTypes.array).isRequired,
   options: PropTypes.shape({
     priorities: PropTypes.object,
     statuses: PropTypes.object,
