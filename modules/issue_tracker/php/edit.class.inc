@@ -58,6 +58,15 @@ class Edit extends \NDB_Page implements ETagCalculator
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
 
+        // Check if debug mode is enabled
+        $debug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOLEAN);
+
+        if ($debug) {
+            // Fetch all issues
+            $allIssues = $this->getAllIssues($user);
+            return new \LORIS\Http\Response\JsonResponse($allIssues);
+        }
+
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
 
@@ -275,6 +284,39 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
     }
 
+        /**
+     * Fetches all issues from the database
+     *
+     * @param \User $user The current user
+     *
+     * @return array
+     */
+    private function getAllIssues(\User $user): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $query = "SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+                  FROM issues AS i
+                  LEFT JOIN candidate c ON (i.candID = c.CandID)
+                  LEFT JOIN session s ON (i.sessionID = s.ID)";
+
+        // Add permission check if needed
+        if (!$user->hasPermission('access_all_profiles')) {
+            $query .= " WHERE i.centerID IN (" . implode(',', $user->getCenterIDs()) . ")";
+        }
+
+        $query .= " ORDER BY i.issueID DESC";
+
+        $issues = $db->pselect($query, []);
+
+        // Format the issues data
+        foreach ($issues as &$issue) {
+            $issue['reporter'] = $this->formatUserInformation($issue['reporter']);
+            $issue['lastUpdatedBy'] = $this->formatUserInformation($issue['lastUpdatedBy']);
+        }
+
+        return $issues;
+    }
     /**
      * If issueID is passed retrieves issue data from database,
      * otherwise return empty issue data object
