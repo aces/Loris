@@ -63,16 +63,16 @@ class TestOptionsEndpoint extends \NDB_Page
             $this->loris->getDatabaseConnection()
         );
         return [
-            'instruments' => \NDB_BVL_Instrument::getInstrumentNamesList(
+            'instruments'            => \NDB_BVL_Instrument::getInstrumentNamesList(
                 $this->loris
             ),
-            'stages'      => $this->_getStageList(),
-            'cohorts'     => \Utility::getCohortList(null),
-            'visits'      => $visitController->getVisitlabels(),
-            'sites'       => \Utility::getSiteList(false),
-            'firstVisit'  => $this->_getYesNoList(),
-            'DoubleDataEntryEnabled'  => $this->_getYesNoList(),
-            'active'      => $this->_getYesNoList(),
+            'stages'                 => $this->_getStageList(),
+            'cohorts'                => \Utility::getCohortList(null),
+            'visits'                 => $visitController->getVisitlabels(),
+            'sites'                  => \Utility::getSiteList(false),
+            'firstVisit'             => $this->_getYesNoList(),
+            'DoubleDataEntryEnabled' => $this->_getYesNoList(),
+            'active'                 => $this->_getYesNoList(),
         ];
     }
 
