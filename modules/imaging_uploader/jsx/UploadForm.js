@@ -312,8 +312,10 @@ class UploadForm extends Component {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
+          confirmButtonText: 'OK',
+        }).then((result) => {
+            window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
-        window.location.assign(loris.BaseURL + '/imaging_uploader/');
       } else {
         this.processError(xhr);
       }

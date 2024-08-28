@@ -24,6 +24,7 @@ changes in the following format: PR #1234***
 - Fix delete file in upload (PR #9181)
 - Fix profile level feedback display in behavioural QC module (PR #9192)
 - While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
@@ -53,6 +54,7 @@ changes in the following format: PR #1234***
   - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
   - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
 - Help and help editor reactification (PR #8309)
+- In document repository: Add Upload / edit permission, add "Edit Categories" tab, create category permission (PR #7103)
 
 #### Bug Fixes
 - Fix a Fatal error on the Genomic Browser tabs (PR #8468)
