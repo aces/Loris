@@ -71,6 +71,7 @@ class TestOptionsEndpoint extends \NDB_Page
             'visits'      => $visitController->getVisitlabels(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),
+            'DoubleDataEntryEnabled'  => $this->_getYesNoList(),
             'active'      => $this->_getYesNoList(),
         ];
     }

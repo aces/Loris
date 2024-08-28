@@ -50,6 +50,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                b.Visit_label as visitLabel,
                p.CenterID as centerId,
                b.firstVisit,
+               b.DoubleDataEntryEnabled,
                b.instr_order as instrumentOrder,
                b.Active as active
         FROM test_battery b

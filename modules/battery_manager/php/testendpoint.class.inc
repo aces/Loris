@@ -233,6 +233,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
+                && $testArray['DoubleDataEntryEnabled'] == $entry['DoubleDataEntryEnabled']
             ) {
                 return true;
             }

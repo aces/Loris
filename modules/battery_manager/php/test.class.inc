@@ -98,6 +98,7 @@ class Test implements
             'Visit_label' => $this->row['visitLabel']      ?? null,
             'CenterID'    => $this->row['centerId']        ?? null,
             'firstVisit'  => $this->row['firstVisit']      ?? null,
+            'DoubleDataEntryEnabled'  => $this->row['DoubleDataEntryEnabled'] ?? null,
             'instr_order' => $this->row['instrumentOrder'] ?? null,
             'Active'      => $this->row['active']          ?? null,
         ];

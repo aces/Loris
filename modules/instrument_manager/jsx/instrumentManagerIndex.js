@@ -30,7 +30,6 @@ class InstrumentManagerIndex extends Component {
       error: false,
       isLoaded: false,
       modifyPermissions: false,
-      modifyDDE: false,
     };
 
    this.fetchData = this.fetchData.bind(this);
@@ -70,27 +69,15 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (
-      column === 'Permission Required'
-      || column === 'Double Data Entry Visits'
-    ) {
+    if (column === 'Permission Required') {
       const clickHandler = (row) => {
         return () => {
-          if (column === 'Permission Required') {
-            this.setState({
-              'modifyPermissions': {
-                'instrument': row.Instrument,
-                'permissions': row['Permission Required'],
-              },
-            });
-          } else {
-            this.setState({
-              'modifyDDE': {
-                'instrument': row.Instrument,
-                'visits': row['Double Data Entry Visits'],
-              },
-            });
-          }
+          this.setState({
+            'modifyPermissions': {
+              'instrument': row.Instrument,
+              'permissions': row['Permission Required'],
+            },
+          });
         };
       };
       return (
@@ -103,30 +90,18 @@ class InstrumentManagerIndex extends Component {
             }}
           >
             {
-              column === 'Permission Required' ?
-                (cell == null
+              cell == null
                 ? 'No Permissions enforced.'
-                : cell.join(',')) :
-                (cell == null
-                  ? 'DDE not enabled for any visits.'
-                  : cell.join(','))
+                : cell.join(',')
             }
             {
-              this.props.hasPermission('instrument_manager_write')&& (
+              this.props.hasPermission('instrument_manager_write') && (
                 <button
                   className='btn btn-primary'
                   style={{marginTop: '5px'}}
                   onClick={clickHandler(row)}
                 >
-                  {
-                    column === 'Permission Required' ?
-                      (cell == null
-                      ? 'Add Permissions'
-                      : 'Modify Permissions') :
-                      (cell == null
-                        ? 'Add DDE Visits'
-                        : 'Modify DDE Visits')
-                  }
+                  {cell == null ? 'Add Permissions' : 'Modify Permissions'}
                 </button>
               )
             }
@@ -190,128 +165,76 @@ class InstrumentManagerIndex extends Component {
         name: 'permissionsRequired',
         type: 'text',
       }},
-      {label: 'Double Data Entry Visits', show: true, filter: {
-        name: 'ddeVisits',
-        type: 'text',
-      }},
     ];
 
     const tabs = [
       {id: 'browse', label: 'Browse'},
     ];
 
-    const submitPromise = () => {
-      return new Promise(
-        (resolve, reject) => {
-          fetch(
-            (this.state.modifyPermissions
-              ? this.props.BaseURL + '/instrument_manager/permissions'
-              : this.props.BaseURL + '/instrument_manager/modifydde'),
-            {
-              method: 'POST',
-              body: JSON.stringify(
-                this.state.modifyPermissions
-                ? this.state.modifyPermissions
-                : this.state.modifyDDE),
-            }).then((response) => {
-              if (!response.ok) {
-                console.error(response.status);
-                throw new Error('Could not modify');
-              }
-              return response.json();
-            }).then( (data) => {
-              resolve();
-              this.fetchData();
-            }).catch((message) => {
-              swal.fire({
-                  title: 'Oops..',
-                  text: 'Something went wrong!',
-                  type: 'error',
-              });
-              reject();
-            });
-      });
-    };
-
     let permsModal = null;
     if (this.state.modifyPermissions !== false) {
-        permsModal = (<Modal
-          title={'Edit Permissions for '
-              + this.state.modifyPermissions.instrument}
-          show={true}
-          onSubmit={submitPromise}
-          onClose={
-              () => {
-                  this.setState({'modifyPermissions': false});
-              }
-          }
-          style={{
-            overflow: 'scroll',
-          }}
-          >
-          <p>Select the permissions required for accessing&nbsp;
-          {this.state.modifyPermissions.instrument} in the dropdown below.
-          </p>
-          <p>Any user accessing the instrument (either for viewing the data
-            or data entry) must have one of the access permissions selected.
-          </p>
-          <InfoPanel>
-            A user with <em>any</em> of the selected permissions will
-            be able to access&nbsp;
-            {this.state.modifyPermissions.instrument}.
-            If no permissions are selected, the default LORIS permissions
-            will be enforced for this instrument.
-          </InfoPanel>
+        const submitPromise = () => {
+          return new Promise(
+            (resolve, reject) => {
+              fetch(
+                this.props.BaseURL + '/instrument_manager/permissions',
+                {
+                  method: 'POST',
+                  body: JSON.stringify(this.state.modifyPermissions),
+                }).then((response) => {
+                  if (!response.ok) {
+                  console.error(response.status);
+                  throw new Error('Could not modify permissions');
+                }
+                return response.json();
+              }).then( (data) => {
+                resolve();
+                this.fetchData();
+              }).catch((message) => {
+                swal.fire({
+                    title: 'Oops..',
+                    text: 'Something went wrong!',
+                    type: 'error',
+                });
+                reject();
+              });
+        });
+        };
 
-          <ModalSelect
-            codes={this.state.data.fieldOptions.allPermissionCodes}
-            selected={this.state.modifyPermissions.permissions}
-            instrument={this.state.modifyPermissions.instrument}
-            modifySelected={(newselected) => {
-                let modifyPermissions = {...this.state.modifyPermissions};
-                modifyPermissions.permissions = newselected;
-                this.setState({modifyPermissions});
-            }}
-          />
-          <div style={{height: '200px'}}></div>
-        </Modal>);
-    }
-    let ddeModal = null;
-    if (this.state.modifyDDE !== false) {
-        ddeModal = (<Modal
-            title={'Edit Double Data Entry Visits for '
-                + this.state.modifyDDE.instrument}
+        permsModal = (<Modal
+            title={'Edit Permissions for '
+                + this.state.modifyPermissions.instrument}
             show={true}
             onSubmit={submitPromise}
             onClose={
                 () => {
-                    this.setState({'modifyDDE': false});
+                    this.setState({'modifyPermissions': false});
                 }
             }>
-            <div
-              style={{
-                paddingBottom: '100px',
-                marginBottom: '100px',
-              }}
-            >
-              <p>Select the visits that should have Double Data Entry for&nbsp;
-              {this.state.modifyDDE.instrument} in the dropdown below.
-              </p>
-              <ModalSelect
-                codes={
-                  this.state.data.fieldOptions.visitLabels[
-                    this.state.modifyDDE.instrument
-                  ]
-                }
-                selected={this.state.modifyDDE.visits}
-                instrument={this.state.modifyDDE.instrument}
+            <p>Select the permissions required for accessing&nbsp;
+            {this.state.modifyPermissions.instrument} in the dropdown below.
+            </p>
+            <p>Any user accessing the instrument (either for viewing the data
+               or data entry) must have one of the access permissions selected.
+            </p>
+            <InfoPanel>
+                A user with <em>any</em> of the selected permissions will
+                be able to access&nbsp;
+                {this.state.modifyPermissions.instrument}.
+                If no permissions are selected, the default LORIS permissions
+                will be enforced for this instrument.
+            </InfoPanel>
+
+            <PermissionSelect
+                codes={this.state.data.fieldOptions.allPermissionCodes}
+                selected={this.state.modifyPermissions.permissions}
+                instrument={this.state.modifyPermissions.instrument}
                 modifySelected={(newselected) => {
-                    this.setState({
-                      modifyDDE: {...this.state.modifyDDE, visits: newselected},
-                    });
+                    let modifyPermissions = {...this.state.modifyPermissions};
+                    modifyPermissions.permissions = newselected;
+                    this.setState({modifyPermissions});
                 }}
             />
-            </div>
         </Modal>);
     }
     if (this.props.hasPermission('instrument_manager_write')) {
@@ -360,7 +283,6 @@ class InstrumentManagerIndex extends Component {
       <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabs[0].id}>
           {permsModal}
-          {ddeModal}
           <FilterableDataTable
             name="instrument_manager"
             data={this.state.data.Data}
@@ -384,35 +306,35 @@ InstrumentManagerIndex.propTypes = {
 };
 
 /**
- * Create a component to select items from a list
+ * Create a componenet to select permissions from a list of available
+ * permissions.
  *
  * @param {object} props - react props
  * @return {JSX}
  */
-function ModalSelect(props) {
-  const options = props.codes.map((val) => {
-      return {value: val, label: val};
-  });
-  const values = options.filter((row) => {
-      if (props.selected == null) {
-          // nothing selected, filter everything
-          return false;
-      }
-      return props.selected.includes(row.value);
-  });
-  return <Select
-      isMulti={true}
-      options={options}
-      value={values}
-      onChange={(newValue) => {
-          props.modifySelected(newValue.map((row) => row.value));
-      }}
-  />;
+function PermissionSelect(props) {
+    const options = props.codes.map((val) => {
+        return {value: val, label: val};
+    });
+    const values = options.filter((row) => {
+        if (props.selected == null) {
+            // nothing selected, filter everything
+            return false;
+        }
+        return props.selected.includes(row.value);
+    });
+    return <Select
+                isMulti={true}
+                options={options}
+                value={values}
+                onChange={(newValue) => {
+                    props.modifySelected(newValue.map((row) => row.value));
+                }}
+           />;
 }
 
-ModalSelect.propTypes = {
+PermissionSelect.propTypes = {
     codes: PropTypes.array,
-    formElement: PropTypes.string,
     selected: PropTypes.array,
     modifySelected: PropTypes.func,
 };

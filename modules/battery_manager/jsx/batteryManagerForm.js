@@ -145,6 +145,14 @@ class BatteryManagerForm extends Component {
           max={127} // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
         />
+        <SelectElement
+          name="DoubleDataEntryEnabled"
+          label="Enable Double Data Entry"
+          options={options.DoubleDataEntryEnabled}
+          onUserInput={setTest}
+          required={false}
+          value={test.DoubleDataEntryEnabled}
+        />
          <ButtonElement
           label="Submit"
         />
