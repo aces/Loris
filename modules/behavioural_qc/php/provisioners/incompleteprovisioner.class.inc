@@ -54,7 +54,7 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 AND psc.Centerid != '1'
                 AND c.Entity_type != 'Scanner'
                 AND (
-                    test_battery.DoubleDataEntryEnabled = 1
+                    test_battery.DoubleDataEntryEnabled = 'Y'
                     OR f.commentid NOT LIKE 'DDE_%'
                 )
             ORDER BY

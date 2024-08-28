@@ -108,7 +108,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => null,
                     'CenterID'               => null,
                     'firstVisit'             => null,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 2,
@@ -121,7 +121,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => null,
                     'CenterID'               => '1',
                     'firstVisit'             => null,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 3,
@@ -134,7 +134,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => 'V01',
                     'CenterID'               => '1',
                     'firstVisit'             => null,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 4,
@@ -147,7 +147,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => 'V01',
                     'CenterID'               => null,
                     'firstVisit'             => null,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 5,
@@ -160,7 +160,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => 'V01',
                     'CenterID'               => '1',
                     'firstVisit'             => null,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 6,
@@ -173,7 +173,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => null,
                     'CenterID'               => '1',
                     'firstVisit'             => 'Y',
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
                 [
                     'ID'                     => 7,
@@ -186,7 +186,7 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'            => null,
                     'CenterID'               => '1',
                     'firstVisit'             => 'N',
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ],
             ]
         );

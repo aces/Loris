@@ -1936,7 +1936,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'CohortID'               => '12',
                     'AgeMinDays'             => 0,
                     'AgeMaxDays'             => 100,
-                    'DoubleDataEntryEnabled' => 1
+                    'DoubleDataEntryEnabled' => 'Y'
                 ]
             ]
         );

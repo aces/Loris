@@ -352,7 +352,6 @@ class NDB_BVL_Battery
                            Sub_group,
                            Subgroup_order,
                            isDirectEntry";
-
         if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
@@ -390,7 +389,7 @@ class NDB_BVL_Battery
             WHERE Visit_label=:Visit_label
             AND Test_name=:Test_name',
             ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
-        ) == 1 ? true : false;
+        ) == 'Y' ? true : false;
         return $ans;
     }
 
@@ -410,7 +409,7 @@ class NDB_BVL_Battery
             "SELECT DISTINCT Visit_label
             FROM test_battery
             WHERE Test_name=:Test_name
-            AND DoubleDataEntryEnabled = 1",
+            AND DoubleDataEntryEnabled = 'Y'",
             [':Test_name' => $Test_name]
         );
     }
