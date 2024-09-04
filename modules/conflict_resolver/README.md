@@ -34,7 +34,7 @@ will not be enforced by LORIS.
 
 ## Permissions
 
-Accessing the module requires the `conflict_resolver` permission.
+Accessing the module requires the `conflict_resolver` permission, as well as either 'Dictionary: Edit Parameter Type Descriptions' or 'Dictionary: Edit Parameter Type Descriptions'.
 
 A user should only see conflicts at the sites at which the user is
 a member.

@@ -21,4 +21,4 @@ else
 fi
 
 # Core integration tests
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisCoreIntegrationTests,LorisModuleIntegrationTests ${FILTER} $*
+docker compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisCoreIntegrationTests,LorisModuleIntegrationTests ${FILTER} $*

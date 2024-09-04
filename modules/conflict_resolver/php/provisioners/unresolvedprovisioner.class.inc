@@ -33,7 +33,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '
              SELECT
               conflicts_unresolved.ConflictID as conflictid,
-              conflicts_unresolved.TableName as instrument,
+              conflicts_unresolved.TestName as instrument,
               session.CandID as candid,
               candidate.PSCID as pscid,
               session.Visit_label as visitlabel,

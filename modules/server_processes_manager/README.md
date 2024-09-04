@@ -54,7 +54,8 @@ module and the ability to view the information for all processes.
 
 ## Configurations
 
-There are no configuration settings associated to this module.
+The following configurations affect the load of the server_processes_manager module:
+ - The `LORIS-MRI code` path of the `Imaging Pipeline` tab in the configuration module must be set for the `server_processes_manager` module to load.
 
 ## Interactions with LORIS
 

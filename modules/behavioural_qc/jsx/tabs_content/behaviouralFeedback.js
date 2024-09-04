@@ -119,6 +119,8 @@ class BehaviouralFeedback extends Component {
                      rowData['sessionID'] +
                      '&commentID=' +
                      rowData['commentID'];
+          // Open feedback panel
+          bvlLink += '&showFeedback=true';
           bvlLevel ='Instrument : ' + rowData['Instrument'];
         } else if (rowData['Visit']) {
           bvlLink = this.props.baseURL +
@@ -127,7 +129,15 @@ class BehaviouralFeedback extends Component {
                      rowData['DCCID'] +
                      '&sessionID=' +
                      rowData['sessionID'];
+          // Open feedback panel
+          bvlLink += '&showFeedback=true';
           bvlLevel ='Visit : ' + rowData['Visit'];
+        } else {
+          bvlLink = this.props.baseURL +
+                     '/' + rowData['DCCID'];
+          // Open feedback panel
+          bvlLink += '/?showFeedback=true';
+          bvlLevel ='Profile : ' + rowData['PSCID'];
         }
         reactElement = (
           <td>

@@ -40,7 +40,7 @@ class Module extends \Module
                 [
                     'document_repository_view',
                     'document_repository_delete',
-                    'document_repository_edit'
+                    'document_repository_upload_edit'
                 ]
             );
     }

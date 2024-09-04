@@ -15,7 +15,7 @@ function CandidateMediaWidget(props) {
         files.push(
             <a className="list-group-item" key={i}
                 href={props.BaseURL
-                    + '/media/ajax/FileDownload.php?File='
+                    + '/media/files/'
                     + encodeURIComponent(file.Filename)}>
                 <span className="pull-right text-muted small">
                     Last modified : {file.LastModified}

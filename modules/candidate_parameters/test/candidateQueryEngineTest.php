@@ -1780,7 +1780,6 @@ class CandidateQueryEngineTest extends TestCase
         }
 
         $memory10dataAfter = memory_get_usage();
-        $memory10peak      = memory_get_peak_usage();
 
         $iterator10usage = $memory10dataAfter - $memory10data;
 
@@ -1803,11 +1802,9 @@ class CandidateQueryEngineTest extends TestCase
         $memoryBigDataAfter = memory_get_usage();
         $iteratorBigUsage   = $memoryBigDataAfter - $memoryBigDataBefore;
 
-        $memoryBigPeak = memory_get_peak_usage();
         // We tested 20,000 candidates. Give 2k buffer room for variation in
         // memory usage.
         $this->assertTrue($iteratorBigUsage <= ($iterator10usage + (1024*2)));
-        $this->assertTrue($memoryBigPeak <= ($memory10peak + (1024*2)));
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
     }
 

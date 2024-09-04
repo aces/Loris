@@ -113,10 +113,10 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     function testDocumentRepositoryAddCategoryPage()
     {
-        $this->safeGet($this->url . "/document_repository/#category");
+        $this->safeGet($this->url . "/document_repository/#addCategory");
         $text = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#category > div > div > form >".
+                "#addCategory > div > div > form >".
                 " div > div:nth-child(1) > h3"
             )
         )->getText();
@@ -130,14 +130,14 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     function testDocumentRepositoryAddCategory()
     {
-        $this->safeGet($this->url . "/document_repository/#category");
+        $this->safeGet($this->url . "/document_repository/#addCategory");
         $this->safeFindElement(
             WebDriverBy::Name("categoryName")
         )->sendKeys("test");
         $this->safeClick(
             WebDriverBy::cssSelector(
                 "
-              #category > div > div > ".
+              #addCategory > div > div > ".
                 "form > div > div:nth-child(6) > div > div > button
             "
             )

@@ -151,8 +151,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('Test Text successful', $data);
     }
@@ -172,8 +174,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"testCheckbox":"1"', $data);
     }
@@ -199,8 +203,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"yes"', $data);
 
@@ -218,8 +224,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"no"', $data);
 

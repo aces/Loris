@@ -135,6 +135,7 @@ class Module extends \Module
                         AND s.Active='Y' AND c.Active='Y'",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . "/statistics/statistics_site/",
                     ""
                 ),

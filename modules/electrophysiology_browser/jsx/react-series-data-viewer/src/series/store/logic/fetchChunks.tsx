@@ -147,11 +147,6 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                       Math.ceil(bounds.interval[1] - bounds.domain[0])
                     ) / recordingDuration;
 
-                  const interval : [number, number] = [
-                    Math.floor(i0),
-                    Math.min(Math.ceil(i1), numChunks),
-                  ];
-
                   return {
                     interval:
                       [

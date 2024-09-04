@@ -111,6 +111,7 @@ export type FieldDictionary = {
     cardinality: 'unique' | 'single' | 'optional' | 'many',
     visits?: string[], // session only
     options?: string[], // enum only
+    labels?: string[], // enum only, and only if provided
 }
 
 export interface DictionaryCategory {

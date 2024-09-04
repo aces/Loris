@@ -86,9 +86,10 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
             $notifierID  = $this->notifier->getId();
+            $senderName  = $this->notifier->getFullname();
             $senderEmail = $this->notifier->getEmail();
             $this->tpl_data['notified_user'] = $name;
-            $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
+            $this->tpl_data['notifier_user'] = "$senderName <$senderEmail>";
             $recipientEmail = $this->getEmail((int)$uid);
 
             if ($notifierID === $uid) {
@@ -99,7 +100,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
                     $this->template,
                     $this->tpl_data
                 );
-                $this->log((int)$notifierID, (int)$uid, 'email_text');
+
+                $this->log($notifierID, (int)$uid, 'email_text');
             }
         }
     }

@@ -1529,21 +1529,6 @@ export class DateElement extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    // Check if props minYear and maxYear are valid values if supplied
-    let minYear = this.props.minYear;
-    let maxYear = this.props.maxYear;
-    if (this.props.minYear === '' || this.props.minYear === null) {
-      minYear = '1000';
-    }
-    if (this.props.maxYear === '' || this.props.maxYear === null) {
-      maxYear = '9999';
-    }
-  }
-
-  /**
    * Handle change
    *
    * @param {object} e - Event

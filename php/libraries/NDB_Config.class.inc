@@ -387,6 +387,18 @@ class NDB_Config
         throw new ConfigurationException("No setting $name in config.xml");
     }
 
+    protected $settingCache = [];
+
+    /**
+     * Clears the settings cache.
+     *
+     * @return void
+     */
+    public function clearCache()
+    {
+        $this->settingCache = [];
+    }
+
     /**
      * Gets a setting by name
      *
@@ -396,10 +408,14 @@ class NDB_Config
      */
     function getSetting(string $name)
     {
+        if (isset($this->settingCache[$name])) {
+            return $this->settingCache[$name];
+        }
         try {
             $XMLValue = $this->getSettingFromXML($name);
 
             if ($XMLValue !== null) {
+                $this->settingCache[$name] = $XMLValue;
                 return $XMLValue;
             }
         } catch (ConfigurationException $e) {
@@ -411,7 +427,10 @@ class NDB_Config
         // nothing in the config file, so get the value from the DB
         // This will throw a ConfigurationException if it does not
         // exist.
-        return $this->getSettingFromDB($name);
+        $DBVal = $this->getSettingFromDB($name);
+        $this->settingCache[$name] = $DBVal;
+        return $DBVal;
+
     }
 
     /**

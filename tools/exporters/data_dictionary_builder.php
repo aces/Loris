@@ -51,9 +51,12 @@ $parameter_types = [];
 $instrumentParameterTypeCategoryIDs = [];
 $instrumentParameterTypeIDs         = [];
 
-
 $parameter_types = $DB->pselectColWithIndexKey(
-    "Select Name, ParameterTypeID from parameter_type",
+    "SELECT pt.Name, pt.ParameterTypeID
+    FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+    WHERE ptc.Type = 'Instrument'",
     [],
     "Name"
 );

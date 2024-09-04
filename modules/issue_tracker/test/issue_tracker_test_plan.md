@@ -12,8 +12,8 @@
 
 ## Issue Tracker Create New Issue [Manual Testing]
 1. User can access the page if they have `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` or `Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission.
-2. Check that title, assignee and site are required.
-3. Do not provide a PSCID value and set site to All Sites. This should set Site to NULL after success.
+2. Check that title and site are required.
+3. Do not provide a PSCID value and set site to All Sites. This should set `issues.centerID` to `NULL` after success.
 4. Do not provide a PSCID value and and check that site can be populated by a particular site (except All Sites) in the dropdown values.
 5. Submit a PSCID and set Site to All Sites. This should work if the PSCID exists in the database.
 6. Submit a PSCID with a Site value (except All Sites). This should not work if the PSCID does not exists or if the PSCID does not match with the site.

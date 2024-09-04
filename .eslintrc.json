@@ -48,7 +48,7 @@
         "ignoreComments": true
     }],
     "no-unexpected-multiline": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-useless-escape": "off",
     "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",

@@ -122,6 +122,7 @@ class Module extends \Module
                          s.CenterID <> 1",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . '/' . $this->getName(),
                     'conflict_resolver'
                 )

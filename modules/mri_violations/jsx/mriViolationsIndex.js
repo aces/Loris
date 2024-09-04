@@ -288,7 +288,7 @@ const filters = (fieldoptions) => {
       {
         label: 'Time Run', show: true, filter: {
           name: 'timeRun',
-          type: 'date',
+          type: 'datetime',
         },
       },
       {

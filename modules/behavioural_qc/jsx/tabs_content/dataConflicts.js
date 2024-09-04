@@ -125,7 +125,7 @@ class DataConflicts extends Component {
           <td>
             <a href={this.props.baseURL +
             '/instruments/' +
-            rowData['tableName'] +
+            rowData['testName'] +
             '/?candID=' +
             rowData['DCCID'] +
             '&sessionID=' +
@@ -229,7 +229,7 @@ class DataConflicts extends Component {
         show: true,
       },
       {
-        label: 'tableName',
+        label: 'testName',
         show: false,
       },
       {

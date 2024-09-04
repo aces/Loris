@@ -110,7 +110,7 @@ class ConflictDetector
     function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = [
-            'TableName'      => $diffLine['TableName'],
+            'testName'       => $diffLine['TestName'],
             'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
             'ExtraKey1'      => $diffLine['ExtraKey1'],
             'ExtraKey2'      => $diffLine['ExtraKey2'],

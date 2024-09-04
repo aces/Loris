@@ -201,7 +201,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="useScanDone";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="allowPrenatalTimepoints";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="ImagingUploaderAutoLaunch";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "Modify this to your project's citation policy" FROM ConfigSettings WHERE Name="citation_policy";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Customize this text with your citation policy (via Configuration module)" FROM ConfigSettings WHERE Name="citation_policy";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "" FROM ConfigSettings WHERE Name="CSPAdditionalHeaders";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd" FROM ConfigSettings WHERE Name="dobFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd"  FROM ConfigSettings WHERE Name="dodFormat";

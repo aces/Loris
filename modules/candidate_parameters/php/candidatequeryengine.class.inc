@@ -55,7 +55,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             "Demographics",
             "Candidate Demographics",
         );
-        $sexList      = \Utility::getSexList();
+        $sexList      = array_keys(\Utility::getSexList());
         $t            = new Enumeration(...$sexList);
         $demographics = $demographics->withItems(
             [

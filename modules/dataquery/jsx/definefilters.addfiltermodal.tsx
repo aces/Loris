@@ -414,7 +414,11 @@ function valueInput(fielddict: FieldDictionary,
               i++
           ) {
              const opt = fielddict.options[i];
-             opts[opt] = opt;
+             if (fielddict.labels) {
+                 opts[opt] = fielddict.labels[i];
+             } else {
+                 opts[opt] = opt;
+             }
           }
           if (op == 'in') {
            return <SelectElement

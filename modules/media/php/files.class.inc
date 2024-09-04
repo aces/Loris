@@ -18,10 +18,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
      */
     function _hasAccess(\User $user): bool
     {
-        //XXX: Should this be 'media_read' instead? It seems that downloading
-        //     files should be a read permission, not write.. but this is the
-        //     permission that the old ajax script was checking.
-        return $user->hasPermission('media_write');
+        return $user->hasPermission('media_read');
     }
 
     /**

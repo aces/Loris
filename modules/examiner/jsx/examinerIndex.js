@@ -123,8 +123,8 @@ class ExaminerIndex extends Component {
           }
         });
       } else {
-        resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
+        resp.json().then((message) => {
+          swal.fire('Error!', message.error, 'error');
         });
       }
     })
