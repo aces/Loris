@@ -383,13 +383,15 @@ class NDB_BVL_Battery
         String $Test_name
     ) : bool {
         $DB  = \NDB_Factory::singleton()->database();
-        $ans = $DB->pselectOneInt(
+        $ans = $DB->pselectOne(
             'SELECT DISTINCT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
             AND Test_name=:Test_name',
             ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
         ) == 'Y' ? true : false;
+
+        error_log(print_r("IS DDE ENABLED " . $ans . " $Test_name $Visit_label"));
         return $ans;
     }
 
