@@ -3261,13 +3261,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (empty($Visit_label)) {
             $doubleDataEntryInstruments = $DB->pselectCol(
                 "SELECT DISTINCT Test_name FROM test_battery
-                WHERE DoubleDataEntryEnabled=true",
+                WHERE DoubleDataEntryEnabled='Y'",
                 []
             );
         } else {
             $doubleDataEntryInstruments = $DB->pselectCol(
                 "SELECT DISTINCT Test_name FROM test_battery
-                WHERE DoubleDataEntryEnabled=true
+                WHERE DoubleDataEntryEnabled='Y'
                 AND Visit_label = :Visit_label",
                 ['Visit_label' => $Visit_label]
             );
