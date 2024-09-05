@@ -391,7 +391,6 @@ class NDB_BVL_Battery
             ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
         ) == 'Y' ? true : false;
 
-        error_log(print_r("IS DDE ENABLED " . $ans . " $Test_name $Visit_label"));
         return $ans;
     }
 
