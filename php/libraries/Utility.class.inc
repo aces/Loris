@@ -265,7 +265,7 @@ class Utility
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
         // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column($result, 'Visit_label');
+        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
         // Generates an array where the keys are equal to the values.
         return array_combine($visitLabels, $visitLabels);

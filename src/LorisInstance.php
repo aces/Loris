@@ -72,7 +72,7 @@ class LorisInstance
         putenv("LORIS_{$dbname}_USERNAME=");
         putenv("LORIS_{$dbname}_PASSWORD=");
         putenv("LORIS_{$dbname}_HOST=");
-	return $db;
+        return $db;
     }
 
     /**

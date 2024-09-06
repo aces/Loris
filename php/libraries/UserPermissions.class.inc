@@ -87,11 +87,9 @@ class UserPermissions
 
         // Fill the permissions array of this UserPermissions object with the
         // values extracted for this user from the database.
-        if (is_array($results) and !empty($results)) {
-            foreach ($results as $row) {
-                $userMatch = $row['userID'] === $this->userID;
-                $this->permissions[$row['code']] = $userMatch;
-            }
+        foreach ($results as $row) {
+            $userMatch = $row['userID'] == $this->userID;
+            $this->permissions[$row['code']] = $userMatch;
         }
     }
 

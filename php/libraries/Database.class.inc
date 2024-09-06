@@ -740,7 +740,7 @@ class Database implements LoggerAwareInterface
      */
     function pselect(string $query, array $params): \LORIS\Database\Query
     {
-	return new \LORIS\Database\Query($this->_PDO, $query, $params);
+        return new \LORIS\Database\Query($this->_PDO, $query, $params);
     }
 
     /**
@@ -836,17 +836,17 @@ class Database implements LoggerAwareInterface
      */
     function pselectRow(string $query, array $params): ?array
     {
-        $rows = $this->pselect($query . " LIMIT 2", $params);
-	switch(count($rows)) {
-	case 0: return null;
-	case 1:
-		$val = $rows->fetch();
-		return $val;
-	default:
+        $query = $this->pselect($query . " LIMIT 2", $params);
+        switch (count($query)) {
+        case 0:
+            return null;
+        case 1:
+            return $query->getFirstRow();
+        default:
             throw new \DomainException(
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
-	}
+        }
     }
 
     /**

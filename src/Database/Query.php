@@ -16,20 +16,29 @@ class Query implements \Countable, \IteratorAggregate
 
     public function count(): int
     {
-	// PDOStatement->rowCount only works for buffered connections
+        // PDOStatement->rowCount only works for buffered connections
         if ($this->buffered == true) {
-		$this->stmt->execute($this->params);
-		return $this->stmt->rowCount();
-	} else {
-		$stmt = $DB->prepare("SELECT COUNT('x') FROM ($query)");
-		$stmt->execute($this->params);
-		return $stmt->fetch();
-	}
+            $this->stmt->execute($this->params);
+            return $this->stmt->rowCount();
+        } else {
+            $stmt = $this->DB->prepare("SELECT COUNT('x') FROM ({$this->query})");
+            $stmt->execute($this->params);
+            return $stmt->fetch();
+        }
+    }
+
+    public function getFirstRow() : array
+    {
+         $rows = $this->getIterator();
+         assert($rows instanceof \PDOStatement);
+         $val = $rows->fetch();
+         $rows->closeCursor();
+         return $val;
     }
 
     public function getIterator() : \Traversable
     {
         $this->stmt->execute($this->params);
-	return $this->stmt;
+        return $this->stmt;
     }
 }
