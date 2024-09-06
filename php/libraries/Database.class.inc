@@ -738,11 +738,9 @@ class Database implements LoggerAwareInterface
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params): array
+    function pselect(string $query, array $params): \LORIS\Database\Query
     {
-        $this->_printQuery($query, $params);
-        $stmt = $this->prepare($query);
-        return $this->execute($stmt, $params);
+	return new \LORIS\Database\Query($this->_PDO, $query, $params);
     }
 
     /**
@@ -839,12 +837,16 @@ class Database implements LoggerAwareInterface
     function pselectRow(string $query, array $params): ?array
     {
         $rows = $this->pselect($query . " LIMIT 2", $params);
-        if (count($rows) > 1) {
+	switch(count($rows)) {
+	case 0: return null;
+	case 1:
+		$val = $rows->fetch();
+		return $val;
+	default:
             throw new \DomainException(
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
-        }
-        return $rows[0] ?? null;
+	}
     }
 
     /**
