@@ -5,11 +5,11 @@ import {QueryGroup} from './querydef';
 
 
 export enum Tabs {
-	Info,
-	Fields,
-	Filters,
-	Data,
-};
+    Info,
+    Fields,
+    Filters,
+    Data,
+}
 
 interface TabSteps{
     [tab: string]: string

@@ -237,7 +237,7 @@ function DataQueryApp(props: {
         <div>{content}</div>
         <NextSteps page={activeTab} fields={selectedFields}
             filters={query}
-	    extrasteps={ {} }
+            extrasteps={ {} }
             changePage={
                 (page) => setActiveTab(page)
         }/>
