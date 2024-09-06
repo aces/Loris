@@ -234,7 +234,7 @@ class Statistics_Site extends \NDB_Menu
                 AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
             $this->query_vars
         );
-        return $result;
+        return iterator_to_array($result);
     }
     /**
      * Setup function

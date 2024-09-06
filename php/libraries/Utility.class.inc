@@ -671,7 +671,7 @@ class Utility
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
-        return $stage[0]['Current_stage'];
+        return $stage->getFirstRow()['Current_stage'];
     }
 
     /**

@@ -461,7 +461,7 @@ class NDB_Menu_Filter extends NDB_Menu
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -803,7 +803,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $result = $DB->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**

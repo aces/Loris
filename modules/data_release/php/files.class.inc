@@ -309,7 +309,7 @@ class Files extends \NDB_Page
             []
         );
 
-        $dataReleaseFiles = array_column($filesList, 'file_name');
+        $dataReleaseFiles = array_column(iterator_to_array($filesList), 'file_name');
 
         $results = [
             'files'         => $dataReleaseFiles,

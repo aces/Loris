@@ -380,7 +380,7 @@ class Project implements \JsonSerializable
             ['v_project_id' => $this->_projectId]
         );
 
-        return $cohortData;
+        return iterator_to_array($cohortData);
     }
 
     /**
@@ -409,7 +409,7 @@ class Project implements \JsonSerializable
             function ($row) {
                 return $row['candid'];
             },
-            $candidatesData
+            iterator_to_array($candidatesData)
         );
     }
 

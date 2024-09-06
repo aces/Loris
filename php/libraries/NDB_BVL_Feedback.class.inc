@@ -515,7 +515,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -624,7 +624,7 @@ class NDB_BVL_Feedback
 
             $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -656,7 +656,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, ['FID' => $feedbackID]);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**

@@ -81,9 +81,11 @@ class DocTree extends \NDB_Page
      */
     public function getTreeData()
     {
-        return $this->loris->getDatabaseConnection()->pselect(
-            "SELECT * FROM document_repository_categories",
-            []
+        return iterator_to_array(
+            $this->loris->getDatabaseConnection()->pselect(
+                "SELECT * FROM document_repository_categories",
+                []
+            )
         );
     }
     /**

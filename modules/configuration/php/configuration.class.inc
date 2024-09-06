@@ -112,7 +112,7 @@ class Configuration extends \NDB_Form
             []
         );
 
-        return $parentConfigItems;
+        return iterator_to_array($parentConfigItems);
     }
 
     /**
@@ -180,7 +180,7 @@ class Configuration extends \NDB_Form
             $tree[$node['Parent']]['Children'][] = &$node;
         }
 
-        return $configs;
+        return iterator_to_array($configs);
     }
 
     /**

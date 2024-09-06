@@ -143,7 +143,7 @@ class Image
                 ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
-            $dbrows,
+            iterator_to_array($dbrows),
             function ($carry, $row) {
                 $carry[$row['name']] = $row['value'];
                 return $carry;
@@ -239,7 +239,7 @@ class Image
                 $values = array_values($row);
                 return new \LORIS\ImageCaveats(...$values);
             },
-            $rows
+            iterator_to_array($rows)
         );
     }
 

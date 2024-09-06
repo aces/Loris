@@ -182,7 +182,7 @@ class Recording
                 ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
-            $dbrows,
+            iterator_to_array($dbrows),
             function ($carry, $row) {
                 $carry[$row['name']] = $row['value'];
                 return $carry;
@@ -324,7 +324,7 @@ class Recording
                 $values = array_values($row);
                 return new \LORIS\RecordingChannels(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 
@@ -369,7 +369,7 @@ class Recording
                 $values = array_values($row);
                 return new \LORIS\RecordingElectrodes(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 
@@ -408,7 +408,7 @@ class Recording
                 $values = array_values($row);
                 return new \LORIS\RecordingEvents(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 

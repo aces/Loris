@@ -129,7 +129,7 @@ class DicomTar
                     $row['seriesuid']
                 );
             },
-            $dbrow
+            iterator_to_array($dbrow)
         );
     }
 }

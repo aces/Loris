@@ -809,12 +809,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
           WHERE CandID=:cid AND Date_visit IS NOT NULL
           ORDER BY Date_visit DESC LIMIT 1";
         $where  = ['cid' => $candID];
-        $result = $db->pselect($query, $where);
+        $result = $db->pselectRow($query, $where);
 
         if (empty($result)) {
             return null;
         }
-        return $result[0];
+        return $result;
     }
 
     /**

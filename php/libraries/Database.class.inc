@@ -732,11 +732,7 @@ class Database implements LoggerAwareInterface
      * @param array<string,mixed> $params Values to use for binding to the
      *                                    prepared statement
      *
-     * @return array<int,array<string,string>> An array of arrays containing
-     *                                          the data.
-     *               The outside (non-associative array contains 1 element per
-     *               row returned by the query, and each element is an associative
-     *               array representing the row in the format ColumnName => Value
+     * @return \LORIS\Database\Query
      */
     function pselect(string $query, array $params): \LORIS\Database\Query
     {

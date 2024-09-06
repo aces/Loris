@@ -30,13 +30,15 @@ class ElectrophysioEvents
         $this->_physioFileID = $physioFileID;
         $db = $this->loris->getDatabaseConnection();
 
-        $taskEvents = $db->pselect(
-            'SELECT te.*
+        $taskEvents = iterator_to_array(
+            $db->pselect(
+                'SELECT te.*
                 FROM physiological_task_event AS te
                 JOIN physiological_event_file AS f
                 ON f.EventFileID = te.EventFileID
                 WHERE f.PhysiologicalFileID=:PFID AND f.FileType="tsv"',
-            ['PFID' => $this->_physioFileID]
+                ['PFID' => $this->_physioFileID]
+            )
         );
 
         $taskEventIDs = array_map(
@@ -172,10 +174,12 @@ class ElectrophysioEvents
                 );
             }
 
-            $taskEvent = $db->pselect(
-                'SELECT * FROM physiological_task_event
+            $taskEvent = iterator_to_array(
+                $db->pselect(
+                    'SELECT * FROM physiological_task_event
             WHERE PhysiologicalTaskEventID=:PTEID',
-                ['PTEID' => $instance_id]
+                    ['PTEID' => $instance_id]
+                )
             );
 
             $extraColumns = $db->pselect(
@@ -274,8 +278,9 @@ class ElectrophysioEvents
         $config  = \NDB_Factory::singleton()->config();
         $dataDir = $config->getSetting("dataDirBasepath");
 
-        $tsv = $db->pselect(
-            "SELECT
+        $tsv = iterator_to_array(
+            $db->pselect(
+                "SELECT
             EventFileID   AS id,
             FilePath      AS filePath,
             ProjectID     AS projectID,
@@ -284,7 +289,8 @@ class ElectrophysioEvents
           FROM physiological_event_file
           WHERE PhysiologicalFileID=:PFID
           AND FileType='tsv'",
-            ['PFID' => $this->_physioFileID]
+                ['PFID' => $this->_physioFileID]
+            )
         );
 
         $projectID = $db->pselectOneInt(
@@ -295,8 +301,9 @@ class ElectrophysioEvents
             ['PFID' => $this->_physioFileID]
         );
 
-        $json = $db->pselect(
-            "SELECT
+        $json = iterator_to_array(
+            $db->pselect(
+                "SELECT
             EventFileID   AS id,
             FilePath      AS filePath,
             LastUpdate    AS lastUpdate,
@@ -306,10 +313,11 @@ class ElectrophysioEvents
               PhysiologicalFileID=:PFID OR ProjectID=:PID
           )
           AND FileType='json'",
-            [
-                'PFID' => $this->_physioFileID,
-                'PID'  => $projectID
-            ]
+                [
+                    'PFID' => $this->_physioFileID,
+                    'PID'  => $projectID
+                ]
+            )
         );
 
         $tsvPath  = count($tsv) > 0
@@ -399,26 +407,30 @@ class ElectrophysioEvents
             // events.tsv
             $tsvFile = fopen($tsvPath, 'w'); // Will override all file content
 
-            $extraColumns = $db->pselect(
-                "SELECT *
+            $extraColumns = iterator_to_array(
+                $db->pselect(
+                    "SELECT *
                     FROM physiological_task_event_opt
                     WHERE PhysiologicalTaskEventID IN (
                         SELECT PhysiologicalTaskEventID
                         FROM physiological_task_event
                         WHERE PhysiologicalFileID=:PFID
                     )",
-                ['PFID' => $this->_physioFileID]
+                    ['PFID' => $this->_physioFileID]
+                )
             );
 
-            $hed_tags = $db->pselect(
-                "SELECT *
+            $hed_tags = iterator_to_array(
+                $db->pselect(
+                    "SELECT *
                     FROM physiological_task_event_hed_rel
                     WHERE PhysiologicalTaskEventID IN (
                         SELECT PhysiologicalTaskEventID
                         FROM physiological_task_event
                         WHERE PhysiologicalFileID=:PFID
                     )",
-                ['PFID' => $this->_physioFileID]
+                    ['PFID' => $this->_physioFileID]
+                )
             );
 
             $columnNames = $db->pselect(
