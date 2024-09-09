@@ -1,7 +1,7 @@
 .issue-tracker-detail-view {
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -21,8 +21,8 @@
 }
 
 .filter-tabs button.active {
-  border-bottom: 2px solid #007bff;
-  color: #007bff;
+  border-bottom: 2px solid #074785;
+  color: #074785;
 }
 
 .filter-section {
@@ -39,6 +39,11 @@
   display: flex;
   align-items: center;
   margin-bottom: 0;
+  font-weight: normal;
+}
+
+.filter-list label span {
+  margin-left: 2px;
 }
 
 .issues-list {
@@ -53,6 +58,7 @@
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .issue-header {
@@ -62,22 +68,40 @@
   margin-bottom: 15px;
 }
 
+.issue-title-section {
+  display: flex;
+  align-items: center;
+}
+
 .issue-header h3 {
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  font-size: 1.5em;
 }
 
 .issue-header a {
-  color: #007bff;
+  color: #074785;
   text-decoration: none;
+  display: flex;
+  align-items: baseline;
 }
 
-.issue-title {
-  margin-bottom: 15px;
+.issue-id {
+  font-size: 0.8em;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-right: 8px;
 }
 
-.issue-title h4 {
-  margin: 0;
-  font-size: 1.2em;
+.issue-dates {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.8em;
+  color: #666;
 }
 
 .issue-controls {
@@ -99,25 +123,42 @@
   border-top: 1px solid #eee;
 }
 
-.issue-card button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.issue-metadata {
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #666;
 }
 
-.issue-card button:hover {
-  background-color: #0056b3;
+.issue-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
-.issue-card input[type="text"],
-.issue-card textarea {
+.issue-card a {
+  color: #074785;
+  text-decoration: none;
+}
+
+.issue-card a:hover {
+  text-decoration: underline;
+}
+
+.issue-card input[type="text"], .issue-card textarea {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-bottom: 10px;
+}
+
+.title-input {
+  font-size: 1em;
+  width: calc(100% - 40px);
+  margin-left: 8px;
+}
+
+.checkbox {
+  margin-right: 8px;
 }

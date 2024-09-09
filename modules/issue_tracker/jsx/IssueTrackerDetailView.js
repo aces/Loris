@@ -94,8 +94,9 @@ function IssueTrackerDetailView({ options }) {
                 type="checkbox" 
                 checked={selectedCategories.includes(value)}
                 onChange={() => toggleFilter(selectedCategories, setSelectedCategories, value)}
+                className="checkbox"
               />
-              {label}
+              <span>{label}</span>
             </label>
           ))}
           {activeTab === 'priority' && Object.entries(priorities).map(([value, label]) => (
@@ -104,8 +105,9 @@ function IssueTrackerDetailView({ options }) {
                 type="checkbox" 
                 checked={selectedPriorities.includes(value)}
                 onChange={() => toggleFilter(selectedPriorities, setSelectedPriorities, value)}
+                className="checkbox"
               />
-              {label}
+              <span>{label}</span>
             </label>
           ))}
           {activeTab === 'status' && Object.entries(statuses).map(([value, label]) => (
@@ -114,12 +116,14 @@ function IssueTrackerDetailView({ options }) {
                 type="checkbox" 
                 checked={selectedStatuses.includes(value)}
                 onChange={() => toggleFilter(selectedStatuses, setSelectedStatuses, value)}
+                className="checkbox"
               />
-              {label}
+              <span>{label}</span>
             </label>
           ))}
         </div>
       </div>
+      <br/>
       <div className="issues-list">
         {filteredIssues.map(issue => (
           <IssueCard 

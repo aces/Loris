@@ -30,12 +30,10 @@ const IssueCard = React.memo(function IssueCard({
 
     const formData = new FormData();
 
-    // Append all fields to the form data
     Object.entries(editedIssue).forEach(([key, value]) => {
       formData.append(key, value === null ? "null" : value);
     });
 
-    // Check if there are any changes
     const hasChanges = Object.entries(editedIssue).some(([key, value]) => 
       value !== issue[key]
     );
@@ -65,34 +63,56 @@ const IssueCard = React.memo(function IssueCard({
     });
   };
 
-  const showAlertMessage = (type, message) => {
+  const showAlertMessage = (msgType, message) => {
+    let type = 'success';
+    let title = 'Issue updated!';
+    let text = message || '';
+    let timer = null;
+    let confirmation = true;
+  
+    if (msgType === 'error') {
+      type = 'error';
+      title = 'Error!';
+    }
+  
     swal.fire({
-      title: type === 'success' ? 'Success!' : 'Error!',
-      text: message,
-      icon: type,
-      confirmButtonText: 'OK'
+      title: title,
+      type: type,
+      text: text,
+      timer: timer,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: confirmation,
     });
   };
 
   return (
     <div className="issue-card">
       <div className="issue-header">
-        <h3>
-          <a href={`${loris.BaseURL}/issue_tracker/issue/${issue.issueID}`}>Issue ID: {issue.issueID}</a>
-        </h3>
+        <div className="issue-title-section">
+          <h3>
+            <span className="issue-id">#{issue.issueID}</span>
+            {isEditing ? (
+              <input
+                type="text"
+                value={editedIssue.title}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                className="title-input"
+              />
+            ) : (
+              <a href={`${loris.BaseURL}/issue_tracker/issue/${issue.issueID}`}>
+                {issue.title}
+              </a>
+            )}
+          </h3>
+        </div>
+        <div className="issue-dates">
+          <span>Created: {issue.dateCreated}</span>
+          <span>Last Updated: {issue.lastUpdate}</span>
+          <span>Assignee: {issue.assignee}</span>
+        </div>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="issue-title">
-          {isEditing ? (
-            <input
-              type="text"
-              value={editedIssue.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-            />
-          ) : (
-            <h4>{issue.title}</h4>
-          )}
-        </div>
         <div className="issue-controls">
           <select
             value={editedIssue.status}
@@ -124,6 +144,7 @@ const IssueCard = React.memo(function IssueCard({
           </select>
         </div>
         <div className="issue-description">
+        <label htmlFor="description" className="small">Description</label>
           {isEditing ? (
             <textarea
               value={editedIssue.description}
@@ -133,20 +154,15 @@ const IssueCard = React.memo(function IssueCard({
             <p>{issue.description}</p>
           )}
         </div>
-        {/* <div className="issue-assignee">
-          <p>Assignee: {issue.assignee}</p>
-        </div>
-        <div className="issue-dates">
-          <p>Created: {issue.dateCreated}</p>
-          <p>Last Updated: {issue.lastUpdate}</p>
-        </div> */}
-        {isEditing ? (
-          <>
-            <button type="submit">Update Issue</button>
-            <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-          </>
-        ) : (
-          <button type="button" onClick={() => setIsEditing(true)}>Edit Issue</button>
+        <br/>
+        {!isEditing && (
+          <button className="btn btn-primary" onClick={() => setIsEditing(true)}>Edit Issue</button>
+        )}
+        {isEditing && (
+          <div className="issue-actions">
+            <button type="submit" className="btn btn-primary">Update Issue</button>
+            <button type="button" className="btn btn-primary" onClick={() => setIsEditing(false)}>Cancel</button>
+          </div>
         )}
       </form>
     </div>
