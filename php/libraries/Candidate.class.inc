@@ -107,7 +107,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $row = $db->pselectRow($query, $CandArray);
 
-        if (!is_array($row) || sizeof($row) == 0) {
+        if ($row === null) {
             throw new \LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
@@ -131,13 +131,16 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
-                $registrationProjectID     = new \ProjectID($value);
+                $registrationProjectID     = new \ProjectID(strval($value));
                 $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $registrationCenterID      = new \CenterID($value);
+                $registrationCenterID      = new \CenterID(strval($value));
                 $this->candidateInfo[$key] = $registrationCenterID;
                 break;
+	    case 'CandID':
+		$this->candidateInfo[$key] = new CandID(strval($value));
+		break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -575,7 +578,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the CandID of this candidate
      *
-     * @return integer 6 digit CandID
+     * @return CandID
      */
     function getCandID()
     {
