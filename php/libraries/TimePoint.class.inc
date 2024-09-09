@@ -168,7 +168,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         );
 
         // store user data in object property
-        if (count($row) > 0) {
+        if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $cohortSettings       = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)

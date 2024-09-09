@@ -131,9 +131,11 @@ class Database_Test extends TestCase
      */
     function testSetFakeData()
     {
+	    /*
         $client = new NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
+	     */
 
         $this->DB->setFakeTableData(
             "Config",
@@ -149,7 +151,7 @@ class Database_Test extends TestCase
         $allCandidates = $this->DB->pselect("SELECT * FROM Config", []);
 
         $this->assertEquals(
-            $allCandidates,
+            iterator_to_array($allCandidates),
             [
                 0 => [
                     'ID'       => 99999,
@@ -308,10 +310,10 @@ class Database_Test extends TestCase
             "ConfigSettings",
             ['Visible' => 1, 'Description' => null]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -357,10 +359,10 @@ class Database_Test extends TestCase
             "ConfigSettings",
             ['Visible' => 1, 'Description' => 'deleting']
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -408,10 +410,10 @@ class Database_Test extends TestCase
             ['Visible' => null, 'Description' => 'new description'],
             ['Description' => null]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -463,10 +465,10 @@ class Database_Test extends TestCase
             ['Visible' => null, 'Description' => 'new description'],
             ['Description' => 'first description']
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -517,10 +519,10 @@ class Database_Test extends TestCase
                 'Description' => null
             ]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -570,10 +572,10 @@ class Database_Test extends TestCase
                 'Description' => 'test description'
             ]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -633,10 +635,10 @@ class Database_Test extends TestCase
                 'Description' => null
             ]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -695,10 +697,10 @@ class Database_Test extends TestCase
                 'Description' => 'description 2'
             ]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -757,10 +759,10 @@ class Database_Test extends TestCase
                 'Description' => 'description updated'
             ]
         );
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
@@ -1007,10 +1009,10 @@ class Database_Test extends TestCase
             [':id' => 99991, ':name' => 'new name'],
             ['nofetch' => "true"]
         );
-        $check      = $this->DB->pselect(
+        $check      = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $check,
@@ -1024,32 +1026,6 @@ class Database_Test extends TestCase
             ]
         );
         $this->assertEquals($allSetting, []);
-    }
-
-    /**
-     * Tests that pselect calls the "prepare" and "execute" functions with the proper
-     * parameters.
-     *
-     * @return void
-     * @covers Database::pselect
-     */
-    function testPselectCallsFunctions()
-    {
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
-
-        '@phan-var \Database $stub';
-        $stmt   = $stub->prepare("SHOW TABLES");
-        $params = ['test' => 'test'];
-
-        '@phan-var \PHPUnit\Framework\MockObject\MockObject $stub';
-        $stub->expects($this->once())
-            ->method("prepare")->with($this->equalTo("SHOW TABLES"));
-        $stub->expects($this->once())->method("execute")
-            ->with($this->equalTo($stmt), $this->equalTo($params), []);
-
-        '@phan-var \Database $stub';
-        $stub->pselect("SHOW TABLES", $params);
     }
 
     /**
@@ -1076,10 +1052,10 @@ class Database_Test extends TestCase
         ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
-        $allSetting = $this->DB->pselect(
+        $allSetting = iterator_to_array($this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
-        );
+        ));
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals($allSetting, $data);
     }

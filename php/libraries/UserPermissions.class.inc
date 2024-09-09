@@ -323,6 +323,7 @@ class UserPermissions
             $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
             $newDesc .= $perm['description'];
 
+	    $results[$key] = $perm;
             $results[$key]['label'] = $newDesc;
         }
         return $results;
