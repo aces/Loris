@@ -301,9 +301,6 @@ class FieldList extends Component {
     let start = (this.props.PageNumber - 1) * rowsPerPage;
     let filter = this.props.Filter.toLowerCase();
     let selectedFields;
-    if (filter > 0) {
-      start = 0;
-    }
 
     let filteredItems = items.filter((item) => {
       fieldName = item.key[1];
