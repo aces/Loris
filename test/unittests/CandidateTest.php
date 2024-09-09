@@ -184,22 +184,26 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')->disableOriginalConstructor()->getMock();
-	$resultMock->method("getIterator")
-	    ->willReturn(
-                new ArrayIterator([
+        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultMock->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
                     [
-                        "ID"        => 97,
-                        "ProjectID" => 1,
-                        "CenterID"  => 2,
-                    ],
-                    [
-                        "ID"        => 98,
-                        "ProjectID" => 1,
-                        "CenterID"  => 2,
+                        [
+                            "ID"        => 97,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ],
+                        [
+                            "ID"        => 98,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ]
                     ]
-		])
-	    );
+                )
+            );
         $this->_dbMock
             ->method('pselect')
             ->willReturn($resultMock);
@@ -1357,26 +1361,30 @@ class CandidateTest extends TestCase
     private function _setUpTestDoublesForSelectCandidate()
     {
 
-        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')->disableOriginalConstructor()->getMock();
-	$resultMock->method("getIterator")
-	    ->willReturn(
-                new ArrayIterator([
+        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultMock->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
                     [
-                        "ID"        => 97,
-                        "ProjectID" => 1,
-                        "CenterID"  => 2,
-                    ],
-                    [
-                        "ID"        => 98,
-                        "ProjectID" => 1,
-                        "CenterID"  => 2,
+                        [
+                            "ID"        => 97,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ],
+                        [
+                            "ID"        => 98,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ]
                     ]
-		])
-	    );
+                )
+            );
         $this->_dbMock
             ->method('pselect')
             ->willReturn($resultMock);
-	/*
+        /*
                 $this->onConsecutiveCalls(
                     [
                         [
@@ -1393,7 +1401,7 @@ class CandidateTest extends TestCase
                     $this->_listOfTimePoints
                 )
             );
-	*/
+        */
 
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')

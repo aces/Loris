@@ -202,7 +202,7 @@ class NDB_BVL_Feedback
         }
         $query .= " LIMIT 1";
 
-        $result = $db->pselect($query, $qparams);
+        $result = iterator_to_array($db->pselect($query, $qparams));
         if (!is_array($result) || count($result) == 0) {
             throw new LorisException(
                 "Error, unable to select data for the feedback object"

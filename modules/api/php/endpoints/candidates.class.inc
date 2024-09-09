@@ -145,6 +145,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             // came from the CandID column of a database call. If
             // something goes wrong at this point we should definitely
             // propagate an exception..
+            assert($pscids instanceof \LORIS\Database\Query);
             $candID = new CandID(strval($pscids->getFirstRow()["CandID"]));
         }
 

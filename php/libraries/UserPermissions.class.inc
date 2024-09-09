@@ -88,7 +88,8 @@ class UserPermissions
         // Fill the permissions array of this UserPermissions object with the
         // values extracted for this user from the database.
         foreach ($results as $row) {
-            $userMatch = $row['userID'] == $this->userID;
+            $userMatch = $row !== null && ($row['userID'] == $this->userID);
+            assert($row['code'] !== null);
             $this->permissions[$row['code']] = $userMatch;
         }
     }
@@ -323,7 +324,7 @@ class UserPermissions
             $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
             $newDesc .= $perm['description'];
 
-	    $results[$key] = $perm;
+            $results[$key]          = $perm;
             $results[$key]['label'] = $newDesc;
         }
         return $results;
