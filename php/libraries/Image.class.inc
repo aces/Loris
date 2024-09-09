@@ -79,7 +79,9 @@ class Image
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = new \CenterID($dbrow['centerid']);
+            $this->_centerid            = $dbrow['centerid'] === null
+            ? null
+            : new \CenterID(strval($dbrow['centerid']));
             $this->_entitytype          = $dbrow['entitytype'];
         }
     }

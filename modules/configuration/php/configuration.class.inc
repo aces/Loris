@@ -137,7 +137,7 @@ class Configuration extends \NDB_Form
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
         // Update the value for the setting to the value from the config.xml
-        foreach ($configs as &$setting) {
+        foreach ($configs as $setting) {
             try {
                 $setting['Disabled'] = 'Yes';
                 if ($setting['Parent'] != null) {
@@ -155,7 +155,7 @@ class Configuration extends \NDB_Form
 
         // Now check for config settings from the database for the fields not
         // overridden in the config.xml
-        foreach ($configs as &$setting) {
+        foreach ($configs as $setting) {
             if ($setting['Disabled'] == 'No') {
                 $value = $DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
@@ -171,7 +171,7 @@ class Configuration extends \NDB_Form
 
         // build a tree from configs array
         $tree = [];
-        foreach ($configs as &$node) {
+        foreach ($configs as $node) {
             $node['Children']  = [];
             $tree[$node['ID']] = &$node;
 

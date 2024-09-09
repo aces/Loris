@@ -409,7 +409,7 @@ class Project implements \JsonSerializable
         );
         return array_map(
             function ($row) {
-                return $row['candid'];
+                return strval($row['candid']);
             },
             iterator_to_array($candidatesData)
         );

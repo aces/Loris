@@ -115,7 +115,7 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = new \CenterID($dbrow['centerid']);
+            $this->_centerid            = new \CenterID(strval($dbrow['centerid']));
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];
@@ -366,7 +366,12 @@ class Recording
             );
         return array_map(
             function ($row) {
-                $values = array_values($row);
+                $values = array_map(
+                    function ($val) {
+                           return $val === null ? null : strval($val);
+                    },
+                    array_values($row)
+                );
                 return new \LORIS\RecordingElectrodes(...$values);
             },
             iterator_to_array($dbrows)

@@ -212,7 +212,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
+        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()->__toString()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID does not match this candidate'
             );
