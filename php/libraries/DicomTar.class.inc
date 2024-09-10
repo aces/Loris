@@ -122,10 +122,10 @@ class DicomTar
                     intval($row['id']),
                     $row['seriesdescription'],
                     intval($row['seriesnumber']),
-                    \Utility::nullableStringToInt($row['echotime']),
-                    \Utility::nullableStringToInt($row['repetitiontime']),
-                    \Utility::nullableStringToInt($row['inversiontime']),
-                    \Utility::nullableStringToInt($row['slicethickness']),
+                    $row['echotime'],
+                    $row['repetitiontime'],
+                    $row['inversiontime'],
+                    $row['slicethickness'],
                     $row['modality'],
                     $row['seriesuid']
                 );

@@ -43,7 +43,7 @@ class Processes
     public function toArray(): array
     {
         return [
-            'mri_uploads' => array_map(
+            'MriUploads' => array_map(
                 self::_formatMRIUploads(...),
                 $this->_mriuploads
             ),
@@ -64,8 +64,8 @@ class Processes
         $mriupload = new \MRIUpload($mriuploaddto->getUploadID());
 
         return [
-            'mri_upload_id' => $mriuploaddto->getUploadID(),
-            'processes'     => $mriupload->getProcesses(),
+            'MriUploadID' => $mriuploaddto->getUploadID(),
+            'Processes'   => $mriupload->getProcesses(),
         ];
     }
 }
