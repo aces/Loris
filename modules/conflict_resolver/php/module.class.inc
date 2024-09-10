@@ -151,7 +151,7 @@ class Module extends \Module
                 ['cand1' => $candID, 'cand2' => $candID],
             );
             // Do not show the conflicts card if there are no conflicts
-            if (empty($results)) {
+            if (count($results) === 0) {
                 return [];
             }
 
@@ -165,7 +165,7 @@ class Module extends \Module
                     $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",
                     [
-                        'Conflicts' => $results,
+                        'Conflicts' => iterator_to_array($results),
                     ],
                     $width,
                     1,

@@ -706,7 +706,6 @@ class Utility
         $DB      = $factory->database();
 
         //get sourcefield using instrument
-        $sourcefields = [];
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
@@ -726,12 +725,14 @@ class Utility
                 ['instrument' => $instrument]
             );
         } elseif (!is_null($name)) { //get all source fields
-            $sourcefields = $DB->pselectRow(
+            return $DB->pselectRow(
                 "SELECT * FROM parameter_type WHERE Name = :pn",
                 ['pn' => $name]
             );
+        } else {
+            return [];
         }
-        return $sourcefields;
+        return iterator_to_array($sourcefields);
     }
 
 

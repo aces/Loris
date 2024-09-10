@@ -803,7 +803,23 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $result = $DB->pselect($query, $qparams);
 
-        return iterator_to_array($result);
+        // StaticDataTable makes assumptions about values being strings,
+        // so convert all values to strings.
+        return array_map(
+            function ($row) {
+                    return array_map(
+                        function ($cell) {
+                            if ($cell === null) {
+                                return $cell;
+                            }
+                            return strval($cell);
+
+                        },
+                        $row
+                    );
+            },
+            iterator_to_array($result)
+        );
     }
 
     /**

@@ -175,9 +175,9 @@ class DocTree extends \NDB_Page
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;
-        $result['currentcategory']  = $currentcategory;
+        $result['currentcategory']  = iterator_to_array($currentcategory);
         $result['parentcategory']   = $parentcategories;
-        $result['subcategories']    = $subcategories;
+        $result['subcategories']    = iterator_to_array($subcategories);
 
         return $result;
     }

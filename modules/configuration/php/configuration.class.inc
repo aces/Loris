@@ -129,15 +129,17 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         // Get the names and meta-information for the config settings in the database
-        $configs = $DB->pselect(
-            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
-            []
+        $configs = iterator_to_array(
+            $DB->pselect(
+                "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
+                []
+            )
         );
 
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
         // Update the value for the setting to the value from the config.xml
-        foreach ($configs as $setting) {
+        foreach ($configs as &$setting) {
             try {
                 $setting['Disabled'] = 'Yes';
                 if ($setting['Parent'] != null) {
@@ -155,7 +157,7 @@ class Configuration extends \NDB_Form
 
         // Now check for config settings from the database for the fields not
         // overridden in the config.xml
-        foreach ($configs as $setting) {
+        foreach ($configs as &$setting) {
             if ($setting['Disabled'] == 'No') {
                 $value = $DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
@@ -171,16 +173,15 @@ class Configuration extends \NDB_Form
 
         // build a tree from configs array
         $tree = [];
-        foreach ($configs as $node) {
-            $node['Children']  = [];
-            $tree[$node['ID']] = &$node;
-
+        foreach ($configs as &$node) {
+            $node['Children']          = [];
+            $tree[intval($node['ID'])] = &$node;
         }
         foreach ($configs as &$node) {
             $tree[$node['Parent']]['Children'][] = &$node;
         }
 
-        return iterator_to_array($configs);
+        return $configs;
     }
 
     /**
