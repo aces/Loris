@@ -99,7 +99,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         $config =& \NDB_Config::singleton();
         if (is_null($config)) {
             throw new \RuntimeException(
-                "Cannot construct MriUploadTask: unable to instantiate
+                "Cannot construct MriUploadTask: unable to instantiate 
                  configuration object"
             );
         }

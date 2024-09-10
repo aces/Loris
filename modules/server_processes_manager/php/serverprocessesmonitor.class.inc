@@ -94,7 +94,7 @@ class ServerProcessesMonitor
         //------------------------------------------------------
         $db = $this->getDatabaseProvider()->getDatabase();
 
-        $query = "SELECT id, pid, type, userid, stdout_file, stderr_file,
+        $query = "SELECT id, pid, type, userid, stdout_file, stderr_file, 
                          exit_code_file, exit_code, start_time, end_time,
                          exit_text
                   FROM server_processes

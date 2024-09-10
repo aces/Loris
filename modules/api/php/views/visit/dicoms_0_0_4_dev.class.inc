@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * PHP Version 7
  *
@@ -25,7 +24,7 @@ use \LORIS\Data\Models\DicomSeriesDTO;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Dicoms
+class Dicoms_0_0_4_Dev
 {
     private $_timepoint;
     private $_dicoms;
@@ -53,8 +52,9 @@ class Dicoms
     private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
         return [
-            'Tarname'    => $dicom->getTarname(),
-            'SeriesInfo' => array_map(
+            'Tarname'     => $dicom->getTarname(),
+            'Patientname' => $dicom->getPatientname(),
+            'SeriesInfo'  => array_map(
                 [
                     self::class,
                     '_formatSeries'
@@ -109,4 +109,3 @@ class Dicoms
         ];
     }
 }
-

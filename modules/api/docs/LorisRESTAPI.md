@@ -787,18 +787,19 @@ The JSON object is of the form:
 
 ## 5.0 DICOM Data
 
-Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
-portion of the REST API namespace, but is defined in a separate section of this 
+Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$VisitLabel`
+portion of the REST API namespace, but is defined in a separate section of this
 document for clarity purposes.
 
 ### 5.1 Candidate DICOMs
+
 ```
-GET /candidates/$CandID/$Visit/dicoms
+GET /candidates/$CandID/$VisitLabel/dicoms
 ```
 
-A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
-all the raw DICOM data which have been acquired for that visit. It will return an 
-object of the form:
+A GET request to `/candidates/$CandID/$VisitLabel/dicoms` will return a JSON object of
+all the DICOM archives (A.K.A. one DICOM archive per `StudyInstanceUID`) which have been
+acquired for that visit. It will return an object of the form:
 
 ```js
 {
@@ -806,63 +807,164 @@ object of the form:
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
     },
-    "DicomTars" : 
-    [
+    "DicomTars" : [
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-            "SeriesInfo" :
-                [{
+            "SeriesInfo" : [
+                {
                     "SeriesDescription" : "MPRAGE_ipat2",
-                    "SeriesNumber" : "2",
+                    "SeriesNumber" : 2,
                     "EchoTime" : "2.98",
                     "RepetitionTime" : "2300",
                     "InversionTime" : "900",
                     "SliceThickness" : "1",
                     "Modality" : "MR",
                     "SeriesUID" : "1.2.3.4.1107",
-                    },
-                    {
+                },
+                {
                     "SeriesDescription" : "BOLD Resting State",
-                    "SeriesNumber" : "5",
+                    "SeriesNumber" : 5,
                     "EchoTime" : "30",
                     "RepetitionTime" : "2100",
                     "InversionTime" : NULL,
                     "SliceThickness" : "3.5",
                     "Modality" : "MR",
                     "SeriesUID" : "3.4.5.6.1507",
-                }]
+                }
+            ]
         },
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
-            "SeriesInfo" :
-                [{
-                "SeriesDescription" : "MPRAGE_ipat2",
-                "SeriesNumber" : "2",
-                "EchoTime" : "2.98",
-                "RepetitionTime" : "2300",
-                "InversionTime" : "900",
-                "SliceThickness" : "1",
-                "Modality" : "MR",
-                "SeriesUID" : "1.7.8.9.1296",
-                }]
+            "SeriesInfo" : [
+                {
+                  "SeriesDescription" : "MPRAGE_ipat2",
+                  "SeriesNumber" : 2,
+                  "EchoTime" : "2.98",
+                  "RepetitionTime" : "2300",
+                  "InversionTime" : "900",
+                  "SliceThickness" : "1",
+                  "Modality" : "MR",
+                  "SeriesUID" : "1.7.8.9.1296",
+                }
+            ]
         }
-    ]    
+    ]
 }
 ```
 
-The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
+The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET
 scans, respectively.
 
+```
+POST /candidates/$CandID/$VisitLabel/dicoms
+```
+
+The body of the POST request should be encoded as a form data and contain a
+field `File` with the imaging file, and `Json`, with the following keys and
+values:
+
+```js
+{
+    "CandID": $CandID,
+    "PSCID": $PSCID,
+    "VisitLabel": $VisitLabel,
+    "IsPhantom": boolean
+}
+```
+
+An optionnal header 'LORIS-Overwrite' with the value 'overwrite' can be used to
+overwrite an existing file.
+A successful request will be answered by a `303 See Other` response with its
+`Location` header pointing to the processes list of the new upload.
+(See 5.3 Tar Level processes)
+
 ### 5.2 Tar Level Data
+
+This section describe how to upload DICOM studies and how to start and monitor
+`mri_upload` processes.
+DICOM studies that have been successfully uploaded and processed can be downloaded with
+the following `GET` request:
+
 ```
-GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
+GET /candidates/$CandID/$VisitLabel/dicoms/$ArchiveName
 ```
 
-Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text 
+Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
-scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
+scanning session, and as retrieved from `/candidates/$CandID/$VisitLabel/dicoms`.
 
-Only `GET` is currently supported.
+To get a list of the processes and their status for a given DICOM study previously uploaded use the following:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$TarName/processes
+```
+
+The response contains all `mri_upload` attempts with the specified `$tarname`. And for
+each of them, a list of processes status.
+Response shape:
+
+```js
+{
+  "MriUploads": [
+    {
+      "MriUploadID": 123,
+      "Processes": [
+        {
+          "END_TIME": "YYYY-MM-DD hh:mm:ss",
+          "EXIT_CODE": "0",
+          "ID": "1",
+          "PID": "24971",
+          "PROGRESS": "text"
+          "STATE": "SUCCESS|RUNNING|ERROR"
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+```
+
+** An empty `Processes` array means that there has never been a process launched on
+that MRI upload.
+To start an MRI upload process on a previously uploaded DICOM study, a POST request
+containing the `MriUploadID` attribute in the request body should be sent.
+
+```
+POST /candidates/$CandID/$VisitLabel/dicoms/$TarName/processes
+```
+
+The request body must contain:
+
+```js
+{
+  "ProcessType": "mri_upload",
+  "MriUploadID": 123
+}
+```
+
+Expected response: 202 Accepted with `Location` header pointing to the new process.
+To obtain a specific process state, use the following:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$TarName/processes/$ProcessID
+```
+
+Response shape:
+```js
+{
+  "ProcessState": [
+    {
+      "END_TIME": "YYYY-MM-DD hh:mm:ss",
+      "EXIT_CODE": "0",
+      "ID": "1",
+      "PID": "24971",
+      "PROGRESS": "text",
+      "STATE": "SUCCESS|RUNNING|ERROR"
+    }
+  ]
+}
+```
 
 ## 6.0 Electrophysiology Recording Data
 
