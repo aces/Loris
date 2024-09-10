@@ -162,13 +162,13 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case "v0.0.3":
             $view = (new \LORIS\api\Views\Visit\Dicoms(
                 $this->_visit,
-                $dicomtars
+                ...$dicomtars
             ))->toArray();
             break;
         default:
-            $view = (new \LORIS\api\Views\Visit\Dicoms(
+            $view = (new \LORIS\api\Views\Visit\Dicoms_0_0_4_Dev(
                 $this->_visit,
-                $dicomtars
+                ...$dicomtars
             ))->toArray();
         }
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
@@ -205,23 +205,23 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!isset($files['MriFile'])) {
+        if (!isset($files['File'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The input key for the uploaded file should be MriFile.'
+                'The request should have a "File" attribute with the uploaded file.'
             );
         }
 
-        $uploaded_file = $files['MriFile'];
+        $uploaded_file = $files['File'];
 
         $request_body = $request->getParsedBody();
-        if (!isset($request_body['json'])) {
+        if (!isset($request_body['Json'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The request should have a "json" form attribute containing the '
+                'The request should have a "Json" form attribute containing the '
                     . 'request data.'
             );
         }
 
-        $data = json_decode($request_body['json'], true);
+        $data = json_decode($request_body['Json'], true);
 
         $input_candid = $data['CandID'] ?? null;
         $visit_candid = $this->_visit->getCandID();
@@ -238,7 +238,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $visit_label = $data['Visit'] ?? null;
+        $visit_label = $data['VisitLabel'] ?? null;
         if ($visit_label !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Visit label in URL and POST data do not match.'
@@ -293,7 +293,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $file_info = new \SplFileInfo($file_path);
         if (!$file_info->isFile()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Upload failed (see error_log.)'
+                'Upload failed, please contact your LORIS administrator.'
             );
         }
 
@@ -307,7 +307,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Database insertion failed (see error_log.)'
+                'Database insertion failed, please contact your LORIS '
+                    . 'administrator.'
             );
         }
 

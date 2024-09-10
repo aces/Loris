@@ -60,88 +60,88 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
-            gettype($dicomArray['DicomArchives']),
+            gettype($dicomArray['DicomTars']),
             'array'
         );
         $this->assertSame(
-            gettype($dicomArray['DicomArchives']['0']),
+            gettype($dicomArray['DicomTars']['0']),
             'array'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']
+                $dicomArray['DicomTars']['0']['SeriesInfo']
             ),
             'array'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['ArchiveName']
+                $dicomArray['DicomTars']['0']['Tarname']
             ),
             'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['PatientName']
+                $dicomArray['DicomTars']['0']['Patientname']
             ),
             'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']
             ),
             'array'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['SeriesDescription']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesDescription']
             ),
             'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['SeriesNumber']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesNumber']
             ),
             'integer'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['EchoTime']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['EchoTime']
             ),
-            'integer'
+            'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['RepetitionTime']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['RepetitionTime']
             ),
-            'integer'
+            'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['InversionTime']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['InversionTime']
             ),
             'NULL'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['1']['InversionTime']
-            ),
-            'integer'
-        );
-        $this->assertSame(
-            gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['SliceThickness']
-            ),
-            'integer'
-        );
-        $this->assertSame(
-            gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['Modality']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['1']['InversionTime']
             ),
             'string'
         );
         $this->assertSame(
             gettype(
-                $dicomArray['DicomArchives']['0']['SeriesInfo']['0']['SeriesUID']
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['SliceThickness']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['Modality']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $dicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesUID']
             ),
             'string'
         );
@@ -151,65 +151,65 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('Visit', $dicomArray['Meta']);
 
         $this->assertArrayHasKey(
-            'DicomArchives',
+            'DicomTars',
             $dicomArray
         );
         $this->assertArrayHasKey(
             '0',
-            $dicomArray['DicomArchives']
+            $dicomArray['DicomTars']
         );
         $this->assertArrayHasKey(
-            'ArchiveName',
-            $dicomArray['DicomArchives']['0']
+            'Tarname',
+            $dicomArray['DicomTars']['0']
         );
         $this->assertArrayHasKey(
-            'PatientName',
-            $dicomArray['DicomArchives']['0']
+            'Patientname',
+            $dicomArray['DicomTars']['0']
         );
 
         $this->assertArrayHasKey(
             'SeriesInfo',
-            $dicomArray['DicomArchives']['0']
+            $dicomArray['DicomTars']['0']
         );
         $this->assertArrayHasKey(
             '0',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']
+            $dicomArray['DicomTars']['0']['SeriesInfo']
         );
         $this->assertArrayHasKey(
             'SeriesDescription',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'SeriesDescription',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'SeriesNumber',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'EchoTime',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'RepetitionTime',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'InversionTime',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'SliceThickness',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'Modality',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
         $this->assertArrayHasKey(
             'SeriesUID',
-            $dicomArray['DicomArchives']['0']['SeriesInfo']['0']
+            $dicomArray['DicomTars']['0']['SeriesInfo']['0']
         );
     }
 
@@ -240,7 +240,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
                 "$this->tarfileTest"
             );
         }
-
+ 
         $this->assertEquals(200, $response_stream->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_stream->getBody();

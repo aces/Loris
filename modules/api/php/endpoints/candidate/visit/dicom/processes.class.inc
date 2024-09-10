@@ -187,7 +187,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $mriuploadid = $data['MRIUploadID'] ?? null;
+        $mriuploadid = $data['MriUploadID'] ?? null;
         if (!is_numeric($mriuploadid)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid ProcessType.'
@@ -201,7 +201,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                'filename and MRIUploadID do not match'
+                'Filename and MRIUploadID do not match'
             );
         }
 
@@ -213,7 +213,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\LorisException $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'mri_upload process can not be launched (see error_log.)'
+                'MRI upload process can not be launched (see error_log.)'
             );
         }
 
@@ -233,8 +233,8 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withQuery('');
 
         $body = [
-            'link'          => (string) $processlocation,
-            'process_state' => $processesState,
+            'Link'         => (string) $processlocation,
+            'ProcessState' => $processesState,
         ];
 
         return new \LORIS\Http\Response\JSON\Accepted($body);

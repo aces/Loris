@@ -1080,36 +1080,4 @@ class Utility
             );
         }
     }
-
-    /**
-     * Convert a nullable integer to a nullable string.
-     *
-     * @param ?int $int The nullable integer
-     *
-     * @return ?string
-     */
-    static function nullableIntToString(?int $int): ?string
-    {
-        if ($int === null) {
-            return null;
-        }
-
-        return (string) $int;
-    }
-
-    /**
-     * Convert a nullable string to a nullable integer.
-     *
-     * @param ?string $string The nullable string
-     *
-     * @return ?int
-     */
-    static function nullableStringToInt(?string $string): ?int
-    {
-        if ($string === null) {
-            return null;
-        }
-
-        return (int) $string;
-    }
 }
