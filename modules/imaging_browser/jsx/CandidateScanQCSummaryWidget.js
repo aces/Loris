@@ -1,6 +1,7 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -68,6 +69,11 @@ function CandidateScanQCSummaryWidget(props) {
             </p>
         </div>;
 }
+CandidateScanQCSummaryWidget.propTypes = {
+  Files: PropTypes.array,
+  BaseURL: PropTypes.string,
+  VisitMap: PropTypes.array,
+};
 
 /**
  * Get a list of unique modalities in the files passed.

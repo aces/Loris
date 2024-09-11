@@ -1,13 +1,14 @@
 /* exported SelectField, SearchField, SelectDropdown */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * MultiSelect Dropdown component
  * Note this is only used in DQT
  * For generic SelectDropdown, see Select in Form.js
  */
-class SelectField extends Component {
+export class SelectField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -53,11 +54,17 @@ class SelectField extends Component {
     );
   }
 }
+SelectField.propTypes = {
+  toggleCheckbox: PropTypes.func,
+  label: PropTypes.string,
+  checked: PropTypes.bool,
+  multi: PropTypes.bool,
+};
 
 /**
  * Search Field React component
  */
-class SearchField extends Component {
+export class SearchField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -112,11 +119,15 @@ class SearchField extends Component {
     );
   }
 }
+SearchField.propTypes = {
+  updateFilter: PropTypes.func,
+  filter: PropTypes.string,
+};
 
 /**
  * Select Dropdown React component
  */
-class SelectDropdown extends Component {
+export class SelectDropdown extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -333,6 +344,12 @@ class SelectDropdown extends Component {
     );
   }
 }
+SelectDropdown.propTypes = {
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  onFieldClick: PropTypes.func,
+  selectedCategory: PropTypes.string,
+};
 
 window.SelectField = SelectField;
 window.SearchField = SearchField;

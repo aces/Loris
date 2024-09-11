@@ -1,9 +1,4 @@
 <!-- Main table -->
-{if $show3DViewer|default}
-{*<td nowrap="nowrap">the first opening td already opened in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
-
-</br>
-{/if}
 <div>
 {$headerTable}
 </div>
@@ -18,62 +13,63 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-          ReactDOM.render(
-                  RImagePanel({
-                      'BaseURL' : "{$baseurl}",
+            ReactDOM.createRoot(
+              document.getElementById("image-{$files[file].FileID}")
+            ).render(
+              RImagePanel({
+                'BaseURL' : "{$baseurl}",
 
-                      'FileID'   : "{$files[file].FileID}",
-                      'Filename' : "{$files[file].Filename}",
-                      'QCStatus' : "{$files[file].QCStatus}",
-                      'APIFile' : "{$files[file].APIFile}",
+                'FileID'   : "{$files[file].FileID}",
+                'Filename' : "{$files[file].Filename}",
+                'QCStatus' : "{$files[file].QCStatus}",
+                'APIFile' : "{$files[file].APIFile}",
 
-                      'HasQCPerm': {if $has_qc_permission}true{else}false{/if},
-                      'FileNew'  : {if $files[file].New}true{else}false{/if},
-                      "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
+                'HasQCPerm': {if $has_qc_permission}true{else}false{/if},
+                'FileNew'  : {if $files[file].New}true{else}false{/if},
+                "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
-                      "Caveat" : "{$files[file].Caveat}",
-                      "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
-                      "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
-                      'HeaderInfo' : {
-                          "SeriesUID" : "{$files[file].SeriesUID}",
-                          'XStep' : "{$files[file].Xstep}",
-                          'YStep' : "{$files[file].Ystep}",
-                          'ZStep' : "{$files[file].Zstep}",
-                          'OutputType' : "{$files[file].OutputType}",
-                          'CoordinateSpace' : "{$files[file].CoordinateSpace}",
-                          "AcquisitionProtocol" : "{$files[file].AcquisitionProtocol}",
-                          'AcquisitionDate' : "{$files[file].AcquisitionDate|date_format}",
-                          "InsertedDate" : "{$files[file].FileInsertDate|date_format}",
-                          "SeriesNumber" : "{$files[file].SeriesNumber}",
-                          "SeriesDescription" : "{$files[file].SeriesDescription}",
-                          "SliceThickness" : "{$files[file].SliceThickness}",
-                          "RepetitionTime" : "{$files[file].RepetitionTime}",
-                          "EchoTime" : "{$files[file].EchoTime}",
-                          "InversionTime" : "{$files[file].InversionTime}",
-                          "PhaseEncodingDirection" : "{$files[file].PhaseEncodingDirection}",
-                          "ImageType" : "{$files[file].ImageType}",
-                          "EchoNumber" : "{$files[file].EchoNumber}",
-                          "NumVolumes" : "{$files[file].Time}",
-                          "ProcessingPipeline": "{$files[file].ProcessingPipeline}",
-                          "ProcDate": "{$files[file].ProcDate|date_format}",
-                          "TotalRejected" : "{$files[file].TotalRejected}",
-                          "InterlaceRejected" : "{$files[file].InterlaceRejected}",
-                          "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
-                          "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
-                      },
-
-                      'Fullname' : "{$files[file].FullFilename}",
-                      "XMLProtocol" : "{$files[file].XMLprotocol}",
-                      "XMLReport" : "{$files[file].XMLreport}",
-                      "NrrdFile" : "{$files[file].NrrdFile}",
-                      "BvalFile" : "{$files[file].BvalFile}",
-                      "BvecFile" : "{$files[file].BvecFile}",
-                      "JsonFile" : "{$files[file].JsonFile}",
-                      "OtherTimepoints" : "{$files[file].OtherTimepoints}",
-                      "SeriesUID": "{$files[file].SeriesUID}"
-                  }),
-                  document.getElementById("image-{$files[file].FileID}" )
-                  );
+                "Caveat" : "{$files[file].Caveat}",
+                "EditableCaveat": "{$files[file].EditableCaveat}",
+                "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
+                'HeaderInfo' : {
+                  "SeriesUID" : "{$files[file].SeriesUID}",
+                  'XStep' : "{$files[file].Xstep}",
+                  'YStep' : "{$files[file].Ystep}",
+                  'ZStep' : "{$files[file].Zstep}",
+                  'OutputType' : "{$files[file].OutputType}",
+                  'CoordinateSpace' : "{$files[file].CoordinateSpace}",
+                  "AcquisitionProtocol" : "{$files[file].AcquisitionProtocol}",
+                  'AcquisitionDate' : "{$files[file].AcquisitionDate|date_format}",
+                  "InsertedDate" : "{$files[file].FileInsertDate|date_format}",
+                  "SeriesNumber" : "{$files[file].SeriesNumber}",
+                  "SeriesDescription" : "{$files[file].SeriesDescription}",
+                  "SliceThickness" : "{$files[file].SliceThickness}",
+                  "RepetitionTime" : "{$files[file].RepetitionTime}",
+                  "EchoTime" : "{$files[file].EchoTime}",
+                  "InversionTime" : "{$files[file].InversionTime}",
+                  "PhaseEncodingDirection" : "{$files[file].PhaseEncodingDirection}",
+                  "ImageType" : "{$files[file].ImageType}",
+                  "EchoNumber" : "{$files[file].EchoNumber}",
+                  "NumVolumes" : "{$files[file].Time}",
+                  "ProcessingPipeline": "{$files[file].ProcessingPipeline}",
+                  "ProcDate": "{$files[file].ProcDate|date_format}",
+                  "TotalRejected" : "{$files[file].TotalRejected}",
+                  "InterlaceRejected" : "{$files[file].InterlaceRejected}",
+                  "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
+                  "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
+                },
+                'Fullname' : "{$files[file].FullFilename}",
+                "XMLProtocol" : "{$files[file].XMLprotocol}",
+                "XMLReport" : "{$files[file].XMLreport}",
+                "NrrdFile" : "{$files[file].NrrdFile}",
+                "NiiFile" : "{$files[file].NiiFile}",
+                "BvalFile" : "{$files[file].BvalFile}",
+                "BvecFile" : "{$files[file].BvecFile}",
+                "JsonFile" : "{$files[file].JsonFile}",
+                "OtherTimepoints" : "{$files[file].OtherTimepoints}",
+                "SeriesUID": "{$files[file].SeriesUID}"
+              }),
+            );
           </script>
        {/section}
    </div> <!-- closing panel-body div-->

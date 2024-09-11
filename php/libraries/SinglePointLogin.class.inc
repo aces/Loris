@@ -113,59 +113,6 @@ class SinglePointLogin
     }
 
     /**
-     * Saves the new password if last was expired
-     *
-     * @return bool
-     * @access public
-     */
-    /*
-    function save(): bool
-    {
-        // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
-
-        // get user's data
-        $data = $user->getData();
-
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-                $_POST['confirm'] ?? '',
-                $data['UserID'],
-                $data['Email'],
-            ),
-            array(
-                '==',
-                '!=',
-                '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-            return false;
-        }
-
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-            return false;
-        }
-        // Check if password is present in existing data breaches.
-        if ($user->pwnedPassword($_POST['password'])) {
-            $this->_lastError = 'The password you chose is too common. Please '
-                . 'choose a more unique password.';
-                return false;
-        }
-
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
-        return true;
-    }
-     */
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return bool Whether a user has successfully authenticated.
@@ -178,8 +125,9 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = isset($headers['Authorization'])
-                         ? $headers['Authorization']
+        $headers    = array_change_key_case($headers, CASE_LOWER);
+        $authHeader = isset($headers['authorization'])
+                         ? $headers['authorization']
                          : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
@@ -214,7 +162,6 @@ class SinglePointLogin
 
         $sharedKey = $config->getSetting("JWTKey");
 
-        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode(
                 $token,
@@ -252,6 +199,16 @@ class SinglePointLogin
     ): bool {
 
         $this->_lastError = '';
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $maxDaysInactive = $config->getSetting("UserMaximumDaysInactive");
+        if (!empty($maxDaysInactive) && is_numeric($maxDaysInactive)) {
+            $maxDaysInactive = intval($maxDaysInactive);
+        } else {
+            $maxDaysInactive = null;
+        }
 
          ///////////////////////////
          ///initialization/////
@@ -356,7 +313,8 @@ class SinglePointLogin
             }
 
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -401,7 +359,7 @@ class SinglePointLogin
                 && ($currentDay < strtotime($row['active_from']))
             ) {
                 $this->_lastError = "Your account is not active yet."
-                    ." According to our records it will be active from 
+                    ." According to our records it will be active from
             {$row['active_from']}"
                 . " Please contact your project administrator";
                 return false;
@@ -416,7 +374,8 @@ class SinglePointLogin
                 return false;
             }
             if ($row['Active'] == 'N'
-                || $this->disabledDueToInactivity($username, 365)
+                || (!empty($maxDaysInactive)
+                && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -600,7 +559,7 @@ class SinglePointLogin
 
         $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
-                  FROM user_login_history 
+                  FROM user_login_history
                   WHERE UserID = :username";
 
         $row = $DB->pselectRow($query, ['username' => $username]);
@@ -625,5 +584,20 @@ class SinglePointLogin
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set the User to be the currently logged
+     * in user for this session.
+     *
+     * @param \User $user The user to login.
+     *
+     * @return void
+     */
+    function setLoggedInUser(\User $user) : void
+    {
+        $this->_username = $user->getUsername();
+        $this->setState();
+        $_SESSION['State']->setProperty('login', $this);
     }
 }

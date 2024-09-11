@@ -6,7 +6,13 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import EditDocCategoryForm from './editCategoryForm';
+import DeleteDocCategoryForm from './deleteCategoryForm';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {CheckboxElement} from 'jsx/Form';
 
 /**
  * Doc index component
@@ -170,6 +176,8 @@ class DocIndex extends React.Component {
       case 'File Name':
         let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
+                          + encodeURIComponent(row['Uploaded By'])
+                          + '/'
                           + encodeURIComponent(row['File Name']);
         result = <td>
           <a
@@ -241,6 +249,8 @@ class DocIndex extends React.Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+    const uploadEditPerm =
+      this.props.hasPermission('document_repository_upload_edit');
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
@@ -274,7 +284,7 @@ class DocIndex extends React.Component {
       {
         label: 'Edit',
         show: this.props.hasPermission('superUser')
-        || this.props.hasPermission('document_repository_edit'),
+        || uploadEditPerm,
       },
       {
         label: 'Delete File',
@@ -291,18 +301,13 @@ class DocIndex extends React.Component {
     ];
     let uploadDoc;
     let uploadCategory;
-    if (loris.userHasPermission('document_repository_edit')) {
+    let editCategory;
+    let deleteCategory;
+    if (loris.userHasPermission('document_repository_upload_edit')) {
       tabList.push(
         {
           id: 'upload',
           label: 'Upload',
-        },
-      );
-
-      tabList.push(
-        {
-          id: 'category',
-          label: 'Category',
         },
       );
 
@@ -317,9 +322,27 @@ class DocIndex extends React.Component {
           />
         </TabPane>
       );
+    }
+    if (loris.userHasPermission('document_repository_categories')) {
+      tabList.push(
+        {
+          id: 'addCategory',
+          label: 'Add Category',
+        },
+        {
+          id: 'editCategory',
+          label: 'Edit Category',
+        },
+        {
+          id: 'deleteCategory',
+          label: 'Delete Category',
+        },
+      );
+
+      let numTabs = tabList.length-1;
 
       uploadCategory = (
-        <TabPane TabId={tabList[2].id}>
+        <TabPane TabId={tabList[numTabs-2].id}>
           <DocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/UploadCategory`}
@@ -328,21 +351,23 @@ class DocIndex extends React.Component {
           />
         </TabPane>
       );
-    } else if (loris.userHasPermission('document_repository_view')) {
-      tabList.push(
-        {
-          id: 'category',
-          label: 'Category',
-        },
+
+      editCategory = (
+        <TabPane TabId={tabList[numTabs-1].id}>
+          <EditDocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/EditCategory`}
+            refreshPage={this.fetchData}
+          />
+        </TabPane>
       );
 
-      uploadCategory = (
-        <TabPane TabId={tabList[1].id}>
-          <DocCategoryForm
+      deleteCategory = (
+        <TabPane TabId={tabList[numTabs].id}>
+          <DeleteDocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            action={`${loris.BaseURL}/document_repository/DeleteCategory`}
             refreshPage={this.fetchData}
-            newCategoryState={this.newCategoryState}
           />
         </TabPane>
       );
@@ -421,19 +446,26 @@ class DocIndex extends React.Component {
         </TabPane>
         {uploadDoc}
         {uploadCategory}
+        {editCategory}
+        {deleteCategory}
       </Tabs>
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <div className="page-document">
-    <DocIndex
-      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-    </div>,
+  createRoot(
     document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-document">
+      <DocIndex
+        dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />
+    </div>
   );
 });

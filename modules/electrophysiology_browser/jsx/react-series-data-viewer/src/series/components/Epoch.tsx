@@ -12,6 +12,7 @@ type CProps = {
   ],
   color: string,
   opacity: number,
+  minWidth: number,
 };
 
 /**
@@ -23,6 +24,7 @@ type CProps = {
  * @param root0.scales
  * @param root0.color
  * @param root0.opacity
+ * @param root0.minWidth
  */
 const Epoch = (
   {
@@ -32,14 +34,18 @@ const Epoch = (
     scales,
     color,
     opacity,
+    minWidth,
   }: CProps) => {
+  onset = isNaN(onset) ? 0 : onset;
+  duration = isNaN(duration) ? 0 : duration;
+
   const start = vec2.fromValues(
     scales[0](onset),
     scales[1](-parentHeight/2),
   );
 
   const end = vec2.fromValues(
-    scales[0](onset + duration) + MIN_EPOCH_WIDTH,
+    scales[0](onset + Math.max(duration, minWidth)),
     scales[1](parentHeight/2)
   );
 
@@ -62,6 +68,7 @@ const Epoch = (
 Epoch.defaultProps = {
   color: '#dae5f2',
   opacity: 1,
+  minWidth: MIN_EPOCH_WIDTH,
 };
 
 export default Epoch;

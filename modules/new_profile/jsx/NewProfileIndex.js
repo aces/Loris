@@ -1,5 +1,16 @@
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    ButtonElement,
+    FieldsetElement,
+} from 'jsx/Form';
 
 /**
  * New Profile Form
@@ -88,7 +99,7 @@ class NewProfileIndex extends React.Component {
 
     let candidateObject = {
       'Candidate': {
-        'Project': configData.project[formData.project],
+        'Project': formData.project,
         // 'PSCID' : conditionally included below
         // 'EDC' : conditionally included below
         'DoB': formData.dobDate,
@@ -98,7 +109,7 @@ class NewProfileIndex extends React.Component {
     };
 
     if (this.state.configData['edc'] === 'true') {
-      candidateObject.Candidate.EDC = formData.edc;
+      candidateObject.Candidate.EDC = formData.edcDate;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
@@ -129,14 +140,12 @@ class NewProfileIndex extends React.Component {
             cancelButtonColor: '#3085d6',
             cancelButtonText: 'Recruit another candidate',
           }).then((result) => {
-            if (result.value === true) {
-              window.location.href = '/' + data.CandID;
-            } else {
-              this.setState({
-                formData: {},
-                submitDisabled: false,
-              });
-            }
+            // Go to the candidate profile or reload the page, depending
+            // on whether the user clicked on 'Access Profile' or
+            // 'Recruit another candidate' respectively
+            window.location.href = result.value === true
+                ? '/' + data.CandID
+                : window.location.href;
           });
         } )
         .catch((error) => {
@@ -319,13 +328,19 @@ class NewProfileIndex extends React.Component {
     );
   }
 }
+NewProfileIndex.propTypes = {
+  dataURL: PropTypes.string,
+  submitURL: PropTypes.string,
+};
+
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <NewProfileIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
       submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
       hasPermission = {loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

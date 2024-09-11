@@ -9,8 +9,7 @@
  * have a valid \Module descriptor to the modules table.
  *
  * If the --remove parameter is provided, it will remove anything in the
- * modules table that can not be instantiated with Module::factory from
- * the modules table.
+ * modules table that can not be instantiated with from the modules table.
  *
  * If the -n flag is provided, it will not actually add/delete from the
  * table, but only tell you what it would otherwise do.
@@ -52,7 +51,7 @@ $currentModules = $DB->pselectCol(
 if (isset($flags['remove'])) {
     foreach ($currentModules as $module) {
         try {
-            Module::factory($module);
+            $lorisInstance->getModule($module);
         } catch (\LorisNoSuchModuleException | \LorisModuleMissingException $e) {
             print "Removing $module\n";
             if ($dryrun) {
@@ -80,6 +79,7 @@ if (isset($flags['add'])) {
 function addDir(string $moduledir): void
 {
     global $DB;
+    global $lorisInstance;
     global $dryrun;
     global $currentModules;
 
@@ -91,7 +91,7 @@ function addDir(string $moduledir): void
         if (!in_array($module, $currentModules, true)) {
             if (is_dir("$moduledir/$module")) {
                 try {
-                    Module::factory($module);
+                    $lorisInstance->getModule($module);
                 } catch (\LorisNoSuchModuleException
                     | \LorisModuleMissingException $e
                 ) {

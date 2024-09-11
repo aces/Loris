@@ -90,14 +90,22 @@ class ModuleDict extends \NDB_Page
             }
             $fieldname = $row->getFieldName();
             $datatype  = $row->getDataType();
+            $scope     = $row->getScope();
             $organized[$cat][$fieldname] = [
                 'description' => $row->getDescription(),
-                'scope'       => $row->getScope(),
+                'scope'       => $scope,
                 'type'        => $row->getDataType(),
                 'cardinality' => $row->getCardinality(),
             ];
             if ($datatype instanceof \LORIS\Data\Types\Enumeration) {
                 $organized[$cat][$fieldname]['options'] = $datatype->getOptions();
+                $labels = $datatype->getLabels();
+                if (!empty($labels)) {
+                    $organized[$cat][$fieldname]['labels'] = $datatype->getLabels();
+                }
+            }
+            if ($scope->__toString() == "session") {
+                $organized[$cat][$fieldname]['visits'] = $row->getVisits();
             }
         }
         return new \LORIS\Http\Response\JSON\OK($organized);

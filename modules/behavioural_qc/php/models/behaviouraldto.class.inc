@@ -126,7 +126,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->_site);
+        return new \CenterID(strval($this->_site));
     }
 
     /**
@@ -137,7 +137,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID($this->_project);
+        return new \ProjectID(strval($this->_project));
     }
 
     /**

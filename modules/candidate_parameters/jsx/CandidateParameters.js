@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import CandidateInfo from './CandidateInfo';
@@ -7,6 +8,7 @@ import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
 import CandidateDOB from './CandidateDOB';
 import CandidateDOD from './CandidateDOD';
+import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
 
 /**
@@ -77,6 +79,11 @@ class CandidateParameters extends Component {
         label: 'Date of Death',
         component: CandidateDOD,
       },
+      {
+        id: 'diagnosisEvolution',
+        label: 'Diagnosis Evolution',
+        component: DiagnosisEvolution,
+      },
     ];
 
     if (loris.config('useProband') === 'true') {
@@ -130,18 +137,15 @@ CandidateParameters.propTypes = {
 const args = QueryString.get(document.currentScript.src);
 
 window.addEventListener('load', () => {
-  const candidateParameters = (
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-candidate-parameters">
       <CandidateParameters
         Module="candidate_parameters"
         candID={args.candID}
       />
     </div>
-  );
-
-  ReactDOM.render(
-    candidateParameters,
-    document.getElementById('lorisworkspace')
   );
 });
 

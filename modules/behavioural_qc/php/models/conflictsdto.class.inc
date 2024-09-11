@@ -77,11 +77,11 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
     private $_fieldName = '';
 
     /**
-     * The tableName
+     * The testName
      *
      * @var string
      */
-    private $_tableName = '';
+    private $_testName = '';
 
     /**
      * The test_name_display
@@ -112,7 +112,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->_site);
+        return new \CenterID(strval($this->_site));
     }
 
     /**
@@ -123,7 +123,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID($this->_project);
+        return new \ProjectID(strval($this->_project));
     }
 
     /**
@@ -142,7 +142,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
             'cohort'            => $this->_cohort,
             'site'              => $this->_site,
             'fieldName'         => $this->_fieldName,
-            'tableName'         => $this->_tableName,
+            'testName'          => $this->_testName,
             'test_name_display' => $this->_test_name_display,
             'sessionID'         => $this->_sessionID,
             'commentID'         => $this->_commentID,

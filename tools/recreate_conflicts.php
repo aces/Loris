@@ -12,10 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . 'generic_includes.php';
+require_once __DIR__ . '/generic_includes.php';
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
@@ -46,7 +46,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 $action = $argv[1];
 
 if ($action=='all') {
-    $allInstruments = Utility::getAllInstruments();
+    $allInstruments = NDB_BVL_Instrument::getInstrumentNamesList($lorisInstance);
     $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
     $allInstruments = [$action => $action];
@@ -94,6 +94,7 @@ foreach ($ddeInstruments as $test) {
             print "Recreating conflicts for " . $instrument['Test_name'] .
                 ':'. $instrument['CommentID'] . "\n";
             $diff = ConflictDetector::detectConflictsForCommentIds(
+                $lorisInstance,
                 $instrument['Test_name'],
                 $instrument['CommentID'],
                 $instrument['DDECommentID']

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -288,5 +289,11 @@ class VisitInstrumentList extends Component {
         );
     }
 }
+VisitInstrumentList.propTypes = {
+  BaseURL: PropTypes.string,
+  Candidate: PropTypes.object,
+  Visit: PropTypes.object,
+  VisitMap: PropTypes.object,
+};
 
 export default VisitInstrumentList;

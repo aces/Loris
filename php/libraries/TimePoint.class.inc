@@ -500,9 +500,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets this timepoint's screening status.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getScreeningStatus(): string
+    function getScreeningStatus(): ?string
     {
         return $this->_timePointInfo["Screening"];
     }
@@ -817,6 +817,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             && $this->getData($stage) == null
         ) {
             $setArray[$stage] = 'In Progress';
+            $setArray['Date_status_change'] = date('Y-m-d');
         }
 
         if ($setArray['Current_stage'] == 'Approval') {

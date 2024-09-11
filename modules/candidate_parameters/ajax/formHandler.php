@@ -14,15 +14,28 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$user = \User::singleton();
-if (!$user->hasPermission('candidate_parameter_edit')) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-}
-
 $tab = $_POST['tab'] ?? '';
 if ($tab === '') {
     header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
+$user = \User::singleton();
+if (($tab == 'candidateDOB')
+    && (!$user->hasPermission('candidate_dob_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab == 'candidateDOD')
+    && (!$user->hasPermission('candidate_dod_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab != 'candidateDOB')
+    && ($tab != 'candidateDOD')
+    && !$user->hasPermission('candidate_parameter_edit')
+) {
+    header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
@@ -52,7 +65,6 @@ case 'participantStatus':
 case 'consentStatus':
     editConsentStatusFields($db);
     break;
-
 
 case 'candidateDOB':
     editCandidateDOB($db);
@@ -450,6 +462,7 @@ function editConsentStatusFields(\Database $db)
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
         $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldDate       = $candidateConsent[$consentID]['DateGiven'] ?? null;
         $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
         $validated     = false;
 
@@ -488,11 +501,28 @@ function editConsentStatusFields(\Database $db)
                 ) { // Withdrawing from 'yes' status required consent date
                     // and withdrawal date
                     $validated = true;
+                } else if ($oldStatus === 'not_applicable' && !empty($date)
+                    && empty($withdrawal)
+                ) { // Add N/A option
+                    $validated = true;
                 } else {
                     http_response_code(400);
                     echo('Data failed validation. Resolve errors and try again.');
                     return;
                 }
+            }
+            break;
+        case 'not_applicable':
+            // If status is N/A, date is not required.
+            if (empty($date) && empty($withdrawal)
+                && ($oldStatus !== 'yes' || $oldStatus !== 'no')
+            ) {
+                $validated = true;
+            } else {
+                http_response_code(400);
+                echo('Answering not applicable to a consent type
+                      does not require a date of consent.');
+                return;
             }
             break;
         default:
@@ -505,7 +535,14 @@ function editConsentStatusFields(\Database $db)
                 echo('A status is missing for at least one consent type.
                       Please select a valid status for all consent types.');
                 return;
+            } elseif (!empty($oldStatus)
+                || !empty($oldDate)
+                || !empty($oldWithdrawal)
+            ) {
+                // Only update empty fields if they were not already empty
+                $validated = true;
             }
+
             break;
         }
 

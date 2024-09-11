@@ -39,7 +39,7 @@ async function processLines(data, rowcb, endstreamcb) {
         }
     }
     return {remainder: data.slice(rowStart), eos: false};
-};
+}
 
 /**
  * fetchDataStream fetches a data stream from dataURL where
@@ -52,11 +52,15 @@ async function processLines(data, rowcb, endstreamcb) {
  *                             read from the stream.
  * @param {function} endstreamcb - A callback to call when the final
  *                             byte is read from the stream.
+ * @param {string} method    - the HTTP method to use for the request
  */
-async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb) {
+async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb, method) {
     const response = await fetch(
         dataURL,
-        {credentials: 'same-origin'},
+        {
+            method: method || 'get',
+            credentials: 'same-origin',
+        },
     );
 
     const reader = response.body.getReader();
@@ -88,7 +92,7 @@ async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb) {
             console.error(err);
             doneLoop = true;
         });
-    };
-};
+    }
+}
 
 export default fetchDataStream;

@@ -4,34 +4,233 @@ on:
   - push
   - pull_request
 
-env:
-  EEG_VIS_ENABLED: 'true'
 
 jobs:
-  build:
+  buildjs:
+    env:
+      EEG_VIS_ENABLED: 'true'
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+
+      - name: Install EEG package dependencies
+      # We only need to install protobuf-compiler
+      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
+      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
+      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
+        run: |
+          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
+             libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+          cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+          protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
+      - name: Install npm modules
+        run: npm ci
+
+      - name: Compile LORIS javascript
+        run: npm run compile
+
+      - name: Create LORIS JS tarball
+        run: tar cfvz lorisjs.tar.gz htdocs/js/components/ modules/*/js/*
+
+      - name: Create node_modules tarball
+        run: tar cfvz node_modules.tar.gz node_modules
+
+      - uses: actions/upload-artifact@v3
+        name: Upload node_modules artifact
+        with:
+          name: node_modules
+          path: node_modules.tar.gz
+
+      - uses: actions/upload-artifact@v3
+        name: Upload lorisjs.tar.gz artifact
+        with:
+          name: lorisjs
+          path: lorisjs.tar.gz
+
+  buildphp:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: zip, php-ast
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Composer cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Create vendor tarball
+        run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
+
+      - uses: actions/upload-artifact@v3
+        name: Upload vendor-php${{matrix.php}}.tar.gz artifact
+        with:
+          name: vendor-php${{matrix.php}}
+          path: vendor-php${{matrix.php}}.tar.gz
+
+  api:
+    runs-on: ubuntu-latest
+    needs:
+      - buildjs
+      - buildphp 
+
+    env:
+      DB_DATABASE: LorisTest
+      DB_USER: SQLTestUser
+      DB_PASSWORD: TestPassword
+      LORIS_DB_CONFIG: project/config.xml
+      DOCKER_WEB_SERVER: http://localhost:8000/
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+        apiversion: ['v0.0.3', 'v0.0.4-dev']
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/download-artifact@v3
+      name: Download node_modules artifact
+      with:
+        name: node_modules
+        path: .
+
+    - uses: actions/download-artifact@v3
+      name: Download compiled LORIS javascript artifact
+      with:
+        name: lorisjs
+        path: .
+
+    - uses: actions/download-artifact@v3
+      name: Download PHP dependencies artifact
+      with:
+        name: vendor-php${{matrix.php}}
+        path: .
+
+
+    - name: Extract node_modules
+      run: tar xfvz node_modules.tar.gz
+
+    - name: Extract compiled JS
+      run: tar xfvz lorisjs.tar.gz
+
+    - name: Extract composer vendor directory
+      run: tar xfvz vendor-php${{matrix.php}}.tar.gz
+
+    - name: Generate VERSION file
+      run: make VERSION
+
+    - name: Setup project/ directory
+      run: |
+        mkdir -p project/instruments
+        cp test/config.xml project/config.xml
+        cp test/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/
+        cp -r raisinbread/instruments/* project/instruments/
+        sed -i 's/<sandbox>1<\/sandbox>/<sandbox>0<\/sandbox>/g' project/config.xml
+        sed -i 's/<adminUser>SQLTestUser<\/adminUser>/<adminUser>root<\/adminUser>/g' project/config.xml
+        sed -i 's/<adminPassword>TestPassword<\/adminPassword>/<adminPassword>root<\/adminPassword>/g' project/config.xml
+        sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
+        cat project/config.xml
+
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+        mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
+        mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
+
+    - name: Source default schema and Raisinbread
+      run: |
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-00-schema.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-01-Modules.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-02-Permission.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-04-Help.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
+        find raisinbread/instruments/instrument_sql -name *.sql -not -name 9999-99-99-drop_instrument_tables.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+    - name: Source instrument schemas
+      run: |
+        find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        echo Sourcing test/test_instrument/testtest.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < test/test_instrument/testtest.sql
+ 
+    - name: Set LORIS base path
+      run: |
+        echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\)
+        echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\) | mysql ${{env.DB_DATABASE}} -uroot -proot
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: zip, php-ast
+
+    - name: Start PHP Web Server
+      run: php -S localhost:8000 -t htdocs/ htdocs/router.php 2>error_log &
+
+    - name: Test server
+      run: |
+           sleep 1
+           curl -v http://localhost:8000
+
+
+    - name: Run Test Suite
+      run: |
+          vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisAPITests --group api-${{ matrix.apiversion }}
+
+    - name: Print Error Logs
+      if: always()
+      run: cat error_log
+
+  docker:
     runs-on: ubuntu-latest
     strategy:
         fail-fast: false
         matrix:
             testsuite: ['integration']
-            php: ['8.1','8.2']
+            php: ['8.1','8.2', '8.3']
             ci_node_index: [0,1,2,3]
 
             include:
-            # add a variable but do not display it in the job's name 
+            # add a variable but do not display it in the job's name
             - ci_node_total: 4
 
             - testsuite: 'static'
               php: '8.1'
             - testsuite: 'static'
               php: '8.2'
+            - testsuite: 'static'
+              php: '8.3'
             - testsuite: 'unit'
               php: '8.1'
             - testsuite: 'unit'
               php: '8.2'
-            
+            - testsuite: 'unit'
+              php: '8.3'
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -45,8 +244,9 @@ jobs:
     - name: Cache Composer packages
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Composer cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -56,9 +256,15 @@ jobs:
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install package dependencies
-      run: sudo apt-get install -y protobuf-compiler 
-           && cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
-           && protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+      # We only need to install protobuf-compiler
+      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
+      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
+      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
+      run: |
+        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
+                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+        cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+        protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
@@ -68,7 +274,11 @@ jobs:
       run: make dev
 
     - name: Run Test Suite
-      run: npm run tests:${{ matrix.testsuite }}
+      run: |
+          # set sandbox to 1 before running the tests
+          # since some tests only run in sandbox environments
+          sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
+          npm run tests:${{ matrix.testsuite }}
       env:
           # Specifies how many jobs you would like to run in parallel,
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}

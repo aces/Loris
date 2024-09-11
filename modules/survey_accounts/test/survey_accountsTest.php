@@ -34,7 +34,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     static $instrument = 'select[name="instrument"]';
     // clear filter button
     static $clearFilter = ".nav-tabs a";
-    static $add         = "div:nth-child(2) > .btn:nth-child(1)";
+    static $add         = ".panel-body .btn-primary:nth-child(1)";
     // header of the table
     static $table = ".table-header > .row > div > div:nth-child(1)";
     /**
@@ -118,7 +118,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "participant_accounts",
             [
                 'SessionID'       => '111111',
-                'Email'           => 'TestTestTest@example.com',
                 'Test_name'       => 'Test',
                 'Status'          => 'In Progress',
                 'OneTimePassword' => 'Test',

@@ -8,6 +8,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
+import {CTA} from 'jsx/Form';
 
 /**
  * Triggerable Modal Component.
@@ -74,6 +75,7 @@ class TriggerableModal extends Component {
 TriggerableModal.propTypes = {
   label: PropTypes.string.isRequired,
   onClose: PropTypes.func,
+  onUserInput: PropTypes.func,
 };
 
 export default TriggerableModal;

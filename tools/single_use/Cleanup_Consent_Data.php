@@ -12,7 +12,7 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$db     = \Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 $errors = [];
 
 $query       = "SELECT CandidateID, ConsentID, Status, DateGiven, DateWithdrawn

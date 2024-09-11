@@ -1,8 +1,10 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * Module Manager React Component
@@ -222,15 +224,18 @@ class ModuleManagerIndex extends Component {
 
 ModuleManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string,
+  hasEditPermission: PropTypes.bool,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ModuleManagerIndex
       dataURL={`${loris.BaseURL}/module_manager/?format=json`}
       BaseURL={loris.BaseURL}
       hasEditPermission={loris.userHasPermission('module_manager_edit')}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

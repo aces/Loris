@@ -29,9 +29,9 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 fb.CandID AS _candID,
                 ca.PSCID AS _pscID,
                 s.Visit_label AS _visit,
-                s.ProjectID AS _project,
+                COALESCE(s.ProjectID, ca.RegistrationProjectID) AS _project,
                 s.CohortID AS _cohort,
-                psc.CenterID AS _site,
+                COALESCE(psc.CenterID, psc2.CenterID) AS _site,
 	            fb.FeedbackID AS _feedbackID,
 	            fb.SessionID AS _sessionID,
 	            fb.CommentID AS _commentID,
@@ -42,10 +42,9 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
             FROM
                 feedback_bvl_thread AS fb
                 JOIN candidate ca ON (ca.CandID = fb.CandID)
-                JOIN session s ON (s.ID = fb.SessionID)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                JOIN project_cohort_rel psr ON
-                    (s.CohortID = psr.CohortID)
+                LEFT JOIN session s ON (s.ID = fb.SessionID)
+                LEFT JOIN psc ON (s.CenterID = psc.CenterID)
+                LEFT JOIN psc psc2 ON (ca.RegistrationCenterID=psc2.CenterID)
                 LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                 LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
             WHERE

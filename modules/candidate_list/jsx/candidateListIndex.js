@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +6,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
 
+import fetchDataStream from 'jslib/fetchDataStream';
 import OpenProfileForm from './openProfileForm';
 
 /**
@@ -24,10 +26,11 @@ class CandidateListIndex extends Component {
     super(props);
 
     this.state = {
-      data: {},
+      data: [],
       error: false,
       isLoaded: false,
       hideFilter: true,
+      fieldOptions: {},
       show: {profileForm: false},
     };
 
@@ -62,8 +65,18 @@ class CandidateListIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    fetch('options',
+        {credentials: 'same-origin'}).then(
+            (resp) => resp.json()
+        ).then(
+            (json) => {
+            this.setState({
+                fieldOptions: json,
+            });
+        }
+        );
+
+    this.fetchData();
 
     const searchParams = new URLSearchParams(location.search);
     if (searchParams.has('hide')) {
@@ -79,23 +92,15 @@ class CandidateListIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => {
-        // Convert concatenated string of cohort and visit labels to array
-        data.Data = data.Data.map((row) => {
-          // Visit label
-          row[2] = (row[2]) ? row[2].split(',') : null;
-          // Cohort
-          row[4] = (row[4]) ? row[4].split(',') : null;
-          return row;
-        });
-        this.setState({data});
-      })
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+        fetchDataStream(this.props.dataURL,
+            (row) => this.state.data.push(row),
+            (end) => {
+                this.setState({data: this.state.data});
+            },
+            () => {
+                this.setState({isLoaded: true});
+            },
+        );
   }
 
   /**
@@ -109,7 +114,7 @@ class CandidateListIndex extends Component {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('hide', hideFilter);
     history.replaceState(history.state, '', `?${searchParams.toString()}`);
-  };
+  }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -132,10 +137,10 @@ class CandidateListIndex extends Component {
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>comment</td>;
+        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
         default: return <td>None</td>;
       }
     }
@@ -148,8 +153,7 @@ class CandidateListIndex extends Component {
     }
 
     if (column === 'Cohort') {
-      // If user has multiple cohorts, join array into string
-      let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
+      let result = (cell) ? <td>{cell}</td> : <td></td>;
       return result;
     }
 
@@ -177,7 +181,8 @@ class CandidateListIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in candidate_list.class.inc
      */
-    const options = this.state.data.fieldOptions;
+    // const options = this.state.data.fieldOptions;
+    const options = this.state.fieldOptions;
     const fields = [
       {
         label: 'PSCID',
@@ -200,7 +205,7 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'select',
+          type: 'multiselect',
           options: options.visitlabel,
         },
       },
@@ -209,7 +214,7 @@ class CandidateListIndex extends Component {
         show: true,
         filter: {
           name: 'site',
-          type: 'select',
+          type: 'multiselect',
           options: options.site,
         },
       },
@@ -218,7 +223,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'cohort',
-          type: 'select',
+          type: 'multiselect',
           options: options.cohort,
         },
       },
@@ -267,17 +272,21 @@ class CandidateListIndex extends Component {
         },
       },
       {
+        'label': 'Date of registration',
+        'show': true,
+        'filter': {
+          name: 'Date_registered',
+          type: 'date',
+        },
+      },
+      {
         label: 'Sex',
         show: true,
         filter: {
           name: 'sex',
           type: 'select',
           hide: this.state.hideFilter,
-          options: {
-            'Male': 'Male',
-            'Female': 'Female',
-            'Other': 'Other',
-          },
+          options: options.Sex,
         },
       },
       {
@@ -298,10 +307,10 @@ class CandidateListIndex extends Component {
           hide: this.state.hideFilter,
           options: {
             '0': 'None',
-            '1': 'opened',
-            '2': 'answered',
-            '3': 'closed',
-            '4': 'comment',
+            '1': 'Opened',
+            '2': 'Answered',
+            '3': 'Closed',
+            '4': 'Comment',
           },
         },
       },
@@ -366,7 +375,7 @@ class CandidateListIndex extends Component {
         {profileForm}
         <FilterableDataTable
           name="candidateList"
-          data={this.state.data.Data}
+          data={this.state.data}
           fields={fields}
           actions={actions}
           getFormattedCell={this.formatColumn}
@@ -379,17 +388,20 @@ class CandidateListIndex extends Component {
 CandidateListIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  betaProfileLink: PropTypes.string,
+  baseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CandidateListIndex
-      dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
+      dataURL={`${loris.BaseURL}/candidate_list/?format=binary`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
       betaProfileLink={args['betaprofile']}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

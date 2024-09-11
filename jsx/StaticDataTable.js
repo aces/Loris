@@ -1,5 +1,3 @@
-/* exported RStaticDataTable */
-
 /**
  * This file contains React component for Static Data Table
  *
@@ -60,16 +58,13 @@ class StaticDataTable extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    if (jQuery.fn.DynamicTable) {
+    if (jQuery.fn.DynamicTable && !this.props.NoDynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
           freezeColumn: this.props.freezeColumn,
         });
       } else {
         $('#dynamictable').DynamicTable();
-      }
-      if (this.state.Hide.defaultColumn) {
-        $('#dynamictable').find('tbody td:eq(0)').hide();
       }
     }
     if (!this.props.DisableFilter) {
@@ -105,7 +100,7 @@ class StaticDataTable extends Component {
    * @param {object} prevState - Previous React Component state
    */
   componentDidUpdate(prevProps, prevState) {
-    if (jQuery.fn.DynamicTable) {
+    if (jQuery.fn.DynamicTable && !this.props.NoDynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
           freezeColumn: this.props.freezeColumn,
@@ -532,7 +527,8 @@ class StaticDataTable extends Component {
             this.props.Headers[j],
             data,
             this.props.Data[index[i].RowIdx],
-            this.props.Headers
+            this.props.Headers,
+            j
           );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
@@ -552,9 +548,12 @@ class StaticDataTable extends Component {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
+          const rowCell = this.state.Hide.defaultColumn !== true ?
+              <td>{rowIndex}</td> : null;
+
           rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-              <td>{rowIndex}</td>
+              {rowCell}
               {curRow}
             </tr>
           );
@@ -664,7 +663,12 @@ StaticDataTable.propTypes = {
   Hide: PropTypes.object,
   hiddenHeaders: PropTypes.array,
   DisableFilter: PropTypes.bool,
+  NoDynamicTable: PropTypes.bool,
+  freezeColumn: PropTypes.string,
+  RowNameMap: PropTypes.string,
+  Filter: PropTypes.object,
 };
+
 StaticDataTable.defaultProps = {
   Headers: [],
   Data: {},
@@ -676,11 +680,9 @@ StaticDataTable.defaultProps = {
     defaultColumn: false,
   },
   DisableFilter: false,
+  NoDynamicTable: false,
 };
 
-let RStaticDataTable = React.createFactory(StaticDataTable);
-
 window.StaticDataTable = StaticDataTable;
-window.RStaticDataTable = RStaticDataTable;
 
 export default StaticDataTable;

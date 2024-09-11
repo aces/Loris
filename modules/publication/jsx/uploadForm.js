@@ -1,6 +1,11 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Publication upload form component
@@ -78,9 +83,17 @@ class PublicationUploadForm extends React.Component {
    */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
-    if (!this.state.formData[formElement]) {
-      numFiles += 1;
-      this.setState({numFiles: numFiles});
+    if (value) {
+      if (!this.state.formData[formElement]) {
+        numFiles += 1;
+        this.setState({numFiles: numFiles});
+      }
+    } else {
+      // File is being removed
+      if (this.state.formData[formElement]) {
+        numFiles -= 1;
+        this.setState({numFiles: numFiles});
+      }
     }
     this.setFormData(formElement, value);
   }
@@ -153,7 +166,10 @@ class PublicationUploadForm extends React.Component {
       );
       return;
     }
-    let formData = this.state.formData;
+    let formData = {
+      ...this.state.formData,
+      baseURL: loris.BaseURL,
+    };
 
     let formObj = new FormData();
     for (let key in formData) {
@@ -284,5 +300,10 @@ class PublicationUploadForm extends React.Component {
     );
   }
 }
+PublicationUploadForm.propTypes = {
+  DataURL: PropTypes.string,
+  action: PropTypes.string,
+  editMode: PropTypes.bool,
+};
 
 export default PublicationUploadForm;

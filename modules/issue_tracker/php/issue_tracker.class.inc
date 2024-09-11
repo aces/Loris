@@ -115,21 +115,21 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         //reporters
         $reporters         = [];
         $reporter_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
-               ON(i.assignee=u.UserID)",
+               ON(i.reporter=u.UserID)",
             []
         );
         foreach ($reporter_expanded as $r_row) {
-            $reporters[$r_row['UserID']] = $r_row['Real_name'];
+            $reporters[$r_row['Real_name']] = $r_row['Real_name'];
         }
 
         //assignees
         $assignees         = [];
         $assignee_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
@@ -137,7 +137,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             []
         );
         foreach ($assignee_expanded as $a_row) {
-            $assignees[$a_row['UserID']] = $a_row['Real_name'];
+            $assignees[$a_row['Real_name']] = $a_row['Real_name'];
         }
 
         $modules = array_reduce(

@@ -61,10 +61,8 @@ class VisitTest extends TestCase
         putenv("LORIS_{$database['database']}_PASSWORD={$database['password']}");
         putenv("LORIS_{$database['database']}_HOST={$database['host']}");
 
-        $this->DB = \Database::singleton(
-            $database['database'],
-            true,
-        );
+        $this->DB = $this->factory->database();
+
         $this->visitController = new \Loris\VisitController($this->DB);
 
         $v1 = new \Loris\Visit('V1');

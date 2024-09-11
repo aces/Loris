@@ -23,13 +23,8 @@ from further analysis.
 
 The MRI violations module shows a summary of the MRI violations
 (one image per row) identified by the imaging pipeline scripts.
-Depending on the type of violation, clicking on the scan's problem
-will redirect the user to pages with more information regarding
-the identified violation. The different types of violation are:
-
-- Could not identify scan type
-- Protocol Violation
-- Candidate Mismatch
+It can be used to set a "Resolution Status" for how the violation
+was dealt with.
 
 Additionally, the violations "Resolution Status" column can be
 updated once the violation has been resolved. Available options
@@ -53,6 +48,9 @@ into the Imaging Browser and a caveat flag was attached - this caveat
 flag should have either a drop down menu or open text for the person 
 approving the insertion to indicate what the flag is for
 - **Other**: resolutions that don't fit in any of the above categories 
+
+It does not resolve any problems itself, it only logs the problem and
+what resolution occured.
 
 ## Permissions
 
@@ -82,5 +80,5 @@ the problem "Could not identify scan type"
 
 ## Dashboard Widget
 
-The total `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
-with a link pointing to the mri_violations module.
+The total number of unresolved `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
+with a link pointing to the mri_violations module with the Resolution Status filter set to "Unresolved".

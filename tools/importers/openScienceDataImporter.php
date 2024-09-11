@@ -93,17 +93,27 @@ case CANDIDATE_IMPORT:
 case VISIT_IMPORT:
     validateFilename($dataFile->getBasename(), 'visits');
     if (is_null($excludedFile)) {
-        $importer = new VisitImporter($mappingFile, $dataFile);
+        $importer = new VisitImporter(
+            $mappingFile,
+            $dataFile,
+            null,
+            $lorisInstance->getDatabaseConnection(),
+        );
     } else {
         $importer = new VisitImporter(
             $mappingFile,
             $dataFile,
-            new SplFileInfo($excludedFile)
+            new SplFileInfo($excludedFile),
+            $lorisInstance->getDatabaseConnection(),
         );
     }
     break;
 case INSTRUMENT_IMPORT:
-    $importer = new InstrumentImporter($mappingFile, $dataFile);
+    $importer = new InstrumentImporter(
+        $mappingFile,
+        $dataFile,
+        $lorisInstance->getDatabaseConnection()
+    );
     break;
 }
 

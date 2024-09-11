@@ -108,6 +108,11 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 '',
                 true
             );
+
+            $user = $request->getAttribute("user");
+            if ($instrument->_hasAccess($user) == false) {
+                return new \LORIS\Http\Response\JSON\Forbidden();
+            }
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }

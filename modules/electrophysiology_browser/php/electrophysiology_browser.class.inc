@@ -59,16 +59,15 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Set up the variables required by NDB_Menu_Filter class for
-     * constructing a query
+     * Get dynamic field options needed for React to render the
+     * page.
      *
-     * @return array list of sites
+     * @return array
      */
     function getFieldOptions(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = \User::singleton();
+        $db   =  $this->loris->getDatabaseConnection();
 
         // get list of types
         $list_of_types = [];

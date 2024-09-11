@@ -9,7 +9,16 @@ namespace LORIS\Data\Types;
  */
 class Enumeration implements \LORIS\Data\Type
 {
+    /**
+     * Valid options for this Enumeration
+     */
     protected $options = [];
+
+    /**
+     * Optional labels for the Enumeration value. This must either be
+     * null or an array of equal length to options.
+     */
+    protected $labels = null;
 
     /**
      * Construct an Enumeration type
@@ -61,5 +70,30 @@ class Enumeration implements \LORIS\Data\Type
     public function asSQLType() : string
     {
         return "enum(" . join(",", $this->options) . ")";
+    }
+
+    /**
+     * Returns a new Enumeration which is identical to this one
+     * except with the options being accompanied by a label.
+     */
+    public function withLabels(string ...$labels)
+    {
+        if (count($labels) != count($this->options)) {
+            throw new \LengthException("Number of labels does not match number of options");
+        }
+        $new         = clone $this;
+        $new->labels = $labels;
+        return $new;
+    }
+
+    /**
+     * Return the labels for the values of this enum, or null
+     * if no labels have been provided.
+     *
+     * @return ?string[]
+     */
+    public function getLabels() : ?array
+    {
+        return $this->labels;
     }
 }

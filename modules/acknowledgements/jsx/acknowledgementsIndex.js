@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,6 +7,13 @@ import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    DateElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Acknowledgements Module page.
@@ -267,8 +275,6 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddForm() {
-    const requireEndDate = (this.state.formData.addPresent === 'No') || false;
-    const disableEndDate = (this.state.formData.addPresent === 'Yes') || false;
     return (
       <Modal
         title='Add Acknowledgement'
@@ -465,12 +471,13 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

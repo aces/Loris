@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  SelectElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Add Permission Form
@@ -108,7 +113,7 @@ class AddPermissionForm extends Component {
           required={false}
           value={this.state.formData.data_release_id}
         />
-        <h4 align='center'>OR</h4><br/>
+        <h4>OR</h4><br/>
         <SelectElement
           name='data_release_version'
           label='Data Release Version'
@@ -235,6 +240,7 @@ class AddPermissionForm extends Component {
 AddPermissionForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  fetchData: PropTypes.func,
 };
 
 export default AddPermissionForm;

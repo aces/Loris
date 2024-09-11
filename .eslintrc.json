@@ -4,7 +4,6 @@
     "react",
     "no-jquery",
     "jsdoc"
-
   ],
   "settings": {
     "react": {
@@ -48,12 +47,14 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "no-unexpected-multiline": "off",
+    "no-unused-vars": "error",
     "no-useless-escape": "off",
     "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",
     "react/jsx-no-target-blank": "off",
-    "react/no-unknown-property": "off",
-    "react/no-find-dom-node": "off",
+    "react/no-unknown-property": "error",
+    "react/no-find-dom-node": "error",
     "no-empty": "off",
     "no-redeclare": "off",
     "no-inner-declarations": "off",
@@ -61,12 +62,12 @@
     "react/no-deprecated": "off",
     "react/no-string-refs": "off",
     "no-case-declarations": "off",
-    "no-fallthrough": "off",
+    "no-fallthrough": "error",
     "react/jsx-no-undef": "off",
-    "react/prop-types": "off",
+    "react/prop-types": "error",
     "no-undef": "error",
     "react/jsx-key": "off",
-    "no-extra-semi": "off",
+    "no-extra-semi": "error",
     "no-prototype-builtins": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
@@ -85,7 +86,11 @@
     }],
     "jsdoc/require-param-description": "off",
     "jsdoc/require-returns": "off",
-    "jsdoc/require-returns-description": "off"
+    "jsdoc/require-returns-description": "off",
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error",
+    "jsdoc/valid-types": "error",
+    "jsdoc/no-undefined-types": "error"
   },
   "overrides": [
     {
@@ -196,10 +201,9 @@
     {
       "files": [
         "modules/candidate_parameters/**",
-        "modules/bvl_feedback/**",
-        "modules/dataquery/**",
         "modules/dqt/**",
-        "modules/configuration/jsx/configuration_helper.js"
+        "modules/configuration/jsx/configuration_helper.js",
+        "modules/brainbrowser/js/brainbrowser.loris.js"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",
@@ -283,7 +287,7 @@
     "loris": true,
     "QueryString": true,
     "swal": true,
-    "schema_urls": true,
+    "schemaUrls": true,
     "JSX": true
   }
 }

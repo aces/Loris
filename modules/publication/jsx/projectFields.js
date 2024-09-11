@@ -1,5 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  StaticElement,
+  TagsElement,
+  FileElement,
+  ButtonElement,
+  TextareaElement,
+  TextboxElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Email element component
@@ -90,7 +101,19 @@ class EmailElement extends React.Component {
     );
   }
 }
-
+EmailElement.propTypes = {
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+  disabled: PropTypes.bool,
+  name: PropTypes.string,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  toggleEmailNotify: PropTypes.func,
+  addressee: PropTypes.string,
+};
 EmailElement.defaultProps = {
   name: '',
   label: '',
@@ -140,8 +163,8 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    }).then(function(willDelete) {
-        if (willDelete) {
+    }).then((result) => {
+        if (result.value) {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
@@ -173,7 +196,7 @@ class ProjectFormFields extends React.Component {
     if (this.props.files) {
       this.props.files.forEach(function(f) {
         let downloadURL = loris.BaseURL
-                          + '/publication/ajax/FileDownload.php?File='
+                          + '/publication/files/'
                           + encodeURIComponent(f.Filename);
         let link = (
           <span>
@@ -564,5 +587,22 @@ class ProjectFormFields extends React.Component {
     );
   }
 }
-
+ProjectFormFields.propTypes = {
+  fetchData: PropTypes.func,
+  files: PropTypes.array,
+  numFiles: PropTypes.number,
+  setFormData: PropTypes.func,
+  formData: PropTypes.object,
+  uploadTypes: PropTypes.array,
+  setFileData: PropTypes.func,
+  formErrors: PropTypes.array,
+  allVOIs: PropTypes.object,
+  users: PropTypes.object,
+  addListItem: PropTypes.func,
+  removeListItem: PropTypes.func,
+  allCollabs: PropTypes.object,
+  allKWs: PropTypes.object,
+  editMode: PropTypes.string,
+  projectOptions: PropTypes.object,
+};
 export default ProjectFormFields;

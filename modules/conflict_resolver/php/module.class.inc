@@ -60,10 +60,10 @@ class Module extends \Module
         $path = trim($request->getURI()->getPath(), "/");
         switch ($path) {
         case 'unresolved':
-            $handler = new Endpoints\Unresolved();
+            $handler = new Endpoints\Unresolved($this->loris);
             break;
         case 'resolved':
-            $handler = new Endpoints\Resolved();
+            $handler = new Endpoints\Resolved($this->loris);
             break;
         default:
             return parent::handle($request);
@@ -122,6 +122,7 @@ class Module extends \Module
                          s.CenterID <> 1",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . '/' . $this->getName(),
                     'conflict_resolver'
                 )

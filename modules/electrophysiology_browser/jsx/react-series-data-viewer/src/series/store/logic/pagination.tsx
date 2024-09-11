@@ -38,7 +38,7 @@ export const createPaginationEpic = (fromState: (_: any) => State) => (
 
       const offsetIndex = Math.min(
         Math.max(payload, 1),
-        channelMetadata.length
+        Math.max(channelMetadata.length - limit + 1, 1)
       );
 
       let channelIndex = offsetIndex - 1;

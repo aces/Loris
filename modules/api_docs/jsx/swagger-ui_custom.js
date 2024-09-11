@@ -3,7 +3,7 @@ import 'swagger-ui-dist/swagger-ui.css';
 
 window.addEventListener('load', () => {
   const ui = new SwaggerUIBundle({
-    urls: schema_urls,
+    urls: schemaUrls,
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [

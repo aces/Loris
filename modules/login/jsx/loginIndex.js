@@ -1,11 +1,19 @@
 import PasswordExpired from './passwordExpiry';
 import RequestAccount from './requestAccount';
 import ResetPassword from './resetPassword';
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import DOMPurify from 'dompurify';
+import {
+    FormElement,
+    StaticElement,
+    TextboxElement,
+    PasswordElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Login form.
@@ -40,6 +48,7 @@ class Login extends Component {
         },
       },
       mode: props.defaultmode || 'login',
+      oidc: null,
       component: {
         requestAccount: null,
         expiredPassword: null,
@@ -51,6 +60,7 @@ class Login extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.setForm = this.setForm.bind(this);
     this.setMode = this.setMode.bind(this);
+    this.getOIDCLinks = this.getOIDCLinks.bind(this);
   }
 
   /**
@@ -80,6 +90,7 @@ class Login extends Component {
           + '/' + json.login.logo;
         // request account setup.
         state.component.requestAccount = json.requestAccount;
+        state.oidc = json.oidc;
         state.isLoaded = true;
         this.setState(state);
       }).catch((error) => {
@@ -125,9 +136,11 @@ class Login extends Component {
       })
       .then((response) => {
         if (response.ok) {
-          response.json().then((data) => {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
+          response.json().then(() => {
+            // Redirect if there is a "redirect" param, refresh the page otherwise
+            window.location.href = this.props.redirect !== null
+              ? this.props.redirect
+              : window.location.origin;
           });
         } else {
           response.json().then((data) => {
@@ -186,6 +199,7 @@ class Login extends Component {
           class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
         />
       ) : null;
+      const oidc = this.state.oidc ? this.getOIDCLinks() : '';
       const login = (
         <div>
           <section className={'study-logo'}>
@@ -195,7 +209,7 @@ class Login extends Component {
           <FormElement
             name={'loginIndex'}
             action={''}
-            fileUpload={'false'}
+            fileUpload={false}
             onSubmit={this.handleSubmit}
           >
             <TextboxElement
@@ -233,6 +247,7 @@ class Login extends Component {
             <a onClick={() => this.setMode('request')}
                style={{cursor: 'pointer'}}>Request Account</a>
           </div>
+          {oidc}
           <div className={'help-text'}>
             A WebGL-compatible browser is required for full functionality
             (Mozilla Firefox, Google Chrome)
@@ -296,25 +311,53 @@ class Login extends Component {
       );
     }
   }
+
+  /**
+   * Return the OpenID Connect links for this LORIS instance.
+   *
+   * @return {JSX}
+   */
+  getOIDCLinks() {
+      if (!this.state.oidc) {
+          return null;
+      }
+      return (<div className={'oidc-links'}>
+        {this.state.oidc.map((val) => {
+            return <div>
+                <a href={'/oidc/login?loginWith=' + val}>
+                    Login with {val}
+                </a>
+            </div>;
+        })}
+      </div>);
+  }
 }
 
 Login.propTypes = {
   module: PropTypes.string,
+  defaultmode: PropTypes.string,
+  defaultRequestFirstName: PropTypes.string,
+  defaultRequestLastName: PropTypes.string,
+  defaultRequestEmail: PropTypes.string,
+  redirect: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
   const params = new URLSearchParams(window.location.search);
   const getParam = (name, deflt) => {
-      return params.has(name) ? params.get(name) : deflt;
+    return params.has(name) ? params.get(name) : deflt;
   };
-  ReactDOM.render(
+
+  createRoot(
+    document.getElementsByClassName('main-content')[0]
+  ).render(
     <Login
       defaultmode={getParam('page', null)}
       defaultRequestFirstName={getParam('firstname', '')}
       defaultRequestLastName={getParam('lastname', '')}
       defaultRequestEmail={getParam('email', '')}
+      redirect={getParam('redirect', null)}
       module={'login'}
-    />,
-    document.getElementsByClassName('main-content')[0]
+    />
   );
 });

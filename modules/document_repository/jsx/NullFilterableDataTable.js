@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Null filterable data table component
@@ -25,4 +26,8 @@ class NullFilterableDataTable extends Component {
     );
   }
 }
+NullFilterableDataTable.propTypes = {
+  children: PropTypes.node,
+};
+
 export default NullFilterableDataTable;

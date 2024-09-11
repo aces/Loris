@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -169,10 +170,11 @@ ElectrophysiologyBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ElectrophysiologyBrowserIndex
       dataURL={`${loris.BaseURL}/electrophysiology_browser/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

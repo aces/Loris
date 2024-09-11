@@ -58,68 +58,31 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $rv = [];
         foreach ($mnames as $row) {
-            $rv[$row['ID']] = self::factory($loris, $row['Name']);
+            $rv[$row['ID']] = $loris->getModule($row['Name']);
         }
         return $rv;
     }
 
-
     /**
-     * Returns a Module instance for the module named $name. The returned
-     * value may be a subtype of the base LORIS module class and override
-     * it's method.
+     * Register an autoloader for this module's namespace.
      *
-     * This also sets up PHP class autoloading for the module that is loaded,
-     * such that files in the module/php directory can be autoloaded.
-     *
-     * @param \Loris\LorisInstance $loris The LORIS instance containing the module
-     * @param string               $name  The module name we'd like information about
-     *
-     * @throws \LorisNoSuchModuleException
-     * @throws \LorisModuleMissingException
-     * @throws \NotFound
-     *
-     * @return \Module object
+     * @return void
      */
-    static public function factory(
-        \Loris\LorisInstance $loris,
-        string $name
-    ) : \Module {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-        $base    = $config->getSetting("base");
-
-        // TODO: Module search path should be a config option.
-        if (is_dir($base . "project/modules/$name")) {
-            $mpath = $base . "project/modules/$name";
-        } else if (is_dir($base . "modules/$name")) {
-            $mpath = $base . "modules/$name";
-        } else {
-            throw new LorisNoSuchModuleException("No such module: $name");
-        }
-
-        if (!file_exists($mpath . "/php/module.class.inc")) {
-            // Check if there's a module class to see if the module has been
-            // updated. This can be removed once support for old Modules has
-            // been removed. If it hasn't been updated, fall back on the old
-            // style.
-            throw new LorisModuleMissingException("$name is missing Module class");
-        }
+    public function registerAutoloader() : void
+    {
         // Manually do dependency injection for the module's php/ directory,
         // since composer doesn't know anything about our modules and we only
         // want *this* module's classes autoloaded anyways.
         spl_autoload_register(
-            function ($class) use ($name,
-                $mpath
-            ) {
-                if (strpos($class, "LORIS\\$name\\") === 0) {
-                    $fpath = $mpath . "/php/"
-                    . strtolower(substr($class, strlen("LORIS\\$name\\")))
+            function ($class) {
+                if (strpos($class, "LORIS\\{$this->name}\\") === 0) {
+                    $fpath = $this->dir. "/php/"
+                    . strtolower(substr($class, strlen("LORIS\\{$this->name}\\")))
                     . ".class.inc";
                     $fpath = str_replace('\\', '/', $fpath);
                     if (!file_exists($fpath)) {
                         throw new \NotFound(
-                            "Could not load module `$name`: file `$fpath` " .
+                            "Could not load module `{$this->name}`: file `$fpath` " .
                             "does not exist"
                         );
                     }
@@ -127,15 +90,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 }
             }
         );
-
-        // Manually do the require for the module descriptor because of
-        // namespacing
-        //require_once $mpath . "/php/Module.class.inc";
-        $className = "\LORIS\\$name\Module";
-        $cls       = new $className($loris, $name, $mpath);
-        return $cls;
     }
-
     /**
      * Creates a new module instance
      *
@@ -149,12 +104,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         protected string $name,
         protected string $dir,
     ) {
-        $loglevel = $loris->getConfiguration()
-            ->getLogSettings()
-            ->getRequestLogLevel();
-
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
-
         parent::__construct(
             new \ArrayIterator(
                 [
@@ -352,13 +301,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         } catch (\NotFound $e) {
             $this->logger->debug("Page $pagename not found");
             return $resp->withStatus(404);
-        }
-        // FIXME: Hack required for breadcrumbs. This should be removed,
-        // but some tests depend on it.
-        if ($this->getName() === $pagename) {
-            $_REQUEST['test_name'] = $pagename;
-        } else {
-            $_REQUEST['subtest'] = $pagename;
         }
 
         $page->loadResources($user, $request);

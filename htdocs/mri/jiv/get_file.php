@@ -132,10 +132,7 @@ case 'xml':
     $DownloadFilename = basename($File);
     break;
 case 'edf':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'application/octet-stream';
-    $DownloadFilename = basename($File);
-    break;
+case 'fdt':
 case 'set':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'application/octet-stream';

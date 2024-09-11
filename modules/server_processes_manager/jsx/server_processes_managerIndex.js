@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -122,10 +123,11 @@ ServerProcessesManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ServerProcessesManagerIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

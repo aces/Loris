@@ -119,7 +119,7 @@ if (($change && $change_all)
 
 /// Initialization
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $db_config      = $config->getSetting('database');
 $paths          = $config->getSetting('paths');
@@ -153,9 +153,7 @@ if ($delete_ignored_conflicts) {
 } else {
     // Check to see if the variable instrument is set
     if (($instrument=='all') ||($instrument=='All')) {
-        $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $instruments_q = $DB->pselect(
+        $instruments_q = $db->pselect(
             "SELECT Test_name FROM test_names",
             []
         );
@@ -298,7 +296,7 @@ if ($delete_ignored_conflicts) {
  */
 function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
-    $db     =& Database::singleton();
+    global $db;
     $params = [];
     $query  = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
@@ -332,7 +330,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
  */
 function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
 {
-    $db     =& Database::singleton();
+    global $db;
     $params = [];
     $query  = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
@@ -458,7 +456,7 @@ function writeCSV($output, $path, $instrument, $visit_label, $prefix)
  */
 function getInfoUsingCommentID($commentid)
 {
-    $db   =& Database::singleton();
+    global $db;
     $data =  $db->pselectRow(
         "SELECT c.PSCID, c.CandID, s.Visit_label FROM flag f
         JOIN session s on (f.sessionid=s.ID)
@@ -624,25 +622,25 @@ function detectIgnoreColumns($instruments, $confirm)
  */
 function ignoreColumn($instrument, $instrumentFields, $confirm)
 {
-    $db =& Database::singleton();
+    global $db;
 
     foreach ($instrumentFields as $field => $instr) {
-        $query        = "SELECT TableName, FieldName, Value1, Value2 
+        $query        = "SELECT TestName, FieldName, Value1, Value2 
             FROM conflicts_unresolved 
-            WHERE TableName = '$instrument' AND FieldName = '$field'";
+            WHERE TestName = '$instrument' AND FieldName = '$field'";
         $ignoreColumn = $db->pselectOne($query, []);
 
         if (!empty($ignoreColumn)) {
             $query = "SELECT 
-                TableName, FieldName, CommentId1, Value1, CommentId2, Value2 
+                TestName, FieldName, CommentId1, Value1, CommentId2, Value2 
                 FROM conflicts_unresolved 
-                WHERE TableName = '$instrument' AND FieldName = '$field'";
+                WHERE TestName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
 
             if ($confirm) {
                 $query = "DELETE FROM conflicts_unresolved 
-                    WHERE TableName = '$instrument' AND FieldName = '$field'";
+                    WHERE TestName = '$instrument' AND FieldName = '$field'";
                 $db->run($query);
             }
         }
