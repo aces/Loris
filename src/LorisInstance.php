@@ -50,31 +50,6 @@ class LorisInstance
         return $this->DB;
     }
 
-    public function getNewDatabaseConnection() : \Database
-    {
-        $settings = \NDB_Factory::singleton()->settings();
-
-        // Pass the credentials in environment variables, so that they
-        // don't potentially show up in a stack trace if something goes
-        // wrong.
-        $dbname = $settings->dbName();
-        putenv("LORIS_{$dbname}_USERNAME=" . $settings->dbUserName());
-        putenv("LORIS_{$dbname}_PASSWORD=" . $settings->dbPassword());
-        putenv("LORIS_{$dbname}_HOST=" . $settings->dbHost());
-
-        $db = new \Database();
-        $db->connect(
-            $settings->dbName(),
-            true,
-        );
-
-        // Unset the variables now that they're no longer needed.
-        putenv("LORIS_{$dbname}_USERNAME=");
-        putenv("LORIS_{$dbname}_PASSWORD=");
-        putenv("LORIS_{$dbname}_HOST=");
-        return $db;
-    }
-
     /**
      * Return a list of directories on the filesystem which
      * may contain modules.
