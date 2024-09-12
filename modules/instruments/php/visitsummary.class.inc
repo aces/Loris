@@ -102,6 +102,7 @@ class VisitSummary extends \NDB_Page
             ['candid' => $candid, 'vl' => $visitLabel]
         );
 
+        $rslt = [];
         foreach ($bvl_result as $key => $row) {
             $testName  = $row['Test_name'];
             $commentID = $row['CommentID'];
@@ -121,13 +122,13 @@ class VisitSummary extends \NDB_Page
                 continue;
             }
             if ($instrument === null) {
-                $bvl_result[$key]['Completion'] = 0;
+                $rslt[$key]['Completion'] = 0;
             } else {
                 $completion = $instrument->determineDataEntryCompletionProgress();
-                $bvl_result[$key]['Completion'] = $completion;
+                $rslt[$key]['Completion'] = $completion;
             }
         }
 
-        return new \LORIS\Http\Response\JSON\OK($bvl_result);
+        return new \LORIS\Http\Response\JSON\OK($rslt);
     }
 }

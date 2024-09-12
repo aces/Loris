@@ -2264,7 +2264,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $jsondata
+                iterator_to_array($jsondata)
             );
         } else {
             $defaults = $db->pselect(
@@ -2291,7 +2291,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $defaults
+                iterator_to_array($defaults)
             );
         }
     }
@@ -2726,12 +2726,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $smarty   = new Smarty_NeuroDB();
         $tpl_data = [];
 
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
+        $tpl_data['questions'] = iterator_to_array(
+            $DB->pselect(
+                "SELECT Description as question,
             SourceField FROM parameter_type
             WHERE SourceFrom=:TN AND
             SourceField NOT IN ('Validity', 'Administration')",
-            ['TN' => $this->testName]
+                ['TN' => $this->testName]
+            )
         );
 
         $Responses = $this->getInstanceData();

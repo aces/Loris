@@ -478,8 +478,9 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //AGE AVERAGE
-        $result = $db->pselect(
-            "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
+        $result = iterator_to_array(
+            $db->pselect(
+                "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
               FROM
               (SELECT DISTINCT c.CandID, s.cohortid as rowid,
                           c.Date_registered as dr,c.DoB as dob
@@ -499,7 +500,8 @@ class Stats_Demographic extends \NDB_Form
                           $paramSite)
                                 as res
               GROUP BY rowid",
-            $this->params ?? []
+                $this->params ?? []
+            )
         );
 
         foreach ($result as $row) {
@@ -524,8 +526,9 @@ class Stats_Demographic extends \NDB_Form
                 'Complete',
                 'Incomplete',
             ];
-            $result = $db->pselect(
-                "SELECT count(*) as val,
+            $result = iterator_to_array(
+                $db->pselect(
+                    "SELECT count(*) as val,
                         f.Data_entry as Subcat,
                         c.RegistrationCenterID as CenterID,
                         s.CohortID as CohortID,
@@ -566,7 +569,8 @@ class Stats_Demographic extends \NDB_Form
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.RegistrationCenterID, CohortID, VLabel, Subcat
                 ",
-                $this->params ?? []
+                    $this->params ?? []
+                )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -588,8 +592,9 @@ class Stats_Demographic extends \NDB_Form
                 'Male',
                 'Female',
             ];
-            $result        = $db->pselect(
-                "SELECT s.CenterID as CenterID,
+            $result        = iterator_to_array(
+                $db->pselect(
+                    "SELECT s.CenterID as CenterID,
                         s.CohortID as CohortID,
                         s.visit_label as VLabel,
                         c.sex as Subcat,
@@ -605,7 +610,8 @@ class Stats_Demographic extends \NDB_Form
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY s.CenterID, CohortID, VLabel, Subcat",
-                []
+                    []
+                )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',

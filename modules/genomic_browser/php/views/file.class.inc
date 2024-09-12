@@ -71,7 +71,7 @@ class File
             []
         );
         return array_reduce(
-            $results,
+            iterator_to_array($results),
             function ($carry, $item) {
                 $value = array_values($item)[0];
                 if (!empty($value)) {

@@ -460,6 +460,8 @@ class Edit_User extends \NDB_Form
                         'userID' => $uid
                     ]
                 );
+
+                $examinerID = iterator_to_array($examinerID);
                 $examinerID = $examinerID[0]['examinerID'];
 
                 //get existing sites for examiner

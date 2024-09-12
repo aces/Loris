@@ -202,7 +202,7 @@ class NDB_BVL_Feedback
         }
         $query .= " LIMIT 1";
 
-        $result = $db->pselect($query, $qparams);
+        $result = iterator_to_array($db->pselect($query, $qparams));
         if (!is_array($result) || count($result) == 0) {
             throw new LorisException(
                 "Error, unable to select data for the feedback object"
@@ -515,7 +515,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -624,7 +624,7 @@ class NDB_BVL_Feedback
 
             $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -656,7 +656,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, ['FID' => $feedbackID]);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
