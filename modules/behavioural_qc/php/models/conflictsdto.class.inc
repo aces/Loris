@@ -65,9 +65,9 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
     /**
      * The site
      *
-     * @var string
+     * @var int
      */
-    private $_site = '';
+    private $_site;
 
     /**
      * The fieldName
@@ -112,7 +112,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_site));
+        return \CenterID::singleton($this->_site);
     }
 
     /**

@@ -100,7 +100,7 @@ class User extends UserPermissions implements
         $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = new \CenterID(strval($val['CenterID']));
+            $user_cid[$key] = \CenterID::singleton($val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
         $row['Sites'] = implode(';', $sitenames);
@@ -451,7 +451,7 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
+        return (in_array(\CenterID::singleton(1), $this->getCenterIDs()));
     }
 
     /**

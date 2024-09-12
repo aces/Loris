@@ -171,7 +171,7 @@ class LorisInstance
 
         return array_map(
             function ($center) {
-                return \Site::singleton(new \CenterID(strval($center)));
+                return \Site::singleton(\CenterID::singleton(intval($center)));
             },
             $centers
         );

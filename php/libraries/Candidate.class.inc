@@ -135,7 +135,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $registrationCenterID      = new \CenterID(strval($value));
+                $registrationCenterID      = \CenterID::singleton($value);
                 $this->candidateInfo[$key] = $registrationCenterID;
                 break;
             case 'CandID':
@@ -213,7 +213,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 new TimePointData(
                     new SessionID(strval($value["ID"])),
                     new ProjectID(strval($value["ProjectID"])),
-                    new CenterID(strval($value["CenterID"])),
+                    CenterID::singleton($value["CenterID"]),
                 )
             );
         }
