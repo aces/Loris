@@ -125,16 +125,20 @@ function IssueTrackerDetailView({ options }) {
       </div>
       <br/>
       <div className="issues-list">
-        {filteredIssues.map(issue => (
-          <IssueCard 
-            key={issue.issueID} 
-            issue={issue} 
-            onUpdate={handleIssueUpdate}
-            statuses={statuses}
-            priorities={priorities}
-            categories={categories}
-          />
-        ))}
+        {filteredIssues.length > 0 ? (
+          filteredIssues.map(issue => (
+            <IssueCard
+              key={issue.issueID}
+              issue={issue}
+              onUpdate={handleIssueUpdate}
+              statuses={statuses}
+              priorities={priorities}
+              categories={categories}
+            />
+          ))
+        ) : (
+          <div className="no-results-message">No issues match the selected filters.</div>
+        )}
       </div>
     </div>
   );

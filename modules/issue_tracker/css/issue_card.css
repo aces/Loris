@@ -43,7 +43,7 @@
 }
 
 .filter-list label span {
-  margin-left: 2px;
+  margin-left: 3px;
 }
 
 .issues-list {
@@ -161,4 +161,15 @@
 
 .checkbox {
   margin-right: 8px;
+}
+
+.no-results-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+  color: #666;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 20px;
 }
