@@ -115,7 +115,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-                'Test_name' => 'testtest',
+                'TestID'    => '999999',
                 'CommentID' => '11111111111111111',
             ]
         );
@@ -124,7 +124,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-                'Test_name' => 'testtest',
+                'TestID'    => '999999',
                 'CommentID' => 'DDE_11111111111111111',
             ]
         );

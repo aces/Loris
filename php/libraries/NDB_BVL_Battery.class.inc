@@ -249,7 +249,7 @@ class NDB_BVL_Battery
             'flag',
             [
                 'SessionID' => $sessionData['SessionID'],
-                'Test_name' => $testId,
+                'TestID'    => $testId,
                 'CommentID' => $ddeCommentID,
                 'UserID'    => $sessionData['UserID'],
             ]
