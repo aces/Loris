@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import IssueTrackerDetailView from './IssueTrackerDetailView';
+import IssueTrackerDebugView from './IssueTrackerDebugView';
 
 /**
  * Issue Tracker Index component
@@ -21,7 +21,7 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
-      view: 'table', // 'table' for FilterableDataTable, 'detail' for IssueTrackerDetailView
+      view: 'normal', // 'normal' for FilterableDataTable, 'debug' for IssueTrackerDebugView
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -55,13 +55,14 @@ class IssueTrackerIndex extends Component {
   }
 
   /**
-   * Toggle between table and detail view
+   * Toggle between normal and debug view
    */
   toggleView() {
     this.setState(prevState => ({
-      view: prevState.view === 'table' ? 'detail' : 'table',
+      view: prevState.view === 'normal' ? 'debug' : 'normal',
     }));
-}
+    this.fetchData(); // Fetch fresh data when toggling views
+  }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -278,10 +279,10 @@ class IssueTrackerIndex extends Component {
       <div>
       <div className="view-toggle">
         <button onClick={this.toggleView}>
-          {this.state.view === 'table' ? 'Switch to Detail View' : 'Switch to Table View'}
+          {this.state.view === 'normal' ? 'Switch to Debug View' : 'Switch to Normal View'}
         </button>
       </div>
-      {this.state.view === 'table' ? (
+      {this.state.view === 'normal' ? (
         <FilterableDataTable
           name="issuesTracker"
           data={this.state.data.data}
@@ -291,14 +292,14 @@ class IssueTrackerIndex extends Component {
           getFormattedCell={this.formatColumn}
         />
       ) : (
-<IssueTrackerDetailView 
-  issues={this.state.data.data}
-  options={{
-    priorities: this.state.data.fieldOptions.priorities,
-    statuses: this.state.data.fieldOptions.statuses,
-    categories: this.state.data.fieldOptions.categories,
-  }}
-/>
+      <IssueTrackerDebugView
+        issues={this.state.data.data}
+        options={{
+          priorities: this.state.data.fieldOptions.priorities,
+          statuses: this.state.data.fieldOptions.statuses,
+          categories: this.state.data.fieldOptions.categories,
+        }}
+      />
       )}
     </div>
     );

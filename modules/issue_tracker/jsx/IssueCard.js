@@ -8,7 +8,6 @@ const IssueCard = React.memo(function IssueCard({
   statuses,
   priorities,
   categories,
-  baseURL,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
@@ -194,7 +193,6 @@ IssueCard.propTypes = {
   statuses: PropTypes.object.isRequired,
   priorities: PropTypes.object.isRequired,
   categories: PropTypes.object.isRequired,
-  baseURL: PropTypes.string.isRequired,
 };
 
 export default IssueCard;

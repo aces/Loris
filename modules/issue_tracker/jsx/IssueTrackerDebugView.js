@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import IssueCard from './IssueCard';
-import '../css/issue_card.css';
+import '../css/issue_tracker_debug.css';
 
-function IssueTrackerDetailView({ options }) {
+function IssueTrackerDebugView({ options }) {
   const [issues, setIssues] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriorities, setSelectedPriorities] = useState([]);
@@ -79,7 +79,7 @@ function IssueTrackerDetailView({ options }) {
   }
 
   return (
-    <div className="issue-tracker-detail-view">
+    <div className="issue-tracker-debug-view">
       <div className="filter-tabs">
         <button onClick={() => setActiveTab('category')} className={activeTab === 'category' ? 'active' : ''}>Category</button>
         <button onClick={() => setActiveTab('priority')} className={activeTab === 'priority' ? 'active' : ''}>Priority</button>
@@ -144,7 +144,7 @@ function IssueTrackerDetailView({ options }) {
   );
 }
 
-IssueTrackerDetailView.propTypes = {
+IssueTrackerDebugView.propTypes = {
   options: PropTypes.shape({
     priorities: PropTypes.object,
     statuses: PropTypes.object,
@@ -152,4 +152,4 @@ IssueTrackerDetailView.propTypes = {
   }).isRequired,
 };
 
-export default IssueTrackerDetailView;
+export default IssueTrackerDebugView;
