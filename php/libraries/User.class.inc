@@ -100,7 +100,7 @@ class User extends UserPermissions implements
         $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = new \CenterID($val['CenterID']);
+            $user_cid[$key] = new \CenterID(strval($val['CenterID']));
             $sitenames[]    = $val['Name'];
         }
         $row['Sites'] = implode(';', $sitenames);
@@ -110,7 +110,7 @@ class User extends UserPermissions implements
             ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
-            $user_pid[$k] = new ProjectID($pid);
+            $user_pid[$k] = new ProjectID(strval($pid));
         }
 
         // Get examiner information

@@ -210,7 +210,7 @@ class NDB_BVL_Battery
                 "Failed to get SessionID, and UserID when trying to add $testName"
             );
         }
-        $sessionData = $rows[0];
+        $sessionData = $rows->getFirstRow();
 
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
@@ -356,7 +356,7 @@ class NDB_BVL_Battery
         $rows = $DB->pselect($query, $qparams);
 
         // return all the data selected
-        return $rows;
+        return iterator_to_array($rows);
     }
 
 

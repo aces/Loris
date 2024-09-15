@@ -116,7 +116,7 @@ class Module extends \Module
                  GROUP BY i.issueID, i.Title",
                 [ 'cid' => $candidate->getCandID() ],
             );
-            if (empty($issues)) {
+            if (count($issues) === 0) {
                 return [];
             }
             return [
@@ -125,7 +125,7 @@ class Module extends \Module
                     $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
                     "lorisjs.issue_tracker.CandidateIssuesWidget.default",
                     [
-                        'Issues' => $issues,
+                        'Issues' => iterator_to_array($issues),
                     ],
                     1,
                     1,

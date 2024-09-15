@@ -1151,7 +1151,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Exclusion'                   => null,
                 'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
-                'Data'                        => null
+                'DataID'                      => null
             ]
         );
     }
@@ -1346,7 +1346,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             'arthritis_age_status' => 'status'
         ];
         $this->_instrument->_saveValues($values);
-        $dbData = $this->_DB->pselect("SELECT * FROM medical_history", []);
+        $dbData = iterator_to_array(
+            $this->_DB->pselect("SELECT * FROM medical_history", [])
+        );
         $this->assertEquals('77.2', $dbData[0]['Candidate_Age']);
         $this->assertEquals('0', $dbData[0]['Window_Difference']);
         $this->assertEquals(null, $dbData[0]['arthritis_age']);
@@ -1669,15 +1671,19 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $conflictsBefore = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved",
-            []
+        $conflictsBefore = iterator_to_array(
+            $this->_DB->pselect(
+                "SELECT * FROM conflicts_unresolved",
+                []
+            )
         );
         $this->_instrument->clearInstrument();
         $data           = $this->_instrument->getInstanceData();
-        $conflictsAfter = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved",
-            []
+        $conflictsAfter = iterator_to_array(
+            $this->_DB->pselect(
+                "SELECT * FROM conflicts_unresolved",
+                []
+            )
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);

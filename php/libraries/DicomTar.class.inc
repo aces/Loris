@@ -121,15 +121,21 @@ class DicomTar
                     intval($row['id']),
                     $row['seriesdescription'],
                     intval($row['seriesnumber']),
-                    $row['echotime'],
-                    $row['repetitiontime'],
-                    $row['inversiontime'],
-                    $row['slicethickness'],
+                    is_null($row['echotime']) ? null : strval($row['echotime']),
+                    is_null($row['repetitiontime'])
+                    ? null
+                    : strval($row['repetitiontime']),
+                    $row['inversiontime'] === null
+                    ? null
+                    : strval($row['inversiontime']),
+                    $row['slicethickness'] === null
+                    ? null
+                    : strval($row['slicethickness']),
                     $row['modality'],
                     $row['seriesuid']
                 );
             },
-            $dbrow
+            iterator_to_array($dbrow)
         );
     }
 }

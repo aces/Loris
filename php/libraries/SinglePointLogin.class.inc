@@ -113,59 +113,6 @@ class SinglePointLogin
     }
 
     /**
-     * Saves the new password if last was expired
-     *
-     * @return bool
-     * @access public
-     */
-    /*
-    function save(): bool
-    {
-        // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
-
-        // get user's data
-        $data = $user->getData();
-
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-                $_POST['confirm'] ?? '',
-                $data['UserID'],
-                $data['Email'],
-            ),
-            array(
-                '==',
-                '!=',
-                '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-            return false;
-        }
-
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-            return false;
-        }
-        // Check if password is present in existing data breaches.
-        if ($user->pwnedPassword($_POST['password'])) {
-            $this->_lastError = 'The password you chose is too common. Please '
-                . 'choose a more unique password.';
-                return false;
-        }
-
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
-        return true;
-    }
-     */
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return bool Whether a user has successfully authenticated.

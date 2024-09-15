@@ -820,7 +820,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
-            "SELECT Data FROM flag WHERE CommentID=:cid",
+            "SELECT id.Data FROM flag f
+                    JOIN instrument_data id ON (id.ID=f.DataID)
+                WHERE CommentID=:cid",
             ['cid' => $this->getCommentID()]
         );
 
@@ -832,15 +834,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $newData = array_merge($oldData ?? [], $values);
 
-        // Save the JSON to the flag.Data column.
-        //
-        // json_encode ensures that this is safe. If we use the safe wrapper,
-        // HTML encoding the quotation marks will make it invalid JSON.
-        $db->unsafeUpdate(
-            "flag",
-            ["Data" => json_encode($newData)],
-            ['CommentID' => $this->getCommentID()]
+        // If there's already a row with the same data, re-use the DataID.
+        // Otherwise, insert it, then update the DataID on flag.
+        $jsonencoded = json_encode($newData);
+        $newDataID   = $db->pselectOne(
+            "SELECT ID FROM instrument_data WHERE Data=:json",
+            [ 'json' => $jsonencoded]
         );
+        if ($newDataID === null) {
+            $db->unsafeInsert(
+                "instrument_data",
+                ['Data' => $jsonencoded],
+            );
+            $newDataID = $db->getLastInsertId();
+        }
+        assert($newDataID !== null);
+        $db->update(
+            "flag",
+            ["DataID" => $newDataID],
+            ['CommentID' => $this->getCommentID()],
+        );
+
         $this->instanceData = $newData;
     }
 
@@ -2129,7 +2143,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if ($this->jsonData) {
             $jsondata = $db->pselectOne(
-                "SELECT Data FROM flag WHERE CommentID=:CID",
+                "SELECT id.Data FROM flag f
+                        JOIN instrument_data id ON (id.ID=f.DataID)
+                    WHERE CommentID=:CID",
                 ['CID' => $this->getCommentID()]
             );
 
@@ -2229,6 +2245,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         Data
                     FROM flag
                         JOIN session ON (session.ID=flag.SessionID)
+                        JOIN instrument_data ON (flag.DataID=instrument_data.ID)
                     WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
@@ -2247,7 +2264,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $jsondata
+                iterator_to_array($jsondata)
             );
         } else {
             $defaults = $db->pselect(
@@ -2274,7 +2291,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $defaults
+                iterator_to_array($defaults)
             );
         }
     }
@@ -2550,7 +2567,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Clear data out of the flag table's Data column
-        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
+        $db->update('flag', ['DataID'=>null], ['CommentID' => $this->commentID]);
         $this->_setRequiredElementsCompletedFlag('N');
 
         $prepQ = $db->prepare(
@@ -2709,12 +2726,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $smarty   = new Smarty_NeuroDB();
         $tpl_data = [];
 
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
+        $tpl_data['questions'] = iterator_to_array(
+            $DB->pselect(
+                "SELECT Description as question,
             SourceField FROM parameter_type
             WHERE SourceFrom=:TN AND
             SourceField NOT IN ('Validity', 'Administration')",
-            ['TN' => $this->testName]
+                ['TN' => $this->testName]
+            )
         );
 
         $Responses = $this->getInstanceData();

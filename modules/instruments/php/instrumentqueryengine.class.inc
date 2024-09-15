@@ -128,7 +128,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 function ($row) {
                     return $row['CommentID'];
                 },
-                $data,
+                iterator_to_array($data),
             )
         );
 
@@ -333,8 +333,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $q = $DB->prepare($insertstmt);
         $q->execute([]);
 
-        $rows = $DB->pselect(
-            "SELECT c.CandID, CommentID FROM flag f 
+        $rows = iterator_to_array(
+            $DB->pselect(
+                "SELECT c.CandID, CommentID FROM flag f 
                 JOIN session s ON (f.SessionID=s.ID)
                 JOIN candidate c ON (s.CandID=c.CandID)
              WHERE f.CommentID NOT LIKE 'DDE%'
@@ -342,7 +343,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 AND f.Test_name IN ('" . join("', '", $instruments). "')
                 AND c.Active='Y' AND s.Active='Y'
              ORDER BY c.CandID",
-            [],
+                [],
+            )
         );
 
         $commentID2CandID = [];

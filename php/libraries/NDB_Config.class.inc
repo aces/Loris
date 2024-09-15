@@ -321,7 +321,7 @@ class NDB_Config
         // with what would have come from the config.xml.
         if (count($configSetting) === 1) {
             // Trying to get a single value from the database.
-            $configSetting = $configSetting[0];
+            $configSetting = $configSetting->getFirstRow();
             if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",

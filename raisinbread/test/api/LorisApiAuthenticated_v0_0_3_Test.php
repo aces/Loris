@@ -42,7 +42,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->_version = 'v0.0.3';
 
         // store the original JWT key for restoring it later
-        $jwtConfig = $this->DB->pselect(
+        $jwtConfig = $this->DB->pselectRow(
             '
             SELECT
               Value, ConfigID
@@ -53,7 +53,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")
             ',
             []
-        )[0] ?? null;
+        );
 
         if ($jwtConfig === null) {
             throw new \LorisException('There is no Config for "JWTKey"');

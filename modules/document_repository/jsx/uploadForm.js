@@ -154,6 +154,18 @@ class DocUploadForm extends Component {
               onUserInput={this.setFormData}
               value={this.state.formData.comments}
             />
+            {
+              loris.userHasPermission('document_repository_hidden') ?
+                (<SelectElement
+                name="hiddenFile"
+                label="Restrict access to the file?"
+                options={this.state.data.fieldOptions.hiddenFile}
+                sortByValue={false}
+                onUserInput={this.setFormData}
+                value={this.state.formData.hiddenFile}
+                />) :
+                null
+            }
             <FileElement
               name="files"
               id="docUploadEl"
@@ -279,7 +291,7 @@ DocUploadForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   refreshPage: PropTypes.func.isRequired,
-  category: PropTypes.string,
+  category: PropTypes.bool,
 };
 
 export default DocUploadForm;
