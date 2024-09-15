@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import IssueCard from './IssueCard';
+import Loader from 'Loader';
 import '../css/issue_tracker_debug.css';
 
 function IssueTrackerDebugView({ options }) {
@@ -71,7 +72,7 @@ function IssueTrackerDebugView({ options }) {
   }
 
   if (isLoading) {
-    return <div>Loading issues...</div>;
+    return <Loader />;
   }
 
   if (error) {
