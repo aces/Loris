@@ -63,7 +63,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         if ($debug) {
             // Fetch all issues
-            $allIssues = $this->getAllIssues($user);
+            $allIssues = $this->_getAllIssues($user);
             return new \LORIS\Http\Response\JsonResponse($allIssues);
         }
 
@@ -285,13 +285,13 @@ class Edit extends \NDB_Page implements ETagCalculator
     }
 
         /**
-     * Fetches all issues from the database
-     *
-     * @param \User $user The current user
-     *
-     * @return array
-     */
-    private function getAllIssues(\User $user): array
+         * Fetches all issues from the database
+         *
+         * @param \User $user The current user
+         *
+         * @return array
+         */
+    private function _getAllIssues(\User $user): array
     {
         $db = $this->loris->getDatabaseConnection();
 
@@ -302,7 +302,8 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Add permission check if needed
         if (!$user->hasPermission('access_all_profiles')) {
-            $query .= " WHERE i.centerID IN (" . implode(',', $user->getCenterIDs()) . ")";
+            $query .= " WHERE i.centerID IN (" .
+            implode(',', $user->getCenterIDs()) . ")";
         }
 
         $query .= " ORDER BY i.issueID DESC";
@@ -311,7 +312,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Format the issues data
         foreach ($issues as &$issue) {
-            $issue['reporter'] = $this->formatUserInformation($issue['reporter']);
+            $issue['reporter']      = $this->formatUserInformation($issue['reporter']);
             $issue['lastUpdatedBy'] = $this->formatUserInformation($issue['lastUpdatedBy']);
         }
 
