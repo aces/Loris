@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
@@ -13,9 +13,9 @@ const IssueCard = React.memo(function IssueCard({
   const [editedIssue, setEditedIssue] = useState({...issue});
 
   const handleInputChange = (field, value) => {
-    setEditedIssue(prev => ({
+    setEditedIssue((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -30,10 +30,10 @@ const IssueCard = React.memo(function IssueCard({
     const formData = new FormData();
 
     Object.entries(editedIssue).forEach(([key, value]) => {
-      formData.append(key, value === null ? "null" : value);
+      formData.append(key, value === null ? 'null' : value);
     });
 
-    const hasChanges = Object.entries(editedIssue).some(([key, value]) => 
+    const hasChanges = Object.entries(editedIssue).some(([key, value]) =>
       value !== issue[key]
     );
 
@@ -47,7 +47,7 @@ const IssueCard = React.memo(function IssueCard({
       body: formData,
     }).then((response) => {
       if (!response.ok) {
-        return response.json().then(data => {
+        return response.json().then((data) => {
           throw new Error(data.error || 'Network response was not ok');
         });
       }
@@ -68,12 +68,12 @@ const IssueCard = React.memo(function IssueCard({
     let text = message || '';
     let timer = null;
     let confirmation = true;
-  
+
     if (msgType === 'error') {
       type = 'error';
       title = 'Error!';
     }
-  
+
     swal.fire({
       title: title,
       type: type,
@@ -155,12 +155,29 @@ const IssueCard = React.memo(function IssueCard({
         </div>
         <br/>
         {!isEditing && (
-          <button className="btn btn-primary" onClick={() => setIsEditing(true)}>Edit Issue</button>
+          <button
+          className="btn btn-primary"
+          onClick={() => setIsEditing(true)}
+        >
+          Edit Issue
+        </button>
         )}
         {isEditing && (
           <div className="issue-actions">
-            <button type="submit" className="btn btn-primary">Update Issue</button>
-            <button type="button" className="btn btn-primary" onClick={() => setIsEditing(false)}>Cancel</button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+            >
+              Update Issue
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setIsEditing(false)}
+            >
+              Cancel
+            </button>
           </div>
         )}
       </form>
@@ -187,7 +204,7 @@ IssueCard.propTypes = {
     instrument: PropTypes.string,
     description: PropTypes.string,
     PSCID: PropTypes.string,
-    visitLabel: PropTypes.string
+    visitLabel: PropTypes.string,
   }).isRequired,
   onUpdate: PropTypes.func.isRequired,
   statuses: PropTypes.object.isRequired,

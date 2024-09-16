@@ -58,7 +58,7 @@ class IssueTrackerIndex extends Component {
    * Toggle between normal and debug view
    */
   toggleView() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       view: prevState.view === 'normal' ? 'debug' : 'normal',
     }));
     this.fetchData(); // Fetch fresh data when toggling views
@@ -274,12 +274,16 @@ class IssueTrackerIndex extends Component {
     const actions = [
       {label: 'New Issue', action: addIssue},
     ];
-    console.log(this.state.data.data)
+
     return (
       <div>
       <div className="view-toggle">
         <button onClick={this.toggleView}>
-          {this.state.view === 'normal' ? 'Switch to Debug View' : 'Switch to Normal View'}
+        {`Switch to ${
+          this.state.view === 'normal'
+            ? 'Debug'
+            : 'Normal'
+        } View`}
         </button>
       </div>
       {this.state.view === 'normal' ? (
