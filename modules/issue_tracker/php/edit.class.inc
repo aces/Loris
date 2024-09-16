@@ -310,6 +310,11 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $issues = $db->pselect($query, []);
 
+        // Ensure $issues is an array
+        if (!is_array($issues)) {
+            $issues = iterator_to_array($issues);
+        }
+
         // Format the issues data
         foreach ($issues as &$issue) {
             $issue['reporter']      = $this->formatUserInformation(
