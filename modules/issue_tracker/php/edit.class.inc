@@ -312,8 +312,12 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Format the issues data
         foreach ($issues as &$issue) {
-            $issue['reporter']      = $this->formatUserInformation($issue['reporter']);
-            $issue['lastUpdatedBy'] = $this->formatUserInformation($issue['lastUpdatedBy']);
+            $issue['reporter']      = $this->formatUserInformation(
+                $issue['reporter']
+            );
+            $issue['lastUpdatedBy'] = $this->formatUserInformation(
+                $issue['lastUpdatedBy']
+            );
         }
 
         return $issues;
