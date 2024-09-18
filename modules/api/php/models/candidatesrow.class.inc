@@ -50,7 +50,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         $this->_edc      = $row['EDC'] ?? null;
         $this->_dob      = $row['DoB'] ?? null;
         $this->_sex      = $row['Sex'] ?? null;
-        $this->_centerid = new \CenterID($row['CenterID']);
+        $this->_centerid = \CenterID::singleton(intval($row['CenterID']));
     }
 
     /**

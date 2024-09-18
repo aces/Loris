@@ -613,7 +613,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     new \TimePointData(
                         new \SessionID($row['sessionID']),
                         new \ProjectID($row['SProjectID']),
-                        new \CenterID($row['SCenterID']),
+                        \CenterID::singleton($row['SCenterID']),
                     )
                 );
             }
@@ -624,7 +624,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $canddata  = new \CandidateData(
                 candID: $vals['CandID'],
                 registrationProjectID: new \ProjectID($vals['RegistrationProject']),
-                registrationCenterID: new \CenterID($vals['RegistrationCenter']),
+                registrationCenterID: \CenterID::singleton(
+                    $vals['RegistrationCenter']
+                ),
                 timepoints: $vals['Timepoints']
             );
             $candidate = new \Candidate($canddata);

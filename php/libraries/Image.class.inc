@@ -81,7 +81,7 @@ class Image
             $this->_filetype            = $dbrow['filetype'];
             $this->_centerid            = $dbrow['centerid'] === null
             ? null
-            : new \CenterID(strval($dbrow['centerid']));
+            : \CenterID::singleton($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
         }
     }

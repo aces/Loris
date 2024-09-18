@@ -59,7 +59,7 @@ class MediaFile implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->DBRow['centerId']);
+        return \CenterID::singleton($this->DBRow['centerId']);
     }
 
     /**

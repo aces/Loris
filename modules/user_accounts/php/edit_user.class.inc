@@ -281,7 +281,7 @@ class Edit_User extends \NDB_Form
         $us_curr_sites = $values['CenterIDs'];
         $userNewCenterIDs = array_map(
             function ($val) {
-                return new \CenterID($val);
+                return \CenterID::singleton($val);
             },
             $values['CenterIDs']
         );

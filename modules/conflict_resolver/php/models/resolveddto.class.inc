@@ -87,7 +87,7 @@ class ResolvedDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->centerid));
+        return \CenterID::singleton($this->centerid);
     }
 
     /**
