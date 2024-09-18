@@ -274,7 +274,7 @@ jobs:
       run: make dev
 
     - name: Debug LORIS DB
-      run: docker-compose up --build
+      run: docker compose up --build
 
     - name: Run Test Suite
       run: |
