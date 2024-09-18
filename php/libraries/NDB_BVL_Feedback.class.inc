@@ -563,7 +563,7 @@ class NDB_BVL_Feedback
                      JOIN feedback_bvl_type as ftp
                          ON (ftp.Feedback_type=ft.Feedback_type)";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= ", flag as f LEFT JOIN tn ON (tn.ID=f.TestID)";
+            $query .= ", flag as f LEFT JOIN test_names tn ON (tn.ID=f.TestID)";
         }
 
         // FIXME: This clause is kept here so that the ANDs below don't
@@ -623,7 +623,7 @@ class NDB_BVL_Feedback
                              ft.Status,
                              ft.Testdate DESC";
 
-            $result = $db->pselect($query, $qparams);
+        $result = $db->pselect($query, $qparams);
 
         return iterator_to_array($result);
     }
