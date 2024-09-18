@@ -273,9 +273,6 @@ jobs:
     - name: Build LORIS
       run: make dev
 
-    - name: Debug LORIS DB
-      run: docker compose up --build
-
     - name: Run Test Suite
       run: |
           # set sandbox to 1 before running the tests

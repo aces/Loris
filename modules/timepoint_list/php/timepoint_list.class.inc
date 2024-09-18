@@ -149,11 +149,6 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentDate']
                 =   $timePoint->getCurrentDate();
 
-            // get meta cohort info
-            $this->tpl_data['timePoints'][$x]['metaCohorts'] =json_encode(
-                ['Fresh','Ettt']
-            );
-
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
                 $username,

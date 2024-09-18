@@ -136,7 +136,7 @@ INSERT INTO `permissions` VALUES
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
     (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
     (66,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
-    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
+    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2'),
     (68,'candidate_edit','Candidate Archive and Edit',(SELECT ID FROM modules WHERE Name='candidate_list'),'Edit/Upload/Delete','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
