@@ -73,7 +73,7 @@ Ensure the [Visit Windows table](https://github.com/aces/Loris/wiki/Project-Cust
 Ensure your `mri_protocol` table contains an entry for each type of scan in the study protocol.
 The `mri_protocol` table is used to identify incoming scans based on their SeriesDescription and scan parameter values (TE, TR, slice thickness, etc). By default, this table is populated with entries for t1, t2, fMRI and DTI, and the columns defining expected scan parameters (e.g. `TE_Range`) are defined very broadly.
 
-Note: `Name` column values are defined in the `mri_scan_type` table (e.g. 44=t1); do not include hyphens, spaces or periods in your `mri_scan_type.Name` column values.
+Note: `Scan_type` column values are defined in the `mri_scan_type` table (e.g. 44=t1); do not include hyphens, spaces or periods in your `mri_scan_type.MriScanTypeName` column values.
 
 #### Notes on Scan type identification
 * By default, any scan will be inserted if it matches an _mri_protocol_ table entry.

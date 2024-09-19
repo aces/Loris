@@ -1153,10 +1153,13 @@ class UtilityTest extends TestCase
                 )
             )
             ->willReturn(
-                [0 => ['ID' => 123,
-                    'Name' => 'scan 1'
-                ],
-                    1 => ['ID' => 234,
+                [
+                    0 => [
+                        'ID'   => 123,
+                        'Name' => 'scan 1'
+                    ],
+                    1 => [
+                        'ID'   => 234,
                         'Name' => 'scan 2'
                     ]
                 ]
