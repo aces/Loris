@@ -102,7 +102,10 @@ class Statistics_Mri_Site extends Statistics_Site
         $DB = $this->loris->getDatabaseConnection();
 
         $scan_types = iterator_to_array(
-            $DB->pselect("SELECT Name AS ScanType from mri_scan_type", [])
+            $DB->pselect(
+                "SELECT MriScanTypeName AS ScanType from mri_scan_type",
+                []
+            )
         );
         $where      = "WHERE (";
         $counter    = 1;

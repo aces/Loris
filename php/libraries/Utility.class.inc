@@ -967,15 +967,15 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Name
-             FROM mri_scan_type mri
-                JOIN files f ON (f.MriScanTypeID=mri.ID)",
+            "SELECT MriScanTypeID, MriScanTypeName
+             FROM mri_scan_type JOIN files USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
-            $scan_types[$scan_type['ID']] = $scan_type['Name'];
+            $scan_types[$scan_type['MriScanTypeID']]
+                = $scan_type['MriScanTypeName'];
         }
 
         return $scan_types;

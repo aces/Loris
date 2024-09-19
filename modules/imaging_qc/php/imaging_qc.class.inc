@@ -60,14 +60,14 @@ class Imaging_QC extends \NDB_Menu_Filter
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
         $all_scan_types_2d = $db->pselect(
-            "SELECT ID, Name FROM mri_scan_type mri",
+            "SELECT MriScanTypeID, MriScanTypeName FROM mri_scan_type",
             []
         );
 
         $all_scan_types = [];
         foreach ($all_scan_types_2d as $row) {
-            $type = $row['Name'];
-            $all_scan_types[$row['ID']] = $type;
+            $type = $row['MriScanTypeName'];
+            $all_scan_types[$row['MriScanTypeID']] = $type;
         }
 
         // Get the intersection between all the scan types and those
@@ -286,7 +286,8 @@ class Imaging_QC extends \NDB_Menu_Filter
 
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
-                "SELECT ID FROM mri_scan_type WHERE Name=:scan_type",
+                "SELECT MriScanTypeID FROM mri_scan_type
+                    WHERE MriScanTypeName=:scan_type",
                 $query_params
             );
             if (substr("$scan_type", 0, 2) == "t1") {

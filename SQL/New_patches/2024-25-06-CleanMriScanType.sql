@@ -1,7 +1,10 @@
 -- Rename foreign key fields for consistency
 
 ALTER TABLE `mri_scan_type`
-  RENAME COLUMN `Scan_type` TO `Name`;
+  RENAME COLUMN `ID` TO `MriScanTypeID`;
+
+ALTER TABLE `mri_scan_type`
+  RENAME COLUMN `Scan_type` TO `MriScanTypeName`;
 
 ALTER TABLE `mri_protocol`
   RENAME COLUMN `Scan_type` TO `MriScanTypeID`;
@@ -23,9 +26,9 @@ ALTER TABLE `mri_protocol_group_target`
 
 ALTER TABLE `mri_scan_type`
   ADD CONSTRAINT `UK_mri_scan_type_name`
-    UNIQUE KEY `Name` (`Name`);
+    UNIQUE KEY `MriScanTypeName` (`MriScanTypeName`);
 
--- Drop suspicious default
+-- Drop wrong default
 
 ALTER TABLE `mri_protocol`
   ALTER `MriScanTypeID` DROP DEFAULT;
@@ -34,15 +37,15 @@ ALTER TABLE `mri_protocol`
 
 ALTER TABLE `mri_protocol`
   ADD CONSTRAINT `FK_mri_protocol_scan_type`
-    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`);
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
 
 ALTER TABLE `mri_violations_log`
   ADD CONSTRAINT `FK_mri_violations_log_scan_type`
-    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`);
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
 
 -- Rename the existing constraints for consistency
 
 ALTER TABLE `mri_protocol_checks`
   DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`,
   ADD CONSTRAINT `FK_mri_protocol_checks_scan_type`
-    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`ID`);
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);

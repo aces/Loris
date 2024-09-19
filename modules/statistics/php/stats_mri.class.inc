@@ -309,15 +309,15 @@ class Stats_MRI extends \NDB_Form
 
         //GET SCAN TYPES
         $Scan_type_results = $DB->pselect(
-            "SELECT mst.ID, mst.Name
+            "SELECT mst.MriScanTypeID, mst.MriScanTypeName
               FROM mri_scan_type mst
-                JOIN mri_protocol mp ON (mst.ID=mp.MriScanTypeID)",
+                JOIN mri_protocol mp USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($Scan_type_results as $row) {
-            $scan_types[$row['ID']] = $row['Name'];
+            $scan_types[$row['MriScanTypeID']] = $row['MriScanTypeName'];
         }
 
         $scans_selected = [];

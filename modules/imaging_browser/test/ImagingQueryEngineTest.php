@@ -139,12 +139,12 @@ class ImagingQueryEngineTest extends TestCase
             "mri_scan_type",
             [
                 [
-                    'ID'   => 98,
-                    'Name' => 'ScanType1',
+                    'MriScanTypeID'   => 98,
+                    'MriScanTypeName' => 'ScanType1',
                 ],
                 [
-                    'ID'   => 99,
-                    'Name' => 'ScanType2',
+                    'MriScanTypeID'   => 99,
+                    'MriScanTypeName' => 'ScanType2',
                 ],
             ]
         );

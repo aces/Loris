@@ -117,8 +117,9 @@ class MRIFile
         }
 
         return \NDB_Factory::singleton()->database()->pselectOne(
-            'SELECT Name AS ScanType FROM mri_scan_type WHERE ID=:ProtoID',
-            ['ProtoID' => $this->fileData['MriScanTypeID']]
+            'SELECT MriScanTypeName FROM mri_scan_type
+             WHERE MriScanTypeID=:ID',
+            ['ID' => $this->fileData['MriScanTypeID']]
         );
     }
 }

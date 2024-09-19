@@ -10,7 +10,7 @@
 4. Test Clear Filters button. [Automation Testing]
 5. Test column table is sortable by headers.
 6. Ensure that the hyperlinks in the Links column are active and load the correct dataset.
-7. Add more modalities (from the `Name` column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)
+7. Add more modalities (from the `MriScanTypeName` column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)
 
 ### View Session / Volume List
 8. Make sure a user can only access the viewSession page if and only if at least one of the following cases is true:

@@ -73,14 +73,14 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT MriScanTypeID))>0 ";
+                        DISTINCT f.MriScanTypeID))>0 ";
                     $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT MriScanTypeID))";
+                        DISTINCT f.MriScanTypeID))";
                 } else {
                     $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT MriScanTypeID))>0 ";
+                        DISTINCT f.MriScanTypeID))>0 ";
                     $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT MriScanTypeID))";
+                        DISTINCT f.MriScanTypeID))";
                 }
                 $isFirst = false;
             }
@@ -196,7 +196,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $NewDataSubquery as New_Data,
               GROUP_CONCAT(DISTINCT OutputType) as Links,
               s.ID as sessionID,
-              GROUP_CONCAT(mst.Name) as sequenceType,
+              GROUP_CONCAT(DISTINCT mst.MriScanTypeName) as sequenceType,
               $PendingNewquery as pending,
               s.CenterID as CenterID,
               c.Entity_type as entityType,
@@ -209,7 +209,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               JOIN files f ON (f.SessionID=s.ID)
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
               LEFT JOIN mri_scan_type mst ON
-                (f.MriScanTypeID=mst.ID)
+                (f.MriScanTypeID=mst.MriScanTypeID)
               $left_joins
             WHERE
               s.Active = 'Y' AND
