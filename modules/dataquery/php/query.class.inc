@@ -537,7 +537,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @param \User $user The user running the query.
      *
-     * @return CandID[]
+     * @return iterable
      */
     public function matchCandidates(\User $user) : iterable
     {
@@ -557,7 +557,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param CandID[] $candIDs The CandIDs to be filtered
      * @param \User    $user    The user whose access should check.
      *
-     * @return CandID[]
+     * @return iterable
      */
     private function _filterInaccessibleCandidates(
         array $candIDs,
