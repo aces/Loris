@@ -120,7 +120,7 @@ ON
         // behaviour of requiring the registration site to match
         // one of the user's sites.
         $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new ScheduleRow($row, $cid, $pid);

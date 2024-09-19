@@ -100,7 +100,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // behaviour of requiring the registration site to match
         // one of the user's sites.
         $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         if ($row['DoB'] !== null) {
             $dob = new \DateTimeImmutable($row['DoB']);
             switch ($this->dobFormat) {

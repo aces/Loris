@@ -88,6 +88,6 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->projectid));
+        return \ProjectID::singleton($this->projectid);
     }
 }

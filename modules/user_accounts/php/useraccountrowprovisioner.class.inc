@@ -57,7 +57,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         if (isset($row['projectIds'])) {
             $pids = array_map(
                 function (string $pid) : \ProjectID {
-                    return new \ProjectID($pid);
+                    return \ProjectID::singleton((int )$pid);
                 },
                 explode(',', $row['projectIds'])
             );

@@ -7,6 +7,23 @@
 class ProjectID extends ValidatableIdentifier implements \JsonSerializable
 {
     /**
+     * Acts as a constructor for a ProjectID , using a cached instantiation
+     * if available
+     *
+     * @param int $id The ProjectID to get a singleton for.
+     *
+     * @return ProjectID
+     */
+    static public function singleton(int $id)
+    {
+        static $cache = [];
+        if (!isset($cache[$id])) {
+            $cache[$id] = new \ProjectID(strval($id));
+        }
+        return $cache[$id];
+    }
+
+    /**
      * Returns this identifier type
      *
      * @return string

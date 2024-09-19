@@ -81,8 +81,8 @@ class Project implements \JsonSerializable
 
             $project = new Project();
 
-            $project->_projectId         = new ProjectID(
-                strval($projectData['projectId'])
+            $project->_projectId         = ProjectID::singleton(
+                $projectData['projectId']
             );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
@@ -514,7 +514,9 @@ class Project implements \JsonSerializable
             }
             $project = new Project();
 
-            $project->_projectId         = new ProjectID($projectData['projectId']);
+            $project->_projectId         = ProjectID::singleton(
+                $projectData['projectId']
+            );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer)$projectData['recTarget'];

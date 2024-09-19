@@ -56,6 +56,6 @@ class MRIViolation implements \LORIS\Data\DataInstance
         if ($this->DBRow['Project'] === null) {
             return null;
         }
-        return new \ProjectID($this->DBRow['Project']);
+        return \ProjectID::singleton($this->DBRow['Project']);
     }
 }

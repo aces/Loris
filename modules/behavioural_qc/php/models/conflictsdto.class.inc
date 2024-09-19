@@ -51,9 +51,9 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
     /**
      * The project
      *
-     * @var string
+     * @var int
      */
-    private $_project = '';
+    private $_project;
 
     /**
      * The feedback_status
@@ -123,7 +123,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_project));
+        return \ProjectID::singleton($this->_project);
     }
 
     /**
