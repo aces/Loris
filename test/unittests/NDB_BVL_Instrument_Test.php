@@ -1054,7 +1054,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['CohortID' => '2', 'ProjectID' => '1',
+                ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );

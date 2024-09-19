@@ -43,7 +43,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
-            $this->_projectid = new \ProjectID($row['ProjectID']);
+            $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));
         }
         $this->_pscid    = $row['PSCID'] ?? null;
         $this->_sitename = $row['SiteName'] ?? null;

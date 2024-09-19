@@ -214,7 +214,7 @@ class Statistics_Mri_Site extends Statistics_Site
         // template
         $visits    = [];
         $projectID = isset($_REQUEST['ProjectID'])
-            ? new \ProjectID($_REQUEST['ProjectID'])
+            ? \ProjectID::singleton(intval($_REQUEST['ProjectID']))
             : null;
 
         $data = [];

@@ -110,7 +110,7 @@ class User extends UserPermissions implements
             ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
-            $user_pid[$k] = new ProjectID(strval($pid));
+            $user_pid[$k] = ProjectID::singleton(intval($pid));
         }
 
         // Get examiner information

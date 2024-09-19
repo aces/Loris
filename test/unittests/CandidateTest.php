@@ -154,7 +154,7 @@ class CandidateTest extends TestCase
             'Active'                => 'Y',
             'RegisteredBy'          => 'Admin Admin',
             'UserID'                => 'admin',
-            'RegistrationProjectID' => "1",
+            'RegistrationProjectID' => 1,
             'ProjectTitle'          => '',
         ];
         $this->_candidate     = new Candidate();
@@ -323,7 +323,7 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(
-            $this->_candidateInfo['RegistrationProjectID'],
+            \ProjectID::singleton($this->_candidateInfo['RegistrationProjectID']),
             $this->_candidate->getProjectID()
         );
     }

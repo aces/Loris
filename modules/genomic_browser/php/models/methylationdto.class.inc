@@ -33,9 +33,9 @@ class MethylationDTO implements DataInstance, SiteHaver
     /**
      * The projectID
      *
-     * @var string
+     * @var int
      */
-    private $_projectID = "";
+    private $_projectID;
 
     /**
      * The PSC
@@ -329,6 +329,6 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_projectID));
+        return \ProjectID::singleton($this->_projectID);
     }
 }

@@ -238,7 +238,7 @@ class NDB_Factory_Test extends TestCase
         $mockdb = $this->getMockBuilder("\Database")->getMock();
         $mockdb->expects($this->any())
             ->method('pselectRow')
-            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => '1']);
+            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => 1]);
 
         // Mock call for Candidate->select()
         $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
@@ -290,7 +290,7 @@ class NDB_Factory_Test extends TestCase
             ->willReturn(
                 [
                     'SessionID' => '1',
-                    'ProjectID' => '1',
+                    'ProjectID' => 1,
                     'CandID'    => 123456
                 ]
             );
