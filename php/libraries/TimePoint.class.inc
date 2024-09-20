@@ -1185,11 +1185,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $result = $db->pselectCol(
             '
              SELECT DISTINCT
-               Test_name as shortname
+               tn.Test_name as shortname
              FROM
-               flag
+               flag f
+             JOIN test_names tn ON (f.TestID=tn.ID)
              WHERE
-               SessionID = :v_sessionid
+               f.SessionID = :v_sessionid
             ',
             ['v_sessionid' => $this->getSessionID()]
         );

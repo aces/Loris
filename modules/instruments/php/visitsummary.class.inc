@@ -77,11 +77,12 @@ class VisitSummary extends \NDB_Page
 
         $bvl_result = $DB->pselect(
             "SELECT
-                f.Test_name,
+                tn.Test_name,
                 f.CommentID,
                 COUNT(cu.ConflictID) AS NumOfConflict
             FROM session s
                 LEFT JOIN flag f ON (s.ID = f.SessionID)
+                	JOIN test_names tn ON (tn.ID = f.TestID)
                 LEFT JOIN conflicts_unresolved cu
                     ON (cu.CommentId1=f.CommentID OR cu.CommentID2=f.CommentID)
                 LEFT JOIN candidate c USING (CandID)
@@ -92,13 +93,13 @@ class VisitSummary extends \NDB_Page
                 s.Visit_label,
                 s.ID,
                 s.Date_visit,
-                f.Test_name,
+                tn.Test_name,
                 f.CommentID,
                 s.Current_stage,
                 s.Screening,
                 s.Visit,
                 s.Approval
-            ORDER BY s.Visit_label, f.Test_name, f.CommentID",
+            ORDER BY s.Visit_label, tn.Test_name, f.CommentID",
             ['candid' => $candid, 'vl' => $visitLabel]
         );
 

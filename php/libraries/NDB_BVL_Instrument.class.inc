@@ -637,7 +637,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $validage = $DB->pselectOne(
                     "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
                         FROM test_battery tb
-                            JOIN flag f USING(Test_name)
+                            JOIN test_names tn USING(Test_name)
+                            JOIN flag f ON (f.TestID=tn.ID)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y'
                             AND tb.Test_name=:TN
@@ -654,7 +655,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $Windows = $DB->pselect(
                         "SELECT AgeMinDays, AgeMaxDays
                         FROM test_battery tb
-                            JOIN flag f USING(Test_name)
+                            JOIN test_names tn USING(Test_name)
+                            JOIN flag f ON (f.TestID=tn.ID)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y' AND tb.Test_name=:TN
                             AND tb.CohortID=s.CohortID
