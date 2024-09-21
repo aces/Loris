@@ -461,7 +461,7 @@ class NDB_Menu_Filter extends NDB_Menu
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -803,7 +803,23 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $result = $DB->pselect($query, $qparams);
 
-        return $result;
+        // StaticDataTable makes assumptions about values being strings,
+        // so convert all values to strings.
+        return array_map(
+            function ($row) {
+                    return array_map(
+                        function ($cell) {
+                            if ($cell === null) {
+                                return $cell;
+                            }
+                            return strval($cell);
+
+                        },
+                        $row
+                    );
+            },
+            iterator_to_array($result)
+        );
     }
 
     /**

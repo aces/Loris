@@ -144,8 +144,9 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      */
     function getParameter(string $parameterName) : string
     {
-        return $this->_fileData[$parameterName] ??
+        $val = $this->_fileData[$parameterName] ??
             ($this->_parameters[$parameterName] ?? '');
+        return strval($val);
     }
 
     /**

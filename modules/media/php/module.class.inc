@@ -72,7 +72,7 @@ class Module extends \Module
                     AND hide_file=false",
                 ['cid' => $candidate->getCandID()],
             );
-            if (empty($media)) {
+            if (count($media) === 0) {
                 return [];
             }
             return [
@@ -80,7 +80,7 @@ class Module extends \Module
                     "Candidate Media",
                     $baseurl . "/media/js/CandidateMediaWidget.js",
                     "lorisjs.media.CandidateMediaWidget.default",
-                    [ 'Files' => $media],
+                    [ 'Files' => iterator_to_array($media)],
                     1,
                     1,
                 )

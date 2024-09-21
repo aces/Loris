@@ -185,7 +185,7 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             $qparams = ['SID' => $this->session_id];
         }
-        $result = $DB->pselect($query, $qparams);
+        $result = iterator_to_array($DB->pselect($query, $qparams));
         if (count($result) > 0) {
             $i = 0;
             foreach ($result[0] as $key => $value) {

@@ -160,10 +160,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $this->data = new TimePointData(
             $sessionID,
             isset($row['ProjectID'])
-                ? new ProjectID($row['ProjectID'])
+                ? ProjectID::singleton($row['ProjectID'])
                 : null,
             isset($row['CenterID'])
-                ? new \CenterID($row['CenterID'])
+                ? \CenterID::singleton($row['CenterID'])
                 : null,
         );
 
@@ -175,6 +175,8 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
             $title = $cohortSettings['title'] ?? '';
             $this->_timePointInfo['CohortTitle'] = $title;
+
+            $this->_timePointInfo['CandID'] = new CandID(strval($row['CandID']));
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -278,7 +280,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         $insertData = [
-            'CandID'          => $candidate->getCandID(),
+            'CandID'          => $candidate->getCandID()->__toString(),
             'CohortID'        => $CohortID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
@@ -423,7 +425,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
          * which returns values in string format. CandID is used here to
          * ensure we return a validated CandID object.
          */
-        return new CandID($this->_timePointInfo["CandID"]);
+        return $this->_timePointInfo["CandID"];
     }
 
     /**
@@ -1183,11 +1185,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $result = $db->pselectCol(
             '
              SELECT DISTINCT
-               Test_name as shortname
+               tn.Test_name as shortname
              FROM
-               flag
+               flag f
+             JOIN test_names tn ON (f.TestID=tn.ID)
              WHERE
-               SessionID = :v_sessionid
+               f.SessionID = :v_sessionid
             ',
             ['v_sessionid' => $this->getSessionID()]
         );

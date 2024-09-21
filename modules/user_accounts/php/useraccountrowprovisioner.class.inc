@@ -49,7 +49,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         if (isset($row['centerIds'])) {
             $cids = array_map(
                 function (string $cid) : \CenterID {
-                    return new \CenterID($cid);
+                    return \CenterID::singleton(intval($cid));
                 },
                 explode(',', $row['centerIds'])
             );
@@ -57,7 +57,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         if (isset($row['projectIds'])) {
             $pids = array_map(
                 function (string $pid) : \ProjectID {
-                    return new \ProjectID($pid);
+                    return \ProjectID::singleton((int )$pid);
                 },
                 explode(',', $row['projectIds'])
             );

@@ -119,8 +119,8 @@ ON
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = new \CenterID($row['RegistrationCenterID']);
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new ScheduleRow($row, $cid, $pid);

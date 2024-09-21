@@ -121,7 +121,9 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         if ($_REQUEST['BehaviouralProject'] ?? '') {
-            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
+            $currentProject = \ProjectID::singleton(
+                intval($_REQUEST['BehaviouralProject'])
+            );
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,

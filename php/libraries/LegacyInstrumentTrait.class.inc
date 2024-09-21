@@ -77,6 +77,6 @@ trait LegacyInstrumentTrait
 
         $results = $db->pselect($query, ['TN' => $this->testName]);
 
-        return $results;
+        return iterator_to_array($results);
     }
 }

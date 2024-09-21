@@ -170,7 +170,10 @@ class Sessions extends \NDB_Page
         $response = [];
 
         $sessions            = $db->pselect($query, []);
-        $sessions            = array_column($sessions, 'SessionID');
+        $sessions            = array_column(
+            iterator_to_array($sessions),
+            'SessionID'
+        );
         $response['patient'] = $this->getSubjectData($outputType);
         $response['database']    = array_values(
             $this->getFilesData($outputType)

@@ -41,6 +41,6 @@ class ProtocolCheckViolation implements \LORIS\Data\DataInstance
         if (($this->DBRow['CenterID'] ?? null) == null) {
             return null;
         }
-        return new \CenterID($this->DBRow['CenterID']);
+        return \CenterID::singleton($this->DBRow['CenterID']);
     }
 }

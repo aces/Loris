@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class defines a factory which can be used to generate other objects that
  * are usually singletons. Instead of directly calling class::singleton staticly,

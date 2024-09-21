@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file implements a data provisioner to get all possible rows
  * for the issue tracker menu page.
@@ -114,7 +114,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         if (isset($row['centerId'])) {
             // convert the value from string to int array
-            $cids = [new \CenterID($row['centerId'])];
+            $cids = [\CenterID::singleton(intval($row['centerId']))];
 
         } else {
             $cids = $this->allCenterIDs;

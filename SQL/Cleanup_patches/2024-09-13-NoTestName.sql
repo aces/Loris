@@ -1,0 +1,2 @@
+ALTER TABLE flag DROP CONSTRAINT FK_flag_2;
+ALTER TABLE flag DROP COLUMN test_name;

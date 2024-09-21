@@ -120,7 +120,7 @@ class AddSurvey extends \NDB_Form
             ];
         }
 
-        $projectID = $db->pselectOne(
+        $projectID = $db->pselectOneInt(
             "SELECT ProjectID FROM session
             WHERE CandID=:v_CandID
             AND Visit_Label=:v_VL",
@@ -131,7 +131,7 @@ class AddSurvey extends \NDB_Form
         );
 
         $user = \NDB_Factory::singleton()->user();
-        if (!$user->hasProject(new \ProjectID($projectID))) {
+        if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
                 'Project' => "You are not affiliated with this session's project"
             ];

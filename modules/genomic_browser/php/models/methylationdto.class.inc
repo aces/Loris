@@ -26,16 +26,16 @@ class MethylationDTO implements DataInstance, SiteHaver
     /**
      * The centerID
      *
-     * @var string
+     * @var int
      */
-    private $_centerID = "";
+    private $_centerID;
 
     /**
      * The projectID
      *
-     * @var string
+     * @var int
      */
-    private $_projectID = "";
+    private $_projectID;
 
     /**
      * The PSC
@@ -319,7 +319,7 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_centerID));
+        return \CenterID::singleton($this->_centerID);
     }
 
     /**
@@ -329,6 +329,6 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_projectID));
+        return \ProjectID::singleton($this->_projectID);
     }
 }

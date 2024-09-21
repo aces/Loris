@@ -243,7 +243,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
         if ($centerID === false
             || !in_array(
-                new \CenterID(strval($centerID)),
+                \CenterID::singleton($centerID),
                 $user->getCenterIDs()
             )
         ) {
@@ -254,7 +254,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         }
 
         // Now that the validation is done, convert to an object.
-        $this->_centerID = new \CenterID(strval($centerID));
+        $this->_centerID = \CenterID::singleton($centerID);
 
         return null;
     }

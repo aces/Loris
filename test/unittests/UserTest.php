@@ -91,10 +91,12 @@ class UserTest extends TestCase
      * @var array
      */
     private $_projectInfo = [0 => ['ProjectID' => '1',
-        'Name'      => 'project_test'
+        'Name'      => 'project_test',
+        'Alias'     => 'TST1',
     ],
         1 => ['ProjectID' => '3',
-            'Name'      => 'project_test2'
+            'Name'      => 'project_test2',
+            'Alias'     => 'TST2',
         ]
     ];
 
