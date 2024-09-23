@@ -620,13 +620,15 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 );
                 $curCandID = $row['CandID'];
             }
-            $canddata->timepoints[] = new \TimePoint(
-                new \TimePointData(
-                    new \SessionID(strval($row['sessionID'])),
-                    \ProjectID::singleton($row['SProjectID']),
-                    \CenterID::singleton($row['SCenterID']),
-                )
-            );
+            if ($row['sessionID'] !== null) {
+                $canddata->timepoints[] = new \TimePoint(
+                    new \TimePointData(
+                        new \SessionID(strval($row['sessionID'])),
+                        \ProjectID::singleton($row['SProjectID']),
+                        \CenterID::singleton($row['SCenterID']),
+                    )
+                );
+            }
         }
 
         // check the last candidate that wouldn't have entered the check in the
@@ -654,7 +656,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($row) {
-                return new CandID($row);
+                return new CandID(strval($row));
             },
             $results
         );
