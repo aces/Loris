@@ -244,6 +244,10 @@ class Utility
      */
     static function getVisitList(?ProjectID $projectID = null) : array
     {
+        static $cache = [];
+        if (isset($cache[$projectID])) {
+            return $cache[$projectID];
+        }
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
         $qparams = [];
@@ -268,7 +272,8 @@ class Utility
         $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
         // Generates an array where the keys are equal to the values.
-        return array_combine($visitLabels, $visitLabels);
+        $cache[$projectID] = array_combine($visitLabels, $visitLabels);
+        return $cache[$projectID];
     }
 
     /**
