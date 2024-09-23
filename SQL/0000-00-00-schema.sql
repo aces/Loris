@@ -1580,6 +1580,7 @@ CREATE TABLE `issues_attachments` (
     `description` text DEFAULT NULL,
     `file_size` int(20) DEFAULT NULL,
     `mime_type` varchar(255) NOT NULL DEFAULT '',
+    `date_deleted` timestamp DEFAULT NULL,
     CONSTRAINT `fk_issues_attachments_issue` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`),
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
