@@ -335,9 +335,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $q = $DB->prepare($insertstmt);
         $q->execute([]);
 
-        $rows = iterator_to_array(
-            $DB->pselect(
-                "SELECT c.CandID, CommentID FROM flag f 
+        $rows = $DB->pselect(
+            "SELECT c.CandID, CommentID FROM flag f 
 		JOIN test_names tn ON (f.TestID=tn.ID)
                 JOIN session s ON (f.SessionID=s.ID)
                 JOIN candidate c ON (s.CandID=c.CandID)
@@ -346,8 +345,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 AND tn.Test_name IN ('" . join("', '", $instruments). "')
                 AND c.Active='Y' AND s.Active='Y'
              ORDER BY c.CandID",
-                [],
-            )
+            [],
         );
 
         $commentID2CandID = [];
@@ -359,12 +357,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-                array_map(
-                    function ($row) {
-                        return $row['CommentID'];
-                    },
-                    $rows
-                ),
+                array_keys($commentID2CandID)
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(
