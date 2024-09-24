@@ -60,7 +60,7 @@ class ViewDetails extends \NDB_Form
         }
 
         // get project ID from Tarchive ID.
-        $projectID  = $this->_getProjectFromTarchiveID();
+        $projectID = $this->_getProjectFromTarchiveID();
         if (is_null($projectID)) {
             return false;
         }
