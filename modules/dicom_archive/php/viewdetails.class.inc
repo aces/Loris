@@ -109,7 +109,7 @@ class ViewDetails extends \NDB_Form
         if (is_null($pid)) {
             return null;
         }
-        return \ProjectID::singleton($pid);
+        return \ProjectID::singleton(intval($pid));
     }
 
     /**
