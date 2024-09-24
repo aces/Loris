@@ -31,10 +31,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     /**
      * Create a new ProjectImagesRow.
      *
-     * @param array $row An array of image properties
+     * @param array  $row        An array of image properties
+     * @param string $apiversion The version of the API being used
      */
-    public function __construct(array $row)
-    {
+    public function __construct(
+        array $row,
+        private string $apiversion = 'v0.0.3'
+    ) {
         $this->_shortname = $row['shortname'] ?? null;
         $this->_ddeVisits = \NDB_BVL_Battery::getDDEVisitsForInstrument(
             $this->_shortname
