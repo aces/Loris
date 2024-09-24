@@ -158,13 +158,13 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
-        return $this->_saveInstance($test,"post");
+        return $this->_saveInstance($test, "post");
     }
 
     /**
      * Generic save function for Test Instances.
      *
-     * @param Test $test The Test Instance to be saved.
+     * @param Test   $test   The Test Instance to be saved.
      * @param string $method check the request method
      *
      * @return ResponseInterface response
