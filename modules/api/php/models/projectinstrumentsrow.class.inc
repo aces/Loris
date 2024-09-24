@@ -25,7 +25,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     private $_shortname;
     private $_fullname;
     private $_subgroupname;
-    private $_hasDDE;
+    private $_isDDE;
     private $_ddeVisits;
 
     /**
@@ -42,7 +42,7 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
 
         $this->_fullname     = $row['fullname'] ?? null;
         $this->_subgroupname = $row['subgroupname'] ?? null;
-        $this->_hasDDE       = count($this->_ddeVisits) > 0;
+        $this->_isDDE       = count($this->_ddeVisits) > 0;
     }
 
     /**
@@ -76,13 +76,13 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Accessor for hasDDE.
+     * Accessor for isDDE.
      *
      * @return bool
      */
-    public function hasDDE(): bool
+    public function isDDE(): bool
     {
-        return $this->_hasDDE;
+        return $this->_isDDE;
     }
 
     /**
@@ -102,12 +102,17 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        return [
+        $obj = [
             'shortname' => $this->_shortname,
             'fullname'  => $this->_fullname,
             'subgroup'  => $this->_subgroupname,
-            'ddeenable' => $this->_hasDDE,
+            'ddeenable' => $this->_isDDE,
             'ddevisits' => $this->_ddeVisits,
         ];
+        if ($this->apiversion != 'v0.0.3') {
+            // api version >= v0.0.4
+            $obj['ddevisits'] = $this->_ddeVisits;
+        }
+        return $obj;
     }
 }
