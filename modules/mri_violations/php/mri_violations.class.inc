@@ -106,7 +106,7 @@ class Mri_Violations extends \DataFrameworkMenu
             'cohorts'      => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
-            'protocols'    => $protocols,
+            'protocols'    => iterator_to_array($protocols),
         ];
     }
 
