@@ -84,8 +84,7 @@ class ViewDetails extends \NDB_Form
             FROM tarchive t
                 JOIN session s ON (t.SessionID = s.ID)
                 JOIN Project p ON (p.ProjectID = s.ProjectID)
-            WHERE t.TarchiveID = :tar
-            ORDER BY 1",
+            WHERE t.TarchiveID = :tar",
             ['tar' => $tarchiveID]
         );
         //
