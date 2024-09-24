@@ -31,12 +31,12 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CheckCriteria function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID)
+    function _checkCriteria(?\CenterID $centerID, ?\ProjectID $projectID)
     {
         if (!empty($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
@@ -69,28 +69,34 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CompleteCount function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
-     * @param string     $issue     the value of issue
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
+     * @param string      $issue     the value of issue
      *
      * @return ?string
      */
-    function _completeCount($centerID, $projectID, $issue): ?string
-    {
+    function _completeCount(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        $issue
+    ): ?string {
         return null;
     }
 
     /**
      * GetResults function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
-     * @param string     $issue     the value of issue
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
+     * @param string      $issue     the value of issue
      *
      * @return array
      */
-    function _getResults($centerID, $projectID, $issue)
-    {
+    function _getResults(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        $issue
+    ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
 
