@@ -51,7 +51,48 @@ class ViewDetails extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('dicom_archive_view_allsites');
+        // remove the possibility to have no tarchive ID in this page
+        if (empty($_REQUEST['tarchiveID'])) {
+            // defaults to permission denied
+            return false;
+        }
+
+        // get project ID from Tarchive ID.
+        $tarchiveID = intval($_REQUEST['tarchiveID']);
+        $projectID  = self::getProjectFromTarchiveID($tarchiveID);
+        if (is_null($projectID)) {
+            return false;
+        }
+
+        // check permissions
+        return $user->hasPermission('dicom_archive_view_allsites')
+            && $user->hasProject($projectID);
+    }
+
+    /**
+     * Get the ProjectID attached to a given tarchive ID.
+     *
+     * @param int $tarchiveID a tarchiveID
+     *
+     * @return ProjectID|null a ProjectID if found, else null
+     */
+    private static function getProjectFromTarchiveID(int $tarchiveID): ?\ProjectID
+    {
+        $db = \NDB_Factory::singleton()->database();
+        $pid = $db->pselectOne(
+            "SELECT p.ProjectID
+            FROM tarchive t
+                JOIN session s ON (t.SessionID = s.ID)
+                JOIN Project p ON (p.ProjectID = s.ProjectID)
+            WHERE t.TarchiveID = :tar
+            ORDER BY 1",
+            ['tar' => $tarchiveID]
+        );
+        //
+        if (is_null($pid)) {
+            return null;
+        }
+        return new \ProjectID($pid);
     }
 
     /**
