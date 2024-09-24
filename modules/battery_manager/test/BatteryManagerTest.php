@@ -292,7 +292,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
         $this->assertStringContainsString(
-            "OK",
+            "Submission successful!"",
             $bodyText
         );
     }
