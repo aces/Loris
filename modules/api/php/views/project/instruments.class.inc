@@ -44,7 +44,7 @@ class Instruments
      *
      * @param \Project                $project     The requested project
      * @param ProjectInstrumentsRow[] $instruments An array of ProjectInstrumentsRow
-     * @param string                  $apiversion The version of the API being used
+     * @param string                  $apiversion  The version of the API being used
      */
     public function __construct(
         \Project $project,
@@ -77,7 +77,7 @@ class Instruments
                 // >= v0.0.4
                 $item['DoubleDataEntryVisits'] = $instrument->getddeVisits();
             }
-            
+
             if (!is_null($shortname)) {
                 $instruments[$shortname] = $item;
             }
