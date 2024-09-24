@@ -106,9 +106,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $query       = "SELECT c.CandID, f.CommentID
             FROM flag f 
+		JOIN test_names tn ON (f.TestID=tn.ID)
             JOIN session s ON (s.ID=f.SessionID AND s.Active='Y')
             JOIN candidate c ON (s.CandID=c.CandID AND c.Active='Y')
-            WHERE Test_name=:tn AND f.CommentID NOT LIKE 'DDE%'";
+            WHERE tn.Test_name=:tn AND f.CommentID NOT LIKE 'DDE%'";
         $queryparams = ['tn' => $testname];
         if ($visitlist !== null) {
             $query .= ' AND s.Visit_label IN (';
@@ -128,7 +129,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 function ($row) {
                     return $row['CommentID'];
                 },
-                $data,
+                iterator_to_array($data),
             )
         );
 
@@ -265,9 +266,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $visits = $DB->pselectCol(
             "SELECT DISTINCT s.Visit_Label
                 FROM flag f
+                   JOIN test_names tn ON (tn.ID=f.TestID)
                    JOIN session s ON (f.SessionID=s.ID)
                    JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE s.Active='Y' AND c.Active='Y' and f.Test_name=:tn
+                WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
         );
@@ -333,16 +335,19 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $q = $DB->prepare($insertstmt);
         $q->execute([]);
 
-        $rows = $DB->pselect(
-            "SELECT c.CandID, CommentID FROM flag f 
+        $rows = iterator_to_array(
+            $DB->pselect(
+                "SELECT c.CandID, CommentID FROM flag f 
+		JOIN test_names tn ON (f.TestID=tn.ID)
                 JOIN session s ON (f.SessionID=s.ID)
                 JOIN candidate c ON (s.CandID=c.CandID)
              WHERE f.CommentID NOT LIKE 'DDE%'
                 AND c.CandID IN (SELECT CandID FROM querycandidates)
-                AND f.Test_name IN ('" . join("', '", $instruments). "')
+                AND tn.Test_name IN ('" . join("', '", $instruments). "')
                 AND c.Active='Y' AND s.Active='Y'
              ORDER BY c.CandID",
-            [],
+                [],
+            )
         );
 
         $commentID2CandID = [];

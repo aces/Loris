@@ -81,7 +81,9 @@ class Project implements \JsonSerializable
 
             $project = new Project();
 
-            $project->_projectId         = new ProjectID($projectData['projectId']);
+            $project->_projectId         = ProjectID::singleton(
+                $projectData['projectId']
+            );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
@@ -380,7 +382,7 @@ class Project implements \JsonSerializable
             ['v_project_id' => $this->_projectId]
         );
 
-        return $cohortData;
+        return iterator_to_array($cohortData);
     }
 
     /**
@@ -407,9 +409,9 @@ class Project implements \JsonSerializable
         );
         return array_map(
             function ($row) {
-                return $row['candid'];
+                return strval($row['candid']);
             },
-            $candidatesData
+            iterator_to_array($candidatesData)
         );
     }
 
@@ -512,7 +514,9 @@ class Project implements \JsonSerializable
             }
             $project = new Project();
 
-            $project->_projectId         = new ProjectID($projectData['projectId']);
+            $project->_projectId         = ProjectID::singleton(
+                $projectData['projectId']
+            );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer)$projectData['recTarget'];

@@ -291,7 +291,7 @@ DocUploadForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   refreshPage: PropTypes.func.isRequired,
-  category: PropTypes.string,
+  category: PropTypes.bool,
 };
 
 export default DocUploadForm;

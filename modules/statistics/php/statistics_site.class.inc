@@ -64,7 +64,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                new \CenterID($_REQUEST['CenterID'])
+                \CenterID::singleton(intval($_REQUEST['CenterID']))
             );
         } else {
             // For the short term the user we'll be granted access
@@ -94,13 +94,12 @@ class Statistics_Site extends \NDB_Menu
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID)
+    function _checkCriteria(\CenterID $centerID, \ProjectID $projectID)
     {
 
         //SITES
-        $projectID = new \ProjectID(strval($projectID));
-        $factory   = \NDB_Factory::singleton();
-        $user      = $factory->user();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
         if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
@@ -234,7 +233,7 @@ class Statistics_Site extends \NDB_Menu
                 AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
             $this->query_vars
         );
-        return $result;
+        return iterator_to_array($result);
     }
     /**
      * Setup function
@@ -252,7 +251,7 @@ class Statistics_Site extends \NDB_Menu
                 ['cid' => $_REQUEST['CenterID']]
             );
 
-            $centerID = new \CenterID($center['ID'] ?? '');
+            $centerID = \CenterID::singleton(intval($_REQUEST['CenterID']));
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';

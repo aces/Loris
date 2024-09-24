@@ -292,7 +292,7 @@ CREATE TABLE `instrument_data` (
 CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
-  `Test_name` varchar(255) NOT NULL default '',
+  `TestID` int(10) unsigned NOT NULL,
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
   `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
@@ -305,15 +305,14 @@ CREATE TABLE `flag` (
   PRIMARY KEY  (`CommentID`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
-  KEY `flag_Test_name` (`Test_name`),
   KEY `flag_Exclusion` (`Exclusion`),
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
   KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
-  CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`)
+  CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
+  CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
@@ -1551,7 +1550,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),

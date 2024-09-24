@@ -192,8 +192,9 @@ class Charts extends \NDB_Page
         $scanData = [];
         // Run a query to get all the data. Order matters to ensure that the
         // labels are calculated in the correct order.
-        $data = $DB->pselect(
-            "SELECT s.CenterID,
+        $data = iterator_to_array(
+            $DB->pselect(
+                "SELECT s.CenterID,
                 CONCAT(MONTH(pf.Value), '-', YEAR(pf.Value)) as datelabel,
                 COUNT(distinct s.ID) as count
             FROM files f
@@ -203,7 +204,8 @@ class Charts extends \NDB_Page
             WHERE pt.Name='acquisition_date'
             GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID, datelabel
             ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
-            []
+                []
+            )
         );
 
         // Create the labels.

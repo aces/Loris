@@ -63,7 +63,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'ID'         => '999999',
                 'SessionID'  => '999999',
                 'Data_entry' => 'In Progress',
-                'Test_name'  => 'testtest',
+                'TestID'     => '999999',
                 'CommentID'  => '11111111111111111',
             ]
         );

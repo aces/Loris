@@ -637,7 +637,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $validage = $DB->pselectOne(
                     "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
                         FROM test_battery tb
-                            JOIN flag f USING(Test_name)
+                            JOIN test_names tn USING(Test_name)
+                            JOIN flag f ON (f.TestID=tn.ID)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y'
                             AND tb.Test_name=:TN
@@ -654,7 +655,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $Windows = $DB->pselect(
                         "SELECT AgeMinDays, AgeMaxDays
                         FROM test_battery tb
-                            JOIN flag f USING(Test_name)
+                            JOIN test_names tn USING(Test_name)
+                            JOIN flag f ON (f.TestID=tn.ID)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y' AND tb.Test_name=:TN
                             AND tb.CohortID=s.CohortID
@@ -2264,7 +2266,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $jsondata
+                iterator_to_array($jsondata)
             );
         } else {
             $defaults = $db->pselect(
@@ -2291,7 +2293,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     return $newinst;
                 },
-                $defaults
+                iterator_to_array($defaults)
             );
         }
     }
@@ -2726,12 +2728,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $smarty   = new Smarty_NeuroDB();
         $tpl_data = [];
 
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
+        $tpl_data['questions'] = iterator_to_array(
+            $DB->pselect(
+                "SELECT Description as question,
             SourceField FROM parameter_type
             WHERE SourceFrom=:TN AND
             SourceField NOT IN ('Validity', 'Administration')",
-            ['TN' => $this->testName]
+                ['TN' => $this->testName]
+            )
         );
 
         $Responses = $this->getInstanceData();

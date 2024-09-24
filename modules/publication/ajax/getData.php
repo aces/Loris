@@ -61,10 +61,13 @@ function getData($db) : array
     );
 
     // for selecting behavioural variables of interest
-    $bvlVOIs = $db->pselect(
-        "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
-        "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
-        []
+    $bvlVOIs = iterator_to_array(
+        $db->pselect(
+            "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt 
+	    JOIN test_names tn ON tn.Test_name=pt.SourceFrom
+	    ORDER BY pt.SourceFrom",
+            []
+        )
     );
 
     $rawProject = $db->pselect(
@@ -288,12 +291,14 @@ function getCollaborators($id) : array
 {
     $db = \NDB_Factory::singleton()->database();
 
-    $collaborators = $db->pselect(
-        'SELECT Name as name, Email as email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
+    $collaborators = iterator_to_array(
+        $db->pselect(
+            'SELECT Name as name, Email as email FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
+            'WHERE pcr.PublicationID=:pid',
+            ['pid' => $id]
+        )
     );
 
     return $collaborators;
@@ -315,12 +320,16 @@ function getFiles($id) : array
         ['pid' => $id]
     );
 
+    $results = [];
     foreach ($files as $key => $f) {
-        $files[$key]['Citation'] = htmlspecialchars_decode($f['Citation']);
-        $files[$key]['Version']  = htmlspecialchars_decode($f['Version']);
+        $val = [];
+        $val['Citation'] = htmlspecialchars_decode($f['Citation']);
+        $val['Version']  = htmlspecialchars_decode($f['Version']);
+
+        $results[$key] = $val;
     }
 
-    return $files;
+    return $results;
 }
 
 /**

@@ -94,7 +94,9 @@ class Statistics_Mri_Site extends Statistics_Site
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", []);
+        $scan_types = iterator_to_array(
+            $DB->pselect("SELECT Scan_type from mri_scan_type", [])
+        );
         $where      = "WHERE (";
         $counter    = 1;
         foreach (array_values($scan_types) as $scan) {
@@ -212,7 +214,7 @@ class Statistics_Mri_Site extends Statistics_Site
         // template
         $visits    = [];
         $projectID = isset($_REQUEST['ProjectID'])
-            ? new \ProjectID($_REQUEST['ProjectID'])
+            ? \ProjectID::singleton(intval($_REQUEST['ProjectID']))
             : null;
 
         $data = [];

@@ -115,7 +115,7 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = new \CenterID($dbrow['centerid']);
+            $this->_centerid            = \CenterID::singleton($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];
@@ -182,7 +182,7 @@ class Recording
                 ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
-            $dbrows,
+            iterator_to_array($dbrows),
             function ($carry, $row) {
                 $carry[$row['name']] = $row['value'];
                 return $carry;
@@ -324,7 +324,7 @@ class Recording
                 $values = array_values($row);
                 return new \LORIS\RecordingChannels(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 
@@ -366,10 +366,15 @@ class Recording
             );
         return array_map(
             function ($row) {
-                $values = array_values($row);
+                $values = array_map(
+                    function ($val) {
+                           return $val === null ? null : strval($val);
+                    },
+                    array_values($row)
+                );
                 return new \LORIS\RecordingElectrodes(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 
@@ -408,7 +413,7 @@ class Recording
                 $values = array_values($row);
                 return new \LORIS\RecordingEvents(...$values);
             },
-            $dbrows
+            iterator_to_array($dbrows)
         );
     }
 

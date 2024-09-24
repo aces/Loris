@@ -397,7 +397,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     = $this->formatUserInformation($comment['newValue']);
             }
         }
-        return $unformattedComments; //now formatted I guess
+        return iterator_to_array($unformattedComments); //now formatted I guess
     }
 
     /**
@@ -460,7 +460,7 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         return $centerID == null
             ? 'All Sites'
-            : \Site::singleton(new \CenterID(strval($centerID)))->getCenterName();
+            : \Site::singleton(\CenterID::singleton($centerID))->getCenterName();
     }
 
     /**
@@ -607,9 +607,16 @@ class Edit extends \NDB_Page implements ETagCalculator
 
             // Add new watchers (if any)
             $usersWatching = explode(',', $values['othersWatching']);
+            // If the assignee is watching, add them
+            if ($values['watching'] == 'Yes'
+                && $issueValues['assignee'] == $user->getUsername()
+            ) {
+                $usersWatching[] = $issueValues['assignee'];
+            }
+
             foreach ($usersWatching as $usersWatching) {
                 if ($usersWatching) {
-                    $db->insert(
+                    $db->replace(
                         'issues_watching',
                         [
                             'userID'  => $usersWatching,
@@ -736,8 +743,9 @@ class Edit extends \NDB_Page implements ETagCalculator
         $msg_data['comment']     = $values['comment'];
 
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
-            $issueChangeEmailsAssignee = $db->pselect(
-                "SELECT
+            $issueChangeEmailsAssignee = iterator_to_array(
+                $db->pselect(
+                    "SELECT
                     u.Email AS Email,
                     u.First_name AS firstname
                 FROM
@@ -745,10 +753,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                 WHERE
                     u.UserID = :assignee
                     AND u.UserID != :currentUser",
-                [
-                    'assignee'    => $changed_assignee,
-                    'currentUser' => $user->getUserName(),
-                ]
+                    [
+                        'assignee'    => $changed_assignee,
+                        'currentUser' => $user->getUserName(),
+                    ]
+                )
             );
             if (isset($issueChangeEmailsAssignee[0])) {
                 $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
@@ -759,14 +768,16 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
             }
         } else if (isset($changed_assignee) && $new_assignee_tag === 'true') {
-            $issueChangeEmailsAssignee = $db->pselect(
-                "SELECT u.Email as Email, u.First_name as firstname " .
-                "FROM users u WHERE u.UserID=:assignee
+            $issueChangeEmailsAssignee = iterator_to_array(
+                $db->pselect(
+                    "SELECT u.Email as Email, u.First_name as firstname " .
+                    "FROM users u WHERE u.UserID=:assignee
                 AND u.UserID<>:currentUser",
-                [
-                    'assignee'    => $changed_assignee,
-                    'currentUser' => $user->getUserName(),
-                ]
+                    [
+                        'assignee'    => $changed_assignee,
+                        'currentUser' => $user->getUserName(),
+                    ]
+                )
             );
 
             if (isset($issueChangeEmailsAssignee[0])) {
@@ -886,14 +897,16 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
         // If both are set, return SessionID and CandID
         if (isset($result['PSCID']) && isset($result['visit'])) {
-            $session = $db->pSelect(
-                "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
+            $session = iterator_to_array(
+                $db->pSelect(
+                    "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
                 INNER JOIN session s on (c.CandID = s.CandID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
-                [
-                    'PSCID'      => $result['PSCID'],
-                    'visitLabel' => $result['visit'],
-                ]
+                    [
+                        'PSCID'      => $result['PSCID'],
+                        'visitLabel' => $result['visit'],
+                    ]
+                )
             );
 
             if (isset($session[0]['sessionID'])) {

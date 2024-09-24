@@ -79,7 +79,9 @@ class Image
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = new \CenterID($dbrow['centerid']);
+            $this->_centerid            = $dbrow['centerid'] === null
+            ? null
+            : \CenterID::singleton($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
         }
     }
@@ -143,7 +145,7 @@ class Image
                 ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
-            $dbrows,
+            iterator_to_array($dbrows),
             function ($carry, $row) {
                 $carry[$row['name']] = $row['value'];
                 return $carry;
@@ -239,7 +241,7 @@ class Image
                 $values = array_values($row);
                 return new \LORIS\ImageCaveats(...$values);
             },
-            $rows
+            iterator_to_array($rows)
         );
     }
 

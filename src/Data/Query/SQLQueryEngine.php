@@ -130,7 +130,7 @@ abstract class SQLQueryEngine implements QueryEngine
 
         return array_map(
             function ($cid) {
-                return new CandID($cid);
+                return new CandID(strval($cid));
             },
             $rows
         );
