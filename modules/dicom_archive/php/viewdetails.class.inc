@@ -76,9 +76,9 @@ class ViewDetails extends \NDB_Form
      *
      * @return ProjectID|null a ProjectID if found, else null
      */
-    private static function getProjectFromTarchiveID(int $tarchiveID): ?\ProjectID
+    private static function _getProjectFromTarchiveID(int $tarchiveID): ?\ProjectID
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db  = \NDB_Factory::singleton()->database();
         $pid = $db->pselectOne(
             "SELECT p.ProjectID
             FROM tarchive t
