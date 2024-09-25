@@ -235,8 +235,8 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         // validate site entered
         $site = !empty($values['psc'])
-        ?  \CenterID::singleton(intval($values['psc']))
-        : null;
+            ?  \CenterID::singleton(intval($values['psc']))
+            : null;
 
         $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
