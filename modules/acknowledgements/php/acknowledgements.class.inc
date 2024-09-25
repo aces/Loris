@@ -81,20 +81,19 @@ class Acknowledgements extends \DataFrameworkMenu
      */
     public function toJSON(): string
     {
-        $table = (new \LORIS\Data\Table())
+        $table  = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisionerWithFilters());
-        $arr   = array_map(
+        $arr    = array_map(
             function ($row) {
                 return array_values($row);
             },
             json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
         );
         $config = \NDB_Config::singleton();
-        $m = [];
+        $m      = [];
         $m['citation_policy'] = $config->getSetting('citation_policy');
         $m['minYear']         = $config->getSetting('startYear');
         $m['maxYear']         = $config->getSetting('endYear');
-
 
         return json_encode(
             [
