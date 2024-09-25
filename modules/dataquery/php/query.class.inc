@@ -537,7 +537,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @param \User $user The user running the query.
      *
-     * @return CandID[]
+     * @return iterable
      */
     public function matchCandidates(\User $user) : iterable
     {
@@ -557,7 +557,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param CandID[] $candIDs The CandIDs to be filtered
      * @param \User    $user    The user whose access should check.
      *
-     * @return CandID[]
+     * @return iterable
      */
     private function _filterInaccessibleCandidates(
         array $candIDs,
@@ -566,7 +566,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         if (count($candIDs) == 0) {
             return [];
         }
-        $DB = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
 
         // Put candidates into a temporary table so that it can be used in a join
         // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
@@ -574,7 +575,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE accesscandidates(
-            CandID int(6)
+	    CandID int(6) NOT NULL,
+	    PRIMARY KEY(CandID)
         );"
         );
         $insertstmt = "INSERT INTO accesscandidates VALUES"
@@ -593,25 +595,35 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             ORDER BY c.CandID",
             []
         );
-        $organized = [];
+        $curCandID = '';
+        $canddata  = null;
 
         // Foreach CandID, create the TimePointData object for all timepoints
         // that were returned.
         foreach ($rows as $row) {
-            $candid = $row['CandID'];
-            if (!isset($organized[$candid])) {
-                $organized[$candid] = [
-                    'CandID'              => new CandID($row['CandID']),
-                    'RegistrationProject' => $row['RegistrationProjectID'],
-                    'RegistrationCenter'  => $row['RegistrationCenterID'],
-                    'Timepoints'          => [],
-                ];
+            if ($curCandID != $row['CandID']) {
+                if ($canddata !== null) {
+                     $candidate = new \Candidate($canddata);
+                    if ($candidate->isAccessibleBy($user)) {
+                        yield $canddata->CandID;
+                    }
+                }
+                $canddata  = new \CandidateData(
+                    candID: new CandID(strval($row['CandID'])),
+                    registrationProjectID: $row['RegistrationProjectID'] !== null
+                    ? \ProjectID::singleton($row['RegistrationProjectID'])
+                    : null,
+                    registrationCenterID: $row['RegistrationCenterID'] !== null
+                    ? \CenterID::singleton($row['RegistrationCenterID'])
+                    : null,
+                    timepoints: [],
+                );
+                $curCandID = $row['CandID'];
             }
-
             if ($row['sessionID'] !== null) {
-                $organized[$candid]['Timepoints'][] = new \TimePoint(
+                $canddata->timepoints[] = new \TimePoint(
                     new \TimePointData(
-                        new \SessionID($row['sessionID']),
+                        new \SessionID(strval($row['sessionID'])),
                         \ProjectID::singleton($row['SProjectID']),
                         \CenterID::singleton($row['SCenterID']),
                     )
@@ -619,35 +631,14 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             }
         }
 
-        // Remove inaccessible candidates from the temp table
-        foreach ($organized as $vals) {
-            $canddata  = new \CandidateData(
-                candID: $vals['CandID'],
-                registrationProjectID: \ProjectID::singleton(
-                    $vals['RegistrationProject']
-                ),
-                registrationCenterID: \CenterID::singleton(
-                    $vals['RegistrationCenter']
-                ),
-                timepoints: $vals['Timepoints']
-            );
+        // check the last candidate that wouldn't have entered the check in the
+        // loop
+        if ($canddata !== null) {
             $candidate = new \Candidate($canddata);
-
-            if (!$candidate->isAccessibleBy($user)) {
-                // Not accessible, so delete from accesscandidates
-                $DB->delete("accesscandidates", ['CandID' => $vals['CandID']]);
-                continue;
+            if ($candidate->isAccessibleBy($user)) {
+                yield $canddata->CandID;
             }
         }
-
-        $candidates = $DB->pselectCol("SELECT CandID from accesscandidates", []);
-        $DB->run("DROP TEMPORARY TABLE accesscandidates");
-        return array_map(
-            function ($row) {
-                return new CandID($row);
-            },
-            $candidates
-        );
     }
 
     /**
@@ -665,7 +656,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($row) {
-                return new CandID($row);
+                return new CandID(strval($row));
             },
             $results
         );

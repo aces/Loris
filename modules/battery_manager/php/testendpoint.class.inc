@@ -158,17 +158,18 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
-        return $this->_saveInstance($test);
+        return $this->_saveInstance($test, "post");
     }
 
     /**
      * Generic save function for Test Instances.
      *
-     * @param Test $test The Test Instance to be saved.
+     * @param Test   $test   The Test Instance to be saved.
+     * @param string $method check the request method
      *
      * @return ResponseInterface response
      */
-    private function _saveInstance(Test $test)
+    private function _saveInstance(Test $test , $method=null)
     {
         if (!$this->user->hasPermission('battery_manager_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
@@ -183,7 +184,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         }
 
         // check if instance is duplicate
-        if ($this->_isDuplicate($test)) {
+        if ($this->_isDuplicate($test) && $method =='post') {
             return new \LORIS\Http\Response\JSON\Conflict(
                 'This Test already exists in the database'
             );
