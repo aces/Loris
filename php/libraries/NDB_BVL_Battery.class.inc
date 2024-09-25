@@ -203,8 +203,8 @@ class NDB_BVL_Battery
         }
 
         // get SessionID, UserID, Visit_label
-        $query = "SELECT ID, UserID, Visit_label FROM session WHERE ID=:s";
-        $rows  = $DB->pselect($query, ['s' => $this->sessionID]);
+        $query = "SELECT ID as SessionID, UserID, Visit_label FROM session WHERE ID=:SID";
+        $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -255,22 +255,13 @@ class NDB_BVL_Battery
             $DB->insert(
                 'flag',
                 [
-                    'SessionID' => $sessionData['ID'],
-                    'Test_name' => $testName,
+                    'SessionID' => $sessionData['SessionID'],
+                    'TestID' => $testId,
                     'CommentID' => $ddeCommentID,
                     'UserID'    => $sessionData['UserID'],
                 ]
             );
         }
-        $DB->insert(
-            'flag',
-            [
-                'SessionID' => $sessionData['SessionID'],
-                'TestID'    => $testId,
-                'CommentID' => $ddeCommentID,
-                'UserID'    => $sessionData['UserID'],
-            ]
-        );
 
         return $commentID ?? '';
     } // end addInstrument()
