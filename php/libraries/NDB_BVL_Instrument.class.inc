@@ -2214,16 +2214,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @param $commentIDs string[] A list of commentIDs to load in bulk.
      *
-     * @return \NDB_BVL_Instrument[]
+     * @return Generator<\NDB_BVL_Instrument>
      */
-    function bulkLoadInstanceData(iterable $commentIDs): array
+    function bulkLoadInstanceData(iterable $commentIDs): iterable
     {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
                 "Must bulk load from instrument loaded without commentID"
             );
         }
-        $db = $this->loris->getDatabaseConnection();
+        $db = $this->loris->getNewDatabaseConnection();
+        $db->setBuffering(false);
 
         $prepBindings = [];
         $prepValues   = [];
@@ -2252,8 +2253,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
-            return array_map(
-                function ($row) {
+            foreach ($jsondata as $row) {
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
@@ -2263,11 +2263,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         $row['Data'] ?? '{}',
                         true,
                     ) ?? $this->defaultInstanceData();
-
-                    return $newinst;
-                },
-                iterator_to_array($jsondata)
-            );
+                    yield $newinst;
+            }
+            return;
         } else {
             $defaults = $db->pselect(
                 "SELECT flag.CommentID as CommentID,
@@ -2280,8 +2278,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
-            return array_map(
-                function ($row) {
+            foreach ($defaults as $row) {
                     $newinst = clone $this;
 
                     $newinst->commentID  = $row['CommentID'];
@@ -2291,10 +2288,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     $newinst->instanceData = $row;
 
-                    return $newinst;
-                },
-                iterator_to_array($defaults)
-            );
+                    yield $newinst;
+            }
+            return;
         }
     }
 
