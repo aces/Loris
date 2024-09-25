@@ -38,6 +38,7 @@ class AcknowledgementsIndex extends Component {
     this.state = {
       data: {},
       formData: {},
+      submitting: false, // track if form is being submitted	    
       error: false,
       isLoaded: false,
       affiliationsOptions: {
@@ -146,7 +147,13 @@ class AcknowledgementsIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
-    const formData = Object.assign({}, this.state.formData);
+      e.preventDefault(); // prevent default form submission
+    const { formData, submitting } = this.state;
+
+    if (submitting) return; // prevent multiple submits
+
+    this.setState({ submitting: true }); // set submitting to true
+
     let formObject = new FormData();
     for (let key in formData) {
       if (formData[key] !== '') {
@@ -163,16 +170,14 @@ class AcknowledgementsIndex extends Component {
     })
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal.fire(
-            'Success!',
-            'Acknowledgement added.',
-            'success'
-          ).then((result) => {
-            if (result.value) {
-              this.closeModalForm();
-              this.fetchData();
-            }
-          });
+          swal
+            .fire('Success!', 'Acknowledgement added.', 'success')
+            .then((result) => {
+              if (result.value) {
+                this.closeModalForm();
+                this.fetchData();
+              }
+            });
         } else {
           resp.text().then((message) => {
             swal.fire('Error!', message, 'error');
@@ -181,6 +186,9 @@ class AcknowledgementsIndex extends Component {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        this.setState({ submitting: false }); // reset submitting state
       });
   }
 
@@ -286,7 +294,7 @@ class AcknowledgementsIndex extends Component {
           Module='acknowledgements'
           name='addAcknowledgement'
           id='addAcknowledgementForm'
-          onSubmit={this.handleSubmit}
+          onSubmit={(e) => this.handleSubmit(e)}
           method='POST'
         >
           <TextboxElement
@@ -371,6 +379,7 @@ class AcknowledgementsIndex extends Component {
               label='Save'
               type='submit'
               buttonClass='btn btn-sm btn-primary'
+	      disabled={this.state.submitting}
             />
           </div>
         </FormElement>
