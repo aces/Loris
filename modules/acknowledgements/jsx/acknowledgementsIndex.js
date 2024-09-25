@@ -38,7 +38,7 @@ class AcknowledgementsIndex extends Component {
     this.state = {
       data: {},
       formData: {},
-      submitting: false, // track if form is being submitted	    
+      submitting: false, // track if form is being submitted
       error: false,
       isLoaded: false,
       affiliationsOptions: {
@@ -148,11 +148,11 @@ class AcknowledgementsIndex extends Component {
    */
   handleSubmit(e) {
       e.preventDefault(); // prevent default form submission
-    const { formData, submitting } = this.state;
+    const {formData, submitting} = this.state;
 
     if (submitting) return; // prevent multiple submits
 
-    this.setState({ submitting: true }); // set submitting to true
+    this.setState({submitting: true}); // set submitting to true
 
     let formObject = new FormData();
     for (let key in formData) {
@@ -188,7 +188,7 @@ class AcknowledgementsIndex extends Component {
         console.error(error);
       })
       .finally(() => {
-        this.setState({ submitting: false }); // reset submitting state
+        this.setState({submitting: false}); // reset submitting state
       });
   }
 
