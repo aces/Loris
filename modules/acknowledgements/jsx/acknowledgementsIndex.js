@@ -349,7 +349,8 @@ class AcknowledgementsIndex extends Component {
             name='addStartDate'
             label='Start date'
             value={this.state.formData.addStartDate}
-            maxYear={this.state.formData.addEndDate || this.state.data.meta.maxYear}
+            maxYear={this.state.formData.addEndDate
+              || this.state.data.meta.maxYear}
             minYear={this.state.data.meta.minYear}
             required={true}
             onUserInput={this.setFormData}
@@ -379,7 +380,7 @@ class AcknowledgementsIndex extends Component {
               label='Save'
               type='submit'
               buttonClass='btn btn-sm btn-primary'
-	      disabled={this.state.submitting}
+              disabled={this.state.submitting}
             />
           </div>
         </FormElement>
