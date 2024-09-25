@@ -203,7 +203,8 @@ class NDB_BVL_Battery
         }
 
         // get SessionID, UserID, Visit_label
-        $query = "SELECT ID as SessionID, UserID, Visit_label FROM session WHERE ID=:SID";
+        $query = "SELECT ID as SessionID, UserID, Visit_label
+                  FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
@@ -256,7 +257,7 @@ class NDB_BVL_Battery
                 'flag',
                 [
                     'SessionID' => $sessionData['SessionID'],
-                    'TestID' => $testId,
+                    'TestID'    => $testId,
                     'CommentID' => $ddeCommentID,
                     'UserID'    => $sessionData['UserID'],
                 ]
