@@ -137,7 +137,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"
+                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(14) > button"
             )
         );
         $bodyText = $this->safeFindElement(
@@ -164,7 +164,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/battery_manager/");
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr > td:nth-child(13) > button"
+                "#dynamictable > tbody > tr > td:nth-child(14) > button"
             )
         );
         $this->safeClick(
@@ -285,7 +285,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/battery_manager/");
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > button"
+                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"
             )
         );
         $bodyText = $this->safeFindElement(
