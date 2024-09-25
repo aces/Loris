@@ -208,7 +208,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeClick(
             WebDriverBy::cssSelector(
                 "#lorisworkspace>div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(11) > div > div > button"
+                " div > div:nth-child(12) > div > div > button"
             )
         );
         $bodyText = $this->safeFindElement(
@@ -263,7 +263,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeClick(
             WebDriverBy::cssSelector(
                 "#lorisworkspace > div >div:nth-child(2)>div>div:nth-child(2)>form ".
-                "> div > div:nth-child(11) > div > div > button"
+                "> div > div:nth-child(12) > div > div > button"
             )
         );
         $bodyText = $this->safeFindElement(
