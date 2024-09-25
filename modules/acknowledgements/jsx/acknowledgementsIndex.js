@@ -263,7 +263,7 @@ class AcknowledgementsIndex extends Component {
         title='Citation Policy'
       >
         <div className='col-sm-12 col-md-12'>
-          <span>{this.state.data.citation_policy}</span>
+          <span>{this.state.data.meta.citation_policy}</span>
         </div>
       </Panel>
     );
@@ -341,8 +341,8 @@ class AcknowledgementsIndex extends Component {
             name='addStartDate'
             label='Start date'
             value={this.state.formData.addStartDate}
-            maxYear={this.state.formData.addEndDate || this.state.data.maxYear}
-            minYear={this.state.data.minYear}
+            maxYear={this.state.formData.addEndDate || this.state.data.meta.maxYear}
+            minYear={this.state.data.meta.minYear}
             required={true}
             onUserInput={this.setFormData}
           />
@@ -350,9 +350,9 @@ class AcknowledgementsIndex extends Component {
             name='addEndDate'
             label='End date'
             value={this.state.formData.addEndDate}
-            maxYear={this.state.data.maxYear}
+            maxYear={this.state.data.meta.maxYear}
             minYear={this.state.formData.addStartDate
-              || this.state.data.minYear}
+              || this.state.data.meta.minYear}
             required={false}
             onUserInput={this.setFormData}
           />
