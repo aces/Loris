@@ -74,7 +74,36 @@ class Acknowledgements extends \DataFrameworkMenu
     {
         return new AcknowledgementsProvisioner();
     }
+    /**
+     * Override the toJSON function to provide custom behavior.
+     *
+     * @return string A JSON-encoded string with custom data.
+     */
+    public function toJSON(): string
+    {
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisionerWithFilters());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
+        );
+        $config = \NDB_Config::singleton();
+        $m = [];
+        $m['citation_policy'] = $config->getSetting('citation_policy');
+        $m['minYear']         = $config->getSetting('startYear');
+        $m['maxYear']         = $config->getSetting('endYear');
 
+
+        return json_encode(
+            [
+                'Data'         => $arr,
+                'fieldOptions' => $this->getFieldOptions(),
+                'meta'         => $m,
+            ]
+        );
+    }
     /**
      * {@inheritDoc}
      *
