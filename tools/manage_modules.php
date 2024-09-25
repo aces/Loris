@@ -56,10 +56,10 @@ if (isset($flags['remove'])) {
             print "Removing $module\n";
             if ($dryrun) {
                 continue;
-	    }
-           $ModuleID= $DB->pselectOne(
-             "SELECT ID FROM modules WHERE Name=:name",
-            ['name'=>$module]
+            }
+            $ModuleID = $DB->pselectOne(
+                "SELECT ID FROM modules WHERE Name=:name",
+                ['name'=>$module]
             );
 
             $DB->delete("issues", [ 'module' => $ModuleID]);
