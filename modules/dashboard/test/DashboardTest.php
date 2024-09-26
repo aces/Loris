@@ -136,7 +136,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'         => '111111',
                 'SessionID'  => '222222',
-                'Test_name'  => 'TestName11111111111',
+                'TestID'     => '111',
                 'CommentID'  => 'commentID111',
                 'Data_entry' => 'In Progress',
             ]

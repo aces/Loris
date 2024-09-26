@@ -74,7 +74,7 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         if (isset($row['centerIds'])) {
             $cids = array_map(
                 function (string $cid) : \CenterID {
-                    return new \CenterID($cid);
+                    return \CenterID::singleton(intval($cid));
                 },
                 explode(',', $row['centerIds'])
             );

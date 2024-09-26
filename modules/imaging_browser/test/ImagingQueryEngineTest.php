@@ -233,8 +233,10 @@ class ImagingQueryEngineTest extends TestCase
     {
         $dict = $this->_getDictItem("ScanDone");
 
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new Equal(true))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new Equal(true))
+            )
         );
 
         // 123456 has a ScanDone = true result for visit TestMRIVisit
@@ -246,8 +248,10 @@ class ImagingQueryEngineTest extends TestCase
 
         // 123456 has a ScanDone = false result for visit TestBvlVisit
         // No other candidate has a ScanDone=false session.
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new NotEqual(true))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new NotEqual(true))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(1, count($result));
@@ -263,8 +267,10 @@ class ImagingQueryEngineTest extends TestCase
     {
         $dict = $this->_getDictItem("ScanType1_file");
 
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new Equal('test/abc.file'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new Equal('test/abc.file'))
+            )
         );
 
         // 123456 has ScanType1 at session 1
@@ -274,16 +280,20 @@ class ImagingQueryEngineTest extends TestCase
 
         // 123456 has no files that aren't equal to test/abc.file
         // 123457 has files that are not equal to test/abc.file.
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new NotEqual('test/abc.file'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new NotEqual('test/abc.file'))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
         // Both 123456 and 123457 have files that start with test/abc
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new StartsWith('test/abc'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new StartsWith('test/abc'))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
@@ -291,8 +301,10 @@ class ImagingQueryEngineTest extends TestCase
         $this->assertEquals($result[1], new CandID("123457"));
 
         // Both 123456 and 123457 have files that contain abc
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new Substring('abc'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new Substring('abc'))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
@@ -300,8 +312,10 @@ class ImagingQueryEngineTest extends TestCase
         $this->assertEquals($result[1], new CandID("123457"));
 
         // Only 123457 has files that end with abc.file1
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new EndsWith('abc.file1'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new EndsWith('abc.file1'))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(1, count($result));
@@ -318,31 +332,39 @@ class ImagingQueryEngineTest extends TestCase
         $dict = $this->_getDictItem("ScanType1_QCStatus");
 
         // Both candidates have a passed scan
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new Equal('Pass'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new Equal('Pass'))
+            )
         );
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
 
         // Only 123457 has a failed scan.
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new Equal('Fail'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new Equal('Fail'))
+            )
         );
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
         // The failed scan is the only not Equal to pass Scan
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new NotEqual('Pass'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new NotEqual('Pass'))
+            )
         );
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
         // The failed scan is still the only failed scan with an "IN" criteria
         // The failed scan is the only not Equal to pass Scan
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($dict, new In('Fail'))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($dict, new In('Fail'))
+            )
         );
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));

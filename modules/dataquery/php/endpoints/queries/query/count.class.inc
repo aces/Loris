@@ -59,7 +59,7 @@ class Count extends \LORIS\Http\Endpoint
         try {
             $query = new \LORIS\dataquery\Query($this->loris, $queryID);
 
-            $candidates = $query->matchCandidates($user);
+            $candidates = \iterator_to_array($query->matchCandidates($user));
             return new \LORIS\Http\Response\JSON\OK(
                 [
                     'count' => count($candidates),

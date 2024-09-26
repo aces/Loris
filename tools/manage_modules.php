@@ -57,7 +57,13 @@ if (isset($flags['remove'])) {
             if ($dryrun) {
                 continue;
             }
-            $DB->delete("modules", [ 'Name' => $module]);
+        }
+        try {
+            // Attempt to delete the module
+            $DB->delete("modules", ['Name' => $module]);
+        } catch (\Exception $e) {
+            // Handle the delete failure
+            print "Failed to delete $module: " . $e->getMessage() . "\n";
         }
     }
 }

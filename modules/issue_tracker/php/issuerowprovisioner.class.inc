@@ -114,7 +114,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         if (isset($row['centerId'])) {
             // convert the value from string to int array
-            $cids = [new \CenterID($row['centerId'])];
+            $cids = [\CenterID::singleton(intval($row['centerId']))];
 
         } else {
             $cids = $this->allCenterIDs;

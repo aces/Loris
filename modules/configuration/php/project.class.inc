@@ -57,7 +57,7 @@ class Project extends \NDB_Form
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
             $projects[$ProjectID]['projectCohorts']
                 = \Utility::getCohortsForProject(
-                    new \ProjectID(strval($ProjectID))
+                    \ProjectID::singleton($ProjectID)
                 );
         }
         $this->tpl_data['projects'] = $projects;

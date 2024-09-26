@@ -645,11 +645,11 @@ function getDiagnosisEvolutionFields(): array
     foreach ($candProjIDs as $projectID) {
         $candProjects[$projectID]   = $projectList[$projectID];
         $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             false
         );
         $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             true
         );
     }

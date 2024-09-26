@@ -241,7 +241,7 @@ class Stats_MRI extends \NDB_Form
 
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
-            $currentProject = new \ProjectID($_REQUEST['MRIProject']);
+            $currentProject = \ProjectID::singleton(intval($_REQUEST['MRIProject']));
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
