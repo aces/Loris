@@ -62,7 +62,7 @@ if (isset($flags['remove'])) {
             // Attempt to delete the module
             $DB->delete("modules", ['Name' => $module]);
         } catch (\Exception $e) {
-            // Handle the delete failure (optional logging)
+            // Handle the delete failure 
             print "Failed to delete $module: " . $e->getMessage() . "\n";
         }        
     }
