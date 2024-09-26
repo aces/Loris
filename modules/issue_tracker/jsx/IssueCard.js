@@ -11,9 +11,10 @@ const IssueCard = React.memo(function IssueCard({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
+  const [tempEditedIssue, setTempEditedIssue] = useState({...issue});
 
   const handleInputChange = (field, value) => {
-    setEditedIssue((prev) => ({
+    setTempEditedIssue((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -22,18 +23,18 @@ const IssueCard = React.memo(function IssueCard({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!editedIssue.title.trim()) {
+    if (!tempEditedIssue.title.trim()) {
       showAlertMessage('error', 'Title cannot be empty');
       return;
     }
 
     const formData = new FormData();
 
-    Object.entries(editedIssue).forEach(([key, value]) => {
+    Object.entries(tempEditedIssue).forEach(([key, value]) => {
       formData.append(key, value === null ? 'null' : value);
     });
 
-    const hasChanges = Object.entries(editedIssue).some(([key, value]) =>
+    const hasChanges = Object.entries(tempEditedIssue).some(([key, value]) =>
       value !== issue[key]
     );
 
@@ -54,11 +55,13 @@ const IssueCard = React.memo(function IssueCard({
       return response.json();
     }).then((data) => {
       showAlertMessage('success', 'Issue updated successfully');
-      onUpdate(issue.issueID, editedIssue);
+      setEditedIssue(tempEditedIssue);
+      onUpdate(issue.issueID, tempEditedIssue);
       setIsEditing(false);
     }).catch((error) => {
       console.error('Error:', error);
       showAlertMessage('error', error.message || 'Failed to update issue');
+      setTempEditedIssue({...editedIssue});
     });
   };
 
@@ -94,19 +97,19 @@ const IssueCard = React.memo(function IssueCard({
             {isEditing ? (
               <input
                 type="text"
-                value={editedIssue.title}
+                value={tempEditedIssue.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
                 className="title-input"
               />
             ) : (
               <a href={`${loris.BaseURL}/issue_tracker/issue/${issue.issueID}`}>
-                {issue.title}
+                {editedIssue.title}
               </a>
             )}
           </h3>
         </div>
         <div className="issue-dates">
-          <span>Created: {issue.dateCreated}</span>
+          <span> {issue.dateCreated}</span>
           <span>Last Updated: {issue.lastUpdate}</span>
           <span>Assignee: {issue.assignee}</span>
         </div>
@@ -114,7 +117,7 @@ const IssueCard = React.memo(function IssueCard({
       <form onSubmit={handleSubmit}>
         <div className="issue-controls">
           <select
-            value={editedIssue.status}
+            value={tempEditedIssue.status}
             onChange={(e) => handleInputChange('status', e.target.value)}
             disabled={!isEditing}
           >
@@ -123,7 +126,7 @@ const IssueCard = React.memo(function IssueCard({
             ))}
           </select>
           <select
-            value={editedIssue.priority}
+            value={tempEditedIssue.priority}
             onChange={(e) => handleInputChange('priority', e.target.value)}
             disabled={!isEditing}
           >
@@ -132,7 +135,7 @@ const IssueCard = React.memo(function IssueCard({
             ))}
           </select>
           <select
-            value={editedIssue.category}
+            value={tempEditedIssue.category}
             onChange={(e) => handleInputChange('category', e.target.value)}
             disabled={!isEditing}
           >
@@ -146,11 +149,11 @@ const IssueCard = React.memo(function IssueCard({
         <label htmlFor="description" className="small">Description</label>
           {isEditing ? (
             <textarea
-              value={editedIssue.description}
+              value={tempEditedIssue.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
             />
           ) : (
-            <p>{issue.description}</p>
+            <p>{editedIssue.description}</p>
           )}
         </div>
         <br/>
@@ -174,7 +177,10 @@ const IssueCard = React.memo(function IssueCard({
             <button
               type="button"
               className="btn btn-primary"
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                setTempEditedIssue({...editedIssue});
+              }}
             >
               Cancel
             </button>
