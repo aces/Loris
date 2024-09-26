@@ -60,7 +60,6 @@ if (isset($flags['remove'])) {
         }
         try {
             // Attempt to delete the module
-            print "Removing $module\n";
             $DB->delete("modules", ['Name' => $module]);
         } catch (\Exception $e) {
             // Handle the delete failure
