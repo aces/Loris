@@ -57,15 +57,14 @@ if (isset($flags['remove'])) {
             if ($dryrun) {
                 continue;
             }
-            $ModuleID = $DB->pselectOne(
-                "SELECT ID FROM modules WHERE Name=:name",
-                ['name'=>$module]
-            );
-
-            $DB->delete("issues", [ 'module' => $ModuleID]);
-            $DB->delete("permissions", [ 'moduleID' => $ModuleID]);
-            $DB->delete("modules", [ 'Name' => $module]);
         }
+        try {
+            // Attempt to delete the module
+            $DB->delete("modules", ['Name' => $module]);
+        } catch (\Exception $e) {
+            // Handle the delete failure (optional logging)
+            print "Failed to delete $module: " . $e->getMessage() . "\n";
+        }        
     }
 }
 
