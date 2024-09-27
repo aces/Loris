@@ -61,6 +61,7 @@ class DiagnosisEvolution extends Component {
   formattedDiagnosisEvolution() {
     const dxEvolution = this.state.data.diagnosisEvolution;
     let formattedDxEvolution = [];
+    try {
     dxEvolution.map((record) => {
       let formattedDiagnosis = [];
       Object.entries(JSON.parse(record.Diagnosis)).map((entry, index) => {
@@ -94,6 +95,9 @@ class DiagnosisEvolution extends Component {
         ]
       );
     });
+    } catch (error) {
+        console.error('Error parsing JSON:', error);
+    }
     return formattedDxEvolution;
   }
 
