@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the NDB_Page base class. This file should
  * contain ALL of the references to HTML_QuickForm (or any library

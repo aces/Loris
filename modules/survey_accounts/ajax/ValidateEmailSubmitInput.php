@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is used by the survey accounts module to validate inputs
  * before the email message popup appears

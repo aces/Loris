@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
