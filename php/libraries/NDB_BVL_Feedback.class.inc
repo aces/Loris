@@ -492,7 +492,7 @@ class NDB_BVL_Feedback
             $query            .= " AND ft.SessionID = :SID";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
             $timepoint         = TimePoint::singleton(
-                new SessionID($qparams['SID'])
+                new SessionID(strval($qparams['SID']))
             );
             $hasReadPermission = (
                 $hasReadPermission ||
