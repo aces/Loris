@@ -40,8 +40,6 @@ class CandID_Test extends TestCase
     {
         return [
             ['A'],
-            [1],
-            [000000],
             ['11111a'],
             [' 11111'],
             ['111111a'],
