@@ -7,39 +7,40 @@ DROP TABLE IF EXISTS dataquery_query_names;
 DROP TABLE IF EXISTS dataquery_queries;
 
 -- 0000-00-05-ElectrophysiologyTables.sql
-DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;
-DROP TABLE IF EXISTS `physiological_event_parameter`;
-DROP TABLE IF EXISTS `physiological_event_archive`;
-DROP TABLE IF EXISTS `physiological_event_file`;
-DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`;
-DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
-DROP TABLE IF EXISTS `point_3d`;
-DROP TABLE IF EXISTS `physiological_coord_system`;
-DROP TABLE IF EXISTS `physiological_coord_system_unit`;
-DROP TABLE IF EXISTS `physiological_coord_system_name`;
-DROP TABLE IF EXISTS `physiological_coord_system_type`;
-DROP TABLE IF EXISTS `electrophysiology_uploader`;
+
+DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`; 
+DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`; 
+DROP TABLE IF EXISTS `bids_event_file_mapping`; 
+DROP TABLE IF EXISTS `bids_event_dataset_mapping`;
 DROP TABLE IF EXISTS `physiological_annotation_rel`;
 DROP TABLE IF EXISTS `physiological_annotation_instance`;
 DROP TABLE IF EXISTS `physiological_annotation_parameter`;
 DROP TABLE IF EXISTS `physiological_annotation_archive`;
 DROP TABLE IF EXISTS `physiological_annotation_file`;
 DROP TABLE IF EXISTS `physiological_annotation_file_type`;
-DROP TABLE IF EXISTS `physiological_annotation_label`;
-DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event_opt`;
+DROP TABLE IF EXISTS `physiological_task_event_hed_rel`;
 DROP TABLE IF EXISTS `physiological_task_event`;
-DROP TABLE IF EXISTS `physiological_electrode`;
-DROP TABLE IF EXISTS `physiological_electrode_material`;
-DROP TABLE IF EXISTS `physiological_electrode_type`;
-DROP TABLE IF EXISTS `physiological_channel`;
-DROP TABLE IF EXISTS `physiological_channel_type`;
-DROP TABLE IF EXISTS `physiological_status_type`;
-DROP TABLE IF EXISTS `physiological_parameter_file`;
+DROP TABLE IF EXISTS `physiological_annotation_label`;
 DROP TABLE IF EXISTS `physiological_split_file`;
-DROP TABLE IF EXISTS `physiological_file`;
-DROP TABLE IF EXISTS `physiological_output_type`;
-DROP TABLE IF EXISTS `physiological_modality`;
+DROP TABLE IF EXISTS `electrophysiology_uploader`; 
+DROP TABLE IF EXISTS `physiological_channel`; 
+DROP TABLE IF EXISTS `physiological_channel_type`; 
+DROP TABLE IF EXISTS `physiological_status_type`; 
+DROP TABLE IF EXISTS `physiological_parameter_file`; 
+DROP TABLE IF EXISTS `physiological_archive`; 
+DROP TABLE IF EXISTS `physiological_event_parameter_category_level`; 
+DROP TABLE IF EXISTS `physiological_event_parameter`; 
+DROP TABLE IF EXISTS `physiological_event_archive`; 
+DROP TABLE IF EXISTS `physiological_event_file`; 
+DROP TABLE IF EXISTS `physiological_file`; 
+DROP TABLE IF EXISTS `physiological_coord_system`; 
+DROP TABLE IF EXISTS `physiological_coord_system_unit`; 
+DROP TABLE IF EXISTS `physiological_coord_system_name`; 
+DROP TABLE IF EXISTS `physiological_coord_system_type`; 
+DROP TABLE IF EXISTS `physiological_output_type`; 
+DROP TABLE IF EXISTS `physiological_modality`; 
+
 
 -- 0000-00-04-Help.sql
 DROP TABLE IF EXISTS `help`;
@@ -113,6 +114,10 @@ DROP TABLE IF EXISTS `publication`;
 DROP TABLE IF EXISTS `publication_status`;
 DROP TABLE IF EXISTS `publication_collaborator`;
 
+DROP TABLE IF EXISTS `candidate_diagnosis_evolution_rel`;
+DROP TABLE IF EXISTS `diagnosis_evolution`;
+
+
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
 DROP TABLE IF EXISTS `parameter_candidate`;
@@ -183,6 +188,7 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
+
 
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
