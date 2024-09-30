@@ -96,7 +96,7 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_map(
             function ($sessionID) {
                 return \TimePoint::singleton(
-                    new \SessionID($sessionID),
+                    new \SessionID(strval($sessionID)),
                 );
             },
             $listOfSessionIDs,
@@ -201,7 +201,7 @@ class Timepoint_List extends \NDB_Menu
          */
         if (isset($firstDateOfVisit)) {
             $timePoint = \TimePoint::singleton(
-                new \SessionID($listOfSessionIDs[0])
+                new \SessionID(strval($listOfSessionIDs[0]))
             );
 
             $this->tpl_data['CohortID'] = $timePoint->getCohortID();
