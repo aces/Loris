@@ -1397,7 +1397,7 @@ paths:
                 format: binary
 
   '/candidates/{id}/{visit}/recordings':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get the recording files for that visit
@@ -1426,7 +1426,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Recordings'
   '/candidates/{id}/{visit}/recordings/{filename}':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file
@@ -1458,7 +1458,7 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/metadata':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file metadata
@@ -1489,10 +1489,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingMetadata'
   '/candidates/{id}/{visit}/recordings/{filename}/metadata/{headername}':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a specific metadata from a recording file 
+      summary: Get a specific metadata from a recording file
       parameters:
         - name: id
           in: path
@@ -1526,7 +1526,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingMetadataSpecific'
   '/candidates/{id}/{visit}/recordings/{filename}/channels':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file channels
@@ -1557,7 +1557,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingChannels'
   '/candidates/{id}/{visit}/recordings/{filename}/electrodes':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file electrodes
@@ -1588,7 +1588,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingElectrodes'
   '/candidates/{id}/{visit}/recordings/{filename}/events':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file events
@@ -1619,10 +1619,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingEvents'
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/archive':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording archive with all associated files 
+      summary: Get a recording archive with all associated files
       parameters:
         - name: id
           in: path
@@ -1651,10 +1651,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/channels':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording channels in BIDS format 
+      summary: Get a recording channels in BIDS format
       parameters:
         - name: id
           in: path
@@ -1683,10 +1683,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/electrodes':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording electrodes in BIDS format 
+      summary: Get a recording electrodes in BIDS format
       parameters:
         - name: id
           in: path
@@ -1715,10 +1715,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/events':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording events in BIDS format 
+      summary: Get a recording events in BIDS format
       parameters:
         - name: id
           in: path
@@ -2056,7 +2056,7 @@ components:
       properties:
         Meta:
           $ref: '#/components/schemas/ImageMeta'
-        QC:
+        QCStatus:
           type: string
           enum:
             - Pass
@@ -2263,7 +2263,7 @@ components:
           $ref: '#/components/schemas/inline_response_200_5_Meta'
         Value:
           type: string
- 
+
     Project_Meta:
       type: object
       properties:
@@ -2484,7 +2484,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingElectrode'
-            
+
     RecordingElectrode:
       type: object
       properties:
@@ -2504,7 +2504,7 @@ components:
           type: string
         ElectrodeFilePath:
           type: string
-          
+
     RecordingEvents:
       type: object
       properties:
@@ -2514,7 +2514,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingTaskEvent'
-            
+
     RecordingTaskEvent:
       type: object
       properties:

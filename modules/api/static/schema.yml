@@ -1966,7 +1966,7 @@ components:
       properties:
         Meta:
           $ref: '#/components/schemas/ImageMeta'
-        QC:
+        QCStatus:
           type: string
           enum:
             - Pass
