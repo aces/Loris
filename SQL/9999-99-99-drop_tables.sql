@@ -40,6 +40,10 @@ DROP TABLE IF EXISTS `physiological_coord_system_name`;
 DROP TABLE IF EXISTS `physiological_coord_system_type`; 
 DROP TABLE IF EXISTS `physiological_output_type`; 
 DROP TABLE IF EXISTS `physiological_modality`; 
+DROP TABLE IF EXISTS `physiological_electrode`;
+DROP TABLE IF EXISTS `physiological_electrode_material`;
+DROP TABLE IF EXISTS `physiological_electrode_type`;
+DROP TABLE IF EXISTS `point_3d`;
 
 
 -- 0000-00-04-Help.sql
@@ -222,3 +226,6 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
+DROP TABLE IF EXISTS `instrument_data`;
+DROP TABLE IF EXISTS `sex`;
+
