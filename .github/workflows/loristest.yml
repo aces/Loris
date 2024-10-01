@@ -107,21 +107,21 @@ jobs:
         php: ['8.3']
         apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       name: Download node_modules artifact
       with:
         name: node_modules
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       name: Download compiled LORIS javascript artifact
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       name: Download PHP dependencies artifact
       with:
         name: vendor-php${{matrix.php}}
