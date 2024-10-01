@@ -109,19 +109,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       name: Download node_modules artifact
       with:
         name: node_modules
         path: .
 
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       name: Download compiled LORIS javascript artifact
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       name: Download PHP dependencies artifact
       with:
         name: vendor-php${{matrix.php}}
