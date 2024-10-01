@@ -11,7 +11,7 @@ jobs:
       EEG_VIS_ENABLED: 'true'
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install EEG package dependencies
       # We only need to install protobuf-compiler
@@ -36,13 +36,13 @@ jobs:
       - name: Create node_modules tarball
         run: tar cfvz node_modules.tar.gz node_modules
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload node_modules artifact
         with:
           name: node_modules
           path: node_modules.tar.gz
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload lorisjs.tar.gz artifact
         with:
           name: lorisjs
@@ -54,7 +54,7 @@ jobs:
       matrix:
         php: ['8.3']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -83,7 +83,7 @@ jobs:
       - name: Create vendor tarball
         run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload vendor-php${{matrix.php}}.tar.gz artifact
         with:
           name: vendor-php${{matrix.php}}
@@ -225,7 +225,7 @@ jobs:
               php: '8.3'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
