@@ -109,34 +109,37 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v4
-      name: Download node_modules artifact
+    # Cache node_modules to avoid downloading dependencies if already cached
+    - name: Cache node_modules
+      uses: actions/cache@v3
       with:
-        name: Cache node_modules
-        path: .
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-    - name: Extract node_modules
-      run: tar xfvz node_modules.tar.gz        
+    # Install npm dependencies if cache is not available
+    - name: Install node.js dependencies
+      run: npm install
 
-    - uses: actions/download-artifact@v4
-      name: Download compiled LORIS javascript artifact
+    # Download and extract compiled LORIS JavaScript artifact (from build job)
+    - name: Download compiled LORIS javascript artifact
+      uses: actions/download-artifact@v4
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v4
-      name: Download PHP dependencies artifact
-      with:
-        name: vendor-php${{matrix.php}}
-        path: .
-
-
-    - name: Extract node_modules
-      run: tar xfvz node_modules.tar.gz
-
     - name: Extract compiled JS
       run: tar xfvz lorisjs.tar.gz
 
+    # Cache PHP vendor directory to speed up Composer dependencies
+    - name: Cache PHP vendor directory
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php }}-
     - name: Extract composer vendor directory
       run: tar xfvz vendor-php${{matrix.php}}.tar.gz
 
