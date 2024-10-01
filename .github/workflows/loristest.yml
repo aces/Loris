@@ -118,10 +118,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    # Install npm dependencies if cache is not available
-    - name: Install node.js dependencies
-      run: npm install
-
     # Download and extract compiled LORIS JavaScript artifact (from build job)
     - name: Download compiled LORIS javascript artifact
       uses: actions/download-artifact@v4
