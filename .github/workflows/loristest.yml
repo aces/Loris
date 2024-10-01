@@ -136,8 +136,6 @@ jobs:
         path: .
 
 
-    - name: Extract node_modules
-      run: tar xfvz node_modules.tar.gz
     - name: Extract compiled JS
       run: tar xfvz lorisjs.tar.gz
 
