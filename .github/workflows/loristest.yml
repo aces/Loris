@@ -116,7 +116,7 @@ jobs:
         path: .
 
     - name: Extract node_modules
-       run: tar xfvz node_modules.tar.gz        
+      run: tar xfvz node_modules.tar.gz        
 
     - uses: actions/download-artifact@v4
       name: Download compiled LORIS javascript artifact
