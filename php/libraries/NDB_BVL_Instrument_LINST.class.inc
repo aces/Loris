@@ -1026,7 +1026,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $element['Name'] = $value[1];
                 $specialCase     = false;
                 if ($value[0] !== 'table' && $value[0] !== 'title') {
-                    $element['Description'] = rtrim($value[2]);
+                    $element['Description'] = rtrim(strval($value[2]));
                 }
                 switch ($value[0]) {
                 case 'selectmultiple':
