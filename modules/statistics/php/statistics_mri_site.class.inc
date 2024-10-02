@@ -79,7 +79,7 @@ class Statistics_Mri_Site extends Statistics_Site
     function _completeCount(
         ?\CenterID $centerID,
         ?\ProjectID $projectID,
-        $issue
+        string $issue
     ): ?string {
         return null;
     }
@@ -96,7 +96,7 @@ class Statistics_Mri_Site extends Statistics_Site
     function _getResults(
         ?\CenterID $centerID,
         ?\ProjectID $projectID,
-        $issue
+        string $issue
     ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
