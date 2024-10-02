@@ -111,8 +111,13 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $suburi = $this->stripPrefix($modulename, $uri);
 
             // Calculate the base path by stripping off the module from the original.
-            $path    = $uri->getPath();
-            $baseurl = substr($path, 0, strpos($path, $modulename));
+            $path     = $uri->getPath();
+            $pathstrt =strpos($path, $modulename);
+            if ($pathstrt !== false) {
+                $baseurl = substr($path, 0, $pathstrt);
+            } else {
+                $baseurl = '';
+            }
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
