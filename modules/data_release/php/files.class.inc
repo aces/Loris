@@ -115,6 +115,7 @@ class Files extends \NDB_Page
             $request,
             $posted['version'],
             $overwrite,
+            $posted['project'],
         );
     }
 
@@ -197,12 +198,19 @@ class Files extends \NDB_Page
         string $fileName,
         ServerRequestInterface $request,
         ?string $version,
-        bool $overwrite
+        bool $overwrite,
+        ?string $projectName
     ) : ResponseInterface {
         $DB = $this->loris->getDatabaseConnection();
         if ($version !== null) {
             $version = strtolower($version);
         }
+
+        // Get ProjectID
+        $ProjectID = $DB->pselectOne(
+            "SELECT ProjectID FROM Project WHERE Name=:project",
+            ['project' => $projectName]
+        );
 
         $upload_date = date('Y-m-d');
         if ($overwrite) {
@@ -212,6 +220,7 @@ class Files extends \NDB_Page
                 [
                     'version'     => $version,
                     'upload_date' => $upload_date,
+                    'ProjectID' => $ProjectID,
                 ],
                 ['file_name' => $fileName]
             );
@@ -223,6 +232,7 @@ class Files extends \NDB_Page
                         'file_name'   => $fileName,
                         'version'     => $version,
                         'upload_date' => $upload_date,
+                        'ProjectID' => $ProjectID,
                     ]
                 );
 

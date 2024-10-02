@@ -58,8 +58,11 @@ class Data_Release extends \DataFrameworkMenu
     function getUsersList(\Database $DB)
     {
         return $DB->pselectColWithIndexKey(
-            "SELECT ID, UserID FROM users",
-            [],
+            "SELECT DISTINCT ID, LOWER(users.UserID) as UserID FROM users
+            JOIN user_project_rel upr ON upr.UserID = users.ID 
+            WHERE upr.ProjectID IN (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)
+            ORDER BY LOWER(users.UserID)",
+            [':userID' => \User::singleton()->getID()],
             "ID"
         );
     }
@@ -74,8 +77,10 @@ class Data_Release extends \DataFrameworkMenu
     function getFilesList(\Database $DB)
     {
         $result = $DB->pselectWithIndexKey(
-            "SELECT id, file_name, version FROM data_release",
-            [],
+            "SELECT id, file_name, version, dr.ProjectID FROM data_release dr
+            JOIN user_project_rel upr ON upr.ProjectID = dr.ProjectID
+            WHERE upr.UserID = :userID",
+            [':userID' => \User::singleton()->getID()],
             "id"
         );
 
@@ -98,9 +103,13 @@ class Data_Release extends \DataFrameworkMenu
      */
     function getVersionsList(\Database $DB)
     {
+        $user =& \User::singleton();
         $versions = $DB->pselectCol(
-            "SELECT DISTINCT version FROM data_release",
-            [],
+            "SELECT DISTINCT version FROM data_release dr
+            JOIN user_project_rel upr ON upr.ProjectID = dr.ProjectID
+            WHERE upr.UserID = :userID
+            ",
+            ['userID' => $user->getID()],
             "version"
         );
 
@@ -124,8 +133,10 @@ class Data_Release extends \DataFrameworkMenu
     function getVersionFiles(\Database $db)
     {
         $result = $db->pselect(
-            "SELECT version, id FROM data_release",
-            []
+            "SELECT version, id FROM data_release
+            JOIN user_project_rel upr ON upr.ProjectID = data_release.ProjectID
+            WHERE upr.UserID = :userID",
+            [':userID' => \User::singleton()->getID()]
         );
 
         $versionFiles = [];
@@ -150,7 +161,8 @@ class Data_Release extends \DataFrameworkMenu
         $result = $db->pselect(
             "SELECT u.ID as userId,
                     u.UserID as userName,
-                    drp.data_release_id fileId
+                    drp.data_release_id fileId,
+                    dr.ProjectID as ProjectID
              FROM users u
              LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid)
              LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
@@ -160,6 +172,7 @@ class Data_Release extends \DataFrameworkMenu
         $userFiles = [];
         foreach ($result as $row) {
             $userFiles[$row['userId']]['name'] = $row['userName'];
+            $userFiles[$row['userId']]['id'] = $row['userId'];
             if (empty($userFiles[$row['userId']]['files'])) {
                 $userFiles[$row['userId']]['files'] = [];
             }
@@ -206,10 +219,12 @@ class Data_Release extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $db = $this->loris->getDatabaseConnection();
+        $projects = \Utility::getProjectList();
         return [
             'users'     => $this->getUsersList($db),
             'versions'  => $this->getVersionsList($db),
             'filenames' => $this->getFilesList($db),
+            'projects' => array_combine($projects, $projects)
         ];
     }
 

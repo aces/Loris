@@ -7,6 +7,7 @@ import {
   FormElement,
   CheckboxElement,
   StaticElement,
+  SearchableDropdown,
 } from 'jsx/Form';
 
 /**
@@ -24,11 +25,13 @@ class ManagePermissionsForm extends Component {
 
     this.state = {
       data: {},
+      originalData: {},
       hasError: {},
       errorMessage: {},
       isLoaded: false,
     };
 
+    this.setFormData = this.setFormData.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -49,7 +52,7 @@ class ManagePermissionsForm extends Component {
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
     .then((resp) => resp.json())
-    .then((data) => this.setState({data}))
+    .then((data) => this.setState({data, originalData: data}))
     .catch( (error) => {
       this.setState({error: 'An error occurred when loading the form!'});
       console.error(error);
@@ -88,26 +91,58 @@ class ManagePermissionsForm extends Component {
         onSubmit={this.handleSubmit}
       >
         <FormElement name="manage_permissions">
-          {Object.entries(data).map(([userId, user]) => {
-            const versions = Object.values(options.versions).map((version) =>
-                <div key={version}>
+
+          <SearchableDropdown name="user"
+            label="Manage Versions a User has access to"
+            placeHolder="Search for a User"
+            options={options.users}
+            strictSearch={true}
+            onUserInput={this.setFormData}
+            value={this.state.user}
+          />
+          {this.state.user && <StaticElement
+              label={'Versions'}
+              text={Object.values(options.versions).map((version) =>
+                <div>
                   <CheckboxElement
-                    name={version}
-                    label={version || 'Unversioned'}
-                    value={user.versions.includes(version)}
-                    onUserInput={(version, permission) =>
-                      this.setFormData(userId, version, permission)
+                  name={'versionsByUser'}
+                  label={version}
+                  value={data[this.state.user].versions.includes(version)}
+                  onUserInput={(formElement, checked) =>
+                    this.setFormData('versionsByUser', {userId: this.state.user, version, checked})
+                  }
+                  /><br/>
+                </div>
+              )}
+            />
+          }
+          <SearchableDropdown
+            name="version"
+            label="Manage Users with access to a Version"
+            placeHolder="Search for a Version"
+            options={options.versions}
+            strictSearch={true}
+            onUserInput={this.setFormData}
+            value={this.state.version}
+          />
+          {this.state.version &&
+            <StaticElement
+              label={'Users'}
+              text={Object.values(this.state.originalData).map((user) => {
+                if (user.versions.includes(this.state.version)) return <div>
+                  <CheckboxElement
+                    name={'usersByVersion'}
+                    label={user.name}
+                    value={data[user.id].versions.includes(this.state.version)}
+                    onUserInput={(_, checked) =>
+                      this.setFormData('usersByVersion', {userId: user.id, checked, version: this.state.version})
                     }
                   /><br/>
                 </div>
-            );
-
-            return <StaticElement
-                      key={userId}
-                      label={user.name}
-                      text={<div>{versions}</div>}
-                   />;
-         })};
+              }
+              )}
+            />
+          }
         </FormElement>
       </Modal>
     );
@@ -116,19 +151,25 @@ class ManagePermissionsForm extends Component {
   /**
    * Store the value of the element in this.state.data
    *
-   * @param {string} userId
-   * @param {string} version
-   * @param {boolean} permission
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
    */
-  setFormData(userId, version, permission) {
+  setFormData(formElement, value) {
     let {data} = JSON.parse(JSON.stringify(this.state));
-    if (permission) {
-      data[userId].versions = [...data[userId].versions, version];
+    if (formElement === 'versionsByUser' || formElement === 'usersByVersion') {
+      let {checked, version, userId} = value;
+      if (checked) {
+        data[userId].versions = [...data[userId].versions, version];
+      } else {
+        data[userId].versions = data[userId].versions
+        .filter((e) => e !== version);
+      }
+      this.setState({data});
     } else {
-      data[userId].versions = data[userId].versions
-      .filter((e) => e !== version);
+      this.setState({[formElement]: (value === '' ? null : value)});
+      if (formElement != 'user') this.setState({user: null})
+      if (formElement != 'version') this.setState({version: null})
     }
-    this.setState({data});
   }
 
   /**

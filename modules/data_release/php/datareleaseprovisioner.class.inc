@@ -43,8 +43,10 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 file_name AS fileName,
                 IF(version is null or version ='','Unversioned', version) AS version,
                 upload_date AS uploadDate,
+                p.Name as ProjectName,
                 dr.id as dataReleaseID
-            FROM data_release dr";
+            FROM data_release dr
+            JOIN Project p on p.ProjectID = dr.ProjectID";
 
         if (!$user->hasPermission("superuser")) {
             $query .= "
