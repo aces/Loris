@@ -57,8 +57,8 @@ class ElectrophysiologyUploaderProvisioner
      */
     public function getInstance($row): DataInstance
     {
-        $cid = \CenterID::singleton($row['RegistrationCenterID']);
-        $pid = \ProjectID::singleton($row['RegistrationProjectID']);
+        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new ElectrophysiologyUploaderRow($row, $cid, $pid);
