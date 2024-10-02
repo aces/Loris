@@ -96,7 +96,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $inactive_users_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 WHERE (FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC))
                  AND Active='N'",
                 [
                     'CenterID' => $CenterID,

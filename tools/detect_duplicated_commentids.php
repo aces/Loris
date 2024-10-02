@@ -115,8 +115,8 @@ foreach ($instruments as $instrument => $full_name) {
                     ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
-                    $sessionid   = $session_info['ID'];
-                    $visit_label = $session_info['Visit_label'];
+                    $sessionid   = $session_info[0]['ID'];
+                    $visit_label = $session_info[0]['Visit_label'];
                     if ($sessionid !=null) {
                         $commentid = getCommentIDs(
                             $instrument,
