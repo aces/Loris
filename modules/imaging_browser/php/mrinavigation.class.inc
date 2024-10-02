@@ -52,10 +52,15 @@ class MRINavigation
                 = $_SESSION['State']->getProperty('mriSessionsListed');
         }
 
-        $this->_currentListIndex = array_search(
+        $idx = array_search(
             $this->_sessionID,
             $this->_FilteredSessionList
         );
+        if ($idx !== false) {
+            $this->_currentListIndex = $idx;
+        } else {
+            $this->_currentListIndex = 0;
+        }
 
         $this->urlParams = $this->_splitURL();
     }
