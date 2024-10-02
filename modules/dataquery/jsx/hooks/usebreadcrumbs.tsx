@@ -33,9 +33,9 @@ function useBreadcrumbs(
                 },
             },
         ];
-        if (activeTab == Tabs.Fields
-                || activeTab == Tabs.Filters
-                || activeTab == Tabs.Data) {
+        if (activeTab === Tabs.Fields
+                || activeTab === Tabs.Filters
+                || activeTab === Tabs.Data) {
             breadcrumbs.push({
                 text: 'Define Fields',
                 /**
@@ -50,8 +50,8 @@ function useBreadcrumbs(
                 },
             });
         }
-        if (activeTab == Tabs.Filters
-                || activeTab == Tabs.Data) {
+        if (activeTab === Tabs.Filters
+                || activeTab === Tabs.Data) {
             breadcrumbs.push({
                 text: 'Define Filters',
                 /**
@@ -67,7 +67,7 @@ function useBreadcrumbs(
             });
         }
 
-        if (activeTab == Tabs.Data) {
+        if (activeTab === Tabs.Data) {
             breadcrumbs.push({
                 text: 'View Data',
                 /**
