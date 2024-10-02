@@ -9,9 +9,10 @@ import {Tabs, TabSteps} from '../nextsteps';
  * @returns {Function | null} - The callback if available
  */
 function getCallback(name: string): (() => void) | null {
-    const namepieces = name.split('.').reverse();
+    const namepieces = name.split('.');
     let level: any = window;
-    for (let name = namepieces.pop(); name; name = namepieces.pop()) {
+
+    for (const name of namepieces) {
          if (level[name]) {
              level = level[name];
          } else {
