@@ -37,6 +37,4 @@ class ActionWidget implements \LORIS\GUI\Widget
     {
         return "";
     }
-
-
 }
