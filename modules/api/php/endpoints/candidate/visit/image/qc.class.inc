@@ -165,7 +165,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $inputqcstatus = $data['QCStatus'] ?? null;
+        $inputqcstatus = $data['QC'] ?? null;
         $inputselected = $data['Selected'] ?? null;
 
         // TODO :: This is (and was) not checking or handling Caveats
