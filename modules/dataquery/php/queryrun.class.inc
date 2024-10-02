@@ -106,7 +106,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($val) {
-                return new CandID($val);
+                return new CandID(strval($val));
             },
             $candIDs
         );

@@ -2304,10 +2304,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID           = new CandID($row['CandID']);
+                $newinst->candID           = new CandID(strval($row['CandID']));
                     $newinst->commentID    = $row['CommentID'];
                     $newinst->visitLabel   = $row['VisitLabel'];
-                    $newinst->sessionID    = new SessionID($row['SessionID']);
+                    $newinst->sessionID    = new SessionID(strval($row['SessionID']));
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,
@@ -2355,10 +2355,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($data as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID         = new CandID($row['CandID']);
+                $newinst->candID         = new CandID(strval($row['CandID']));
                     $newinst->commentID  = $row['CommentID'];
                     $newinst->visitLabel = $row['VisitLabel'];
-                    $newinst->sessionID  = new SessionID($row['SessionID']);
+                    $newinst->sessionID  = new SessionID(strval($row['SessionID']));
                     unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
 
                     $newinst->instanceData = $row;
