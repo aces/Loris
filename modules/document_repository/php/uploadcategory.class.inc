@@ -93,7 +93,7 @@ class UploadCategory extends \NDB_Page
             throw new \LorisException("Invalid JSON");
         }
         $category_name = $req['categoryName']; // required
-        $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
+        $parent_id     = isset($req['parentId']) ? $req['parentId'] : 0;
         $comments      = isset($req['comments']) ? $req['comments'] : null;
         //check duplicate name category
         if ($this->existCategoryName($category_name, $parent_id)) {
