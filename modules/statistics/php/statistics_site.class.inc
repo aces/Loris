@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * The module to display study statistics
  *
@@ -64,7 +64,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                new \CenterID($_REQUEST['CenterID'])
+                \CenterID::singleton(intval($_REQUEST['CenterID']))
             );
         } else {
             // For the short term the user we'll be granted access
@@ -89,20 +89,19 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID)
+    function _checkCriteria(?\CenterID $centerID, ?\ProjectID $projectID)
     {
 
         //SITES
-        $projectID = new \ProjectID(strval($projectID));
-        $factory   = \NDB_Factory::singleton();
-        $user      = $factory->user();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
-        if (!empty($centerID) && $user->hasCenter($centerID)) {
+        if ($centerID !== null && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -131,7 +130,7 @@ class Statistics_Site extends \NDB_Menu
 
         // PROJECTS
 
-        if (!empty($projectID) && $user->hasProject($projectID)) {
+        if ($projectID !== null && $user->hasProject($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
@@ -178,14 +177,17 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return ?string
      */
-    function _completeCount($centerID, $projectID, $instrument): ?string
-    {
+    function _completeCount(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ): ?string {
 
         $this->_checkCriteria($centerID, $projectID);
         $DB    = $this->loris->getDatabaseConnection();
@@ -209,13 +211,13 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return array
      */
-    function _getResults($centerID, $projectID, $instrument)
+    function _getResults(?\CenterID $centerID, ?\ProjectID $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
         $DB     = $this->loris->getDatabaseConnection();
@@ -234,7 +236,7 @@ class Statistics_Site extends \NDB_Menu
                 AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
             $this->query_vars
         );
-        return $result;
+        return iterator_to_array($result);
     }
     /**
      * Setup function
@@ -252,16 +254,16 @@ class Statistics_Site extends \NDB_Menu
                 ['cid' => $_REQUEST['CenterID']]
             );
 
-            $centerID = new \CenterID($center['ID'] ?? '');
+            $centerID = \CenterID::singleton(intval($_REQUEST['CenterID']));
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
-            $centerID = '';
+            $centerID = null;
         }
         if (!empty($_REQUEST['ProjectID'])) {
-            $projectID = $_REQUEST['ProjectID'];
+            $projectID = \ProjectID::singleton(intval($_REQUEST['ProjectID']));
         } else {
-            $projectID = '';
+            $projectID = null;
         }
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank

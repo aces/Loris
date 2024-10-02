@@ -67,14 +67,17 @@ class Mri_Violations extends \DataFrameworkMenu
         // Build a list of existing problem types based on data in db
         $db           = $this->loris->getDatabaseConnection();
         $problemTypes = array_column(
-            $db->pselect(
-                "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            iterator_to_array(
+                $db->pselect(
+                    "SELECT DISTINCT MRICandidateErrors.Reason
+			FROM MRICandidateErrors
                     UNION
                  SELECT DISTINCT 'Could not identify scan type'
                       FROM mri_protocol_violated_scans
                     UNION
                  SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-                []
+                    []
+                )
             ),
             'Reason'
         );
@@ -103,7 +106,7 @@ class Mri_Violations extends \DataFrameworkMenu
             'cohorts'      => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
-            'protocols'    => $protocols,
+            'protocols'    => iterator_to_array($protocols),
         ];
     }
 

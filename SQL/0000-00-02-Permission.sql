@@ -117,7 +117,7 @@ INSERT INTO `permissions` VALUES
     (45,'publication_view', 'Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),'View', 2),
     (46,'publication_propose', 'Propose Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),NULL, 2),
     (47,'publication_approve', 'Accept/Reject Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),NULL, 2),
-    (48, 'candidate_dob_edit', 'Dates of Birth',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
+    (48,'candidate_dob_edit', 'Dates of Birth',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
     (49,'electrophysiology_browser_view_allsites', 'EEGs - All Sites',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'View', 2),
     (50,'electrophysiology_browser_view_site', 'EEGs - Own Sites',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'View', 2),
     (51,'battery_manager_view','Battery Entries',(SELECT ID FROM modules WHERE Name='battery_manager'),'View',2),
@@ -126,7 +126,7 @@ INSERT INTO `permissions` VALUES
     (54,'module_manager_edit', 'Installed Modules',(SELECT ID FROM modules WHERE Name='module_manager'),'Edit', 2),
     (55,'candidate_dod_edit', 'Dates of Death',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
     (56,'violated_scans_view_ownsite','Violated Scans - Own Sites',(SELECT ID FROM modules WHERE Name='mri_violations'),'View','2'),
-    (57,'document_repository_edit','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Edit/Upload','2'),
+    (57,'document_repository_upload_edit','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Edit/Upload','2'),
     (58,'survey_accounts_view', 'Candidate Surveys',(SELECT ID FROM modules WHERE Name='survey_accounts'),'View', 2),
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
@@ -134,7 +134,9 @@ INSERT INTO `permissions` VALUES
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', '2'),
     (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
-    (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2');
+    (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
+    (66,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
+    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

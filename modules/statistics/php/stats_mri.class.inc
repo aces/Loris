@@ -241,7 +241,7 @@ class Stats_MRI extends \NDB_Form
 
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
-            $currentProject = new \ProjectID($_REQUEST['MRIProject']);
+            $currentProject = \ProjectID::singleton(intval($_REQUEST['MRIProject']));
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
@@ -279,8 +279,9 @@ class Stats_MRI extends \NDB_Form
         }
         $sitesString = implode(",", array_keys($list_of_sites));
 
-        $centers   = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
+        $centers   = iterator_to_array(
+            $DB->pselect(
+                "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
@@ -288,7 +289,8 @@ class Stats_MRI extends \NDB_Form
               WHERE CenterID <> '1'
                 AND Study_site = 'Y'
 	        AND CenterID IN (" . $sitesString . ")",
-            []
+                []
+            )
         );
         $sites     = [];
         $sites[''] ="All sites";

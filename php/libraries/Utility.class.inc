@@ -244,6 +244,11 @@ class Utility
      */
     static function getVisitList(?ProjectID $projectID = null) : array
     {
+        static $cache = [];
+        $projStr      = strval($projectID);
+        if (isset($cache[$projStr])) {
+            return $cache[$projStr];
+        }
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
         $qparams = [];
@@ -265,10 +270,11 @@ class Utility
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
         // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column($result, 'Visit_label');
+        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
         // Generates an array where the keys are equal to the values.
-        return array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        return $cache[$projStr];
     }
 
     /**
@@ -671,7 +677,7 @@ class Utility
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
-        return $stage[0]['Current_stage'];
+        return $stage->getFirstRow()['Current_stage'];
     }
 
     /**
@@ -706,7 +712,6 @@ class Utility
         $DB      = $factory->database();
 
         //get sourcefield using instrument
-        $sourcefields = [];
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
@@ -726,12 +731,14 @@ class Utility
                 ['instrument' => $instrument]
             );
         } elseif (!is_null($name)) { //get all source fields
-            $sourcefields = $DB->pselectRow(
+            return $DB->pselectRow(
                 "SELECT * FROM parameter_type WHERE Name = :pn",
                 ['pn' => $name]
             );
+        } else {
+            return [];
         }
-        return $sourcefields;
+        return iterator_to_array($sourcefields);
     }
 
 

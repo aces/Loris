@@ -46,7 +46,8 @@ class DocTree extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
-                'document_repository_edit'
+                'document_repository_categories',
+                'document_repository_upload_edit'
             ]
         );
     }
@@ -80,9 +81,11 @@ class DocTree extends \NDB_Page
      */
     public function getTreeData()
     {
-        return $this->loris->getDatabaseConnection()->pselect(
-            "SELECT * FROM document_repository_categories",
-            []
+        return iterator_to_array(
+            $this->loris->getDatabaseConnection()->pselect(
+                "SELECT * FROM document_repository_categories",
+                []
+            )
         );
     }
     /**
@@ -172,9 +175,9 @@ class DocTree extends \NDB_Page
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;
-        $result['currentcategory']  = $currentcategory;
+        $result['currentcategory']  = iterator_to_array($currentcategory);
         $result['parentcategory']   = $parentcategories;
-        $result['subcategories']    = $subcategories;
+        $result['subcategories']    = iterator_to_array($subcategories);
 
         return $result;
     }

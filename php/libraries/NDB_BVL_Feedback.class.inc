@@ -202,7 +202,7 @@ class NDB_BVL_Feedback
         }
         $query .= " LIMIT 1";
 
-        $result = $db->pselect($query, $qparams);
+        $result = iterator_to_array($db->pselect($query, $qparams));
         if (!is_array($result) || count($result) == 0) {
             throw new LorisException(
                 "Error, unable to select data for the feedback object"
@@ -465,14 +465,15 @@ class NDB_BVL_Feedback
                     ft.Feedback_level as QC_Class,
                     COUNT(ft.FeedbackID) as No_Threads";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= ", f.Test_name as Instrument, ft.CommentID";
+            $query .= ", tn.Test_name as Instrument, ft.CommentID";
         }
         $query  .= " FROM candidate as c
                         JOIN feedback_bvl_thread as ft ON (c.CandID=ft.CandID)
                         LEFT JOIN session as s ON (s.ID = ft.SessionID)";
         $qparams = [];
         if (empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
+            $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)
+                             JOIN test_names tn ON (f.TestID=tn.ID) ";
         }
         $query .= " WHERE ft.Active ='Y'";
 
@@ -515,7 +516,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -551,7 +552,7 @@ class NDB_BVL_Feedback
                      ft.Date_taken as Date,
                      DATE_FORMAT(ft.Testdate, '%Y-%m-%d') as Modified";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= ", f.Test_name as Instrument, f.CommentID";
+            $query .= ", tn.Test_name as Instrument, f.CommentID";
         }
 
         $query .= " FROM candidate as c
@@ -562,7 +563,7 @@ class NDB_BVL_Feedback
                      JOIN feedback_bvl_type as ftp
                          ON (ftp.Feedback_type=ft.Feedback_type)";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= ", flag as f";
+            $query .= ", flag as f LEFT JOIN test_names tn ON (tn.ID=f.TestID)";
         }
 
         // FIXME: This clause is kept here so that the ANDs below don't
@@ -622,9 +623,9 @@ class NDB_BVL_Feedback
                              ft.Status,
                              ft.Testdate DESC";
 
-            $result = $db->pselect($query, $qparams);
+        $result = $db->pselect($query, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -656,7 +657,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, ['FID' => $feedbackID]);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**

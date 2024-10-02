@@ -107,7 +107,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $row = $db->pselectRow($query, $CandArray);
 
-        if (!is_array($row) || sizeof($row) == 0) {
+        if ($row === null) {
             throw new \LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
@@ -131,12 +131,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
-                $registrationProjectID     = new \ProjectID($value);
+                $registrationProjectID     = \ProjectID::singleton($value);
                 $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $registrationCenterID      = new \CenterID($value);
+                $registrationCenterID      = \CenterID::singleton($value);
                 $this->candidateInfo[$key] = $registrationCenterID;
+                break;
+            case 'CandID':
+                $this->candidateInfo[$key] = new CandID(strval($value));
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -209,8 +212,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $timepoints[] = new TimePoint(
                 new TimePointData(
                     new SessionID(strval($value["ID"])),
-                    new ProjectID(strval($value["ProjectID"])),
-                    new CenterID(strval($value["CenterID"])),
+                    ProjectID::singleton($value["ProjectID"]),
+                    CenterID::singleton($value["CenterID"]),
                 )
             );
         }
@@ -575,7 +578,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the CandID of this candidate
      *
-     * @return integer 6 digit CandID
+     * @return CandID
      */
     function getCandID()
     {
@@ -809,12 +812,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
           WHERE CandID=:cid AND Date_visit IS NOT NULL
           ORDER BY Date_visit DESC LIMIT 1";
         $where  = ['cid' => $candID];
-        $result = $db->pselect($query, $where);
+        $result = $db->pselectRow($query, $where);
 
         if (empty($result)) {
             return null;
         }
-        return $result[0];
+        return $result;
     }
 
     /**

@@ -58,9 +58,11 @@ class VisitController
                     $row['VisitLabel']
                 );
             },
-            $this->database->pselect(
-                'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
-                []
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
+                    []
+                )
             )
         );
     }
@@ -95,8 +97,9 @@ class VisitController
                     $row['ID']
                 );
             },
-            $this->database->pselect(
-                'SELECT
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT
                  v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
@@ -104,7 +107,8 @@ class VisitController
                  v.VisitName = :name
                 ORDER BY ID
                 ',
-                ['name' => $visit]
+                    ['name' => $visit]
+                )
             )
         );
     }
@@ -155,8 +159,9 @@ class VisitController
                     $row['cohort'], // available
                 ];
             },
-            $this->database->pselect(
-                'SELECT
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT
                   v.VisitID as "ID",
                   v.VisitName as "name",
                   psr.ProjectID as "project",
@@ -171,7 +176,8 @@ class VisitController
                  ON vps.ProjectCohortRelID = psr.ProjectCohortRelID
                 ORDER BY ID, project, cohort
                 ',
-                []
+                    []
+                )
             )
         );
     }

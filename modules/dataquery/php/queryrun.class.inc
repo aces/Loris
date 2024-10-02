@@ -69,7 +69,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
     public function insertCandidates(\User $user) : void
     {
         $DB      = $this->loris->getDatabaseConnection();
-        $candIDs = $this->query->matchCandidates($user);
+        $candIDs = \iterator_to_array($this->query->matchCandidates($user));
         if (count($candIDs) == 0) {
             return;
         }

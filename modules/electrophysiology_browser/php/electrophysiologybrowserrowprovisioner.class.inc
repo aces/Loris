@@ -82,8 +82,8 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = new \CenterID($row['CenterID']);
-        $pid = new \ProjectID($row['ProjectID']);
+        $cid = \CenterID::singleton(intval($row['CenterID']));
+        $pid = \ProjectID::singleton(intval($row['ProjectID']));
         unset($row['CenterID']);
         unset($row['ProjectID']);
         return new ElectrophysiologyBrowserRow($row, $cid, $pid);

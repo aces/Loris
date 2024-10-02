@@ -104,7 +104,7 @@ abstract class SQLQueryEngine implements QueryEngine
      * @param ?string[]                   $visitlist The optional list of visits
      *                                               to match at.
      *
-     * @return CandID[]
+     * @return \Generator<CandID>
      */
     public function getCandidateMatches(
         \LORIS\Data\Query\QueryTerm $term,
@@ -127,13 +127,9 @@ abstract class SQLQueryEngine implements QueryEngine
 
         $DB   = $this->loris->getDatabaseConnection();
         $rows = $DB->pselectCol($query, $prepbindings);
-
-        return array_map(
-            function ($cid) {
-                return new CandID($cid);
-            },
-            $rows
-        );
+        foreach ($rows as $candID) {
+            yield new CandID(strval($candID));
+        }
     }
 
     /**
@@ -237,7 +233,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    protected function sqlOperator(Criteria $criteria) : string
+    public static function sqlOperator(Criteria $criteria) : string
     {
         if ($criteria instanceof LessThan) {
             return '<';
@@ -285,7 +281,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    protected function sqlValue(DictionaryItem $dict, Criteria $criteria, array &$prepbindings) : string
+    public static function sqlValue(DictionaryItem $dict, Criteria $criteria, array &$prepbindings) : string
     {
         static $i = 1;
 

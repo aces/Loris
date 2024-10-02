@@ -43,11 +43,13 @@ class DatasetTags
         $db = $this->loris->getDatabaseConnection();
 
         // TODO: Instead use schemas in project_schema_rel?
-        $this->_hedSchema = $db->pselect(
-            'SELECT * FROM hed_schema_nodes AS hsn
+        $this->_hedSchema = iterator_to_array(
+            $db->pselect(
+                'SELECT * FROM hed_schema_nodes AS hsn
               LEFT JOIN hed_schema AS hs
               ON hsn.SchemaID = hs.ID',
-            []
+                []
+            )
         );
 
         $this->_projectID = $db->pselectOneInt(

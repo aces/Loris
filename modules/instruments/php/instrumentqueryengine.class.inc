@@ -1,6 +1,5 @@
 <?php
 namespace LORIS\instruments;
-use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * InstrumentQueryEngine implements a LORIS QueryEngine for querying
@@ -84,19 +83,19 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         //
         // We walk the existing test names ordered by length to look for the
         // longest prefix match to find out what the instrument for the fieldname is.
-        $DB   = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
+
         $rows = $DB->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Length(Test_name) DESC",
             []
         );
 
-        $testname  = null;
-        $fieldname = null;
-        $fullname  = $term->dictionary->getName();
+        $testname = null;
+        $fullname = $term->dictionary->getName();
         foreach ($rows as $testcandidate) {
             if (strpos($fullname, $testcandidate) === 0) {
-                $testname  = $testcandidate;
-                $fieldname = substr($fullname, strlen($testname)+1);
+                $testname = $testcandidate;
                 break;
             }
         }
@@ -104,138 +103,15 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             throw new \DomainException("Field for unknown instrument");
         }
 
-        $query       = "SELECT c.CandID, f.CommentID
-            FROM flag f 
-            JOIN session s ON (s.ID=f.SessionID AND s.Active='Y')
-            JOIN candidate c ON (s.CandID=c.CandID AND c.Active='Y')
-            WHERE Test_name=:tn AND f.CommentID NOT LIKE 'DDE%'";
-        $queryparams = ['tn' => $testname];
-        if ($visitlist !== null) {
-            $query .= ' AND s.Visit_label IN (';
-            foreach ($visitlist as $vnum => $visit) {
-                if ($vnum !== 0) {
-                    $query .=', ';
-                }
-                $query .= ":visit$vnum";
-                $queryparams["visit$vnum"] = $visit;
-            }
-            $query .= ')';
-        }
-        $data   = $DB->pselect($query, $queryparams);
         $inst   = \NDB_BVL_Instrument::factory($this->loris, $testname);
         $values = $inst->bulkLoadInstanceData(
-            array_map(
-                function ($row) {
-                    return $row['CommentID'];
-                },
-                $data,
-            )
+            null,
+            $term,
         );
-
-        $map = [];
-        foreach ($data as $row) {
-            $map[$row['CommentID']] = new CandID($row['CandID']);
+        foreach ($values as $match) {
+            yield $match->getCandID();
         }
-        return $this->_filtered($values, $map, $fieldname, $term->criteria);
-    }
-
-    /**
-     * Filter out candidates which do not match a criteria
-     *
-     * @param array                      $values    The values from the
-     *                                              instrument
-     * @param array                      $candidmap CandID map from
-     *                                              commentID=>candID
-     *                                              commentID=>candID
-     * @param string                     $fieldname The field to compare
-     * @param \LORIS\Data\Query\Criteria $criteria  The criteria which the field
-     *                                              must match.
-     *
-     * @return \Traversable CandIDs that matched criteria
-     */
-    private function _filtered(
-        $values,
-        $candidmap,
-        $fieldname,
-        $criteria
-    ) : \Traversable {
-        foreach ($values as $inst) {
-            $value = $inst->getFieldValue($fieldname);
-
-            switch (get_class($criteria)) {
-            case \LORIS\Data\Query\Criteria\In::class:
-                foreach ($criteria->getValue() as $valuecandidate) {
-                    if ($value == $valuecandidate) {
-                        yield $candidmap[$inst->getCommentID()];
-                    }
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\LessThan::class:
-                if ($value !== null && $value < $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\LessThanOrEqual::class:
-                if ($value !== null && $value <= $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\Equal::class:
-                if ($value !== null && $value == $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\NotEqual::class:
-                if ($value !== null && $value != $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\GreaterThanOrEqual::class:
-                if ($value !== null && $value >= $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\GreaterThan::class:
-                if ($value !== null && $value > $criteria->getValue()) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-
-            case \LORIS\Data\Query\Criteria\IsNull::class:
-                if ($value === null) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\NotNull::class:
-                if ($value !== null) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-
-            case \LORIS\Data\Query\Criteria\StartsWith::class:
-                if ($value !== null && strpos($value, $criteria->getValue()) === 0) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\EndsWith::class:
-                $critval = $criteria->getValue();
-                $matches = strrpos($value, $critval)
-                    === strlen($value)-strlen($critval);
-                if ($value !== null && $matches) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            case \LORIS\Data\Query\Criteria\Substring::class:
-                if ($value !== null
-                    && strpos($value, $criteria->getValue()) !== false
-                ) {
-                    yield $candidmap[$inst->getCommentID()];
-                }
-                break;
-            default:
-                throw new \Exception("Unhandled operator: " . get_class($criteria));
-            }
-        }
+        return;
     }
 
     /**
@@ -265,9 +141,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $visits = $DB->pselectCol(
             "SELECT DISTINCT s.Visit_Label
                 FROM flag f
+                   JOIN test_names tn ON (tn.ID=f.TestID)
                    JOIN session s ON (f.SessionID=s.ID)
                    JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE s.Active='Y' AND c.Active='Y' and f.Test_name=:tn
+                WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
         );
@@ -321,7 +198,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS querycandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE querycandidates (
-                 CandID int(6)
+                 CandID int(6),
+                 PRIMARY KEY (CandID)
             );"
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
@@ -335,11 +213,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f 
+		JOIN test_names tn ON (f.TestID=tn.ID)
                 JOIN session s ON (f.SessionID=s.ID)
                 JOIN candidate c ON (s.CandID=c.CandID)
              WHERE f.CommentID NOT LIKE 'DDE%'
                 AND c.CandID IN (SELECT CandID FROM querycandidates)
-                AND f.Test_name IN ('" . join("', '", $instruments). "')
+                AND tn.Test_name IN ('" . join("', '", $instruments). "')
                 AND c.Active='Y' AND s.Active='Y'
              ORDER BY c.CandID",
             [],
@@ -354,12 +233,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-                array_map(
-                    function ($row) {
-                        return $row['CommentID'];
-                    },
-                    $rows
-                ),
+                array_keys($commentID2CandID)
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(

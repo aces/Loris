@@ -85,8 +85,8 @@ class Imaging_Session_ControlPanel
         foreach ($linkedInstruments as $v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
-            JOIN test_names tn ON f.Test_name = tn.Test_name
-            WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
+            JOIN test_names tn ON f.TestID = tn.ID
+            WHERE tn.Test_name = :tname AND f.SessionID = :v_sessions_id
             AND f.CommentID NOT LIKE 'DDE_%'",
                 [
                     'tname'         => $v,
@@ -100,7 +100,7 @@ class Imaging_Session_ControlPanel
                     "CommentID" => $qresult['CommentID'],
                 ];
             }
-            // else 'Could not find linked instruments';
+                   // else 'Could not find linked instruments';
         }
         $subjectData['links'] = $links;
 

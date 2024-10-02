@@ -68,14 +68,17 @@ class Statistics_DD_Site extends statistics_site
     /**
      * CompleteCount function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return ?string
      */
-    function _completeCount($centerID, $projectID, $instrument): ?string
-    {
+    function _completeCount(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ): ?string {
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
 
@@ -99,14 +102,17 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return array
      */
-    function _getResults($centerID, $projectID, $instrument)
-    {
+    function _getResults(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        $instrument
+    ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
         $safe_instrument = $DB->escape($instrument);
@@ -123,7 +129,7 @@ class Statistics_DD_Site extends statistics_site
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
-        return $result;
+        return iterator_to_array($result);
     }
 }
 

@@ -40,7 +40,7 @@ class Module extends \Module
                 [
                     'document_repository_view',
                     'document_repository_delete',
-                    'document_repository_edit'
+                    'document_repository_upload_edit'
                 ]
             );
     }
@@ -85,13 +85,15 @@ class Module extends \Module
 
             $last_login = $user->getLastLogin($DB);
 
-            $docs         = $DB->pselect(
-                "SELECT File_name,
+            $docs         = iterator_to_array(
+                $DB->pselect(
+                    "SELECT File_name,
                         Date_uploaded,
                         CONCAT(uploaded_by, '/', File_name) AS Data_dir
                  FROM document_repository
                  ORDER BY Date_uploaded DESC LIMIT 4",
-                []
+                    []
+                )
             );
             $numberOfDocs = sizeof($docs);
             for ($i=0; $i < $numberOfDocs; $i++) {
