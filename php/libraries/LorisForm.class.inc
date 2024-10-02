@@ -701,7 +701,7 @@ class LorisForm
                         }
                     } else {
                         // Submitted value not an array: trim it
-                        $newValue = trim($value);
+                        $newValue = trim(strval($value));
                     }
                 }
             }
