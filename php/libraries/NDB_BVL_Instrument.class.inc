@@ -2307,7 +2307,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $newinst->candID           = new CandID(strval($row['CandID']));
                     $newinst->commentID    = $row['CommentID'];
                     $newinst->visitLabel   = $row['VisitLabel'];
-                    $newinst->sessionID    = new SessionID(strval($row['SessionID']));
+                $newinst->sessionID        = new SessionID(
+                    strval($row['SessionID'])
+                );
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,

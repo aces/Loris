@@ -74,7 +74,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         return new Test(
             $this->loris,
             isset($row['centerId'])
-                ? \CenterID::singleton($row['centerId'])
+                ? \CenterID::singleton(intval($row['centerId']))
                 : null,
             $row
         );

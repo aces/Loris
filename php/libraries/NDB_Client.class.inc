@@ -88,7 +88,12 @@ class NDB_Client
         if (!$this->_isWebClient) {
             // Set user as unix username.
             // Requires Loris to have user with this username
-            User::singleton(getenv('USER'));
+            $username = getenv('USER');
+            if ($username === false) {
+                // happens under GitHub actions tests
+                $username = '';
+            }
+            User::singleton($username);
             return true;
         }
 
