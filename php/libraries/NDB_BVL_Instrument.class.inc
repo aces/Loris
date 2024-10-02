@@ -2267,26 +2267,52 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
-                $conditions[] = 'JSON_VALUE(Data, "$.'
-                . substr(
+                $fname = substr(
                     $condition->dictionary->getName(),
                     strlen($this->testName)+1
-                )
-                . '") '
-                . \LORIS\Data\Query\SQLQueryEngine::sqlOperator($condition->criteria)
-                . ' '
-                . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
-                    $condition->dictionary,
-                    $condition->criteria,
-                    $params
-                )
-                . ' ';
+                );
+                if ($fname == 'Administration'
+                    || $name == 'Validity'
+                    || $fname == 'Data_entry'
+                ) {
+                    $conditions[] = "flag.$fname"
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
+                        $condition->criteria
+                    )
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
+                        $condition->dictionary,
+                        $condition->criteria,
+                        $params
+                    )
+                                   . ' ';
+                } else {
+
+                    $conditions[] = 'JSON_VALUE(Data, "$.'
+                    . substr(
+                        $condition->dictionary->getName(),
+                        strlen($this->testName)+1
+                    )
+                    . '")'
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
+                        $condition->criteria
+                    )
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
+                        $condition->dictionary,
+                        $condition->criteria,
+                        $params
+                    )
+                    . ' ';
+                }
+                $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
                         CommentID,
                         session.Visit_Label as VisitLabel,
+			flag.Administration,
+			flag.Data_entry as DataEntry,
+			flag.Validity,
                         Data
                     FROM flag
                         JOIN session ON (session.ID=flag.SessionID)
@@ -2298,12 +2324,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID           = new CandID(strval($row['CandID']));
-                    $newinst->commentID    = $row['CommentID'];
-                    $newinst->visitLabel   = $row['VisitLabel'];
-                $newinst->sessionID        = new SessionID(
-                    strval($row['SessionID'])
+                    $newinst->candID     = new CandID(strval($row['CandID']));
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID(
+                        strval($row['SessionID'])
+                    );
+                $newinst->flags          = new \InstrumentFlags(
+                    $row['Data_entry'],
+                    $row['Administration'],
+                    $row['Validity']
                 );
+                unset($row['Data_entry'], $row['Administration'], $row['Validity']);
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,
@@ -2319,11 +2351,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
-                $conditions[] = 't.'
-                . substr(
+                $fname = substr(
                     $condition->dictionary->getName(),
                     strlen($this->testName)+1
-                )
+                );
+                if ($fname == 'Administration'
+                    || $name == 'Validity'
+                    || $fname == 'Data_entry'
+                ) {
+                    $tname = 'f.';
+                } else {
+                    $tname = 't.';
+                }
+
+                $conditions[] = $tname
+                . $fname
                 . ' '
                 . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
                     $condition->criteria
@@ -2335,12 +2377,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $params
                 )
                 . ' ';
+                $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT 
 		    session.CandID as CandID,
 		    t.CommentID as CommentID,
                     session.Visit_Label as VisitLabel,
+			f.Administration,
+			f.Data_entry,
+			f.Validity,
                     session.ID as SessionID, t.*
                  FROM $this->table t
                     JOIN flag f ON (t.CommentID=f.CommentID)
@@ -2356,6 +2402,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst->visitLabel = $row['VisitLabel'];
                     $newinst->sessionID  = new SessionID(strval($row['SessionID']));
                     unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
+
+                $newinst->flags = new \InstrumentFlags(
+                    $row['Data_entry'],
+                    $row['Administration'],
+                    $row['Validity']
+                );
+                unset($row['Data_entry'], $row['Administration'], $row['Validity']);
 
                     $newinst->instanceData = $row;
 
@@ -3063,6 +3116,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $this->determineDataEntryAllowed();
     }
 
+    private ?\InstrumentFlags $flags = null;
     /**
      * Gets the flags of that instrument
      *
@@ -3070,6 +3124,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function getFlags(): \InstrumentFlags
     {
+        if ($this->flags !== null) {
+            return $this->flags;
+        }
         $row = \NDB_Factory::singleton()->database()->pselectRow(
             'SELECT
                Data_entry as dataentry,
@@ -3085,11 +3142,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $administration = $row['administration'] ?? null;
         $validity       = $row['validity'] ?? null;
 
-        return new \InstrumentFlags(
+        $this->flags = new \InstrumentFlags(
             $dataentry,
             $administration,
             $validity
         );
+        return $this->flags;
     }
 
     /**
