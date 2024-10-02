@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The user account page
  *
@@ -281,7 +282,7 @@ class Edit_User extends \NDB_Form
         $us_curr_sites = $values['CenterIDs'];
         $userNewCenterIDs = array_map(
             function ($val) {
-                return \CenterID::singleton($val);
+                return \CenterID::singleton(intval($val));
             },
             $values['CenterIDs']
         );

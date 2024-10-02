@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class represents an attempt to re-implement the API for
  * HTML_QuickForm (Version 1) in Loris since QuickForm1 isn't
@@ -700,7 +701,7 @@ class LorisForm
                         }
                     } else {
                         // Submitted value not an array: trim it
-                        $newValue = trim($value);
+                        $newValue = trim(strval($value));
                     }
                 }
             }

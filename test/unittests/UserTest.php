@@ -1,4 +1,5 @@
 <?php declare (strict_types=1);
+
 /**
  * Unit tests for the User and UserPermissions class
  *

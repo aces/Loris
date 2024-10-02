@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class features the code for the menu portion of the LORIS
  * electrophysiology browser module.
