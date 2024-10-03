@@ -197,6 +197,7 @@ class Statistics_Site extends \NDB_Menu
                 flag f
                     JOIN session s ON (s.ID=f.SessionID)
                     JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN test_names tn ON tn.ID = f.TestID
                 WHERE 
                     s.Active='Y' AND s.CenterID <> '1'
                     AND c.Active='Y'
@@ -205,7 +206,7 @@ class Statistics_Site extends \NDB_Menu
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.Administration='All'
                     AND f.CommentID NOT LIKE 'DDE%'
-                    AND f.Test_name=:instrument",
+                    AND tn.Test_name=:instrument",
             ['instrument' => $instrument, ...$this->query_vars]
         );
         return $count;
@@ -235,12 +236,13 @@ class Statistics_Site extends \NDB_Menu
                 s.Visit_label
                 FROM flag f
                     JOIN session s ON (s.ID=f.SessionID)
+                    JOIN test_names tn ON tn.ID = f.TestID
                     JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Active='Y' AND c.Active='Y'
                     AND s.CenterID <> '1'
                     AND s.Current_stage <> 'Recycling Bin'
                     $this->query_criteria
-                    AND f.Test_name=:instrument
+                    AND tn.Test_name=:instrument
                     AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
                     AND f.CommentID NOT LIKE 'DDE%'
                 ORDER BY s.Visit_label, c.PSCID",

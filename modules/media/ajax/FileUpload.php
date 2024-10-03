@@ -264,11 +264,11 @@ function getUploadFields()
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
     $sessionQuery = "SELECT
-                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                      c.PSCID, s.Visit_label, s.CenterID, tn.Test_name, tn.Full_name
                      FROM candidate c
                       LEFT JOIN session s USING (CandID)
                       LEFT JOIN flag f ON (s.ID=f.SessionID)
-                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
+                      LEFT JOIN test_names tn ON (f.TestID=tn.ID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
