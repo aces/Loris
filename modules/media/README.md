@@ -49,6 +49,16 @@ Creation of the upload directory is not done by the install script automatically
 permissions for access to the directory must be set-up manually, either the web 
 server `user` or `group` must have read and write permissions.
 
+## Notifications
+
+In order to enable Media upload digest notifications the proper configuration must be set up.
+
+The media_upload_digest tool must be added to the Cron job for whatever frequency it should be run.
+`php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]`
+
+Further, each user that should receive the Media Upload Digest notifications should have the `media_upload_digest`
+permission, and `Media: Email Digest of Recently Uploaded Files` activated in the notifications tab.
+
 ## Interactions with LORIS
 
 Media module depends on a session to be already created before any files can be 
