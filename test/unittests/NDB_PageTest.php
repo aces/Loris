@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Unit tests for NDB_Page class
  *
@@ -806,7 +807,6 @@ class NDB_PageTest extends TestCase
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
                 '/js/util/queryString.js',
-                '/js/components/Form.js',
                 '/js/components/Help.js',
             ],
             $this->_page->getJSDependencies()

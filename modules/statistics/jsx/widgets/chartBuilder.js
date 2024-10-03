@@ -208,6 +208,11 @@ const studyProgressionCharts = async () => {
       columns: scanLineData,
       type: 'area-spline',
     },
+    spline: {
+      interpolation: {
+        type: 'monotone',
+      },
+    },
     legend: {
       show: false,
     },
@@ -281,6 +286,11 @@ const studyProgressionCharts = async () => {
       xFormat: '%m-%Y',
       columns: recruitmentLineData,
       type: 'area-spline',
+    },
+    spline: {
+      interpolation: {
+        type: 'monotone',
+      },
     },
     legend: {
       show: false,

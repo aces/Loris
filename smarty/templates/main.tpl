@@ -13,7 +13,7 @@
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        let loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
@@ -27,12 +27,14 @@
             {$study_title}
         </title>
         <script type="text/javascript">
+          let breadcrumbsRoot;
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              ReactDOM.createRoot(
+              breadcrumbsRoot = ReactDOM.createRoot(
                 document.getElementById("breadcrumbs")
-              ).render(
+              );
+              breadcrumbsRoot.render(
                 React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL

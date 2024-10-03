@@ -8,7 +8,25 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 25.0 (Release Date: ????-??-??)
+## LORIS 26.0 (Release Date: 2024-06-13)
+### Core
+#### Features
+- Add OpenID Connect authorization support to LORIS (PR #8255)
+
+#### Updates and Improvements
+- Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+- Add Project filter for "My tasks" counts in dashboard (PR #9220)
+
+#### Bug Fixes
+- Fix examiner site display (PR #8967)
+- bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
+- Fix delete file in upload (PR #9181)
+- Fix profile level feedback display in behavioural QC module (PR #9192)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
+
+## LORIS 25.0 (Release Date: 2023-07-17)
 ### Core
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
@@ -19,7 +37,6 @@ changes in the following format: PR #1234***
   module. (PR #8302)
 - new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
   when `make` or `npm ci` is executed (PR #8244)
-
 
 #### Updates and Improvements
 - Upgrade react to version 18 (PR #8188)
@@ -37,6 +54,7 @@ changes in the following format: PR #1234***
   - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
   - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
 - Help and help editor reactification (PR #8309)
+- In document repository: Add Upload / edit permission, add "Edit Categories" tab, create category permission (PR #7103)
 
 #### Bug Fixes
 - Fix a Fatal error on the Genomic Browser tabs (PR #8468)
@@ -504,3 +522,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)

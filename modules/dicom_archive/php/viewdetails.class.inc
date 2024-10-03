@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -107,12 +108,14 @@ class ViewDetails extends \NDB_Form
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    "OField" => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        "OField" => $order,
+                    ]
+                )
             );
 
             if ($this->_setProtocols()) {
@@ -136,12 +139,14 @@ class ViewDetails extends \NDB_Form
         case "tarchive_files":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    'OField' => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        'OField' => $order,
+                    ]
+                )
             );
             break;
         }
@@ -358,24 +363,6 @@ class ViewDetails extends \NDB_Form
     }
 
     /**
-     * Overrides base getJSDependencies() to add additional JS files
-     *
-     * @return array of extra JS files that this page depends on
-     */
-    function getJSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/dicom_archive/js/view_details_link.js",
-            ]
-        );
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
@@ -392,4 +379,3 @@ class ViewDetails extends \NDB_Form
         );
     }
 }
-

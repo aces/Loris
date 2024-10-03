@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *

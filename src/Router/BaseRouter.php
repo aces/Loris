@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements BaseRouter, a Router to handle the base of a LORIS
  * install.
@@ -110,12 +111,17 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $suburi = $this->stripPrefix($modulename, $uri);
 
             // Calculate the base path by stripping off the module from the original.
-            $path    = $uri->getPath();
-            $baseurl = substr($path, 0, strpos($path, $modulename));
+            $path     = $uri->getPath();
+            $pathstrt =strpos($path, $modulename);
+            if ($pathstrt !== false) {
+                $baseurl = substr($path, 0, $pathstrt);
+            } else {
+                $baseurl = '';
+            }
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
-            $factory->setBaseURL($baseurl);
+            $factory->setBaseURL((string )$baseurl);
 
             $module = $this->loris->getModule($modulename);
             $module->registerAutoloader();
@@ -137,7 +143,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
             $baseurl = $uri->withPath("")->withQuery("");
 
-            $factory->setBaseURL($baseurl);
+            $factory->setBaseURL((string )$baseurl);
             if (count($components) == 1) {
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements the add_survey page which is used by the Loris
  * survey module, for creating user account/keys that are tied to a
@@ -120,7 +121,7 @@ class AddSurvey extends \NDB_Form
             ];
         }
 
-        $projectID = $db->pselectOne(
+        $projectID = $db->pselectOneInt(
             "SELECT ProjectID FROM session
             WHERE CandID=:v_CandID
             AND Visit_Label=:v_VL",
@@ -131,7 +132,7 @@ class AddSurvey extends \NDB_Form
         );
 
         $user = \NDB_Factory::singleton()->user();
-        if (!$user->hasProject(new \ProjectID($projectID))) {
+        if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
                 'Project' => "You are not affiliated with this session's project"
             ];
@@ -162,8 +163,9 @@ class AddSurvey extends \NDB_Form
                 ];
             }
         }
-
-        if ($_REQUEST['fire_away'] !== 'Create survey') {
+        if (!isset($_REQUEST['fire_away'])
+            || ($_REQUEST['fire_away'] !== 'Create survey')
+        ) {
             if (!filter_var(
                 $values['Email'],
                 FILTER_VALIDATE_EMAIL
@@ -241,11 +243,11 @@ class AddSurvey extends \NDB_Form
                     'CommentID'       => $commentID,
                 ]
             );
+            $this->tpl_data['success'] = true;
         } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
-        $this->tpl_data['success'] = true;
 
         if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
@@ -291,7 +293,7 @@ class AddSurvey extends \NDB_Form
             "Instrument",
             array_merge(
                 ['' => ''],
-                \Utility::getDirectInstruments()
+                \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
             )
         );
         $this->addBasicText("Email", "Email address");

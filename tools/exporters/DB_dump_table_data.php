@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * This script generates data-only dumps for all tables
  * in the currently active database.
@@ -94,6 +95,7 @@ foreach ($tableNames as $tableName) {
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
+        '--column-statistics=0 '.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.

@@ -1,11 +1,5 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `physiological_coord_system_point_3d_rel`;
 LOCK TABLES `physiological_coord_system_point_3d_rel` WRITE;
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (2,385,'NAS');
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (2,386,'LPA');
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (2,387,'RPA');
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (3,385,'NAS');
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (3,386,'LPA');
-INSERT INTO `physiological_coord_system_point_3d_rel` (`PhysiologicalCoordSystemID`, `Point3DID`, `Name`) VALUES (3,387,'RPA');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

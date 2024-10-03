@@ -52,5 +52,7 @@ INSERT INTO modules (Name, Active) VALUES ('user_accounts', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('electrophysiology_browser', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dqt', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('dataquery', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');
 
 ALTER TABLE issues ADD CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `modules` (`ID`);

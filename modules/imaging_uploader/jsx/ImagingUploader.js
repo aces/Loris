@@ -6,6 +6,8 @@ import Loader from 'Loader';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
+import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
+import StaticDataTable from 'jsx/StaticDataTable';
 
 /**
  * Imaging uploader component

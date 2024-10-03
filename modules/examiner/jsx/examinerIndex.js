@@ -6,6 +6,13 @@ import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    ButtonElement,
+    CheckboxElement,
+    SelectElement,
+    FormElement,
+    TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Examiner Module Page.
@@ -116,8 +123,8 @@ class ExaminerIndex extends Component {
           }
         });
       } else {
-        resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
+        resp.json().then((message) => {
+          swal.fire('Error!', message.error, 'error');
         });
       }
     })

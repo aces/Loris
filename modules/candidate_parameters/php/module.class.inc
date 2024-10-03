@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateInfo;
 use LORIS\candidate_profile\CandidateWidget;
@@ -184,5 +185,15 @@ class Module extends \Module
             $entries[] = new CandidateInfo($param['Description'], $param['Value']);
         }
         return $entries;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new CandidateQueryEngine($this->loris);
     }
 }

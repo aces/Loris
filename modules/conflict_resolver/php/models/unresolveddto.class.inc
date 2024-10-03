@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP version 7
  *
@@ -43,6 +44,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
     protected $visitlabel;
     protected $instrument;
     protected $question;
+    protected $description;
     protected $value1;
     protected $value2;
 
@@ -62,6 +64,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
             'Visit Label' => $this->visitlabel,
             'Instrument'  => $this->instrument,
             'Question'    => $this->question,
+            'Description' => "",
             'Value 1'     => $this->value1,
             'Value 2'     => $this->value2,
         ];
@@ -75,7 +78,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->centerid));
+        return \CenterID::singleton($this->centerid);
     }
 
     /**
@@ -86,6 +89,6 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->projectid));
+        return \ProjectID::singleton($this->projectid);
     }
 }

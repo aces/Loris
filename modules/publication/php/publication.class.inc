@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publications module class
  *
@@ -301,6 +302,9 @@ class Publication extends \NDB_Menu_Filter_Form
         array_walk_recursive(
             $result,
             function (&$r) {
+                if ($r === null) {
+                    return $r;
+                }
                 $r = htmlspecialchars_decode($r);
             }
         );

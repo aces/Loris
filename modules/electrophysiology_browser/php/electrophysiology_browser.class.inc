@@ -66,9 +66,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = \User::singleton();
+        $db   =  $this->loris->getDatabaseConnection();
 
         // get list of types
         $list_of_types = [];

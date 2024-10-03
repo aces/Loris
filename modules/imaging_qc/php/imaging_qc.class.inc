@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the Imaging_QC class
  *
@@ -11,6 +12,9 @@
  * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\imaging_qc;
+
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Main class for imaging quality control module corresponding to /imaging_qc/
@@ -386,5 +390,29 @@ class Imaging_QC extends \NDB_Menu_Filter
             )
         );
     }
-}
 
+    /**
+     * This method overrides the NBD_Page handle function.
+     * It checks if the MRI Parameter Form table exists
+     * before calling the parent handle function.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $db = $this->loris->getDatabaseConnection();
+        if ($db->tableExists('mri_parameter_form')) {
+            return parent::handle($request);
+        } else {
+            return (new \LORIS\Http\Response())
+                ->withStatus(500)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        "MRI Parameter Form table does not exist"
+                    )
+                );
+        }
+    }
+}

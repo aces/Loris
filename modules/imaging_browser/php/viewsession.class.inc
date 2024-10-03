@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Form_imaging_browser class file
@@ -118,17 +118,6 @@ class ViewSession extends \NDB_Form
             $this->tpl_data['headerTable'] = $this->getHeaderTable();
 
             $this->tpl_data['showFloatJIV'] = true;
-
-            $file = $this->_DB->pselectOne(
-                "SELECT File FROM files f
-                JOIN session s
-                ON (s.ID=f.SessionID)
-                WHERE s.ID=:sid AND FileType='obj'",
-                ['sid' => $this->sessionID]
-            );
-            if (!empty($file)) {
-                $this->tpl_data['show3DViewer'] = true;
-            }
 
             $this->tpl_data['status_options']    = [
                 ''     => '&nbsp;',
@@ -428,7 +417,7 @@ class ViewSession extends \NDB_Form
             AND mvl.Header NOT LIKE 'Manual Caveat Set by %';
         ";
 
-        return $this->_DB->pselect($query, ['fileID' => $fileID]);
+        return iterator_to_array($this->_DB->pselect($query, ['fileID' => $fileID]));
     }
 
     /**

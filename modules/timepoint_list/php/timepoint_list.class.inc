@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The timepoint list menu
  *
@@ -80,6 +81,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['cand']      = $candidate;
 
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
@@ -94,7 +96,7 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_map(
             function ($sessionID) {
                 return \TimePoint::singleton(
-                    new \SessionID($sessionID),
+                    new \SessionID(strval($sessionID)),
                 );
             },
             $listOfSessionIDs,
@@ -199,7 +201,7 @@ class Timepoint_List extends \NDB_Menu
          */
         if (isset($firstDateOfVisit)) {
             $timePoint = \TimePoint::singleton(
-                new \SessionID($listOfSessionIDs[0])
+                new \SessionID(strval($listOfSessionIDs[0]))
             );
 
             $this->tpl_data['CohortID'] = $timePoint->getCohortID();
