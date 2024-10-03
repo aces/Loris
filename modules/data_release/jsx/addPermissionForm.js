@@ -111,6 +111,7 @@ class AddPermissionForm extends Component {
           errorMessage={this.state.errorMessage.Filename}
           required={false}
           value={this.state.formData.data_release_id}
+          autoSelect={false}
         />
         <h4 align='center'>OR</h4><br/>
         <SelectElement
@@ -123,6 +124,7 @@ class AddPermissionForm extends Component {
           errorMessage={this.state.errorMessage.Version}
           required={false}
           value={this.state.formData.data_release_version}
+          autoSelect={false}
         />
         <ButtonElement label='Add Permission'/>
       </FormElement>

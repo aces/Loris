@@ -180,15 +180,17 @@ class Files extends \NDB_Page
      * Moves a to the appropriate place on the filesystem and inserts into
      * the database, returning an appropriate HTTP response.
      *
-     * @param \LORIS\FilesUploadHandler $files     The FilesUploadHandler which moves
-     *                                             the file and generates the
-     *                                             response.
-     * @param \User                     $user      The user uploading the file.
-     * @param string                    $fileName  The file name being uploaded.
-     * @param ServerRequestInterface    $request   The incoming request.
-     * @param ?string                   $version   The user submitted file version.
-     * @param bool                      $overwrite Flag to indicate if existing file
-     *                                             should be overwritten.
+     * @param \LORIS\FilesUploadHandler $files       The FilesUploadHandler which
+     *                                               moves the file and generates
+     *                                               the response.
+     * @param \User                     $user        The user uploading the file.
+     * @param string                    $fileName    The file name being uploaded.
+     * @param ServerRequestInterface    $request     The incoming request.
+     * @param ?string                   $version     The user submitted file version.
+     * @param bool                      $overwrite   Flag to indicate if existing
+     *                                               file should be overwritten.
+     * @param projectName               $projectName The name of the project the file
+     *                                               belongs to
      *
      * @return ResponseInterface
      */
@@ -220,7 +222,7 @@ class Files extends \NDB_Page
                 [
                     'version'     => $version,
                     'upload_date' => $upload_date,
-                    'ProjectID' => $ProjectID,
+                    'ProjectID'   => $ProjectID,
                 ],
                 ['file_name' => $fileName]
             );
@@ -232,7 +234,7 @@ class Files extends \NDB_Page
                         'file_name'   => $fileName,
                         'version'     => $version,
                         'upload_date' => $upload_date,
-                        'ProjectID' => $ProjectID,
+                        'ProjectID'   => $ProjectID,
                     ]
                 );
 

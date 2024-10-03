@@ -8,6 +8,7 @@ import {
   FileElement,
   TextboxElement,
   ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
