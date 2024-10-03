@@ -1,9 +1,5 @@
 <?php
-require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . '/../../tools/generic_includes.php';
-require_once __DIR__ . "/../modules/electrophysiology_browser/php/models/electrophysiofile.class.inc";
-
-use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
+require_once 'generic_includes.php';
 
 /**
  * Wrapper around CouchDB EEG functions
@@ -17,12 +13,12 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 class CouchDBEEGImporter
 {
     var $SQLDB; // reference to the database handler, store here instead
-    // of using Database::singleton in case it's a mreock.
+    // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
     // this is just in an instance variable to make
     // the code a little more readable.
-    private $Dictionary = array();
+    private $Dictionary = [];
 
     /**
      * Constructor for CouchDBMRIImporter
@@ -51,67 +47,66 @@ class CouchDBEEGImporter
     {
         $this->updateDataDict();
         $CandidateData = $this->getCandidateData();
-        $results = $this->updateCandidateDocs($CandidateData);
+        $results       = $this->updateCandidateDocs($CandidateData);
         $this->createRunLog($results);
     }
 
     /**
      * Add data dictionary in DQT
      *
-     *
      * @return void
      */
     function updateDataDict()
     {
 
-        $this->Dictionary = array();
+        $this->Dictionary = [];
 
         $eeg_array = [
-            'Acquisition_Time'                        => 'Acquisition Time',
-            'FilePaths'                               => 'Paths of all session recordings',
-            'age_at_scan'                             => 'Subject\'s age at scan',
-            'CapManufacturer'                         => 'Cap Manufacturer',
-            'CapManufacturersModelName'               => 'Manufacturer Cap Model Name',
-            'EEGChannelCount'                         => 'EEG Channel Count',
-            'EOGChannelCount'                         => 'EOG Channel Count',
-            'ECGChannelCount'                         => 'ECG Channel Count',
-            'EMGChannelCount'                         => 'EMG Channel Count',
-            'EEGReference'                            => 'EEG Reference',
-            'EEGGround'                               => 'EEG Ground',
-            'EEGPlacementScheme'                      => 'EEG Placement Scheme',
-            'HardwareFilters'                         => 'Hardware Filters',
-            'InstitutionName'                         => 'Institution Name',
-            'InstitutionAddress'                      => 'Institution Address',
-            'MiscChannelCount'                        => 'Misc Channel Count',
-            'Manufacturer'                            => 'Manufacturer',
-            'ManufacturerModelName'                   => 'Manufacturer Model Name',
-            'PowerLineFrequency'                      => 'Power Line Frequency',
-            'RecordingType'                           => 'Recording Type',
-            'RecordingDuration'                       => 'Recording Duration',
-            'SamplingFrequency'                       => 'Sampling Frequency',
-            'SoftwareFilters'                         => 'Software Filters',
-            'SoftwareVersions'                        => 'Software Version',
-            'TriggerChannelCount'                     => 'Trigger Channel Count',
-            'TaskDescription'                         => 'Task Description',
-            'TaskName'                                => 'Task Name',
-            'OutputType'                              => 'Output type - raw or derived',
-            'HEDTags'                                 => 'HED Tags - Unique List',
-            'HEDTagsShortForm'                        => 'HED Tags - Short Form',
+            'Acquisition_Time'          => 'Acquisition Time',
+            'FilePaths'                 => 'Paths of all session recordings',
+            'age_at_scan'               => 'Subject\'s age at scan',
+            'CapManufacturer'           => 'Cap Manufacturer',
+            'CapManufacturersModelName' => 'Manufacturer Cap Model Name',
+            'EEGChannelCount'           => 'EEG Channel Count',
+            'EOGChannelCount'           => 'EOG Channel Count',
+            'ECGChannelCount'           => 'ECG Channel Count',
+            'EMGChannelCount'           => 'EMG Channel Count',
+            'EEGReference'              => 'EEG Reference',
+            'EEGGround'                 => 'EEG Ground',
+            'EEGPlacementScheme'        => 'EEG Placement Scheme',
+            'HardwareFilters'           => 'Hardware Filters',
+            'InstitutionName'           => 'Institution Name',
+            'InstitutionAddress'        => 'Institution Address',
+            'MiscChannelCount'          => 'Misc Channel Count',
+            'Manufacturer'              => 'Manufacturer',
+            'ManufacturerModelName'     => 'Manufacturer Model Name',
+            'PowerLineFrequency'        => 'Power Line Frequency',
+            'RecordingType'             => 'Recording Type',
+            'RecordingDuration'         => 'Recording Duration',
+            'SamplingFrequency'         => 'Sampling Frequency',
+            'SoftwareFilters'           => 'Software Filters',
+            'SoftwareVersions'          => 'Software Version',
+            'TriggerChannelCount'       => 'Trigger Channel Count',
+            'TaskDescription'           => 'Task Description',
+            'TaskName'                  => 'Task Name',
+            'OutputType'                => 'Output type - raw or derived',
+            'HEDTags'                   => 'HED Tags - Unique List',
+            'HEDTagsShortForm'          => 'HED Tags - Short Form',
         ];
 
         foreach ($eeg_array as $field => $desc) {
-            $this->Dictionary[$field] = array(
+            $this->Dictionary[$field] = [
                 'Type'        => "varchar(255)",
                 'Description' => $desc
-            );
+            ];
         }
 
         $this->CouchDB->replaceDoc(
             "DataDictionary:eeg_data",
-            array(
-                'Meta'           => array('DataDict' => true),
-                'DataDictionary' => array('eeg_data' => $this->Dictionary)
-            )
+            [
+                'Meta'           => ['DataDict' => true],
+                'DataDictionary' => ['eeg_data' => $this->Dictionary]
+            ]
         );
     }
 
@@ -123,7 +118,7 @@ class CouchDBEEGImporter
      */
     public function getCandidateData(): array
     {
-      $query = "SELECT
+        $query = "SELECT
         psc.Name                                  AS Site,
         c.PSCID                                   AS PSCID,
         c.CandID                                  AS DCCID,
@@ -153,20 +148,19 @@ class CouchDBEEGImporter
         )
       GROUP BY SessionID";
 
-
-      $CandidateData = $this->SQLDB->pselect($query, array());
-      foreach ($CandidateData as &$row) {
-            $sessionID = $row['SessionID'];
+        $CandidateData = $this->SQLDB->pselect($query, []);
+        foreach ($CandidateData as &$row) {
+            $sessionID          = $row['SessionID'];
             $eeg_header_results = $this->_addEEGHeaderInfo($sessionID);
             $row = array_merge($row, $eeg_header_results);
-       }
+        }
         return $CandidateData;
     }
 
     /**
      * Add EEG header information
      *
-     * @param int $sessionID  Session ID
+     * @param int $sessionID Session ID
      *
      * @return array          Array of EEG header info
      */
@@ -217,7 +211,7 @@ class CouchDBEEGImporter
         }
 
         $hed_tags = $this->SQLDB->pselect(
-          "WITH DatasetTags AS (
+            "WITH DatasetTags AS (
             SELECT DISTINCT HEDTagID
             FROM bids_event_dataset_mapping
             WHERE ProjectID = (
@@ -228,8 +222,10 @@ class CouchDBEEGImporter
           ), EventRelTags AS (
             SELECT DISTINCT ptehr.HEDTagID
             FROM physiological_task_event_hed_rel AS ptehr
-            JOIN physiological_task_event AS pte ON ptehr.PhysiologicalTaskEventID = pte.PhysiologicalTaskEventID
-            JOIN physiological_file AS pf ON pte.PhysiologicalFileID = pf.PhysiologicalFileID
+            JOIN physiological_task_event AS pte
+                ON ptehr.PhysiologicalTaskEventID = pte.PhysiologicalTaskEventID
+            JOIN physiological_file AS pf
+                ON pte.PhysiologicalFileID = pf.PhysiologicalFileID
             WHERE pf.SessionID = :sid
           )
           SELECT
@@ -241,12 +237,12 @@ class CouchDBEEGImporter
               UNION
               SELECT HEDTagID FROM EventRelTags
           );",
-          ['sid' => $sessionID]
+            ['sid' => $sessionID]
         );
 
         if (count($hed_tags) > 0) {
-          $header['HEDTags'] = $hed_tags[0]['LongName'];
-          $header['HEDTagsShortForm'] = $hed_tags[0]['Name'];
+            $header['HEDTags']          = $hed_tags[0]['LongName'];
+            $header['HEDTagsShortForm'] = $hed_tags[0]['Name'];
         }
 
         return $header;
@@ -255,38 +251,38 @@ class CouchDBEEGImporter
     /**
      * Updates DQT with the new data
      *
-     * @param array $data      Candidate data to be updated
+     * @param array $data Candidate data to be updated
      *
      * @return void
      */
     function updateCandidateDocs($data)
     {
-        $results       = [
+        $results = [
             'new'       => 0,
             'modified'  => 0,
             'unchanged' => 0,
         ];
 
         foreach ($data as $index => $candidateRecord) {
-            $doc = $candidateRecord;
+            $doc        = $candidateRecord;
             $identifier = [
                 $candidateRecord['PSCID'],
                 $candidateRecord['Visit_Label']
             ];
-            $docid = 'EEG_Files:' . join('_', $identifier);
+            $docid      = 'EEG_Files:' . join('_', $identifier);
             unset($doc['PSCID']);
             unset($doc['Visit_Label']);
             unset($doc['SessionID']);
 
             $success = $this->CouchDB->replaceDoc(
                 $docid,
-                array(
-                    'Meta' => array(
+                [
+                    'Meta' => [
                         'DocType'    => 'eeg_data',
                         'identifier' => $identifier,
-                    ),
+                    ],
                     'data' => $doc,
-                )
+                ]
             );
             print $docid . ": " . $success . "\n";
 
@@ -327,7 +323,7 @@ class CouchDBEEGImporter
 }
 
 // Don't run if we're doing the unit tests; the unit test will call run.
-if(!class_exists('UnitTestCase')) {
+if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBEEGImporter();
     $Runner->run();
 }
