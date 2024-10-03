@@ -139,8 +139,9 @@ class AddSurvey extends \NDB_Form
         }
 
         $instrument_list = $db->pselect(
-            "SELECT f.Test_name FROM flag f
+            "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
+             JOIN test_names tn ON tn.ID = f.TestID
              WHERE s.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
