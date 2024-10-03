@@ -312,10 +312,9 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        // This concatenation is here because the API part is removed from the URL by
-        // the module, which may not be a good idea.
-        $path = '/api/v0.0.4-dev/' . $request->getUri()->getPath() . '/'
-            . $file_name . '/processes';
+        $api_version = $request->getAttribute("LORIS-API-Version");
+        $api_path    = $request->getUri()->getPath();
+        $path        = "/api/{$api_version}/{$api_path}/{$file_name}/processes";
 
         $processes_location = $request->getUri()
             ->withPath($path)
