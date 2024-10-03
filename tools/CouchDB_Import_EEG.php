@@ -1,4 +1,15 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * This file contains code to import EEG data into
+ * DQT
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 require_once 'generic_includes.php';
 
 /**
@@ -18,7 +29,7 @@ class CouchDBEEGImporter
 
     // this is just in an instance variable to make
     // the code a little more readable.
-    private $Dictionary = [];
+    private $_Dictionary = [];
 
     /**
      * Constructor for CouchDBMRIImporter
@@ -59,7 +70,7 @@ class CouchDBEEGImporter
     function updateDataDict()
     {
 
-        $this->Dictionary = [];
+        $this->_Dictionary = [];
 
         $eeg_array = [
             'Acquisition_Time'          => 'Acquisition Time',
@@ -95,7 +106,7 @@ class CouchDBEEGImporter
         ];
 
         foreach ($eeg_array as $field => $desc) {
-            $this->Dictionary[$field] = [
+            $this->_Dictionary[$field] = [
                 'Type'        => "varchar(255)",
                 'Description' => $desc
             ];
@@ -105,7 +116,7 @@ class CouchDBEEGImporter
             "DataDictionary:eeg_data",
             [
                 'Meta'           => ['DataDict' => true],
-                'DataDictionary' => ['eeg_data' => $this->Dictionary]
+                'DataDictionary' => ['eeg_data' => $this->_Dictionary]
             ]
         );
     }
