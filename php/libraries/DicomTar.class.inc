@@ -122,10 +122,10 @@ class DicomTar
                     intval($row['id']),
                     $row['seriesdescription'],
                     intval($row['seriesnumber']),
-                    $row['echotime'],
-                    $row['repetitiontime'],
-                    $row['inversiontime'],
-                    $row['slicethickness'],
+                    $row['echotime'] === null ? null : strval($row['echotime']),
+                    $row['repetitiontime'] === null ? null : strval($row['repetitiontime']),
+                    $row['inversiontime'] === null ? null : strval($row['inversiontime']),
+                    $row['slicethickness'] === null ? null : strval($row['slicethickness']),
                     $row['modality'],
                     $row['seriesuid']
                 );
