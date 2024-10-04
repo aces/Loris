@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is used to send out an email digest of
  * recent file uploads related to Media.
