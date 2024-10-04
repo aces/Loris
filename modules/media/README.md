@@ -38,6 +38,11 @@ permissions:
 Media files are displayed if and only if the files were uploaded to a site within 
 the logged in user's own site affiliations.
 
+In order to receive media upload digest notifications, the user needs permission:
+
+- `media_upload_digest`: gives user the ability to enable media upload digest notifications
+from `my preferences`
+
 ## Configurations
 
 The following configuration is necessary for the media module to function
@@ -57,7 +62,7 @@ The media_upload_digest tool must be added to the Cron job for whatever frequenc
 `php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]`
 
 Further, each user that should receive the Media Upload Digest notifications should have the `media_upload_digest`
-permission, and `Media: Email Digest of Recently Uploaded Files` activated in the notifications tab.
+permission, and `Media: Email Digest of Recently Uploaded Files` activated in the notifications tab of `my preferences`.
 
 ## Interactions with LORIS
 
