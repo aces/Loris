@@ -189,7 +189,7 @@ class Files extends \NDB_Page
      * @param ?string                   $version     The user submitted file version.
      * @param bool                      $overwrite   Flag to indicate if existing
      *                                               file should be overwritten.
-     * @param projectName               $projectName The name of the project the file
+     * @param ?string                   $projectName The name of the project the file
      *                                               belongs to
      *
      * @return ResponseInterface
