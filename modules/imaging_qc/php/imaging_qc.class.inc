@@ -153,6 +153,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $joins = " FROM flag f
         JOIN session s ON (f.SessionID=s.ID)
+        JOIN test_names tn ON tn.ID = f.TestID
         JOIN candidate c ON (s.CandID=c.CandID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
@@ -166,7 +167,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name='mri_parameter_form'
+          AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
           AND s.CenterID <> '1' ";
