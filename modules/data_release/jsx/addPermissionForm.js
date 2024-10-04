@@ -113,7 +113,7 @@ class AddPermissionForm extends Component {
           value={this.state.formData.data_release_id}
           autoSelect={false}
         />
-        <h4 align='center'>OR</h4><br/>
+        <h4>OR</h4><br/>
         <SelectElement
           name='data_release_version'
           label='Data Release Version'

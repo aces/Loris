@@ -246,6 +246,7 @@ class UploadFileForm extends Component {
 UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  projects: PropTypes.array.isRequired,
 };
 
 export default UploadFileForm;

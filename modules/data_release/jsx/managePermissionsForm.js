@@ -109,7 +109,11 @@ class ManagePermissionsForm extends Component {
                   label={version}
                   value={data[this.state.user].versions.includes(version)}
                   onUserInput={(formElement, checked) =>
-                    this.setFormData('versionsByUser', {userId: this.state.user, version, checked})
+                    this.setFormData(
+                      'versionsByUser', {
+                        userId: this.state.user, version, checked,
+                      }
+                    )
                   }
                   /><br/>
                 </div>
@@ -129,16 +133,27 @@ class ManagePermissionsForm extends Component {
             <StaticElement
               label={'Users'}
               text={Object.values(this.state.originalData).map((user) => {
-                if (user.versions.includes(this.state.version)) return <div>
-                  <CheckboxElement
-                    name={'usersByVersion'}
-                    label={user.name}
-                    value={data[user.id].versions.includes(this.state.version)}
-                    onUserInput={(_, checked) =>
-                      this.setFormData('usersByVersion', {userId: user.id, checked, version: this.state.version})
-                    }
-                  /><br/>
-                </div>
+                if (user.versions.includes(this.state.version)) {
+                  return <div>
+                    <CheckboxElement
+                      name={'usersByVersion'}
+                      label={user.name}
+                      value={
+                        data[user.id].versions.includes(this.state.version)
+                      }
+                      onUserInput={(_, checked) =>
+                        this.setFormData(
+                          'usersByVersion',
+                          {
+                            userId: user.id,
+                            checked,
+                            version: this.state.version,
+                          }
+                        )
+                      }
+                    /><br/>
+                  </div>;
+                }
               }
               )}
             />
@@ -167,8 +182,8 @@ class ManagePermissionsForm extends Component {
       this.setState({data});
     } else {
       this.setState({[formElement]: (value === '' ? null : value)});
-      if (formElement != 'user') this.setState({user: null})
-      if (formElement != 'version') this.setState({version: null})
+      if (formElement != 'user') this.setState({user: null});
+      if (formElement != 'version') this.setState({version: null});
     }
   }
 
