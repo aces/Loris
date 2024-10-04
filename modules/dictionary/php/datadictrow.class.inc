@@ -76,7 +76,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
             $val['options'] = $itype->getOptions();
         }
         if ($scope->__toString() == "session") {
-            $val['visits'] = $this->visits;
+            $val['visits']  = $this->visits;
             $val['cohorts'] = $this->cohorts;
         }
 

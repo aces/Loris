@@ -54,7 +54,7 @@ class Dictionary extends \DataFrameworkMenu
         }
         $user     = \NDB_Factory::singleton()->user();
         $projects = $user->getProjectIDs();
-        $cohorts = [];
+        $cohorts  = [];
         foreach ($projects AS $projectID) {
             $cohorts = $cohorts + \Utility::getCohortList($projectID);
         }

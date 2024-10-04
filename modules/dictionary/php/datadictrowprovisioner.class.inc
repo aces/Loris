@@ -76,7 +76,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                     ORDER BY tb.CohortID",
                     ['tn' => $cat->getName()]
                 );
-                
+
                 $visits = $qe->getVisitList($cat, $item);
                 $dict[] = $this->getInstance(
                     $module,
@@ -118,6 +118,14 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         array $visits,
         array $cohorts,
     ) : \LORIS\Data\DataInstance {
-        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits, $cohorts);
+        return new DataDictRow(
+            $module,
+            $cat,
+            $item,
+            $desc,
+            $descstatus,
+            $visits,
+            $cohorts,
+        );
     }
 }

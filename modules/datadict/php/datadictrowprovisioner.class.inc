@@ -53,8 +53,8 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             LEFT JOIN parameter_type_override pto USING (Name)
             LEFT JOIN test_battery tb ON pt.sourceFrom=tb.Test_name
             WHERE pt.Queryable=1
-            GROUP BY pt.sourceFrom, pt.name, pt.sourceField, description, description_status
-            ",
+            GROUP BY pt.sourceFrom, pt.name, pt.sourceField,
+            description, description_status",
             []
         );
     }
