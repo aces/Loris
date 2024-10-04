@@ -20,6 +20,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
     protected string $desc;
     protected string $status;
     protected ?array $visits;
+    protected ?array $cohorts;
 
     /**
      * Construct a DataDictRow
@@ -31,6 +32,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
      * @param string         $desc       The (possibly overridden) description
      * @param string         $descstatus The status of the description override
      * @param ?string[]      $visits     List of visits for the item.
+     * @param ?string[]      $cohorts    List of cohorts for the item.
      */
     public function __construct(
         \Module $itemmodule,
@@ -39,6 +41,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         string $desc,
         string $descstatus,
         ?array $visits,
+        ?array $cohorts
     ) {
         $this->itemmodule   = $itemmodule;
         $this->itemcategory = $cat;
@@ -46,6 +49,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         $this->desc         = $desc;
         $this->status       = $descstatus;
         $this->visits       = $visits;
+        $this->cohorts      = $cohorts;
     }
 
     /**
@@ -73,6 +77,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         }
         if ($scope->__toString() == "session") {
             $val['visits'] = $this->visits;
+            $val['cohorts'] = $this->cohorts;
         }
 
         return $val;

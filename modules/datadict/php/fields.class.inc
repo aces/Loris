@@ -23,8 +23,14 @@ class Fields extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
         return new \LORIS\Http\Response\JSON\OK(
-            ['sourceFrom' => \Utility::getAllInstruments()]
+            ['sourceFrom' => \Utility::getAllInstruments(), 'cohorts' => $cohorts]
         );
     }
 }

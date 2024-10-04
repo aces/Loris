@@ -69,6 +69,14 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                     $status = 'Empty';
                 }
 
+                $cohorts = $DB->pselectCol(
+                    "SELECT DISTINCT tb.CohortID FROM test_names tn
+                        JOIN test_battery tb ON tn.Test_name=tb.Test_name
+                        WHERE tn.Test_name=:tn
+                    ORDER BY tb.CohortID",
+                    ['tn' => $cat->getName()]
+                );
+                
                 $visits = $qe->getVisitList($cat, $item);
                 $dict[] = $this->getInstance(
                     $module,
@@ -77,6 +85,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                     $desc,
                     $status,
                     $visits,
+                    $cohorts,
                 );
             }
         }
@@ -96,6 +105,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string         $desc       The overridden description of the item
      * @param string         $descstatus The status of the description override
      * @param ?[]string      $visits     The visits for session scoped variables
+     * @param ?[]string      $cohorts    The cohorts for session scoped variables
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
@@ -106,7 +116,8 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         string $desc,
         string $descstatus,
         array $visits,
+        array $cohorts,
     ) : \LORIS\Data\DataInstance {
-        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits);
+        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits, $cohorts);
     }
 }
