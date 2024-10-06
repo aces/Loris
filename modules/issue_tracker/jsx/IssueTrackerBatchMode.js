@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import IssueCard from './IssueCard';
 import Loader from 'Loader';
+import PaginationLinks from 'jsx/PaginationLinks';
 import '../css/issue_tracker_batchmode.css';
 
 /**
@@ -19,6 +20,12 @@ function IssueTrackerBatchMode({options}) {
   const [activeTab, setActiveTab] = useState('category');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Pagination state
+  const [page, setPage] = useState({
+    number: 1,
+    rows: 20,
+  });
 
   const priorities = options.priorities || {};
   const statuses = options.statuses || {};
@@ -102,6 +109,16 @@ function IssueTrackerBatchMode({options}) {
     setIssues(updatedIssues);
   }
 
+  // Pagination functions
+  function changePage(pageNumber) {
+    setPage((prevPage) => ({...prevPage, number: pageNumber}));
+  }
+
+  function updatePageRows(e) {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setPage({number: 1, rows: newRowsPerPage});
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -109,6 +126,11 @@ function IssueTrackerBatchMode({options}) {
   if (error) {
     return <div>{error}</div>;
   }
+
+  // Calculate pagination
+  const startIndex = (page.number - 1) * page.rows;
+  const endIndex = startIndex + page.rows;
+  const paginatedIssues = filteredIssues.slice(startIndex, endIndex);
 
   return (
     <div className="issue-tracker-batch-mode">
@@ -188,9 +210,33 @@ function IssueTrackerBatchMode({options}) {
         </div>
       </div>
       <br/>
+      <div className="pagination-container">
+        <div>
+          {paginatedIssues.length} issues displayed of {filteredIssues.length}.
+          (Maximum issues per page:
+          <select
+            className="input-sm perPage"
+            onChange={updatePageRows}
+            value={page.rows}
+          >
+            <option>20</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+          )
+        </div>
+        <div className="pagination-controls">
+          <PaginationLinks
+            Total={filteredIssues.length}
+            onChangePage={changePage}
+            RowsPerPage={page.rows}
+            Active={page.number}
+          />
+        </div>
+      </div>
       <div className="issues-list">
-        {filteredIssues.length > 0 ? (
-          filteredIssues.map((issue) => (
+        {paginatedIssues.length > 0 ? (
+          paginatedIssues.map((issue) => (
             <IssueCard
               key={issue.issueID}
               issue={issue}
@@ -205,6 +251,15 @@ function IssueTrackerBatchMode({options}) {
             No issues match the selected filters.
           </div>
         )}
+      </div>
+      <br/>
+      <div className="pagination-controls">
+        <PaginationLinks
+          Total={filteredIssues.length}
+          onChangePage={changePage}
+          RowsPerPage={page.rows}
+          Active={page.number}
+        />
       </div>
     </div>
   );

@@ -173,3 +173,21 @@
   border-radius: 8px;
   margin-top: 20px;
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pagination-controls {
+  margin-left: auto;
+}
+
+.perPage {
+  margin-left: 5px;
+  margin-right: 5px;
+}
