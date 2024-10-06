@@ -2,15 +2,15 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import IssueCard from './IssueCard';
 import Loader from 'Loader';
-import '../css/issue_tracker_debug.css';
+import '../css/issue_tracker_batchmode.css';
 
 /**
- * IssueTrackerDebugView component
+ * IssueTrackerBatchMode component
  *
  * @param {object} props - The component props
- * @param {object} props.options - The options for the IssueTrackerDebugView
+ * @param {object} props.options - The options for the IssueTrackerBatchMode
  */
-function IssueTrackerDebugView({options}) {
+function IssueTrackerBatchMode({options}) {
   const [issues, setIssues] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriorities, setSelectedPriorities] = useState([]);
@@ -38,7 +38,7 @@ function IssueTrackerDebugView({options}) {
   async function fetchIssues() {
     try {
       const response = await fetch(
-        `${loris.BaseURL}/issue_tracker/Edit/?debug=true`,
+        `${loris.BaseURL}/issue_tracker/Edit/?batch=true`,
         {
           credentials: 'include', // This ensures cookies are sent with the request
         }
@@ -111,7 +111,7 @@ function IssueTrackerDebugView({options}) {
   }
 
   return (
-    <div className="issue-tracker-debug-view">
+    <div className="issue-tracker-batch-mode">
       <div className="filter-tabs">
         <button
           onClick={() => setActiveTab('category')}
@@ -210,7 +210,7 @@ function IssueTrackerDebugView({options}) {
   );
 }
 
-IssueTrackerDebugView.propTypes = {
+IssueTrackerBatchMode.propTypes = {
   options: PropTypes.shape({
     priorities: PropTypes.object,
     statuses: PropTypes.object,
@@ -218,4 +218,4 @@ IssueTrackerDebugView.propTypes = {
   }).isRequired,
 };
 
-export default IssueTrackerDebugView;
+export default IssueTrackerBatchMode;

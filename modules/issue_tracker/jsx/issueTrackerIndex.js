@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import IssueTrackerDebugView from './IssueTrackerDebugView';
+import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 /**
  * Issue Tracker Index component
@@ -21,7 +21,7 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
-      view: 'normal', // 'normal' for FilterableDataTable, 'debug' for IssueTrackerDebugView
+      view: 'normal', // 'normal' for FilterableDataTable, 'batch' for IssueTrackerBatchMode
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -55,11 +55,11 @@ class IssueTrackerIndex extends Component {
   }
 
   /**
-   * Toggle between normal and debug view
+   * Toggle between normal and batch mode
    */
   toggleView() {
     this.setState((prevState) => ({
-      view: prevState.view === 'normal' ? 'debug' : 'normal',
+      view: prevState.view === 'normal' ? 'batch' : 'normal',
     }));
     this.fetchData(); // Fetch fresh data when toggling views
   }
@@ -281,9 +281,9 @@ class IssueTrackerIndex extends Component {
         <button onClick={this.toggleView}>
         {`Switch to ${
           this.state.view === 'normal'
-            ? 'Debug'
+            ? 'Batch'
             : 'Normal'
-        } View`}
+        } Mode`}
         </button>
       </div>
       {this.state.view === 'normal' ? (
@@ -296,7 +296,7 @@ class IssueTrackerIndex extends Component {
           getFormattedCell={this.formatColumn}
         />
       ) : (
-      <IssueTrackerDebugView
+      <IssueTrackerBatchMode
         issues={this.state.data.data}
         options={{
           priorities: this.state.data.fieldOptions.priorities,

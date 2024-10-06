@@ -58,10 +58,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
 
-        // Check if debug mode is enabled
-        $debug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOLEAN);
+        // Check if batch mode is enabled
+        $batch_mode = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_BOOLEAN);
 
-        if ($debug) {
+        if ($batch_mode) {
             // Fetch all issues
             $allIssues = $this->_getAllIssues($user);
             return new \LORIS\Http\Response\JsonResponse($allIssues);
