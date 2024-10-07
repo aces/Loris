@@ -46,6 +46,36 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::tearDown();
     }
+    /**
+     * Tests that, when loading the create_timepoint module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testCreateTimepointBTN()
+    {
+        $this->safeGet(
+            $this->url . "/900000"
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->safeFindElement(WebDriverBy::cssSelector("#lorisworkspace > div.col-xs-12.row > a:nth-child(2)"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
+
+
 
     /**
      * Tests that, when loading the create_timepoint module, some
@@ -128,6 +158,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
+sleep(300);
         $this->safeFindElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
         $this->assertStringNotContainsString(
