@@ -57,9 +57,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/900000"
         );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "#lorisworkspace > div.col-xs-12.row > a:nth-child(2)"
