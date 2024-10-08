@@ -104,7 +104,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             throw new \DomainException("Field for unknown instrument");
         }
 
-        $inst   = \NDB_BVL_Instrument::factory($this->loris, $testname);
+        $inst = \NDB_BVL_Instrument::factory($this->loris, $testname);
+        \Profiler::checkpoint("After NDB_BVL_Instrument::factory for $testname");
         $values = $inst->bulkLoadInstanceData(
             null,
             $term,
@@ -112,6 +113,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($values as $match) {
             yield $match->getCandID();
         }
+        \Profiler::checkpoint("Finished bulk load for $testname");
         return;
     }
 

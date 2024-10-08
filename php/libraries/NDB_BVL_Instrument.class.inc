@@ -2299,7 +2299,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         JOIN instrument_data ON (flag.DataID=instrument_data.ID)
 			JOIN test_names tn ON (tn.ID=flag.TestID)
 			$where";
-
+            \Profiler::checkpoint("Running query (JSON data): " . $query);
             $jsondata = $db->pselect($query, $params);
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
@@ -2316,6 +2316,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     ) ?? $this->defaultInstanceData();
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         } else {
             $conditions   = ['tn.test_name=:tn'];
@@ -2353,7 +2354,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session ON (f.SessionID=session.ID)
 		 $where";
-            $data  = $db->pselect($query, $params);
+            \Profiler::checkpoint("Running query (table instrument): " . $query);
+            $data = $db->pselect($query, $params);
             foreach ($data as $row) {
                     $newinst = clone $this;
 
@@ -2367,6 +2369,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         }
     }
