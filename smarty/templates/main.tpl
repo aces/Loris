@@ -145,6 +145,17 @@
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
+                            <li>
+                                <div id="language-menu"></div>
+                                <script>
+                                    const languageMenu = document.getElementById('language-menu');
+
+                                    ReactDOM.createRoot(languageMenu).render(
+                                        React.createElement(LanguageMenu, {})
+                                    );
+
+                                </script>
+                            </li>
                             <li class="nav">
                                 <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}

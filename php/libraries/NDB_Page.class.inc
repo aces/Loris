@@ -830,7 +830,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $baseurl = $factory->settings()->getBaseURL();
         $config  = $factory->config();
 
-        $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+        $min = $config->getSetting("sandbox") === '1';
 
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs
@@ -842,14 +842,17 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
-                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                    // $baseurl . '/js/react/react-dom' . $min . '.js',
-            $baseurl . ($min === '' ?
+                    // $baseurl . '/js/react/react-with-addons.min.js',
+                    // $baseurl . '/js/react/react-dom.min.js',
+            $baseurl . ($min ?
                       '/vendor/js/react/react.development.js' :
-                      '/vendor/js/react/react.production' . $min . '.js'),
-            $baseurl . ($min === '' ?
+                      '/vendor/js/react/react.production.min.js'),
+            $baseurl . ($min ?
                       '/vendor/js/react/react-dom.development.js' :
-                      '/vendor/js/react/react-dom.production' . $min . '.js'),
+                      '/vendor/js/react/react-dom.production.min.js'),
+            $baseurl . ($min ?
+                      '/vendor/js/react/react-i18next.js' :
+                      '/vendor/js/react/react-i18next.min.js'),
 
             $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
             $baseurl . '/js/jquery.dynamictable.js',
@@ -858,6 +861,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/components/Breadcrumbs.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Help.js',
+            $baseurl . '/js/components/LanguageMenu.js',
         ];
         return $files;
     }
