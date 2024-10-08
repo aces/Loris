@@ -243,7 +243,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
-            array(
+            [
              'FileID'                => 1111,
              'SessionID'             => 999998,
              'File'                  => 'assembly/506145/V1/mri/native/' .
@@ -263,14 +263,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'ProcessProtocolID'     => 1111,
              'Caveat'                => 0,
              'TarchiveSource'        => 263,
-            )
+            ]
         );
         // @codingStandardsIgnoreEnd
 
         // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
-            array(
+            [
              'FileID'                => 2222,
              'SessionID'             => 999999,
              'File'                  => 'assembly/506145/V1/mri/native/' .
@@ -290,13 +290,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'ProcessProtocolID'     => 2222,
              'Caveat'                => 0,
              'TarchiveSource'        => 264,
-            )
+            ]
         );
         // @codingStandardsIgnoreStart
 
         $this->DB->insert(
             'files_qcstatus',
-            array(
+            [
              'FileQCID'          => 1111,
              'FileID'            => 1111,
              'SeriesUID'         => '1.3.12.2.1107.5.2.32.35049.' .
@@ -306,12 +306,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
              'Selected'          => true
-            )
+            ]
         );
 
         $this->DB->insert(
             'files_qcstatus',
-            array(
+            [
              'FileQCID'          => 2222,
              'FileID'            => 2222,
              'SeriesUID'         => '1.3.12.2.1107.5.2.32.35049.' .
@@ -321,7 +321,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
              'Selected'          => true
-            )
+            ]
         );
 
     }
@@ -336,28 +336,28 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         // tear down test-specific dataset
         $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->delete("files", array('FileID' => '1111'));
-        $this->DB->delete("files", array('FileID' => '2222'));
+        $this->DB->delete("files", ['FileID' => '1111']);
+        $this->DB->delete("files", ['FileID' => '2222']);
         $this->DB->delete(
             "mri_processing_protocol",
-            array('ProcessProtocolID' => '1111')
+            ['ProcessProtocolID' => '1111']
         );
         $this->DB->delete(
             "mri_processing_protocol",
-            array('ProcessProtocolID' => '2222')
+            ['ProcessProtocolID' => '2222']
         );
-        $this->DB->delete("files_qcstatus", array('FileID' => '1111'));
-        $this->DB->delete("files_qcstatus", array('FileID' => '2222'));
-        $this->DB->delete("tarchive", array('TarchiveID' => '263'));
-        $this->DB->delete("tarchive", array('TarchiveID' => '264'));
-        $this->DB->delete("session", array('ID' => '999997'));
-        $this->DB->delete("session", array('ID' => '999998'));
-        $this->DB->delete("session", array('ID' => '999999'));
-        $this->DB->delete("candidate", array('CandID' => '000001'));
-        $this->DB->delete("candidate", array('CandID' => '000002'));
-        $this->DB->delete("candidate", array('CandID' => '000003'));
-        $this->DB->delete("psc", array('CenterID' => '253'));
-        $this->DB->delete("psc", array('CenterID' => '254'));
+        $this->DB->delete("files_qcstatus", ['FileID' => '1111']);
+        $this->DB->delete("files_qcstatus", ['FileID' => '2222']);
+        $this->DB->delete("tarchive", ['TarchiveID' => '263']);
+        $this->DB->delete("tarchive", ['TarchiveID' => '264']);
+        $this->DB->delete("session", ['ID' => '999997']);
+        $this->DB->delete("session", ['ID' => '999998']);
+        $this->DB->delete("session", ['ID' => '999999']);
+        $this->DB->delete("candidate", ['CandID' => '000001']);
+        $this->DB->delete("candidate", ['CandID' => '000002']);
+        $this->DB->delete("candidate", ['CandID' => '000003']);
+        $this->DB->delete("psc", ['CenterID' => '253']);
+        $this->DB->delete("psc", ['CenterID' => '254']);
         $this->DB->run('SET foreign_key_checks =1');
 
     }
@@ -916,10 +916,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // Check that the QC -VISIT LEVEL- options are viewable
         // with correct permission
         $this->setupPermissions(
-            array(
+            [
              'imaging_browser_view_allsites',
              'imaging_browser_qc',
-            )
+            ]
         );
         $this->webDriver->navigate()->refresh();
 
@@ -1054,10 +1054,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         // Setting permissions to view all sites and have qc permissions
         $this->setupPermissions(
-            array(
+            [
              'imaging_browser_view_allsites',
              'imaging_browser_qc',
-            )
+            ]
         );
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
@@ -1125,11 +1125,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         // Caveat Link only if view all_sites violated scans permissions
         $this->setupPermissions(
-            array(
+            [
              'imaging_browser_view_allsites',
              'imaging_browser_qc',
              'violated_scans_view_allsites',
-            )
+            ]
         );
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
@@ -1230,10 +1230,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(
-            array(
+            [
              'imaging_browser_view_allsites',
              'imaging_browser_qc',
-            )
+            ]
         );
         $this->safeGet(
             $this->url . "/imaging_browser/"
@@ -1291,10 +1291,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(
-            array(
+            [
              'imaging_browser_view_allsites',
              'imaging_browser_qc',
-            )
+            ]
         );
         $this->safeGet(
             $this->url . "/imaging_browser/"
