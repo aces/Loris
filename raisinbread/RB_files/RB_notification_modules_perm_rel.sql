@@ -18,5 +18,6 @@ INSERT INTO `notification_modules_perm_rel` (`notification_module_id`, `perm_id`
 INSERT INTO `notification_modules_perm_rel` (`notification_module_id`, `perm_id`) VALUES (9,53);
 INSERT INTO `notification_modules_perm_rel` (`notification_module_id`, `perm_id`) VALUES (9,54);
 INSERT INTO `notification_modules_perm_rel` (`notification_module_id`, `perm_id`) VALUES (9,55);
+INSERT INTO `notification_modules_perm_rel` (`notification_module_id`, `perm_id`) VALUES (10,76);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
