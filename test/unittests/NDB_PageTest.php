@@ -801,6 +801,7 @@ class NDB_PageTest extends TestCase
                 '/js/polyfills.js',
                 '/vendor/js/react/react.production.min.js',
                 '/vendor/js/react/react-dom.production.min.js',
+                '/vendor/js/react/react-i18next.min.js',
                 '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                 '/js/jquery.dynamictable.js',
                 '/js/jquery.fileupload.js',
@@ -808,6 +809,7 @@ class NDB_PageTest extends TestCase
                 '/js/components/Breadcrumbs.js',
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
+                '/js/components/LanguageMenu.js',
             ],
             $this->_page->getJSDependencies()
         );
