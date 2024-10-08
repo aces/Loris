@@ -39,7 +39,7 @@ class EditExaminer extends \NDB_Form
     {
         if (empty($_REQUEST['identifier'])) {
             throw new \LorisException(
-                "Incorrect URL: No examiner ID provided."
+                _("Incorrect URL: No examiner ID provided.")
             );
         }
         $DB     = $this->loris->getDatabaseConnection();
@@ -69,7 +69,7 @@ class EditExaminer extends \NDB_Form
             return $permitted || $permittedAllSites;
         }
         throw new \ConfigurationException(
-            "Certification Disabled in config.xml"
+            _("Certification Disabled in config.xml")
         );
     }
 
@@ -306,10 +306,10 @@ class EditExaminer extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
         $statusOptions = [
-            ''              => 'N/A',
-            'not_certified' => 'Not Certified',
-            'in_training'   => 'In Training',
-            'certified'     => 'Certified',
+            ''              => _('N/A'),
+            'not_certified' => _('Not Certified'),
+            'in_training'   => _('In Training'),
+            'certified'     => _('Certified'),
         ];
 
         // Get the list of certification instruments
@@ -358,7 +358,7 @@ class EditExaminer extends \NDB_Form
         );
         if (is_null($row)) {
             throw new \LorisException(
-                'No full name found in Database for examiner with ID ' .
+                _('No full name found in Database for examiner with ID ') .
                 htmlspecialchars($this->identifier)
             );
         }
@@ -388,8 +388,8 @@ class EditExaminer extends \NDB_Form
             if (($certificationStatus == "certified")
                 && empty($values['date_cert'][$instrumentID])
             ) {
-                  $errors['certStatus[' . $instrumentID .']'] = 'Both certification
-                  status and date must be filled out';
+                  $errors['certStatus[' . $instrumentID .']'] = _('Both certification
+                  status and date must be filled out');
             }
         }
 
@@ -404,7 +404,7 @@ class EditExaminer extends \NDB_Form
         foreach ($rows as $row) {
             if ($values['certStatus'][$row['testID']] == "") {
                 $errors['certStatus['.$row['testID'].']']
-                    = 'You can not delete a status';
+                    = _('You can not delete a status');
             }
         }
         return $errors;
@@ -458,7 +458,7 @@ class EditExaminer extends \NDB_Form
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Edit Examiner',
+                _('Edit Examiner'),
                 "/examiner/editExaminer/?identifier=$this->identifier"
             )
         );

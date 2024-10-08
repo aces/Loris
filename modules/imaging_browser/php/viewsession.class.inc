@@ -121,13 +121,13 @@ class ViewSession extends \NDB_Form
 
             $this->tpl_data['status_options']    = [
                 ''     => '&nbsp;',
-                'Pass' => 'Pass',
-                'Fail' => 'Fail',
+                'Pass' => _('Pass'),
+                'Fail' => _('Fail'),
             ];
             $this->tpl_data['caveat_options']    = [
                 ''      => '&nbsp;',
-                'true'  => 'True',
-                'false' => 'False',
+                'true'  => _('True'),
+                'false' => _('False'),
             ];
             $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
@@ -931,8 +931,8 @@ class ViewSession extends \NDB_Form
         );
         if (is_null($qcstatus)) {
             throw new \LorisException(
-                'Could not find QC status information for the supplied '
-                . 'session ID'
+                _('Could not find QC status information for the supplied '
+                . 'session ID')
             );
         }
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
@@ -1028,9 +1028,9 @@ class ViewSession extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
+            new \LORIS\Breadcrumb(_('Imaging Browser'), '/imaging_browser'),
             new \LORIS\Breadcrumb(
-                'View Session',
+                _('View Session'),
                 "/imaging_browser/viewSession/?sessionID=$this->sessionID"
             )
         );

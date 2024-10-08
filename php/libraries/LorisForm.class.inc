@@ -471,7 +471,7 @@ class LorisForm
                     // The default was [], turn it into '' for addLink
                     $options = '';
                 } else {
-                    throw new \DomainException("Invalid argument type");
+                    throw new \DomainException(_("Invalid argument type"));
                 }
             }
             if (is_array($attribs)) {
@@ -479,7 +479,7 @@ class LorisForm
                     // The default was [], turn it into '' for addLink
                     $attribs = '';
                 } else {
-                    throw new \DomainException("Invalid argument type");
+                    throw new \DomainException(_("Invalid argument type"));
                 }
             }
 
@@ -1802,7 +1802,7 @@ class LorisForm
             return;
         }
         if (!is_string($element)) {
-            throw new \LorisException("Element name is not a string");
+            throw new \LorisException(_("Element name is not a string"));
         }
         if (!isset($this->form[$element])) {
             throw new \LorisException("Invalid Element $element");
@@ -1847,7 +1847,7 @@ class LorisForm
     function registerRule()
     {
         throw new \DeprecatedException(
-            "LorisForm RegisterRule is no longer supported"
+            _("LorisForm RegisterRule is no longer supported")
         );
     }
 
@@ -1887,14 +1887,14 @@ class LorisForm
                         $this->form[$group]['numeric'][] = $elementIndex;
                     } else {
                         throw new \LorisException(
-                            "Group Rule Error: element rule type doesn't exist"
+                            _("Group Rule Error: element rule type doesn't exist")
                         );
                     }
                 }
             }
         } else {
             throw new InvalidArgumentException(
-                'Invalid argument passed to addGroupRule for group: '
+                _('Invalid argument passed to addGroupRule for group: ')
                 . $group
             );
         }

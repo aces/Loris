@@ -97,7 +97,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$this->_instrument->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'This user can not update this instrument'
+                _('This user can not update this instrument')
             );
         }
 
@@ -173,20 +173,20 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                _('Can not update instruments that are flagged as complete.')
             );
         }
 
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                _('Could not update.')
             );
         }
 
@@ -220,20 +220,20 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                _('Can not update instruments that are flagged as complete.')
             );
         }
 
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                _('Could not update.')
             );
         }
 

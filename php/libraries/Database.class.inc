@@ -96,9 +96,9 @@ class Database implements LoggerAwareInterface
         // We don't have access to $this->logger since it's a static function,
         // so we need to use error_log() instead of $this->logger->warning().
         error_log(
-            "Database::singleton is deprecated. "
+            _("Database::singleton is deprecated. "
             . "Use the getDatabaseConnection method from your LorisInstance"
-            . " object instead."
+            . " object instead.")
         );
         return \NDB_Factory::singleton()->database();
     }
@@ -372,8 +372,8 @@ class Database implements LoggerAwareInterface
     ): bool {
         if ($ignore && $onDuplicateUpdate) {
             throw new DatabaseException(
-                'The Database::_realinsert() function does not accept both ignore
-                and onDuplicateUpdate parameters.'
+                _('The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.')
             );
         }
         if ($autoescape === true) {
@@ -409,7 +409,7 @@ class Database implements LoggerAwareInterface
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Insert statement did not execute successfully: "
+                _("Insert statement did not execute successfully: ")
                 . $this->_createPDOErrorString(),
                 $prepQ,
                 $exec_params
@@ -460,7 +460,7 @@ class Database implements LoggerAwareInterface
         $result = $this->_PDO->exec($query);
         if ($result === false) {
             throw new DatabaseException(
-                "Replace statement did not execute successfully.",
+                _("Replace statement did not execute successfully."),
                 $query
             );
         }
@@ -577,7 +577,7 @@ class Database implements LoggerAwareInterface
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Update statement did not execute successfully.",
+                _("Update statement did not execute successfully."),
                 $prepQ,
                 $exec_params
             );
@@ -611,7 +611,7 @@ class Database implements LoggerAwareInterface
         $this->logger->info("Deleted from database with query $query");
         if (preg_match("/=NULL/", $query)) {
             throw new DatabaseException(
-                "NULL values not allowed in a WHERE structure.",
+                _("NULL values not allowed in a WHERE structure."),
                 $query
             );
         }
@@ -624,7 +624,7 @@ class Database implements LoggerAwareInterface
         $result = $this->_PDO->exec($query);
         if ($result === false) {
             throw new DatabaseException(
-                "Database DELETE did not execute successfully."
+                _("Database DELETE did not execute successfully.")
                 . $this->_createPDOErrorString(),
                 $query,
                 $where,
@@ -771,9 +771,9 @@ class Database implements LoggerAwareInterface
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
-                "The pselectWithIndexKey() function expects the uniqueKey parameter 
+                _("The pselectWithIndexKey() function expects the uniqueKey parameter 
                 to not be null or empty. If re-indexing on the primary key is 
-                not necessary please use the pselect() function instead."
+                not necessary please use the pselect() function instead.")
             );
         }
 
@@ -789,10 +789,10 @@ class Database implements LoggerAwareInterface
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row)) {
                 throw new DatabaseException(
-                    "The query supplied to pselectWithIndexKey() does not contain 
+                    _("The query supplied to pselectWithIndexKey() does not contain 
                     the unique key to re-index on. Make sure to supply the 
                     appropriate key in the SELECT statement to match the supplied 
-                    parameter of this function",
+                    parameter of this function"),
                     $query
                 );
             }
@@ -801,9 +801,9 @@ class Database implements LoggerAwareInterface
             // in the result array
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
-                    "The uniqueKey supplied to pselectWithIndexKey() does not appear
+                    _("The uniqueKey supplied to pselectWithIndexKey() does not appear
                      to be unique or is nullable. This function expects the key to 
-                     be both UNIQUE and NOT NULL.",
+                     be both UNIQUE and NOT NULL."),
                     $query
                 );
             }
@@ -840,7 +840,7 @@ class Database implements LoggerAwareInterface
             return $query->getFirstRow();
         default:
             throw new \DomainException(
-                "Attempt to use pselectRow on a query that returns multiple rows"
+                _("Attempt to use pselectRow on a query that returns multiple rows")
             );
         }
     }
@@ -908,9 +908,9 @@ class Database implements LoggerAwareInterface
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
-                "The pselectColWithIndexKey() function expects the uniqueKey
+                _("The pselectColWithIndexKey() function expects the uniqueKey
                  parameter to not be null or empty. If re-indexing on the primary 
-                 key is not necessary please use the pselectCol() function instead."
+                 key is not necessary please use the pselectCol() function instead.")
             );
         }
 
@@ -927,10 +927,10 @@ class Database implements LoggerAwareInterface
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
                 throw new DatabaseException(
-                    "The query supplied to pselectColWithIndexKey() should only 
+                    _("The query supplied to pselectColWithIndexKey() should only 
                     contain the unique key and one other column in the SELECT 
                     clause. Make sure to supply the appropriate key in the SELECT 
-                    statement to match the supplied parameter of this function.",
+                    statement to match the supplied parameter of this function."),
                     $query
                 );
             }
@@ -939,9 +939,9 @@ class Database implements LoggerAwareInterface
             // in the result array
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
-                    "The uniqueKey supplied to pselectColWithIndexKey() does not 
+                    _("The uniqueKey supplied to pselectColWithIndexKey() does not 
                     appear to be unique or is nullable. This function expects the 
-                    key to be both UNIQUE and NOT NULL.",
+                    key to be both UNIQUE and NOT NULL."),
                     $query
                 );
             }
@@ -1436,8 +1436,8 @@ class Database implements LoggerAwareInterface
     {
         if ($this->inTransaction()) {
             throw new DatabaseException(
-                "There is already a database transaction in progress; "
-                . "rollBack() or commit() the current transaction first"
+                _("There is already a database transaction in progress; "
+                . "rollBack() or commit() the current transaction first")
             );
         }
         try {
@@ -1460,7 +1460,7 @@ class Database implements LoggerAwareInterface
     {
         if (!$this->inTransaction()) {
             throw new DatabaseException(
-                "Cannot rollBack() when not in a transaction"
+                _("Cannot rollBack() when not in a transaction")
             );
         }
         try {
@@ -1482,7 +1482,7 @@ class Database implements LoggerAwareInterface
     {
         if (!$this->inTransaction()) {
             throw new DatabaseException(
-                "Cannot commit() when not in a transaction"
+                _("Cannot commit() when not in a transaction")
             );
         }
         try {
@@ -1610,7 +1610,7 @@ class Database implements LoggerAwareInterface
             $buffered
         ) == false
         ) {
-            throw new \DatabaseException("Could not use unbuffered queries");
+            throw new \DatabaseException(_("Could not use unbuffered queries"));
         };
     }
 }

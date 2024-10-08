@@ -50,7 +50,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Genomics";
+        return _("Genomics");
     }
 
     /**
@@ -60,6 +60,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Genomic Browser";
+        return _("Genomic Browser");
     }
 }

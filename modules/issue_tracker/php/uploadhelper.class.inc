@@ -73,7 +73,7 @@ class UploadHelper
             || empty($files['file']->getStream()->getMetadata('uri'))
         ) {
             $this->errorMessage
-                = 'The server is not configured to receive a file this large.';
+                = _('The server is not configured to receive a file this large.');
             return false;
         }
         $this->_user   = $user;
@@ -97,7 +97,7 @@ class UploadHelper
 
         if (!$this->setFullPath($this->_fileToUpload)) {
             $this->errorMessage
-                = 'The server is not configured for attachments';
+                = _('The server is not configured for attachments');
             return false;
         }
 

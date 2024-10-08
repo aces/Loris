@@ -170,7 +170,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
             $login->setState();
         } else if ($login->passwordChangeRequired()) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'password expired'
+                _('password expired')
             );
         } else {
             // login error.

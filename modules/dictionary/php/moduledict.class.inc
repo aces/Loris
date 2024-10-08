@@ -29,7 +29,7 @@ class ModuleDict extends \NDB_Page
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
+                _("No valid user")
             );
         }
         if (!($this->_hasAccess($user))) {
@@ -40,7 +40,7 @@ class ModuleDict extends \NDB_Page
         if (strpos($path, "module/") === false) {
             // if the path doesn't contain "module" we shouldn't have
             // delegated to this class..
-            throw new \LorisException("Invalid internal LORIS state");
+            throw new \LorisException(_("Invalid internal LORIS state"));
         }
 
         $name = substr($path, strpos($path, "module/") + strlen("module/"));
@@ -74,7 +74,7 @@ class ModuleDict extends \NDB_Page
         }
 
         if ($module === null) {
-            return new \LORIS\Http\Response\JSON\NotFound('module not found');
+            return new \LORIS\Http\Response\JSON\NotFound(_('module not found'));
         }
 
         assert($this->Module instanceof Module);

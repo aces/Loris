@@ -65,7 +65,7 @@ class Create_Timepoint extends \NDB_Form
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                _('Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
@@ -73,7 +73,7 @@ class Create_Timepoint extends \NDB_Form
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                'Create Time Point',
+                _('Create Time Point'),
                 "/create_timepoint/?candID=$candid&identifier=$candid"
             )
         );

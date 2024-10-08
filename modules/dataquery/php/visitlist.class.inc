@@ -36,7 +36,7 @@ class VisitList extends \NDB_Page
 
         if ($this->dictionaryitem->getScope()->__toString() !== 'session') {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit list only applicable to session scoped variables'
+                _('Visit list only applicable to session scoped variables')
             );
         }
 

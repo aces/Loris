@@ -31,6 +31,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return 'Login';
+        return _('Login');
     }
 }

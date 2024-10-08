@@ -222,9 +222,9 @@ class User extends UserPermissions implements
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
-                "The function getData('CenterID')
+                _("The function getData('CenterID')
                                         is deprecated and is replaced
-                                        with getData('CenterIDs')"
+                                        with getData('CenterIDs')")
             );
         } elseif ($var === 'Site') {
             throw new \LorisException(
@@ -275,9 +275,9 @@ class User extends UserPermissions implements
     function getSiteName(): string
     {
         throw new \LorisException(
-            "The function getSiteName
+            _("The function getSiteName
                                    is deprecated and is replaced
-                                   with getSiteNames"
+                                   with getSiteNames")
         );
     }
 
@@ -539,11 +539,11 @@ class User extends UserPermissions implements
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
-                'Password cannot be set to email'
+                _('Password cannot be set to email')
             );
         } else if (password_verify($this->userInfo['UserID'], (string) $password)) {
             throw new \InvalidArgumentException(
-                'Password cannot be set to username'
+                _('Password cannot be set to username')
             );
         }
 

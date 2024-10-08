@@ -124,7 +124,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\DomainException $e) {
             $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
             if ($apiversion != "v0.0.4-dev") {
-                return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+                return new \LORIS\Http\Response\JSON\NotFound(_('Candidate not found'));
             }
 
             $loris  = $request->getAttribute('loris');
@@ -135,10 +135,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
 
             if (count($pscids) === 0) {
-                return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+                return new \LORIS\Http\Response\JSON\NotFound(_('Candidate not found'));
             } else if (count($pscids) > 1) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Candidate identifier is not unique'
+                    _('Candidate identifier is not unique')
                 );
             }
 
@@ -153,7 +153,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $candidate = \NDB_Factory::singleton()->candidate($candID);
         } catch (\DomainException $e) {
-            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+            return new \LORIS\Http\Response\JSON\NotFound(_('Candidate not found'));
         }
 
         if (!$candidate->isAccessibleBy($user)) {
@@ -215,14 +215,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!isset($data['Candidate'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'There is no Candidate object in the POST data'
+                _('There is no Candidate object in the POST data')
             );
         }
 
         $usersites = $user->getSiteNames();
         if (!in_array($data['Candidate']['Site'], $usersites)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You are not affiliated with the candidate's site"
+                _("You are not affiliated with the candidate's site")
             );
         }
 
@@ -242,7 +242,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!in_array($projectname, $userprojects, true)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You are not affiliated with the candidate's project"
+                _("You are not affiliated with the candidate's project")
             );
         }
 

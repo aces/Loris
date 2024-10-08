@@ -61,7 +61,7 @@ class Feedback_MRI_Popup extends \NDB_Page
                 new \LORIS\Image($file_id);
                 $this->file_id = $file_id;
             } catch (\LorisException $e) {
-                throw new \NotFound("Invalid FileID");
+                throw new \NotFound(_("Invalid FileID"));
             }
         } elseif (preg_match('#sessionID=(\d+)#', $path, $matches) === 1) {
             $session_id = intval($matches[1]);
@@ -71,10 +71,10 @@ class Feedback_MRI_Popup extends \NDB_Page
                 );
                 $this->session_id = $session_id;
             } catch (\LorisException $e) {
-                throw new \NotFound("Invalid SessionID");
+                throw new \NotFound(_("Invalid SessionID"));
             }
         } else {
-            throw new \NotFound("Invalid Parameters");
+            throw new \NotFound(_("Invalid Parameters"));
         }
 
         $this->user = $user;
@@ -92,7 +92,7 @@ class Feedback_MRI_Popup extends \NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                "Feedback MRI Popup",
+                _("Feedback MRI Popup"),
                 "/imaging_browser/$this->page/$pageID"
             )
         );
@@ -109,7 +109,7 @@ class Feedback_MRI_Popup extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->logger->debug("NDB_Page handle called");
+        $this->logger->debug(_("NDB_Page handle called"));
 
         $this->setup();
 

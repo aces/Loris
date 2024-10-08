@@ -83,7 +83,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     public function getCenterID(): \CenterID
     {
         if ($this->_centerid === null) {
-            throw new \Exception('CenterID is null');
+            throw new \Exception(_('CenterID is null'));
         }
         return $this->_centerid;
     }
@@ -97,7 +97,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     public function getProjectID(): \ProjectID
     {
         if ($this->_projectid === null) {
-            throw new \Exception('ProjectID is null');
+            throw new \Exception(_('ProjectID is null'));
         }
         return $this->_projectid;
     }

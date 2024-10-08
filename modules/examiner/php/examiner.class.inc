@@ -64,8 +64,8 @@ class Examiner extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $yesNoOptions  = [
-            '1' => 'Yes',
-            '0' => 'No',
+            '1' => _('Yes'),
+            '0' => _('No'),
         ];
         $config        = \NDB_Config::singleton();
         $certification = $config->getSetting('Certification');

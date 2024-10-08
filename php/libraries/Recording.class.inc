@@ -108,7 +108,7 @@ class Recording
                     ['v_fileid' => $fileid]
                 );
             if (empty($dbrow)) {
-                throw new \NotFound('There is no file with that FileID');
+                throw new \NotFound(_('There is no file with that FileID'));
             }
             $this->_fileid       = $fileid;
             $this->_filename     = basename($dbrow['filelocation']);

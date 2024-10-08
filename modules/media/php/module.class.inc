@@ -30,7 +30,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Clinical";
+        return _("Clinical");
     }
 
     /**
@@ -40,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Media";
+        return _("Media");
     }
 
     /**
@@ -78,7 +78,7 @@ class Module extends \Module
             }
             return [
                 new CandidateWidget(
-                    "Candidate Media",
+                    _("Candidate Media"),
                     $baseurl . "/media/js/CandidateMediaWidget.js",
                     "lorisjs.media.CandidateMediaWidget.default",
                     [ 'Files' => iterator_to_array($media)],

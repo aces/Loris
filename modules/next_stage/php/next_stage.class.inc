@@ -176,15 +176,15 @@ class Next_Stage extends \NDB_Form
             $list_of_objectives = \Utility::getCohortList();
             $this->addSelect(
                 'CohortID',
-                'Objective',
+                _('Objective'),
                 ['' => ''] + $list_of_objectives
             );
             $this->addRule('CohortID', 'Required', 'required');
         }
 
         // add date rules
-        $this->addRule('date1', 'Date is required', 'required');
-        $this->addRule(['date1', 'date2'], 'Date fields must match', 'compare');
+        $this->addRule('date1', _('Date is required'), 'required');
+        $this->addRule(['date1', 'date2'], _('Date fields must match'), 'compare');
 
         $this->form->addFormRule([&$this, '_validate']);
     }
@@ -209,16 +209,16 @@ class Next_Stage extends \NDB_Form
             || is_null($values['date1'])
             || is_null($values['date2'])
         ) {
-            $errors['date1'] .= "Both date fields are required.";
+            $errors['date1'] .= _("Both date fields are required.");
             return $errors;
         }
         // check date pairs
         if (empty($values['date1'])) {
-            $errors['date1'] .= "Date is required. \n";
+            $errors['date1'] .= _("Date is required. \n");
         }
 
         if ($values['date1'] != $values['date2']) {
-            $errors['date1'] .= "Both Date fields must match. \n";
+            $errors['date1'] .= _("Both Date fields must match. \n");
         }
 
         // get candidate's DOB or EDC according to CohortID
@@ -235,14 +235,14 @@ class Next_Stage extends \NDB_Form
                 && $config->getSetting('screeningAfterVisit')!="true"
                 && strcmp($date, $timePoint->getData('Date_screening')) < 0
             ) {
-                $errors['date1'] .= "Date of Visit is less than".
-                                    " Date of Screening. \n";
+                $errors['date1'] .= _("Date of Visit is less than".
+                                    " Date of Screening. \n");
             }
             if ($config->getSetting('allowPrenatalTimepoints')!="true"
                 && strcmp($date, $candidateBirthDate) < 1
             ) {
-                $errors['date1'] .= "Date of Visit is less than ".
-                                    "Date of Birth/EDC. \n";
+                $errors['date1'] .= _("Date of Visit is less than ".
+                                    "Date of Birth/EDC. \n");
             }
         }
 
@@ -266,11 +266,11 @@ class Next_Stage extends \NDB_Form
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                _('Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                'Candidate Profile ' . $candid . ' / ' . $pscid,
+                _('Candidate Profile ') . $candid . ' / ' . $pscid,
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
@@ -278,7 +278,7 @@ class Next_Stage extends \NDB_Form
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
-                'Start Next Stage',
+                _('Start Next Stage'),
                 "/next_stage/?candID=$candid&sessionID=$sessionid" .
                 "&identifier=$sessionid"
             )

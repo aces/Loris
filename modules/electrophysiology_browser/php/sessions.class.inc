@@ -75,7 +75,7 @@ class Sessions extends \NDB_Page
         $matches = [];
 
         if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
-            throw new \NotFound("Invalid session");
+            throw new \NotFound(_("Invalid session"));
         }
         $session_id = intval($matches[1]);
 
@@ -85,7 +85,7 @@ class Sessions extends \NDB_Page
             );
             $this->sessionID = $session_id;
         } catch (\LorisException $e) {
-            throw new \NotFound("Session not found");
+            throw new \NotFound(_("Session not found"));
         }
 
         parent::loadResources($user, $request);
@@ -107,7 +107,7 @@ class Sessions extends \NDB_Page
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
-                    new \LORIS\Http\StringStream("Permission denied")
+                    new \LORIS\Http\StringStream(_("Permission denied"))
                 )->withStatus(403);
         }
 
@@ -128,14 +128,14 @@ class Sessions extends \NDB_Page
 
         if (!isset($parameters['outputType'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'OutputType required'
+                _('OutputType required')
             ));
         }
 
         $outputType = $parameters['outputType'];
         if (!in_array($outputType, ['raw', 'derivative', 'all_types'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid output type'
+                _('Invalid output type')
             ));
         }
         return $this->getSessionData($outputType);
@@ -574,7 +574,7 @@ class Sessions extends \NDB_Page
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
-            'label' => 'EEG File(s)',
+            'label' => _('EEG File(s)'),
         ];
 
         $queryFDT = "SELECT
@@ -606,11 +606,11 @@ class Sessions extends \NDB_Page
         ];
 
         $labels = [
-            'physiological_electrode_file'    => 'Electrodes',
-            'physiological_coord_system_file' => 'Coordinate System',
-            'physiological_channel_file'      => 'Channels',
-            'physiological_event_files'       => 'Events',
-            'all_files'                       => 'All Files',
+            'physiological_electrode_file'    => _('Electrodes'),
+            'physiological_coord_system_file' => _('Coordinate System'),
+            'physiological_channel_file'      => _('Channels'),
+            'physiological_event_files'       => _('Events'),
+            'all_files'                       => _('All Files'),
         ];
 
         foreach ($queries as $query_key => $query_value) {
@@ -704,11 +704,11 @@ class Sessions extends \NDB_Page
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Electrophysiology Browser',
+                _('Electrophysiology Browser'),
                 '/electrophysiology_browser'
             ),
             new \LORIS\Breadcrumb(
-                'View Session',
+                _('View Session'),
                 "/electrophysiology_browser/sessions/$this->sessionID"
             )
         );

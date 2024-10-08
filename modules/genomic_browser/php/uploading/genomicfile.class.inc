@@ -167,7 +167,7 @@ class Genomicfile
     {
         $dest_dir = dirname($fileToUpload->full_path);
         // update ui to show we are trying to move the file
-        $this->reportProgress(98, "Copying file...");
+        $this->reportProgress(98, _("Copying file..."));
         // file system validation
         try {
             if (!file_exists($fileToUpload->tmp_name)) {
@@ -188,7 +188,7 @@ class Genomicfile
                 $fileToUpload->full_path
             )
             ) {
-                $this->reportProgress(99, 'File successfully copied!');
+                $this->reportProgress(99, _('File successfully copied!'));
             }
         } catch (\Exception $ex) {
             error_log("Cannot move file: $ex");
@@ -257,7 +257,7 @@ class Genomicfile
                         ]
                     );
                     if (!$success) {
-                        throw new \DatabaseException('Failed to insert row');
+                        throw new \DatabaseException(_('Failed to insert row'));
                     }
                 }
             } catch (\DatabaseException $e) {
@@ -266,7 +266,7 @@ class Genomicfile
         } else {
             $this->endWithFailure();
         }
-        $this->reportProgress(95, 'Creating file-candidate relations');
+        $this->reportProgress(95, _('Creating file-candidate relations'));
     }
 
     /**
@@ -282,7 +282,7 @@ class Genomicfile
      */
     function insertBetaValues(&$fileToUpload) : void
     {
-        $this->reportProgress(95, 'Inserting beta-values');
+        $this->reportProgress(95, _('Inserting beta-values'));
         // Assuming genomic_cpg_annotation have already been created.
         // see: /module/genomic_browser/tool/human...
 
@@ -375,7 +375,7 @@ class Genomicfile
      */
     function createSampleCandidateRelations(&$fileToUpload) : void
     {
-        $this->reportProgress(85, 'Creating sample-candidate relations');
+        $this->reportProgress(85, _('Creating sample-candidate relations'));
 
         $DB = \NDB_Factory::singleton()->database();
 
@@ -433,7 +433,7 @@ class Genomicfile
                 );
             }
             // Report number on relation created (candidate founded)
-            $this->reportProgress(90, 'Relation created');
+            $this->reportProgress(90, _('Relation created'));
         } catch (\Exception $e) {
             $this->endWithFailure();
         }

@@ -50,7 +50,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return _("Tools");
     }
 
     /**
@@ -60,7 +60,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Issue Tracker";
+        return _("Issue Tracker");
     }
 
     /**
@@ -90,7 +90,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Your assigned issue",
+                    _("Your assigned issue"),
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
@@ -122,7 +122,7 @@ class Module extends \Module
             }
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Open Issues",
+                    _("Open Issues"),
                     $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
                     "lorisjs.issue_tracker.CandidateIssuesWidget.default",
                     [

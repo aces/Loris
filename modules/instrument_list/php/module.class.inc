@@ -118,6 +118,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Instrument List";
+        return _("Instrument List");
     }
 }

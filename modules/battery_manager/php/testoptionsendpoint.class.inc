@@ -50,7 +50,7 @@ class TestOptionsEndpoint extends \NDB_Page
             return new \LORIS\Http\Response\JSON\OK($this->_getOptions());
         }
 
-        return new \LORIS\Http\Response\JSON\BadRequest('Unspecified Request');
+        return new \LORIS\Http\Response\JSON\BadRequest(_('Unspecified Request'));
     }
 
     /**
@@ -101,8 +101,8 @@ class TestOptionsEndpoint extends \NDB_Page
     private function _getYesNoList() : array
     {
         return [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => _('Yes'),
+            'N' => _('No'),
         ];
     }
 }

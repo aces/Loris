@@ -118,21 +118,21 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($mincpath === null) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Invalid MINCToolsPath configuration setting: ' .
-                'MINCToolsPath is null'
+                _('Invalid MINCToolsPath configuration setting: ' .
+                'MINCToolsPath is null')
             );
         }
 
         $minctooldir = new \SPLFileInfo($mincpath);
         if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Invalid MINCToolsPath configuration setting.'
+                _('Invalid MINCToolsPath configuration setting.')
             );
         }
 
         if (!`$mincpath/bin/minctoraw -v`) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'minctoraw not installed'
+                _('minctoraw not installed')
             );
         }
 

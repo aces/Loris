@@ -101,7 +101,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             }
         }
         if ($testname === null) {
-            throw new \DomainException("Field for unknown instrument");
+            throw new \DomainException(_("Field for unknown instrument"));
         }
 
         $inst   = \NDB_BVL_Instrument::factory($this->loris, $testname);

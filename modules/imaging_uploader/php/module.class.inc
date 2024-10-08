@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return _("Imaging");
     }
 
     /**
@@ -56,7 +56,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Uploader";
+        return _("Imaging Uploader");
     }
 
     /**

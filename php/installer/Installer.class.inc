@@ -57,18 +57,18 @@ class Installer
     {
         // Check if config.xml already exists
         if ($this->_configXMLExists()) {
-            $this->_lastErr = "LORIS appears to already be installed"
+            $this->_lastErr = _("LORIS appears to already be installed"
             . " (project/config.xml already exists.)\n"
             . "Can not install LORIS on top of existing"
             . " LORIS installation.\n"
-            . "Aborting.";
+            . "Aborting.");
             return false;
         }
 
         // Check that we have access to the schema files
         if ($this->_schemaFilesExist() == false) {
-            $this->_lastErr = "LORIS database schema appears to be missing.\n"
-            . "Please verify your LORIS installation and try again.";
+            $this->_lastErr = _("LORIS database schema appears to be missing.\n"
+            . "Please verify your LORIS installation and try again.");
             return false;
         }
 
@@ -76,9 +76,9 @@ class Installer
         // error than "autoload.php not found" when the script requires
         // it.
         if ($this->_checkComposerRan() == false) {
-            $this->_lastErr = "Must run `composer install` before accessing this"
+            $this->_lastErr = _("Must run `composer install` before accessing this"
             . " page.\n"
-            . "Please see instructions in README.md";
+            . "Please see instructions in README.md");
             return false;
         }
         return true;
@@ -140,9 +140,9 @@ class Installer
         // Check that some standard PHP packages which are removed in Debian
         // without a special package installed are available.
         if (function_exists('json_encode') == false) {
-            $this->_lastErr = "JSON functions do not appear to be accessible "
+            $this->_lastErr = _("JSON functions do not appear to be accessible "
                 . "in your PHP installation. If you're running on Debian or "
-                . "Ubuntu, please install the php-json package.";
+                . "Ubuntu, please install the php-json package.");
             return false;
         }
 
@@ -151,23 +151,23 @@ class Installer
             // and check that the MySQL driver is available.
             $drivers = \PDO::getAvailableDrivers();
             if (in_array("mysql", $drivers) == false) {
-                $this->_lastErr = "You do not appear to have MySQL support"
+                $this->_lastErr = _("You do not appear to have MySQL support"
                 . " available in PHP. Aborting.\n"
-                . " Please check your system dependencies and try again.";
+                . " Please check your system dependencies and try again.");
                 return false;
             }
         } catch (\Exception $e) {
-            $this->_lastErr = "You do not appear to have PDO support in your "
-            . "version of PHP, which is required to access the database.";
+            $this->_lastErr = _("You do not appear to have PDO support in your "
+            . "version of PHP, which is required to access the database.");
             return false;
         }
 
         // Check that the smarty templates_c directory is writable.
         if (is_writable(__DIR__ . "/../../smarty/templates_c") == false) {
-            $this->_lastErr = "Web server can not write to template cache "
+            $this->_lastErr = _("Web server can not write to template cache "
             . "directory.\n"
             . "Please ensure the LORIS/smarty/templaces_c directory is writable"
-            . "by your web server and try again.";
+            . "by your web server and try again.");
             return false;
         }
         return true;
@@ -188,9 +188,9 @@ class Installer
             $values['dbname']
         ) == false
         ) {
-            $this->_lastErr = "Database name must only contain letters, "
+            $this->_lastErr = _("Database name must only contain letters, "
             . "numbers and underscores and must be at least 2 "
-                        . "characters long.";
+                        . "characters long.");
             return false;
         }
         $DB = Database::singleton();
@@ -205,8 +205,8 @@ class Installer
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
-                $this->_lastErr = "Could not connect to MySQL server "
-                    . "and create database with credentials provided.";
+                $this->_lastErr = _("Could not connect to MySQL server "
+                    . "and create database with credentials provided.");
             }
             return false;
         }
@@ -234,8 +234,8 @@ class Installer
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
-                $this->_lastErr = "Could not connect to MySQL server "
-                    ."with credentials provided.";
+                $this->_lastErr = _("Could not connect to MySQL server "
+                    ."with credentials provided.");
             }
             return false;
         }
@@ -304,14 +304,14 @@ class Installer
             );
 
             if (! $success) {
-                throw new \DatabaseException('Could not connect to database');
+                throw new \DatabaseException(_('Could not connect to database'));
             }
         } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
-                $this->_lastErr = "Could not connect to MySQL server "
-                    . "with credentials provided.";
+                $this->_lastErr = _("Could not connect to MySQL server "
+                    . "with credentials provided.");
             }
             return false;
         }
@@ -407,8 +407,8 @@ class Installer
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
-                $this->_lastErr = "Could not connect to MySQL server "
-                . "with credentials provided.";
+                $this->_lastErr = _("Could not connect to MySQL server "
+                . "with credentials provided.");
             }
             return false;
         }
@@ -432,7 +432,7 @@ class Installer
         if (!is_array($connectHost) || empty($connectHost['Host'])) {
             // This should never happen. It would mean that the user
             // that we ran the query from isn't connected..
-            $this->_lastErr = "Could not retrieve hostname for MySQL user";
+            $this->_lastErr = _("Could not retrieve hostname for MySQL user");
             return false;
         }
 
@@ -480,8 +480,8 @@ class Installer
         }
 
         if (!$DB->hasPrivilege("*", "*", "CREATE USER")) {
-            $this->_lastErr = "User does not have privilege to create "
-                . "a mysql user.";
+            $this->_lastErr = _("User does not have privilege to create "
+                . "a mysql user.");
             return false;
         }
         // The user does not exist and needs to be created
@@ -515,7 +515,7 @@ class Installer
             || empty($values['frontenduser'])
             || empty($values['frontendpassword'])
         ) {
-            $this->_lastErr = "All entries must be provided.";
+            $this->_lastErr = _("All entries must be provided.");
             return false;
         }
         $DB = Database::singleton();
@@ -529,8 +529,8 @@ class Installer
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
-                $this->_lastErr = "Could not connect to MySQL server "
-                . "with credentials provided.";
+                $this->_lastErr = _("Could not connect to MySQL server "
+                . "with credentials provided.");
             }
             return false;
         }

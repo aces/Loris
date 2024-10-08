@@ -89,6 +89,6 @@ class NDB_Menu extends NDB_Page
      */
     function toJSON(): string
     {
-        return json_encode(['error' => 'Not implemented']);
+        return json_encode(['error' => _('Not implemented']));
     }
 }

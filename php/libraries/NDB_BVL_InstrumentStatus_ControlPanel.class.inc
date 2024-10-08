@@ -79,7 +79,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function display(): string
     {
         if (empty($this->_commentID)) {
-            throw new Exception("No instrument instance selected");
+            throw new Exception(_("No instrument instance selected"));
         }
 
         $this->tpl_data['candID']    = $this->candID ?? '';
@@ -242,7 +242,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $showLink = false;
                     if ($option == 'Complete') {
                         $this->tpl_data['data_entry'][$i]['tooltip']
-                            = "To enable link, Validity option must be selected";
+                            = _("To enable link, Validity option must be selected");
                     }
                 }
 
@@ -262,8 +262,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
                             if (!$showLink) {
                                 $this->tpl_data['data_entry'][$i]['tooltip']
-                                    = "To enable link, required fields must be
-                                      filled in";
+                                    = _("To enable link, required fields must be
+                                      filled in");
                             }
                         }
                     }
@@ -276,7 +276,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             } else {
                 $this->tpl_data['data_entry'][$i]['icon']    = 'fas fa-times';
                 $this->tpl_data['data_entry'][$i]['tooltip']
-                    = "To enable link, Administration option must be selected";
+                    = _("To enable link, Administration option must be selected");
             }
             $i++;
         }

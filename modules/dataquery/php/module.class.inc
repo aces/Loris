@@ -30,7 +30,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Reports";
+        return _("Reports");
     }
 
     /**
@@ -40,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool (Beta)";
+        return _("Data Query Tool (Beta)");
     }
 
     /**
@@ -82,7 +82,7 @@ class Module extends \Module
             if (count($starredqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Starred Queries",
+                        _("Starred Queries"),
                         $this->renderTemplate(
                             "starredwidget.tpl",
                             [
@@ -111,7 +111,7 @@ class Module extends \Module
             if (count($studyqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Study Queries",
+                        _("Study Queries"),
                         $this->renderTemplate(
                             "studyquerieswidget.tpl",
                             [

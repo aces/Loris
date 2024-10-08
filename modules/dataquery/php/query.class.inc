@@ -674,7 +674,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     {
         $results = [];
         if (!$criteria['operator']) {
-            throw new \LorisException("Bad criteria");
+            throw new \LorisException(_("Bad criteria"));
         }
 
         foreach ($criteria['group'] as $crit) {
@@ -738,7 +738,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $term = new QueryTerm($dictitem, new In(...$crit['value']));
                 break;
             default:
-                throw new \Exception("Unhandled operator: " . $crit['op']);
+                throw new \Exception(_("Unhandled operator: " . $crit['op']));
             }
 
             // FIXME: Verify visits, test was done with candidate scope data

@@ -106,16 +106,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         $phantomOtions = [
-            'N' => 'No',
-            'Y' => 'Yes',
+            'N' => _('No'),
+            'Y' => _('Yes'),
         ];
         $visitlabels   = \Utility::getVisitList();
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'CandID');
-        $this->addBasicText('pSCID', 'PSCID');
-        $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
-        $this->addFile('mriFile', 'File to Upload');
+        $this->addSelect('IsPhantom', _('Phantom Scans'), $phantomOtions);
+        $this->addBasicText('candID', _('CandID'));
+        $this->addBasicText('pSCID', _('PSCID'));
+        $this->addSelect('visitLabel', _('Visit Label'), $visitlabels);
+        $this->addFile('mriFile', _('File to Upload'));
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
             $upload_max_size = \Utility::getMaxUploadSize();
-            $error_message   = "Please make sure files are not larger than " .
+            $error_message   = _("Please make sure files are not larger than ") .
                                 $upload_max_size;
             http_response_code(413);
             $errors = [

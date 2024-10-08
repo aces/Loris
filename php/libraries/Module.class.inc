@@ -33,13 +33,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 {
     use \Psr\Log\LoggerAwareTrait;
 
-    const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
-        . "server error. Please contact your project administrator for more "
-        . "information.";
-    const CONFIGURATION_ERROR = "LORIS configuration settings are invalid or "
-        . "missing and as a result execution cannot proceed. Please contact "
-        . "your project administrator and/or verify your LORIS configuration.";
-
     /**
      * Retrieve all active module descriptors from the given database, indexed
      * by their primary key in the database.
@@ -186,9 +179,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         if ($this->isPublicModule() !== true) {
             if ($user instanceof \LORIS\AnonymousUser) {
                 $this->logger->debug(
-                    "Denied module access because AnonymousUser attempted to " .
+                    _("Denied module access because AnonymousUser attempted to " .
                     "access non-public module"
-                );
+                ));
                 return false;
             }
         }
@@ -268,7 +261,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->logger->debug("Module handle function called");
+        $this->logger->debug(_("Module handle function called"));
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
             $path = $request->getURI()->getPath();
@@ -314,7 +307,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                     new \LORIS\Http\Error(
                         $request,
                         403,
-                        "You do not have access to this page."
+                        _("You do not have access to this page.")
                     )
                 )
             );

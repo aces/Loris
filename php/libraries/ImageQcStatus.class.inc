@@ -50,7 +50,7 @@ class ImageQcStatus
     public function __construct(?string $qcstatus, ?bool $selected)
     {
         if (!in_array($qcstatus, ['Pass', 'Fail', null], true)) {
-            throw new \DomainException('Invalid value for QCStatus');
+            throw new \DomainException(_('Invalid value for QCStatus'));
         }
         $this->_qcstatus = $qcstatus;
         $this->_selected = $selected;

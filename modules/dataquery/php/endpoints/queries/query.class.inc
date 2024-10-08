@@ -57,13 +57,13 @@ class Query extends \LORIS\Http\Endpoint
             if (isset($params['star'])) {
                 if ($params['star'] == 'false') {
                     $query->unstar($user);
-                    $resp['starred'] = 'Unstarred query';
+                    $resp['starred'] = _('Unstarred query');
                 } else if ($params['star'] == 'true') {
                     $query->star($user);
-                    $resp['starred'] = 'Starred query';
+                    $resp['starred'] = _('Starred query');
                 } else {
                     return new \LORIS\Http\Response\JSON\BadRequest(
-                        'Invalid star action'
+                        _('Invalid star action')
                     );
                 }
             }
@@ -71,13 +71,13 @@ class Query extends \LORIS\Http\Endpoint
             if (isset($params['share'])) {
                 if ($params['share'] == 'true') {
                     $query->share($user);
-                    $resp['Share'] = 'Marked query public';
+                    $resp['Share'] = _('Marked query public');
                 } else if ($params['share'] == 'false') {
                     $query->unshare($user);
-                    $resp['Share'] = 'Unshared query';
+                    $resp['Share'] = _('Unshared query');
                 } else {
                     return new \LORIS\Http\Response\JSON\BadRequest(
-                        'Invalid share action'
+                        _('Invalid share action')
                     );
                 }
             }
@@ -85,40 +85,40 @@ class Query extends \LORIS\Http\Endpoint
             if (isset($params['adminname'])) {
                 if ($params['adminname'] == '') {
                     $query->removeAdminPinnedQuery('topquery');
-                    $resp['adminpin'] = 'Unpinned query from dataquery module';
+                    $resp['adminpin'] = _('Unpinned query from dataquery module');
                 } else {
                     $query->setAdminPinnedQuery(
                         $user,
                         $params['adminname'],
                         'topquery'
                     );
-                    $resp['adminpin'] = 'Pinned query to dataquery module';
+                    $resp['adminpin'] = _('Pinned query to dataquery module');
                 }
             }
 
             if (isset($params['dashboardname'])) {
                 if ($params['dashboardname'] == '') {
                     $query->removeAdminPinnedQuery('dashboard');
-                    $resp['dashboard'] = 'Unpinned query from dashboard';
+                    $resp['dashboard'] = _('Unpinned query from dashboard');
                 } else {
                     $query->setAdminPinnedQuery(
                         $user,
                         $params['dashboardname'],
                         'dashboard'
                     );
-                    $resp['dashboard'] = 'Pinned query to dashboard';
+                    $resp['dashboard'] = _('Pinned query to dashboard');
                 }
             }
 
             if (isset($params['name'])) {
                 $query->setQueryName($user, $params['name']);
-                $resp['Name'] = 'Named query';
+                $resp['Name'] = _('Named query');
             }
             return new \LORIS\Http\Response\JSON\OK($resp);
         }
         return new \LORIS\Http\Response\JSON\MethodNotAllowed(
             ['GET', 'PATCH'],
-            'Request must be GET'
+            _('Request must be GET')
         );
     }
 }

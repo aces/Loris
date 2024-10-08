@@ -107,7 +107,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'     => ['yes' => _("Yes"), 'no' => _("No")],
         ];
         return;
     }
@@ -131,8 +131,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $value     = $DB->pselectRow($query, []);
                 if (is_null($value)) {
                     throw new \LorisException(
-                        'Could not find data for specified parent ID. '
-                        . 'Cannot parse category.'
+                        _('Could not find data for specified parent ID. '
+                        . 'Cannot parse category.')
                     );
                 }
                 $categoryName = $value['category_name'] . ">" . $categoryName;

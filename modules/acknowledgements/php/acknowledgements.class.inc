@@ -60,7 +60,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $errors = [];
 
         if ($values['addStartDate'] > $values['addEndDate']) {
-            $errors['dates'] = "Start date cannot be greater than the end date.";
+            $errors['dates'] = _("Start date cannot be greater than the end date.");
         }
 
         return $errors;
@@ -188,8 +188,8 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         parent::setup();
 
         $present = [
-            'Yes' => 'Yes',
-            'No'  => 'No',
+            'Yes' => _('Yes'),
+            'No'  => _('No'),
         ];
 
         $this->fieldOptions = ['presents' => $present];

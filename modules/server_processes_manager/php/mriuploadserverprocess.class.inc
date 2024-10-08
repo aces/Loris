@@ -99,8 +99,8 @@ class MriUploadServerProcess extends AbstractServerProcess
         $config =& \NDB_Config::singleton();
         if (is_null($config)) {
             throw new \RuntimeException(
-                "Cannot construct MriUploadTask: unable to instantiate 
-                 configuration object"
+                _("Cannot construct MriUploadTask: unable to instantiate 
+                 configuration object")
             );
         }
 
@@ -111,7 +111,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
-                "Value for config setting 'MRICodePath' is not an existing directory"
+                _("Value for config setting 'MRICodePath' is not an existing directory")
             );
         }
 

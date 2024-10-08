@@ -52,7 +52,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return _("Tools");
     }
 
     /**
@@ -62,6 +62,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Battery Manager";
+        return _("Battery Manager");
     }
 }

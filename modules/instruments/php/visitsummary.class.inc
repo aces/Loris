@@ -27,7 +27,7 @@ class VisitSummary extends \NDB_Page
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
+                _("No valid user")
             );
         }
         if (!($this->_hasAccess($user))) {
@@ -37,13 +37,13 @@ class VisitSummary extends \NDB_Page
         $params = $request->getQueryParams();
         if (!isset($params['CandID'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing CandID query parameter"
+                _("Missing CandID query parameter")
             );
         }
 
         if (!isset($params['VisitLabel'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing VisitLabel query parameter"
+                _("Missing VisitLabel query parameter")
             );
         }
 

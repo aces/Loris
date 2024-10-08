@@ -78,7 +78,7 @@ class DirectDataEntryMainPage
         $this->caller->setDataEntryType('Direct');
 
         if (empty($_REQUEST['key'])) {
-            throw new Exception("Missing parameter", 403);
+            throw new Exception(_("Missing parameter"), 403);
         }
         $this->key = $_REQUEST['key'];
 
@@ -104,7 +104,7 @@ class DirectDataEntryMainPage
         );
 
         if (empty($this->TestName) && empty($this->CommentID)) {
-            throw new Exception("Data has already been submitted.", 403);
+            throw new Exception(_("Data has already been submitted."), 403);
         }
 
         $instrumentObj = \NDB_BVL_Instrument::factory(
@@ -114,7 +114,7 @@ class DirectDataEntryMainPage
 
         $user = \User::singleton();
         if ($instrumentObj->_hasAccess($user) !== true) {
-            throw new \Exception("Permission denied", 403);
+            throw new \Exception(_("Permission denied"), 403);
         }
 
         $subtests       = $instrumentObj->getSubtestList();
@@ -361,7 +361,7 @@ class DirectDataEntryMainPage
         } else if (isset($_REQUEST['pageNum'])
             && $_REQUEST['pageNum'] === 'complete'
         ) {
-            $this->tpl_data['workspace'] = "Thank you for completing this survey.";
+            $this->tpl_data['workspace'] = _("Thank you for completing this survey.");
             $this->tpl_data['complete']  = true;
 
             $this->updateStatus('Complete');

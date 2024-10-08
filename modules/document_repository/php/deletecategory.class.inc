@@ -79,7 +79,7 @@ class DeleteCategory extends \NDB_Page
             return new \LORIS\Http\Response\JSON\OK();
         } else {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Can not delete non-empty category'
+                _('Can not delete non-empty category')
             );
         }
     }

@@ -99,8 +99,8 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
         );
         if (!$couchConfigValid) {
             throw new \ConfigurationException(
-                'Missing CouchDB configuration settings. Cannot load ' .
-                'Data Query Tool.'
+                _('Missing CouchDB configuration settings. Cannot load ' .
+                'Data Query Tool.')
             );
         }
         $couch            = \NDB_Factory::singleton()->couchDB(

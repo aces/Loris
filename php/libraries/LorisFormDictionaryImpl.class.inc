@@ -139,7 +139,7 @@ trait LorisFormDictionaryImpl
                 continue 2;
             default:
                 throw new \LorisException(
-                    "Unknown element type: " . $element['type']
+                    _("Unknown element type: ") . $element['type']
                 );
             }
             $items[] = new DictionaryItem(

@@ -61,8 +61,8 @@ class CandidateData
             foreach ($timepoints as $timepoint) {
                 if (!($timepoint instanceof \TimePoint)) {
                     throw new \DomainException(
-                        "CandidateData timepoints must contain TimePoint "
-                        . "classes"
+                        _("CandidateData timepoints must contain TimePoint "
+                        . "classes")
                     );
                 }
             }

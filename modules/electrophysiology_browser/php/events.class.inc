@@ -124,8 +124,8 @@ class Events extends \NDB_Page
                 // $metadata      = $parameters['metadata'];
                 // TODO: Figure out better description modeled on other derivatives
                 $metadata = [
-                    'description' => 'An event',
-                    'sources'     => 'EEGNet LORIS',
+                    'description' => _('An event'),
+                    'sources'     => _('EEGNet LORIS'),
                     'author'      => $user->getFullname()
                 ];
 

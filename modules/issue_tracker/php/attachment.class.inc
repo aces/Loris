@@ -70,7 +70,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withStatus(404)
                 ->withHeader('Content-Type', 'text/plain')
-                ->withBody(new \LORIS\Http\StringStream("Not found"));
+                ->withBody(new \LORIS\Http\StringStream(_("Not found")));
 
         }
 
@@ -86,7 +86,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             $result['file_hash'];
 
         if (!is_readable($fileToDownload)) {
-            throw new \LorisException('Forbidden Access');
+            throw new \LorisException(_('Forbidden Access'));
         }
 
         $name = rawurldecode($result['file_name']);
@@ -123,7 +123,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
-                ? ['success' => 'upload succeeded']
+                ? ['success' => _('upload succeeded')]
                 : ['error' => $attachment->errorMessage]
         );
     }
@@ -156,7 +156,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             );
         }
         return new \LORIS\Http\Response\JSON\Forbidden(
-            'Invalid Permissions'
+            _('Invalid Permissions')
         );
     }
 

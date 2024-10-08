@@ -76,7 +76,7 @@ class File_Upload
         if (empty($this->fieldNames) || !is_array($this->fieldNames)) {
             $this->setError(
                 "",
-                "No files to process!  Register handlers first."
+                _("No files to process!  Register handlers first.")
             );
             return false;
         }
@@ -86,7 +86,7 @@ class File_Upload
             if (!$this->preProcessFile()) {
                 $this->setError(
                     $field,
-                    "Could not upload file. Max file size is "
+                    _("Could not upload file. Max file size is ")
                     . ini_get("upload_max_filesize") . "."
                 );
                 continue;
@@ -240,7 +240,7 @@ class File_Upload
             ) {
                 $this->setError(
                     $this->fieldName,
-                    "Could not move file to "
+                    _("Could not move file to: ")
                     . $this->destinationDirectory
                     . $this->destinationFilename
                 );
@@ -277,6 +277,7 @@ class File_Upload
         if (file_exists($dest_dir) && !is_dir($dest_dir)) {
             $this->setError(
                 $this->fieldName,
+		// XXX: This should be localized but includes a variable name
                 "A file named '$dest_dir' exists in your chosen upload root. "
                 . "Could not create directory with same name."
             );
@@ -337,7 +338,7 @@ class File_Upload
                 }
                 break;
             case "reject":
-                $this->setError($this->fieldName, "File Exists, rejecting");
+                $this->setError($this->fieldName, _("File Exists, rejecting"));
                 return false;
             }
         }
@@ -376,7 +377,7 @@ class File_Upload
             // array, so if somehow it become a string in a non-obvious
             // code path, throw an exception.
             throw new \UnexpectedValueException(
-                "Invalid internal state of FileHandler. Expected array of methods"
+                _("Invalid internal state of FileHandler. Expected array of methods")
             );
         }
         foreach ($methods AS $method) {

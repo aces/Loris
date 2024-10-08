@@ -35,7 +35,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         if (! $downloadDirectory->isDir()) {
             throw new \LorisException(
                 sprintf(
-                    "Download directory %s is not a directory",
+                    _("Download directory %s is not a directory"),
                     htmlentities($downloadDirectory->getPathname())
                 )
             );
@@ -44,7 +44,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         if (! $downloadDirectory->isReadable()) {
             throw new \LorisException(
                 sprintf(
-                    "Download directory %s is not readable",
+                    _("Download directory %s is not readable"),
                     htmlentities($downloadDirectory->getPathname())
                 )
             );
@@ -73,7 +73,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
 
         if (empty($filename)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                self::ERROR_EMPTY_FILENAME
+                _(self::ERROR_EMPTY_FILENAME)
             );
         }
 
@@ -91,7 +91,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
 
         if (!is_file($targetPath)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                self::ERROR_FILE_NOT_FILE
+                _(self::ERROR_FILE_NOT_FILE)
             );
         }
 

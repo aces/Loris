@@ -148,21 +148,21 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $inputcandid = $data['Meta']['CandID'] ?? null;
         if ($inputcandid != $this->_visit->getCandID()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Candidate from URL does not match JSON metadata.'
+                _('Candidate from URL does not match JSON metadata.')
             );
         }
 
         $inputvisit = $data['Meta']['Visit'] ?? null;
         if ($inputvisit != $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit from URL does not match JSON metadata.'
+                _('Visit from URL does not match JSON metadata.')
             );
         }
 
         $inputfilename = $data['Meta']['File'] ?? null;
         if ($inputfilename != $this->_image->getFileInfo()->getFilename()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'File name from URL does not match JSON metadata.'
+                _('File name from URL does not match JSON metadata.')
             );
         }
 
@@ -180,7 +180,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'QC status not updated.'
+                _('QC status not updated.')
             );
         } catch (\DomainException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(

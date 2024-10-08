@@ -58,7 +58,7 @@ class DicomTar
                     ['v_tarchiveid' => $tarchiveid]
                 );
             if (empty($dbrow)) {
-                throw new \NotFound('There is no tarchive with that id');
+                throw new \NotFound(_('There is no tarchive with that id'));
             }
             $this->_tarchiveid      = $tarchiveid;
             $this->_tarname         = basename($dbrow['archivelocation']);

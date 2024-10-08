@@ -294,7 +294,7 @@ class Stats_MRI extends \NDB_Form
             )
         );
         $sites     = [];
-        $sites[''] ="All sites";
+        $sites[''] = _("All sites");
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if (isset($_REQUEST['MRIsite'])
@@ -406,7 +406,7 @@ class Stats_MRI extends \NDB_Form
 
         $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
-            "Breakdown By Scan Type",
+            _("Breakdown By Scan Type"),
             $MRIHeader,
             $MRISubcategories,
             $M_Visits,

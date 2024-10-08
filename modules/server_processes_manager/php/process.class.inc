@@ -84,7 +84,7 @@ class Process
     {
         if (is_null($shellCommand)) {
             throw new \InvalidArgumentException(
-                "Shell command parameter cannot be null"
+                _("Shell command parameter cannot be null")
             );
         }
 

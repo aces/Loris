@@ -62,7 +62,7 @@ $factory->setConfig(\LORIS\Installer\NDB_Config::singleton());
 if ($installer->checkPreconditionsValid() === false) {
     $err = $installer->getLastError();
     if ($err == "") {
-        $err = "Unknown error checking LORIS install preconditions. Sorry.";
+        $err = _("Unknown error checking LORIS install preconditions. Sorry.");
     }
     echo $err;
     exit(2);
@@ -72,7 +72,7 @@ if ($installer->checkPreconditionsValid() === false) {
 if ($installer->checkSystemDependenciesValid() == false) {
     $err = $installer->getLastError();
     if ($err == "") {
-        $err = "Unknown error checking system dependencies.";
+        $err = _("Unknown error checking system dependencies.");
     }
     echo $err;
     exit(3);
@@ -131,8 +131,8 @@ case 'validaterootaccount':
             $_POST['dbadminpassword']
         )
     ) {
-        $tpl_data['error'] = 'The specified user does not exist or '.
-            'is using an incorrect password or the database does not exist';
+        $tpl_data['error'] = _('The specified user does not exist or '.
+            'is using an incorrect password or the database does not exist');
         $tpl_data['Page']  = '';
         break;
     }

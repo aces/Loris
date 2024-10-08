@@ -78,18 +78,18 @@ class ServerProcessLauncher
     private function _saveProcess(AbstractServerProcess $process)
     {
         if (is_null($process)) {
-            throw new \InvalidArgumentException("Invalid null process argument");
+            throw new \InvalidArgumentException(_("Invalid null process argument"));
         }
 
         if (is_null($process->getPid())) {
             throw new \InvalidArgumentException(
-                "Cannot save a process with a null PID"
+                _("Cannot save a process with a null PID")
             );
         }
 
         if (is_null($process->getStartTime())) {
             throw new \InvalidArgumentException(
-                "Cannot record a process with a null start time"
+                _("Cannot record a process with a null start time")
             );
         }
 

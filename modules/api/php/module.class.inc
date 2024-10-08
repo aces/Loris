@@ -78,7 +78,7 @@ class Module extends \Module
         ) !== 1
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'You must specify a version of the API to use in the URL'
+                _('You must specify a version of the API to use in the URL')
             );
         };
 
@@ -131,7 +131,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API";
+        return _("API");
     }
 
     /**

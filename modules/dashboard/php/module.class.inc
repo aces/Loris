@@ -102,7 +102,7 @@ class Module extends \Module
         }
 
         if ($last_login === null) {
-            $logindatestring = "...never. Welcome!";
+            $logindatestring = _("...never. Welcome!");
         } else {
             // Note: This is the format from MySQL for historical reasons.
             // We might want to make it a more human-friendly since we have
@@ -151,7 +151,7 @@ class Module extends \Module
         }
         return new Widget(
             new WidgetContent(
-                "My Tasks",
+                _("My Tasks"),
                 $this->renderTemplate(
                     "mytasks.tpl",
                     [

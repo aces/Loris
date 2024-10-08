@@ -76,8 +76,8 @@ class Reset extends \NDB_Page implements ETagCalculator
         $values = json_decode((string) $request->getBody(), true);
 
         // Always claim success to avoid providing user info to attackers.
-        $values['success'] = 'Password reset. '
-            . 'You should receive an email within a few minutes.';
+        $values['success'] = _('Password reset. '
+            . 'You should receive an email within a few minutes.');
 
         // Create the user object.
         $username = $values['username'];
@@ -88,7 +88,7 @@ class Reset extends \NDB_Page implements ETagCalculator
             $email = $user->getEmail();
             if (empty($email)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Not a valid user'
+                    _('Not a valid user')
                 );
             }
 
@@ -121,13 +121,13 @@ class Reset extends \NDB_Page implements ETagCalculator
                         . ' attempted to reset password for ' . $username
                     );
                     return new \LORIS\Http\Response\JSON\Conflict(
-                        'Sending reset email failed.'
+                        _('Sending reset email failed.')
                     );
                 }
             } catch (\LorisException $e) {
                 error_log($e->getMessage());
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Sending reset email failed.'
+                    _('Sending reset email failed.')
                 );
             }
         }

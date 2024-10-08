@@ -173,7 +173,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _saveInstance(Test $test , $method=null)
     {
         if (!$this->user->hasPermission('battery_manager_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
+            return new \LORIS\Http\Response\JSON\Forbidden(_('Edit Permission Denied'));
         }
 
         // validate instance
@@ -187,7 +187,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         // check if instance is duplicate
         if ($this->_isDuplicate($test) && $method =='post') {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'This Test already exists in the database'
+                _('This Test already exists in the database')
             );
         }
 
@@ -196,7 +196,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\OK();
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Could not add entry to the Test Battery'
+                _('Could not add entry to the Test Battery')
             );
         }
     }
@@ -268,37 +268,37 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     {
         $errors = [];
         if (!isset($test->row['testName'])) {
-            $errors[] = 'Test Name is a required field.';
+            $errors[] = _('Test Name is a required field.');
         }
         if (!isset($test->row['ageMinDays'])) {
-            $errors[] = 'Minimum age is a required field.';
+            $errors[] = _('Minimum age is a required field.');
         }
         if (isset($test->row['ageMinDays']) && $test->row['ageMinDays'] < 0) {
-            $errors[] = 'Minimum age must be greater than 0.';
+            $errors[] = _('Minimum age must be greater than 0.');
         }
         if (!isset($test->row['ageMaxDays'])) {
-            $errors[] = 'Maximum age is a required field.';
+            $errors[] = _('Maximum age is a required field.');
         }
         if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] < 0) {
-            $errors[] = 'Maximum age must be greater than 0.';
+            $errors[] = _('Maximum age must be greater than 0.');
         }
         if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] > 99999) {
-             $errors[] = 'Maximum age must be less than 99999.';
+             $errors[] = _('Maximum age must be less than 99999.');
         }
         if (isset($test->row['ageMinDays']) && $test ->row['ageMinDays'] > 99999) {
-             $errors[] = 'Minimum age must be less than 99999';
+             $errors[] = _('Minimum age must be less than 99999');
         }
         if ($test->row['ageMaxDays'] < $test->row['ageMinDays']) {
-            $errors[] = 'Maximum age must be greater than minimum age.';
+            $errors[] = _('Maximum age must be greater than minimum age.');
         }
         if (!isset($test->row['stage'])) {
-            $errors[] = 'Stage is a required field.';
+            $errors[] = _('Stage is a required field.');
         }
         if (isset($test->row['instrumentOrder'])
             && ($test->row['instrumentOrder'] > 127
             || $test->row['instrumentOrder'] < -127)
         ) {
-            $errors[] = 'Instrument order must be between -127 and 127';
+            $errors[] = _('Instrument order must be between -127 and 127');
         }
 
         return $errors;

@@ -60,14 +60,14 @@ class Cohort extends \NDB_Form
 
         $this->tpl_data['useEDCOptions']
             = [
-                '1' => 'Yes',
-                '0' => 'No',
+                '1' => _('Yes'),
+                '0' => _('No'),
             ];
 
         $this->tpl_data['WindowDifferenceOptions']
             = [
-                'battery' => 'Closest Test Battery',
-                'optimal' => 'Optimal Visit Window for Visit Label',
+                'battery' => _('Closest Test Battery'),
+                'optimal' => _('Optimal Visit Window for Visit Label'),
             ];
     }
 }

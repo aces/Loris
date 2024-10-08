@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Clinical";
+        return _("Clinical");
     }
 
     /**

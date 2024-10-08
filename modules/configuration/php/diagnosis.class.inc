@@ -156,7 +156,7 @@ class Diagnosis extends \NDB_Page
             && $instrumentName && $sourceFields && $orderNumber)
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Please fill out all fields!'
+                _('Please fill out all fields!')
             );
         }
 
@@ -171,7 +171,7 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($visit, $projectVisits)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit is not defined for selected Project.'
+                _('Visit is not defined for selected Project.')
             );
         }
 
@@ -185,7 +185,7 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($instrumentName, $visitInstruments)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Instrument does not exist in selected visit.'
+                _('Instrument does not exist in selected visit.')
             );
         }
 
@@ -197,7 +197,7 @@ class Diagnosis extends \NDB_Page
         $matches          = array_intersect($sourceFields, $instrumentFields);
         if (count($matches) !== count($sourceFields)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Source Field does not exist in instrument.'
+                _('Source Field does not exist in instrument.')
             );
         }
 
@@ -281,7 +281,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    _('Trajectory Name already exists.')
                 );
             }
 
@@ -299,7 +299,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    _('Trajectory Name already exists.')
                 );
             }
 

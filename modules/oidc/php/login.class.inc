@@ -26,7 +26,7 @@ class Login extends \NDB_Page
             return (new \LORIS\Http\Response())
                 ->withStatus(400)
                 ->withBody(
-                    new \LORIS\Http\StringStream("Missing loginWith parameter")
+                    new \LORIS\Http\StringStream(_("Missing loginWith parameter"))
                 );
         }
         $DB = $this->loris->getDatabaseConnection();
@@ -39,7 +39,7 @@ class Login extends \NDB_Page
             return (new \LORIS\Http\Response())
                 ->withStatus(400)
                 ->withBody(
-                    new \LORIS\Http\StringStream("Invalid loginWith parameter")
+                    new \LORIS\Http\StringStream(_("Invalid loginWith parameter"))
                 );
 
         }
@@ -64,7 +64,7 @@ class Login extends \NDB_Page
                 ->withStatus(500)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Could not determine authorization endpoint"
+                        _("Could not determine authorization endpoint")
                     )
                 );
         }
