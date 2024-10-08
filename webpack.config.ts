@@ -143,6 +143,7 @@ const resolve: webpack.ResolveOptions = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
+    i18n: path.resolve(__dirname, './jsx/i18n'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -212,6 +213,20 @@ plugins.push(new CopyPlugin({
         const keep = [
           'react-dom.development.js',
           'react-dom.production.min.js',
+        ];
+        return keep.includes(file);
+      },
+    },
+    {
+      from: path.resolve(__dirname, 'node_modules/react-i18next/dist/umd'),
+      to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+      force: true,
+      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
+      filter: async (path) => {
+        const file = path.split(/\\|\//).pop() as string;
+        const keep = [
+          'react-i18next.js',
+          'react-i18next.min.js',
         ];
         return keep.includes(file);
       },
@@ -300,6 +315,7 @@ configs.push({
     Breadcrumbs: './jsx/Breadcrumbs.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
+    LanguageMenu: './jsx/LanguageMenu.tsx',
     ...entries,
   },
   output: {
@@ -308,7 +324,11 @@ configs.push({
     library: ['lorisjs', '[name]'],
     libraryTarget: 'window',
   },
-  externals: {'react': 'React', 'react-dom': 'ReactDOM'},
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+    'react-i18next': 'ReactI18next'
+  },
   devtool: 'source-map',
   plugins,
   optimization,
@@ -343,7 +363,11 @@ if (!target || target === 'electrophysiology_browser') {
       library: ['lorisjs', '[name]'],
       libraryTarget: 'window',
     },
-    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
+    externals: {
+      'react': 'React',
+      'react-dom': 'ReactDOM',
+      'react-i18next': 'ReactI18next'
+    },
     devtool: 'source-map',
     plugins,
     optimization,
