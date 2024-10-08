@@ -545,8 +545,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Get changed values to save in history
         $issueValuesWithWatching = $issueValues;
         if (isset($values['othersWatching'])) {
-            $usersWatching = $values['othersWatching'];
-            $issueValuesWithWatching['watching'] = $usersWatching;
+            $issueValuesWithWatching['watching'] = $values['othersWatching'];
         }
         $historyValues = $this->getChangedValues(
             $issueValuesWithWatching,
@@ -598,46 +597,50 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // Adding others from multiselect to watching table.
+        // Get users watching all issues
+        $usersWatching = $db->pselectCol(
+            "SELECT u.UserID
+                FROM users_notifications_rel unr
+                JOIN users u ON unr.user_id=u.ID
+                WHERE unr.module_id=
+                (SELECT id FROM notification_modules
+                    WHERE module_name='issue_tracker'
+                    AND operation_type='create/edit'
+                )",
+            []
+        );
+        // If the assignee is watching, add them
+        if ($values['watching'] == 'Yes'
+            && $issueValues['assignee'] == $user->getUsername()
+        ) {
+            $usersWatching[] = $issueValues['assignee'];
+        }
+        // Add new watchers (if any)
         if (isset($values['othersWatching'])) {
+            $usersWatching = array_unique(
+                array_merge(
+                    $usersWatching,
+                    explode(',', $values['othersWatching'] ?? '')
+                )
+            );
+        }
 
+        // Adding others from multiselect to watching table.
+        if (isset($usersWatching)) {
             // Clear the list of current watchers
             $db->delete(
                 'issues_watching',
                 ['issueID' => $issueID]
             );
 
-            // Add new watchers (if any)
-            $usersWatching = explode(',', $values['othersWatching']);
-            // If the assignee is watching, add them
-            if ($values['watching'] == 'Yes'
-                && $issueValues['assignee'] == $user->getUsername()
-            ) {
-                $usersWatching[] = $issueValues['assignee'];
-            }
-
-            foreach ($usersWatching as $usersWatching) {
-                if ($usersWatching) {
+            foreach ($usersWatching as $userWatching) {
+                if ($userWatching) {
                     $db->replace(
                         'issues_watching',
                         [
-                            'userID'  => $usersWatching,
+                            'userID'  => $userWatching,
                             'issueID' => $issueID,
                         ]
-                    );
-                    // Send email to watchers if they are not the assignee
-                    if (isset($issueValues['assignee'])
-                        && $issueValues['assignee'] == $usersWatching
-                    ) {
-                        continue;
-                    }
-                    $this->emailUser(
-                        $issueID,
-                        '',
-                        $usersWatching,
-                        $user,
-                        'false',
-                        $values
                     );
                 }
             }
@@ -667,6 +670,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ]
             );
         }
+        $flag           = 'false';
+        $assigneeString = '';
         // Adding new assignee to watching
         if (isset($issueValues['assignee'])
             && $issueValues['assignee'] !== $assignee
@@ -677,36 +682,21 @@ class Edit extends \NDB_Page implements ETagCalculator
             ];
             $db->replace('issues_watching', $nowWatching);
             // sending email
-            $this->emailUser(
-                $issueID,
-                $issueValues['assignee'],
-                isset($usersWatching) ? $usersWatching : '',
-                $user,
-                'false',
-                $values
-            );
+            $assigneeString = $issueValues['assignee'];
         } else if (isset($issueValues['assignee'])
             && $issueValues['assignee'] === $assignee
         ) {
-            // sending email
-            $this->emailUser(
-                $issueID,
-                $issueValues['assignee'],
-                isset($usersWatching) ? $usersWatching : '',
-                $user,
-                'true',
-                $values
-            );
-        } else {
-            $this->emailUser(
-                $issueID,
-                '',
-                isset($usersWatching) ? $usersWatching : '',
-                $user,
-                'false',
-                $values
-            );
+            $flag           = 'true';
+            $assigneeString = $issueValues['assignee'];
         }
+        $this->emailUser(
+            $issueID,
+            $assigneeString,
+            isset($usersWatching) ? $usersWatching : [],
+            $user,
+            $flag,
+            $values
+        );
         return new \LORIS\Http\Response\JsonResponse(
             ['issueID' => $issueID]
         );
@@ -717,7 +707,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int    $issueID          the issueID
      * @param string $changed_assignee changed assignee
-     * @param string $changed_watcher  changed watcher
+     * @param array  $changed_watcher  changed watcher
      * @param \User  $user             the user requesting the change
      * @param string $new_assignee_tag boolean of whether it is a new assignee
      * @param array  $values           the values the user entered in the form
@@ -725,7 +715,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @return void
      */
     function emailUser(int $issueID, string $changed_assignee,
-        string $changed_watcher, \User $user, string $new_assignee_tag, array $values
+        array $changed_watcher, \User $user, string $new_assignee_tag, array $values
     ) {
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
@@ -793,34 +783,33 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $issue_change_emails = $db->pselect(
-            "SELECT
-                        u.Email AS Email,
-                        u.First_name AS firstname
-                    FROM
-                        users u
-                        INNER JOIN issues_watching w ON (w.userID = u.UserID)
-                    WHERE
-                        w.issueID = :issueID
-                        AND u.UserID = :watcher
-                        AND u.UserID != :assignee
-                        AND u.UserID != :currentUser",
-            [
-                'issueID'     => $issueID,
-                'watcher'     => $changed_watcher,
-                'currentUser' => $user->getUserName(),
-                'assignee'    => $changed_assignee,
-            ]
-        );
-
-        $msg_data['url']         = $baseurl .
-            "/issue_tracker/issue/" . $issueID;
-        $msg_data['issueID']     = $issueID;
-        $msg_data['currentUser'] = $user->getUsername();
-
-        foreach ($issue_change_emails as $email) {
-            $msg_data['firstname'] = $email['firstname'];
-            \Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+        foreach ($changed_watcher as $watcher) {
+            $email = $db->pselectRow(
+                "SELECT
+                    u.Email AS Email,
+                    u.First_name AS firstname
+                FROM
+                    users u
+                    INNER JOIN issues_watching w ON (w.userID = u.UserID)
+                WHERE
+                    w.issueID = :issueID
+                    AND u.UserID = :watcher
+                    AND u.UserID != :assignee
+                    AND u.UserID != :currentUser",
+                [
+                    'issueID'     => $issueID,
+                    'watcher'     => $watcher,
+                    'currentUser' => $user->getUserName(),
+                    'assignee'    => $changed_assignee,
+                ]
+            );
+            if (isset($email)
+                && array_key_exists('firstname', $email)
+                && array_key_exists('firstname', $email)
+            ) {
+                $msg_data['firstname'] = $email['firstname'];
+                \Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+            }
         }
     }
 
