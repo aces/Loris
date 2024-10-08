@@ -301,7 +301,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
     global $db;
     $params = [];
-    $query  = "SELECT CommentID, s.visit_label,Test_name,
+    $query  = "SELECT CommentID, s.visit_label, tn.Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
         JOIN candidate c ON (c.CandID=s.CandID)
@@ -310,7 +310,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND tn.Test_name= :instrument ";
+        $where .= " AND tn.Test_name=:instrument ";
         $params['instrument'] = $test_name;
 
         if (($visit_label!=null) && (isset($visit_label))) {
@@ -583,31 +583,35 @@ function findConflict($conflict, $conflicts)
  */
 function detectIgnoreColumns($instruments, $confirm)
 {
+    global $lorisInstance;
     $instrumentFields = [];
 
     foreach ($instruments as $instrument) {
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
             include_once $file;
-            $commentids      = getCommentIDs($instrument, null);
-            $instance        =& NDB_BVL_Instrument::factory(
-                $instrument,
-                $commentids[0]['CommentID'],
-                null
-            );
-            $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
+            $commentids      = getCommentIDs($instrument, null)->getIterator();
 
-            if ($DDEIgnoreFields != null) {
-                foreach ($DDEIgnoreFields as $key => $DDEField) {
-                    $instrumentFields = array_merge(
-                        $instrumentFields,
-                        [$DDEField => $instrument]
-                    );
+            foreach ($commentids as $cid) {
+                $instance        =& NDB_BVL_Instrument::factory(
+                    $lorisInstance,
+                    $instrument,
+                    $cid['CommentID']
+                );
+                $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
+    
+                if ($DDEIgnoreFields != null) {
+                    foreach ($DDEIgnoreFields as $key => $DDEField) {
+                        $instrumentFields = array_merge(
+                            $instrumentFields,
+                            [$DDEField => $instrument]
+                        );
+                    }
+                } else {
+                    echo "No DDE ignore fields found for " . $instrument;
                 }
-            } else {
-                echo "No DDE ignore fields found for " . $instrument;
+                ignoreColumn($instrument, $instrumentFields, $confirm);
             }
-            ignoreColumn($instrument, $instrumentFields, $confirm);
         } else {
             echo $file . " was not found.\n";
         }
