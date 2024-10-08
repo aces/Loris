@@ -327,7 +327,7 @@ configs.push({
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
-    'react-i18next': 'ReactI18next'
+    'react-i18next': 'ReactI18next',
   },
   devtool: 'source-map',
   plugins,
@@ -366,7 +366,7 @@ if (!target || target === 'electrophysiology_browser') {
     externals: {
       'react': 'React',
       'react-dom': 'ReactDOM',
-      'react-i18next': 'ReactI18next'
+      'react-i18next': 'ReactI18next',
     },
     devtool: 'source-map',
     plugins,
