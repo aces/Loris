@@ -499,7 +499,7 @@ class NDB_BVL_Feedback
         }
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query           .= " AND ft.CommentID = :ComID";
-            $qparams['ComID'] = $this->_feedbackCandidateProfileInfo['CommentID'];
+            $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         }
 
         if (!$hasReadPermission) {

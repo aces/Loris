@@ -236,18 +236,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config  = $factory->config();
         $base    = $config->getSetting('base');
 
+        $db = $factory->database();
+
+        $isMindloggerInstrument = $db->pselectOneInt("SELECT COUNT(*) FROM instrument_mindlogger_schema WHERE AppletID = ?", [$instrument]);
+
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it
         // isn't necessarily an error.
-        if (!file_exists($base."project/instruments/$class.class.inc")
-            && !file_exists($base."project/instruments/$instrument.linst")
-            && $guarantee_exists==false
+        if (!file_exists($base . "project/instruments/$class.class.inc")
+            && !file_exists($base . "project/instruments/$instrument.linst")
+            && $guarantee_exists == false && !$isMindloggerInstrument
         ) {
             return null;
         }
-        if (file_exists($base."project/instruments/$instrument.linst")
-        ) {
+
+        if ($isMindloggerInstrument) {
+            include_once 'NDB_BVL_Instrument_Mindlogger.class.inc';
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_Mindlogger(
+                $loris,
+                $loris->getModule("instruments"),
+                $page,
+                $commentID,
+                $commentID,
+            );
+            $obj->setup($commentID, $page);
+            $obj->loadInstrumentFile($instrument);
+
+            return $obj;
+        } elseif (file_exists($base . "project/instruments/$instrument.linst")) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
                 // The module directory we use for instruments is arbitrary,
