@@ -6,9 +6,9 @@ INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (10,'Behav
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (11,'Data Entry');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (12,'Examiners');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (13,'Imaging');
-INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (16,'Other');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (14,'Technical Issue');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (15,'User Accounts');
-INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (16,'Medications');
+INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (16,'Other');
+INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (17,'Medications');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
