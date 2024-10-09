@@ -307,16 +307,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
     /**
      * Generates the template data for a progress bar.
      *
-     * @param string $ID                The name of the progress bar being
-     *                                  created.
-     * @param string $title             The title to add to the template
-     *                                  variables.
-     * @param int    $recruitmentTarget The target for this recruitment type.
-     * @param int    $totalRecruitment  The total number of candidates of all
-     *                                  types.
-     * @param array  $rawData           The raw data from the database
+     * @param \ProjectID $ID                The name of the progress bar being
+     *                                      created.
+     * @param string     $title             The title to add to the template
+     *                                      variables.
+     * @param int        $recruitmentTarget The target for this recruitment type.
+     * @param int        $totalRecruitment  The total number of candidates of all
+     *                                      types.
+     * @param array      $rawData           The raw data from the database
      *
-     * @return array Smarty template data
+     * @return array     Smarty template data
      */
     private function _createProjectProgressBar(
         $ID,
@@ -413,8 +413,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
     /**
      * Gets the total count of candidates associated with a specific project.
      *
-     * @param array $data      The raw data returned from the SQL query.
-     * @param int   $projectID The Project ID to get recruitment for.
+     * @param array      $data      The raw data returned from the SQL query.
+     * @param \ProjectID $projectID The Project ID to get recruitment for.
      *
      * @return int
      */
