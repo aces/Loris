@@ -164,7 +164,7 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        $data          = $DB->pselect(
+        $data           = $DB->pselect(
             "
                 SELECT COUNT(c.CandID) as Count,
                     c.RegistrationCenterID as SiteID,
@@ -339,9 +339,9 @@ class Charts extends \NDB_Page
      */
     private function _handleScansByMonth()
     {
-        $DB       = \NDB_Factory::singleton()->database();
+        $DB = \NDB_Factory::singleton()->database();
 
-        $params        = $this->_parseGetParameters();
+        $params     = $this->_parseGetParameters();
         $conditions = $this->_buildQueryConditions($params, true);
 
         $user          = \NDB_Factory::singleton()->user();
@@ -447,7 +447,7 @@ class Charts extends \NDB_Page
     {
         $DB = \NDB_Factory::singleton()->database();
 
-        $params        = $this->_parseGetParameters();
+        $params     = $this->_parseGetParameters();
         $conditions = $this->_buildQueryConditions($params, true);
 
         $recruitmentData      = [];
@@ -693,7 +693,7 @@ class Charts extends \NDB_Page
     {
         $data = [];
         foreach ($labels as $label) {
-            $month = (strlen($label) == 6)
+            $month  = (strlen($label) == 6)
                 ? substr($label, 0, 1) : substr($label, 0, 2);
             $year   = substr($label, -4, 4);
             $data[] = intval($recruitmentdata[$siteID][$year][$month] ?? "0");

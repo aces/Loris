@@ -105,13 +105,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     'project ID ' . intval(strval($projectID))
                 );
             }
-            $recruitment[intval(strval($projectID))] = $this->_createProjectProgressBar(
-                $projectID,
-                $projectInfo['Name'],
-                $projectInfo['recruitmentTarget'],
-                $this->getTotalRecruitmentByProject($recruitmentRaw, ($projectID)),
-                $recruitmentRaw
-            );
+            $recruitment[intval(strval($projectID))]
+                = $this->_createProjectProgressBar(
+                    $projectID,
+                    $projectInfo['Name'],
+                    $projectInfo['recruitmentTarget'],
+                    $this->getTotalRecruitmentByProject(
+                        $recruitmentRaw,
+                        $projectID
+                    ),
+                    $recruitmentRaw
+                );
 
             // Set cohort recruitment data
             $project = \Project::getProjectFromID($projectID);
@@ -345,7 +349,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if ($ID == 'overall') {
             $totalMales = $this->_getTotalSex($rawData, "Male");
         } else {
-            $totalMales = $this->getTotalSexByProject($rawData, "Male", intval(strval($ID)));
+            $totalMales = $this->getTotalSexByProject(
+                $rawData,
+                "Male",
+                intval(strval($ID))
+            );
         }
         $rv['male_total']   = $totalMales;
         $rv['male_percent']
