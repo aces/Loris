@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written for a one time use only to iterate through
  * instruments and generate a patch to remove the Data_entry_completion_status

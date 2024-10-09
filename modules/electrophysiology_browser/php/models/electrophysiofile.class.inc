@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *

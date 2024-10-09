@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class implements a data Instance which represents a single
  * row in the survey accounts menu table.

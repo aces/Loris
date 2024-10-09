@@ -21,8 +21,13 @@ class Card extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.state = {hasError: false};
   }
 
+  static getDerivedStateFromError(error) {
+    console.error(error);
+    return {hasError: true};
+  }
   /**
    * Delegate clicks on the card to the onClick handler
    *
@@ -68,7 +73,11 @@ class Card extends Component {
             onClick={this.handleClick}
             style={cursorStyle}
           >
-            {this.props.children}
+            {this.state.hasError ? <div>
+                      <strong>Something went wrong rendering this panel.
+                          Please open a bug report.</strong>
+                      </div>
+                      : this.props.children}
           </div>
         </Panel>
       </div>

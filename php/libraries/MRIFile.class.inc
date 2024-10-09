@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Contains the MRIFile class used for NeuroDB imaging
  *
@@ -86,19 +87,19 @@ class MRIFile
     function getParameter(string $parameterName): ?string
     {
         if (isset($this->QCData[$parameterName])) {
-            return $this->QCData[$parameterName];
+            return strval($this->QCData[$parameterName]);
         }
         if (isset($this->intermFiles[$parameterName])) {
-            return $this->intermFiles[$parameterName];
+            return strval($this->intermFiles[$parameterName]);
         }
         if (isset($this->protFiles[$parameterName])) {
-            return $this->protFiles[$parameterName];
+            return strval($this->protFiles[$parameterName]);
         }
 
         if (isset($this->fileData[$parameterName])) {
-            return $this->fileData[$parameterName];
+            return strval($this->fileData[$parameterName]);
         } elseif (isset($this->parameters[$parameterName])) {
-            return $this->parameters[$parameterName];
+            return strval($this->parameters[$parameterName]);
         } else {
             return null;
         }

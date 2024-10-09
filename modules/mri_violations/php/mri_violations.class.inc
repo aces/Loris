@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -147,7 +148,11 @@ class Mri_Violations extends \DataFrameworkMenu
             );
         default:
             return (new Provisioner())
-                ->filter(new UserCenterMatchOrNull())
+                ->filter(
+                    new UserCenterMatchOrNullOrAnyPermission(
+                        $this->allSitePermissionNames(),
+                    )
+                )
                 ->filter(new UserProjectMatchOrNull());
         }
     }

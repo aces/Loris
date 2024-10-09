@@ -401,13 +401,15 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         $db = $this->loris->getDatabaseConnection();
 
-        $unformattedComments = $db->pselect(
-            "SELECT newValue, fieldChanged, dateAdded, addedBy " .
-            "FROM issues_history where issueID=:issueID " .
-            "UNION " .
-            "SELECT issueComment, 'comment', dateAdded, addedBy " .
-            "FROM issues_comments where issueID=:issueID ",
-            ['issueID' => $issueID]
+        $unformattedComments = iterator_to_array(
+            $db->pselect(
+                "SELECT newValue, fieldChanged, dateAdded, addedBy " .
+                "FROM issues_history where issueID=:issueID " .
+                "UNION " .
+                "SELECT issueComment, 'comment', dateAdded, addedBy " .
+                "FROM issues_comments where issueID=:issueID ",
+                ['issueID' => $issueID]
+            )
         );
 
         // looping by reference so can edit in place
@@ -449,7 +451,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     = $this->formatUserInformation($comment['newValue']);
             }
         }
-        return iterator_to_array($unformattedComments); //now formatted I guess
+        return $unformattedComments; //now formatted I guess
     }
 
     /**

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 

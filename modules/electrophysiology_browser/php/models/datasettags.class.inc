@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser\Models;
 use DatabaseException;
 use Psr\Log\LoggerAwareTrait;
