@@ -107,11 +107,8 @@ class Issue extends \NDB_Form
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
-        $centerID  = $issueData['centerID']
-                        ? new \CenterID(strval($issueData['centerID']))
-                        : '';
         return (is_null($issueData)
-            || in_array($centerID, $user->getCenterIDs())
+            || in_array($issueData['centerID'], $user->getCenterIDs())
             || ($user->hasPermission('access_all_profiles'))
             || (empty($issueData['centerID']))
         );
