@@ -156,7 +156,7 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteSexBreakdown()
     {
-        $DB = \NDB_Factory::singleton()->database();
+        $DB      = \NDB_Factory::singleton()->database();
         $sexData = [];
 
         $params     = $this->_parseGetParameters();
