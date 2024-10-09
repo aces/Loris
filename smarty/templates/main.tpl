@@ -13,7 +13,14 @@
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        let loris = new LorisHelper(
+            {$userjson},
+            {$jsonParams},
+            {$userPerms|json_encode},
+            {$studyParams|json_encode},
+            {$supported_languages|json_encode},
+        );
+
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>

@@ -2,10 +2,12 @@ import i18n from 'i18next';
 import {useCallback} from 'react';
 import {initReactI18next, useTranslation} from 'react-i18next';
 
-export const supportedLanguages = [
-  {code: 'en', name: 'English'},
-  {code: 'fr', name: 'Français'},
-];
+export type Language = {
+  code: string;
+  name: string;
+}
+
+declare const loris: any;
 
 /**
  * Check if a given language code is among the supported langauges of this
@@ -14,7 +16,9 @@ export const supportedLanguages = [
  * @returns The boolean
  */
 function isSupportedLanguage(languageCode: string) {
-  return supportedLanguages.some((language) => languageCode === language.code);
+  return loris.supportedLanguages.some(
+    (language: Language) => languageCode === language.code
+  );
 }
 
 /**
@@ -70,7 +74,7 @@ const resources = {
       'Time run': 'Date d\'insertion',
       'Image file': 'Fichier de l\'image',
       'Series description or scan type':
-        'Description de la série ou type du scan',
+        'Description de la série ou type de scan',
       'Type of problem': 'Type de problème',
       'Resolution status': 'Statut de résolution',
       'Series UID': 'UID de la série',

@@ -16,6 +16,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $Config;
     protected $BaseURL;
     protected $PageName;
+    protected array $supported_languages;
 
     protected \User $user;
 
@@ -25,7 +26,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         string $pagename,
         \NDB_Config $config,
         array $JS,
-        array $CSS
+        array $CSS,
+        array $supported_languages,
     ) {
 
         $this->JSFiles  = $JS;
@@ -34,6 +36,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
         $this->user     = $user;
+        $this->supported_languages = $supported_languages;
     }
 
     /**
@@ -276,6 +279,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Assign the console template variable as the very, very last thing.
         $tpl_data['console'] = htmlspecialchars(ob_get_contents());
         ob_end_clean();
+
+        $tpl_data['supported_languages'] = $this->supported_languages;
 
         // Finally, the actual content and render it..
         $tpl_data += array(
