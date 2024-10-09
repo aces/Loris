@@ -590,7 +590,7 @@ function detectIgnoreColumns($instruments, $confirm)
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
             include_once $file;
-            $commentids      = getCommentIDs($instrument, null)->getIterator();
+            $commentids = getCommentIDs($instrument, null)->getIterator();
 
             foreach ($commentids as $cid) {
                 $instance        =& NDB_BVL_Instrument::factory(
@@ -599,7 +599,7 @@ function detectIgnoreColumns($instruments, $confirm)
                     $cid['CommentID']
                 );
                 $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
-    
+
                 if ($DDEIgnoreFields != null) {
                     foreach ($DDEIgnoreFields as $key => $DDEField) {
                         $instrumentFields = array_merge(
