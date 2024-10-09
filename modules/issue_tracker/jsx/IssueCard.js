@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import '../css/issue_card.css';
 
 const IssueCard = React.memo(function IssueCard({
   issue,
@@ -88,6 +89,8 @@ const IssueCard = React.memo(function IssueCard({
     });
   };
 
+  const description = editedIssue.description || '';
+
   return (
     <div className="issue-card">
       <div className="issue-header">
@@ -109,12 +112,12 @@ const IssueCard = React.memo(function IssueCard({
           </h3>
         </div>
         <div className="issue-dates">
-          <span> {issue.dateCreated}</span>
+          <span>Created: {issue.dateCreated}</span>
           <span>Last Updated: {issue.lastUpdate}</span>
           <span>Assignee: {issue.assignee}</span>
         </div>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="issue-form">
         <div className="issue-controls">
           <select
             value={tempEditedIssue.status}
@@ -145,18 +148,42 @@ const IssueCard = React.memo(function IssueCard({
             ))}
           </select>
         </div>
-        <div className="issue-description">
-        <label htmlFor="description" className="small">Description</label>
-          {isEditing ? (
-            <textarea
-              value={tempEditedIssue.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-            />
-          ) : (
-            <p>{editedIssue.description}</p>
-          )}
+        <div className="issue-content">
+          <div className="description-section">
+            <label htmlFor="description" className="small">Description</label>
+            {isEditing ? (
+              <textarea
+                value={tempEditedIssue.description || ''}
+                onChange={
+                  (e) => handleInputChange('description', e.target.value)
+                }
+                className="textarea"
+              />
+            ) : (
+              <div className="description-container">
+                <p className="description-text">{description}</p>
+              </div>
+            )}
+          </div>
+          <div className="comments-section">
+            <label className="small">Last 3 Comments</label>
+            <div className="comments-container">
+              {issue.topComments.length > 0 ? (
+                issue.topComments.map((comment, index) => (
+                  <div key={index} className="comment">
+                    <p className="comment-text">{comment.issueComment}</p>
+                    <span className="comment-meta">
+                      {comment.addedBy} on {comment.dateAdded}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="no-comments">No comments available.</p>
+              )}
+            </div>
+          </div>
         </div>
-        <br/>
+        <br />
         {!isEditing && (
           <button
           className="btn btn-primary"
@@ -193,24 +220,31 @@ const IssueCard = React.memo(function IssueCard({
 
 IssueCard.propTypes = {
   issue: PropTypes.shape({
-    issueID: PropTypes.string.isRequired,
+    issueID: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     reporter: PropTypes.string.isRequired,
     assignee: PropTypes.string,
     status: PropTypes.string.isRequired,
     priority: PropTypes.string.isRequired,
-    module: PropTypes.string,
+    module: PropTypes.number,
     dateCreated: PropTypes.string.isRequired,
     lastUpdate: PropTypes.string,
     lastUpdatedBy: PropTypes.string,
-    sessionID: PropTypes.string,
-    centerID: PropTypes.string,
-    candID: PropTypes.string,
+    sessionID: PropTypes.number,
+    centerID: PropTypes.number,
+    candID: PropTypes.number,
     category: PropTypes.string,
     instrument: PropTypes.string,
     description: PropTypes.string,
     PSCID: PropTypes.string,
     visitLabel: PropTypes.string,
+    topComments: PropTypes.arrayOf(
+      PropTypes.shape({
+        issueComment: PropTypes.string.isRequired,
+        dateAdded: PropTypes.string.isRequired,
+        addedBy: PropTypes.string.isRequired,
+      })
+    ).isRequired,
   }).isRequired,
   onUpdate: PropTypes.func.isRequired,
   statuses: PropTypes.object.isRequired,
