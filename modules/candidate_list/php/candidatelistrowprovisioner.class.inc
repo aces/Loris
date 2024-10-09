@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the candidate list menu page.
@@ -99,8 +100,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = new \CenterID($row['RegistrationCenterID']);
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         if ($row['DoB'] !== null) {
             $dob = new \DateTimeImmutable($row['DoB']);
             switch ($this->dobFormat) {

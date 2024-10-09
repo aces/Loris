@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is a wrapper around Configuration errors thrown from
  * the Loris database

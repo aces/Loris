@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This contains an abstract class for Loris unit tests which
  * will not mock the Database class and therefore will use

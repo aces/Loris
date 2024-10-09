@@ -18,7 +18,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (16,20,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (17,21,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (18,22,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (19,23,'0');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (20,24,'Modify this to your project\'s citation policy');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (20,24,'Customize this text with your citation policy (via Configuration module)');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (22,12,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/var/www/loris/');

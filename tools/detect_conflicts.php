@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * - Option to detect conflicts for the given instrument
  * and create corresponding CSV file
@@ -625,22 +626,22 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
     global $db;
 
     foreach ($instrumentFields as $field => $instr) {
-        $query        = "SELECT TableName, FieldName, Value1, Value2 
+        $query        = "SELECT TestName, FieldName, Value1, Value2 
             FROM conflicts_unresolved 
-            WHERE TableName = '$instrument' AND FieldName = '$field'";
+            WHERE TestName = '$instrument' AND FieldName = '$field'";
         $ignoreColumn = $db->pselectOne($query, []);
 
         if (!empty($ignoreColumn)) {
             $query = "SELECT 
-                TableName, FieldName, CommentId1, Value1, CommentId2, Value2 
+                TestName, FieldName, CommentId1, Value1, CommentId2, Value2 
                 FROM conflicts_unresolved 
-                WHERE TableName = '$instrument' AND FieldName = '$field'";
+                WHERE TestName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
 
             if ($confirm) {
                 $query = "DELETE FROM conflicts_unresolved 
-                    WHERE TableName = '$instrument' AND FieldName = '$field'";
+                    WHERE TestName = '$instrument' AND FieldName = '$field'";
                 $db->run($query);
             }
         }

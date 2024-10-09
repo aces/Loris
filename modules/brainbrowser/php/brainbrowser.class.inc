@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is a stub class that permits Loris to load the BrainBrowser
  * module. Since BrainBrowser is implemented in Javascript on the

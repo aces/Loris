@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publication data retriever
  *
@@ -61,10 +62,13 @@ function getData($db) : array
     );
 
     // for selecting behavioural variables of interest
-    $bvlVOIs = $db->pselect(
-        "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
-        "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
-        []
+    $bvlVOIs = iterator_to_array(
+        $db->pselect(
+            "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt 
+	    JOIN test_names tn ON tn.Test_name=pt.SourceFrom
+	    ORDER BY pt.SourceFrom",
+            []
+        )
     );
 
     $rawProject = $db->pselect(
@@ -145,7 +149,8 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, pr.Name as project, datePublication, '.
+    $query  = 'SELECT Title, Description, ' .
+        'p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
@@ -199,6 +204,7 @@ function getProjectData($db, $user, $id) : array
             'title'                 => $title,
             'description'           => $description,
             'project'               => $result['project'],
+            'projectName'           => $result['projectName'],
             'datePublication'       => $datePublication,
             'journal'               => $journal,
             'link'                  => $link,
@@ -286,12 +292,14 @@ function getCollaborators($id) : array
 {
     $db = \NDB_Factory::singleton()->database();
 
-    $collaborators = $db->pselect(
-        'SELECT Name as name, Email as email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
+    $collaborators = iterator_to_array(
+        $db->pselect(
+            'SELECT Name as name, Email as email FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
+            'WHERE pcr.PublicationID=:pid',
+            ['pid' => $id]
+        )
     );
 
     return $collaborators;
@@ -313,12 +321,16 @@ function getFiles($id) : array
         ['pid' => $id]
     );
 
+    $results = [];
     foreach ($files as $key => $f) {
-        $files[$key]['Citation'] = htmlspecialchars_decode($f['Citation']);
-        $files[$key]['Version']  = htmlspecialchars_decode($f['Version']);
+        $val = [];
+        $val['Citation'] = htmlspecialchars_decode($f['Citation']);
+        $val['Version']  = htmlspecialchars_decode($f['Version']);
+
+        $results[$key] = $val;
     }
 
-    return $files;
+    return $results;
 }
 
 /**

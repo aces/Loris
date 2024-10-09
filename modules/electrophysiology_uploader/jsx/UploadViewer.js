@@ -53,10 +53,19 @@ export default function UploadViewer(props) {
     {
       label: 'PSCID',
       show: true,
+      filter: {
+        name: 'pscid',
+        type: 'text',
+      },
     },
     {
       label: 'Visit',
       show: true,
+      filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: props.fieldOptions.visitLabel,
+      },
     },
     {
       label: 'Upload Location',

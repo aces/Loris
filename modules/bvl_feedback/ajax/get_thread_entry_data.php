@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This AJAX request serves the purpose of getting the entries for a given
  * bvl_feedback thread.
@@ -29,3 +30,4 @@ if (isset($_GET['feedbackID']) && !Empty($_GET['feedbackID'])) {
 }
 
 exit();
+

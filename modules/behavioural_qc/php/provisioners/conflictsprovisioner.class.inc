@@ -28,7 +28,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
   	          s.CandID AS _candID,
   	          ca.PSCID AS _pscID,
   	          c.FieldName AS _fieldName,
-  	          c.TableName AS _tableName,
+  	          c.TestName AS _testName,
   	          t.full_name AS _test_name_display,
   	          s.visit_label AS _visit,
               s.ProjectID AS _project,
@@ -42,7 +42,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 	          LEFT JOIN flag f ON (c.CommentId1 = f.CommentID)
 	          LEFT JOIN session s ON (f.SessionID = s.ID)
 	          LEFT JOIN candidate ca ON (ca.CandID = s.CandID)
-	          JOIN test_names t ON (t.test_name = f.test_name)
+	          JOIN test_names t ON (t.ID = f.TestID)
 	          JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
 	          ca.Active = 'Y'

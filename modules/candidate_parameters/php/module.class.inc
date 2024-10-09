@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateInfo;
 use LORIS\candidate_profile\CandidateWidget;

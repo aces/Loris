@@ -17,10 +17,11 @@
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='LorisModuleIntegrationTests'>
+	<testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
-            <directory>../modules/brainbrowser/test/</directory>
+            <directory>../modules/battery_manager/test/</directory>
+            <directory>../modules/brainbrowser/test/</directory>	
             <directory>../modules/bvl_feedback/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
@@ -35,7 +36,7 @@
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
             <directory>../modules/electrophysiology_browser/test/</directory>
-            <directory>../modules/electrophysiology_uploader/test/</directory>	    
+            <directory>../modules/electrophysiology_uploader/test/</directory>    	
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
@@ -52,8 +53,9 @@
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/my_preferences/test/</directory>
             <directory>../modules/new_profile/test/</directory>
-	    <directory>../modules/next_stage/test/</directory>
-	    <directory>../modules/publication/test/</directory>
+            <directory>../modules/next_stage/test/</directory>
+            <directory>../modules/publication/test/</directory>
+            <directory>../modules/schedule_module/test/</directory>
             <directory>../modules/server_processes_manager/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>
@@ -61,7 +63,7 @@
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
-            <directory>../test/test_instrument/</directory>
+            <directory>../test/test_instrument/</directory>	
         </testsuite>
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so

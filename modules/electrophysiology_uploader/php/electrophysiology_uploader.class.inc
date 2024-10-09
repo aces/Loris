@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\electrophysiology_uploader;
 
@@ -77,7 +77,8 @@ class Electrophysiology_Uploader extends \DataFrameworkMenu
         }
 
         return [
-            'sites' => $site_options
+            'sites'      => $site_options,
+            'visitLabel' => \Utility::getVisitList(),
         ];
     }
 

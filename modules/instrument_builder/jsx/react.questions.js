@@ -14,10 +14,10 @@ import PropTypes from 'prop-types';
 import {
     SelectElement,
     DateElement,
+    TextboxElement,
     TextareaElement,
-    TextElement,
     NumericElement,
-    ButtonElement,
+    StaticElement,
 } from 'jsx/Form';
 
 /**

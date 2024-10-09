@@ -19,7 +19,7 @@ function useBreadcrumbs(
     useEffect(() => {
         const breadcrumbs = [
             {
-                text: 'Data Query Tool (Alpha)',
+                text: 'Data Query Tool (Beta)',
                 /**
                  * OnClick handler for the main breadcrumb
                  *
@@ -77,7 +77,7 @@ function useBreadcrumbs(
                  */
                 onClick: (e) => {
                     e.preventDefault();
-                    setActiveTab('View Data');
+                    setActiveTab('ViewData');
                 },
             });
         }
