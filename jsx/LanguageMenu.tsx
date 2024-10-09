@@ -1,4 +1,6 @@
-import {supportedLanguages, useLanguage} from 'i18n';
+import {Language, useLanguage} from 'i18n';
+
+declare const loris: any;
 
 /**
  * The language menu component, which displays the list of languages supported
@@ -11,7 +13,7 @@ function LanguageMenu() {
 
   return (
     <div>
-      {supportedLanguages.map((language) => (
+      {loris.supportedLanguages.map((language: Language) => (
         <button
           key={language.code}
           className={language.code === currentLanguageCode ? 'selected' : ''}
