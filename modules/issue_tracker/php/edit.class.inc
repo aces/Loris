@@ -284,13 +284,13 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
     }
 
-        /**
-         * Fetches all issues from the database
-         *
-         * @param \User $user The current user
-         *
-         * @return array
-         */
+    /**
+     * Fetches all issues and includes top 3 comments per issue.
+     *
+     * @param \User $user The current user.
+     *
+     * @return array List of issues with top comments.
+     */
     private function _getAllIssues(\User $user): array
     {
         $db = $this->loris->getDatabaseConnection();
@@ -323,10 +323,46 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issue['lastUpdatedBy'] = $this->formatUserInformation(
                 $issue['lastUpdatedBy']
             );
+            $issue['topComments']   = $this->getTopComments(
+                (int)$issue['issueID']
+            );
         }
 
         return $issues;
     }
+
+    /**
+     * Fetches the top 3 most recent comments for an issue.
+     *
+     * @param int $issueID The ID of the issue.
+     *
+     * @return array Top 3 comments with comment text, date, and author.
+     */
+    function getTopComments(int $issueID): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $comments = $db->pselect(
+            "SELECT issueComment, dateAdded, addedBy
+             FROM issues_comments
+             WHERE issueID = :issueID
+             ORDER BY dateAdded DESC 
+             LIMIT 3",
+            ['issueID' => $issueID]
+        );
+
+        $topComments = [];
+        foreach ($comments as $comment) {
+            $topComments[] = [
+                'issueComment' => $comment['issueComment'],
+                'dateAdded'    => $comment['dateAdded'],
+                'addedBy'      => $this->formatUserInformation($comment['addedBy']),
+            ];
+        }
+
+        return $topComments;
+    }
+
     /**
      * If issueID is passed retrieves issue data from database,
      * otherwise return empty issue data object
