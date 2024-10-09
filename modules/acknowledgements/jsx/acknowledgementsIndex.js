@@ -7,6 +7,13 @@ import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    DateElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Acknowledgements Module page.
@@ -268,8 +275,6 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddForm() {
-    const requireEndDate = (this.state.formData.addPresent === 'No') || false;
-    const disableEndDate = (this.state.formData.addPresent === 'Yes') || false;
     return (
       <Modal
         title='Add Acknowledgement'
@@ -348,17 +353,7 @@ class AcknowledgementsIndex extends Component {
             maxYear={this.state.data.maxYear}
             minYear={this.state.formData.addStartDate
                     || this.state.data.minYear}
-            disabled={disableEndDate}
-            required={requireEndDate}
-            onUserInput={this.setFormData}
-          />
-          <SelectElement
-            name='addPresent'
-            options={this.state.data.fieldOptions.presents}
-            label='Present'
-            value={this.state.formData.addPresent}
-            emptyOption={true}
-            required={true}
+            required={false}
             onUserInput={this.setFormData}
           />
           <div>

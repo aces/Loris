@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the NDB_Page base class. This file should
  * contain ALL of the references to HTML_QuickForm (or any library
@@ -155,7 +156,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function setTemplateVar($name, $value)
     {
-        $this->tpl_data[$name] = htmlspecialchars($value);
+        $this->tpl_data[$name] = htmlspecialchars(strval($value));
     }
 
     /**
@@ -856,7 +857,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
             $baseurl . "/js/util/queryString.js",
-            $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Help.js',
         ];
         return $files;

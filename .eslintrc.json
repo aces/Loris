@@ -48,7 +48,7 @@
         "ignoreComments": true
     }],
     "no-unexpected-multiline": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-useless-escape": "off",
     "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",
@@ -88,7 +88,9 @@
     "jsdoc/require-returns": "off",
     "jsdoc/require-returns-description": "off",
     "jsdoc/check-tag-names": "error",
-    "jsdoc/check-types": "error"
+    "jsdoc/check-types": "error",
+    "jsdoc/valid-types": "error",
+    "jsdoc/no-undefined-types": "error"
   },
   "overrides": [
     {

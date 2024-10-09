@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file features the code for the form portion of the Loris issue
  * tracker.
@@ -158,5 +159,22 @@ class Issue extends \NDB_Form
         // display based on whether it's a PUT or GET request in order to remove
         // the ajax/EditIssue.php hack.
         return parent::handle($request);
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Issue',
+                "/issue_tracker/issue/$this->issueID"
+            )
+        );
     }
 }

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file handles the Document Repository for LORIS
  *
@@ -26,8 +27,9 @@ class Document_Repository extends \DataFrameworkMenu
 {
     private const PERMISSIONS = [
         'document_repository_view',
-        'document_repository_edit',
         'document_repository_delete',
+        'document_repository_categories',
+        'document_repository_upload_edit'
     ];
     public $AjaxModule        = true;
     public $skipTemplate      = true;
@@ -104,6 +106,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
+            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
         ];
     }
     /**

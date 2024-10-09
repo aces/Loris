@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
@@ -98,7 +99,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
+            c.Active, u1.Real_name as RegisteredBy, 
+            c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -106,7 +108,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $row = $db->pselectRow($query, $CandArray);
 
-        if (!is_array($row) || sizeof($row) == 0) {
+        if ($row === null) {
             throw new \LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
@@ -130,12 +132,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
-                $registrationProjectID     = new \ProjectID($value);
+                $registrationProjectID     = \ProjectID::singleton($value);
                 $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $registrationCenterID      = new \CenterID($value);
+                $registrationCenterID      = \CenterID::singleton($value);
                 $this->candidateInfo[$key] = $registrationCenterID;
+                break;
+            case 'CandID':
+                $this->candidateInfo[$key] = new CandID(strval($value));
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -208,8 +213,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $timepoints[] = new TimePoint(
                 new TimePointData(
                     new SessionID(strval($value["ID"])),
-                    new ProjectID(strval($value["ProjectID"])),
-                    new CenterID(strval($value["CenterID"])),
+                    ProjectID::singleton($value["ProjectID"]),
+                    CenterID::singleton($value["CenterID"]),
                 )
             );
         }
@@ -574,7 +579,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the CandID of this candidate
      *
-     * @return integer 6 digit CandID
+     * @return CandID
      */
     function getCandID()
     {
@@ -621,6 +626,40 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     function getCandidateDoB(): ?string
     {
         return $this->candidateInfo["DoB"];
+    }
+
+    /**
+     * Returns the way that the DoB should be displayed for this
+     * candidate to a user on the frontend.
+     *
+     * @return ?array{label:string,value:string}
+     */
+    function getDisplayDoB(): ?array
+    {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $dobFormat = $config->getSetting('dobFormat');
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
+        switch ($dobFormat) {
+        case 'Ym':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m'),
+            ];
+        case 'Ymd':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m-d'),
+            ];
+        default:
+            throw new Exception("Unhandled DoB format: $dobFormat");
+        }
     }
 
     /**
@@ -774,12 +813,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
           WHERE CandID=:cid AND Date_visit IS NOT NULL
           ORDER BY Date_visit DESC LIMIT 1";
         $where  = ['cid' => $candID];
-        $result = $db->pselect($query, $where);
+        $result = $db->pselectRow($query, $where);
 
         if (empty($result)) {
             return null;
         }
-        return $result[0];
+        return $result;
     }
 
     /**
@@ -1039,6 +1078,79 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
         return $res['Description'] ?? '';
     }
+
+    /**
+     * Returns the candidate's latest diagnosis defined by
+     * the configured diagnosis trajectory. Based on input, can return
+     * the confirmed or unconfirmed latest diagnosis. A confirmed
+     * diagnosis is one that has been pulled from a session that has
+     * Approval = 'Pass'
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return array|null JSON of the candidate's latest diagnosis
+     *                    as depicted by the configured diagnosis
+     *                    evolution ordering.
+     */
+    function getLatestDiagnosis(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) : ?array {
+        $DB = \NDB_Factory::singleton()->database();
+
+        // Define where clauses
+        $whereConfirmed = $isConfirmed ?
+            " AND Confirmed='Y'" : "";
+
+        $latestDx = $DB->pselectRow(
+            "SELECT DxEvolutionID,
+                ProjectID,
+                CandID,
+                Name,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM diagnosis_evolution 
+            JOIN candidate_diagnosis_evolution_rel USING (DxEvolutionID)
+            WHERE OrderNumber IN (
+                SELECT MAX(orderNumber) AS OrderNumber 
+                FROM diagnosis_evolution de2
+                JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+                WHERE CandID=:candID
+                AND ProjectID=:projID"
+                . $whereConfirmed .
+            " )
+            AND CandID=:candID
+            AND ProjectID=:projID"
+            . $whereConfirmed,
+            [
+                'candID' => $this->getCandID(),
+                'projID' => $projectID
+            ]
+        );
+
+        return $latestDx ?? null;
+    }
+
+    /**
+     * Returns the DxEvolutionID for which the latest diagnosis
+     * of the specified project is based on.
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return string|null the DxEvolutionID that LatestDiagnosis is based on
+     */
+    function getLatestDiagnosisSource(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) {
+        $latestDx = $this->getLatestDiagnosis($projectID, $isConfirmed);
+        return $latestDx['DxEvolutionID'] ?? null;
+    }
+
     /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation

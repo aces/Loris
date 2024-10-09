@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP version 7
  *
@@ -33,7 +34,7 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '
              SELECT
               conflicts_resolved.ResolvedID as resolvedid,
-              conflicts_resolved.TableName as instrument,
+              conflicts_resolved.TestName as instrument,
               session.CandID as candid,
               candidate.PSCID as pscid,
               session.Visit_label as visitlabel,

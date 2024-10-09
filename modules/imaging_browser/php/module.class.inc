@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\imaging_browser;
 use \LORIS\candidate_profile\CandidateWidget;
 
@@ -80,6 +81,7 @@ class Module extends \Module
                          AND s.CenterID <> 1",
                     'imaging_browser_view_allsites',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . "/imaging_browser/?pendingNew=N&pendingNew=P",
                     "new-scans"
                 )
@@ -102,10 +104,11 @@ class Module extends \Module
                 GROUP BY s.Visit_label, mst.Scan_type, QC",
                 ['cid' => $candidate->getCandID()],
             );
-            if (empty($scansummary)) {
+
+            if (count($scansummary) === 0) {
                 return [];
             }
-            foreach ($scansummary as &$summary) {
+            foreach ($scansummary as $summary) {
                 $summary['nfiles'] = (int )$summary['nfiles'];
             }
             return [
@@ -113,12 +116,22 @@ class Module extends \Module
                     "Imaging QC Summary",
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
-                    [ 'Files' => $scansummary],
+                    [ 'Files' => iterator_to_array($scansummary)],
                     2,
                     1,
                 )
             ];
         }
         return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine
+     */
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
+        return new QueryEngine($this->loris);
     }
 }

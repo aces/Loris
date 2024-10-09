@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Media uploader.
  *
@@ -117,12 +118,9 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (empty($_FILES)) {
-        echo showMediaError(
-            "File could not be uploaded successfully.
-            Please contact the administrator.",
-            400
-        );
+    if (empty($_POST)) {
+        echo showMediaError("File too large!", 413);
+        return;
     }
 
     if (!isset($pscid, $visit)) {
@@ -191,11 +189,13 @@ function uploadFile()
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
-            $result = $db->pselect(
-                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+            $result = iterator_to_array(
+                $db->pselect(
+                    'SELECT ID, CandID, CenterID, ProjectID, Visit_label
                             from session
                         where ID=:ID',
-                $qparam
+                    $qparam
+                )
             )[0];
             echo json_encode(
                 [
@@ -220,7 +220,7 @@ function uploadFile()
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("File too Large!", 500);
     }
 }
 
@@ -264,11 +264,11 @@ function getUploadFields()
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
     $sessionQuery = "SELECT
-                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                      c.PSCID, s.Visit_label, s.CenterID, tn.Test_name, tn.Full_name
                      FROM candidate c
                       LEFT JOIN session s USING (CandID)
                       LEFT JOIN flag f ON (s.ID=f.SessionID)
-                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
+                      LEFT JOIN test_names tn ON (f.TestID=tn.ID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -276,9 +276,11 @@ function getUploadFields()
     } else {
         $sessionQuery .= " ORDER BY c.PSCID ASC";
     }
-    $sessionRecords = $db->pselect(
-        $sessionQuery,
-        $qparam
+    $sessionRecords = iterator_to_array(
+        $db->pselect(
+            $sessionQuery,
+            $qparam
+        )
     );
 
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
@@ -349,7 +351,7 @@ function getUploadFields()
         $mediaData   = $db->pselectRow(
             "SELECT " .
             "m.session_id as sessionID, " .
-            "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
+            "c.PSCID as pscid, " .
             "Visit_label as visitLabel, " .
             "instrument, " .
             "CenterID as forSite, " .
@@ -358,9 +360,10 @@ function getUploadFields()
             "file_name as fileName, " .
             "hide_file as hideFile, " .
             "language_id as language," .
-            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
-            "WHERE m.id = $idMediaFile",
-            []
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID 
+                LEFT JOIN candidate c ON (c.CandID=s.CandID) " .
+            "WHERE m.id = :mediaId",
+            ['mediaId' => $idMediaFile]
         );
     }
 

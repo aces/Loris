@@ -3,9 +3,8 @@
   <tr>
     <th>Acquisition ID</th>
     <td>
-      <a class="dicom_archive" style="cursor: pointer"
-         data-patientname="{$archive.PatientName}">
-         {$archive.DicomArchiveID}
+      <a href="/mri_violations?patientName={$archive.PatientName}">
+        {$archive.DicomArchiveID}
       </a>
     </td>
   </tr>
@@ -81,14 +80,14 @@
   <tr>
     <th>md5sum of Archive</th>
     <td>
-      <pre><br><b>{$archive.md5sumArchive}</pre>
-      </b></td>
+      <pre><b>{$archive.md5sumArchive}</b></pre>
+    </td>
   </tr>
   <tr>
     <th>md5sum of Dicom unzipped</th>
-    <td><br><b>
-        <pre>{$archive.md5sumDicomOnly}</pre>
-      </b></td>
+    <td>
+      <pre><b>{$archive.md5sumDicomOnly}</b></pre>
+    </td>
   </tr>
   <tr>
     <th class="valign-top">Series</th>
@@ -124,9 +123,7 @@
             <td>{$archive_series[record].PhaseEncoding}</td>
             <td>{$archive_series[record].NumberOfFiles}</td>
             <td>
-              <a href="#" class="dicom_archive"
-                 data-patientname="{$archive.PatientName}"
-                 data-seriesuid="{$archive_series[record].SeriesUID}">
+              <a href="/mri_violations?patientName={$archive.PatientName}&seriesUID={$archive_series[record].SeriesUID}">
                 {$archive_series[record].SeriesUID}
               </a>
             </td>

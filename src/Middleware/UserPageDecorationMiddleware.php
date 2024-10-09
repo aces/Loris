@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -221,7 +222,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Do not show menu item if module not active
         $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
-
+        $tpl_data['userjson']       = json_encode(
+            [
+             'username' => $user->getUsername(),
+             'id'       => $user->getId(),
+            ]
+        );
         // Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 

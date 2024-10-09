@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dictionary;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Dictionary\DictionaryItem;
@@ -64,7 +65,6 @@ class DataDictRow implements \LORIS\Data\DataInstance,
             'datascope'          => $scope,
             'type'               => $this->getDataType(),
             'cardinality'        => $this->getCardinality(),
-            'visits'             => $this->visits,
         ];
 
         $itype = $this->item->getDataType();

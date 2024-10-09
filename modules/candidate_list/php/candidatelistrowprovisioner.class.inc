@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the candidate list menu page.
@@ -30,6 +31,7 @@ namespace LORIS\candidate_list;
  */
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private string $dobFormat;
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
@@ -43,6 +45,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
+        $this->dobFormat = $config->getSetting("dobFormat");
+
         parent::__construct(
             "SELECT
                 c.PSCID,
@@ -96,8 +100,21 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = new \CenterID($row['RegistrationCenterID']);
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
+        if ($row['DoB'] !== null) {
+            $dob = new \DateTimeImmutable($row['DoB']);
+            switch ($this->dobFormat) {
+            case 'Ym':
+                $row['DoB'] = $dob->format('Y-m');
+                break;
+            case 'Ymd':
+                $row['DoB'] = $dob->format('Y-m-d');
+                break;
+            default:
+                throw new \Exception("Unhandled DoB format: $this->dobFormat");
+            }
+        }
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);

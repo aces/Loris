@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
@@ -63,7 +64,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'ID'         => '999999',
                 'SessionID'  => '999999',
                 'Data_entry' => 'In Progress',
-                'Test_name'  => 'testtest',
+                'TestID'     => '999999',
                 'CommentID'  => '11111111111111111',
             ]
         );
@@ -151,8 +152,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('Test Text successful', $data);
     }
@@ -172,8 +175,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"testCheckbox":"1"', $data);
     }
@@ -199,8 +204,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"yes"', $data);
 
@@ -218,8 +225,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"no"', $data);
 

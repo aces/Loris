@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to be processed as part of the conflict resolver
@@ -203,7 +204,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         $conflict = $db->pselectRow(
             '
              SELECT
-               TableName,
+               TestName,
                FieldName,
                CommentId1 as CID1,
                CommentId2 as CID2,
@@ -217,7 +218,7 @@ class Unresolved extends Endpoint implements ETagCalculator
                ConflictID = :v_conflictid
              UNION DISTINCT
              SELECT
-               TableName,
+               TestName,
                FieldName,
                CommentId1 as CID1,
                CommentId2 as CID2,
@@ -247,14 +248,14 @@ class Unresolved extends Endpoint implements ETagCalculator
 
         $instrument = \NDB_BVL_Instrument::factory(
             $loris,
-            $conflict['TableName'],
+            $conflict['TestName'],
             $conflict['CID1'],
             '',
             true
         );
         if ($instrument->_hasAccess($user) == false) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Permission denied for ' . $conflict['TableName']
+                'Permission denied for ' . $conflict['TestName']
             );
         }
         $instrument->_saveValues(
@@ -263,7 +264,7 @@ class Unresolved extends Endpoint implements ETagCalculator
 
         $ddeinstrument = \NDB_BVL_Instrument::factory(
             $loris,
-            $conflict['TableName'],
+            $conflict['TestName'],
             $conflict['CID2'],
             '',
             true
@@ -292,7 +293,7 @@ class Unresolved extends Endpoint implements ETagCalculator
                UserID,
                User1,
                User2,
-               TableName,
+               TestName,
                ExtraKeyColumn,
                ExtraKey1,
                ExtraKey2,
@@ -308,7 +309,7 @@ class Unresolved extends Endpoint implements ETagCalculator
                :v_username,
                f1.UserID,
                f2.UserID,
-               cu.TableName,
+               cu.TestName,
                cu.ExtraKeyColumn,
                cu.ExtraKey1,
                cu.ExtraKey2,
@@ -330,7 +331,7 @@ class Unresolved extends Endpoint implements ETagCalculator
                :v_username,
                cr.User1,
                cr.User2,
-               cr.TableName,
+               cr.TestName,
                cr.ExtraKeyColumn,
                cr.ExtraKey1,
                cr.ExtraKey2,

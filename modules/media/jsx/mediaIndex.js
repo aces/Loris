@@ -107,9 +107,9 @@ class MediaIndex extends Component {
     let result = <td className={style}>{cell}</td>;
     switch (column) {
     case 'File Name':
-      if (this.props.hasPermission('media_write')) {
+      if (this.props.hasPermission('media_read')) {
         const downloadURL = loris.BaseURL
-                            + '/media/ajax/FileDownload.php?File='
+                            + '/media/files/'
                             + encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>

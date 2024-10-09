@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File to open a BVL feedback thread via the BVL feedback panel.
  *
@@ -38,6 +39,11 @@ if ($openedthreadcount === 0) {
     exit;
 }
 
-header("HTTP/1.1 204 No Content");
+
+header("Content-Type: application/json");
+print json_encode(
+    ['status' => 'success']
+);
+
 exit;
 

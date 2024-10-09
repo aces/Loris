@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -43,6 +44,7 @@ class CNV
             'Sites'    => $sites,
             'Cohorts'  => $cohorts,
             'Platform' => $platform_options,
+            'Sex'      => \Utility::getSexList(),
         ];
     }
 

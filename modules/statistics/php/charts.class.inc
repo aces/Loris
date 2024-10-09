@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -111,20 +112,22 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
-        foreach ($list_of_sites as $siteID => $siteName) {
-            $totalRecruitment = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
+        $data = $DB->pselectColWithIndexKey(
+            "
+            SELECT COUNT(c.CandID), c.RegistrationCenterID as CenterID
                 FROM candidate c
-                WHERE
-                c.RegistrationCenterID=:Site AND
-                c.Active='Y' AND
-                c.Entity_type='Human'",
-                ['Site' => $siteID]
-            );
+                WHERE c.Active='Y' AND c.Entity_type='Human'
+                GROUP BY c.RegistrationCenterID
+        ",
+            [],
+            "CenterID"
+        );
+
+        foreach ($list_of_sites as $siteID => $siteName) {
 
             $recruitmentBySiteData[] = [
                 "label" => $siteName,
-                "total" => $totalRecruitment,
+                "total" => intval($data[$siteID] ?? 0),
             ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentBySiteData);
@@ -142,23 +145,38 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
+        $data           = $DB->pselect(
+            "
+                SELECT COUNT(c.CandID) as Count,
+                    c.RegistrationCenterID as SiteID,
+                    c.Sex as Sex
+                FROM candidate c
+                WHERE c.Active='Y' AND c.Entity_type='Human'
+                GROUP BY c.RegistrationCenterID, c.Sex",
+            []
+        );
+        $processed_data = [];
+        foreach ($data as $row) {
+            $siteid = $row['SiteID'];
+            $count  = intval($row['Count']);
+            $sex    = strtolower($row['Sex']);
+            if (!isset($processed_data[$siteid])) {
+                $processed_data[$siteid] = [
+                    strtolower($sex) => $count
+                ];
+            } else {
+                assert(!isset($processed_data[$siteid][$sex]));
+                $processed_data[$siteid][$sex] = $count;
+            }
+        }
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
-            $sexData['datasets']['female'][] = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-                FROM candidate c
-                WHERE c.RegistrationCenterID=:Site
-                    AND c.Sex='female' AND c.Active='Y'
-                    AND c.Entity_type='Human'",
-                ['Site' => $siteID]
-            );
-            $sexData['datasets']['male'][]   = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-                FROM candidate c
-                WHERE c.RegistrationCenterID=:Site AND c.Sex='male' AND c.Active='Y'
-                AND c.Entity_type='Human'",
-                ['Site' => $siteID]
-            );
+
+            $sexData['datasets']['female'][]
+                = $processed_data[$siteID]['female'] ?? 0;
+
+            $sexData['datasets']['male'][]
+                = $processed_data[$siteID]['male'] ?? 0;
         }
         return (new \LORIS\Http\Response\JsonResponse($sexData));
     }
@@ -175,8 +193,9 @@ class Charts extends \NDB_Page
         $scanData = [];
         // Run a query to get all the data. Order matters to ensure that the
         // labels are calculated in the correct order.
-        $data = $DB->pselect(
-            "SELECT s.CenterID,
+        $data = iterator_to_array(
+            $DB->pselect(
+                "SELECT s.CenterID,
                 CONCAT(MONTH(pf.Value), '-', YEAR(pf.Value)) as datelabel,
                 COUNT(distinct s.ID) as count
             FROM files f
@@ -186,7 +205,8 @@ class Charts extends \NDB_Page
             WHERE pt.Name='acquisition_date'
             GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID, datelabel
             ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
-            []
+                []
+            )
         );
 
         // Create the labels.
@@ -287,6 +307,36 @@ class Charts extends \NDB_Page
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
+        $recruitment_summary = $DB->pselect(
+            "SELECT COUNT(c.CandID) as Count,
+            MONTH(c.Date_registered) as Month,
+            YEAR(c.Date_registered) as Year,
+            c.RegistrationCenterID as SiteID
+                FROM candidate c
+                    WHERE c.Entity_type='Human'
+                GROUP BY MONTH(c.Date_registered),
+                    YEAR(c.Date_registered),
+                    c.RegistrationCenterID",
+            []
+        );
+
+        $recruitmentdata = [];
+        foreach ($recruitment_summary as $row) {
+            $siteId = $row['SiteID'];
+            $year   = $row['Year'];
+            $month  = $row['Month'];
+            if (!isset($recruitmentdata[$siteId])) {
+                $recruitmentdata[$siteId] = [
+                    $year => [$month => $row['Count']]
+                ];
+            } else if (!isset($recruitmentdata[$siteId][$year])) {
+                $recruitmentdata[$siteId][$year] = [$month => $row['Count']];
+            } else {
+                assert(!isset($recruitmentdata[$siteId][$year][$month]));
+                $recruitmentdata[$siteId][$year][$month] = $row['Count'];
+            }
+
+        }
         foreach ($list_of_sites as $siteID => $siteName) {
             if (!isset($recruitmentData['labels'])) {
                 continue;
@@ -296,6 +346,7 @@ class Charts extends \NDB_Page
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
                     $recruitmentData['labels'],
+                    $recruitmentdata,
                 ),
             ];
         }
@@ -333,33 +384,22 @@ class Charts extends \NDB_Page
     /**
      * Helper to generate the data for the site recruitment line for $siteID.
      *
-     * @param int   $siteID The centerID to get data for.
-     * @param array $labels The list of labels on the chart to fill the data for.
+     * @param int   $siteID          The centerID to get data for.
+     * @param array $labels          The list of labels on the chart to fill
+     *                               the data for.
+     * @param array $recruitmentdata The raw recruitment data to split according to
+                                     the labels
      *
      * @return array
      */
-    private function _getSiteLineRecruitmentData($siteID, $labels)
+    private function _getSiteLineRecruitmentData($siteID, $labels, $recruitmentdata)
     {
-        $DB   = \NDB_Factory::singleton()->database();
         $data = [];
-
         foreach ($labels as $label) {
             $month  = (strlen($label) == 6)
                 ? substr($label, 0, 1) : substr($label, 0, 2);
             $year   = substr($label, -4, 4);
-            $data[] = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-                FROM candidate c
-                WHERE c.RegistrationCenterID=:Site
-                AND MONTH(c.Date_registered)=:Month
-                AND YEAR(c.Date_registered)=:Year
-                AND c.Entity_type='Human'",
-                [
-                    'Site'  => $siteID,
-                    'Month' => $month,
-                    'Year'  => $year,
-                ]
-            );
+            $data[] = intval($recruitmentdata[$siteID][$year][$month] ?? "0");
         }
         return $data;
     }

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements PrefixRouter, a class for handling prefixes
  * of a URL and then delegating to other request handlers.
