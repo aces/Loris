@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file contains the Imaging_QC class
  *
@@ -10,10 +11,11 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+
 namespace LORIS\imaging_qc;
 
-use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Main class for imaging quality control module corresponding to /imaging_qc/
@@ -28,6 +30,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @link     https://www.github.com/aces/Loris
  */
 class Imaging_QC extends \NDB_Menu_Filter
+
 {
     public $AjaxModule = true;
     public $fieldOptions;
@@ -40,7 +43,7 @@ class Imaging_QC extends \NDB_Menu_Filter
      * @return bool
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    public function _hasAccess(\User $user): bool
     {
         return $user->hasPermission('imaging_quality_control_view');
     }
@@ -51,10 +54,10 @@ class Imaging_QC extends \NDB_Menu_Filter
      *
      * @return array $scan_types of desired scan types.
      */
-    function _getScanTypes(): array
+    public function _getScanTypes(): array
     {
         $config = \NDB_Config::singleton();
-        $db     = $this->loris->getDatabaseConnection();
+        $db = $this->loris->getDatabaseConnection();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
@@ -74,21 +77,19 @@ class Imaging_QC extends \NDB_Menu_Filter
         // array values rather than keys (hence the array_flip), then flip
         // the resulting array back to revert it to a key/value (i.e.
         // acquisition protocol ID/scan type) combination.
-        $scan_id_types =array_flip(
+        $scan_id_types = array_flip(
             array_intersect_key(
                 array_flip($all_scan_types),
                 array_flip($toTable_scan_types)
             )
         );
-        $scan_types    =[];
+        $scan_types = [];
 
         foreach ($scan_id_types as $scan) {
             $scan_types[$scan] = $scan;
         }
         return $scan_types;
     }
-
-
 
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
@@ -99,16 +100,17 @@ class Imaging_QC extends \NDB_Menu_Filter
      *
      * @return string $query for the given modality
      */
-    function _buildQuery($scan_type, $scan_done, $acqID): string
+    public function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-
-        $select =  " SELECT DISTINCT
+        $user = \User::singleton();
+        $siteList = implode(',', array_keys($user->getStudySites()));
+        $select = " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
            s.CandID as cand_id,
            (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
            s.Visit_label as visit_label,
-           '".$scan_type."' as scan_type,
+           '" . $scan_type . "' as scan_type,
            t.TarchiveID as tarchiveID,
            CASE
               WHEN EXISTS(
@@ -116,25 +118,25 @@ class Imaging_QC extends \NDB_Menu_Filter
                       *
                   FROM
                       tarchive_series ts
-                  LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
+                  LEFT JOIN mri_protocol mp ON mp.Scan_type=" . $acqID . "
                   WHERE
                       ts.TarchiveID = t.TarchiveID
                       AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
-                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)".
-               " ) THEN 'In DICOM'".
-              " ELSE 'Missing'
+                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)" .
+            " ) THEN 'In DICOM'" .
+            " ELSE 'Missing'
            END as tarchive_loc,
-           (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project,".
+           (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project," .
             " (SELECT title FROM cohort WHERE CohortID=s.CohortID)
-           as cohort,".
+           as cohort," .
             " CASE
               WHEN f.Required_elements_completed='N' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
-              WHEN m.`".$scan_done."` IS NULL THEN ''
-              WHEN (m.`".$scan_done."` = 'Complete'
-              OR m.`".$scan_done."` = 'Partial') THEN 'Yes'
+              WHEN m.`" . $scan_done . "` IS NULL THEN ''
+              WHEN (m.`" . $scan_done . "` = 'Complete'
+              OR m.`" . $scan_done . "` = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
            CASE
@@ -156,9 +158,9 @@ class Imaging_QC extends \NDB_Menu_Filter
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
-        fi.AcquisitionProtocolID=".$acqID.")
+        fi.AcquisitionProtocolID=" . $acqID . ")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."
+        (mvl.CandID = s.CandID AND mvl.Scan_type=" . $acqID . "
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
@@ -168,9 +170,9 @@ class Imaging_QC extends \NDB_Menu_Filter
           AND f.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.CenterID IN ($siteList) ";
 
-        $query = $select.$joins.$where;
+        $query = $select . $joins . $where;
         return $query;
     }
 
@@ -180,13 +182,13 @@ class Imaging_QC extends \NDB_Menu_Filter
      * @return void
      * @throws \DatabaseException
      */
-    function _setupVariables(): void
+    public function _setupVariables(): void
     {
 
         $this->skipTemplate = true;
-        $user      = \User::singleton();
-        $db        = $this->loris->getDatabaseConnection();
-        $siteList  = [];
+        $user = \User::singleton();
+        $db = $this->loris->getDatabaseConnection();
+        $siteList = [];
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
@@ -198,30 +200,29 @@ class Imaging_QC extends \NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getCenterIDs();
-            foreach ($siteIDs as $val) {
-                $site = \Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
-                }
+            $siteList = $user->getStudySites();
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
             }
         }
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
+        $userProjects = $user->getProjects();
         $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
+        foreach ($userProjects as $project) {
+            $projectList2[$project->getName()] = $project->getName();
         }
-        $cohortList  = \Utility::getCohortList();
+
+        $cohortList = \Utility::getCohortList();
         $cohortList2 = [];
         foreach (array_values($cohortList) as $value) {
             $cohortList2[$value] = $value;
         }
-        //print_r($cohortList2);
+
         $uploaderList = [];
-        $uploaders    = $db -> pselect(
+        $uploaders = $db->pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
             []
         );
@@ -230,45 +231,45 @@ class Imaging_QC extends \NDB_Menu_Filter
         }
 
         $scan_location = [
-            "In Imaging Browser"    => "Found in Imaging Browser",
+            "In Imaging Browser" => "Found in Imaging Browser",
             "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
+            "Missing" => "Missing",
         ];
 
         $this->fieldOptions
-            = [
-                'site'             => $siteList,
-                'project'          => $projectList2,
-                'cohort'           => $cohortList2,
-                'scanType'         => $scan_types,
-                'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
-                ],
-                'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
-                ],
-                'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
-                ],
-                'scanLocation'     => $scan_location,
-                'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
-                ],
-                'uploadedBy'       => $uploaderList,
-                'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
-                ],
-                'visitLabel'       => $visitList,
-            ];
+        = [
+            'site' => $siteList,
+            'project' => $projectList2,
+            'cohort' => $cohortList2,
+            'scanType' => $scan_types,
+            'mRIParameterForm' => [
+                "Incomplete" => "Incomplete",
+                "Complete" => "Complete",
+            ],
+            'scanDoneInMRIPF' => [
+                "Yes" => "Yes",
+                "No" => "No",
+            ],
+            'tarchive' => [
+                "In DICOM" => "In DICOM Archives",
+                "Missing" => "Missing",
+            ],
+            'scanLocation' => $scan_location,
+            'qCStatus' => [
+                "Pass" => "Pass",
+                "Fail" => "Fail",
+            ],
+            'uploadedBy' => $uploaderList,
+            'selected' => [
+                "True" => "True",
+                "False" => "False",
+            ],
+            'visitLabel' => $visitList,
+        ];
 
         $scan_types = $this->_getScanTypes();
         $scans_done = [];
-        $acq_IDs    = [];
+        $acq_IDs = [];
         foreach ($scan_types as $scan_type) {
             // Only include scan types that appear in the MRI Parameter Form
             $scanTypeInMRIPF = $db->columnExists(
@@ -282,7 +283,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                 continue;
             }
 
-            $query_params        = ['scan_type' => $scan_type];
+            $query_params = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
                 $query_params
@@ -300,11 +301,11 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
-                = $this->_buildQuery(
-                    $scan_type,
-                    $scans_done[$scan_type],
-                    $acq_IDs[$scan_type]
-                );
+            = $this->_buildQuery(
+                $scan_type,
+                $scans_done[$scan_type],
+                $acq_IDs[$scan_type]
+            );
         }
 
         $query = implode(
@@ -362,11 +363,11 @@ class Imaging_QC extends \NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    public function getJSDependencies()
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
+        $deps = parent::getJSDependencies();
         return array_merge(
             $deps,
             [
@@ -399,7 +400,7 @@ class Imaging_QC extends \NDB_Menu_Filter
      *
      * @return ResponseInterface The PSR15 response for the page.
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $db = $this->loris->getDatabaseConnection();
         if ($db->tableExists('mri_parameter_form')) {
