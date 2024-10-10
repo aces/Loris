@@ -14,7 +14,6 @@ done
 if [ -v SELENIUM_REQUIRED ]; 
 then
   echo "Waiting for Selenium..."
-  # Changed to localhost:4444
   until $(curl --output /dev/null --silent --head --fail http://selenium:4444/status); do
     sleep 1
   done
