@@ -23,7 +23,16 @@ check_selenium() {
 # Check on localhost
 
 # Check on Docker internal network (service name)
+
+# Check on localhost
 check_selenium http://localhost:4444/wd/hub &
+
+# Check on Docker internal network (service name)
+check_selenium http://selenium:4444/wd/hub &
+
+# Check on 127.0.0.1
+check_selenium http://127.0.0.1:4444/wd/hub &
+
 
 # Check on 127.0.0.1
 
