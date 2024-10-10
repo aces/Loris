@@ -57,17 +57,21 @@ window.addEventListener('load', () => {
         modprops = {$widget->getComponentProps()|json_encode};
         allprops = { ...baseprops, ...modprops };
 
-        cards.push({
-            Title: '{$widget->getTitle()|escape:js}',
-            Content: React.createElement(
-                {$widget->getComponentName()},
-                allprops
-            ),
-            collapsing: false
-            {if $widget->getWidth()},Width: {$widget->getWidth()}{/if}
-            {if $widget->getOrder()},Order: {$widget->getOrder()}{/if}
-            {if $widget->getHeight()},Height: {$widget->getHeight()}{/if}
-        });
+        try {
+		cards.push({
+		    Title: '{$widget->getTitle()|escape:js}',
+		    Content: React.createElement(
+			{$widget->getComponentName()},
+			allprops
+		    ),
+		    collapsing: false
+		    {if $widget->getWidth()},Width: {$widget->getWidth()}{/if}
+		    {if $widget->getOrder()},Order: {$widget->getOrder()}{/if}
+		    {if $widget->getHeight()},Height: {$widget->getHeight()}{/if}
+		});
+        } catch(err) {
+             console.error(err);
+        }
         {/section}
 
         return cards;

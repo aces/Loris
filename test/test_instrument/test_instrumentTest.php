@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
@@ -63,7 +64,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'ID'         => '999999',
                 'SessionID'  => '999999',
                 'Data_entry' => 'In Progress',
-                'Test_name'  => 'testtest',
+                'TestID'     => '999999',
                 'CommentID'  => '11111111111111111',
             ]
         );

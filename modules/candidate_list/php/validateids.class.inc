@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The validateIDs endpoint is used to verify whether or not
  * a candidate PSCID and CandID match

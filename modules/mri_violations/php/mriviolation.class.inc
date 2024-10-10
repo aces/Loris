@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 
 /**
@@ -42,7 +43,7 @@ class MRIViolation implements \LORIS\Data\DataInstance
         if ($this->DBRow['Site'] === null) {
             return null;
         }
-        return new \CenterID($this->DBRow['Site']);
+        return \CenterID::singleton(intval($this->DBRow['Site']));
     }
 
     /**
@@ -56,6 +57,6 @@ class MRIViolation implements \LORIS\Data\DataInstance
         if ($this->DBRow['Project'] === null) {
             return null;
         }
-        return new \ProjectID($this->DBRow['Project']);
+        return \ProjectID::singleton(intval($this->DBRow['Project']));
     }
 }

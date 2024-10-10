@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Mri_upload class file
  *
@@ -124,7 +125,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $upload_max_size = \Utility::getMaxUploadSize();
             $error_message   = "Please make sure files are not larger than " .
                                 $upload_max_size;
-            http_response_code(400);
+            http_response_code(413);
             $errors = [
                 'IsPhantom'  => [],
                 'candID'     => [],

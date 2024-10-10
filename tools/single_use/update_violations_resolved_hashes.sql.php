@@ -1,6 +1,4 @@
-<?php
-
-
+<?php declare(strict_types=1);
 
 /**
  * This script is written for a one time use only to update the hashes

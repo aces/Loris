@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains code for editing help content.
  * It holds the processing of adding/updating content

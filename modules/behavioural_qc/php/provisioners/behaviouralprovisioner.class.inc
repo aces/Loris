@@ -36,7 +36,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
 	            fb.SessionID AS _sessionID,
 	            fb.CommentID AS _commentID,
                 fb.Feedback_level AS _feedback_level,
-                f.Test_name AS _test_name,
+                tn.Test_name AS _test_name,
                 fb.FieldName AS _field_name,
                 fb.Status as _feedback_status
             FROM
@@ -46,7 +46,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LEFT JOIN psc ON (s.CenterID = psc.CenterID)
                 LEFT JOIN psc psc2 ON (ca.RegistrationCenterID=psc2.CenterID)
                 LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
-                LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
+                LEFT JOIN test_names tn ON (tn.ID = f.TestID)
             WHERE
                 fb.Public = 'Y'
                 AND fb.Status = 'opened'

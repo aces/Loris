@@ -2,7 +2,13 @@
 
 ## Purpose
 
-The electrophysiology uploader is intended to allow users to upload and browse electrophysiology files.
+The electrophysiology uploader is intended to allow users to upload electrophysiology files.
+
+**LORIS 26 Beta Note:** Files uploaded in this module will not be viewable 
+in 
+the Electrophysiology Browser module.
+This feature is under construction for the next release. Please get in 
+touch with the LORIS team to configure this for your project.
 
 
 ## Intended Users
@@ -26,6 +32,7 @@ EEG recordings can be re-uploaded multiple times. Previous upload attempts will 
 Permission `electrophysiology_browser_view_allsites` or `electrophysiology_browser_view_site`
 is necessary to have access to the module and gives the user the ability to 
 upload and browse all recordings uploaded to the database.
+Permission `monitor_eeg_uploads` is necessary to receive EEG upload notifications.
 
 #### Filesystem Permission
 
@@ -49,3 +56,6 @@ EEGUploadIncomingPath - This setting determines where on the filesystem the
         `EEGUploadIncomingPath` following a successful archival and insertion 
         through the LORIS-MRI pipeline. 
 
+### Caveat
+
+Archive extraction and EEG insertion have to be performed manually at the moment.

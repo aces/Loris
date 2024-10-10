@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Script exporting Update statements to remove 0000-00-00 values
  * and replace them by NULL

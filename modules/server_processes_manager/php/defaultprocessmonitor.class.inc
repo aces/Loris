@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a default way to determine whether a process is running
  * or not.

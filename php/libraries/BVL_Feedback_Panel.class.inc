@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * General behavioural feedback panel class.
  *
@@ -78,7 +79,7 @@ class BVL_Feedback_Panel
     function display(): string
     {
         $feedbackProfile = $this->feedbackThread->_feedbackCandidateProfileInfo;
-        $candidateID     = new CandID($feedbackProfile["CandID"]);
+        $candidateID     = new CandID(strval($feedbackProfile["CandID"]));
 
         $this->tpl_data['candID'] = (string) $candidateID;
 

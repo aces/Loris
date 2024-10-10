@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This defines valid values for the Sex data point for a Candidate.
  * It is a Value Object used to assist with validation.

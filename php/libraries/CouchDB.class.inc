@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a database wrapper around the CouchDB API for Loris.
  *

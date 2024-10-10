@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is used to move mri violations to the resolved tab in bulk.
  * This is the first step for a project that wants to insert scans that were

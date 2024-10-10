@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the LORIS\schedule_module\Module class.
  *

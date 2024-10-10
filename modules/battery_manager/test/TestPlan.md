@@ -43,7 +43,7 @@ Test Battery.
 
 ### New Test Button
 
-**Testing add functionality**
+**Testing add functionality**  [Automation Testing]
 Click the "New Test" button in the upper right corner of the data table.
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
@@ -76,7 +76,7 @@ Click the "New Test" button in the upper right corner of the data table.
   1. Press the `Edit` button in the `Edit Metadata` column on an entry in the data table to edit.
      - Ensure that you are taken to an Edit page with a form that is populated with the entry's values.
 
-**Test filters**
+**Test filters** [Automation Testing]
   1. A selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
      - Instrument, Stage, Cohort, Visit Label, Site, First Visit, and Active (as dropdown fields with blank default option).
@@ -87,7 +87,7 @@ Click the "New Test" button in the upper right corner of the data table.
 
 ### Edit window
 
-**Testing edit (activate/deactivate/add) functionality**
+**Testing edit (activate/deactivate/add) functionality**  [Automation Testing]
   1. Check that you cannot edit an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
   3. Check that you can only enter positive numbers (including 0) in Instrument order.

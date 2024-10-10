@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Script to convert MyISAM tables in the database into InnoDB tables. Multiple
  * options are proposed to the user, see showHelp() function for more details.

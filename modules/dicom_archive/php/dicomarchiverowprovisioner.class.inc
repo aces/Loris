@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the dicom archive menu page.
@@ -73,7 +74,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
         if ($row['CenterID'] !== null) {
-            $cid = new \CenterID($row['CenterID']);
+            $cid = \CenterID::singleton(intval($row['CenterID']));
             unset($row['CenterID']);
             return new DICOMArchiveRowWithSession($row, $cid);
         }

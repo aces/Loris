@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dictionary;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Dictionary\DictionaryItem;

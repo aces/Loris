@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script populates the visits table based on the config.xml.
  * This should usually be run on a one time basis, and then the visits

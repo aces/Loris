@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This defines what a SessionID should be so it can be passed as a typed
  * parameter in functions.

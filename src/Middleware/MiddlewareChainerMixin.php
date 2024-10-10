@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Defines a MiddlewareChainerMixin trait to aid in the
  * implementation of Middleware chains.

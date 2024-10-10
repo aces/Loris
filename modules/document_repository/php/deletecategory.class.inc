@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class handles a post request to delete a category.
  * PHP Version 7

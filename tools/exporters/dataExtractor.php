@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This script, given a table and a column name, will grab all the cells from
  * that column and create a CSV file containing that data alongside the

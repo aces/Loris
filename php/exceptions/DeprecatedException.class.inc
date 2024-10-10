@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is an Exception extention created to distinguish any
  * Exception from the case when a class function has been deprecated

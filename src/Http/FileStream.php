@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a FileStream, a simple wrapper which converts
  * a file into a PSR7 StreamInterface compatible with other PSR7

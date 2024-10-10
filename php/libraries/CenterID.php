@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A representation of a CenterID object. A CenterID is always an integer
  *
@@ -6,6 +7,24 @@
  */
 class CenterID extends ValidatableIdentifier implements \JsonSerializable
 {
+    /**
+     * Acts as a constructor for a CenterID, using a cached instantiation
+     * if available
+     *
+     * @param int $id The CenterID to get a singleton for.
+     *
+     * @return CenterID
+     */
+    static public function singleton(int $id) : CenterID
+    {
+        static $cache = [];
+        if (!isset($cache[$id])) {
+            $cache[$id] = new \CenterID(strval($id));
+        }
+        return $cache[$id];
+    }
+
+
     /**
      * Returns this identifier type
      *
@@ -50,6 +69,4 @@ class CenterID extends ValidatableIdentifier implements \JsonSerializable
     {
         return $this->value;
     }
-
 }
-

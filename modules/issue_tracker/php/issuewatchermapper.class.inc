@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class implements a data mapper which converts User ID to a boolean
  * in the Issue Tracker.

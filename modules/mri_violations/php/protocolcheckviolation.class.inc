@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 
 /**
@@ -41,6 +42,6 @@ class ProtocolCheckViolation implements \LORIS\Data\DataInstance
         if (($this->DBRow['CenterID'] ?? null) == null) {
             return null;
         }
-        return new \CenterID($this->DBRow['CenterID']);
+        return \CenterID::singleton($this->DBRow['CenterID']);
     }
 }

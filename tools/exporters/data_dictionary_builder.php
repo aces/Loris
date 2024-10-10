@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Purpose:
  * This script automatically generates the following tables from ip_output.txt

@@ -56,19 +56,28 @@ export default function ElectrophysiologyUploader(props) {
   ];
 
   return (
-    <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
-      <TabPane TabId={tabList[0].id}>
-        <UploadViewer
-          data={data.Data}
-          fieldOptions={data.fieldOptions}
-        />
-      </TabPane>
-      <TabPane TabId={tabList[1].id}>
-        <UploadForm
-          uploadURL={`${props.DataURL}/upload`}
-        />
-      </TabPane>
-    </Tabs>
+    <>
+      <div className="alert alert-warning" role="alert">
+        <strong>LORIS 26 Beta Note:</strong> Files uploaded in this module
+         will not be viewable in the Electrophysiology Browser
+         module. This feature is under construction for the next release.
+         Please get in touch with the LORIS team to configure this for your
+         project.
+      </div>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
+          <UploadViewer
+            data={data.Data}
+            fieldOptions={data.fieldOptions}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <UploadForm
+            uploadURL={`${props.DataURL}/upload`}
+          />
+        </TabPane>
+      </Tabs>
+    </>
   );
 }
 

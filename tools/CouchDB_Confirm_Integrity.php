@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script deletes cancelled or incorrect data from the DQT by comparing
  * everything in CouchDB against what's currently valid in MySQL.

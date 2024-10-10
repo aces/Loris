@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 use \LORIS\StudyEntities\Candidate\CandID;
 
@@ -69,7 +70,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
     public function insertCandidates(\User $user) : void
     {
         $DB      = $this->loris->getDatabaseConnection();
-        $candIDs = $this->query->matchCandidates($user);
+        $candIDs = \iterator_to_array($this->query->matchCandidates($user));
         if (count($candIDs) == 0) {
             return;
         }
@@ -105,7 +106,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($val) {
-                return new CandID($val);
+                return new CandID(strval($val));
             },
             $candIDs
         );

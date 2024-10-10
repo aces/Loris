@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\imaging_browser;
 
 use \LORIS\Data\Dictionary\DictionaryItem;

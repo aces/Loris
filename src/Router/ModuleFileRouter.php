@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements ModuleFileRouter, a class for routing to files
  * directly stored on the file system.
@@ -86,7 +87,7 @@ class ModuleFileRouter implements RequestHandlerInterface
         if (is_file($fullpath)) {
             $resp = (new \LORIS\Http\Response)
                 ->withStatus(200)
-                ->withBody(new \Laminas\Diactoros\Stream($fullpath));
+                ->withBody(new \LORIS\Http\FileStream($fullpath));
             if ($this->contenttype != "") {
                 $resp = $resp->withHeader("Content-Type", $this->contenttype);
             }

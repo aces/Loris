@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * It includes one main function.
  * Get method handles getting the parent's categroies and
@@ -81,9 +82,11 @@ class DocTree extends \NDB_Page
      */
     public function getTreeData()
     {
-        return $this->loris->getDatabaseConnection()->pselect(
-            "SELECT * FROM document_repository_categories",
-            []
+        return iterator_to_array(
+            $this->loris->getDatabaseConnection()->pselect(
+                "SELECT * FROM document_repository_categories",
+                []
+            )
         );
     }
     /**
@@ -173,9 +176,9 @@ class DocTree extends \NDB_Page
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;
-        $result['currentcategory']  = $currentcategory;
+        $result['currentcategory']  = iterator_to_array($currentcategory);
         $result['parentcategory']   = $parentcategories;
-        $result['subcategories']    = $subcategories;
+        $result['subcategories']    = iterator_to_array($subcategories);
 
         return $result;
     }

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the \LORIS\dashboard\WidgetContent class.
  *

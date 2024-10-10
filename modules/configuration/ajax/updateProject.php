@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file is used by the Configuration module to update
  * or insert values into the Project table.
@@ -69,7 +70,7 @@ if ($projectID == 'new') {
     }
 
     // Update Project fields
-    $project = \Project::getProjectFromID(new \ProjectID($projectID));
+    $project = \Project::getProjectFromID(\ProjectID::singleton(intval($projectID)));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);

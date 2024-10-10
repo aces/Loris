@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publication file upload & editing handler
  *
@@ -730,12 +731,14 @@ function editCollaborators($id) : void
         }
     }
     // update emails if any have changed
-    $currentCollabs = $db->pselect(
-        'SELECT Name, Email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
+    $currentCollabs = iterator_to_array(
+        $db->pselect(
+            'SELECT Name, Email FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
+            'WHERE pcr.PublicationID=:pid',
+            ['pid' => $id]
+        )
     );
 
     $currCollabEmails      = array_column($currentCollabs, 'email');

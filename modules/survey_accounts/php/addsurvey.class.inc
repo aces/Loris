@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements the add_survey page which is used by the Loris
  * survey module, for creating user account/keys that are tied to a
@@ -120,7 +121,7 @@ class AddSurvey extends \NDB_Form
             ];
         }
 
-        $projectID = $db->pselectOne(
+        $projectID = $db->pselectOneInt(
             "SELECT ProjectID FROM session
             WHERE CandID=:v_CandID
             AND Visit_Label=:v_VL",
@@ -131,15 +132,16 @@ class AddSurvey extends \NDB_Form
         );
 
         $user = \NDB_Factory::singleton()->user();
-        if (!$user->hasProject(new \ProjectID($projectID))) {
+        if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
                 'Project' => "You are not affiliated with this session's project"
             ];
         }
 
         $instrument_list = $db->pselect(
-            "SELECT f.Test_name FROM flag f
+            "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
+             JOIN test_names tn ON tn.ID = f.TestID
              WHERE s.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",

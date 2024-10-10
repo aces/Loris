@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a HTTP error, a simple wrapper which provide
  * a html response using smarthy templates. It rely on the Diactoros implementation

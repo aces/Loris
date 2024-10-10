@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all electrophysiology recordings
  * of a project created since a given date.

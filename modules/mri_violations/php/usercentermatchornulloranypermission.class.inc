@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 
 /**
@@ -46,7 +47,7 @@ class UserCenterMatchOrNullOrAnyPermission implements \LORIS\Data\Filter
             $resourceCenter = $res->getCenterID();
             if (!is_null($resourceCenter)) {
                 return $user->hasCenter(
-                    new \CenterID(strval($resourceCenter))
+                    \CenterID::singleton($resourceCenter)
                 );
             }
             return true;

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This contains an abstract class for Loris tests to extend.
  * It sets up the database handler, creates a user, creates a

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 
@@ -78,7 +79,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
-        $this->Client->initialize(__DIR__ . "/../../project/config.xml");
+        //$this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
         $i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Candidate parameters data fetch
  *
@@ -245,16 +246,20 @@ function getFamilyInfoFields()
         ['candid' => $candID]
     );
 
-    $candidatesList = $db->pselect(
-        "SELECT CandID FROM candidate ORDER BY CandID",
-        []
+    $candidatesList = iterator_to_array(
+        $db->pselect(
+            "SELECT CandID FROM candidate ORDER BY CandID",
+            []
+        )
     );
 
-    $siblingsList = $db->pselect(
-        "SELECT f1.CandID 
+    $siblingsList = iterator_to_array(
+        $db->pselect(
+            "SELECT f1.CandID 
         FROM family f1 JOIN family f2
         ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
-        ['candid' => $candID]
+            ['candid' => $candID]
+        )
     );
 
     $siblings = [];
@@ -404,7 +409,7 @@ function getParticipantStatusHistory(CandID $candID)
         ['cid' => $candID]
     );
 
-    return $unformattedComments;
+    return iterator_to_array($unformattedComments);
 }
 
 
@@ -641,11 +646,11 @@ function getDiagnosisEvolutionFields(): array
     foreach ($candProjIDs as $projectID) {
         $candProjects[$projectID]   = $projectList[$projectID];
         $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             false
         );
         $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             true
         );
     }

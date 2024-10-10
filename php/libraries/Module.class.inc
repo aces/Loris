@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.

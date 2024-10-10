@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -64,7 +65,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                new \CenterID($_REQUEST['CenterID'])
+                \CenterID::singleton(intval($_REQUEST['CenterID']))
             );
         } else {
             // For the short term the user we'll be granted access
@@ -89,20 +90,19 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param \CenterID  $centerID  the value of centerID
-     * @param \ProjectID $projectID the value of projectID
+     * @param ?\CenterID  $centerID  the value of centerID
+     * @param ?\ProjectID $projectID the value of projectID
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID)
+    function _checkCriteria(?\CenterID $centerID, ?\ProjectID $projectID)
     {
 
         //SITES
-        $projectID = new \ProjectID(strval($projectID));
-        $factory   = \NDB_Factory::singleton();
-        $user      = $factory->user();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
-        if (!empty($centerID) && $user->hasCenter($centerID)) {
+        if ($centerID !== null && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -131,7 +131,7 @@ class Statistics_Site extends \NDB_Menu
 
         // PROJECTS
 
-        if (!empty($projectID) && $user->hasProject($projectID)) {
+        if ($projectID !== null && $user->hasProject($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
@@ -178,30 +178,36 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return ?string
      */
-    function _completeCount($centerID, $projectID, $instrument): ?string
-    {
+    function _completeCount(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ): ?string {
 
         $this->_checkCriteria($centerID, $projectID);
         $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s,
-                candidate c, flag f, {$instrument} i
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
-                AND s.CandID=c.CandID
-                AND s.Active='Y'
-                AND s.CenterID <> '1'
-                $this->query_criteria
-                AND f.Data_entry='Complete'
-                AND s.Current_stage <> 'Recycling Bin'
-                AND f.Administration='All'
-                AND i.CommentID NOT LIKE 'DDE%'",
-            $this->query_vars
+            "SELECT COUNT(DISTINCT s.CandID)  FROM 
+                flag f
+                    JOIN session s ON (s.ID=f.SessionID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN test_names tn ON tn.ID = f.TestID
+                WHERE 
+                    s.Active='Y' AND s.CenterID <> '1'
+                    AND c.Active='Y'
+                    $this->query_criteria
+                    AND f.Data_entry='Complete'
+                    AND s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration='All'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND tn.Test_name=:instrument",
+            ['instrument' => $instrument, ...$this->query_vars]
         );
         return $count;
     }
@@ -209,32 +215,40 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param \CenterID  $centerID   the value of centerID
-     * @param \ProjectID $projectID  the value of projectID
-     * @param string     $instrument the value of instrument
+     * @param ?\CenterID  $centerID   the value of centerID
+     * @param ?\ProjectID $projectID  the value of projectID
+     * @param string      $instrument the value of instrument
      *
      * @return array
      */
-    function _getResults($centerID, $projectID, $instrument)
-    {
+    function _getResults(
+        ?\CenterID $centerID,
+        ?\ProjectID $projectID,
+        string $instrument
+    ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
+            "SELECT DISTINCT s.CandID,
+                f.SessionID,
+                f.CommentID,
+                c.PSCID,
                 s.Visit_label
-                FROM session s, candidate c, flag  f,
-                {$instrument} i
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
-                AND s.CandID=c.CandID
-                AND s.Active='Y'
-                AND s.CenterID <> '1'
-                AND s.Current_stage <> 'Recycling Bin'
-                $this->query_criteria
-                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
-                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
-            $this->query_vars
+                FROM flag f
+                    JOIN session s ON (s.ID=f.SessionID)
+                    JOIN test_names tn ON tn.ID = f.TestID
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Active='Y' AND c.Active='Y'
+                    AND s.CenterID <> '1'
+                    AND s.Current_stage <> 'Recycling Bin'
+                    $this->query_criteria
+                    AND tn.Test_name=:instrument
+                    AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
+                    AND f.CommentID NOT LIKE 'DDE%'
+                ORDER BY s.Visit_label, c.PSCID",
+            ['instrument'=>$instrument, ...$this->query_vars]
         );
-        return $result;
+        return iterator_to_array($result);
     }
     /**
      * Setup function
@@ -252,16 +266,16 @@ class Statistics_Site extends \NDB_Menu
                 ['cid' => $_REQUEST['CenterID']]
             );
 
-            $centerID = new \CenterID($center['ID'] ?? '');
+            $centerID = \CenterID::singleton(intval($_REQUEST['CenterID']));
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
-            $centerID = '';
+            $centerID = null;
         }
         if (!empty($_REQUEST['ProjectID'])) {
-            $projectID = $_REQUEST['ProjectID'];
+            $projectID = \ProjectID::singleton(intval($_REQUEST['ProjectID']));
         } else {
-            $projectID = '';
+            $projectID = null;
         }
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank

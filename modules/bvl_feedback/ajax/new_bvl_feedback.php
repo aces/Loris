@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file creates a new bvl feedback thread via the feedback panel.
  *

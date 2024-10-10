@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script removes the 'ignored' fields from the Conflict Resolver table.

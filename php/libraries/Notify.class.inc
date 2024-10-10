@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * A static class to encapsulate the notification spooling system
  *

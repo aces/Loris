@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The Installer class handles all the logic used by the installdb.php
  * script under htdocs. It's put in a class for testability (even if there

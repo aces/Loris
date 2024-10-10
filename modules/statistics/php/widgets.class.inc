@@ -65,8 +65,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $recruitmentRaw = $db->pselect(
-            "SELECT
+        $recruitmentRaw = iterator_to_array(
+            $db->pselect(
+                "SELECT
                 COUNT(*) as Count,
                 c.Sex as Sex,
                 c.RegistrationProjectID as ProjectID
@@ -74,7 +75,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
                  WHERE c.Active='Y' AND c.Entity_type='Human'
                  AND c.RegistrationCenterID <> 1
              GROUP BY c.Sex, c.RegistrationProjectID",
-            []
+                []
+            )
         );
         $totalScans     = array_sum(array_column($recruitmentRaw, 'Count'));
         $recruitment    = [

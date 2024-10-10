@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains a wrapper for managing and verifying files that are
  * uploaded through PHP QuickForm and handles putting them in the correct place,

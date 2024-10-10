@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is an Exception extension created to distinguish any
  * Exception from the case when a module can't be loaded because it is not a module

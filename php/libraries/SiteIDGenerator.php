@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class used to generate SiteIDs i.e. both PSCIDs and
  * ExternalIDs.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script should be used to migrate existing ProjectIDs and
  * CohortIDs from the config.xml to the cohorts table, so that

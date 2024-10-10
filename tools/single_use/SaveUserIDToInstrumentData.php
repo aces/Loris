@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script.
  * It took 14 hours to run the script on the CCNA DB during testing.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Base class for files containing help text information
  * as well as DB wrappers for CRUD operations
