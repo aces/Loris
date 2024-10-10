@@ -17,6 +17,7 @@ services:
     ports:
       - "4444:4444"  # Selenium WebDriver port
       - "5900:5900"  # VNC Viewer port (optional for VNC)
+    shm_size: 2g 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
       interval: 10s
