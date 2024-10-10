@@ -14,17 +14,17 @@ services:
 
   selenium:
     image: selenium/standalone-firefox:4.25
-      ports:
-        - 4444:4444
-        - 5900:5900
-      options: >-
-        --shm-size=2g
-      # Optional: Define a health check to ensure the service is ready
-      healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
-        interval: 10s
-        timeout: 5s
-        retries: 3
+    ports:
+      - "4444:4444"  # Selenium WebDriver port
+      - "5900:5900"  # VNC Viewer port (optional for VNC)
+    options: >-
+      --shm-size=2g
+    # Optional: Define a health check to ensure the service is ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   web:
     build:
