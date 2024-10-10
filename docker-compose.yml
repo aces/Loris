@@ -35,8 +35,6 @@ services:
     depends_on:
       - db
     command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
-    networks:
-      - app-network
 
   unit-tests:
     build:
@@ -67,6 +65,8 @@ services:
       - selenium
       - web
     entrypoint: /app/test/wait-for-services.sh
+    networks:
+      - app-network
 
 networks:
   app-network:
