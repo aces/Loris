@@ -102,9 +102,9 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-        $user =     \User::singleton();
+        $user     = \User::singleton();
         $siteList = implode(',', array_keys($user->getStudySites()));
-        $select =   " SELECT DISTINCT
+        $select   = " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
            s.CandID as cand_id,
