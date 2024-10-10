@@ -14,12 +14,18 @@ import PropTypes from 'prop-types';
  * @return {HTMLElement} - Loader React component
  */
 function Loader(props) {
-    return (
-      <div
-        className='loader'
-        style={{width: parseInt(props.size), height: parseInt(props.size)}}
-      />
-    );
+  const loaderStyle = {
+    width: parseInt(props.size),
+    height: parseInt(props.size),
+    borderWidth: parseInt(props.size)/15,
+  };
+
+  return (
+    <div
+      className='loader'
+      style={loaderStyle}
+    />
+  );
 }
 
 Loader.propTypes = {size: PropTypes.string};
