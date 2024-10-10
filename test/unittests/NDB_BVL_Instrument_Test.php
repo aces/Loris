@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Unit test for NDB_BVL_Instrument class
  *

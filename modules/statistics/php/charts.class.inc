@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -126,7 +127,7 @@ class Charts extends \NDB_Page
 
             $recruitmentBySiteData[] = [
                 "label" => $siteName,
-                "total" => intval($data[$siteID]) ?? 0,
+                "total" => intval($data[$siteID] ?? 0),
             ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentBySiteData);

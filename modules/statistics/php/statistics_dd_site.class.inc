@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -111,7 +112,7 @@ class Statistics_DD_Site extends statistics_site
     function _getResults(
         ?\CenterID $centerID,
         ?\ProjectID $projectID,
-        $instrument
+        string $instrument
     ) {
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();

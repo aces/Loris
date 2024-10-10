@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Provides an interface to the NeuroDB configuration
  *

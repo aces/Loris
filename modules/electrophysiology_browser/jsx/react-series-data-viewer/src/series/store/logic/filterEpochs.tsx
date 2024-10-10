@@ -65,7 +65,7 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
     ofType(TOGGLE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map(([payload, state]: [any, any]) => {
       const {filteredEpochs, epochs} = fromState(state);
       const index = payload;
       let newFilteredEpochs;
@@ -106,7 +106,7 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_ACTIVE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map(([payload, state]: [any, any]) => {
       const {epochs} = fromState(state);
       const index = payload;
 

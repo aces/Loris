@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
- namespace LORIS\user_accounts;
+
+namespace LORIS\user_accounts;
 
  /**
   * This class implements a data provisioner to get all modules

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 // @phan-file-suppress PhanUnusedProtectedMethodParameter
 // Suppressed due to false-positive for doDownloadNotification function
