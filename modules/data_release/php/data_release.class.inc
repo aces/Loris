@@ -165,9 +165,14 @@ class Data_Release extends \DataFrameworkMenu
                     dr.ProjectID as ProjectID
              FROM users u
              LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid)
-             LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
-            []
+             LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)
+             JOIN user_project_rel upr ON upr.UserID = u.ID
+             WHERE upr.ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            [':userID' => \User::singleton()->getID()]
         );
+
+        error_log(print_r($result, true));
 
         $userFiles = [];
         foreach ($result as $row) {
