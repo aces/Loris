@@ -49,7 +49,7 @@ function Filter(props) {
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
-      || type === 'datetime'));
+      || type === 'datetime' || type === 'multiselect'));
     if (value === null || value === '' ||
       (value.constructor === Array && value.length === 0) ||
       (type === 'checkbox' && value === false)) {
