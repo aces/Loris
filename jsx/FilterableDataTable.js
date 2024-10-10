@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+import ProgressBar from 'jsx/ProgressBar';
 
 /**
  * FilterableDataTable component.
@@ -149,7 +150,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const dataTable = (
+    const {progress} = this.props;
+    const dataTable = !isNaN(progress) && progress < 100 ? (
+      <ProgressBar value={progress}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
@@ -191,6 +195,7 @@ FilterableDataTable.propTypes = {
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,
+  progress: PropTypes.number,
   getMappedCell: PropTypes.func,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
