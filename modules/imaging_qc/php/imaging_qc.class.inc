@@ -102,7 +102,8 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-
+        $user = \User::singleton();
+        $siteList = implode(',', array_keys($user->getStudySites()));
         $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
@@ -170,7 +171,7 @@ class Imaging_QC extends \NDB_Menu_Filter
           AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.CenterID IN ($siteList) ";
 
         $query = $select.$joins.$where;
         return $query;
@@ -211,10 +212,10 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
+        $userProjects = $user->getProjects();
         $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
+        foreach ($userProjects as $project) {
+            $projectList2[$project->getName()] = $project->getName();
         }
         $cohortList  = \Utility::getCohortList();
         $cohortList2 = [];
