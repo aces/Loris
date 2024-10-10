@@ -11,13 +11,23 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent 
   sleep 1
 done
 
-if [ -v SELENIUM_REQUIRED ]; 
-then
-  echo "Waiting for Selenium..."
-  until $(curl --output /dev/null --silent --head --fail http://localhost:4444/wd/hub); do
-    sleep 1
-  done
-  echo "Selenium is alive"
-fi
+check_selenium() {
+    local url=$1
+    until $(curl --output /dev/null --silent --head --fail "$url"); do
+        printf 'Waiting for Selenium server on %s...\n' "$url"
+        sleep 5
+    done
+    printf 'Selenium server is up and running on %s!\n' "$url"
+}
+
+# Check on localhost
+
+# Check on Docker internal network (service name)
+check_selenium http://localhost:4444/wd/hub &
+
+# Check on 127.0.0.1
+
+# Wait for any check to complete
+wait
 
 exec $cmd
