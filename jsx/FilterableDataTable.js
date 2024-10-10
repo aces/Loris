@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+import LoadingBar from 'jsx/LoadingBar';
 
 /**
  * FilterableDataTable component.
@@ -35,7 +36,6 @@ class FilterableDataTable extends Component {
 
   /**
    * Updates filter state
-   *
    * @param {object} filters
    */
   updateFilters(filters) {
@@ -48,7 +48,6 @@ class FilterableDataTable extends Component {
 
   /**
    * Updates URL Query Params
-   *
    * @param {object} filters
    */
   updateQueryParams(filters) {
@@ -66,7 +65,6 @@ class FilterableDataTable extends Component {
 
   /**
    * Add new filter to the filter object
-   *
    * @param {string} name
    * @param {*}      value
    * @param {boolean}   exactMatch
@@ -79,7 +77,6 @@ class FilterableDataTable extends Component {
 
   /**
    * Remove filter from the filter object
-   *
    * @param {string} name
    */
   removeFilter(name) {
@@ -99,7 +96,6 @@ class FilterableDataTable extends Component {
    * Returns the filter state, with filters that are
    * set to an invalid option removed from the returned
    * filters
-   *
    * @return {object}
    */
   validFilters() {
@@ -129,7 +125,6 @@ class FilterableDataTable extends Component {
 
   /**
    * Renders the React component.
-   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -149,7 +144,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const dataTable = (
+    const {progress} = this.props;
+    const dataTable = !isNaN(progress) && progress < 100 ? (
+      <LoadingBar progress={progress}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
@@ -191,6 +189,7 @@ FilterableDataTable.propTypes = {
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,
+  progress: PropTypes.number,
   getMappedCell: PropTypes.func,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,

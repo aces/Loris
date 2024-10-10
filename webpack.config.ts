@@ -133,6 +133,7 @@ const resolve: webpack.ResolveOptions = {
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
+    LoadingBar: path.resolve(__dirname, './jsx/LoadingBar'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
