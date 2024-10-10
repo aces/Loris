@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * PHP version 7
  *
@@ -39,12 +38,25 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               candidate.PSCID as pscid,
               session.Visit_label as visitlabel,
               Project.Name as project,
-              conflicts_resolved.FieldName as question,
-              conflicts_resolved.OldValue1 as value1,
-              conflicts_resolved.OldValue2 as value2,
-              CASE
-                WHEN conflicts_resolved.NewValue = 1
+	      conflicts_resolved.FieldName as question,
+	      CASE
+    		WHEN conflicts_resolved.FieldName <> "Examiner"
+        	THEN conflicts_resolved.OldValue1
+    	      	    ELSE
+              CONCAT(conflicts_resolved.OldValue1, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue1))
+ 		END as value1,
+	      CASE
+    		WHEN conflicts_resolved.FieldName <> "Examiner"
+        	    THEN conflicts_resolved.OldValue2
+    		    ELSE CONCAT(conflicts_resolved.OldValue2, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue2))
+		END as value2,
+	      CASE
+                WHEN conflicts_resolved.NewValue = 1 AND conflicts_resolved.FieldName <> "Examiner"
                     THEN conflicts_resolved.OldValue1
+		WHEN conflicts_resolved.NewValue = 1 AND conflicts_resolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_resolved.OldValue1, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue1))
+		WHEN conflicts_resolved.NewValue <> 1 AND conflicts_resolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_resolved.OldValue2, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue2))
                     ELSE conflicts_resolved.OldValue2
                 END AS correctanswer,
               conflicts_resolved.ResolutionTimestamp as resolutiontimestamp,
