@@ -164,7 +164,6 @@
                             <li class="nav dropdown">
                                 <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     Affiliations
-                                    <span class="tooltip-text">Sites and Projects</span>
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">

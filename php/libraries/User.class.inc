@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains the Loris User class
  *
@@ -16,6 +17,7 @@
  *
  * @category Main
  * @package  Main
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class User extends UserPermissions implements
     \LORIS\StudyEntities\AccessibleResource,
@@ -96,8 +98,8 @@ class User extends UserPermissions implements
         $sitenames = [];     // Array to store site names
 
         foreach ($user_centerID_query as $key => $val) {
-            // Convert CenterID to CenterID object
-            $user_cid[$key] = new \CenterID($val['CenterID']);
+            // Convert CenterID to CenterID object, ensuring it's a string
+            $user_cid[$key] = new \CenterID((string)$val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
 
@@ -124,8 +126,8 @@ class User extends UserPermissions implements
         $project_names = [];   // Array to store project names
 
         foreach ($user_projects_query as $key => $val) {
-            // Convert ProjectID to ProjectID object
-            $user_pid[$key] = new \ProjectID($val['ProjectID']);
+            // Convert ProjectID to ProjectID object, ensuring it's a string
+            $user_pid[$key] = new \ProjectID((string)$val['ProjectID']);
             $project_names[] = $val['Name'];
         }
 
@@ -160,8 +162,8 @@ class User extends UserPermissions implements
                     // Store pending approval status if examiner is active
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                // Store examiner's centerID with active status and radiologist flag
-                $examiner_info[$val['centerID']] = [
+                // Store examiner's centerID with active status and radiologist flag, ensuring centerID is a string
+                $examiner_info[(string)$val['centerID']] = [
                     $val['active'],
                     $val['radiologist'],
                 ];
@@ -365,7 +367,7 @@ class User extends UserPermissions implements
     {
         $site_list = $this->userInfo['examiner'] ?? [];
         unset($site_list['pending']); // Remove 'pending' status if exists
-        ksort($site_list);             // Sort sites by centerID
+        ksort($site_list);            // Sort sites by centerID
         return $site_list;
     }
 
@@ -642,6 +644,7 @@ class User extends UserPermissions implements
      */
     public function isPendingApproval(): bool
     {
-        return isset($this->userInfo['Pending_approval']) && $this->userInfo['Pending_approval'] === 'Y';
+        return isset($this->userInfo['Pending_approval'])
+            && $this->userInfo['Pending_approval'] === 'Y';
     }
 }
