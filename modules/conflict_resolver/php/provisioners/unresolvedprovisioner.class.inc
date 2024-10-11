@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP version 7
  *
@@ -41,12 +42,14 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_unresolved.FieldName as question,
 	    CASE
                 WHEN conflicts_unresolved.FieldName = "Examiner"
-                    THEN CONCAT(conflicts_unresolved.Value1, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value1))
+		    THEN CONCAT(conflicts_unresolved.Value1, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value1))
                 ELSE conflicts_unresolved.Value1
             END AS value1,
             CASE
                 WHEN conflicts_unresolved.FieldName = "Examiner"
-                    THEN CONCAT(conflicts_unresolved.Value2, " - ", (SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value2))
+		    THEN CONCAT(conflicts_unresolved.Value2, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value2))
                 ELSE conflicts_unresolved.Value2
             END AS value2,
               psc.name as site,
