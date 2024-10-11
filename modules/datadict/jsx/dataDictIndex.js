@@ -31,7 +31,7 @@ class DataDictIndex extends Component {
       error: false,
       isLoaded: false,
       isLoading: false,
-      fieldOptions: {'sourceFrom': {}},
+      fieldOptions: {'sourceFrom': {}, 'cohorts': {}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -199,6 +199,15 @@ class DataDictIndex extends Component {
                 },
             },
         },
+        {
+          label: 'Cohorts',
+          show: false,
+          filter: {
+              name: 'Cohorts',
+              type: 'multiselect',
+              options: options.cohorts,
+          },
+      },
     ];
     return (
         <FilterableDataTable
