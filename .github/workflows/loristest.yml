@@ -11,7 +11,7 @@ jobs:
       EEG_VIS_ENABLED: 'true'
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install EEG package dependencies
       # We only need to install protobuf-compiler
@@ -36,13 +36,13 @@ jobs:
       - name: Create node_modules tarball
         run: tar cfvz node_modules.tar.gz node_modules
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload node_modules artifact
         with:
           name: node_modules
           path: node_modules.tar.gz
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload lorisjs.tar.gz artifact
         with:
           name: lorisjs
@@ -54,7 +54,7 @@ jobs:
       matrix:
         php: ['8.3']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -83,7 +83,7 @@ jobs:
       - name: Create vendor tarball
         run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload vendor-php${{matrix.php}}.tar.gz artifact
         with:
           name: vendor-php${{matrix.php}}
@@ -107,29 +107,30 @@ jobs:
         php: ['8.3']
         apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v3
-      name: Download node_modules artifact
+    # Cache node_modules to avoid downloading dependencies if already cached
+    - name: Cache node_modules
+      uses: actions/cache@v3
       with:
-        name: node_modules
-        path: .
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-    - uses: actions/download-artifact@v3
-      name: Download compiled LORIS javascript artifact
+    # Download and extract compiled LORIS JavaScript artifact (from build job)
+    - name: Download compiled LORIS javascript artifact
+      uses: actions/download-artifact@v4
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       name: Download PHP dependencies artifact
       with:
         name: vendor-php${{matrix.php}}
         path: .
 
-
-    - name: Extract node_modules
-      run: tar xfvz node_modules.tar.gz
 
     - name: Extract compiled JS
       run: tar xfvz lorisjs.tar.gz
@@ -222,7 +223,7 @@ jobs:
               php: '8.3'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
