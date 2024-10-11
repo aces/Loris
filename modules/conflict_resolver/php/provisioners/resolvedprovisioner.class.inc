@@ -53,7 +53,8 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_resolved.UserID as resolver,
               psc.name as site,
               session.CenterID as centerid,
-              Project.ProjectID as projectid
+              Project.ProjectID as projectid,
+              cohort.title as cohort
              FROM
               conflicts_resolved
              LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
@@ -61,6 +62,7 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)
              LEFT JOIN Project ON (session.ProjectID=Project.ProjectID )
              LEFT JOIN psc ON (session.CenterID = psc.CenterID)
+             LEFT JOIN cohort ON (session.CohortID=cohort.CohortID)
              WHERE session.Active="Y" AND candidate.Active ="Y"
             ',
             [],
