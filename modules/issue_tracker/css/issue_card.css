@@ -99,7 +99,6 @@
 .issue-actions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
 }
 
 .title-input {

@@ -314,7 +314,7 @@ const IssueCard = React.memo(function IssueCard({
             </button>
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-secondary"
               onClick={() => {
                 setIsEditing(false);
                 setTempEditedIssue({...editedIssue});
