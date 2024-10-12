@@ -94,19 +94,9 @@ function IssueTrackerBatchMode({options}) {
 
   /**
    * Handles updating an issue
-   *
-   * @param {string} issueId - The ID of the issue to update
-   * @param {object} updatedIssue - The updated issue data
    */
-  function handleIssueUpdate(issueId, updatedIssue) {
-    const updatedIssues = issues.map((issue) => {
-      if (issue.issueID === issueId) {
-        return {...issue, ...updatedIssue};
-      }
-      return issue;
-    });
-
-    setIssues(updatedIssues);
+  function handleIssueUpdate() {
+    fetchIssues();
   }
 
   // Pagination functions

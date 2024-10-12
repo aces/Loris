@@ -63,7 +63,7 @@ const IssueCard = React.memo(function IssueCard({
     }).then((data) => {
       showAlertMessage('success', 'Issue updated successfully');
       setEditedIssue(tempEditedIssue);
-      onUpdate(issue.issueID, tempEditedIssue);
+      onUpdate();
       setIsEditing(false);
     }).catch((error) => {
       console.error('Error:', error);
@@ -146,7 +146,7 @@ const IssueCard = React.memo(function IssueCard({
       .then((data) => {
         showAlertMessage('success', 'Comment added successfully');
         handleCloseAddCommentModal();
-        onUpdate(issue.issueID, {...editedIssue});
+        onUpdate();
       })
       .catch((error) => {
         console.error('Error:', error);
