@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import Modal from 'jsx/Modal';
 import '../css/issue_card.css';
 
 const IssueCard = React.memo(function IssueCard({
@@ -13,6 +14,11 @@ const IssueCard = React.memo(function IssueCard({
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
   const [tempEditedIssue, setTempEditedIssue] = useState({...issue});
+
+  // State variables for adding comments
+  const [showAddCommentModal, setShowAddCommentModal] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const handleInputChange = (field, value) => {
     setTempEditedIssue((prev) => ({
@@ -76,6 +82,9 @@ const IssueCard = React.memo(function IssueCard({
     if (msgType === 'error') {
       type = 'error';
       title = 'Error!';
+    } else if (msgType === 'info') {
+      type = 'info';
+      title = 'Information';
     }
 
     swal.fire({
@@ -89,10 +98,104 @@ const IssueCard = React.memo(function IssueCard({
     });
   };
 
+  const handleOpenAddCommentModal = () => {
+    setShowAddCommentModal(true);
+  };
+
+  const handleCloseAddCommentModal = () => {
+    setShowAddCommentModal(false);
+    setNewComment('');
+  };
+
+  const handleAddCommentChange = (e) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleAddCommentSubmit = (e) => {
+    e.preventDefault();
+
+    if (!newComment.trim()) {
+      showAlertMessage('error', 'Comment cannot be empty');
+      return;
+    }
+
+    setIsSubmittingComment(true);
+
+    const formData = new FormData();
+
+    // Prefill all existing issue fields to prevent NULL updates
+    Object.entries(tempEditedIssue).forEach(([key, value]) => {
+      formData.append(key, value === null ? 'null' : value);
+    });
+
+    formData.append('comment', newComment.trim());
+
+    fetch(`${loris.BaseURL}/issue_tracker/Edit/`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => {
+        setIsSubmittingComment(false);
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || 'Network response was not ok');
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        showAlertMessage('success', 'Comment added successfully');
+        handleCloseAddCommentModal();
+        onUpdate(issue.issueID, {...editedIssue});
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        showAlertMessage('error', error.message || 'Failed to add comment');
+      });
+  };
+
   const description = editedIssue.description || '';
 
   return (
     <div className="issue-card">
+      <Modal
+        title="Add New Comment"
+        onClose={handleCloseAddCommentModal}
+        show={showAddCommentModal}
+      >
+        <form onSubmit={handleAddCommentSubmit} className="add-comment-form">
+          <div className="form-group">
+            <label htmlFor="newComment" className="small">
+              Comment
+            </label>
+            <textarea
+              id="newComment"
+              value={newComment}
+              onChange={handleAddCommentChange}
+              className="textarea"
+              required
+              disabled={isSubmittingComment}
+            />
+          </div>
+          <div className="modal-actions">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isSubmittingComment}
+            >
+              {isSubmittingComment ? 'Submitting...' : 'Submit Comment'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCloseAddCommentModal}
+              disabled={isSubmittingComment}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
       <div className="issue-header">
         <div className="issue-title-section">
           <h3>
@@ -185,12 +288,21 @@ const IssueCard = React.memo(function IssueCard({
         </div>
         <br />
         {!isEditing && (
-          <button
-          className="btn btn-primary"
-          onClick={() => setIsEditing(true)}
-        >
-          Edit Issue
-        </button>
+          <div className="issue-actions">
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Issue
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleOpenAddCommentModal}
+            >
+              Add Comment
+            </button>
+          </div>
         )}
         {isEditing && (
           <div className="issue-actions">
@@ -200,7 +312,6 @@ const IssueCard = React.memo(function IssueCard({
             >
               Update Issue
             </button>
-
             <button
               type="button"
               className="btn btn-primary"
