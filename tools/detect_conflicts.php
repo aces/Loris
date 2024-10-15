@@ -302,12 +302,13 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
     $query  = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
-        JOIN candidate c ON (c.CandID=s.CandID)";
+        JOIN candidate c ON (c.CandID=s.CandID)
+        JOIN test_names tn ON tn.ID = f.TestID";
     $where  = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND f.Test_name= :instrument ";
+        $where .= " AND tn.Test_name= :instrument ";
         $params['instrument'] = $test_name;
 
         if (($visit_label!=null) && (isset($visit_label))) {
@@ -336,12 +337,13 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
     $query  = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
         JOIN session s on (s.id = f.sessionid)
-        JOIN candidate c on (c.CandID = s.CandID)";
+        JOIN candidate c on (c.CandID = s.CandID)
+        JOIN test_names tn ON tn.ID = f.TestID";
 
     $where = " WHERE c.Active='Y' AND  s.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND f.Test_name= :instrument ";
+        $where .= " AND tn.Test_name= :instrument ";
         $params['instrument'] = $test_name;
 
         if ($visit_label!=null) {
