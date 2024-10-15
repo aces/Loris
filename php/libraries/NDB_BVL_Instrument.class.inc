@@ -2231,6 +2231,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "Must bulk load from instrument loaded without commentID"
             );
         }
+        // Return empty array if no commentIDs given
+        if (!$commentIDs) {
+            return [];
+        }
         $db = $this->loris->getNewDatabaseConnection();
         $db->setBuffering(false);
 
