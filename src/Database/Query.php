@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\Database;
 
 class Query implements \Countable, \IteratorAggregate

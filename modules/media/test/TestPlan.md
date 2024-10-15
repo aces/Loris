@@ -4,7 +4,7 @@
 
 Media module allows users to upload, browse and edit media files associated with a specific timepoint in Loris.
 
-### 🔒 Permissions 
+### 🔒 Permissions [Automation Testing]
 
 In order to use the media module the user might need one or both of the following permissions:
 
@@ -60,7 +60,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
   7. Once the file finished uploading, a modal containing a success message should appear with an 'OK' button.
   8. Click on the 👉 **OK** button and the page should refresh to the browse tab. Make sure the file you just uploaded is shown in the data table.
 
-**Test file browsing** 
+**Test file browsing** [Automation Testing]
   1. After a couple of files are uploaded, make sure they are properly displayed in the data table
   2. Make sure that information in the data table corresponds to the information in the database (media table)
   3. Click on 👉  **column headers** to make sure sorting functionality is working as expected (Ascending/Descending)

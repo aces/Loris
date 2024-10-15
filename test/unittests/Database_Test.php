@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.

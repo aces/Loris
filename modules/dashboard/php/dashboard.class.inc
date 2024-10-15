@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications

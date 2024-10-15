@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . "/LorisIntegrationTest.class.inc";
 /**
  * This contains an abstract class for Loris tests to extend.

@@ -34,14 +34,14 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 psc.CenterID AS _site,
                 s.ID AS _id,
                 f.SessionID as _sessionID,
-                f.test_name as _test_name,
+                t.test_name as _test_name,
                 f.data_entry as _data_entry,
                 f.commentid as _commentID
             FROM
 	            session s
                 JOIN flag f ON (f.sessionid = s.id)
                 JOIN candidate c ON (c.candid = s.candid)
-                JOIN test_names t ON (t.Test_name = f.Test_name)
+                JOIN test_names t ON (t.ID = f.TestID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN test_battery ON (
                     t.Test_name = test_battery.Test_name
