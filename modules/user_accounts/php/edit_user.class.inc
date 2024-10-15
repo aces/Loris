@@ -440,7 +440,7 @@ class Edit_User extends \NDB_Form
                             WHERE userID=:uid",
                     ['uid' => $uid]
                 );
-            } elseif (!count($examinerID) !== 0
+            } elseif (count($examinerID) > 0
                 && ((!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites))
