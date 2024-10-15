@@ -74,20 +74,11 @@ class ConsentStatus extends Component {
                         formData[cDate2] = data.consentDates[cStatus];
                         formData[cWithdrawal] = data.withdrawals[cStatus];
                         formData[cWithdrawal2] = data.withdrawals[cStatus];
-                        if (data.consentStatuses[cStatus] === 'yes' ||
-                            data.consentStatuses[cStatus] === 'no'
-                        ) {
-                            formData[cOptions] = {
-                                yes: 'Yes',
-                                no: 'No',
-                            };
-                        } else {
-                            formData[cOptions] = {
-                                yes: 'Yes',
-                                no: 'No',
-                                not_applicable: 'Not applicable',
-                            };
-                        }
+                        formData[cOptions] = {
+                            yes: 'Yes',
+                            no: 'No',
+                            not_applicable: 'Not applicable',
+                        };
                     }
                 }
                 this.setState({
@@ -390,6 +381,7 @@ class ConsentStatus extends Component {
                     onUserInput={this.setFormData}
                     disabled={disabled}
                     required={false}
+                    sortByValue={false}
                 />
                 <DateElement
                     label={consentDateLabel}
