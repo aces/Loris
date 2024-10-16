@@ -111,7 +111,6 @@ class IssueForm extends Component {
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
-
     const siteOptions = this.state.Data.sites;
     // Add an 'All Sites' options in the Site dropdown
     // to allow NULL value
@@ -367,6 +366,7 @@ class IssueForm extends Component {
         (data) => {
           let newIssue = !data.issueData.issueID;
           let formData = data.issueData;
+
           // ensure that if the user is at multiple sites and
           // its a new issue, the centerID (which is a dropdown)
           // is set to the empty option instead of an array of
@@ -383,8 +383,11 @@ class IssueForm extends Component {
             if (formData.centerID == null) {
               formData.centerID = 'all';
             }
+             formData.assignee =
+               Object.keys(data.assignees).find(
+                 (key) => data.assignees[key] === data.issueData.assignee
+               );
           }
-
           this.setState({
             Data: data,
             isLoaded: true,
@@ -484,7 +487,6 @@ class IssueForm extends Component {
     // todo: only give valid inputs for fields given previous input to other fields
     const formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
-
     this.setState({
       formData: formDataUpdate,
     });
