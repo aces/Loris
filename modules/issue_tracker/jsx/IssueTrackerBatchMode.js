@@ -24,7 +24,7 @@ function IssueTrackerBatchMode({options}) {
   // Pagination state
   const [page, setPage] = useState({
     number: 1,
-    rows: 20,
+    rows: 10,
   });
 
   const priorities = options.priorities || {};
@@ -206,7 +206,7 @@ function IssueTrackerBatchMode({options}) {
             onChange={updatePageRows}
             value={page.rows}
           >
-            <option>20</option>
+            <option>10</option>
             <option>50</option>
             <option>100</option>
           </select>
@@ -248,7 +248,7 @@ function IssueTrackerBatchMode({options}) {
             onChange={updatePageRows}
             value={page.rows}
           >
-            <option>20</option>
+            <option>10</option>
             <option>50</option>
             <option>100</option>
           </select>
