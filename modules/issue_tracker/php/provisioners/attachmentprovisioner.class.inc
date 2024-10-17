@@ -39,7 +39,6 @@ class AttachmentProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 file_hash,
                 date_added,
                 file_name,
-                deleted,
                 user,
                 description,
                 file_size,
