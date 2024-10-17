@@ -58,6 +58,15 @@ class Edit extends \NDB_Page implements ETagCalculator
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
 
+        // Check if batch mode is enabled
+        $batch_mode = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_BOOLEAN);
+
+        if ($batch_mode) {
+            // Fetch all issues
+            $allIssues = $this->_getAllIssues($user);
+            return new \LORIS\Http\Response\JsonResponse($allIssues);
+        }
+
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
 
@@ -273,6 +282,85 @@ class Edit extends \NDB_Page implements ETagCalculator
         return new \LORIS\Http\Response\JsonResponse(
             $result
         );
+    }
+
+    /**
+     * Fetches all issues and includes top 3 comments per issue.
+     *
+     * @param \User $user The current user.
+     *
+     * @return array List of issues with top comments.
+     */
+    private function _getAllIssues(\User $user): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $query = "SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+                  FROM issues AS i
+                  LEFT JOIN candidate c ON (i.candID = c.CandID)
+                  LEFT JOIN session s ON (i.sessionID = s.ID)";
+
+        // Add permission check if needed
+        if (!$user->hasPermission('access_all_profiles')) {
+            $query .= " WHERE i.centerID IN (" .
+            implode(',', $user->getCenterIDs()) . ")";
+        }
+
+        $query .= " ORDER BY i.issueID DESC";
+
+        $issues = $db->pselect($query, []);
+
+        // Ensure $issues is an array
+        if (!is_array($issues)) {
+            $issues = iterator_to_array($issues);
+        }
+
+        // Format the issues data
+        foreach ($issues as &$issue) {
+            $issue['reporter']      = $this->formatUserInformation(
+                $issue['reporter']
+            );
+            $issue['lastUpdatedBy'] = $this->formatUserInformation(
+                $issue['lastUpdatedBy']
+            );
+            $issue['topComments']   = $this->getTopComments(
+                (int)$issue['issueID']
+            );
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Fetches the top 3 most recent comments for an issue.
+     *
+     * @param int $issueID The ID of the issue.
+     *
+     * @return array Top 3 comments with comment text, date, and author.
+     */
+    function getTopComments(int $issueID): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $comments = $db->pselect(
+            "SELECT issueComment, dateAdded, addedBy
+             FROM issues_comments
+             WHERE issueID = :issueID
+             ORDER BY dateAdded DESC 
+             LIMIT 3",
+            ['issueID' => $issueID]
+        );
+
+        $topComments = [];
+        foreach ($comments as $comment) {
+            $topComments[] = [
+                'issueComment' => $comment['issueComment'],
+                'dateAdded'    => $comment['dateAdded'],
+                'addedBy'      => $this->formatUserInformation($comment['addedBy']),
+            ];
+        }
+
+        return $topComments;
     }
 
     /**
