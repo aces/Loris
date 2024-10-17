@@ -239,14 +239,29 @@ function IssueTrackerBatchMode({options}) {
           </div>
         )}
       </div>
-      <br/>
-      <div className="pagination-controls">
-        <PaginationLinks
-          Total={filteredIssues.length}
-          onChangePage={changePage}
-          RowsPerPage={page.rows}
-          Active={page.number}
-        />
+      <div className="pagination-container">
+        <div>
+          {paginatedIssues.length} issues displayed of {filteredIssues.length}.
+          (Maximum issues per page:
+          <select
+            className="input-sm perPage"
+            onChange={updatePageRows}
+            value={page.rows}
+          >
+            <option>20</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+          )
+        </div>
+        <div className="pagination-controls">
+          <PaginationLinks
+            Total={filteredIssues.length}
+            onChangePage={changePage}
+            RowsPerPage={page.rows}
+            Active={page.number}
+          />
+        </div>
       </div>
     </div>
   );
