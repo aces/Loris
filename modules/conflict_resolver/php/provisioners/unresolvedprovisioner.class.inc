@@ -40,8 +40,18 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               session.Visit_label as visitlabel,
               Project.Name as project,
               conflicts_unresolved.FieldName as question,
-              conflicts_unresolved.Value1 as value1,
-              conflicts_unresolved.Value2 as value2,
+	    CASE
+                WHEN conflicts_unresolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_unresolved.Value1, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value1))
+                ELSE conflicts_unresolved.Value1
+            END AS value1,
+            CASE
+                WHEN conflicts_unresolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_unresolved.Value2, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value2))
+                ELSE conflicts_unresolved.Value2
+            END AS value2,
               psc.name as site,
               session.CenterID as centerid,
               Project.ProjectID as projectid
