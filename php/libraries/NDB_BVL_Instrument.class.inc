@@ -2623,7 +2623,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!$this->jsonData) {
             $columns = $db->pselect(
                 "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+            WHERE IS_NULLABLE!='NO' AND TABLE_NAME=:table AND TABLE_SCHEMA=:db",
                 [
                     'table' => $this->table,
                     'db'    => $dbconfig['database'],
