@@ -4,6 +4,7 @@ import IssueCard from './IssueCard';
 import Loader from 'Loader';
 import PaginationLinks from 'jsx/PaginationLinks';
 import Panel from 'jsx/Panel';
+import {Tabs, TabPane} from 'jsx/Tabs';
 import '../css/issue_tracker_batchmode.css';
 
 /**
@@ -122,66 +123,32 @@ function IssueTrackerBatchMode({options}) {
   const endIndex = startIndex + page.rows;
   const paginatedIssues = filteredIssues.slice(startIndex, endIndex);
 
-  // Define the views for the Panel
-  const filterViews = [
+  const tabList = [
     {
-      title: 'Category',
-      content: (
-        <div className="filter-list">
-          {Object.entries(categories).map(([value, label]) => (
-            <label key={value}>
-              <input
-                type="checkbox"
-                checked={selectedCategories.includes(value)}
-                onChange={() =>
-                  toggleFilter(selectedCategories, setSelectedCategories, value
-                  )}
-                className="checkbox"
-              />
-              <span>{label}</span>
-            </label>
-          ))}
-        </div>
+      id: 'category',
+      label: (
+        <span>
+          Category{' '}
+          <span className="badge bg-primary">{selectedCategories.length}</span>
+        </span>
       ),
     },
     {
-      title: 'Priority',
-      content: (
-        <div className="filter-list">
-          {Object.entries(priorities).map(([value, label]) => (
-            <label key={value}>
-              <input
-                type="checkbox"
-                checked={selectedPriorities.includes(value)}
-                onChange={() =>
-                  toggleFilter(selectedPriorities, setSelectedPriorities, value
-                  )}
-                className="checkbox"
-              />
-              <span>{label}</span>
-            </label>
-          ))}
-        </div>
+      id: 'priority',
+      label: (
+        <span>
+          Priority{' '}
+          <span className="badge bg-primary">{selectedPriorities.length}</span>
+        </span>
       ),
     },
     {
-      title: 'Status',
-      content: (
-        <div className="filter-list">
-          {Object.entries(statuses).map(([value, label]) => (
-            <label key={value}>
-              <input
-                type="checkbox"
-                checked={selectedStatuses.includes(value)}
-                onChange={() =>
-                  toggleFilter(selectedStatuses, setSelectedStatuses, value
-                  )}
-                className="checkbox"
-              />
-              <span>{label}</span>
-            </label>
-          ))}
-        </div>
+      id: 'status',
+      label: (
+        <span>
+          Status{' '}
+          <span className="badge bg-primary">{selectedStatuses.length}</span>
+        </span>
       ),
     },
   ];
@@ -191,11 +158,81 @@ function IssueTrackerBatchMode({options}) {
       <Panel
         id="filter-panel"
         title="Filters"
-        views={filterViews}
         collapsing={true}
         panelSize="auto"
-        class="panel-default"
-      />
+        className="panel-default"
+      >
+        <Tabs
+          tabs={tabList}
+          defaultTab="category"
+          onTabChange={() => {}}
+          updateURL={false}
+        >
+          <TabPane TabId="category">
+            <div className="filter-list">
+              {Object.entries(categories).map(([value, label]) => (
+                <label key={value} className="d-block">
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(value)}
+                    onChange={() =>
+                      toggleFilter(
+                        selectedCategories,
+                        setSelectedCategories,
+                        value,
+                      )
+                    }
+                    className="checkbox me-2"
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </TabPane>
+          <TabPane TabId="priority">
+            <div className="filter-list">
+              {Object.entries(priorities).map(([value, label]) => (
+                <label key={value} className="d-block">
+                  <input
+                    type="checkbox"
+                    checked={selectedPriorities.includes(value)}
+                    onChange={() =>
+                      toggleFilter(
+                        selectedPriorities,
+                        setSelectedPriorities,
+                        value
+                      )
+                    }
+                    className="checkbox me-2"
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </TabPane>
+          <TabPane TabId="status">
+            <div className="filter-list">
+              {Object.entries(statuses).map(([value, label]) => (
+                <label key={value} className="d-block">
+                  <input
+                    type="checkbox"
+                    checked={selectedStatuses.includes(value)}
+                    onChange={() =>
+                      toggleFilter(
+                        selectedStatuses,
+                        setSelectedStatuses,
+                        value
+                      )
+                    }
+                    className="checkbox me-2"
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </TabPane>
+        </Tabs>
+      </Panel>
       <br/>
       <div className="pagination-container">
         <div>
