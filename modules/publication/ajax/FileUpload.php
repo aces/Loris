@@ -73,10 +73,9 @@ function uploadPublication() : void
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Name = :n AND Email = :e',
+        'WHERE Email = :e',
         [
             'e' => $leadInvestEmail,
-            'n' => $leadInvest,
         ]
     );
     if (empty($leadInvID)) {
