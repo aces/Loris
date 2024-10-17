@@ -74,7 +74,7 @@ ORDER BY
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = \CenterID::singleton(intval($this->row['For_site']));
+        $cid = \CenterID::singleton(intval($row['For_site']));
         return new DocRepoRow($row, $cid);
     }
 
