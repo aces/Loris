@@ -202,7 +202,7 @@ class AttachmentsList extends Component {
         const item = this.state.attachments[key];
         const deleteData = JSON.stringify(item);
         // Hide "soft" deleted attachments
-        if (parseInt(item.deleted) === 1) {
+        if (item.date_deleted) {
             attachmentsRows.unshift(
               <Fragment key={key}>
               <div className='row'>
