@@ -144,6 +144,11 @@ class UnresolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.project,
       }},
+      {label: 'Cohort', show: true, filter: {
+        name: 'cohort',
+        type: 'select',
+        options: options.cohort,
+      }},
       {label: 'Site', show: true, filter: {
         name: 'Site',
         type: 'select',
