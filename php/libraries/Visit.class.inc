@@ -61,7 +61,7 @@ class Visit
     public function getName(): string
     {
         if ($this->name === null) {
-            throw new \LorisException("No name defined for Visit");
+            throw new \LorisException(_("No name defined for Visit"));
         }
         return $this->name;
     }
@@ -74,7 +74,7 @@ class Visit
     public function getLabel(): string
     {
         if ($this->label === null) {
-            throw new \LorisException("No label defined for Visit");
+            throw new \LorisException(_("No label defined for Visit"));
         }
         return $this->label;
     }

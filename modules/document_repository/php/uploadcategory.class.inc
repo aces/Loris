@@ -64,12 +64,12 @@ class UploadCategory extends \NDB_Page
                     ->withHeader("Content-Type", "text/plain")
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode("uploaded successfully")
+                            json_encode(_("uploaded successfully"))
                         )
                     );
             }
             return new \LORIS\Http\Response\JSON\Conflict(
-                "Duplicate category name under same parent folder."
+                _("Duplicate category name under same parent folder.")
             );
         } else {
             return (new \LORIS\Http\Response())

@@ -154,20 +154,20 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => _('Low'),
+            'normal'    => _('Normal'),
+            'high'      => _('High'),
+            'urgent'    => _('Urgent'),
+            'immediate' => _('Immediate'),
         ];
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback'     => 'Feedback',
-            'assigned'     => 'Assigned',
-            'resolved'     => 'Resolved',
-            'closed'       => 'Closed',
+            'new'          => _('New'),
+            'acknowledged' => _('Acknowledged'),
+            'feedback'     => _('Feedback'),
+            'assigned'     => _('Assigned'),
+            'resolved'     => _('Resolved'),
+            'closed'       => _('Closed'),
         ];
 
         $unorgCategories = $db -> pselect(

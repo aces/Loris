@@ -136,29 +136,29 @@ class Edit extends \NDB_Page implements ETagCalculator
         // can't set to closed if not developer.
         if ($user->hasPermission('issue_tracker_developer')) {
             $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-                'closed'       => 'Closed',
+                'new'          => _('New'),
+                'acknowledged' => _('Acknowledged'),
+                'assigned'     => _('Assigned'),
+                'feedback'     => _('Feedback'),
+                'resolved'     => _('Resolved'),
+                'closed'       => _('Closed'),
             ];
         } else {
             $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
+                'new'          => _('New'),
+                'acknowledged' => _('Acknowledged'),
+                'assigned'     => _('Assigned'),
+                'feedback'     => _('Feedback'),
+                'resolved'     => _('Resolved'),
             ];
         }
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => _('Low'),
+            'normal'    => _('Normal'),
+            'high'      => _('High'),
+            'urgent'    => _('Urgent'),
+            'immediate' => _('Immediate'),
         ];
 
         $unorgCategories = $db->pselect(
@@ -235,7 +235,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $otherWatchers = array_merge($otherWatchers, $othersWatching);
             unset($otherWatchers[$user->getUserName()]);
 
-            $issueData['watching']       = $isWatching === null ? 'No' : 'Yes';
+            $issueData['watching']       = $isWatching === null ? _('No') : _('Yes');
             $issueData['commentHistory'] = $this->getComments($issueID);
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
@@ -331,7 +331,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'PSCID'         => null,
             'assignee'      => null,
             'history'       => null,
-            'watching'      => "Yes",
+            'watching'      => _("Yes"),
             'visitLabel'    => null,
             'category'      => null,
             'lastUpdatedBy' => null,
@@ -371,7 +371,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 if (array_key_exists($mid, $modules)) {
                     $comment['newValue'] = $modules[$mid]->getLongName();
                 } else {
-                    $comment['newValue'] = "Linked module(s) do not exist";
+                    $comment['newValue'] = _("Linked module(s) do not exist");
                 }
             } else if ($comment['fieldChanged'] === 'centerID') {
                 $comment['newValue']     = $this->getSiteName(
@@ -391,7 +391,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     ['sessionID' => $comment['newValue']]
                 );
                 $comment['newValue'] = $visitLabel;
-                $comment['fieldChanged'] = 'Visit Label';
+                $comment['fieldChanged'] = _('Visit Label');
             } else if ($comment['fieldChanged'] === 'assignee'
                 || $comment['fieldChanged'] === 'lastUpdatedBy'
             ) {
@@ -461,7 +461,7 @@ class Edit extends \NDB_Page implements ETagCalculator
     function getSiteName(int $centerID): ?string
     {
         return $centerID == null
-            ? 'All Sites'
+            ? _('All Sites')
             : \Site::singleton(\CenterID::singleton($centerID))->getCenterName();
     }
 
@@ -478,7 +478,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $values = $request->getParsedBody();
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
 
@@ -610,7 +610,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             // Add new watchers (if any)
             $usersWatching = explode(',', $values['othersWatching']);
             // If the assignee is watching, add them
-            if ($values['watching'] == 'Yes'
+            if ($values['watching'] == _('Yes')
                 && $issueValues['assignee'] == $user->getUsername()
             ) {
                 $usersWatching[] = $issueValues['assignee'];
@@ -645,7 +645,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Add editor to the watching table unless they don't want to be added.
         if (isset($values['watching'])
-            && $values['watching'] == 'Yes'
+            && $values['watching'] == _('Yes')
             && (!isset($issueValues['assignee'])
             || $issueValues['assignee'] !== $user->getUsername())
         ) {
@@ -890,10 +890,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (!$validCenter) {
                 $this->logger->log(
                     \Psr\Log\LogLevel::WARNING,
-                    'PSCID and Center ID do not match a valid session!'
+                    _('PSCID and Center ID do not match a valid session!')
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Center ID do not match a valid session!'
+                    _('PSCID and Center ID do not match a valid session!')
                 );
             }
         }
@@ -942,10 +942,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             } else {
                 $this->logger->log(
                     \Psr\Log\LogLevel::ERROR,
-                    'PSCID does not match a valid candidate!'
+                    _('PSCID does not match a valid candidate!')
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID does not match a valid candidate!'
+                    _('PSCID does not match a valid candidate!')
                 );
             }
 
@@ -956,10 +956,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (isset($result['visit'])) {
             $this->logger->log(
                 \Psr\Log\LogLevel::ERROR,
-                'Visit Label must be accompanied by a PSCID'
+                _('Visit Label must be accompanied by a PSCID')
             );
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit Label must be accompanied by a PSCID'
+                _('Visit Label must be accompanied by a PSCID')
             );
         }
         return $result;

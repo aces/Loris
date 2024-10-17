@@ -231,7 +231,7 @@ class ViewDetails extends \NDB_Form
 
         $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
         if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientName'] = _("INVALID - HIDDEN");
         }
 
         if (isset($this->tpl_data['archive']['PatientID'])
@@ -245,7 +245,7 @@ class ViewDetails extends \NDB_Form
                 $this->tpl_data['archive']['patientIDValid'] = 1;
             } else {
                 $this->tpl_data['archive']['patientIDValid'] = 0;
-                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+                $this->tpl_data['archive']['PatientID']      = _("INVALID - HIDDEN");
             }
         }
     }
@@ -373,7 +373,7 @@ class ViewDetails extends \NDB_Form
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Details',
+                _('View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );

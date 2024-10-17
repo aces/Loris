@@ -45,7 +45,7 @@ class Utility
         )
         ) {
             throw new LorisException(
-                "Argument 1 does not match expected date format (YYYY-MM-DD)"
+                _("Argument 1 does not match expected date format (YYYY-MM-DD)")
             );
         }
         $dob = [
@@ -61,7 +61,7 @@ class Utility
         )
         ) {
             throw new \LorisException(
-                "Argument 2 does not match expected date format (YYYY-MM-DD)"
+                _("Argument 2 does not match expected date format (YYYY-MM-DD)")
             );
         }
         $testdate = [
@@ -229,8 +229,8 @@ class Utility
         bool $DCC = true
     ): array {
         throw new \DeprecatedException(
-            ' This function is deprecated. Please use \Utility::getSiteList()'
-            . ' instead.'
+            _(' This function is deprecated. Please use \Utility::getSiteList()'
+            . ' instead.')
         );
     }
 
@@ -488,9 +488,9 @@ class Utility
     static function toArray($var)
     {
         throw new \DeprecatedException(
-            'Utility::toArray() is deprecated and should not be used. ' .
+            _('Utility::toArray() is deprecated and should not be used. ' .
             'Instead use Utility::associativeToNumericArray() for converting ' .
-            'arrays. Scalar values cannot be passed to this function.'
+            'arrays. Scalar values cannot be passed to this function.')
         );
     }
 
@@ -547,10 +547,10 @@ class Utility
     static function getAllInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getAllInstruments() function of ".
+            _("LORIS Deprecation Warning: The getAllInstruments() function of ".
             "the Utility class has been deprecated. This function does not load ".
             "the most accurate Full_name value and should be replaced by ".
-            "getInstrumentNamesList() of the NDB_BVL_Instrument class."
+            "getInstrumentNamesList() of the NDB_BVL_Instrument class.")
         );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
@@ -576,10 +576,10 @@ class Utility
     static function getAllDDEInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getAllDDEInstruments() function of
+            _("LORIS Deprecation Warning: The getAllDDEInstruments() function of
             the Utility class has been deprecated. This function does not load the
             most accurate Full_name value and should be replaced by
-            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class.")
         );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
@@ -614,11 +614,11 @@ class Utility
     static function getDirectInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getDirectInstruments() function of
+            _("LORIS Deprecation Warning: The getDirectInstruments() function of
             the Utility class has been deprecated. This function does not load the
             most accurate Full_name value and should be replaced by
             getDirectEntryInstrumentNamesList() of the NDB_BVL_Instrument class."
-        );
+	));
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
@@ -757,8 +757,8 @@ class Utility
     static function getExistingVisitLabels(?int $projectID = null): array
     {
         throw new \DeprecatedException(
-            'This function is deprecated. Please use Utility::getVisitList() '
-            . 'instead.'
+            _('This function is deprecated. Please use Utility::getVisitList() '
+            . 'instead.')
         );
     }
 
@@ -813,7 +813,7 @@ class Utility
             }
             if ($piece == '..') {
                 if (!is_array($resolvedPath)) {
-                    error_log("ERROR: Resolved path not an array");
+                    error_log(_("ERROR: Resolved path not an array"));
                     return "";
                 }
                 array_pop($resolvedPath);
@@ -906,7 +906,7 @@ class Utility
         $keyspace = $keyspace
         ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         if ($length < 1) {
-            throw new \RangeException("Length must be a positive integer");
+            throw new \RangeException(_("Length must be a positive integer"));
         }
         $pieces = [];
         $max    = mb_strlen($keyspace, '8bit') - 1;

@@ -692,13 +692,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $this->logger->debug("NDB_Page middleware called");
+        $this->logger->debug(_("NDB_Page middleware called"));
         $user = $request->getAttribute("user");
         if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
-                    new \LORIS\Http\StringStream("Permission Denied")
+                    new \LORIS\Http\StringStream(_("Permission Denied"))
                 )->withStatus(403);
         }
 
@@ -737,7 +737,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->logger->debug("NDB_Page handle called");
+        $this->logger->debug(_("NDB_Page handle called"));
 
         $this->setup();
         return (new \LORIS\Http\Response())
@@ -751,7 +751,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function display()
     {
-        $this->logger->debug("Rendering page via display function");
+        $this->logger->debug(_("Rendering page via display function"));
         switch ($this->format) {
         case 'json':
             return $this->toJSON();
@@ -939,6 +939,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function toJSON(): string
     {
-        return json_encode(['error' => 'Not implemented']);
+        return json_encode(['error' => _('Not implemented')]);
     }
 }

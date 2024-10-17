@@ -94,7 +94,7 @@ class Candidate_Parameters extends \NDB_Form
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Candidate Parameters',
+                _('Candidate Parameters'),
                 "/candidate_parameters/?candID=$candID&identifier=$candID"
             )
         );

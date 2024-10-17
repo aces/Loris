@@ -149,7 +149,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         if (!$this->_instrument->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'This user can not update this instrument'
+                _('This user can not update this instrument')
             );
         }
 
@@ -159,7 +159,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                _('Can not update instruments that are flagged as complete.')
             );
         }
 
@@ -167,12 +167,12 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                _('Could not update.')
             );
         }
 
@@ -187,7 +187,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $diff = array_diff($requiredfields, array_keys($data['Flags']));
             if (!empty($diff)) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Field(s) missing in Flags: ' . implode(', ', $diff)
+                    _('Field(s) missing in Flags: ') . implode(', ', $diff)
                 );
             }
             $this->_instrumentStatus->setDataEntryStatus(
@@ -222,7 +222,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         if (!$this->_instrument->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'This user can not update this instrument'
+                _('This user can not update this instrument')
             );
         }
 
@@ -232,20 +232,20 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                _('Can not update instruments that are flagged as complete.')
             );
         }
 
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                _('Could not update.')
             );
         }
 

@@ -187,11 +187,11 @@ class Unresolved extends Endpoint implements ETagCalculator
         $correctanswer = $data['correctanswer'] ?? null;
 
         if ($conflictid === null || $correctanswer === null) {
-            return new \LORIS\Http\Response\JSON\BadRequest('Missing field(s)');
+            return new \LORIS\Http\Response\JSON\BadRequest(_('Missing field(s)'));
         }
 
         if ($correctanswer !== '1' && $correctanswer !== '2') {
-            return new \LORIS\Http\Response\JSON\BadRequest('Invalid value');
+            return new \LORIS\Http\Response\JSON\BadRequest(_('Invalid value'));
         }
 
         $db = \NDB_Factory::singleton()->database();
@@ -239,7 +239,7 @@ class Unresolved extends Endpoint implements ETagCalculator
 
         if (empty($conflict)) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                'ConflictID not found.'
+                _('ConflictID not found.')
             );
         }
 

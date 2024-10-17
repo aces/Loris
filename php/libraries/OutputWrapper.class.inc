@@ -11,9 +11,9 @@
 class OutputWrapper
 {
     // Error codes
-    const ERROR_LOGDIR_NOT_DIR      = 'Configuration setting for Log directory is '
-        . 'not a directory.';
-    const ERROR_LOGDIR_NOT_WRITABLE = 'Log directory is not writable.';
+    const ERROR_LOGDIR_NOT_DIR      = _('Configuration setting for Log directory is '
+        . 'not a directory.');
+    const ERROR_LOGDIR_NOT_WRITABLE = _('Log directory is not writable.');
     // Colours mapped to ANSI escape codes.
     // @see https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
     const COLOURS = [

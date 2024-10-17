@@ -87,11 +87,11 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
-            throw new \NotFound("Page requires a timepoint to load");
+            throw new \NotFound(_("Page requires a timepoint to load"));
         }
         $candidate = $this->candidate;
         if ($candidate === null) {
-            throw new \NotFound("Page requires a candidate to load");
+            throw new \NotFound(_("Page requires a candidate to load"));
         }
 
         //These variable are only for checking the permissions.
@@ -125,7 +125,7 @@ class Instrument_List extends \NDB_Menu_Filter
         if ($this->candidate === null || $this->timePoint === null) {
             // This shouldn't happen, the module level router verifies that
             // the candidate exists before getting here.
-            throw new \LorisException("Timepoint list requires a timepoint.");
+            throw new \LorisException(_("Timepoint list requires a timepoint."));
         }
 
         // Check imaging_browser permission, used to control imaging_browser link

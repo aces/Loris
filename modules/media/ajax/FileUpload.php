@@ -37,7 +37,7 @@ function editFile()
     $db   = \NDB_Factory::singleton()->database();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
-        showMediaError("Permission Denied", 403);
+        showMediaError(_("Permission Denied"), 403);
         exit;
     }
 
@@ -90,7 +90,7 @@ function uploadFile()
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
-        showMediaError("Permission Denied", 403);
+        showMediaError(_("Permission Denied"), 403);
         exit;
     }
 
@@ -233,7 +233,7 @@ function viewData()
 {
     $user =& User::singleton();
     if (!$user->hasPermission('media_read')) {
-        echo showMediaError("Permission denied", 403);
+        echo showMediaError(_("Permission denied"), 403);
         return;
     }
     echo json_encode(getUploadFields());

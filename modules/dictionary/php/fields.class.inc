@@ -38,7 +38,7 @@ class Fields extends \NDB_Page
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
+                _("No valid user")
             );
         }
         if (!($this->_hasAccess($user))) {
@@ -49,7 +49,7 @@ class Fields extends \NDB_Page
         if (strpos($path, "fields/") === false) {
             // if the path doesn't contain "fields" we shouldn't have
             // delegated to this class..
-            throw new \LorisException("Invalid internal LORIS state");
+            throw new \LorisException(_("Invalid internal LORIS state"));
         }
         $name = substr($path, strpos($path, "fields/") + strlen("fields/"));
         switch ($request->getMethod()) {

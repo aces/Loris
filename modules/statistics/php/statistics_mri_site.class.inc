@@ -59,11 +59,11 @@ class Statistics_Mri_Site extends Statistics_Site
     {
         switch ($issue) {
         case "Tarchive_Missing":
-            return "MRI Parameter Form Completed but Missing tarchive entry";
+            return _("MRI Parameter Form Completed but Missing tarchive entry");
         case "PF_Missing":
-            return "MRI Browser Populated, but no MRI parameter form completed";
+            return _("MRI Browser Populated, but no MRI parameter form completed");
         case "Files_Missing":
-            return "MRI Parameter Form Completed but nothing in MRI Browser";
+            return _("MRI Parameter Form Completed but nothing in MRI Browser");
         }
         return $issue;
     }

@@ -64,8 +64,8 @@ class Module extends \Module
                     new \LORIS\Http\Error(
                         $request,
                         500,
-                        'Required configuration settings for DICOM ' .
-                        'anonymization are missing. Cannot continue.'
+                        _('Required configuration settings for DICOM ' .
+                        'anonymization are missing. Cannot continue.')
                     )
                 )
             );
@@ -93,9 +93,9 @@ class Module extends \Module
             'LivingPhantomRegex',
             'patientIDRegex',
         ];
-        $configError   = 'Configuration settings missing for DICOM anonymization. ' .
+        $configError   = _('Configuration settings missing for DICOM anonymization. ' .
             'Please ensure that the following settings are configured to ' .
-            'be valid regular expressions: ';
+            'be valid regular expressions: ');
         foreach ($configOptions as $option) {
             if (!isset($config[$option])) {
                 throw new \ConfigurationException(
@@ -112,7 +112,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return _("Imaging");
     }
 
     /**
@@ -122,6 +122,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "DICOM Archive";
+        return _("DICOM Archive");
     }
 }

@@ -60,7 +60,7 @@ class Modules extends \NDB_Page
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
+                _("No valid user")
             );
         }
         if (!($this->_hasAccess($user))) {

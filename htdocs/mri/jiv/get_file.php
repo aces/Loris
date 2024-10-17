@@ -29,7 +29,7 @@ ini_set("display_errors", "Off");
 $client = new NDB_Client();
 if ($client->initialize("../../../project/config.xml") == false) {
     http_response_code(401);
-    echo "User is not authenticated.";
+    echo _("User is not authenticated.");
     return;
 }
 
@@ -226,16 +226,16 @@ function validConfigPaths(array $paths): bool
     foreach ($paths as $p) {
         if (empty($p)) {
             throw new \LorisException(
-                'Config paths are not initialized. Please ensure that valid paths ' .
+                _('Config paths are not initialized. Please ensure that valid paths ' .
                 'are set for imagePath, downloadPath and tarchiveLibraryDir'
-            );
+            ));
         }
         if ($p === '/') {
             throw new \LorisException(
-                'Config path invalid. Paths cannot be set to root, i.e., `/`' .
+                _('Config path invalid. Paths cannot be set to root, i.e., `/`' .
                 ' Please verify your path settings for imagePath, ' .
                 'downloadPath and tarchiveLibraryDir.'
-            );
+            ));
         }
     }
     return true;
@@ -254,7 +254,7 @@ function validDownloadPath($path): bool
     // Extra sanity checks, just in case something went wrong with path
     // resolution.
     if (strpos($path, '.') === false) {
-        error_log('ERROR: Invalid filename. Could not determine file type');
+        error_log(_('ERROR: Invalid filename. Could not determine file type'));
         return false;
     }
     // Make sure that the user isn't trying to break out of the $path by
@@ -263,7 +263,7 @@ function validDownloadPath($path): bool
     // $DownloadPath
     if (strpos($path, "..") !== false) {
         error_log(
-            'ERROR: Invalid filename. Contains path traversal characters'
+            _('ERROR: Invalid filename. Contains path traversal characters')
         );
         return false;
     }

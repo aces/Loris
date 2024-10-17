@@ -47,7 +47,7 @@ $paths  = $config->getSetting('paths');
 // Basic config validation
 $basePath = $paths['base'];
 if (empty($basePath)) {
-    error_log("ERROR: Config settings are missing");
+    error_log(_("ERROR: Config settings are missing"));
     header("HTTP/1.1 500 Internal Server Error");
     exit(1);
 }
@@ -57,7 +57,7 @@ if (empty($basePath)) {
 $Module = $_GET['Module'];
 $File   = $_GET['script'];
 if (empty($Module) || empty($File)) {
-    error_log("Missing required parameters for request");
+    error_log(_("Missing required parameters for request"));
     header("HTTP/1.1 400 Bad Request");
     exit(2);
 }
@@ -67,7 +67,7 @@ if (empty($Module) || empty($File)) {
 // No need to check for '/' since all scripts are relative to $basePath
 // and there's no way to go up a level.
 if (strpos($File, "..") !== false) {
-    error_log("ERROR: Invalid filename");
+    error_log(_("ERROR: Invalid filename"));
     header("HTTP/1.1 400 Bad Request");
     exit(4);
 }
@@ -83,7 +83,7 @@ if (is_dir($basePath . "project/modules/$Module")
             $ModuleDir . "/php"
         );
 } else {
-    error_log("ERROR: Module does not exist");
+    error_log(_("ERROR: Module does not exist"));
     header("HTTP/1.1 400 Bad Request");
     exit(5);
 }

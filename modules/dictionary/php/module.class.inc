@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return _("Tools");
     }
 
     /**
@@ -56,7 +56,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Dictionary";
+        return _("Data Dictionary");
     }
 
     /**

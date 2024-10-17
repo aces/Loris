@@ -80,7 +80,7 @@ class Dqt extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Query Tool', "/$this->name")
+            new \LORIS\Breadcrumb(_('Data Query Tool'), "/$this->name")
         );
     }
 

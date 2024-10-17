@@ -65,7 +65,7 @@ class Module extends \Module
                     new \LORIS\Http\Error(
                         $request,
                         500,
-                        self::ERR_MSG_CONFIG_MISSING
+                        _(self::ERR_MSG_CONFIG_MISSING)
                     )
                 )
             );
@@ -89,7 +89,7 @@ class Module extends \Module
         $path = \NDB_Config::singleton()->getSetting("mriCodePath");
         if (empty($path) || !is_readable($path)) {
             throw new \ConfigurationException(
-                'Config setting mriCodePath is missing or unreadable.'
+                _('Config setting mriCodePath is missing or unreadable.')
             );
         }
     }
@@ -101,7 +101,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Admin";
+        return _("Admin");
     }
 
     /**
@@ -111,6 +111,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Server Processes Manager";
+        return _("Server Processes Manager");
     }
 }

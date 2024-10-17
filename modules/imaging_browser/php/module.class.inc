@@ -37,7 +37,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return _("Imaging");
     }
 
     /**
@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Browser";
+        return _("Imaging Browser");
     }
 
     /**
@@ -70,7 +70,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "New and pending imaging session",
+                    _("New and pending imaging session"),
                     $DB,
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f
@@ -113,7 +113,7 @@ class Module extends \Module
             }
             return [
                 new CandidateWidget(
-                    "Imaging QC Summary",
+                    _("Imaging QC Summary"),
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
                     [ 'Files' => iterator_to_array($scansummary)],

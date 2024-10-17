@@ -27,13 +27,6 @@ class Instrument_Manager extends \DataFrameworkMenu
     const FILE_ALREADY_EXISTS   = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
                                   'install the instrument.';
-    const BAD_REQUEST           = 'Uploaded file is not of type LINST or is ' .
-                                  'too large.';
-    const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
-                                  'installation failed. Please contact your ' .
-                                  'administrator.';
-    const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
-                                  'instrument needs to be installed manually.';
     private string $_path;
     /**
      * Checking permissions
@@ -86,7 +79,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         // Ensure the server is properly configured.
         if (!$this->canWriteFiles()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                self::CANNOT_WRITE_FILES
+                _(self::CANNOT_WRITE_FILES)
             );
         }
 
@@ -98,7 +91,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(_(self::ALREADY_INSTALLED));
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -121,7 +114,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                  * installation is disabled (ie. has no adminUser).
                  */
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    self::FILE_ALREADY_EXISTS
+                    _(self::FILE_ALREADY_EXISTS)
                 );
             }
             return $response;

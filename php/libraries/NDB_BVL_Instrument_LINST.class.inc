@@ -233,11 +233,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $errors[$errorEl] = "$elname is required.";
 
                     if ($this->XINDebug) {
-                        echo "Required by default";
+                        echo _("Required by default");
                     }
                 } else {
                     if ($this->XINDebug) {
-                        echo "Status' not required by default";
+                        echo _("Status' not required by default");
                     }
                 }
             }
@@ -454,7 +454,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         [
                             new DictionaryItem(
                                 $this->testName.'_Date_taken',
-                                'Date of Administration',
+                                _('Date of Administration'),
                                 $scope,
                                 new \LORIS\Data\Types\DateType(),
                                 new Cardinality(Cardinality::SINGLE),
@@ -497,7 +497,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             [
                                 new DictionaryItem(
                                     $this->testName.'_Window_Difference',
-                                    'Window difference from test battery (days)',
+                                    _('Window difference from test battery (days)'),
                                     $scope,
                                     new \LORIS\Data\Types\Duration(),
                                     new Cardinality(Cardinality::SINGLE),

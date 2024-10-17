@@ -135,8 +135,8 @@ class NDB_BVL_Battery
             $currentTests = $this->getBattery($stage, $CohortID, $visit_label);
         } catch (Exception $e) {
             throw new Exception(
-                "Could not get the current list of instruments, "
-                . "thus unable to assert that the battery is empty",
+                _("Could not get the current list of instruments, "
+                . "thus unable to assert that the battery is empty"),
                 0,
                 $e
             );
@@ -200,7 +200,7 @@ class NDB_BVL_Battery
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
         if ($error !== true) {
-            throw new \LorisException("Invalid instrument");
+            throw new \LorisException(_("Invalid instrument"));
         }
 
         // get SessionID, UserID
@@ -617,7 +617,7 @@ class NDB_BVL_Battery
     function _assertBatterySelected()
     {
         if (is_null($this->sessionID)) {
-            throw new Exception("No battery selected");
+            throw new Exception(_("No battery selected"));
         }
         return true;
     } // end _assertBatterySelected()

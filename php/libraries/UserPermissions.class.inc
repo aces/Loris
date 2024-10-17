@@ -138,7 +138,7 @@ class UserPermissions
     {
         if (count($permissions) === 0) {
             throw new LorisException(
-                "Cannot call hasAllPermissions with an empty array!"
+                _("Cannot call hasAllPermissions with an empty array!")
             );
         }
         foreach ($permissions as $p) {
@@ -160,7 +160,7 @@ class UserPermissions
     {
         if (count($permissions) === 0) {
             throw new LorisException(
-                "Cannot call hasAnyPermission with an empty array!"
+                _("Cannot call hasAnyPermission with an empty array!")
             );
         }
         foreach ($permissions as $p) {

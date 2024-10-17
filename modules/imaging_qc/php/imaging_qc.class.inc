@@ -232,9 +232,9 @@ class Imaging_QC extends \NDB_Menu_Filter
         }
 
         $scan_location = [
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
+            "In Imaging Browser"    => _("Found in Imaging Browser"),
+            "In MRI Violated Scans" => _("Found in MRI Violated Scans"),
+            "Missing"               => _("Missing"),
         ];
 
         $this->fieldOptions
@@ -244,26 +244,26 @@ class Imaging_QC extends \NDB_Menu_Filter
                 'cohort'           => $cohortList2,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
+                    "Incomplete" => _("Incomplete"),
+                    "Complete"   => _("Complete"),
                 ],
                 'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
+                    "Yes" => _("Yes"),
+                    "No"  => _("No"),
                 ],
                 'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
+                    "In DICOM" => _("In DICOM Archives"),
+                    "Missing"  => _("Missing"),
                 ],
                 'scanLocation'     => $scan_location,
                 'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
+                    "Pass" => _("Pass"),
+                    "Fail" => _("Fail"),
                 ],
                 'uploadedBy'       => $uploaderList,
                 'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
+                    "True"  => _("True"),
+                    "False" => _("False"),
                 ],
                 'visitLabel'       => $visitList,
             ];
@@ -386,7 +386,7 @@ class Imaging_QC extends \NDB_Menu_Filter
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Imaging Quality Control',
+                _('Imaging Quality Control'),
                 '/imaging_qc'
             )
         );
@@ -411,7 +411,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                 ->withStatus(500)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "MRI Parameter Form table does not exist"
+                        _("MRI Parameter Form table does not exist")
                     )
                 );
         }

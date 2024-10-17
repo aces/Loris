@@ -155,16 +155,16 @@ class Imaging_Session_ControlPanel
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = [
             'Unrated' => '',
-            'Pass'    => 'Pass',
-            'Fail'    => 'Fail',
+            'Pass'    => _('Pass'),
+            'Fail'    => _('Fail'),
         ];
         $subjectData['pending_options'] = [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => _('Yes'),
+            'N' => _('No'),
         ];
         $subjectData['caveat_options']  = [
-            'true'  => 'True',
-            'false' => 'False',
+            'true'  => _('True'),
+            'false' => _('False'),
         ];
 
         $qcstatus = $timePoint->getImagingQC();

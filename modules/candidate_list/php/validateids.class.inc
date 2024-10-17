@@ -67,7 +67,7 @@ class ValidateIDs extends \NDB_Page
                 ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Only GET requests are allowed"
+                        _("Only GET requests are allowed")
                     )
                 );
         }
@@ -80,7 +80,7 @@ class ValidateIDs extends \NDB_Page
                 ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        "Must provide PSCID and CandID to validate"
+                        _("Must provide PSCID and CandID to validate")
                     )
                 );
         }

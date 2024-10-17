@@ -54,7 +54,7 @@ class Edit_Help_Content extends \NDB_Form
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
+                _("No valid user")
             );
         }
         if (!($this->_hasAccess($user))) {
@@ -83,7 +83,7 @@ class Edit_Help_Content extends \NDB_Form
         $gets = $request->getQueryParams();
         $data = [
             'title'      => null,
-            'content'    => 'Under Construction',
+            'content'    => _('Under Construction'),
             'section'    => isset($gets['section']) ?
                 htmlspecialchars($gets['section']) : null,
             'subsection' => isset($gets['subsection']) ?

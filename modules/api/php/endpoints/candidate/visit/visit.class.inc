@@ -93,7 +93,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if ($this->_visit !== null) {
             $user = $request->getAttribute('user');
             if (!$this->_visit->isAccessibleBy($user)) {
-                return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
+                return new \LORIS\Http\Response\JSON\Forbidden(_('Permission denied'));
             }
 
         }
@@ -120,7 +120,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($this->_visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(_('Visit not found'));
         }
 
         // Delegate to sub-endpoints
@@ -162,7 +162,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(_('Visit not found'));
         }
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -201,7 +201,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Field(s) missing: ' . implode(', ', $diff)
+                _('Field(s) missing: ') . implode(', ', $diff)
             );
         }
 
@@ -215,13 +215,13 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()->__toString()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID does not match this candidate'
+                _('CandID does not match this candidate')
             );
         }
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify that candidate"
+                _("You can't create or modify that candidate")
             );
         }
 
@@ -257,7 +257,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'This visit is already started'
+                    _('This visit is already started')
                 );
             }
 

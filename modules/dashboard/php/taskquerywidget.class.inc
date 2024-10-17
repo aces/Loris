@@ -64,13 +64,13 @@ class TaskQueryWidget extends TaskWidget
         string $cssclass
     ) {
         $queryparams = [];
-        $siteLabel   = 'Site: All';
+        $siteLabel   = _('Site: All');
         if ($allperm != '') {
             if (!$user->hasPermission($allperm)) {
                 $sites = $user->getCenterIDs();
                 $queryparams['SiteID'] = implode(',', $sites);
                 $dbquery  .= " AND FIND_IN_SET($sitefield, :SiteID)";
-                $siteLabel = 'Site: All User Sites';
+                $siteLabel = _('Site: All User Sites');
             }
         }
         if ($projectfield) {

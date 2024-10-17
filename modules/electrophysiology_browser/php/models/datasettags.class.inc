@@ -488,7 +488,7 @@ class DatasetTags
                                         $subgroup_string = "($subgroup_string)";
                                     } else {
                                         throw new \LorisException(
-                                            "Tag not found: " .
+                                            _("Tag not found: ") .
                                             json_encode($group_tag)
                                         );
                                     }

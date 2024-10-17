@@ -197,7 +197,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new \LorisException("IDs do not match");
+                throw new \LorisException(_("IDs do not match"));
             }
         }
 
@@ -282,7 +282,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         if (($useEDC === '1' || $useEDC === 'true')) {
             if (empty($edc)) {
                 throw new \LorisException(
-                    "EDC must be specified",
+                    _("EDC must be specified"),
                     EDC_NOT_SPECIFIED
                 );
             } else {
@@ -290,7 +290,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $edcDate = DateTime::createFromFormat($dobFormat, $edc);
                 if ($edcDate === false) {
                     throw new InvalidArgumentException(
-                        "EDC is invalid (expected format: YYYY-MM-DD)",
+                        _("EDC is invalid (expected format: YYYY-MM-DD)"),
                         EDC_INVALID
                     );
                 }
@@ -307,7 +307,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             // DoB not required if useEDC is on
             if (!($useEDC === '1' || $useEDC === 'true')) {
                 throw new InvalidArgumentException(
-                    "Date of Birth must be specified",
+                    _("Date of Birth must be specified"),
                     DOB_NOT_SPECIFIED
                 );
             } else {
@@ -317,7 +317,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
             if ($dob === false) {
                 throw new InvalidArgumentException(
-                    "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                    _("Date of Birth is invalid (expected format: YYYY-MM-DD)"),
                     DOB_INVALID
                 );
             }
@@ -333,7 +333,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             // check pscid is specified
             if (empty($PSCID)) {
                 throw new Exception(
-                    "PSCID must be specified",
+                    _("PSCID must be specified"),
                     PSCID_NOT_SPECIFIED
                 );
             }
@@ -352,7 +352,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
             if ($existing > 0) {
                 throw new \ConflictException(
-                    "PSCID must be unique",
+                    _("PSCID must be unique"),
                     PSCID_NOT_UNIQUE
                 );
             }
@@ -365,7 +365,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             )
             ) {
                 throw new LorisException(
-                    "PSCID has an invalid structure",
+                    _("PSCID has an invalid structure"),
                     PSCID_INVALID_STRUCTURE
                 );
             }
@@ -538,7 +538,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
          */
         if (empty($newData)) {
             throw new LorisException(
-                'Candidate::setData() cannot be called with an empty array!'
+                _('Candidate::setData() cannot be called with an empty array!')
             );
         }
         $this->candidateInfo = array_merge($this->candidateInfo, $newData);
@@ -649,12 +649,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         switch ($dobFormat) {
         case 'Ym':
             return [
-                'label' => 'Date of Birth',
+                'label' => _('Date of Birth'),
                 'value' => $dobDate->format('Y-m'),
             ];
         case 'Ymd':
             return [
-                'label' => 'Date of Birth',
+                'label' => _('Date of Birth'),
                 'value' => $dobDate->format('Y-m-d'),
             ];
         default:

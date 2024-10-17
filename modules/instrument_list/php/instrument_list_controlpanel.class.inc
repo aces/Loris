@@ -569,7 +569,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
         if ($this->isSubmitted()) {
             $this->tpl_data['send_to_dcc']['icon']    = 'far fa-check-square';
-            $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
+            $this->tpl_data['send_to_dcc']['reverse'] = _('Reverse Send To DCC');
         }
 
         $battery = new \NDB_BVL_Battery();
@@ -630,15 +630,15 @@ class Instrument_List_ControlPanel extends \TimePoint
         $scanDone = $this->getData('Scan_done');
 
         if (!$user->hasPermission('send_to_dcc')) {
-            return "User does not have permission to send to DCC";
+            return _("User does not have permission to send to DCC");
         }
         if (!$user->hasCenter($this->getCenterID())) {
-            return "Users must belong to the same site"
-                . " as the candidate to submit to DCC.";
+            return _("Users must belong to the same site"
+                . " as the candidate to submit to DCC.");
         }
         if ($this->isSubmitted()) {
-            return "This timepoint has already been sent to DCC.".
-                         "  Try refreshing your page.";
+            return _("This timepoint has already been sent to DCC.".
+                         "  Try refreshing your page.");
         }
         if (!in_array(
             $this->getData('Current_stage'),
@@ -648,8 +648,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            return "This stage is not a Screening or Visit stage. "
-                . "Only Screening or Visit stages can be sent to DCC.";
+            return _("This stage is not a Screening or Visit stage. "
+                . "Only Screening or Visit stages can be sent to DCC.");
         }
         if (in_array(
             $this->getData($this->getData('Current_stage')),
@@ -659,14 +659,14 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            return "The status of this stage is either"
-                . " In Progress or has not been set.";
+            return _("The status of this stage is either"
+                . " In Progress or has not been set.");
         }
         if (! $config->settingEnabled("useScanDone")
             || ($this->getData('Current_stage') != 'Screening'
             && empty($scanDone))
         ) {
-            return "The Scan done field must be entered for the Visit stage";
+            return _("The Scan done field must be entered for the Visit stage");
         }
 
         $battery = new \NDB_BVL_Battery();

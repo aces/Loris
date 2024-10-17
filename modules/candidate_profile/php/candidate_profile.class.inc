@@ -69,7 +69,7 @@ class Candidate_Profile extends \NDB_Page
         if ($this->candidate === null) {
             // This should be impossible, because the Module router added the
             // attribute before loading this page.
-            throw new \LorisException("No candidate provided");
+            throw new \LorisException(_("No candidate provided"));
         }
 
         $factory = \NDB_Factory::singleton();

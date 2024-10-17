@@ -82,7 +82,7 @@ class Data_Release extends \DataFrameworkMenu
 
         foreach ($result as $id => $row) {
             $version     = $row['version'] == null || $row['version'] == '' ?
-               'Unversioned' : $row['version'];
+               _('Unversioned') : $row['version'];
             $result[$id] = $row['file_name'].' - '.$version;
         }
 
@@ -108,7 +108,7 @@ class Data_Release extends \DataFrameworkMenu
         $versionsList = [];
         foreach ($versions as $version) {
             $version = $version == null || $version == '' ?
-                'Unversioned' : $version;
+                _('Unversioned') : $version;
             $versionsList[$version] = $version;
         }
 
@@ -132,7 +132,7 @@ class Data_Release extends \DataFrameworkMenu
         $versionFiles = [];
         foreach ($result as $row) {
             $version = $row['version'] == null || $row['version'] == '' ?
-                'Unversioned' : $row['version'];
+                _('Unversioned') : $row['version'];
             $versionFiles[$version][] = $row['id'];
         }
 
