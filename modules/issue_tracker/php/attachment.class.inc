@@ -148,7 +148,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             $DB      = $factory->database();
             $DB->update(
                 'issues_attachments',
-                ['deleted' => 1, 'date_deleted' => date('Y-m-d H:i:s')],
+                ['date_deleted' => date('Y-m-d H:i:s')],
                 ['ID' => $ID]
             );
             return new \LORIS\Http\Response\JsonResponse(
