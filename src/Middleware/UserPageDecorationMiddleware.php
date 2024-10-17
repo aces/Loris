@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);
-
+<?php
 namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -37,8 +36,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Displays a page to an logged in user, adding the necessary
-     * header/footer/etc page decorations.
+     * Displays a page to a logged-in user, adding the necessary
+     * header/footer/etc. page decorations.
      *
      * @param ServerRequestInterface  $request The incoming request
      * @param RequestHandlerInterface $handler The handler to decorate
@@ -49,14 +48,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     {
         ob_start();
         // Set the page template variables
-        // $user and $loris is set by the page base router
         $user     = $request->getAttribute("user");
         $loris    = $request->getAttribute("loris");
         $tpl_data = array(
-                     'test_name' => $this->PageName,
-                    );
+            'test_name' => $this->PageName,
+        );
         $menu     = [];
 
+        // Build the menu items from active modules
         $modules = $loris->getActiveModules();
         foreach ($modules as $module) {
             if (!$module->hasAccess($user)) {
@@ -101,12 +100,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         // Basic page outline variables
         $tpl_data += array(
-                      'study_title' => $this->Config->getSetting('title'),
-                      'baseurl'     => $this->BaseURL,
-                      'menus'       => $menu,
-                      'currentyear' => date('Y'),
-                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
-                     );
+            'study_title' => $this->Config->getSetting('title'),
+            'baseurl'     => $this->BaseURL,
+            'menus'       => $menu,
+            'currentyear' => date('Y'),
+            'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
+        );
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
@@ -165,51 +164,44 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Variables that get passed along to the LorisHelper javascript object.
         $tpl_data['studyParams'] = array(
-                                    'useEDC'      => $this->Config->getSetting('useEDC'),
-                                    'useProband'  => $this->Config->getSetting(
-                                        'useProband'
-                                    ),
-                                    'useFamilyID' => $this->Config->getSetting(
-                                        'useFamilyID'
-                                    ),
-                                    'useConsent'  => $this->Config->getSetting(
-                                        'useConsent'
-                                    ),
-                                   );
+            'useEDC'      => $this->Config->getSetting('useEDC'),
+            'useProband'  => $this->Config->getSetting('useProband'),
+            'useFamilyID' => $this->Config->getSetting('useFamilyID'),
+            'useConsent'  => $this->Config->getSetting('useConsent'),
+        );
         $tpl_data['jsonParams']  = json_encode(
             array(
-             'BaseURL'   => $this->BaseURL,
-             'TestName'  => $tpl_data['test_name'] ?? '',
-             'Subtest'   => $tpl_data['subtest'] ?? '',
-             'CandID'    => $tpl_data['candID'] ?? '',
-             'SessionID' => $tpl_data['sessionID'] ?? '',
-             'CommentID' => $tpl_data['commentID'] ?? '',
+                'BaseURL'   => $this->BaseURL,
+                'TestName'  => $tpl_data['test_name'] ?? '',
+                'Subtest'   => $tpl_data['subtest'] ?? '',
+                'CandID'    => $tpl_data['candID'] ?? '',
+                'SessionID' => $tpl_data['sessionID'] ?? '',
+                'CommentID' => $tpl_data['commentID'] ?? '',
             )
         );
 
         // User related template variables that used to be in main.php.
         $site_arr    = $this->user->getCenterIDs();
-        $site        = array();
-        $isStudySite = array();
-        foreach ($site_arr as $key => $val) {
-            $site[$key]        = & \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
+        // New edits to add projects to nav bar
+        $project_arr = $this->user->getProjectIDs();
 
-        $oneIsStudySite   = in_array("1", $isStudySite);
+        // Check if the user is associated with any study sites
+        $oneIsStudySite = $this->user->hasStudySite();
+
         $tpl_data['user'] = [];
         $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
-        $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = implode(
-            "<br/>",
-            $this->user->getSiteNames()
-        );
+        $tpl_data['userNumSites']                 = count($site_arr);
+        $tpl_data['userNumProjects']              = count($project_arr);
 
-        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
-            'context_help'
-        );
+        // Retrieve site and project names for tooltips
+        $tpl_data['user']['SitesTooltip']    = implode("<br/>", $this->user->getSiteNames());
+        $tpl_data['user']['ProjectsTooltip'] = implode("<br/>", $this->user->getProjectNames());
+
+
+        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission('context_help');
+        error_log(print_r($tpl_data,true));
 
         // FIXME: This should be array_filter
         $realPerms = array();
@@ -224,8 +216,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
         $tpl_data['userjson']       = json_encode(
             [
-             'username' => $user->getUsername(),
-             'id'       => $user->getId(),
+                'username' => $user->getUsername(),
+                'id'       => $user->getId(),
             ]
         );
         // Display the footer links, as specified in the config file
@@ -236,10 +228,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $WindowName = md5($url);
 
             $tpl_data['links'][] = array(
-                                    'url'        => $url,
-                                    'label'      => $label,
-                                    'windowName' => $WindowName,
-                                   );
+                'url'        => $url,
+                'label'      => $label,
+                'windowName' => $WindowName,
+            );
         }
 
         // Handle needs to be called before formaction, because handle potentially
@@ -279,10 +271,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Finally, the actual content and render it..
         $tpl_data += array(
-                      'jsfiles'   => $this->JSFiles,
-                      'cssfiles'  => $this->CSSFiles,
-                      'workspace' => $undecorated->getBody(),
-                     );
+            'jsfiles'   => $this->JSFiles,
+            'cssfiles'  => $this->CSSFiles,
+            'workspace' => $undecorated->getBody(),
+        );
 
         $smarty = new \Smarty_NeuroDB;
         $smarty->assign($tpl_data);
