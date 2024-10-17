@@ -109,6 +109,11 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         if (empty($values['psc'])) {
             unset($values['psc']);
+        } else {
+            // set default site value as site of the candidate
+            $candID    = new CandID($values['candID']);
+            $candidate = \Candidate::singleton($candID);
+            $values['defaultpsc'] = $candidate->getCenterID()->__toString();
         }
 
         return new \LORIS\Http\Response\JsonResponse(
