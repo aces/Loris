@@ -317,6 +317,15 @@ class DataDictIndex extends Component {
             show: false,
             filter: null,
         },
+        {
+            label: 'Cohorts',
+            show: true,
+            filter: {
+                name: 'Cohorts',
+                type: 'multiselect',
+                options: options.cohorts,
+            },
+        },
     ];
     return (
         <FilterableDataTable
