@@ -1,3 +1,5 @@
+SET NAMES utf8;
+
 -- ********************************
 -- Core tables
 -- ********************************
@@ -69,8 +71,9 @@ CREATE TABLE `language` (
   UNIQUE KEY (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO language (language_code, language_label) VALUES
-    ('en-CA', 'English');
+INSERT INTO `language` (`language_code`, `language_label`) VALUES
+    ('en-CA', 'English'),
+    ('fr-CA', 'Français');
 
 CREATE TABLE `sex` (
   `Name` varchar(255) NOT NULL,

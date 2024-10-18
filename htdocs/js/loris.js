@@ -1,6 +1,12 @@
 /* exported LorisHelper */
 
-let LorisHelper = function(user, configParams, userPerms, studyParams) {
+let LorisHelper = function(
+  user,
+  configParams,
+  userPerms,
+  studyParams,
+  supportedLanguages,
+) {
   'use strict';
   let lorisObj = configParams;
 
@@ -72,6 +78,8 @@ let LorisHelper = function(user, configParams, userPerms, studyParams) {
     'use strict';
     return studyParams[param];
   };
+
+  lorisObj.supportedLanguages = supportedLanguages;
 
   lorisObj.user = user;
 

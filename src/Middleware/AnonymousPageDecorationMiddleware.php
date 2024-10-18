@@ -13,13 +13,20 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
     protected $CSSFiles;
     protected $Config;
     protected $BaseURL;
+    protected array $supported_languages;
 
-    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS)
-    {
+    public function __construct(
+        string $baseurl,
+        \NDB_Config $config,
+        array $JS,
+        array $CSS,
+        array $supported_languages,
+    ) {
         $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
         $this->Config   = $config;
         $this->BaseURL  = $baseurl;
+        $this->supported_languages = $supported_languages;
     }
 
     /**
@@ -67,6 +74,8 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
             // content type right now, so we default to assuming HTML.
             return $undecorated;
         }
+
+        $tpl_data['supported_languages'] = $this->supported_languages;
 
         // Finally, the actual content and render it..
         $tpl_data += array(
