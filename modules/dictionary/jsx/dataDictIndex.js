@@ -319,7 +319,7 @@ class DataDictIndex extends Component {
         },
         {
             label: 'Cohorts',
-            show: false,
+            show: true,
             filter: {
                 name: 'Cohorts',
                 type: 'multiselect',

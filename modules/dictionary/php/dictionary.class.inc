@@ -54,14 +54,18 @@ class Dictionary extends \DataFrameworkMenu
         }
         $user     = \NDB_Factory::singleton()->user();
         $projects = $user->getProjectIDs();
-        $cohorts  = [];
+        $list_of_cohorts  = [];
         foreach ($projects AS $projectID) {
-            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+            $list_of_cohorts = $list_of_cohorts + \Utility::getCohortList($projectID);
+        }
+        $cohort_options=[];
+        foreach (array_values($list_of_cohorts) as $name) {
+            $cohort_options[$name] = $name;
         }
         return [
             'modules'    => $amodules,
             'categories' => $this->categories,
-            'cohorts'    => $cohorts
+            'cohorts'    => $cohort_options
         ];
     }
 

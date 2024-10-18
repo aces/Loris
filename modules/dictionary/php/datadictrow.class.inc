@@ -32,7 +32,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
      * @param string         $desc       The (possibly overridden) description
      * @param string         $descstatus The status of the description override
      * @param ?string[]      $visits     List of visits for the item.
-     * @param ?string[]      $cohorts    List of cohorts for the item.
+     * @param ?string[]      $cohorts List of cohorts for the item.
      */
     public function __construct(
         \Module $itemmodule,

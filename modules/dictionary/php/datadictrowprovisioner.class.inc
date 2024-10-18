@@ -70,10 +70,11 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                 }
 
                 $cohorts = $DB->pselectCol(
-                    "SELECT DISTINCT tb.CohortID FROM test_names tn
+                    "SELECT GROUP_CONCAT(DISTINCT c.title) FROM test_names tn
                         JOIN test_battery tb ON tn.Test_name=tb.Test_name
+                        JOIN cohort c ON tb.CohortID=c.CohortID
                         WHERE tn.Test_name=:tn
-                    ORDER BY tb.CohortID",
+                    ORDER BY c.title",
                     ['tn' => $cat->getName()]
                 );
 
@@ -105,7 +106,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string         $desc       The overridden description of the item
      * @param string         $descstatus The status of the description override
      * @param ?[]string      $visits     The visits for session scoped variables
-     * @param ?[]string      $cohorts    The cohorts for session scoped variables
+     * @param ?[]int      $cohorts       The cohorts for session scoped variables
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */

@@ -48,10 +48,11 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     WHEN pto.name IS NOT NULL THEN 'Modified'
                     WHEN pto.name IS NULL THEN 'Unchanged'
                 END as description_status,
-                GROUP_CONCAT(DISTINCT tb.CohortID) AS cohorts
+                GROUP_CONCAT(DISTINCT c.title) AS Cohort
             FROM parameter_type pt
             LEFT JOIN parameter_type_override pto USING (Name)
             LEFT JOIN test_battery tb ON pt.sourceFrom=tb.Test_name
+            LEFT JOIN cohort c ON tb.CohortID=c.CohortID
             WHERE pt.Queryable=1
             GROUP BY pt.sourceFrom, pt.name, pt.sourceField,
             description, description_status",
