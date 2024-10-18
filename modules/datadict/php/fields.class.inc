@@ -25,16 +25,19 @@ class Fields extends \NDB_Page
     {
         $user     = \NDB_Factory::singleton()->user();
         $projects = $user->getProjectIDs();
-        $list_of_cohorts  = [];
+        $cohorts  = [];
         foreach ($projects AS $projectID) {
-            $list_of_cohorts = $list_of_cohorts + \Utility::getCohortList($projectID);
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
         }
-        $cohort_options=[];
-        foreach (array_values($list_of_cohorts) as $name) {
+        $cohort_options = [];
+        foreach (array_values($cohorts) as $name) {
             $cohort_options[$name] = $name;
         }
         return new \LORIS\Http\Response\JSON\OK(
-            ['sourceFrom' => \Utility::getAllInstruments(), 'cohort' => $cohort_options]
+            [
+                'sourceFrom' => \Utility::getAllInstruments(),
+                'cohort' => $cohort_options
+            ]
         );
     }
 }
