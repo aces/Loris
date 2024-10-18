@@ -80,8 +80,9 @@ foreach ($candIDs as $candID) {
                 // Find instance of instrument
                 $commentID = $DB->pselectOne(
                     "SELECT CommentID FROM flag f
+                    JOIN test_names tn ON tn.ID = f.TestID
                     WHERE f.SessionID=:sid
-                    AND f.Test_name=:tn
+                    AND tn.Test_name=:tn
                     AND CommentID NOT LIKE 'DDE%'",
                     [
                         'sid' => $sessionID,

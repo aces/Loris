@@ -783,7 +783,7 @@ class Utility
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN psc ON (s.CenterID=psc.CenterID)
             JOIN flag f ON (f.sessionID=s.id)
-            JOIN test_names t ON (f.test_name=t.Test_name)
+            JOIN test_names t ON (f.TestID=t.ID)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
             AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
