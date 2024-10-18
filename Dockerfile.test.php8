@@ -1,7 +1,19 @@
 FROM php:8.1
 
+# Install necessary packages
 RUN apt-get update && \
     apt-get install -y mariadb-client libzip-dev
 
-RUN docker-php-ext-install pdo_mysql && \
-    docker-php-ext-install zip
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql zip
+
+# Ensure the logs directory exists
+RUN mkdir -p /app/logs
+
+# Configure PHP error logging in php.ini
+RUN echo "log_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
+RUN echo "error_log = /app/logs/php_errors.log" >> /usr/local/etc/php/conf.d/php-logging.ini
+RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
+RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
+
+# Install any additional packages or tools as needed
