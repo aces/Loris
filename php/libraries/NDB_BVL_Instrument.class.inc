@@ -1042,6 +1042,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
+                    AND epr.active = 'Y'
                  ORDER BY full_name",
                 [
                     'tid'     => $test_id,
@@ -1058,6 +1059,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                              ON (epr.examinerID=e.examinerID)
                      LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
+                     AND epr.active='Y'
                      ORDER BY full_name",
                 ['centID' => $centerID],
                 'examinerID'
