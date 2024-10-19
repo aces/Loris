@@ -191,3 +191,15 @@
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.panel-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.filter-reset-button {
+  margin-left: auto;
+  margin-right: 10px;
+}

@@ -94,6 +94,15 @@ function IssueTrackerBatchMode({options}) {
   }
 
   /**
+   * Resets all selected filters
+   */
+  function resetFilters() {
+    setSelectedCategories([]);
+    setSelectedPriorities([]);
+    setSelectedStatuses([]);
+  }
+
+  /**
    * Handles updating an issue
    */
   function handleIssueUpdate() {
@@ -153,11 +162,24 @@ function IssueTrackerBatchMode({options}) {
     },
   ];
 
+  const panelTitle = (
+    <div className="panel-title-container">
+      <span>Filters</span>
+      <button
+        type="button"
+        className="btn btn-primary btn-sm filter-reset-button"
+        onClick={resetFilters}
+      >
+        Reset
+      </button>
+    </div>
+  );
+
   return (
     <div className="issue-tracker-batch-mode">
       <Panel
         id="filter-panel"
-        title="Filters"
+        title={panelTitle}
         collapsing={true}
         panelSize="auto"
         className="panel-default"
