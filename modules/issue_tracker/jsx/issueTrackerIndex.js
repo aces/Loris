@@ -302,6 +302,7 @@ class IssueTrackerIndex extends Component {
           priorities: this.state.data.fieldOptions.priorities,
           statuses: this.state.data.fieldOptions.statuses,
           categories: this.state.data.fieldOptions.categories,
+          sites: this.state.data.fieldOptions.sites,
         }}
       />
       )}

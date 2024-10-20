@@ -18,6 +18,7 @@ function IssueTrackerBatchMode({options}) {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriorities, setSelectedPriorities] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedSites, setSelectedSites] = useState([]);
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,6 +32,7 @@ function IssueTrackerBatchMode({options}) {
   const priorities = options.priorities || {};
   const statuses = options.statuses || {};
   const categories = options.categories || {};
+  const sites = options.sites || {};
 
   useEffect(() => {
     fetchIssues();
@@ -38,7 +40,13 @@ function IssueTrackerBatchMode({options}) {
 
   useEffect(() => {
     filterIssues();
-  }, [selectedCategories, selectedPriorities, selectedStatuses, issues]);
+  }, [
+    selectedCategories,
+    selectedPriorities,
+    selectedStatuses,
+    selectedSites,
+    issues,
+  ]);
 
   /**
    * Fetches issues from the server
@@ -74,7 +82,9 @@ function IssueTrackerBatchMode({options}) {
       (selectedPriorities.length === 0 ||
         selectedPriorities.includes(issue.priority)) &&
       (selectedStatuses.length === 0 ||
-        selectedStatuses.includes(issue.status))
+        selectedStatuses.includes(issue.status)) &&
+      (selectedSites.length === 0 ||
+        selectedSites.includes(String(issue.centerID)))
     ));
   }
 
@@ -100,6 +110,7 @@ function IssueTrackerBatchMode({options}) {
     setSelectedCategories([]);
     setSelectedPriorities([]);
     setSelectedStatuses([]);
+    setSelectedSites([]);
   }
 
   /**
@@ -157,6 +168,15 @@ function IssueTrackerBatchMode({options}) {
         <span>
           Status{' '}
           <span className="badge bg-primary">{selectedStatuses.length}</span>
+        </span>
+      ),
+    },
+    {
+      id: 'site', // Added site tab
+      label: (
+        <span>
+          Site{' '}
+          <span className="badge bg-primary">{selectedSites.length}</span>
         </span>
       ),
     },
@@ -253,6 +273,23 @@ function IssueTrackerBatchMode({options}) {
               ))}
             </div>
           </TabPane>
+          <TabPane TabId="site">
+            <div className="filter-list">
+              {Object.entries(sites).map(([value, label]) => (
+                <label key={value} className="d-block">
+                  <input
+                    type="checkbox"
+                    checked={selectedSites.includes(value)}
+                    onChange={() =>
+                      toggleFilter(selectedSites, setSelectedSites, value)
+                    }
+                    className="checkbox me-2"
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </TabPane>
         </Tabs>
       </Panel>
       <br/>
@@ -290,6 +327,7 @@ function IssueTrackerBatchMode({options}) {
               statuses={statuses}
               priorities={priorities}
               categories={categories}
+              sites={sites}
             />
           ))
         ) : (
@@ -331,6 +369,7 @@ IssueTrackerBatchMode.propTypes = {
     priorities: PropTypes.object,
     statuses: PropTypes.object,
     categories: PropTypes.object,
+    sites: PropTypes.object,
   }).isRequired,
 };
 

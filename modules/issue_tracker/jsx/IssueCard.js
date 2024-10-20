@@ -10,6 +10,7 @@ const IssueCard = React.memo(function IssueCard({
   statuses,
   priorities,
   categories,
+  sites,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
@@ -218,6 +219,11 @@ const IssueCard = React.memo(function IssueCard({
           <span>Created: {issue.dateCreated}</span>
           <span>Last Updated: {issue.lastUpdate}</span>
           <span>Assignee: {issue.assignee}</span>
+          <span>
+            Site: {issue.centerID
+              ? sites[String(issue.centerID)]
+              : 'No Site'}
+          </span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
@@ -361,6 +367,7 @@ IssueCard.propTypes = {
   statuses: PropTypes.object.isRequired,
   priorities: PropTypes.object.isRequired,
   categories: PropTypes.object.isRequired,
+  sites: PropTypes.object.isRequired,
 };
 
 export default IssueCard;
