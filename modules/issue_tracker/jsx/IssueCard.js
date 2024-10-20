@@ -228,34 +228,100 @@ const IssueCard = React.memo(function IssueCard({
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
         <div className="issue-controls">
-          <select
-            value={tempEditedIssue.status}
-            onChange={(e) => handleInputChange('status', e.target.value)}
-            disabled={!isEditing}
-          >
-            {Object.entries(statuses).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-          <select
-            value={tempEditedIssue.priority}
-            onChange={(e) => handleInputChange('priority', e.target.value)}
-            disabled={!isEditing}
-          >
-            {Object.entries(priorities).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-          <select
-            value={tempEditedIssue.category}
-            onChange={(e) => handleInputChange('category', e.target.value)}
-            disabled={!isEditing}
-          >
-            <option value="">Uncategorized</option>
-            {Object.entries(categories).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          {isEditing ? (
+            <>
+              <div className="control-group">
+                <label htmlFor="status">
+                  Status:&nbsp;
+                </label>
+                <select
+                  id="status"
+                  value={tempEditedIssue.status}
+                  onChange={(e) =>
+                    handleInputChange('status', e.target.value)
+                  }
+                >
+                  {Object.entries(statuses).map(([value, label]) => (
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="control-group">
+                <label htmlFor="priority">
+                  Priority:&nbsp;
+                </label>
+                <select
+                  id="priority"
+                  value={tempEditedIssue.priority}
+                  onChange={(e) =>
+                    handleInputChange('priority', e.target.value)
+                  }
+                >
+                  {Object.entries(priorities).map(([value, label]) => (
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="control-group">
+                <label htmlFor="category">
+                  Category:&nbsp;
+                </label>
+                <select
+                  id="category"
+                  value={tempEditedIssue.category}
+                  onChange={(e) =>
+                    handleInputChange('category', e.target.value)
+                  }
+                >
+                  <option value="">
+                    Uncategorized
+                  </option>
+                  {Object.entries(categories).map(([value, label]) => (
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="control-group">
+                <label>Status:&nbsp;</label>
+                <span>
+                  {statuses[tempEditedIssue.status] ||
+                    tempEditedIssue.status}
+                </span>
+              </div>
+              <div className="control-group">
+                <label>Priority:&nbsp;</label>
+                <span>
+                  {priorities[tempEditedIssue.priority] ||
+                    tempEditedIssue.priority}
+                </span>
+              </div>
+              <div className="control-group">
+                <label>Category:&nbsp;</label>
+                <span>
+                  {categories[tempEditedIssue.category] ||
+                    'Uncategorized'}
+                </span>
+              </div>
+            </>
+          )}
         </div>
         <div className="issue-content">
           <div className="description-section">
