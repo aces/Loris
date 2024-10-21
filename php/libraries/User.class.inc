@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
 /**
- * This file contains the Loris User class
+ * This file contains the Loris user class
  *
- * PHP Version 7.4+
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
@@ -17,7 +18,9 @@
  *
  * @category Main
  * @package  Main
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class User extends UserPermissions implements
     \LORIS\StudyEntities\AccessibleResource,
@@ -33,13 +36,15 @@ class User extends UserPermissions implements
     /**
      * The date format used by MySQL.
      *
-     * @var string
+     * @var    string
      * @access private
      */
     public const MYSQL_DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
-     * Factory method to create a User instance based on the username.
+     * Constructor
+     *
+     * Selects a user and its permissions
      *
      * @param string|null $username Identifies the user
      *
@@ -48,7 +53,7 @@ class User extends UserPermissions implements
      */
     public static function &factory(?string $username = null): \User
     {
-        $obj = new self;
+        $obj = new User;
 
         // Set the username
         $obj->userInfo['UserID'] = $username;
@@ -65,7 +70,7 @@ class User extends UserPermissions implements
 
         // Fetch user data from the 'users' table
         $query = "SELECT * FROM users WHERE UserID = :UID";
-        $row = $DB->pselectRow($query, ['UID' => $username]);
+        $row   = $DB->pselectRow($query, ['UID' => $username]);
 
         if (is_null($row)) {
             // If no user is found, return an AnonymousUser instance
@@ -97,21 +102,16 @@ class User extends UserPermissions implements
         $user_cid  = [];     // Array to store CenterID objects
         $sitenames = [];     // Array to store site names
 
-        foreach ($user_centerID_query as $key => $val) {
-            // Convert CenterID to CenterID object, ensuring it's a string
-            $user_cid[$key] = new \CenterID((string)$val['CenterID']);
+        foreach ($user_centerID_query as $key=>$val) {
+            // Convert string representation of ID to int
+            $user_cid[$key] = \CenterID::singleton($val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
 
-        // Concatenate site names into a semicolon-separated string
         $row['Sites'] = implode(';', $sitenames);
 
         // ------------------- Extract User Projects -------------------
-        /**
-         * Adjusted Section:
-         * - Changed table name from 'projects' to 'Project'
-         * - Updated SQL query accordingly
-         */
+
         $user_projects_query = $DB->pselect(
             "
              SELECT upr.ProjectID, p.Name
@@ -122,21 +122,20 @@ class User extends UserPermissions implements
             ['UID' => $row['ID']]
         );
 
-        $user_pid = [];        // Array to store ProjectID objects
+        $user_pid      = [];        // Array to store ProjectID objects
         $project_names = [];   // Array to store project names
 
         foreach ($user_projects_query as $key => $val) {
             // Convert ProjectID to ProjectID object, ensuring it's a string
-            $user_pid[$key] = new \ProjectID((string)$val['ProjectID']);
+            $user_pid[$key]  = \ProjectID::singleton($val['ProjectID']);
             $project_names[] = $val['Name'];
         }
 
         // Assign ProjectIDs and concatenated project names to userInfo
         $row['ProjectIDs'] = $user_pid;
-        $row['Projects'] = implode(';', $project_names);
+        $row['Projects']   = implode(';', $project_names);
 
         // ------------------- Extract Examiner Information -------------------
-        // Fetch examiner details from 'examiners' and 'examiners_psc_rel' tables
         $examiner_check = $DB->pselect(
             "SELECT e.full_name,
                     epr.centerID,
@@ -156,13 +155,16 @@ class User extends UserPermissions implements
 
         $examiner_info = [];
 
-        if (!empty($examiner_check)) {
+        if (!empty($examiner_check)&& !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     // Store pending approval status if examiner is active
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                // Store examiner's centerID with active status and radiologist flag, ensuring centerID is a string
+                /*
+                Store examiner's centerID with active status and radiologist flag,
+                ensuring centerID is a string
+                */
                 $examiner_info[(string)$val['centerID']] = [
                     $val['active'],
                     $val['radiologist'],
@@ -185,7 +187,7 @@ class User extends UserPermissions implements
      *
      * @param string|null $username Identifies the user
      *
-     * @return \User
+     * @return User
      * @access public
      * @static
      */
@@ -238,7 +240,7 @@ class User extends UserPermissions implements
      * @note   Call without any arguments to get the entire user data array
      * @return array<array|string>|string|null
      * @access public
-     * @throws \LorisException
+     * @throws LorisException
      */
     public function getData(string $var = '')
     {
@@ -246,11 +248,13 @@ class User extends UserPermissions implements
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
-                "The function getData('CenterID') is deprecated and is replaced with getData('CenterIDs')"
+                "The function getData('CenterID') is deprecated and is 
+                replaced with getData('CenterIDs')"
             );
         } elseif ($var === 'Site') {
             throw new \LorisException(
-                "The function getData('Site') is deprecated and is replaced with getData('Sites')"
+                "The function getData('Site') is deprecated and is 
+                replaced with getData('Sites')"
             );
         } else {
             return $this->userInfo[$var] ?? null;
@@ -258,33 +262,47 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get user's real name.
+     * Get users real name
      *
      * @return string
      */
-    public function getFullName(): string
+    function getFullname(): string
     {
         return $this->userInfo['Real_name'];
     }
 
     /**
-     * Get the user's ID.
+     * Get the user's id
      *
      * @return int
      */
-    public function getId(): int
+    function getId(): int
     {
         return intval($this->userInfo['ID']);
     }
 
     /**
-     * Get the user's username.
+     * Get the user's username
      *
      * @return string
      */
-    public function getUsername(): string
+    function getUsername(): string
     {
         return $this->userInfo['UserID'];
+    }
+
+    /**
+     * Get the user's sites' name
+     *
+     * @return string
+     */
+    function getSiteName(): string
+    {
+        throw new \LorisException(
+            "The function getSiteName
+                                   is deprecated and is replaced
+                                   with getSiteNames"
+        );
     }
 
     /**
@@ -292,7 +310,7 @@ class User extends UserPermissions implements
      *
      * @return array
      */
-    public function getSiteNames(): array
+    function getSiteNames(): array
     {
         /* The original query in the factory() function CONCATs the site names
          * together in a string using semi-colons. Therefore, this string must
@@ -318,9 +336,9 @@ class User extends UserPermissions implements
     /**
      * Get the user's sites' ID numbers.
      *
-     * @return \CenterID[]
+     * @return CenterID[]
      */
-    public function getCenterIDs(): array
+    function getCenterIDs(): array
     {
         return $this->userInfo['CenterIDs'] ?? [];
     }
@@ -328,9 +346,9 @@ class User extends UserPermissions implements
     /**
      * Get the user's projects' ID numbers.
      *
-     * @return \ProjectID[]
+     * @return ProjectID[]
      */
-    public function getProjectIDs(): array
+    function getProjectIDs(): array
     {
         return $this->userInfo['ProjectIDs'] ?? [];
     }
@@ -338,9 +356,9 @@ class User extends UserPermissions implements
     /**
      * Get the user's projects.
      *
-     * @return \Project[]
+     * @return Project[]
      */
-    public function getProjects(): array
+    function getProjects(): array
     {
         return array_map(
             fn($projectID) => \Project::getProjectFromID($projectID),
@@ -351,9 +369,9 @@ class User extends UserPermissions implements
     /**
      * Get the user's language preference.
      *
-     * @return int|null
+     * @return ?int|null
      */
-    public function getLanguagePreference(): ?int
+    function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'] ?? null;
     }
@@ -363,7 +381,7 @@ class User extends UserPermissions implements
      *
      * @return array
      */
-    public function getExaminerSites(): array
+    function getExaminerSites(): array
     {
         $site_list = $this->userInfo['examiner'] ?? [];
         unset($site_list['pending']); // Remove 'pending' status if exists
@@ -372,11 +390,11 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites as Site objects.
+     * Returns all user's sites
      *
-     * @return \Site[]
+     * @return array
      */
-    public function getSites(): array
+    function getSites(): array
     {
         return array_map(
             function ($centerID) {
@@ -401,36 +419,36 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites that are StudySites.
+     * Returns all user's sites that are StudySites
      *
      * @return array
      */
-    public function getStudySites(): array
+    function getStudySites(): array
     {
         $site_arr         = $this->getCenterIDs();
         $user_study_sites = [];
-
-        foreach ($site_arr as $val) {
-            $site = \Site::singleton($val);
-            if ($site->isStudySite()) {
-                $user_study_sites[$val->__toString()] = $site->getCenterName();
+        $site = [];
+        foreach ($site_arr as $key => $val) {
+            $site[$key] = &Site::singleton($val);
+            if ($site[$key]->isStudySite()) {
+                $user_study_sites[$val->__toString()]
+                    = $site[$key]->getCenterName();
             }
         }
-
-        natcasesort($user_study_sites); // Sort sites case-insensitively
+        natcasesort($user_study_sites);
         return $user_study_sites;
     }
 
     /**
-     * Checks if the user is in at least one study site.
+     * Checks if the user is in at least one study site
      *
-     * @return bool
+     * @return boolean
      */
-    public function hasStudySite(): bool
+    function hasStudySite(): bool
     {
         $site_arr = $this->getCenterIDs();
         foreach ($site_arr as $sitename) {
-            $site = \Site::singleton($sitename);
+            $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;
             }
@@ -438,79 +456,88 @@ class User extends UserPermissions implements
         return false;
     }
 
+
     /**
-     * Checks that the user's email is valid.
+     * Checks that the user's email is valid
      *
      * @return bool
      */
     public function isEmailValid(): bool
     {
-        return filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL) !== false;
+        if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        };
+        return true;
     }
 
     /**
-     * Returns the user's email address.
+     * Returns the user's email address
      *
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail() : string
     {
         return $this->userInfo['Email'];
     }
 
     /**
-     * Check if user belongs to DCC.
+     * Check if user belongs to DCC
      *
-     * @return bool
+     * @return boolean
      */
-    public function isUserDCC(): bool
+    function isUserDCC(): bool
     {
-        // DCC site = 1 by LORIS convention
-        return in_array(new \CenterID("1"), $this->getCenterIDs(), true);
+        //DCC site = 1 by LORIS convention
+        return (in_array(\CenterID::singleton(1), $this->getCenterIDs()));
     }
 
     /**
-     * Determines if the user has a specific center.
+     * Determines if the user has a center
      *
-     * @param \CenterID $center_id The center ID
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter(\CenterID $center_id): bool
+    public function hasCenter(CenterID $center_id) : bool
     {
-        return in_array($center_id, $this->getCenterIDs(), true);
+        return in_array($center_id, $this->getCenterIDs());
     }
 
     /**
-     * Determines if the user has a specific project.
+     * Determines if the user has a project
      *
-     * @param \ProjectID $projectID The project ID
+     * @param ProjectID $projectID The project ID
      *
      * @return bool
      */
-    public function hasProject(\ProjectID $projectID): bool
+    public function hasProject(ProjectID $projectID) : bool
     {
-        return in_array($projectID, $this->getProjectIDs(), true);
+        return in_array(
+            $projectID,
+            $this->getProjectIDs()
+        );
     }
 
     /**
-     * Determines if the user has a specific permission for a center.
+     * Determines if the user has a permission
+     * for a center
      *
-     * @param string    $code      The permission code
-     * @param \CenterID $center_id The center ID
+     * @param string   $code      The permission code
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, \CenterID $center_id): bool
+    public function hasCenterPermission(string $code, CenterID $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
         }
-        return $this->hasPermission($code) && $this->hasCenter($center_id);
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
     }
 
     /**
-     * Determines if the user has ever logged in successfully.
+     * Determines if the user has ever logged in successfully
      *
      * @return bool
      */
@@ -520,107 +547,106 @@ class User extends UserPermissions implements
         $DB      = $factory->database();
 
         $count = $DB->pselectOneInt(
-            "SELECT COUNT(1)
+            "SELECT
+               COUNT(1)
              FROM user_login_history
-             WHERE userID = :v_userid AND Success = 'Y'",
+             WHERE
+               userID = :v_userid AND
+               Success = 'Y'
+            ",
             ['v_userid' => $this->userInfo['UserID']]
         );
         return $count > 0;
     }
 
     /**
-     * Updates the password for this user in the database.
+     * Updates the password for this user into the appropriate field in the
+     * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
      * @param bool      $expired  Whether the password is expired. If so, a reset
      *                            will be triggered on the user's next login.
      *
      * @return void
-     * @throws \InvalidArgumentException If password is set to email or username.
      */
-    public function updatePassword(
+    function updatePassword(
         \Password $password,
         bool $expired = false
     ): void {
-        // Prevent password from being set to email
-        if (password_verify($this->userInfo['Email'], (string)$password)) {
+        if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
             );
-        }
-
-        // Prevent password from being set to username
-        if (password_verify($this->userInfo['UserID'], (string)$password)) {
+        } else if (password_verify($this->userInfo['UserID'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to username'
             );
         }
 
-        // Update password_hash and PasswordChangeRequired in the database
         $this->update(
             [
                 'Password_hash'          => $password,
                 'PasswordChangeRequired' => $expired ? 1 : 0
             ]
         );
-
-        // Update local userInfo array
-        $this->userInfo['Password_hash']          = (string)$password;
+        $this->userInfo['Password_hash']          = (string) $password;
         $this->userInfo['PasswordChangeRequired'] = $expired;
     }
 
     /**
-     * Determines if the supplied password is different from the current password.
+     * Determines if the supplied password parameter is different than a User's
+     * current password (the one stored in the database).
      *
-     * @param string $plaintextPassword The new desired password entered by the user.
+     * @param string $plaintextPassword The new desired password string entered
+     *                                  by the user.
      *
-     * @return bool True if the password has changed, false otherwise.
+     * @return bool  true if the password has changed, false otherwise.
      */
-    public function isPasswordDifferent(string $plaintextPassword): bool
-    {
-        return !password_verify(
+    function isPasswordDifferent(
+        string $plaintextPassword
+    ): bool {
+        return ! password_verify(
             $plaintextPassword,
-            (string)$this->userInfo['Password_hash']
+            (string) $this->userInfo['Password_hash']
         );
     }
 
     /**
-     * Returns the last login time of this user.
+     * Return the last login of this user to the given database.
      *
-     * @param \Database $DB The database connection to check.
+     * @param \Database $DB The database connection to check
      *
-     * @return \DateTime|null The last login time or null if no login found.
+     * @return ?\DateTime
      */
-    public function getLastLogin(\Database $DB): ?\DateTime
+    function getLastLogin(\Database $DB) : ?\DateTime
     {
         $time = $DB->pselectOne(
             "SELECT MAX(Login_timestamp)
-             FROM user_login_history
-             WHERE Login_timestamp <
-                 (SELECT MAX(Login_timestamp)
-                  FROM user_login_history
-                  WHERE userID = :UserID AND Success = 'Y')
-               AND userID = :UserID AND Success = 'Y'",
+            FROM user_login_history
+            WHERE Login_timestamp <
+                (SELECT MAX(Login_timestamp)
+                    FROM user_login_history
+                    WHERE userID=:UserID AND Success='Y')
+                AND userID=:UserID AND Success='Y'",
             ['UserID' => $this->getUsername()]
         );
-
         if (empty($time)) {
             return null;
         }
-
         return new \DateTime($time);
     }
 
     /**
-     * Implements the AccessibleResource interface. Determines if another user
-     * can access this user based on common projects and centers.
+     * Implements the AccessibleResource interface. A user can
+     * be accessed by another user if they have a project and a site in common.
      *
      * @param \User $user The "editing" user trying to access this user object.
      *
-     * @return bool True if accessible, false otherwise.
+     * @return bool
      */
     public function isAccessibleBy(\User $user): bool
     {
+
         $projMatch   = !empty(
             array_intersect(
                 $this->getProjectIDs(),
@@ -638,13 +664,13 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Determines if the user's account is pending approval by an admin.
+     * Returns whether the user's account is pending approval by
+     * an admin.
      *
-     * @return bool True if pending approval, false otherwise.
+     * @return bool
      */
-    public function isPendingApproval(): bool
+    public function isPendingApproval() : bool
     {
-        return isset($this->userInfo['Pending_approval'])
-            && $this->userInfo['Pending_approval'] === 'Y';
+        return $this->userInfo['Pending_approval'] == 'Y';
     }
 }

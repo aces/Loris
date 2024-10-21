@@ -8,10 +8,9 @@
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
-        This can't be loaded from getJSDependencies(), because it needs access to Smarty
-        variables to be instantiated, so that other JS files don't need access to Smarty variables
-        and can access them through the loris global (e.g., loris.BaseURL)
-        *}
+        This can't be loaded from getJSDependencies(), because it's needs access to smarty
+           variables to be instantiated, so that other js files don't need access to smarty variables
+           and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
         let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
@@ -76,16 +75,16 @@
             });
           });
         </script>
-        <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="stylesheet" />
+        <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     </head>
     {/if}
     <body>
-    {* Defining a FormAction variable will allow us to define
-       a form element which covers the scope of both the sidebar
-       and the workspace. This lets us put controls for the main
+    {* Defining a FormAction variable will allow use to define
+       a form element which covers the scope of both the sidebar,
+       and the workspace. This let's us put controls for the main
        page inside of the side panel.
     *}
         {if $FormAction}
@@ -100,9 +99,10 @@
                         <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
                             data-target="#example-navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
-                            <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
+                            <span class="/usr/bin/phpcs
+toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
-                        <!-- Removed the first help-container here -->
+                        <span class='help-container navbar-toggle'></span>
                        {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
@@ -110,12 +110,16 @@
                         </button>
                        {/if}
 
-                       <!-- Toggle sidebar in mobile view -->
+
+                       <!-- toggle sidebar in mobile view -->
                         {if $control_panel|default}
                             <a id="menu-toggle" href="#" class="navbar-brand">
                                 <span class="glyphicon glyphicon-th-list"></span>
                             </a>
                         {/if}
+
+                       <!-- toggle feedback in mobile view -->
+
 
                         <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
                    </div>
@@ -141,7 +145,6 @@
                             </li>
                             {/if}
 
-                            <!-- Keep one help-container here -->
                             <li class="hidden-xs hidden-sm help-container"></li>
 
                             <!-- Affiliations Links -->
@@ -152,7 +155,6 @@
                                 </a>
                             </li>
 
-                            <!-- Removed the second help-container -->
                             <li class="nav">
                                 <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
@@ -211,128 +213,131 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-            {if $control_panel|default or $feedback_panel|default}
-                {if $control_panel|default}
-                    <div id="page_wrapper_sidebar" class="wrapper">
-                {/if}
-                <div id="bvl_panel_wrapper">
-                    <!-- Sidebar -->
-                    {$feedback_panel|default}
-                    {if $control_panel|default}
-                        <div id="sidebar-wrapper" class="sidebar-div">
-                           <div id="sidebar-content">
-                                {$control_panel}
-                            </div>
+		{if $control_panel|default or $feedback_panel|default}
+			{if $control_panel|default}
+				<div id = "page_wrapper_sidebar" class ="wrapper">
+			{/if}
+		    <div id="bvl_panel_wrapper">
+                <!-- Sidebar -->
+                            {$feedback_panel|default}
+			    {if $control_panel|default}
+                    <div id="sidebar-wrapper" class="sidebar-div">
+                       <div id="sidebar-content">
+                            {$control_panel}
                         </div>
-                    {/if}
-                    <!-- Wrap page content when sidebar is in view -->
-                    <div id="page-content-wrapper">
+                    </div>
+		    {/if}
+                    <!--    Want to wrap page content only when sidebar is in view
+
+                    if not then just put page content in the div #page    -->
+        <div id="page-content-wrapper">
             {/if}
-                {if $dynamictabs eq "dynamictabs"}
-                    {if $console}
-                        <div class="alert alert-warning" role="alert">
-                            <h3>Console Output</h3>
-                            <div>
-                            <pre>{$console}</pre>
-                            </div>
+            {if $dynamictabs eq "dynamictabs"}
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
                         </div>
-                    {/if}
-
+                    </div>
                 {/if}
-                {if $dynamictabs neq "dynamictabs"}
-                <div class="page-content inset">
 
-                    {if $console}
-                        <div class="alert alert-warning" role="alert">
-                            <h3>Console Output</h3>
-                            <div>
-                            <pre>{$console}</pre>
-                            </div>
-                        </div>
-
-                    {/if}
-                    {if $breadcrumbs|default != "" && empty($error_message)}
-                        <div id="breadcrumbs"></div>
-                    {/if}
-                            <div>
-                                {if $error_message|default != ""}
-                                    <p>
-                                        The following errors occurred while attempting to display this page:
-                                        <ul>
-                                            {section name=error loop=$error_message}
-                                                <li>
-                                                    <strong>
-                                                        {$error_message[error]}
-                                                    </strong>
-                                                </li>
-                                            {/section}
-                                        </ul>
-
-                                        If this error persists, please
-                                        <a target="issue_tracker_url" href="{$issue_tracker_url}">
-                                            report a bug to your administrator
-                                        </a>.
-                                    </p>
-                                    <p>
-                                        <a href="javascript:history.back()">
-                                            Please click here to go back
-                                        </a>.
-                                    </p>
-                                {/if}
-
-                              <div id="lorisworkspace">
-                                {$workspace}
-                              </div>
-                            </div>
-                </div>
-
-                </div>
-            </div>
-
-                {else}
-                    {$workspace}
-                {/if}
-            </div>
-
-        </div>
-
-            {if $control_panel|default or $feedback_panel|default}
-            </div></div>
             {/if}
-
             {if $dynamictabs neq "dynamictabs"}
-                {if $control_panel|default}
-                <div id="footer" class="footer navbar-bottom wrapper">
-                {else}
-                <div id="footer" class="footer navbar-bottom">
+            <div class="page-content inset">
+
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
+                        </div>
+                    </div>
+
                 {/if}
-                    <center>
-                        <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
-                            <li id="active">
-                                |
-                            </li>
-                            {foreach from=$links item=link}
-                                    <li>
-                                        <a href="{$link.url}" target="{$link.windowName}" rel="noopener noreferrer">
-                                            {$link.label}
-                                        </a>
-                                        |
-                                    </li>
-                            {/foreach}
-                        </ul>
-                    </center>
-                    <div align="center" colspan="1">
-                        Powered by LORIS &copy; {$currentyear}. All rights reserved.
-                    </div>
-                    <div align="center" colspan="1">
-                        Created by <a href="http://mcin-cnim.ca/" target="_blank">
-                             MCIN
-                        </a>
-                    </div>
+                {if $breadcrumbs|default != "" && empty($error_message)}
+                    <div id="breadcrumbs"></div>
+                {/if}
+                        <div>
+                            {if $error_message|default != ""}
+                                <p>
+                                    The following errors occurred while attempting to display this page:
+                                    <ul>
+                                        {section name=error loop=$error_message}
+                                            <li>
+                                                <strong>
+                                                    {$error_message[error]}
+                                                </strong>
+                                            </li>
+                                        {/section}
+                                    </ul>
+
+                                    If this error persists, please
+                                    <a target="issue_tracker_url" href="{$issue_tracker_url}">
+                                        report a bug to your administrator
+                                    </a>.
+                                </p>
+                                <p>
+                                    <a href="javascript:history.back()">
+                                        Please click here to go back
+                                    </a>.
+                                </p>
+                            {/if}
+
+                          <div id="lorisworkspace">
+                            {$workspace}
+                          </div>
+                        </div>
+            </div>
+
+
+            <!-- </div> -->
+	</div>
+
+            {else}
+                {$workspace}
+            {/if}
+		</div>
+
+	</div>
+
+        {if $control_panel|default or $feedback_panel|default}
+        </div></div>
+        {/if}
+
+        {if $dynamictabs neq "dynamictabs"}
+            {if $control_panel|default}
+            <div id="footer" class="footer navbar-bottom wrapper">
+            {else}
+            <div id="footer" class="footer navbar-bottom">
+            {/if}
+                <center>
+                    <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
+                        <li id="active">
+                            |
+                        </li>
+                        {foreach from=$links item=link}
+                                <li>
+                                    <a href="{$link.url}" target="{$link.windowName}" rel="noopener noreferrer">
+                                        {$link.label}
+                                    </a>
+                                    |
+                                </li>
+                        {/foreach}
+                    </ul>
+                </center>
+                <div align="center" colspan="1">
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
-            {/if}
-            {if $FormAction}
-            </form>
-            {/if}
-        </body>
-    </html>
+      		<div align="center" colspan="1">
+                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
+                         MCIN
+                    </a>
+                </div>
+            </div>
+        {/if}
+        {if $FormAction}
+        </form>
+        {/if}
+    </body>
+</html>
