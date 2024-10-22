@@ -99,7 +99,8 @@
                         <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
                             data-target="#example-navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
-                            <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
+                            <span class="/usr/bin/phpcs
+toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
                         <span class='help-container navbar-toggle'></span>
                        {if $bvl_feedback|default}
@@ -145,6 +146,15 @@
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
+
+                            <!-- Affiliations Links -->
+                            <li class="nav">
+                                <a href="#" class="css-tooltip">
+                                    Project Affiliations: {$userNumProjects}
+                                    <span class="tooltip-text">{$user.ProjectsTooltip}</span>
+                                </a>
+                            </li>
+
                             <li class="nav">
                                 <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
@@ -152,6 +162,32 @@
                                 </a>
                             </li>
 
+                            <!-- Affiliations Dropdown Menu -->
+                            <li class="nav dropdown">
+                                <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Affiliations
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.SitesTooltip}</span>
+                                        </a>
+                                    </li>
+
+                                    <li role="separator" class="divider"></li>
+
+                                    <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.ProjectsTooltip}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <!-- User Dropdown Menu -->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                     {$user.Real_name|escape} <b class="caret"></b>
