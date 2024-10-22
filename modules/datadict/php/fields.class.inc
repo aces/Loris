@@ -36,7 +36,7 @@ class Fields extends \NDB_Page
         return new \LORIS\Http\Response\JSON\OK(
             [
                 'sourceFrom' => \Utility::getAllInstruments(),
-                'cohort' => $cohort_options
+                'cohort'     => $cohort_options
             ]
         );
     }
