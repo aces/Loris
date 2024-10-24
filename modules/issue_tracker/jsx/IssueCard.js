@@ -11,6 +11,8 @@ const IssueCard = React.memo(function IssueCard({
   priorities,
   categories,
   sites,
+  assignees,
+  otherWatchers,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
@@ -20,6 +22,9 @@ const IssueCard = React.memo(function IssueCard({
   const [showAddCommentModal, setShowAddCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+
+  const [newAssignee, setNewAssignee] = useState(issue.assignee || '');
+  const [newWatchers, setNewWatchers] = useState(issue.othersWatching || []);
 
   const handleInputChange = (field, value) => {
     setTempEditedIssue((prev) => ({
@@ -100,23 +105,46 @@ const IssueCard = React.memo(function IssueCard({
   };
 
   const handleOpenAddCommentModal = () => {
+    setNewAssignee(issue.assignee || '');
+    setNewWatchers(issue.othersWatching || []);
     setShowAddCommentModal(true);
   };
 
   const handleCloseAddCommentModal = () => {
     setShowAddCommentModal(false);
     setNewComment('');
+    setNewAssignee(issue.assignee || '');
+    setNewWatchers(issue.othersWatching || []);
   };
 
   const handleAddCommentChange = (e) => {
     setNewComment(e.target.value);
   };
 
+  const handleNewAssigneeChange = (e) => {
+    setNewAssignee(e.target.value);
+  };
+
+  const handleNewWatchersChange = (e) => {
+    const options = e.target.options;
+    const selectedWatchers = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selectedWatchers.push(options[i].value);
+      }
+    }
+    setNewWatchers(selectedWatchers);
+  };
+
   const handleAddCommentSubmit = (e) => {
     e.preventDefault();
 
-    if (!newComment.trim()) {
-      showAlertMessage('error', 'Comment cannot be empty');
+    const trimmedComment = newComment.trim();
+    const hasAssigneeChanged = newAssignee !== issue.assignee;
+    const hasWatchersChanged = JSON.stringify(newWatchers) !==
+      JSON.stringify(issue.othersWatching);
+    if (!trimmedComment && !hasAssigneeChanged && !hasWatchersChanged) {
+      showAlertMessage('info', 'Please add a comment or make changes');
       return;
     }
 
@@ -129,7 +157,16 @@ const IssueCard = React.memo(function IssueCard({
       formData.append(key, value === null ? 'null' : value);
     });
 
-    formData.append('comment', newComment.trim());
+    // Only append comment if it's not empty
+    if (trimmedComment) {
+      formData.append('comment', newComment.trim());
+    }
+
+    formData.append('assignee', newAssignee || 'null');
+    formData.append(
+      'othersWatching',
+      newWatchers.length > 0 ? newWatchers.join(',') : ''
+    );
 
     fetch(`${loris.BaseURL}/issue_tracker/Edit/`, {
       method: 'POST',
@@ -145,7 +182,7 @@ const IssueCard = React.memo(function IssueCard({
         return response.json();
       })
       .then((data) => {
-        showAlertMessage('success', 'Comment added successfully');
+        showAlertMessage('success', 'Issue updated successfully');
         handleCloseAddCommentModal();
         onUpdate();
       })
@@ -174,10 +211,48 @@ const IssueCard = React.memo(function IssueCard({
               value={newComment}
               onChange={handleAddCommentChange}
               className="textarea"
-              required
               disabled={isSubmittingComment}
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="newAssignee" className="small">
+              Assignee
+            </label>
+            <select
+              id="newAssignee"
+              value={newAssignee}
+              onChange={handleNewAssigneeChange}
+              className="form-control"
+              disabled={isSubmittingComment}
+            >
+              <option value="">Unassigned</option>
+              {Object.entries(assignees).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="newWatchers" className="small">
+              Watchers
+            </label>
+            <select
+              id="newWatchers"
+              value={newWatchers}
+              onChange={handleNewWatchersChange}
+              className="form-control"
+              multiple
+              disabled={isSubmittingComment}
+            >
+              {Object.entries(otherWatchers).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="modal-actions">
             <button
               type="submit"
@@ -407,6 +482,7 @@ IssueCard.propTypes = {
     title: PropTypes.string.isRequired,
     reporter: PropTypes.string.isRequired,
     assignee: PropTypes.string,
+    othersWatching: PropTypes.arrayOf(PropTypes.string),
     status: PropTypes.string.isRequired,
     priority: PropTypes.string.isRequired,
     module: PropTypes.number,
@@ -434,6 +510,8 @@ IssueCard.propTypes = {
   priorities: PropTypes.object.isRequired,
   categories: PropTypes.object.isRequired,
   sites: PropTypes.object.isRequired,
+  assignees: PropTypes.object.isRequired,
+  otherWatchers: PropTypes.object.isRequired,
 };
 
 export default IssueCard;
