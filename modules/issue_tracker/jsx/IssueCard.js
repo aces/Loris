@@ -294,11 +294,6 @@ const IssueCard = React.memo(function IssueCard({
           <span>Created: {issue.dateCreated}</span>
           <span>Last Updated: {issue.lastUpdate}</span>
           <span>Assignee: {issue.assignee}</span>
-          <span>
-            Site: {issue.centerID
-              ? sites[String(issue.centerID)]
-              : 'No Site'}
-          </span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
@@ -371,6 +366,29 @@ const IssueCard = React.memo(function IssueCard({
                   ))}
                 </select>
               </div>
+              <div className="control-group">
+                <label htmlFor="centerID">
+                  Site:&nbsp;
+                </label>
+                <select
+                  id="centerID"
+                  value={tempEditedIssue.centerID || ''}
+                  onChange={(e) =>
+                    handleInputChange('centerID', e.target.value)
+                  }
+                  required
+                >
+                  <option value="">No Site</option>
+                  {Object.entries(sites).map(([id, name]) => (
+                    <option
+                      key={id}
+                      value={id}
+                    >
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </>
           ) : (
             <>
@@ -393,6 +411,13 @@ const IssueCard = React.memo(function IssueCard({
                 <span>
                   {categories[tempEditedIssue.category] ||
                     'Uncategorized'}
+                </span>
+              </div>
+              <div className="control-group">
+                <label>Site:&nbsp;</label>
+                <span>
+                  {sites[String(tempEditedIssue.centerID)] ||
+                    'No Site'}
                 </span>
               </div>
             </>
