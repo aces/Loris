@@ -296,11 +296,14 @@ class Edit extends \NDB_Page implements ETagCalculator
         $db            = $this->loris->getDatabaseConnection();
         $assignees     = [];
         $otherWatchers = [];
+        $centerIDsArray = [];
+        $dccID          = null;
+        $centerPlaceholders = '';
 
         // Initialize variables based on permissions
         if (!$user->hasPermission('access_all_profiles')) {
             $centerIDsArray = array_map(
-                fn($centerID) => (int)$centerID->getID(),
+                fn($centerID) => (int)$centerID->__toString(),
                 $user->getCenterIDs()
             );
 
@@ -317,7 +320,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 "SELECT CenterID FROM psc WHERE Name = :name",
                 ['name' => 'DCC']
             );
-            $dccID  = $dccRow ? $dccRow['CenterID'] : null;
+            $dccID  = $dccRow ? (int)$dccRow: null;
 
             // Prepare placeholders
             $centerPlaceholders = implode(
