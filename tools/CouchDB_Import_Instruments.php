@@ -86,8 +86,10 @@ class CouchDBInstrumentImporter
                 "AND Queryable=1",
                 ['inst' => $instrument]
             );
+            $inst = \NDB_BVL_Instrument::factory($this->loris, $instrument);
+            $hiddenColumnsFromDQT = !empty($inst->hiddenColumnsFromDQT) ? $inst->hiddenColumnsFromDQT : [];
             foreach ($Fields as $field) {
-                if (isset($field['SourceField'])) {
+                if (isset($field['SourceField']) && !in_array($field['SourceField'], $hiddenColumnsFromDQT)) {
                     $fname        = $field['SourceField'];
                     $Dict[$fname] = [];
                     $Dict[$fname]['Type']        = $field['Type'];
