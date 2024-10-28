@@ -165,7 +165,7 @@ class User extends UserPermissions implements
                 Store examiner's centerID with active status and radiologist flag,
                 ensuring centerID is a string
                 */
-                $examiner_info[(string)$val['centerID']] = [
+                $examiner_info[$val['centerID']] = [
                     $val['active'],
                     $val['radiologist'],
                 ];
