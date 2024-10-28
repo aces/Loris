@@ -51,8 +51,8 @@ class BatteryManagerIndex extends Component {
    */
   componentDidMount() {
     this.fetchData(this.props.testEndpoint, 'GET', 'tests')
-    .then(() => this.fetchData(this.props.optionEndpoint, 'GET', 'options'))
-    .then(() => this.setState({isLoaded: true}));
+      .then(() => this.fetchData(this.props.optionEndpoint, 'GET', 'options'))
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -66,12 +66,12 @@ class BatteryManagerIndex extends Component {
   fetchData(url, method, state) {
     return new Promise((resolve, reject) => {
       return fetch(url, {credentials: 'same-origin', method: method})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({[state]: data}, resolve))
-      .catch((error) => {
-        this.setState({error: true}, reject);
-        console.error(error);
-      });
+        .then((resp) => resp.json())
+        .then((data) => this.setState({[state]: data}, resolve))
+        .catch((error) => {
+          this.setState({error: true}, reject);
+          console.error(error);
+        });
     });
   }
 
@@ -91,23 +91,23 @@ class BatteryManagerIndex extends Component {
         method: method,
         body: JSON.stringify(dataClone),
       })
-      .then((response) => response.text()
-      .then((body) => {
-        body = JSON.parse(body);
-        if (response.ok) {
-          swal.fire('Submission successful!', body.message, 'success')
-          .then((result) => {
-            if (result.value) {
-              this.closeForm();
-              resolve(body.message);
+        .then((response) => response.text()
+          .then((body) => {
+            body = JSON.parse(body);
+            if (response.ok) {
+              swal.fire('Submission successful!', body.message, 'success')
+                .then((result) => {
+                  if (result.value) {
+                    this.closeForm();
+                    resolve(body.message);
+                  }
+                });
+            } else {
+              swal.fire(body.error, '', 'error');
+              reject(body.error);
             }
-          });
-        } else {
-          swal.fire(body.error, '', 'error');
-          reject(body.error);
-        }
-      })
-      .catch((e) => reject(e)));
+          })
+          .catch((e) => reject(e)));
     });
   }
 
@@ -120,28 +120,28 @@ class BatteryManagerIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-      case 'First Visit':
-        switch (value) {
-          case 'Y':
-            return 'Yes';
-          case 'N':
-            return 'No';
-        }
-        break;
-      case 'Active':
-        switch (value) {
-          case 'Y':
-            return 'Yes';
-          case 'N':
-            return 'No';
-        }
-        break;
-      case 'Change Status':
-        return '';
-      case 'Edit Metadata':
-        return '';
-      default:
-        return value;
+    case 'First Visit':
+      switch (value) {
+      case 'Y':
+        return 'Yes';
+      case 'N':
+        return 'No';
+      }
+      break;
+    case 'Active':
+      switch (value) {
+      case 'Y':
+        return 'Yes';
+      case 'N':
+        return 'No';
+      }
+      break;
+    case 'Change Status':
+      return '';
+    case 'Edit Metadata':
+      return '';
+    default:
+      return value;
     }
   }
 
@@ -158,33 +158,33 @@ class BatteryManagerIndex extends Component {
     let result = <td>{cell}</td>;
     const testId = row['ID'];
     switch (column) {
-      case 'Instrument':
-        result = <td>{this.state.options.instruments[cell]}</td>;
-        break;
-      case 'Cohort':
-        result = <td>{this.state.options.cohorts[cell]}</td>;
-        break;
-      case 'Site':
-        result = <td>{this.state.options.sites[cell]}</td>;
-        break;
-      case 'Change Status':
-        if (row.Active === 'Y') {
-          result = <td><CTA label='Deactivate' onUserInput={() => {
-            this.deactivateTest(testId);
-          }}/></td>;
-        } else if (row.Active === 'N') {
-          result = <td><CTA label='Activate' onUserInput={() => {
-            this.activateTest(testId);
-          }}/></td>;
-        }
-        break;
-      case 'Edit Metadata':
-        const editButton = <CTA label='Edit' onUserInput={() => {
-          this.loadTest(testId);
-          this.setState({edit: true});
-        }}/>;
-        result = <td>{editButton}</td>;
-        break;
+    case 'Instrument':
+      result = <td>{this.state.options.instruments[cell]}</td>;
+      break;
+    case 'Cohort':
+      result = <td>{this.state.options.cohorts[cell]}</td>;
+      break;
+    case 'Site':
+      result = <td>{this.state.options.sites[cell]}</td>;
+      break;
+    case 'Change Status':
+      if (row.Active === 'Y') {
+        result = <td><CTA label='Deactivate' onUserInput={() => {
+          this.deactivateTest(testId);
+        }}/></td>;
+      } else if (row.Active === 'N') {
+        result = <td><CTA label='Activate' onUserInput={() => {
+          this.activateTest(testId);
+        }}/></td>;
+      }
+      break;
+    case 'Edit Metadata':
+      const editButton = <CTA label='Edit' onUserInput={() => {
+        this.loadTest(testId);
+        this.setState({edit: true});
+      }}/>;
+      result = <td>{editButton}</td>;
+      break;
     }
 
     return result;
@@ -257,15 +257,15 @@ class BatteryManagerIndex extends Component {
         }
       });
       this.checkDuplicate(test)
-      .then((test) => this.validateTest(test))
-      .then((test) => this.postData(
+        .then((test) => this.validateTest(test))
+        .then((test) => this.postData(
           this.props.testEndpoint+(test.id || ''),
           test,
           request
-      ))
-      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
-      .then(() => resolve())
-      .catch((e) => reject(e));
+        ))
+        .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
+        .then(() => resolve())
+        .catch((e) => reject(e));
     });
   }
 
@@ -295,52 +295,52 @@ class BatteryManagerIndex extends Component {
     const fields = [
       {label: 'ID', show: false},
       {label: 'Instrument', show: true, filter: {
-          name: 'testName',
-          type: 'select',
-          options: options.instruments,
-        }},
+        name: 'testName',
+        type: 'select',
+        options: options.instruments,
+      }},
       {label: 'Minimum Age', show: true, filter: {
-          name: 'minimumAge',
-          type: 'numeric',
-        }},
+        name: 'minimumAge',
+        type: 'numeric',
+      }},
       {label: 'Maximum Age', show: true, filter: {
-          name: 'maximumAge',
-          type: 'numeric',
-        }},
+        name: 'maximumAge',
+        type: 'numeric',
+      }},
       {label: 'Stage', show: true, filter: {
-          name: 'stage',
-          type: 'select',
-          options: options.stages,
-        }},
+        name: 'stage',
+        type: 'select',
+        options: options.stages,
+      }},
       {label: 'Cohort', show: true, filter: {
-          name: 'cohort',
-          type: 'select',
-          options: options.cohorts,
-        }},
+        name: 'cohort',
+        type: 'select',
+        options: options.cohorts,
+      }},
       {label: 'Visit Label', show: true, filter: {
-          name: 'visitLabel',
-          type: 'select',
-          options: options.visits,
-        }},
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visits,
+      }},
       {label: 'Site', show: true, filter: {
-          name: 'site',
-          type: 'select',
-          options: options.sites,
-        }},
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
       {label: 'First Visit', show: true, filter: {
-          name: 'firstVisit',
-          type: 'select',
-          options: options.firstVisit,
-        }},
+        name: 'firstVisit',
+        type: 'select',
+        options: options.firstVisit,
+      }},
       {label: 'Instrument Order', show: true, filter: {
-          name: 'instrumentOrder',
-          type: 'text',
-        }},
+        name: 'instrumentOrder',
+        type: 'text',
+      }},
       {label: 'Active', show: true, filter: {
-          name: 'active',
-          type: 'select',
-          options: options.active,
-        }},
+        name: 'active',
+        type: 'select',
+        options: options.active,
+      }},
       {label: 'Change Status', show: hasPermission('battery_manager_edit')},
       {label: 'Edit Metadata', show: hasPermission('battery_manager_edit')},
     ];

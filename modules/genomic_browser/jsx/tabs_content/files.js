@@ -150,23 +150,23 @@ class Files extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'Name':
-        const fileName = rowData.Name.split('/').pop();
-        const url =
+    case 'Name':
+      const fileName = rowData.Name.split('/').pop();
+      const url =
           `${this.props.baseURL
-        }/genomic_browser/FileManager?filename=${fileName}`;
-        reactElement = <td><a href={url}>{fileName}</a></td>;
-        break;
-      case 'PSCID':
-        const urlPscid = `${this.props.baseURL}/${rowData.DCCID}/`;
-        reactElement = <td><a href={urlPscid}>{rowData.PSCID}</a></td>;
-        break;
-      case 'Cohort':
-        reactElement = <td>{this.state.data.cohorts[parseInt(cell)]}</td>;
-        break;
-      default:
-        reactElement = <td>{cell}</td>;
-        break;
+          }/genomic_browser/FileManager?filename=${fileName}`;
+      reactElement = <td><a href={url}>{fileName}</a></td>;
+      break;
+    case 'PSCID':
+      const urlPscid = `${this.props.baseURL}/${rowData.DCCID}/`;
+      reactElement = <td><a href={urlPscid}>{rowData.PSCID}</a></td>;
+      break;
+    case 'Cohort':
+      reactElement = <td>{this.state.data.cohorts[parseInt(cell)]}</td>;
+      break;
+    default:
+      reactElement = <td>{cell}</td>;
+      break;
     }
     return reactElement;
   }

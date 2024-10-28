@@ -87,15 +87,15 @@ class EmailElement extends React.Component {
           {errorMessage}
         </div>
         <div className="col-sm-2">
-        <span>
-          <input
-            name={this.props.name + '_notify'}
-            type="checkbox"
-            onChange={this.props.toggleEmailNotify}
-            value={this.props.addressee}
-          />
-          <span>Send email notification?</span>
-        </span>
+          <span>
+            <input
+              name={this.props.name + '_notify'}
+              type="checkbox"
+              onChange={this.props.toggleEmailNotify}
+              value={this.props.addressee}
+            />
+            <span>Send email notification?</span>
+          </span>
         </div>
       </div>
     );
@@ -164,25 +164,25 @@ class ProjectFormFields extends React.Component {
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
     }).then((result) => {
-        if (result.value) {
-          let url = loris.BaseURL
+      if (result.value) {
+        let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
 
-          fetch(url, {
-            method: 'DELETE',
-          }).then((response) => {
-            if (!response.ok) {
-              console.error(response.status);
-              return;
-            }
+        fetch(url, {
+          method: 'DELETE',
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            return;
+          }
 
-            this.props.fetchData();
-          }).catch((error) => {
-            console.error(error);
-          });
-        }
-      });
+          this.props.fetchData();
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+    });
   }
 
   /**
