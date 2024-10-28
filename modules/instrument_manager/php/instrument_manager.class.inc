@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\instrument_manager;
+use LORIS\InstrumentDataParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -58,17 +59,59 @@ class Instrument_Manager extends \DataFrameworkMenu
         $method = $request->getMethod();
         if ($method == 'POST') {
             return $this->handlePOST($request);
+        } else if ($method == 'GET') {
+            return $this->handleGET($request);
+        }
+    }
+
+    /**
+     * Handle a GET requests
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    protected function handleGET(ServerRequestInterface $request): ResponseInterface
+    {
+        // Ensure the user is allowed to upload.
+        if (! $request->getAttribute('user')->hasPermission(
+            'instrument_manager_read'
+        )
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
+        $params = $request->getQueryParams();
+        if (isset($params['instrument'])) {
+            $instrument = $params['instrument'];
+
+            if ($this->instrumentExists($instrument)) {
+                $headers = InstrumentDataParser::getCSVHeaders($instrument);
+
+                $fileName = "${instrument}_headers.csv";
+                $fileObject = new \SplFileObject(sys_get_temp_dir() . "/$fileName", 'w');
+                $fileObject->fputcsv($headers);
+
+                $downloader = new \LORIS\FilesDownloadHandler(
+                    new \SPLFileInfo(sys_get_temp_dir())
+                );
+                return $downloader->handle(
+                    $request->withAttribute('filename', $fileName)
+                );
+            }
+
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+
         }
 
         return parent::handle($request);
     }
 
+
     /**
-     * Handle a POST request for instrument upload. It moves the uploaded file
-     * in the project/instruments directory then call the php script from the
-     * tools directory to generate sql statement required for the installation
-     * of the instrument. Finaly, it source the sql file to complete the
-     * installation.
+     * Handle a POST requests
      *
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
@@ -90,6 +133,33 @@ class Instrument_Manager extends \DataFrameworkMenu
             );
         }
 
+        $data = json_decode((string) $request->getBody(), true);
+
+        if ($data['upload_type'] == 'instrument') {
+            return $this->handleInstrumentUpload($request);
+        } else if ($data['upload_type'] == 'data') {
+            return $this->handleDataUpload($request);
+        }
+
+        return new \LORIS\Http\Response\JSON\BadRequest(
+            'Invalid request'
+        );
+    }
+
+
+    /**
+     * Handle a POST request for uploading a new instrument. It moves the uploaded file
+     * in the project/instruments directory then call the php script from the
+     * tools directory to generate sql statement required for the installation
+     * of the instrument. Finally, it sources the sql file to complete the
+     * installation.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    protected function handleInstrumentUpload(ServerRequestInterface $request): ResponseInterface
+    {
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
@@ -165,6 +235,95 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
         return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
     }
+
+
+    /**
+     * Handle a POST request for uploading instrument data for an existing
+     * instrument.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    protected function handleDataUpload(ServerRequestInterface $request): ResponseInterface
+    {
+        $uploaded_file = $request->getUploadedFiles()['install_file'];
+        $filename      = $uploaded_file->getClientFilename();
+        $instrument    = pathinfo($filename)['filename'];
+        $targetdir     = new \SplFileInfo($this->_path . 'project/instruments/');
+
+        if ($this->instrumentExists($instrument)) {
+            // An instrument with this name already exists in the test_names
+            // table. Abort upload.
+            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
+        }
+
+        /* Although only .linst files should be uploaded to this module, and
+         * they are just special text files, they are marked as
+         * application/octet-stream upon upload.
+         */
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'application/octet-stream'
+            );
+
+        $response = $uploader->handle($request);
+
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
+            if ($response->getStatusCode() == 409) {
+                /* Don't update the file if it already exists on the back-end.
+                 * Instead, inform users that an administrator must install it
+                 * on their behalf.
+                 * This should only happen for users on a system where automatic
+                 * installation is disabled (ie. has no adminUser).
+                 */
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::FILE_ALREADY_EXISTS
+                );
+            }
+            return $response;
+        }
+
+        try {
+
+            $inst = \NDB_BVL_Instrument::factory(
+                $this->loris,
+                $instrument,
+                '',
+                '',
+            );
+
+            $DB = $this->loris->getDatabaseConnection();
+            $DB->insert(
+                "test_names",
+                [
+                    'test_name' => $instrument,
+                    'Full_name' => $inst->getFullName(),
+                    'Sub_group' => 1,
+                ]
+            );
+            file_put_contents(
+                \Utility::pathJoin(
+                    $targetdir->getPath(),
+                    $targetdir->getFilename(),
+                    $instrument . ".meta"
+                ),
+                "jsondata{@}true\n"
+            );
+
+        } catch (\NotFound $e) {
+            return (new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            ));
+        } catch (\Exception $e) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            );
+        }
+        return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
+    }
+
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
