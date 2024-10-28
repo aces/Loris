@@ -212,7 +212,7 @@ class CouchDBInstrumentImporter
                 if ($JSONData) {
                     //Transform JSON object into an array and add treat it the
                     //same as SQL
-                    $instrumentData = json_decode($row['Data'], true) ?? [];
+                    $instrumentData = json_decode($row['Data'] ?? '', true) ?? [];
                     unset($row['Data']);
                     $docdata = $row + $instrumentData;
                 } else {
