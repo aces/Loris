@@ -1,7 +1,7 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import swal from 'sweetalert2';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -69,11 +69,83 @@ class SurveyAccountsIndex extends Component {
     case 'Instrument':
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
+    case 'Edit':
+      if (!loris.userHasPermission('user_account')) {
+          return;
+      }
+      result = <td>
+      <button onClick={() => this.deleteclick(row.Instrument,row.Edit)}
+        className="btn btn-danger" >Delete</button>
+      <button
+        className="btn btn-warning" onClick={() => this.archiveclick(row.Instrument,row.Edit)}
+	>Archive</button>
+      </td>;
+      break;
     }
-
     return result;
   }
-
+  /**
+   * @deleteclick
+   */
+         deleteclick(Instrument,commentid) {
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+		   console.log(Instrument);
+            let deleteurl = loris.BaseURL +
+              '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
+              fetch(deleteurl, {
+              method: 'DELETE',
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('delete Successful!', '', 'success');
+                  } else {
+                   swal.fire('delete Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }
+         archiveclick(Instrument,commentid) {
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t see this survey in the table!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, archive it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
+              fetch(deleteurl, {
+              method: 'POST',
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('archive Successful!', '', 'success');
+                  } else {
+                   swal.fire('archive Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }
   /**
    * Renders the React component.
    *
@@ -117,6 +189,9 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.statusOptions,
       }},
+      {label: 'Edit', show: true},
+      {label: 'centerID', show: false},
+      {label: 'projectID', show: false},	    
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
@@ -140,7 +215,6 @@ class SurveyAccountsIndex extends Component {
 
 SurveyAccountsIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
-  hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
