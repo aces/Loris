@@ -266,7 +266,7 @@ class InstrumentManagerIndex extends Component {
       } else if (this.state.data.fieldOptions.writable) {
         let url = loris.BaseURL.concat('/instrument_manager/');
         content = (
-          <InstrumentUploadForm action={url}/>
+          <InstrumentUploadForm action={url} data={this.state.data} />
         );
       } else {
         content = (
