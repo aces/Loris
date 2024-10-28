@@ -1305,6 +1305,7 @@ CREATE TABLE `participant_accounts` (
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
   `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
+  `survey_archived` tinyint(1) NOT NULL DEFAULT 0,
   `UserEaseRating` varchar(1) DEFAULT NULL,
   `UserComments` text,
   PRIMARY KEY (`ID`)
