@@ -14,6 +14,20 @@ CREATE TABLE `consent_display` (
   PRIMARY KEY (`ConsentDisplayID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Relates different sites and consent groups to their 
+-- respective displays
+CREATE TABLE `consent_display_rel` (
+  `ConsentGroupID` int(10) unsigned NOT NULL,
+  `CenterID` int(10) unsigned DEFAULT NULL,
+  `ConsentDisplayID` int(10) unsigned NOT NULL,
+  `version` DECIMAL(5,2) NOT NULL DEFAULT 1.0,
+  UNIQUE KEY `consent_display_rel_row` (`ConsentGroupID`,`CenterID`,`ConsentDisplayID`),
+  KEY `version` (`version`),
+  CONSTRAINT `FK_consent_group_consent_display_rel_1` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_psc_consent_display_rel_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_consent_display_consent_display_rel_1` FOREIGN KEY (`ConsentDisplayID`) REFERENCES `consent_display` (`ConsentDisplayID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- direct_consent contains all info relevant to the eConsent
 -- form unique to each participant, but does not include the
 -- consent status given
@@ -33,20 +47,6 @@ CREATE TABLE `direct_consent` (
   CONSTRAINT `FK_direct_consent_2` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_direct_consent_3` FOREIGN KEY (`version`) REFERENCES `consent_display_rel`(`version`),
   CONSTRAINT `FK_direct_consent_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Relates different sites and consent groups to their 
--- respective displays
-CREATE TABLE `consent_display_rel` (
-  `ConsentGroupID` int(10) unsigned NOT NULL,
-  `CenterID` int(10) unsigned DEFAULT NULL,
-  `ConsentDisplayID` int(10) unsigned NOT NULL,
-  `version` DECIMAL(5,2) NOT NULL DEFAULT 1.0,
-  UNIQUE KEY `consent_display_rel_row` (`ConsentGroupID`,`CenterID`,`ConsentDisplayID`),
-  KEY `version` (`version`),
-  CONSTRAINT `FK_consent_group_consent_display_rel_1` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_psc_consent_display_rel_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_consent_display_consent_display_rel_1` FOREIGN KEY (`ConsentDisplayID`) REFERENCES `consent_display` (`ConsentDisplayID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `direct_consent_history` (
