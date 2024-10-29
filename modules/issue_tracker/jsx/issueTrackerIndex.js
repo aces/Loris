@@ -1,6 +1,7 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Tabs, TabPane} from 'Tabs';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -21,12 +22,12 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
-      view: 'normal', // 'normal' for FilterableDataTable, 'batch' for IssueTrackerBatchMode
+      activeTab: 'browse',
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.toggleView = this.toggleView.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   /**
@@ -35,6 +36,21 @@ class IssueTrackerIndex extends Component {
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
+  }
+
+  /**
+   * Called by React when the component updates.
+   * @param {object} prevProps - Previous props
+   * @param {object} prevState - Previous state
+   */
+  componentDidUpdate(prevProps, prevState) {
+    // If the activeTab has changed to 'browse', refetch data
+    if (prevState.activeTab !== 'browse' && this.state.activeTab === 'browse') {
+      this.setState({isLoaded: false}, () => {
+        this.fetchData()
+          .then(() => this.setState({isLoaded: true}));
+      });
+    }
   }
 
   /**
@@ -55,13 +71,12 @@ class IssueTrackerIndex extends Component {
   }
 
   /**
-   * Toggle between normal and batch mode
+   * Handle tab changes
+   *
+   * @param {string} newTab - The ID of the newly selected tab
    */
-  toggleView() {
-    this.setState((prevState) => ({
-      view: prevState.view === 'normal' ? 'batch' : 'normal',
-    }));
-    this.fetchData(); // Fetch fresh data when toggling views
+  handleTabChange(newTab) {
+    this.setState({activeTab: newTab});
   }
 
   /**
@@ -275,18 +290,29 @@ class IssueTrackerIndex extends Component {
       {label: 'New Issue', action: addIssue},
     ];
 
+    const tabList = [
+      {
+        id: 'browse',
+        label: 'Browse Issues',
+      },
+    ];
+
+    // Only display the Batch mode tab if user has the required permission
+    if (this.props.hasPermission('issue_tracker_developer')) {
+      tabList.push({
+        id: 'batch',
+        label: 'Batch Edit',
+      });
+    }
+
     return (
-      <div>
-        <div className="view-toggle">
-          <button onClick={this.toggleView}>
-            {`Switch to ${
-              this.state.view === 'normal'
-                ? 'Batch'
-                : 'Normal'
-            } Mode`}
-          </button>
-        </div>
-        {this.state.view === 'normal' ? (
+      <Tabs
+        tabs={tabList}
+        defaultTab={this.state.activeTab}
+        updateURL={true}
+        onTabChange={this.handleTabChange}
+      >
+        <TabPane TabId="browse">
           <FilterableDataTable
             name="issuesTracker"
             data={this.state.data.data}
@@ -295,7 +321,8 @@ class IssueTrackerIndex extends Component {
             actions={actions}
             getFormattedCell={this.formatColumn}
           />
-        ) : (
+        </TabPane>
+        <TabPane TabId="batch">
           <IssueTrackerBatchMode
             issues={this.state.data.data}
             options={{
@@ -305,8 +332,8 @@ class IssueTrackerIndex extends Component {
               sites: this.state.data.fieldOptions.sites,
             }}
           />
-        )}
-      </div>
+        </TabPane>
+      </Tabs>
     );
   }
 }
