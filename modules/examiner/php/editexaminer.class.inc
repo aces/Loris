@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Examiner module: Form used to update examiner certification status
  *

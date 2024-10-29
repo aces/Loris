@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -363,15 +364,7 @@ class Files extends \NDB_Page
             $targetdir = new \SplFileInfo($path);
 
             try {
-                $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-                    ->withPermittedMIMETypes(
-                        'application/pdf',
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/svg+xml',
-                        'text/plain'
-                    );
+                $uploader = (new \LORIS\FilesUploadHandler($targetdir));
             } catch (\ConfigurationException $e) {
                 $responseMessages[] = "$filename: {$e->getMessage()}";
                 $errorCounter      += 1;

@@ -6,7 +6,7 @@ import {createAction} from 'redux-actions';
 import {updateViewedChunks} from './fetchChunks';
 import {setFilter} from '../state/filters';
 import {DifferenceEquationSignal1D}
-from '../../../libs/DifferenceEquationSignal1D';
+  from '../../../libs/DifferenceEquationSignal1D';
 
 export const SET_LOW_PASS_FILTER = 'SET_LOW_PASS_FILTER';
 export const setLowPassFilter = createAction(SET_LOW_PASS_FILTER);

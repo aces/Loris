@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is legacy code that should be rewritten, but is currently used - Dave
  *
@@ -215,7 +216,7 @@ class NDB_BVL_Feedback
         ) {
             $this->_feedbackCandidateProfileInfo['SessionID']
                 = isset($result[0]['SessionID']) ?
-                  new \SessionID($result[0]['SessionID']) :
+                  new \SessionID(strval($result[0]['SessionID'])) :
                   $this->_feedbackObjectInfo['SessionID'];
         }
     }
@@ -481,7 +482,9 @@ class NDB_BVL_Feedback
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query            .= " AND ft.CandID = :CaID";
             $qparams['CaID']   = $this->_feedbackObjectInfo['CandID'];
-            $candidate         = Candidate::singleton(new CandID($qparams['CaID']));
+            $candidate         = Candidate::singleton(
+                new CandID(strval($qparams['CaID']))
+            );
             $hasReadPermission = (
                 $hasReadPermission ||
                 $candidate->isAccessibleBy($user)
@@ -491,7 +494,7 @@ class NDB_BVL_Feedback
             $query            .= " AND ft.SessionID = :SID";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
             $timepoint         = TimePoint::singleton(
-                new SessionID($qparams['SID'])
+                new SessionID(strval($qparams['SID']))
             );
             $hasReadPermission = (
                 $hasReadPermission ||
@@ -582,7 +585,7 @@ class NDB_BVL_Feedback
             $query            .= " AND ft.SessionID = :SID AND ft.CommentID is null";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
             $timepoint         = TimePoint::singleton(
-                new SessionID($qparams['SID'])
+                new SessionID(strval($qparams['SID']))
             );
             $hasReadPermission = (
                 $hasReadPermission ||
@@ -593,7 +596,9 @@ class NDB_BVL_Feedback
                                  AND ft.SessionID IS NULL
                                  AND ft.CommentID IS NULL";
             $qparams['CaID']   = $this->_feedbackObjectInfo['CandID'];
-            $candidate         = Candidate::singleton(new CandID($qparams['CaID']));
+            $candidate         = Candidate::singleton(
+                new CandID(strval($qparams['CaID']))
+            );
             $hasReadPermission = (
                 $hasReadPermission ||
                 $candidate->isAccessibleBy($user)

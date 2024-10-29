@@ -41,7 +41,7 @@ class ManagePermissionsForm extends Component {
    */
   componentDidMount() {
     this.fetchData()
-    .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -51,12 +51,12 @@ class ManagePermissionsForm extends Component {
    */
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
-    .then((resp) => resp.json())
-    .then((data) => this.setState({data, originalData: data}))
-    .catch( (error) => {
-      this.setState({error: 'An error occurred when loading the form!'});
-      console.error(error);
-    });
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data, originalData: data}))
+      .catch( (error) => {
+        this.setState({error: 'An error occurred when loading the form!'});
+        console.error(error);
+      });
   }
 
   /**
@@ -91,7 +91,6 @@ class ManagePermissionsForm extends Component {
         onSubmit={this.handleSubmit}
       >
         <FormElement name="manage_permissions">
-
           <SearchableDropdown name="user"
             label="Manage Versions a User has access to"
             placeHolder="Search for a User"
@@ -204,23 +203,23 @@ class ManagePermissionsForm extends Component {
       body: formObj,
       cache: 'no-cache',
     })
-    .then((response) => {
-      if (response.ok) {
-        swal.fire({
-          text: 'Permission Update Success!',
-          title: '',
-          type: 'success',
-        });
-        this.props.fetchData();
-        return Promise.resolve();
-      } else {
-        let msg = response.statusText ?
-          response.statusText : 'Submission Error!';
-        swal.fire(msg, '', 'error');
-        console.error(msg);
-        return Promise.reject();
-      }
-    });
+      .then((response) => {
+        if (response.ok) {
+          swal.fire({
+            text: 'Permission Update Success!',
+            title: '',
+            type: 'success',
+          });
+          this.props.fetchData();
+          return Promise.resolve();
+        } else {
+          let msg = response.statusText ?
+            response.statusText : 'Submission Error!';
+          swal.fire(msg, '', 'error');
+          console.error(msg);
+          return Promise.reject();
+        }
+      });
   }
 }
 

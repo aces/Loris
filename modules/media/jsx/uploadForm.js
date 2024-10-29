@@ -4,14 +4,14 @@ import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    HeaderElement,
-    StaticElement,
-    SelectElement,
-    DateElement,
-    TextareaElement,
-    FileElement,
-    ButtonElement,
+  FormElement,
+  HeaderElement,
+  StaticElement,
+  SelectElement,
+  DateElement,
+  TextareaElement,
+  FileElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -119,7 +119,7 @@ class MediaUploadForm extends Component {
                         && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
-          {};
+      {};
     const visitErrMsg = visits && visits.length === 0 ?
       'No visits available for this candidate' :
       '';
@@ -221,11 +221,11 @@ class MediaUploadForm extends Component {
     );
   }
 
-/**
- * *******************************************************************************
- *                      ******     Helper methods     *******
- ********************************************************************************
- */
+  /**
+   * *******************************************************************************
+   *                      ******     Helper methods     *******
+   ********************************************************************************
+   */
 
   /**
    * Returns a valid name for the file to be uploaded
@@ -357,7 +357,7 @@ class MediaUploadForm extends Component {
           }
         }
         if (xhr.status === 413) {
-           msg = JSON.stringify('File too large!');
+          msg = JSON.stringify('File too large!');
         }
 
         this.setState({

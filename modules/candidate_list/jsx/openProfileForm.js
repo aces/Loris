@@ -126,9 +126,9 @@ class OpenProfileForm extends Component {
 
     if (this.state.error.message !== '') {
       warning = (
-              <div className={this.state.error.className}>
-                {this.state.error.message}
-              </div>
+        <div className={this.state.error.className}>
+          {this.state.error.message}
+        </div>
       );
     }
     return (
@@ -152,7 +152,7 @@ class OpenProfileForm extends Component {
           name='Open Profile'
           label='Open Profile'
         />
-        </FormElement>
+      </FormElement>
     );
   }
 }

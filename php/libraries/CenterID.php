@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A representation of a CenterID object. A CenterID is always an integer
  *

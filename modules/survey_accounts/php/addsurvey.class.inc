@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements the add_survey page which is used by the Loris
  * survey module, for creating user account/keys that are tied to a
@@ -138,8 +139,9 @@ class AddSurvey extends \NDB_Form
         }
 
         $instrument_list = $db->pselect(
-            "SELECT f.Test_name FROM flag f
+            "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
+             JOIN test_names tn ON tn.ID = f.TestID
              WHERE s.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 use \LORIS\StudyEntities\Candidate\CandID;
 use \LORIS\Data\Query\QueryTerm;

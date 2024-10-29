@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * It includes one main function.
  * Get method handles getting the parent's categroies and

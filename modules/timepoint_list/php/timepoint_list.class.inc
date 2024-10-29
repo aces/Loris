@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The timepoint list menu
  *
@@ -80,8 +81,31 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
-        $this->tpl_data['cand']      = $candidate;
+        // convert DoB date to age and months and rename it to Derived Age
+        $dob = $candidate->getData();
+        if (isset($dob['DoB']) && is_string($dob['DoB'])) {
+            $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
+            if ($dob_date !== false) {
+                $current_date = new \DateTime();
+                $dob_year     = abs($current_date->diff($dob_date)->y);
+                $dob_month    = abs($current_date->diff($dob_date)->m);
+                $dob_age      = $dob_year . " y / " . $dob_month . " m";
+                $this->tpl_data['dob_age'] = $dob_age;
+            }
 
+        }
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (isset($edc['EDC']) && is_string($edc['EDC'])) {
+            $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
+            if ($edc_date !== false) {
+                $current_date = new \DateTime();
+                $edc_year     = abs($current_date->diff($edc_date)->y);
+                $edc_month    = abs($current_date->diff($edc_date)->m);
+                $edc_age      = $edc_year . " y / " . $edc_month . " m";
+                $this->tpl_data['edc_age'] = $edc_age;
+            }
+        }
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
         $user     = \User::singleton();
@@ -95,7 +119,7 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_map(
             function ($sessionID) {
                 return \TimePoint::singleton(
-                    new \SessionID($sessionID),
+                    new \SessionID(strval($sessionID)),
                 );
             },
             $listOfSessionIDs,
@@ -200,7 +224,7 @@ class Timepoint_List extends \NDB_Menu
          */
         if (isset($firstDateOfVisit)) {
             $timePoint = \TimePoint::singleton(
-                new \SessionID($listOfSessionIDs[0])
+                new \SessionID(strval($listOfSessionIDs[0]))
             );
 
             $this->tpl_data['CohortID'] = $timePoint->getCohortID();

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -390,6 +391,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
+        // convert DoB And EDC date to years and months
+        // DoB to Derived Age
+        $dob = $candidate->getCandidateDoB();
+        if (is_string($dob) && strtotime($dob) !== false) {
+            $dob_date     = new \DateTime($dob);
+            $current_date = new \DateTime();
+            $dob_year     = abs($current_date->diff($dob_date)->y);
+            $dob_month    = abs($current_date->diff($dob_date)->m);
+            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $this->tpl_data['dob_age'] = $dob_age;
+        }
+        // EDC to EDC Age
+        $edc = $candidate->getCandidateEDC();
+        if (is_string($edc) && strtotime($edc) !== false) {
+            $edc_date     = new DateTime($edc);
+            $current_date = new DateTime();
+            $edc_year     = abs($current_date->diff($edc_date)->y);
+            $edc_month    = abs($current_date->diff($edc_date)->m);
+            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $this->tpl_data['edc_age'] = $edc_age;
+        }
     }
 
     /**
@@ -2303,10 +2325,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID           = new CandID($row['CandID']);
+                $newinst->candID           = new CandID(strval($row['CandID']));
                     $newinst->commentID    = $row['CommentID'];
                     $newinst->visitLabel   = $row['VisitLabel'];
-                    $newinst->sessionID    = new SessionID($row['SessionID']);
+                $newinst->sessionID        = new SessionID(
+                    strval($row['SessionID'])
+                );
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,
@@ -2354,10 +2378,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($data as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID         = new CandID($row['CandID']);
+                $newinst->candID         = new CandID(strval($row['CandID']));
                     $newinst->commentID  = $row['CommentID'];
                     $newinst->visitLabel = $row['VisitLabel'];
-                    $newinst->sessionID  = new SessionID($row['SessionID']);
+                    $newinst->sessionID  = new SessionID(strval($row['SessionID']));
                     unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
 
                     $newinst->instanceData = $row;

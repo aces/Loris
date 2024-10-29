@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -262,11 +263,10 @@ class Utility
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
+            AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
         // The result has several columns; we only want the visit labels.
@@ -780,11 +780,10 @@ class Utility
             "SELECT DISTINCT t.Test_name, t.Full_name
             FROM session s
             JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN psc ON (s.CenterID=psc.CenterID)
             JOIN flag f ON (f.sessionID=s.id)
             JOIN test_names t ON (f.test_name=t.Test_name)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
-            AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+            AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
             ['vl' => $visit_label],
             'Test_name'
