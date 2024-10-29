@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery\endpoints\queries;
 
 use \LORIS\dataquery\provisioners\RecentQueries;

@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Wrapper around CouchDB MRI functions
  *
@@ -248,11 +249,11 @@ class CouchDBMRIImporter
             2
         );
         $header['SliceThickness_'.$type]      = number_format(
-            $FileObj->getParameter('slice_thickness'),
+            $FileObj->getParameter('slice_thickness') ?? 0,
             2
         );
         $header['Time_'.$type]          = number_format(
-            $FileObj->getParameter('time'),
+            $FileObj->getParameter('time') ?? 0,
             2
         );
         $header['Comment_'.$type]       = $FileObj->getParameter('Comment');

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\my_preferences;
 /**
  * Class module implements the basic LORIS module functionality

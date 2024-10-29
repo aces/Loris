@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Unit test for NDB_BVL_Instrument class
  *
@@ -1054,7 +1055,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['CohortID' => '2', 'ProjectID' => '1',
+                ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );
@@ -1141,9 +1142,9 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $defaults,
             [
-                'ID'                          => '1000',
-                'SessionID'                   => '123',
-                'Test_name'                   => 'Test_name1',
+                'ID'                          => 1000,
+                'SessionID'                   => 123,
+                'TestID'                      => 1000,
                 'Data_entry'                  => '',
                 'Required_elements_completed' => 'N',
                 'Administration'              => '',
@@ -1151,7 +1152,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Exclusion'                   => null,
                 'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
-                'Data'                        => null
+                'DataID'                      => null,
             ]
         );
     }
@@ -1346,7 +1347,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             'arthritis_age_status' => 'status'
         ];
         $this->_instrument->_saveValues($values);
-        $dbData = $this->_DB->pselect("SELECT * FROM medical_history", []);
+        $dbData = iterator_to_array(
+            $this->_DB->pselect("SELECT * FROM medical_history", [])
+        );
         $this->assertEquals('77.2', $dbData[0]['Candidate_Age']);
         $this->assertEquals('0', $dbData[0]['Window_Difference']);
         $this->assertEquals(null, $dbData[0]['arthritis_age']);
@@ -1669,15 +1672,19 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $conflictsBefore = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved",
-            []
+        $conflictsBefore = iterator_to_array(
+            $this->_DB->pselect(
+                "SELECT * FROM conflicts_unresolved",
+                []
+            )
         );
         $this->_instrument->clearInstrument();
         $data           = $this->_instrument->getInstanceData();
-        $conflictsAfter = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved",
-            []
+        $conflictsAfter = iterator_to_array(
+            $this->_DB->pselect(
+                "SELECT * FROM conflicts_unresolved",
+                []
+            )
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
@@ -1852,13 +1859,32 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS test_battery");
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS parameter_type");
         $this->_DB->setFakeTableData(
+            "test_names",
+            [
+                [
+                    'ID'            => '1000',
+                    'Test_name'     => 'Test_name',
+                    'Full_name'     => 'Test Test',
+                    'Sub_group'     => '1',
+                    'IsDirectEntry' => '0',
+                ],
+                [
+                    'ID'            => '1001',
+                    'Test_name'     => 'Test_name2',
+                    'Full_name'     => 'Test Test 2',
+                    'Sub_group'     => '1',
+                    'IsDirectEntry' => '0',
+                ],
+            ]
+        );
+        $this->_DB->setFakeTableData(
             "flag",
             [
                 [
                     'ID'                          => '1000',
                     'SessionID'                   => '123',
                     'CommentID'                   => 'commentID1',
-                    'Test_name'                   => 'Test_name1',
+                    'TestID'                      => '1000',
                     'UserID'                      => '456',
                     'Data_entry'                  => 'Incomplete',
                     'Administration'              => 'admin1',
@@ -1869,7 +1895,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'ID'                          => '2000',
                     'SessionID'                   => '234',
                     'CommentID'                   => 'commentID2',
-                    'Test_name'                   => 'Test_name2',
+                    'TestID'                      => '1001',
                     'UserID'                      => '457',
                     'Data_entry'                  => 'Complete',
                     'Administration'              => 'admin2',

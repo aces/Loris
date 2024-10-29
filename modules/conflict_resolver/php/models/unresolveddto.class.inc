@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP version 7
  *
@@ -77,7 +78,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->centerid));
+        return \CenterID::singleton($this->centerid);
     }
 
     /**
@@ -88,6 +89,6 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->projectid));
+        return \ProjectID::singleton($this->projectid);
     }
 }

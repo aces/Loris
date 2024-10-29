@@ -47,6 +47,7 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "indent": ["error", 2],
     "no-unexpected-multiline": "off",
     "no-unused-vars": "error",
     "no-useless-escape": "off",

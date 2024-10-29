@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 require_once 'generic_includes.php';
 /**
  * Imports demographics to CouchDB

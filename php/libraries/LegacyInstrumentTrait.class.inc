@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a trait to provide legacy behaviour
  * (database lookup) for abstract functions getFullNames and
@@ -77,6 +78,6 @@ trait LegacyInstrumentTrait
 
         $results = $db->pselect($query, ['TN' => $this->testName]);
 
-        return $results;
+        return iterator_to_array($results);
     }
 }

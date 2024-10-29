@@ -132,7 +132,7 @@ class Modal extends Component {
     const submitButton = () => {
       if (onSubmit) {
         const submit = () => onSubmit().then(() => this.props.onClose())
-        .catch(() => {});
+          .catch(() => {});
         return (
           <div style={submitStyle}>
             <ButtonElement

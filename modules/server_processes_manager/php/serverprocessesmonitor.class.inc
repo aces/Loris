@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is used to monitor the state of server processes that are
  * (or were) running on the server. In doing so, the ServerProcessMonitor

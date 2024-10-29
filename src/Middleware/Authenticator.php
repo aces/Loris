@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Defines Authenticator interface to authenticate access
  * to incoming requests.
