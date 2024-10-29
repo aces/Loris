@@ -103,28 +103,28 @@ class FilterableDataTable extends Component {
    * @return {object}
    */
   validFilters() {
-      let filters = {};
-      this.props.fields.forEach((field) => {
-        if (!field.filter) {
-            return;
-        }
-        const filtername = field.filter.name;
-        const filterval = this.state.filters[filtername];
-        if (!filterval) {
-            return;
-        }
+    let filters = {};
+    this.props.fields.forEach((field) => {
+      if (!field.filter) {
+        return;
+      }
+      const filtername = field.filter.name;
+      const filterval = this.state.filters[filtername];
+      if (!filterval) {
+        return;
+      }
 
-        if (field.filter.type !== 'select') {
-            filters[filtername] = filterval;
-            return;
-        }
-
-        if (!(filterval.value in field.filter.options)) {
-            return;
-        }
+      if (field.filter.type !== 'select') {
         filters[filtername] = filterval;
-      });
-      return filters;
+        return;
+      }
+
+      if (!(filterval.value in field.filter.options)) {
+        return;
+      }
+      filters[filtername] = filterval;
+    });
+    return filters;
   }
 
   /**

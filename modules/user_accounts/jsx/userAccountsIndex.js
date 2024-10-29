@@ -69,52 +69,52 @@ class UserAccountsIndex extends Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'Site':
-        // If user has multiple sites, join array of sites into string
+    case 'Site':
+      // If user has multiple sites, join array of sites into string
+      result = (
+        <td>{cell
+          .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+          .join(', ')}
+        </td>
+      );
+      if (cell.length === 0) {
         result = (
-          <td>{cell
-            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-            .join(', ')}
-          </td>
+          <td>This user has no site affiliations</td>
         );
-        if (cell.length === 0) {
-          result = (
-            <td>This user has no site affiliations</td>
-          );
-        }
-        break;
-      case 'Project':
-        // If user has multiple projects, join array of sites into string
+      }
+      break;
+    case 'Project':
+      // If user has multiple projects, join array of sites into string
+      result = (
+        <td>{cell.map(
+          (projectId) => this.state.data.fieldOptions.projects[projectId]
+        ).join(', ')}
+        </td>
+      );
+      if (cell.length === 0) {
         result = (
-          <td>{cell.map(
-              (projectId) => this.state.data.fieldOptions.projects[projectId]
-            ).join(', ')}
-          </td>
+          <td>This user has no project affiliations</td>
         );
-        if (cell.length === 0) {
-          result = (
-            <td>This user has no project affiliations</td>
-          );
-        }
-        break;
-      case 'Username':
-        url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
-        result = <td><a href ={url}>{cell}</a></td>;
-        break;
-      case 'Active':
-        if (row.Active === 'Y') {
-          result = <td>Yes</td>;
-        } else if (row.Active === 'N') {
-          result = <td>No</td>;
-        }
-        break;
-      case 'Pending Approval':
-        if (row['Pending Approval'] === 'Y') {
-          result = <td>Yes</td>;
-        } else if (row['Pending Approval'] === 'N') {
-          result = <td>No</td>;
-        }
-        break;
+      }
+      break;
+    case 'Username':
+      url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
+      result = <td><a href ={url}>{cell}</a></td>;
+      break;
+    case 'Active':
+      if (row.Active === 'Y') {
+        result = <td>Yes</td>;
+      } else if (row.Active === 'N') {
+        result = <td>No</td>;
+      }
+      break;
+    case 'Pending Approval':
+      if (row['Pending Approval'] === 'Y') {
+        result = <td>Yes</td>;
+      } else if (row['Pending Approval'] === 'N') {
+        result = <td>No</td>;
+      }
+      break;
     }
     return result;
   }
@@ -143,10 +143,10 @@ class UserAccountsIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in userAccounts.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in userAccounts.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Site', show: true, filter: {

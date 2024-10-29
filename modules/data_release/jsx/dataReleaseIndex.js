@@ -99,26 +99,26 @@ class DataReleaseIndex extends Component {
     // Set class to 'bg-danger' if file is hidden.
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'File Name':
-        if (this.props.hasPermission('superuser')
+    case 'File Name':
+      if (this.props.hasPermission('superuser')
             || this.props.hasPermission('data_release_view')
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
-          const downloadURL = loris.BaseURL
+        const downloadURL = loris.BaseURL
             + '/data_release/files/'
             + encodeURIComponent(row['Data Release ID']);
-          result = (
-            <td>
-              <a
-                href = {downloadURL}
-                target = "_blank"
-                download = {row['File Name']} >
-                {cell}
-              </a>
-            </td>
-          );
-        }
-        break;
+        result = (
+          <td>
+            <a
+              href = {downloadURL}
+              target = "_blank"
+              download = {row['File Name']} >
+              {cell}
+            </a>
+          </td>
+        );
+      }
+      break;
     }
     return result;
   }
@@ -180,7 +180,7 @@ class DataReleaseIndex extends Component {
           action={loris.BaseURL + '/data_release/files'}
         />
       </Modal>
-  );
+    );
 
     // Add Permission modal window
     const addPermissionForm = (
@@ -224,7 +224,7 @@ class DataReleaseIndex extends Component {
           show={this.state.show.managePermissionsForm}
           onClose={() => this.hide('managePermissionsForm')}
         />
-    );
+      );
 
     const actions = [
       {

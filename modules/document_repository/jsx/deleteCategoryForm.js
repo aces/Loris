@@ -15,8 +15,7 @@ import {
  *
  * @author Rolando Acosta
  * @version 1.0.0
- *
- * */
+ */
 class DeleteDocCategoryForm extends React.Component {
   /**
    * @constructor
@@ -47,6 +46,7 @@ class DeleteDocCategoryForm extends React.Component {
 
   /**
    * Fetch data
+   *
    * @return {Promise<void>}
    */
   fetchData() {
@@ -113,6 +113,7 @@ class DeleteDocCategoryForm extends React.Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -141,11 +142,11 @@ class DeleteDocCategoryForm extends React.Component {
         const body = await response.json();
         let msg;
         if (body && body.error) {
-            msg = body.error;
+          msg = body.error;
         } else if (response.statusText) {
-            msg = response.statusText;
+          msg = response.statusText;
         } else {
-            msg = 'Delete error!';
+          msg = 'Delete error!';
         }
         this.setState({
           errorMessage: msg,
@@ -153,13 +154,13 @@ class DeleteDocCategoryForm extends React.Component {
         swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-          swal.fire({
-            text: 'Delete Successful!',
-            title: '',
-            type: 'success',
-          }).then(function() {
-            window.location.assign('/document_repository');
-          });
+        swal.fire({
+          text: 'Delete Successful!',
+          title: '',
+          type: 'success',
+        }).then(function() {
+          window.location.assign('/document_repository');
+        });
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Delete error!';
