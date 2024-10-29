@@ -97,8 +97,13 @@ $instrument_list = $db->pselect(
         'v_VL'     => $_REQUEST['VL'],
     ]
 );
+
+$instr_string=$_REQUEST['TN'];
+$selected_instr=explode(",", $instr_string);
+
 foreach ($instrument_list as $instrument) {
-    if ($_REQUEST['TN'] == $instrument['Test_name']) {
+    foreach ($selected_instr as $testName)
+    if ($testName == $instrument['Test_name']) {
         echo json_encode(
             [
                 'error_msg' => dcngettext(
@@ -107,7 +112,7 @@ foreach ($instrument_list as $instrument) {
                     'Instruments',
                     1,
                     LC_MESSAGES
-                ).' '. $_REQUEST['TN'].' ' .dgettext(
+                ).' '. $testName .' ' .dgettext(
                     'survey_accounts',
                     'already exists for given candidate for visit'
                 ).' '. $_REQUEST['VL'],
