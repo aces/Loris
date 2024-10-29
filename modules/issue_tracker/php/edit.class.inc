@@ -384,11 +384,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 "SELECT
                             i.*,
                             c.PSCID,
-                            s.Visit_label AS visitLabel
+                            s.Visit_label AS visitLabel,
+                            t.Test_name as instrument_name
                         FROM
                             issues AS i
                             LEFT JOIN candidate c ON (i.candID = c.CandID)
                             LEFT JOIN session s ON (i.sessionID = s.ID)
+                            LEFT JOIN test_names t ON (i.instrument = t.ID)
                         WHERE
                             issueID = :issueID",
                 ['issueID' => $issueID]
@@ -489,6 +491,12 @@ class Edit extends \NDB_Page implements ETagCalculator
             ) {
                 $comment['newValue']
                     = $this->formatUserInformation($comment['newValue']);
+            } else if ($comment['fieldChanged'] === 'instrument') {
+                $instrumentName      = $db->pselectOne(
+                    "SELECT Test_name FROM test_names WHERE ID=:id",
+                    ['id' => $comment['newValue']]
+                );
+                $comment['newValue'] = $instrumentName;
             }
         }
         return $unformattedComments; //now formatted I guess
@@ -605,7 +613,16 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $value = null;
             }
             if (isset($field)) {
-                $issueValues[$field] = $value;
+                if ($field === 'instrument' && $value !== null) {
+                    // Value coming from frontend will be the instrument name
+                    $instrumentID        = $db->pselectOne(
+                        "SELECT ID FROM test_names WHERE Test_name=:name",
+                        ['name' => $value]
+                    );
+                    $issueValues[$field] = $instrumentID;
+                } else {
+                    $issueValues[$field] = $value;
+                }
             }
         }
         foreach ($fieldsToValidateFirst as $vField) {

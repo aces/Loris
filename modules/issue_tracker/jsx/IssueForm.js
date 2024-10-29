@@ -398,6 +398,10 @@ class IssueForm extends Component {
             if (formData.centerID == null) {
               formData.centerID = 'all';
             }
+
+            if (formData.instrument_name) {
+              formData.instrument = formData.instrument_name;
+            }
           }
 
           this.setState({
