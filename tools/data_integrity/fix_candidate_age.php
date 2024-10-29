@@ -82,7 +82,7 @@ foreach ($instruments as $testName=>$instrument) {
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
             JOIN candidate c ON c.CandID=s.CandID
-            JOIN test_names tn ON tn.ID = f.TestID
+            JOIN test_names tn ON tn.ID=f.TestID
         WHERE c.Active='Y' AND s.Active='Y'
 
         AND tn.Test_name=:tn",

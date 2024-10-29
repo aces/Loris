@@ -303,7 +303,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
         JOIN candidate c ON (c.CandID=s.CandID)
-        JOIN test_names tn ON tn.ID = f.TestID";
+        LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
     $where  = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
@@ -338,7 +338,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
         JOIN flag f on (f.commentid = cu.commentid1)
         JOIN session s on (s.id = f.sessionid)
         JOIN candidate c on (c.CandID = s.CandID)
-        JOIN test_names tn ON tn.ID = f.TestID";
+        LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
 
     $where = " WHERE c.Active='Y' AND  s.Active='Y'
         AND s.Visit <> 'Failure'";
