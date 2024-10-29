@@ -2,7 +2,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import ProtocolModal from './protocolModal.js';
+import ProtocolModal from './protocolModal';
 
 /**
  * Entry point for the MRI Violatons module.

@@ -1,6 +1,6 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
-import PublicationUploadForm from './uploadForm.js';
+import PublicationUploadForm from './uploadForm';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';

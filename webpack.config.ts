@@ -294,12 +294,12 @@ const configs: webpack.Configuration[] = [];
 
 configs.push({
   entry: {
-    PaginationLinks: './jsx/PaginationLinks.js',
-    StaticDataTable: './jsx/StaticDataTable.js',
-    MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
-    Breadcrumbs: './jsx/Breadcrumbs.js',
-    CSSGrid: './jsx/CSSGrid.js',
-    Help: './jsx/Help.js',
+    PaginationLinks: './jsx/PaginationLinks.jsx',
+    StaticDataTable: './jsx/StaticDataTable.jsx',
+    MultiSelectDropdown: './jsx/MultiSelectDropdown.jsx',
+    Breadcrumbs: './jsx/Breadcrumbs.jsx',
+    CSSGrid: './jsx/CSSGrid.jsx',
+    Help: './jsx/Help.jsx',
     ...entries,
   },
   output: {
