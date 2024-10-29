@@ -107,15 +107,15 @@ class IssueTrackerIndex extends Component {
     case 'Site':
       // if cell is an array containing all sites values
       if (
-          JSON.stringify(
-              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+        JSON.stringify(
+          Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
         result = <td>All Sites</td>;
       } else {
         result = <td>
-              {cell.map((v) =>
-                  this.state.data.fieldOptions.sites[v]).filter(
-                      (v) => v != undefined).join(', ')}
+          {cell.map((v) =>
+            this.state.data.fieldOptions.sites[v]).filter(
+            (v) => v != undefined).join(', ')}
         </td>;
       }
       break;
@@ -162,10 +162,10 @@ class IssueTrackerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in media.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in media.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Issue ID', show: true, filter: {
@@ -200,26 +200,26 @@ class IssueTrackerIndex extends Component {
         name: 'status',
         type: 'multiselect',
         options: options.statuses,
-        }},
+      }},
       {label: 'Priority', show: true, filter: {
         name: 'priority',
         type: 'select',
         sortByValue: false,
         options: options.priorities,
-        }},
+      }},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,
-        }},
+      }},
       {label: 'PSCID', show: true, filter: {
         name: 'pscid',
         type: 'text',
-        }},
+      }},
       {label: 'Visit Label', show: true, filter: {
         name: 'visitLabel',
         type: 'text',
-        }},
+      }},
       {label: 'Date Created', show: false, filter: {
         name: 'dateCreated',
         type: 'date',

@@ -903,20 +903,20 @@ export class TagsElement extends Component {
         itmTxt = item;
       }
       return (
-          <button
-            className="btn btn-info btn-inline"
-            type="button"
-            onClick={this.handleRemove}
-            data-item={item}
-            key={item}
-          >
-            {itmTxt}
+        <button
+          className="btn btn-info btn-inline"
+          type="button"
+          onClick={this.handleRemove}
+          data-item={item}
+          key={item}
+        >
+          {itmTxt}
             &nbsp;
-            <span
-              className="glyphicon glyphicon-remove"
-              data-item={item}
-            />
-          </button>
+          <span
+            className="glyphicon glyphicon-remove"
+            data-item={item}
+          />
+        </button>
       );
     }, this);
     return (
@@ -934,7 +934,7 @@ export class TagsElement extends Component {
             id={this.props.id + 'Add'}
             type="button"
             onClick={this.handleAdd}
-            >
+          >
             <span className="glyphicon glyphicon-plus"/>
             {this.props.btnLabel}
           </button>
@@ -1599,13 +1599,13 @@ export class DateElement extends Component {
     let labelHTML;
     let classSz = 'col-sm-12';
     if (this.props.label) {
-        labelHTML = <label
-            className="col-sm-3 control-label"
-            htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>;
-        classSz = 'col-sm-9';
+      labelHTML = <label
+        className="col-sm-3 control-label"
+        htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>;
+      classSz = 'col-sm-9';
     }
     return (
       <div className={elementClass}>
@@ -1703,14 +1703,14 @@ export class TimeElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
     if (this.props.label) {
-        label = <label className="col-sm-3 control-label"
-            htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-            </label>;
-        classSz = 'col-sm-9';
+      label = <label className="col-sm-3 control-label"
+        htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>;
+      classSz = 'col-sm-9';
     } else {
-        classSz = 'col-sm-12';
+      classSz = 'col-sm-12';
     }
 
     return (
@@ -1799,14 +1799,14 @@ export class DateTimeElement extends Component {
       requiredHTML = <span className="text-danger">*</span>;
     }
     if (this.props.label) {
-        label = <label className="col-sm-3 control-label"
-            htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-            </label>;
-        classSz = 'col-sm-9';
+      label = <label className="col-sm-3 control-label"
+        htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>;
+      classSz = 'col-sm-9';
     } else {
-        classSz = 'col-sm-12';
+      classSz = 'col-sm-12';
     }
 
     return (
@@ -1897,13 +1897,13 @@ export class NumericElement extends Component {
     let labelHTML;
     let classSz = 'col-sm-12';
     if (this.props.label) {
-        labelHTML = <label
-            className="col-sm-3 control-label"
-            htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>;
-        classSz = 'col-sm-9';
+      labelHTML = <label
+        className="col-sm-3 control-label"
+        htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>;
+      classSz = 'col-sm-9';
     }
 
     return (
@@ -1998,21 +1998,21 @@ export class FileElement extends Component {
 
     if (this.props.value) {
       switch (typeof this.props.value) {
-        case 'string':
-          fileName = this.props.value;
-          break;
+      case 'string':
+        fileName = this.props.value;
+        break;
 
-        case 'object':
-          if (this.props.value instanceof FileList) {
-            const files = this.props.value;
-            fileName = Array.from(files).map((file) => file.name).join(', ');
-          } else {
-            fileName = this.props.value.name;
-          }
-          break;
+      case 'object':
+        if (this.props.value instanceof FileList) {
+          const files = this.props.value;
+          fileName = Array.from(files).map((file) => file.name).join(', ');
+        } else {
+          fileName = this.props.value.name;
+        }
+        break;
 
-        default:
-          break;
+      default:
+        break;
       }
     }
 
@@ -2072,13 +2072,13 @@ export class FileElement extends Component {
     let labelHTML;
     let classSz;
     if (this.props.label) {
-        labelHTML = <label className="col-sm-3 control-label">
-          {this.props.label}
-          {requiredHTML}
-        </label>;
-        classSz = 'col-sm-9';
+      labelHTML = <label className="col-sm-3 control-label">
+        {this.props.label}
+        {requiredHTML}
+      </label>;
+      classSz = 'col-sm-9';
     } else {
-        classSz = 'col-sm-12';
+      classSz = 'col-sm-12';
     }
 
     return (
@@ -2087,7 +2087,7 @@ export class FileElement extends Component {
         <div className={classSz}>
           <div className="input-group">
             <div tabIndex="-1"
-                 className="form-control file-caption kv-fileinput-caption">
+              className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
                 <span style={truncateEllipsisChild}>{fileName}</span>
               </div>
@@ -2488,30 +2488,30 @@ export class CTA extends Component {
    *
    * @return {JSX} - React markup for the component
    */
-   render() {
-     return (
-       <button
-         className={this.props.buttonClass}
-         onClick={this.props.onUserInput}
-       >
-         {this.props.label}
-       </button>
-     );
-   }
- }
+  render() {
+    return (
+      <button
+        className={this.props.buttonClass}
+        onClick={this.props.onUserInput}
+      >
+        {this.props.label}
+      </button>
+    );
+  }
+}
 
-  CTA.propTypes = {
-   label: PropTypes.string,
-   buttonClass: PropTypes.string,
-   onUserInput: PropTypes.func,
- };
+CTA.propTypes = {
+  label: PropTypes.string,
+  buttonClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
 
-  CTA.defaultProps = {
-   buttonClass: 'btn btn-primary',
-   onUserInput: function() {
-     console.warn('onUserInput() callback is not set');
-   },
- };
+CTA.defaultProps = {
+  buttonClass: 'btn btn-primary',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
 
 /**
  * Generic form element.
@@ -2538,58 +2538,58 @@ export class LorisElement extends Component {
     let elementHtml = <div></div>;
 
     switch (elementProps.type) {
-      case 'text':
-        elementHtml = (<TextboxElement {...elementProps} />);
-        break;
-      case 'email':
-       elementHtml = (<EmailElement {...elementProps} />);
-       break;
-      case 'password':
-       elementHtml = (<PasswordElement {...elementProps} />);
-       break;
-      case 'tags':
-        elementHtml = (<TagsElement {...elementProps} />);
-        break;
-      case 'select':
-        elementHtml = (<SelectElement {...elementProps} />);
-        break;
-      case 'search':
-        elementHtml = (<SearchableDropdown {...elementProps}/>);
-        break;
-      case 'date':
-        elementHtml = (<DateElement {...elementProps} />);
-        break;
-      case 'time':
-        elementHtml = (<TimeElement {...elementProps} />);
-        break;
-      case 'numeric':
-        elementHtml = (<NumericElement {...elementProps} />);
-        break;
-      case 'textarea':
-        elementHtml = (<TextareaElement {...elementProps} />);
-        break;
-      case 'file':
-        elementHtml = (<FileElement {...elementProps} />);
-        break;
-      case 'static':
-        elementHtml = (<StaticElement {...elementProps} />);
-        break;
-      case 'header':
-        elementHtml = (<HeaderElement {...elementProps} />);
-        break;
-      case 'link':
-        elementHtml = (<LinkElement {...elementProps} />);
-        break;
-      case 'advcheckbox':
-        elementHtml = (<CheckboxElement {...elementProps} />);
-        break;
-      default:
-        console.warn(
-          'Element of type ' +
+    case 'text':
+      elementHtml = (<TextboxElement {...elementProps} />);
+      break;
+    case 'email':
+      elementHtml = (<EmailElement {...elementProps} />);
+      break;
+    case 'password':
+      elementHtml = (<PasswordElement {...elementProps} />);
+      break;
+    case 'tags':
+      elementHtml = (<TagsElement {...elementProps} />);
+      break;
+    case 'select':
+      elementHtml = (<SelectElement {...elementProps} />);
+      break;
+    case 'search':
+      elementHtml = (<SearchableDropdown {...elementProps}/>);
+      break;
+    case 'date':
+      elementHtml = (<DateElement {...elementProps} />);
+      break;
+    case 'time':
+      elementHtml = (<TimeElement {...elementProps} />);
+      break;
+    case 'numeric':
+      elementHtml = (<NumericElement {...elementProps} />);
+      break;
+    case 'textarea':
+      elementHtml = (<TextareaElement {...elementProps} />);
+      break;
+    case 'file':
+      elementHtml = (<FileElement {...elementProps} />);
+      break;
+    case 'static':
+      elementHtml = (<StaticElement {...elementProps} />);
+      break;
+    case 'header':
+      elementHtml = (<HeaderElement {...elementProps} />);
+      break;
+    case 'link':
+      elementHtml = (<LinkElement {...elementProps} />);
+      break;
+    case 'advcheckbox':
+      elementHtml = (<CheckboxElement {...elementProps} />);
+      break;
+    default:
+      console.warn(
+        'Element of type ' +
           elementProps.type +
           ' is not currently implemented!'
-        );
-        break;
+      );
+      break;
     }
 
     return elementHtml;
@@ -2673,7 +2673,7 @@ export class RadioElement extends React.Component {
         const checked = this.props.checked === key;
         content.push(
           <div key={key}
-               style={styleColumn}>
+            style={styleColumn}>
             <div style={styleContainer}>
               <input
                 type='radio'
@@ -2687,7 +2687,7 @@ export class RadioElement extends React.Component {
                 style={styleInput}
               />
               <label htmlFor={key}
-                     style={styleLabel}
+                style={styleLabel}
               >
                 {this.props.options[key]}
               </label>
@@ -2699,7 +2699,7 @@ export class RadioElement extends React.Component {
 
     layout.push(
       <div key={this.props.name + '_key'}
-           style={styleRow}>
+        style={styleRow}>
         {content}
       </div>
     );
@@ -2824,7 +2824,7 @@ export class SliderElement extends React.Component {
     return (
       <div className={elementClass}>
         <label className={'col-sm-3 control-label'}
-               htmlFor={this.props.id}>
+          htmlFor={this.props.id}>
           {this.props.label}
           {errorMessage}
           {requiredHTML}

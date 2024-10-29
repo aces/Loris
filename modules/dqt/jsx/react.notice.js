@@ -8,9 +8,9 @@ const NoticeMessage = (props) => {
     alert = (
       <div className='alert alert-success' role='alert'>
         <button type='button'
-                className='close'
-                aria-label='Close'
-                onClick={props.dismissAlert}>
+          className='close'
+          aria-label='Close'
+          onClick={props.dismissAlert}>
           <span aria-hidden='true'>&times;</span>
         </button>
         <strong>Success</strong> Query Loaded.
@@ -23,9 +23,9 @@ const NoticeMessage = (props) => {
     alert = (
       <div className='alert alert-success' role='alert'>
         <button type='button'
-                className='close'
-                aria-label='Close'
-                onClick={props.dismissAlert}>
+          className='close'
+          aria-label='Close'
+          onClick={props.dismissAlert}>
           <span aria-hidden='true'>&times;</span>
         </button>
         <strong>Success</strong> Query Saved.
@@ -38,21 +38,21 @@ const NoticeMessage = (props) => {
     alert = (
       <div className='alert alert-warning' role='alert'>
         <button type='button'
-                className='close'
-                aria-label='Close'
-                onClick={props.dismissAlert}>
+          className='close'
+          aria-label='Close'
+          onClick={props.dismissAlert}>
           <span aria-hidden='true'>&times;</span>
         </button>
         <button type='button'
-                className='close'
-                aria-label='Close'
-                onClick={props.dismissAlert}>
+          className='close'
+          aria-label='Close'
+          onClick={props.dismissAlert}>
           <span aria-hidden='true'>Override</span>
         </button>
         <strong>Error</strong> Query with the same name already exists.
         <a href='#'
-           className='alert-link'
-           onClick={props.overrideQuery}>Click here to override</a>
+          className='alert-link'
+          onClick={props.overrideQuery}>Click here to override</a>
       </div>
     );
   }

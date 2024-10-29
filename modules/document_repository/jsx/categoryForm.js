@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    SelectElement,
-    ButtonElement,
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  SelectElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -70,8 +70,8 @@ class DocCategoryForm extends React.Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (<Loader/>);
@@ -80,8 +80,8 @@ class DocCategoryForm extends React.Component {
     let disabled = true;
     let addButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
-        disabled = false;
-        addButton = <ButtonElement label="Add Category"/>;
+      disabled = false;
+      addButton = <ButtonElement label="Add Category"/>;
     }
 
     return (
@@ -159,29 +159,29 @@ class DocCategoryForm extends React.Component {
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => {
-      if (resp.ok) {
-        this.props.refreshPage();
-        this.fetchData();
-        // refresh the upload page
-        this.props.newCategoryState();
-        this.setState({
-          formData: {}, // reset form data after successful file upload
-        });
-        swal.fire('Category Successfully Added!', '', 'success');
-      } else {
-        resp.json().then((data) => {
-          swal.fire('Could not add category!', data.error, 'error');
-        }).catch((error) => {
-          console.error(error);
-          swal.fire(
-            'Unknown Error!',
-            'Please report the issue or contact your administrator.',
-            'error'
-          );
-        });
-      }
-    });
+      .then((resp) => {
+        if (resp.ok) {
+          this.props.refreshPage();
+          this.fetchData();
+          // refresh the upload page
+          this.props.newCategoryState();
+          this.setState({
+            formData: {}, // reset form data after successful file upload
+          });
+          swal.fire('Category Successfully Added!', '', 'success');
+        } else {
+          resp.json().then((data) => {
+            swal.fire('Could not add category!', data.error, 'error');
+          }).catch((error) => {
+            console.error(error);
+            swal.fire(
+              'Unknown Error!',
+              'Please report the issue or contact your administrator.',
+              'error'
+            );
+          });
+        }
+      });
   }
 
   /**
