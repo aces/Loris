@@ -206,10 +206,21 @@ class AddSurvey extends \NDB_Form
             ]
         );
 
-        // $battery = new \NDB_BVL_Battery($this->loris);
-        // $battery->selectBattery(
-        //     new \SessionID($SessionID)
-        // );
+        $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+        $sendEmail = false;
+        if (isset($_REQUEST['send_email'])) {
+            $sendEmail = true;
+        }
+        if ($sendEmail) {
+            $status = 'Sent';
+        } else {
+            $status = 'Created';
+        }
+
+        $battery = new \NDB_BVL_Battery($this->loris);
+        $battery->selectBattery(
+            new \SessionID($SessionID)
+        );
 
         foreach ($values['Test_name'] as $testName) {
             $InstrumentExists = $db->pselectOne(
@@ -224,16 +235,8 @@ class AddSurvey extends \NDB_Form
                 return;
             }
 
-            $commentID = $db->pselectOne(
-                "SELECT CommentID FROM flag 
-                WHERE Test_name=:TN AND SessionID=:SID
-                AND CommentID NOT LIKE 'DDE%'",
-                [
-                 'TN'  => $testName,
-                 'SID' => $SessionID,
-                ]
-            );
-            $key = $this->_generateSurveyKey();
+            $commentID = $battery->addInstrument($this->loris, $testName);
+            $key       = $this->_generateSurveyKey();
 
             try {
                 $db->insert(
@@ -251,25 +254,14 @@ class AddSurvey extends \NDB_Form
                 error_log($e->getMessage());
                 $this->tpl_data['success'] = false;
             }
-        }
-
-        $sendEmail = false;
-        if (isset($_REQUEST['send_email'])) {
-            $sendEmail = true;
-        }
-        if ($sendEmail) {
-            $status = 'Sent';
-        } else {
-            $status = 'Created';
+            $url .= $baseURL . '/survey.php?key=' . urlencode($key) . "\n";
         }
 
         if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
-            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
                 'study'     => $config->getSetting("title"),
-                'url'       => $baseURL . '/survey.php?key=' .
-                        urlencode($key),
+                'url'       => $url,
                 'EmailForm' => $values['email_dialog'],
             ];
             \Email::send($email, 'new_survey.tpl', $msg_data);

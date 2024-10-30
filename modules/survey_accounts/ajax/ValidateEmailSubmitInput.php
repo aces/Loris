@@ -93,19 +93,21 @@ $instrument_list = $db->pselect(
     ]
 );
 
-$instr_string=$_REQUEST['TN'];
-$selected_instr=explode(",", $instr_string);
+$instr_string   =$_REQUEST['TN'];
+$selected_instr =explode(",", $instr_string);
 
 foreach ($instrument_list as $instrument) {
-    foreach ($selected_instr as $testName)
-    if ($testName == $instrument['Test_name']) {
-        echo json_encode(
-            [
-                'error_msg' => "Instrument ". $testName.
-                " already exists for given candidate for visit ". $_REQUEST['VL'],
-            ]
-        );
-        exit(0);
+    foreach ($selected_instr as $testName) {
+        if ($testName == $instrument['Test_name']) {
+            echo json_encode(
+                [
+                    'error_msg' => "Instrument ". $testName.
+                    " already exists for given candidate for visit ".
+                    $_REQUEST['VL'],
+                ]
+            );
+            exit(0);
+        }
     }
 }
 
