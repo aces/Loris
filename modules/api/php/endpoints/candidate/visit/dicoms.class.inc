@@ -256,9 +256,16 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $is_phantom = $data['IsPhantom'] ?? null;
-        if (!in_array($is_phantom, [true, false])) {
+        if (!is_bool($is_phantom)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'IsPhantom must be either `true` or `false`.'
+                'IsPhantom must be a boolean.'
+            );
+        }
+
+        $overwrite = $data['Overwrite'] ?? false;
+        if (!is_bool($overwrite)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Overwrite must be a boolean.'
             );
         }
 
@@ -287,7 +294,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'application/x-tar'
             );
 
-        if ($request->getHeaderLine('LORIS-Overwrite') === 'overwrite') {
+        if ($overwrite) {
             $uploader = $uploader->withOverwrite(true);
         }
 

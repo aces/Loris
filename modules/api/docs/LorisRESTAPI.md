@@ -872,8 +872,8 @@ values:
 }
 ```
 
-An optionnal header 'LORIS-Overwrite' with the value 'overwrite' can be used to
-overwrite an existing file.
+The JSON can optionally have a boolean `Overwrite` attribute that can be used
+to overwrite an existing file (`false` if not present).
 A successful request will be answered by a `303 See Other` response with its
 `Location` header pointing to the processes list of the new upload.
 (See 5.3 Tar Level processes)
