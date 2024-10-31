@@ -1040,13 +1040,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = intval($db->pselectOne('
-            SELECT JSON_EXTRACT(inst_d.Data, "$.Examiner") as examinerID
-            FROM instrument_data inst_d
-            JOIN flag f ON f.DataID = inst_d.ID
-            WHERE f.CommentID = :cmnt_id',
-            ['cmnt_id' => $this->getCommentID()]
-        )) ?? -1;
+        $curr_examinerID = intval(
+            $db->pselectOne(
+                'SELECT JSON_EXTRACT(inst_d.Data, "$.Examiner") as examinerID
+                FROM instrument_data inst_d
+                JOIN flag f ON f.DataID = inst_d.ID
+                WHERE f.CommentID = :cmnt_id',
+                ['cmnt_id' => $this->getCommentID()]
+            )
+        ) ?? -1;
 
         list(
             $CertificationEnabled,
@@ -1056,7 +1058,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
             && in_array($this->testName, $CertificationInstruments)
         ) {
-            error_log("in here");
             $test_id = $db->pselectOne(
                 "SELECT ID FROM test_names WHERE Test_name=:tst_name",
                 ['tst_name' => $this->testName]
@@ -1083,9 +1084,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         } else {
-            error_log("no in here");
-            error_log($centerID);
-            $curr_examinerID = 27;
             $results = $db->pselectWithIndexKey(
                 "SELECT e.examinerID, e.full_name, u.Email
                      FROM examiners e
@@ -1096,13 +1094,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                      AND (epr.active = 'Y' OR e.examinerID =:curr_examinerID)
                      ORDER BY full_name",
                 [
-                    'centID' => $centerID,
+                    'centID'          => $centerID,
                     'curr_examinerID' => $curr_examinerID
                 ],
                 'examinerID'
             );
         }
-        error_log(print_r($results, true));
         $examiners = [
             '' => ''
         ];
@@ -1126,7 +1123,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
-        error_log(print_r($examiners, true));
         return $examiners;
     }
 
