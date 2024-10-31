@@ -38,7 +38,7 @@ class ManagePermissionsForm extends Component {
    */
   componentDidMount() {
     this.fetchData()
-    .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -48,12 +48,12 @@ class ManagePermissionsForm extends Component {
    */
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
-    .then((resp) => resp.json())
-    .then((data) => this.setState({data}))
-    .catch( (error) => {
-      this.setState({error: 'An error occurred when loading the form!'});
-      console.error(error);
-    });
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data}))
+      .catch( (error) => {
+        this.setState({error: 'An error occurred when loading the form!'});
+        console.error(error);
+      });
   }
 
   /**
@@ -90,24 +90,24 @@ class ManagePermissionsForm extends Component {
         <FormElement name="manage_permissions">
           {Object.entries(data).map(([userId, user]) => {
             const versions = Object.values(options.versions).map((version) =>
-                <div key={version}>
-                  <CheckboxElement
-                    name={version}
-                    label={version || 'Unversioned'}
-                    value={user.versions.includes(version)}
-                    onUserInput={(version, permission) =>
-                      this.setFormData(userId, version, permission)
-                    }
-                  /><br/>
-                </div>
+              <div key={version}>
+                <CheckboxElement
+                  name={version}
+                  label={version || 'Unversioned'}
+                  value={user.versions.includes(version)}
+                  onUserInput={(version, permission) =>
+                    this.setFormData(userId, version, permission)
+                  }
+                /><br/>
+              </div>
             );
 
             return <StaticElement
-                      key={userId}
-                      label={user.name}
-                      text={<div>{versions}</div>}
-                   />;
-         })};
+              key={userId}
+              label={user.name}
+              text={<div>{versions}</div>}
+            />;
+          })};
         </FormElement>
       </Modal>
     );
@@ -126,7 +126,7 @@ class ManagePermissionsForm extends Component {
       data[userId].versions = [...data[userId].versions, version];
     } else {
       data[userId].versions = data[userId].versions
-      .filter((e) => e !== version);
+        .filter((e) => e !== version);
     }
     this.setState({data});
   }
@@ -148,23 +148,23 @@ class ManagePermissionsForm extends Component {
       body: formObj,
       cache: 'no-cache',
     })
-    .then((response) => {
-      if (response.ok) {
-        swal.fire({
-          text: 'Permission Update Success!',
-          title: '',
-          type: 'success',
-        });
-        this.props.fetchData();
-        return Promise.resolve();
-      } else {
-        let msg = response.statusText ?
-          response.statusText : 'Submission Error!';
-        swal.fire(msg, '', 'error');
-        console.error(msg);
-        return Promise.reject();
-      }
-    });
+      .then((response) => {
+        if (response.ok) {
+          swal.fire({
+            text: 'Permission Update Success!',
+            title: '',
+            type: 'success',
+          });
+          this.props.fetchData();
+          return Promise.resolve();
+        } else {
+          let msg = response.statusText ?
+            response.statusText : 'Submission Error!';
+          swal.fire(msg, '', 'error');
+          console.error(msg);
+          return Promise.reject();
+        }
+      });
   }
 }
 

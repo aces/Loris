@@ -57,11 +57,11 @@ class LogicOperator extends Component {
     return (
       <div className='btn-group' role='group'>
         <button type='button'
-                className={andClass}
-                onClick={this.changeOperator.bind(this, 0)}>And</button>
+          className={andClass}
+          onClick={this.changeOperator.bind(this, 0)}>And</button>
         <button type='button'
-                className={orClass}
-                onClick={this.changeOperator.bind(this, 1)}>Or</button>
+          className={orClass}
+          onClick={this.changeOperator.bind(this, 1)}>Or</button>
       </div>
     );
   }
@@ -125,11 +125,11 @@ class FilterRule extends Component {
             + rule.instrument,
         {credentials: 'same-origin'},
       )
-      .then( (resp) => resp.json())
-      .then( (data) => {
-        rule.fields = data;
-        this.props.updateRule(this.props.index, rule);
-      });
+        .then( (resp) => resp.json())
+        .then( (data) => {
+          rule.fields = data;
+          this.props.updateRule(this.props.index, rule);
+        });
     }
   }
 
@@ -227,40 +227,40 @@ class FilterRule extends Component {
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
-          fetch(loris.BaseURL + '/dqt/ajax/' + script
+        fetch(loris.BaseURL + '/dqt/ajax/' + script
             + '?category=' + rule.instrument
             + '&field=' + rule.field
             + '&value=' + this.state.value,
-            {credentials: 'same-origin'},
-          )
+        {credentials: 'same-origin'},
+        )
           .then( (resp) => resp.json())
           .then( (data) => {
-                  responseHandler(data);
+            responseHandler(data);
           });
       };
       switch (rule.operator) {
-        case 'equal':
-        case 'isNull':
-          ajaxRetrieve('queryEqual.php');
-          break;
-        case 'notEqual':
-        case 'isNotNull':
-          ajaxRetrieve('queryNotEqual.php');
-          break;
-        case 'lessThanEqual':
-          ajaxRetrieve('queryLessThanEqual.php');
-          break;
-        case 'greaterThanEqual':
-          ajaxRetrieve('queryGreaterThanEqual.php');
-          break;
-        case 'startsWith':
-          ajaxRetrieve('queryStartsWith.php');
-          break;
-        case 'contains':
-          ajaxRetrieve('queryContains.php');
-          break;
-        default:
-          break;
+      case 'equal':
+      case 'isNull':
+        ajaxRetrieve('queryEqual.php');
+        break;
+      case 'notEqual':
+      case 'isNotNull':
+        ajaxRetrieve('queryNotEqual.php');
+        break;
+      case 'lessThanEqual':
+        ajaxRetrieve('queryLessThanEqual.php');
+        break;
+      case 'greaterThanEqual':
+        ajaxRetrieve('queryGreaterThanEqual.php');
+        break;
+      case 'startsWith':
+        ajaxRetrieve('queryStartsWith.php');
+        break;
+      case 'contains':
+        ajaxRetrieve('queryContains.php');
+        break;
+      default:
+        break;
       }
     }
   }
@@ -331,8 +331,8 @@ class FilterRule extends Component {
         value = (this.props.rule.operator) ? this.props.rule.operator : '';
         operatorSelect = (
           <select className='input-sm col-xs-3 '
-                  onChange={this.operatorSelect}
-                  value={value}>
+            onChange={this.operatorSelect}
+            value={value}>
             <option value=''/>
             {operators}
           </select>
@@ -344,33 +344,33 @@ class FilterRule extends Component {
           // Only display value input if operator is selected, displaying specific
           // input type field data type
           switch (operatorKey) {
-            case 'enum':
-              inputOptions = enumToArray(this.props.rule.fieldType);
-              options = inputOptions.map((option, index) => {
-                return (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                );
-              });
-              input = (
-                <select className='input-sm col-xs-3'
-                        onChange={this.valueChange}
-                        value={this.props.rule.value ?? ''}>
-                  <option value=''/>
-                  {options}
-                </select>
+          case 'enum':
+            inputOptions = enumToArray(this.props.rule.fieldType);
+            options = inputOptions.map((option, index) => {
+              return (
+                <option key={index} value={option}>
+                  {option}
+                </option>
               );
-              break;
-            default:
-              input = (
-                <input type='text'
-                       className='input-sm col-xs-3'
-                       onChange={this.valueChange}
-                       value={this.props.rule.value ?? ''}
-                />
-              );
-              break;
+            });
+            input = (
+              <select className='input-sm col-xs-3'
+                onChange={this.valueChange}
+                value={this.props.rule.value ?? ''}>
+                <option value=''/>
+                {options}
+              </select>
+            );
+            break;
+          default:
+            input = (
+              <input type='text'
+                className='input-sm col-xs-3'
+                onChange={this.valueChange}
+                value={this.props.rule.value ?? ''}
+              />
+            );
+            break;
           }
         }
         if (this.props.rule.visit) {
@@ -385,8 +385,8 @@ class FilterRule extends Component {
           });
           forVisits = (
             <select className='input-sm col-xs-3'
-                    onChange={this.updateVisit}
-                    value={this.props.rule.visit}>
+              onChange={this.updateVisit}
+              value={this.props.rule.visit}>
               <option value='all'>All Visits</option>
               {visits}
             </select>
@@ -402,8 +402,8 @@ class FilterRule extends Component {
           </div>
           <div className='col-xs-10'>
             <select className='input-sm col-xs-3'
-                    onChange={this.fieldSelect}
-                    value={fieldIndex}>
+              onChange={this.fieldSelect}
+              value={fieldIndex}>
               <option value=''/>
               {fields}
             </select>
@@ -423,7 +423,7 @@ class FilterRule extends Component {
         });
         rule = (
           <select onChange={this.selectInstrument}
-                  className="input-sm col-xs-10">
+            className="input-sm col-xs-10">
             <option value=''/>
             {options}
           </select>
@@ -436,7 +436,7 @@ class FilterRule extends Component {
           {rule}
           <div className='col-xs-2'>
             <button className='btn btn-danger btn-sm pull-right'
-                    onClick={this.props.deleteRule.bind(this, this.props.index)}
+              onClick={this.props.deleteRule.bind(this, this.props.index)}
             >
               <span className='glyphicon glyphicon-remove'/> Delete
             </button>
@@ -612,12 +612,12 @@ class FilterGroup extends Component {
         return (
           <li key={index}>
             <FilterRule rule={child}
-                        items={this.props.items}
-                        index={index}
-                        updateRule={this.updateChild}
-                        updateSessions={this.updateSessions}
-                        deleteRule={this.deleteChild}
-                        Visits={this.props.Visits}
+              items={this.props.items}
+              index={index}
+              updateRule={this.updateChild}
+              updateSessions={this.updateSessions}
+              deleteRule={this.deleteChild}
+              Visits={this.props.Visits}
             />
           </li>
         );
@@ -625,13 +625,13 @@ class FilterGroup extends Component {
         return (
           <li key={index}>
             <FilterGroup group={child}
-                         items={this.props.items}
-                         index={index}
-                         updateFilter={this.props.updateFilter} // this.updateChild this.props.updateFilter
-                         updateGroup={this.updateChild}
-                         updateSessions={this.updateSessions}
-                         deleteGroup={this.deleteChild}
-                         Visits={this.props.Visits}
+              items={this.props.items}
+              index={index}
+              updateFilter={this.props.updateFilter} // this.updateChild this.props.updateFilter
+              updateGroup={this.updateChild}
+              updateSessions={this.updateSessions}
+              deleteGroup={this.deleteChild}
+              Visits={this.props.Visits}
             />
           </li>
         );
@@ -662,12 +662,12 @@ class FilterGroup extends Component {
               <div className='col-xs-10'>
                 {deleteButton}
                 <button className='btn btn-primary btn-sm pull-right'
-                        onClick={() => this.addChild('group')}
+                  onClick={() => this.addChild('group')}
                 >
                   <span className='glyphicon glyphicon-add'></span> Add Group
                 </button>
                 <button className='btn btn-primary btn-sm pull-right'
-                        onClick={() => this.addChild('rule')}
+                  onClick={() => this.addChild('rule')}
                 >
                   <span className='glyphicon glyphicon-add'></span> Add Rule
                 </button>
@@ -742,12 +742,12 @@ class FilterBuilder extends Component {
     // fetch CandID for PSCID (session) map
     if (type === 'CandID') {
       await fetch(
-      window.location.origin
+        window.location.origin
       + '/dqt/Filterbuilder',
-      {
-        credentials: 'same-origin',
-        method: 'GET',
-      }).then((response) => {
+        {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response) => {
         if (response.ok) {
           response.json().then((data) => {
             data = {
@@ -848,9 +848,9 @@ class FilterBuilder extends Component {
         />
         <div className='row'>
           <h1 className='col-xs-6'
-              style={{color: '#0A3572'}}>The Query's Filter</h1>
+            style={{color: '#0A3572'}}>The Query's Filter</h1>
           <button className='import-csv'
-                  onClick={this.openModalCSV}>
+            onClick={this.openModalCSV}>
             Import Population from CSV&nbsp;&nbsp;
             <span className='glyphicon glyphicon-file'/>
           </button>
@@ -859,9 +859,9 @@ class FilterBuilder extends Component {
           <div className='col-xs-12'>
             <div className='well well-primary'>
               <FilterGroup group={this.props.filter}
-                           items={this.props.items}
-                           updateFilter={this.props.updateFilter}
-                           Visits={this.props.Visits}
+                items={this.props.items}
+                updateFilter={this.props.updateFilter}
+                Visits={this.props.Visits}
               />
             </div>
           </div>

@@ -249,11 +249,11 @@ class CouchDBMRIImporter
             2
         );
         $header['SliceThickness_'.$type]      = number_format(
-            $FileObj->getParameter('slice_thickness'),
+            $FileObj->getParameter('slice_thickness') ?? 0,
             2
         );
         $header['Time_'.$type]          = number_format(
-            $FileObj->getParameter('time'),
+            $FileObj->getParameter('time') ?? 0,
             2
         );
         $header['Comment_'.$type]       = $FileObj->getParameter('Comment');

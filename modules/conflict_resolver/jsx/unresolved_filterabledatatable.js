@@ -46,17 +46,17 @@ class UnresolvedFilterableDataTable extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     switch (column) {
-      case 'Correct Answer':
-        const options = {
-          1: rowData['Value 1'],
-          2: rowData['Value 2'],
-        };
-        return (
-          <FixConflictForm
-            conflictId={rowData['Conflict ID']}
-            options={options}
-          />
-        );
+    case 'Correct Answer':
+      const options = {
+        1: rowData['Value 1'],
+        2: rowData['Value 2'],
+      };
+      return (
+        <FixConflictForm
+          conflictId={rowData['Conflict ID']}
+          options={options}
+        />
+      );
     }
     return (
       <td>{cell}</td>
@@ -143,6 +143,11 @@ class UnresolvedFilterableDataTable extends Component {
         name: 'Project',
         type: 'select',
         options: options.project,
+      }},
+      {label: 'Cohort', show: true, filter: {
+        name: 'cohort',
+        type: 'select',
+        options: options.cohort,
       }},
       {label: 'Site', show: true, filter: {
         name: 'Site',

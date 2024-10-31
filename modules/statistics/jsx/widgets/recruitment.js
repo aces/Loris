@@ -99,21 +99,21 @@ const Recruitment = (props) => {
             content:
               json['recruitment']['overall']
               && json['recruitment']['overall']['total_recruitment'] > 0 ?
-              <>
-                <QueryChartForm
-                  Module={'statistics'}
-                  name={'recruitment'}
-                  id={'recruitmentSiteBreakdownForm'}
-                  data={json}
-                  callback={(formDataObj) => {
-                    updateFilters(formDataObj, 'siteBreakdown');
-                  }}
-                />
-                {Object.keys(chartDetails['siteBreakdown']).map((chartID) => {
-                  return showChart('siteBreakdown', chartID);
-                })}
-              </> :
-              <p>There have been no candidates registered yet.</p>,
+                <>
+                  <QueryChartForm
+                    Module={'statistics'}
+                    name={'recruitment'}
+                    id={'recruitmentSiteBreakdownForm'}
+                    data={json}
+                    callback={(formDataObj) => {
+                      updateFilters(formDataObj, 'siteBreakdown');
+                    }}
+                  />
+                  {Object.keys(chartDetails['siteBreakdown']).map((chartID) => {
+                    return showChart('siteBreakdown', chartID);
+                  })}
+                </> :
+                <p>There have been no candidates registered yet.</p>,
             title: 'Recruitment - site breakdown',
           },
           {
@@ -133,12 +133,12 @@ const Recruitment = (props) => {
             content:
               <>
                 {Object.entries(json['recruitmentcohorts'])
-                .map(([key, value]) => {
-                  return <div key={`cohortBreakdown_${key}`}>
-                    {progressBarBuilder(value)}
-                  </div>;
+                  .map(([key, value]) => {
+                    return <div key={`cohortBreakdown_${key}`}>
+                      {progressBarBuilder(value)}
+                    </div>;
                   }
-                )}
+                  )}
               </>,
             title: 'Recruitment - cohort breakdown',
           },

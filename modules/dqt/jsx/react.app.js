@@ -146,9 +146,9 @@ class DataQueryApp extends Component {
               },
               dataType: 'json',
             }).then((value) => {
-              let queries = this.state.savedQueries;
-              queries[value._id] = value;
-              this.setState({savedQueries: queries});
+            let queries = this.state.savedQueries;
+            queries[value._id] = value;
+            this.setState({savedQueries: queries});
           });
           promises.push(curRequest);
         }
@@ -398,20 +398,20 @@ class DataQueryApp extends Component {
       $.get(loris.BaseURL
         + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
         + id,
-        (value) => {
-          let queries = this.state.savedQueries;
+      (value) => {
+        let queries = this.state.savedQueries;
 
-          queries[value._id] = value;
-          this.setState({
-            savedQueries: queries,
-            queryIDs: queryIDs,
-            alertLoaded: false,
-            alertSaved: true,
-            alertConflict: {
-              show: false,
-            },
-          });
+        queries[value._id] = value;
+        this.setState({
+          savedQueries: queries,
+          queryIDs: queryIDs,
+          alertLoaded: false,
+          alertSaved: true,
+          alertConflict: {
+            show: false,
+          },
         });
+      });
     }).fail((data) => {
       if (data.status === 409) {
         this.setState({
@@ -474,28 +474,28 @@ class DataQueryApp extends Component {
     // Get the sessions which meet the rules criterias.
     // TODO:    Build the sessions in the new format
     switch (rule.operator) {
-      case 'equal':
-      case 'isNull':
-        script = 'queryEqual.php';
-        break;
-      case 'notEqual':
-      case 'isNotNull':
-        script = 'queryNotEqual.php';
-        break;
-      case 'lessThanEqual':
-        script = 'queryLessThanEqual.php';
-        break;
-      case 'greaterThanEqual':
-        script = 'queryGreaterThanEqual.php';
-        break;
-      case 'startsWith':
-        script = 'queryStartsWith.php';
-        break;
-      case 'contains':
-        script = 'queryContains.php';
-        break;
-      default:
-        break;
+    case 'equal':
+    case 'isNull':
+      script = 'queryEqual.php';
+      break;
+    case 'notEqual':
+    case 'isNotNull':
+      script = 'queryNotEqual.php';
+      break;
+    case 'lessThanEqual':
+      script = 'queryLessThanEqual.php';
+      break;
+    case 'greaterThanEqual':
+      script = 'queryGreaterThanEqual.php';
+      break;
+    case 'startsWith':
+      script = 'queryStartsWith.php';
+      break;
+    case 'contains':
+      script = 'queryContains.php';
+      break;
+    default:
+      break;
     }
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
@@ -615,21 +615,21 @@ class DataQueryApp extends Component {
           visit: 'All',
         };
         switch (item.Operator) {
-          case '=':
-            rule.operator = 'equal';
-            break;
-          case '!=':
-            rule.operator = 'notEqual';
-            break;
-          case '<=':
-            rule.operator = 'lessThanEqual';
-            break;
-          case '>=':
-            rule.operator = 'greaterThanEqual';
-            break;
-          default:
-            rule.operator = item.Operator;
-            break;
+        case '=':
+          rule.operator = 'equal';
+          break;
+        case '!=':
+          rule.operator = 'notEqual';
+          break;
+        case '<=':
+          rule.operator = 'lessThanEqual';
+          break;
+        case '>=':
+          rule.operator = 'greaterThanEqual';
+          break;
+        default:
+          rule.operator = item.Operator;
+          break;
         }
         return rule;
       });
@@ -854,15 +854,15 @@ class DataQueryApp extends Component {
     let semaphore = 0;
     let sectionedSessions;
     let ajaxComplete = () => {
-        // Wait until all ajax calls have completed before computing the rowdata
-        if (semaphore == 0) {
-          let rowdata = this.getRowData(this.state.grouplevel);
-          this.setState({
-            rowData: rowdata,
-            loading: false,
-          });
-        }
-      };
+      // Wait until all ajax calls have completed before computing the rowdata
+      if (semaphore == 0) {
+        let rowdata = this.getRowData(this.state.grouplevel);
+        this.setState({
+          rowData: rowdata,
+          loading: false,
+        });
+      }
+    };
 
     // Reset the rowData and sessiondata
     this.setState({
@@ -885,14 +885,14 @@ class DataQueryApp extends Component {
           if (Array.isArray(this.state.filter.session[j])) {
             if (this.state.selectedFields[category].allVisits[
               this.state.filter.session[j][1]
-              ]) {
+            ]) {
               sessionInfo.push(this.state.filter.session[j]);
             }
           } else {
             for (let key in this.state.selectedFields[category].allVisits) {
               if (this.state.selectedFields[
                 category
-                ].allVisits.hasOwnProperty(key)) {
+              ].allVisits.hasOwnProperty(key)) {
                 let temp = [];
 
                 temp.push(this.state.filter.session[j]);
@@ -1201,21 +1201,21 @@ class DataQueryApp extends Component {
     ];
     let index = steps.indexOf(step);
     switch (command) {
-      case 'previous':
-        index--;
-        step = steps[index];
-        this.stepperClicked(step, index);
-        break;
-      case 'next':
-        index++;
-        step = steps[index];
-        this.stepperClicked(step, index);
-        break;
-      case 'save':
-        this.setState({savePrompt: true});
-        break;
-      default:
-        break;
+    case 'previous':
+      index--;
+      step = steps[index];
+      this.stepperClicked(step, index);
+      break;
+    case 'next':
+      index++;
+      step = steps[index];
+      this.stepperClicked(step, index);
+      break;
+    case 'save':
+      this.setState({savePrompt: true});
+      break;
+    default:
+      break;
     }
   }
 
@@ -1227,10 +1227,10 @@ class DataQueryApp extends Component {
    */
   stepperClicked(step, index) {
     switch (step) {
-      case 'Info':
-        this.setState({
-          activeTab: 'Info',
-          navigation: {
+    case 'Info':
+      this.setState({
+        activeTab: 'Info',
+        navigation: {
           disable: {
             previous: true,
             save: false,
@@ -1238,31 +1238,31 @@ class DataQueryApp extends Component {
           },
           index: index,
         }});
-        break;
-      case 'ViewData':
-        this.setState({
-          activeTab: 'ViewData',
-          navigation: {
-            disable: {
-              previous: false,
-              save: false,
-              next: true,
-            },
-            index: index,
+      break;
+    case 'ViewData':
+      this.setState({
+        activeTab: 'ViewData',
+        navigation: {
+          disable: {
+            previous: false,
+            save: false,
+            next: true,
+          },
+          index: index,
         }});
-        break;
-      case 'Statistics':
-        break;
-      default:
-        this.setState({navigation: {
-            disable: {
-              previous: false,
-              save: false,
-              next: false,
-            },
-            index: index,
-          }});
-        break;
+      break;
+    case 'Statistics':
+      break;
+    default:
+      this.setState({navigation: {
+        disable: {
+          previous: false,
+          save: false,
+          next: false,
+        },
+        index: index,
+      }});
+      break;
     }
     this.setState({ActiveTab: step});
   }
