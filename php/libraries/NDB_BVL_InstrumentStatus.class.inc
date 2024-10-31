@@ -201,6 +201,12 @@ class NDB_BVL_InstrumentStatus
             ['CommentID' => $this->_commentID]
         );
 
+        $GLOBALS['DB']->update(
+            'participant_accounts',
+            ['Status' => $status],
+            ['CommentID' => $this->_commentID]
+        );
+
         $this->select($this->_commentID);
 
         // Run the ConflictDetector if the new status is Complete
