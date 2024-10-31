@@ -205,6 +205,7 @@ class AddSurvey extends \NDB_Form
             ]
         );
 
+        $url = '';
         $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
         $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
@@ -256,7 +257,7 @@ class AddSurvey extends \NDB_Form
             $url .= $baseURL . '/survey.php?key=' . urlencode($key) . "\n";
         }
 
-        if ($email && ($values['send_email'] == 'true')) {
+        if ($email && ($sendEmail == 'true')) {
             $config   = \NDB_Config::singleton();
             $msg_data = [
                 'study'     => $config->getSetting("title"),
