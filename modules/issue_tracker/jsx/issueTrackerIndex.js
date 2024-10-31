@@ -277,36 +277,36 @@ class IssueTrackerIndex extends Component {
 
     return (
       <div>
-      <div className="view-toggle">
-        <button onClick={this.toggleView}>
-        {`Switch to ${
-          this.state.view === 'normal'
-            ? 'Batch'
-            : 'Normal'
-        } Mode`}
-        </button>
+        <div className="view-toggle">
+          <button onClick={this.toggleView}>
+            {`Switch to ${
+              this.state.view === 'normal'
+                ? 'Batch'
+                : 'Normal'
+            } Mode`}
+          </button>
+        </div>
+        {this.state.view === 'normal' ? (
+          <FilterableDataTable
+            name="issuesTracker"
+            data={this.state.data.data}
+            fields={fields}
+            filterPresets={filterPresets}
+            actions={actions}
+            getFormattedCell={this.formatColumn}
+          />
+        ) : (
+          <IssueTrackerBatchMode
+            issues={this.state.data.data}
+            options={{
+              priorities: this.state.data.fieldOptions.priorities,
+              statuses: this.state.data.fieldOptions.statuses,
+              categories: this.state.data.fieldOptions.categories,
+              sites: this.state.data.fieldOptions.sites,
+            }}
+          />
+        )}
       </div>
-      {this.state.view === 'normal' ? (
-        <FilterableDataTable
-          name="issuesTracker"
-          data={this.state.data.data}
-          fields={fields}
-          filterPresets={filterPresets}
-          actions={actions}
-          getFormattedCell={this.formatColumn}
-        />
-      ) : (
-      <IssueTrackerBatchMode
-        issues={this.state.data.data}
-        options={{
-          priorities: this.state.data.fieldOptions.priorities,
-          statuses: this.state.data.fieldOptions.statuses,
-          categories: this.state.data.fieldOptions.categories,
-          sites: this.state.data.fieldOptions.sites,
-        }}
-      />
-      )}
-    </div>
     );
   }
 }
