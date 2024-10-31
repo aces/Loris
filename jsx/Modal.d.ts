@@ -4,6 +4,7 @@ type ModalProps = {
     title?: string
     onSubmit: () => Promise<any>,
     onClose: () => void,
+    onSuccess: () => void,
     show: boolean,
     throwWarning?: boolean,
     children: React.ReactNode,

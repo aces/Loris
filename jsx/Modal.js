@@ -1,44 +1,34 @@
-/**
- * This file contains the React Component for a Modal Window.
- *
- * @author Henri Rabalais
- * @version 1.1.0
- *
- */
-// ########### CBIGR START ###########
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Loader from 'Loader';
 
 /**
- * Modal Component.
- * React wrapper for a Modal Window. Allows to dynamically toggle a Modal
- * window.
+ * Modal Component
  *
- * ================================================
- * Usage:
- * - Wrap the contents to be displayed by the Modal Window by the
- *   Modal Component.
- * - Use the 'title' prop to set a title for the Modal Component.
- * - Use the 'onSubmit' prop to set a submission *promise* object for the
- *   Modal's contents.
- * - Use the 'onClose' prop to set a function that triggers upon Modal closure.
- * - Use the 'throwWarning' prop to throw a warning upon closure of the
- *   Modal Window.
- * =================================================
+ * A React functional component that renders a modal dialog with optional
+ * form submission and loading indicators. Supports asynchronous form submission
+ * with loading and success feedback.
  *
+ * @param props
+ * @param props.throwWarning
+ * @param props.show
+ * @param props.onClose
+ * @param props.onSubmit
+ * @param props.onSuccess
+ * @param props.title
+ * @param props.children
  * @return {JSX} - React markup for the component
  */
 function Modal({
-                 throwWarning = false,
-                 show = false,
-                 onClose,
-                 onSubmit,
-                 onSuccess,
-                 title,
-                 children,
-               }) {
+  throwWarning = false,
+  show = false,
+  onClose,
+  onSubmit,
+  onSuccess,
+  title,
+  children,
+}) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -161,22 +151,22 @@ function Modal({
     </div>
   );
 
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    const submit = async (e) => {
-      console.log('form submit');
-      try {
-        setLoading(true);
-        const data = await onSubmit();
-        setLoading(false);
-        setSuccess(true);
-        await wait(2000);
-        setSuccess(false);
-        onClose();
-        onSuccess(data);
-      } catch {
-        setLoading(false);
-      }
-    };
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const submit = async (e) => {
+    console.log('form submit');
+    try {
+      setLoading(true);
+      const data = await onSubmit();
+      setLoading(false);
+      setSuccess(true);
+      await wait(2000);
+      setSuccess(false);
+      onClose();
+      onSuccess(data);
+    } catch {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={modalContainer} onClick={handleClose}>
@@ -208,12 +198,13 @@ function Modal({
     </div>
   );
 }
-// ###########  CBIGR END  ###########
 
 Modal.propTypes = {
+  children: PropTypes.node.isRequired,
   title: PropTypes.string,
   onSubmit: PropTypes.func,
   onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
 };
