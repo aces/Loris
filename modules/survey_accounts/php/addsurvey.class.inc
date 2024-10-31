@@ -206,7 +206,7 @@ class AddSurvey extends \NDB_Form
             ]
         );
 
-        $url = '';
+        $url       = '';
         $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
         $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
