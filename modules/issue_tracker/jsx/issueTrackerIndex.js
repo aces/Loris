@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 /**
  * Issue Tracker Index component
@@ -20,10 +21,12 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
+      view: 'normal', // 'normal' for FilterableDataTable, 'batch' for IssueTrackerBatchMode
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.toggleView = this.toggleView.bind(this);
   }
 
   /**
@@ -49,6 +52,16 @@ class IssueTrackerIndex extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Toggle between normal and batch mode
+   */
+  toggleView() {
+    this.setState((prevState) => ({
+      view: prevState.view === 'normal' ? 'batch' : 'normal',
+    }));
+    this.fetchData(); // Fetch fresh data when toggling views
   }
 
   /**
@@ -107,15 +120,15 @@ class IssueTrackerIndex extends Component {
     case 'Site':
       // if cell is an array containing all sites values
       if (
-          JSON.stringify(
-              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+        JSON.stringify(
+          Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
         result = <td>All Sites</td>;
       } else {
         result = <td>
-              {cell.map((v) =>
-                  this.state.data.fieldOptions.sites[v]).filter(
-                      (v) => v != undefined).join(', ')}
+          {cell.map((v) =>
+            this.state.data.fieldOptions.sites[v]).filter(
+            (v) => v != undefined).join(', ')}
         </td>;
       }
       break;
@@ -162,10 +175,10 @@ class IssueTrackerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in media.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in media.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Issue ID', show: true, filter: {
@@ -200,26 +213,26 @@ class IssueTrackerIndex extends Component {
         name: 'status',
         type: 'multiselect',
         options: options.statuses,
-        }},
+      }},
       {label: 'Priority', show: true, filter: {
         name: 'priority',
         type: 'select',
         sortByValue: false,
         options: options.priorities,
-        }},
+      }},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,
-        }},
+      }},
       {label: 'PSCID', show: true, filter: {
         name: 'pscid',
         type: 'text',
-        }},
+      }},
       {label: 'Visit Label', show: true, filter: {
         name: 'visitLabel',
         type: 'text',
-        }},
+      }},
       {label: 'Date Created', show: false, filter: {
         name: 'dateCreated',
         type: 'date',
@@ -263,14 +276,37 @@ class IssueTrackerIndex extends Component {
     ];
 
     return (
-      <FilterableDataTable
-        name="issuesTracker"
-        data={this.state.data.data}
-        fields={fields}
-        filterPresets={filterPresets}
-        actions={actions}
-        getFormattedCell={this.formatColumn}
-      />
+      <div>
+        <div className="view-toggle">
+          <button onClick={this.toggleView}>
+            {`Switch to ${
+              this.state.view === 'normal'
+                ? 'Batch'
+                : 'Normal'
+            } Mode`}
+          </button>
+        </div>
+        {this.state.view === 'normal' ? (
+          <FilterableDataTable
+            name="issuesTracker"
+            data={this.state.data.data}
+            fields={fields}
+            filterPresets={filterPresets}
+            actions={actions}
+            getFormattedCell={this.formatColumn}
+          />
+        ) : (
+          <IssueTrackerBatchMode
+            issues={this.state.data.data}
+            options={{
+              priorities: this.state.data.fieldOptions.priorities,
+              statuses: this.state.data.fieldOptions.statuses,
+              categories: this.state.data.fieldOptions.categories,
+              sites: this.state.data.fieldOptions.sites,
+            }}
+          />
+        )}
+      </div>
     );
   }
 }

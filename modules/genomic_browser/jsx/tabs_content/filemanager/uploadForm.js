@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import {
-    FormElement,
-    CheckboxElement,
-    FileElement,
-    TextareaElement,
-    SelectElement,
-    ButtonElement,
+  FormElement,
+  CheckboxElement,
+  FileElement,
+  TextareaElement,
+  SelectElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -110,32 +110,32 @@ class GenomicUploadForm extends Component {
     const formElements = (
       this.state.formData.fileType !== ''
     ) ? (
-      <React.Fragment>
-        <FileElement
-          name='file'
-          id='mediaUploadEl'
-          onUserInput={this.setFileUploadFormData}
-          ref='file'
-          label='File to upload'
-          required={true}
-          value={this.state.formData.file}
-        />
-        <TextareaElement
-          name='fileDescription'
-          label='Description'
-          value={this.state.formData.fileDescription}
-          required={false}
-          onUserInput={this.setFileUploadFormData}
-        />
-        {checkbox}
-        <div className='row'>
-          <div className='col-sm-9 col-sm-offset-3'>
-            <ProgressBar value={this.state.uploadProgress}/>
+        <React.Fragment>
+          <FileElement
+            name='file'
+            id='mediaUploadEl'
+            onUserInput={this.setFileUploadFormData}
+            ref='file'
+            label='File to upload'
+            required={true}
+            value={this.state.formData.file}
+          />
+          <TextareaElement
+            name='fileDescription'
+            label='Description'
+            value={this.state.formData.fileDescription}
+            required={false}
+            onUserInput={this.setFileUploadFormData}
+          />
+          {checkbox}
+          <div className='row'>
+            <div className='col-sm-9 col-sm-offset-3'>
+              <ProgressBar value={this.state.uploadProgress}/>
+            </div>
           </div>
-        </div>
-        <ButtonElement label='Upload File'/>
-      </React.Fragment>
-    ) : null;
+          <ButtonElement label='Upload File'/>
+        </React.Fragment>
+      ) : null;
 
     return (
       <div className='row'>
@@ -192,17 +192,17 @@ class GenomicUploadForm extends Component {
         body: formObj,
       }).then((resp) => resp.json())
       .then((data) => {
-          this.setState({
-            formData: {
-              file: '',
-              fileType: '',
-              fileDescription: '',
-              pscidColumn: false,
-            }, // reset form data after successful file upload
-            uploadProgress: -1,
-          });
-          swal('Upload Successful!', '', 'success');
-        }
+        this.setState({
+          formData: {
+            file: '',
+            fileType: '',
+            fileDescription: '',
+            pscidColumn: false,
+          }, // reset form data after successful file upload
+          uploadProgress: -1,
+        });
+        swal('Upload Successful!', '', 'success');
+      }
       ).catch((error) => {
         console.error(error);
         const msg = error.responseJSON ?

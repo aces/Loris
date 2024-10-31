@@ -188,23 +188,23 @@ class CandidateDOD extends Component {
     ).then((resp) => resp.text()
     ).then((result) => {
       swal.fire({
-            title: 'Success!',
-            text: 'Date of death updated!',
-            type: 'success',
-            confirmButtonText: 'OK',
+        title: 'Success!',
+        text: 'Date of death updated!',
+        type: 'success',
+        confirmButtonText: 'OK',
       });
       if (result.value) {
         this.fetchData();
       }
     }).catch((error) => {
-        console.error(error);
-        swal.fire({
-          title: 'Error!',
-          text: 'Something went wrong.',
-          type: 'error',
-          confirmButtonText: 'OK',
-        });
+      console.error(error);
+      swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong.',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
+    });
   }
 }
 CandidateDOD.propTypes = {

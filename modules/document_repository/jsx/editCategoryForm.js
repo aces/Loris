@@ -16,8 +16,7 @@ import {
  *
  * @author Pierre PAC SOO
  * @version 1.0.0
- *
- * */
+ */
 class EditDocCategoryForm extends React.Component {
   /**
    * @constructor
@@ -48,6 +47,7 @@ class EditDocCategoryForm extends React.Component {
 
   /**
    * Fetch data
+   *
    * @return {Promise<void>}
    */
   fetchData() {
@@ -87,7 +87,7 @@ class EditDocCategoryForm extends React.Component {
     if (
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
-      ) {
+    ) {
       errorSameParent = true;
     }
 
@@ -139,9 +139,9 @@ class EditDocCategoryForm extends React.Component {
    *                      ******     Helper methods     *******
    *********************************************************************************/
 
-
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -185,11 +185,11 @@ class EditDocCategoryForm extends React.Component {
         const body = await response.json();
         let msg;
         if (body && body.error) {
-            msg = body.error;
+          msg = body.error;
         } else if (response.statusText) {
-            msg = response.statusText;
+          msg = response.statusText;
         } else {
-            msg = 'Edit error!';
+          msg = 'Edit error!';
         }
         this.setState({
           errorMessage: msg,
@@ -197,13 +197,13 @@ class EditDocCategoryForm extends React.Component {
         swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-          swal.fire({
-            text: 'Edited Successful!',
-            title: '',
-            type: 'success',
-          }).then(function() {
-            window.location.assign('/document_repository');
-          });
+        swal.fire({
+          text: 'Edited Successful!',
+          title: '',
+          type: 'success',
+        }).then(function() {
+          window.location.assign('/document_repository');
+        });
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Edit error!';
