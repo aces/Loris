@@ -100,10 +100,10 @@ class ManagePermissionsForm extends Component {
             value={this.state.user}
           />
           {this.state.user && <StaticElement
-              label={'Versions'}
-              text={Object.values(options.versions).map((version) =>
-                <div>
-                  <CheckboxElement
+            label={'Versions'}
+            text={Object.values(options.versions).map((version) =>
+              <div>
+                <CheckboxElement
                   name={'versionsByUser'}
                   label={version}
                   value={data[this.state.user].versions.includes(version)}
@@ -114,10 +114,10 @@ class ManagePermissionsForm extends Component {
                       }
                     )
                   }
-                  /><br/>
-                </div>
-              )}
-            />
+                /><br/>
+              </div>
+            )}
+          />
           }
           <SearchableDropdown
             name="version"
@@ -176,7 +176,7 @@ class ManagePermissionsForm extends Component {
         data[userId].versions = [...data[userId].versions, version];
       } else {
         data[userId].versions = data[userId].versions
-        .filter((e) => e !== version);
+          .filter((e) => e !== version);
       }
       this.setState({data});
     } else {
