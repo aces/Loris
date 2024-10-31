@@ -580,24 +580,18 @@ class Utility
             most accurate Full_name value and should be replaced by
             getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
-        $Factory       = \NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $config        = $Factory->config();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+        $Factory = \NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+        $ddeInstruments = $DB->pselect(
+            "SELECT DISTINCT test_battery.Test_name, Full_name
+            FROM test_battery
+            JOIN test_names ON test_battery.Test_name = test_names.Test_name
+            WHERE DoubleDataEntryEnabled = 'Y'",
             []
         );
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
-
-        $instruments = [];
-        foreach ($instruments_q as $row) {
-            if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
-                    $instruments[$row['Test_name']] = $row['Full_name'];
-                }
-            }
+        $instruments    = [];
+        foreach ($ddeInstruments as $instrument) {
+            $instruments[$instrument['Test_name']] = $instrument['Full_name'];
         }
         return $instruments;
     }

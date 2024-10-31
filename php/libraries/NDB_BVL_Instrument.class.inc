@@ -3347,20 +3347,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to get DDE from
+     * @param ?string              $Visit_label The visit label to get the DDE for if
+     *                                          null all DDE instruments are returned
      *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
-    {
-        $config = $loris->getConfiguration();
+    static function getDDEInstrumentNamesList(
+        \LORIS\LorisInstance $loris,
+        String $Visit_label=null
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
 
         $instrumentNamesList = self::getInstrumentNamesList($loris);
 
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
+        if (empty($Visit_label)) {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'",
+                []
+            );
+        } else {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'
+                AND Visit_label = :Visit_label",
+                ['Visit_label' => $Visit_label]
+            );
+        }
 
         $instrumentNames = [];
         foreach ($instrumentNamesList as $testName => $fullName) {
