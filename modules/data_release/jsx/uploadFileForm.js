@@ -8,6 +8,7 @@ import {
   FileElement,
   TextboxElement,
   ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
@@ -79,6 +80,14 @@ class UploadFileForm extends Component {
           required={false}
           value={this.state.formData.version}
         />
+        <SelectElement
+          name='project'
+          label='Project'
+          onUserInput={this.updateFormElement}
+          required={true}
+          value={this.state.formData.project}
+          options={this.props.projects}
+        />
         <ButtonElement label='Upload File'/>
         <div className='row'>
           <div className='col-sm-9 col-sm-offset-3'>
@@ -126,6 +135,13 @@ class UploadFileForm extends Component {
     if (!formData.file) {
       errorMessage.Filename = 'You must select a file to upload';
       hasError.Filename = true;
+      this.setState({errorMessage, hasError});
+      return;
+    }
+
+    if (!formData.project) {
+      errorMessage.Project = 'You must select a project';
+      hasError.Project = true;
       this.setState({errorMessage, hasError});
       return;
     }
@@ -230,6 +246,7 @@ class UploadFileForm extends Component {
 UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  projects: PropTypes.array.isRequired,
 };
 
 export default UploadFileForm;

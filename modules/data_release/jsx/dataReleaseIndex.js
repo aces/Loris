@@ -157,6 +157,11 @@ class DataReleaseIndex extends Component {
         name: 'uploadDate',
         type: 'text',
       }},
+      {label: 'Project Name', show: true, filter: {
+        name: 'Project',
+        type: 'select',
+        options: this.state.data.fieldOptions.projects,
+      }},
       {label: 'Data Release ID', show: false,
       },
     ];
@@ -178,6 +183,7 @@ class DataReleaseIndex extends Component {
             + '/data_release/files'
           }
           action={loris.BaseURL + '/data_release/files'}
+          projects={this.state.data.fieldOptions.projects}
         />
       </Modal>
     );
