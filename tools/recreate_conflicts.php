@@ -48,7 +48,9 @@ $action = $argv[1];
 
 if ($action=='all') {
     $allInstruments = NDB_BVL_Instrument::getInstrumentNamesList($lorisInstance);
-    $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+    $ddeInstruments = array_keys(
+        \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
+    );
 } else {
     $allInstruments = [$action => $action];
     $ddeInstruments = [$action => $action];

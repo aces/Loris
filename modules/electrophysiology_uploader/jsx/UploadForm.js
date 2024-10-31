@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    FileElement,
-    TextboxElement,
-    StaticElement,
-    ButtonElement,
+  FormElement,
+  FileElement,
+  TextboxElement,
+  StaticElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**

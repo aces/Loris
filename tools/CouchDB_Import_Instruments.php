@@ -143,7 +143,7 @@ class CouchDBInstrumentImporter
             JOIN session s ON(s.ID=f.SessionID)
             JOIN candidate c ON(c.CandID=s.CandID)
             LEFT JOIN flag ddef ON(ddef.CommentID=CONCAT('DDE_', f.CommentID))
-            LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
+            LEFT JOIN test_names tn ON(f.TestID = tn.ID)";
 
         $where = "WHERE f.CommentID NOT LIKE 'DDE%'
             AND tn.Test_name=:inst AND s.Active='Y' AND c.Active='Y'";
@@ -213,7 +213,7 @@ class CouchDBInstrumentImporter
                 if ($JSONData) {
                     //Transform JSON object into an array and add treat it the
                     //same as SQL
-                    $instrumentData = json_decode($row['Data'], true) ?? [];
+                    $instrumentData = json_decode($row['Data'] ?? '', true) ?? [];
                     unset($row['Data']);
                     $docdata = $row + $instrumentData;
                 } else {

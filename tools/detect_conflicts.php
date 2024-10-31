@@ -121,7 +121,9 @@ if (($change && $change_all)
 /// Initialization
 $config = NDB_Config::singleton();
 $db     = $lorisInstance->getDatabaseConnection();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+$ddeInstruments = array_keys(
+    \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
+);
 $db_config      = $config->getSetting('database');
 $paths          = $config->getSetting('paths');
 $dataDir        = $paths['base'] . $config->getSetting('log');

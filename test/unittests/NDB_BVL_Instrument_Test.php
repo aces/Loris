@@ -1957,11 +1957,12 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active'     => 'Y',
-                    'Test_name'  => 'TestName1_proband',
-                    'CohortID'   => '12',
-                    'AgeMinDays' => 0,
-                    'AgeMaxDays' => 100
+                    'Active'                 => 'Y',
+                    'Test_name'              => 'TestName1_proband',
+                    'CohortID'               => '12',
+                    'AgeMinDays'             => 0,
+                    'AgeMaxDays'             => 100,
+                    'DoubleDataEntryEnabled' => 'Y'
                 ]
             ]
         );
