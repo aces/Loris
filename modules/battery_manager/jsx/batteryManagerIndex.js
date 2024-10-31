@@ -333,8 +333,8 @@ class BatteryManagerIndex extends Component {
         options: options.firstVisit,
       }},
       {label: 'Instrument Order', show: true, filter: {
-          name: 'instrumentOrder',
-          type: 'text',
+        name: 'instrumentOrder',
+        type: 'text',
       }},
       {label: 'Double Data Entry Enabled', show: true, filter: {
         name: 'DoubleDataEntryEnabled',
