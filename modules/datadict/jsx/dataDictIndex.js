@@ -198,14 +198,15 @@ class DataDictIndex extends Component {
             'unchanged': 'Unchanged',
           },
         },
-        {
-          label: 'Cohorts',
-          show: true,
-          filter: {
-              name: 'Cohorts',
-              type: 'multiselect',
-              options: options.cohort,
-          },
+      },
+      {
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohort,
+        },
       },
     ];
     return (
