@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Loader from 'Loader';
+import {FormElement} from 'jsx/Form';
 
 /**
  * Modal Component
