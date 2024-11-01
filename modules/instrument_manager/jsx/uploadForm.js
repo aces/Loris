@@ -16,24 +16,40 @@ class InstrumentUploadForm extends Component {
     super(props);
 
     this.state = {
-      selectedFile: null,
+      selectedInstrumentFile: null,
+      selectedDataFile: null,
       selectedInstrument: '',
     };
 
     this.instrumentFileSelected = this.instrumentFileSelected.bind(this);
     this.uploadInstrument = this.uploadInstrument.bind(this);
     this.getInstrumentOptions = this.getInstrumentOptions.bind(this);
+    this.dataFileSelected = this.dataFileSelected.bind(this);
+    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
+
   }
 
   /**
-   * Update selectedFile on file selection
+   * Update selectedInstrumentFile on instrument file selection
    *
    * @param {string} element - Element name
    * @param {string} file
    */
   instrumentFileSelected(element, file) {
     this.setState({
-      selectedFile: file,
+      selectedInstrumentFile: file,
+    });
+  }
+
+  /**
+   * Update selectedDataFile on data file selection
+   *
+   * @param {string} element - Element name
+   * @param {string} file
+   */
+  dataFileSelected(element, file) {
+    this.setState({
+      selectedDataFile: file,
     });
   }
 
@@ -42,7 +58,8 @@ class InstrumentUploadForm extends Component {
    */
   uploadInstrument() {
     const data = new FormData();
-    data.append('install_file', this.state.selectedFile);
+    data.append('upload_type', 'instrument');
+    data.append('install_file', this.state.selectedInstrumentFile);
 
     fetch(this.props.action, {
       method: 'POST',
@@ -83,6 +100,47 @@ class InstrumentUploadForm extends Component {
       });
   }
 
+
+  /**
+   * Upload instrument data
+   */
+  uploadInstrumentData() {
+    const data = new FormData();
+    data.append('upload_type', 'data');
+    data.append('instrument', this.state.selectedInstrument);
+    data.append('data_file', this.state.selectedDataFile);
+
+    fetch(this.props.action, {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: data,
+    })
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((data) => {
+        console.log('data', data);
+        if (data.success) {
+          swal.fire({
+            title: 'Upload Successful!',
+            type: 'success',
+            text: data.message,
+          }).then(function() {
+            // window.location.assign(loris.BaseURL + '/instrument_manager/');
+          });
+        } else {
+          swal.fire({
+            title: 'No data uploaded',
+            type: 'warn',
+            text: data.message,
+          });
+        }
+      })
+      .catch((error) => {
+        this.setState({error: true});
+      });
+  }
+
   getInstrumentOptions() {
     const instruments = {};
     if (this.props.data) {
@@ -94,14 +152,17 @@ class InstrumentUploadForm extends Component {
     return instruments;
   }
 
+
+
   /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    const disabled = () => this.state.selectedFile === null;
+    const uploadInstrumentDisabled = () => this.state.selectedInstrumentFile === null;
     const instrumentSelected = this.state.selectedInstrument !== '';
+    const uploadDataDisabled = () => !instrumentSelected || this.state.selectedDataFile === null;
 
     return (
       <>
@@ -114,12 +175,12 @@ class InstrumentUploadForm extends Component {
                 name='install_file'
                 label='Instrument file'
                 onUserInput={this.instrumentFileSelected}
-                value={this.state.selectedFile}
+                value={this.state.selectedInstrumentFile}
               />
               <button
                 className="btn btn-default"
-                onClick={this.upload}
-                disabled={disabled()}
+                onClick={this.uploadInstrument}
+                disabled={uploadInstrumentDisabled()}
               >
                 Install
               </button>
@@ -148,16 +209,16 @@ class InstrumentUploadForm extends Component {
               <div className="row">
                 <FileElement
                   name='install_data_file'
-                  label='Instrument Data File (.csv)'
-                  onUserInput={this.instrumentFileSelected}
-                  value={this.state.selectedFile}
+                  label='Instrument Data File'
+                  onUserInput={this.dataFileSelected}
+                  value={this.state.selectedDataFile}
                 />
               </div>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <button
                   className="btn btn-default"
-                  onClick={() => {}}
-                  disabled={!instrumentSelected}
+                  onClick={this.uploadInstrumentData}
+                  disabled={uploadDataDisabled()}
                 >
                   Upload Data
                 </button>

@@ -49,13 +49,13 @@ class CSVParser
     /**
      * Check that headers match (equivalent arrays)
      *
-     * @param array $headers            Headers parsed from csv file
-     * @param array $expectedHeaders    Expected headers (ex: from instrument)
-     * @param bool  $strict             If true, $headers cannot be a superset of $expectedHeaders
+     * @param array $headers         Headers parsed from csv file
+     * @param array $expectedHeaders Expected headers (ex: from instrument)
+     * @param bool  $strict          If true, $headers cannot be a superset of $expectedHeaders
      *
      * @return bool                     Returns true if headers are valid
      */
-    private function _validateHeaders(array $headers, array $expectedHeaders, bool $strict = true): bool
+    private function _validateHeaders(array $headers, array $expectedHeaders, bool $strict = false): bool
     {
         if ($strict && count($headers) !== count($expectedHeaders)) {
             return false;
@@ -64,6 +64,7 @@ class CSVParser
         $matchingHeaders = true;
         foreach ($expectedHeaders as $expectedHeader) {
             if (!in_array($expectedHeader, $headers)) {
+                error_log("Header not found: $expectedHeader");
                 $matchingHeaders = false;
                 break;
             }
@@ -74,24 +75,25 @@ class CSVParser
     /**
      * Parses the csv file
      *
-     * @param array $expectedHeaders    Expected headers. Leave empty to skip validation
+     * @param array  $expectedHeaders Expected headers. Leave empty to skip validation
      *
-     * @param string $separator         The field delimiter (one character only).
-     *                                  Defaults as a comma.
+     * @param string $separator       The field delimiter (one character only).
+     *                                Defaults as a comma.
      *
-     * @param string $enclosure         The field enclosure character (one character only).
-     *                                  Defaults as a double quotation mark
+     * @param string $enclosure       The field enclosure character (one character only).
+     *                                Defaults as a double quotation mark
      *
-     * @param string $escape            The escape character (one character only).
-     *                                  Defaults as a backslash (\)
+     * @param string $escape          The escape character (one character only).
+     *                                Defaults as a backslash (\)
      *
-     * @param int $flags                Bit mask of the flags to set.
-     *                                  See SplFileObject constants for the available flags.
-     *                                  Default is: SplFileObject::READ_CSV |
-     *                                              SplFileObject::DROP_NEW_LINE |
-     *                                              SplFileObject::SKIP_EMPTY |
-     *                                              SplFileObject::READ_AHEAD
-     *
+     * @param int    $flags           Bit mask of the flags to set.
+     *                                See SplFileObject constants
+     *                                for the available flags.
+     *                                Default is:
+     *                                SplFileObject::READ_CSV |
+     *                                SplFileObject::DROP_NEW_LINE
+     *                                | SplFileObject::SKIP_EMPTY |
+     *                                SplFileObject::READ_AHEADSplFileObject::READ_AHEAD
      *
      * @return array                    Returns array of header to row value mapping
      *
@@ -104,7 +106,6 @@ class CSVParser
      *                  [ [A] => 1, [B] => e, [C] => 3 ],
      *                  [ [A] => 4, [B] => 5, [C] => w ]
      *              ]
-     *
      */
     public function parse(
         array $expectedHeaders = [],
@@ -112,13 +113,12 @@ class CSVParser
         string $enclosure = '"',
         string $escape = '\\',
         int $flags =
-            SplFileObject::READ_CSV |
-            SplFileObject::DROP_NEW_LINE |
-            SplFileObject::SKIP_EMPTY |
-            SplFileObject::READ_AHEAD,
-    ): array
-    {
-        $fileObject = new SplFileObject($this->csvFile->getFilename());
+        SplFileObject::READ_CSV |
+        SplFileObject::DROP_NEW_LINE |
+        SplFileObject::SKIP_EMPTY |
+        SplFileObject::READ_AHEAD,
+    ): array {
+        $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
         $csvHeaders = $fileObject->fgetcsv();
 
@@ -129,11 +129,11 @@ class CSVParser
             }
         }
 
-        // Parse and create header to value mapping
+        // Parse and create header => value mapping
         $csv = [];
         while ($row = $fileObject->fgetcsv($separator, $enclosure, $escape)) {
             $csv[] = array_combine($csvHeaders, $row);
         }
         return $csv;
     }
- }
+}
