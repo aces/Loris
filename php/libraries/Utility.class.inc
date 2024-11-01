@@ -1064,7 +1064,7 @@ class Utility
 
         $dxToUpdate = $DB->pselect(
             "SELECT cde.CandID, cde.DxEvolutionID
-            FROM candidate_diagnosis_evolution_rel cde 
+            FROM candidate_diagnosis_evolution_rel cde
             JOIN diagnosis_evolution de USING (DxEvolutionID)
             JOIN session s ON (cde.CandID=s.CandID AND s.Visit_label=de.visitLabel)
             WHERE s.ID=:sid",
@@ -1082,4 +1082,7 @@ class Utility
             );
         }
     }
+
+
+
 }

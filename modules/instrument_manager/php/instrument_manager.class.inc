@@ -4,6 +4,9 @@ namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use SplFileInfo;
+
+use NDB_BVL_Instrument;
 
 /**
  * Contains functions used to view and manage instruments installed in LORIS.
@@ -62,6 +65,8 @@ class Instrument_Manager extends \DataFrameworkMenu
         } else if ($method == 'GET') {
             return $this->handleGET($request);
         }
+
+        return parent::handle($request);
     }
 
     /**
@@ -70,6 +75,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
      * @return ResponseInterface The PSR15 response for the page.
+     * @throws \NotFound|\LorisException
      */
     protected function handleGET(ServerRequestInterface $request): ResponseInterface
     {
@@ -86,9 +92,9 @@ class Instrument_Manager extends \DataFrameworkMenu
             $instrument = $params['instrument'];
 
             if ($this->instrumentExists($instrument)) {
-                $headers = InstrumentDataParser::getCSVHeaders($instrument);
+                $headers = InstrumentDataParser::getCSVHeaders($this->loris, $instrument);
 
-                $fileName = "${instrument}_headers.csv";
+                $fileName   = "${instrument}_headers.csv";
                 $fileObject = new \SplFileObject(sys_get_temp_dir() . "/$fileName", 'w');
                 $fileObject->fputcsv($headers);
 
@@ -133,11 +139,12 @@ class Instrument_Manager extends \DataFrameworkMenu
             );
         }
 
-        $data = json_decode((string) $request->getBody(), true);
+        $request_body = (array) $request->getParsedBody();
+        $uploadType   = $request_body['upload_type'];
 
-        if ($data['upload_type'] == 'instrument') {
+        if ($uploadType == 'instrument') {
             return $this->handleInstrumentUpload($request);
-        } else if ($data['upload_type'] == 'data') {
+        } else if ($uploadType == 'data') {
             return $this->handleDataUpload($request);
         }
 
@@ -247,82 +254,53 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function handleDataUpload(ServerRequestInterface $request): ResponseInterface
     {
-        $uploaded_file = $request->getUploadedFiles()['install_file'];
-        $filename      = $uploaded_file->getClientFilename();
-        $instrument    = pathinfo($filename)['filename'];
-        $targetdir     = new \SplFileInfo($this->_path . 'project/instruments/');
+        $data_file    = $request->getUploadedFiles()['data_file'];
+        $request_body = (array)$request->getParsedBody();
 
-        if ($this->instrumentExists($instrument)) {
-            // An instrument with this name already exists in the test_names
-            // table. Abort upload.
-            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
-        }
+        $fileLocation = sys_get_temp_dir() . '/' . $data_file->getClientFilename();
+        $data_file->moveTo($fileLocation);  // TODO: Explore alternatives
 
-        /* Although only .linst files should be uploaded to this module, and
-         * they are just special text files, they are marked as
-         * application/octet-stream upon upload.
-         */
-        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-            ->withPermittedMIMETypes(
-                'application/octet-stream'
-            );
+        $userID = $request->getAttribute('user')->getUsername();
 
-        $response = $uploader->handle($request);
+        if (isset($request_body['instrument'])) {
+            $instrument = $request_body['instrument'];
+            if ($this->instrumentExists($instrument)) {
 
-        if (!in_array($response->getStatusCode(), [200, 201], true)) {
-            if ($response->getStatusCode() == 409) {
-                /* Don't update the file if it already exists on the back-end.
-                 * Instead, inform users that an administrator must install it
-                 * on their behalf.
-                 * This should only happen for users on a system where automatic
-                 * installation is disabled (ie. has no adminUser).
-                 */
-                return new \LORIS\Http\Response\JSON\Conflict(
-                    self::FILE_ALREADY_EXISTS
+                // Parse
+                $dataParser = new InstrumentDataParser(
+                    $instrument,
+                    new SplFileInfo($fileLocation)
                 );
+
+                try {
+                    $data      = $dataParser->parseCSV($this->loris);
+                    $validData = $dataParser->validateData(
+                        $data,
+                        [
+                            'UserID' => $userID,
+                            'Examiner' => $userID
+                        ]
+                    );
+
+                    $result = $dataParser->insertInstrumentData($this->loris, $validData);
+
+                    return new \LORIS\Http\Response\JSON\Created($result);
+                } catch (\LorisException | \Exception $e) {
+                    return new \LORIS\Http\Response\JSON\OK([
+                        'message' => $e->getMessage()
+                    ]);
+                }
             }
-            return $response;
-        }
 
-        try {
-
-            $inst = \NDB_BVL_Instrument::factory(
-                $this->loris,
-                $instrument,
-                '',
-                '',
-            );
-
-            $DB = $this->loris->getDatabaseConnection();
-            $DB->insert(
-                "test_names",
-                [
-                    'test_name' => $instrument,
-                    'Full_name' => $inst->getFullName(),
-                    'Sub_group' => 1,
-                ]
-            );
-            file_put_contents(
-                \Utility::pathJoin(
-                    $targetdir->getPath(),
-                    $targetdir->getFilename(),
-                    $instrument . ".meta"
-                ),
-                "jsondata{@}true\n"
-            );
-
-        } catch (\NotFound $e) {
-            return (new \LORIS\Http\Response\JSON\NotFound(
-                $e->getMessage()
-            ));
-        } catch (\Exception $e) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
-                $e->getMessage()
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Instrument does not exist'
             );
         }
-        return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
+
+        return new \LORIS\Http\Response\JSON\BadRequest(
+            'Invalid request'
+        );
     }
-
 
     /**
      * Tells the base class that this page's provisioner can support the
@@ -381,6 +359,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         $this->_path    =  $this->loris->getConfiguration()->getSetting('base');
         $instrument_dir = $this->_path . 'project/instruments';
 
+        error_log($instrument_dir . ' writeable? ' . (is_writable($instrument_dir) ? 'Y':'N'));
         return is_writable($instrument_dir);
     }
 
