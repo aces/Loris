@@ -1,8 +1,18 @@
-import React, {useState} from 'react';
-import PropTypes from 'prop-types';
+import {useState, PropsWithChildren, CSSProperties} from 'react';
 import Swal from 'sweetalert2';
-import Loader from 'Loader';
-import {FormElement} from 'jsx/Form';
+import Loader from './Loader';
+import {
+  ButtonElement,
+} from 'jsx/Form';
+
+type ModalProps = PropsWithChildren<{
+  throwWarning?: boolean;
+  show: boolean;
+  onClose: () => void;
+  onSubmit?: () => Promise<any>;
+  onSuccess?: (data: any) => void;
+  title?: string;
+}>;
 
 /**
  * Modal Component
@@ -11,17 +21,10 @@ import {FormElement} from 'jsx/Form';
  * form submission and loading indicators. Supports asynchronous form submission
  * with loading and success feedback.
  *
- * @param props
- * @param props.throwWarning
- * @param props.show
- * @param props.onClose
- * @param props.onSubmit
- * @param props.onSuccess
- * @param props.title
- * @param props.children
- * @return {JSX} - React markup for the component
+ * @param {ModalProps} props - Properties for the modal component
+ * @returns {JSX.Element} - A modal dialog box w/ optional submit functionality
  */
-function Modal({
+const Modal = ({
   throwWarning = false,
   show = false,
   onClose,
@@ -29,12 +32,15 @@ function Modal({
   onSuccess,
   title,
   children,
-}) {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+}: ModalProps) => {
+  const [loading, setLoading] = useState(false); // Tracks loading during submit
+  const [success, setSuccess] = useState(false); // Tracks success after submit
 
+  /**
+   * Handles modal close event. Shows a confirmation if `throwWarning` is true.
+   */
   const handleClose = () => {
-    if (throwWarning) {
+    if (throwWarning) { // Display warning if enabled
       Swal.fire({
         title: 'Are You Sure?',
         text: 'Leaving the form will result in the loss of any information ' +
@@ -45,11 +51,50 @@ function Modal({
         cancelButtonText: 'Cancel',
       }).then((result) => result.value && onClose());
     } else {
-      onClose();
+      onClose(); // Close immediately if no warning
     }
   };
 
-  const headerStyle = {
+  /**
+   * Manages form submission with loading and success states, calling
+   * `onSubmit` and handling modal state based on success or failure.
+   */
+  const submit = async () => {
+    if (!onSubmit) return; // Ensure onSubmit exists
+
+    setLoading(true); // Show loader
+
+    try {
+      const data = await onSubmit();
+      setLoading(false);
+      setSuccess(true); // Show success
+
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Close delay
+
+      setSuccess(false); // Reset success state
+      onClose(); // Close modal
+      onSuccess?.(data); // call onSuccess if defined
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Renders submit button if `onSubmit` is provided and no loading or success.
+   *
+   * @returns {JSX.Element | undefined} - The submit button if conditions are met
+   */
+  const submitButton = () => {
+    if (onSubmit && !(loading || success)) { // Show button if conditions met
+      return (
+        <div style={submitStyle}>
+          <ButtonElement onUserInput={submit}/>
+        </div>
+      );
+    }
+  };
+
+  const headerStyle: CSSProperties = {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -60,12 +105,12 @@ function Modal({
     borderBottom: '1px solid #DDDDDD',
   };
 
-  const glyphStyle = {
+  const glyphStyle: CSSProperties = {
     marginLeft: 'auto',
     cursor: 'pointer',
   };
 
-  const bodyStyle = {
+  const bodyStyle: CSSProperties = {
     padding: success ? 0 : '15px 15px',
     maxHeight: success ? 0 : '75vh',
     overflow: 'scroll',
@@ -73,7 +118,7 @@ function Modal({
     transition: '1s ease, opacity 0.3s',
   };
 
-  const modalContainer = {
+  const modalContainer: CSSProperties = {
     display: 'block',
     position: 'fixed',
     zIndex: 9999,
@@ -88,7 +133,7 @@ function Modal({
     visibility: show ? 'visible' : 'hidden',
   };
 
-  const modalContent = {
+  const modalContent: CSSProperties = {
     opacity: show ? 1 : 0,
     top: show ? 0 : '-300px',
     position: 'relative',
@@ -102,46 +147,49 @@ function Modal({
     transition: '0.4s ease',
   };
 
+  /**
+   * Renders the modal children if `show` is true.
+   *
+   * @returns {JSX.Element | null} - The children to render or null if hidden
+   */
   const renderChildren = () => show && children;
 
-  const footerStyle = {
+  const footerStyle: CSSProperties = {
     borderTop: '1px solid #DDDDDD',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     height: '40px',
     padding: '35px',
-    backgroundColor: success && '#e0ffec',
+    backgroundColor: success ? '#e0ffec' : undefined,
   };
 
-  const submitStyle = {
+  const submitStyle: CSSProperties = {
     marginLeft: 'auto',
     marginRight: '20px',
   };
 
-  const submitButton = () => {
-    if (onSubmit && !(loading || success)) {
-      return (
-        <div style={submitStyle}>
-          <ButtonElement/>
-        </div>
-      );
-    }
-  };
-
-  const processStyle = {
+  const processStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     margin: '0px auto',
     width: '90px',
   };
+
+  /**
+   * Loader element displayed during form submission.
+   */
   const loader = loading && (
     <div style={processStyle}>
       <Loader size={20}/>
       <h5 className='animate-flicker'>Saving</h5>
     </div>
   );
+
+  /**
+   * Success display element shown after successful form submission.
+   */
   const successDisplay = success && (
     <div style={processStyle}>
       <span
@@ -152,62 +200,24 @@ function Modal({
     </div>
   );
 
-  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  const submit = async (e) => {
-    console.log('form submit');
-    try {
-      setLoading(true);
-      const data = await onSubmit();
-      setLoading(false);
-      setSuccess(true);
-      await wait(2000);
-      setSuccess(false);
-      onClose();
-      onSuccess(data);
-    } catch {
-      setLoading(false);
-    }
-  };
-
   return (
     <div style={modalContainer} onClick={handleClose}>
-      <div
-        style={modalContent}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div style={modalContent} onClick={(e) => e.stopPropagation()}>
         <div style={headerStyle}>
           {title}
-          <span style={glyphStyle} onClick={handleClose}>
-            ×
-          </span>
+          <span style={glyphStyle} onClick={handleClose}>×</span>
         </div>
-        <FormElement
-          name="modalForm"
-          id="modalForm"
-          onSubmit={submit}
-        >
-          <div style={bodyStyle}>
-            {renderChildren()}
-          </div>
+        <div>
+          <div style={bodyStyle}>{renderChildren()}</div>
           <div style={footerStyle}>
             {loader}
             {successDisplay}
             {submitButton()}
           </div>
-        </FormElement>
+        </div>
       </div>
     </div>
   );
-}
-
-Modal.propTypes = {
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string,
-  onSubmit: PropTypes.func,
-  onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func,
-  show: PropTypes.bool.isRequired,
-  throwWarning: PropTypes.bool,
 };
 
 export default Modal;
