@@ -409,7 +409,7 @@ class User extends UserPermissions implements
      *
      * @return array
      */
-    public function getSiteNamesList(): array
+    function getSiteNamesList(): array
     {
         $sites = [];
         foreach ($this->getSites() as $site) {
