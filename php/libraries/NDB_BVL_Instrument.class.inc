@@ -391,6 +391,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
+        // convert DoB And EDC date to years and months
+        // DoB to Derived Age
+        $dob = $candidate->getCandidateDoB();
+        if (is_string($dob) && strtotime($dob) !== false) {
+            $dob_date     = new \DateTime($dob);
+            $current_date = new \DateTime();
+            $dob_year     = abs($current_date->diff($dob_date)->y);
+            $dob_month    = abs($current_date->diff($dob_date)->m);
+            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $this->tpl_data['dob_age'] = $dob_age;
+        }
+        // EDC to EDC Age
+        $edc = $candidate->getCandidateEDC();
+        if (is_string($edc) && strtotime($edc) !== false) {
+            $edc_date     = new DateTime($edc);
+            $current_date = new DateTime();
+            $edc_year     = abs($current_date->diff($edc_date)->y);
+            $edc_month    = abs($current_date->diff($edc_date)->m);
+            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $this->tpl_data['edc_age'] = $edc_age;
+        }
     }
 
     /**
@@ -2623,7 +2644,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!$this->jsonData) {
             $columns = $db->pselect(
                 "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+                 WHERE COLUMN_NAME<>'CommentID' AND TABLE_NAME=:table
+                 AND TABLE_SCHEMA=:db",
                 [
                     'table' => $this->table,
                     'db'    => $dbconfig['database'],
@@ -3325,20 +3347,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to get DDE from
+     * @param ?string              $Visit_label The visit label to get the DDE for if
+     *                                          null all DDE instruments are returned
      *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
-    {
-        $config = $loris->getConfiguration();
+    static function getDDEInstrumentNamesList(
+        \LORIS\LorisInstance $loris,
+        String $Visit_label=null
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
 
         $instrumentNamesList = self::getInstrumentNamesList($loris);
 
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
+        if (empty($Visit_label)) {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'",
+                []
+            );
+        } else {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'
+                AND Visit_label = :Visit_label",
+                ['Visit_label' => $Visit_label]
+            );
+        }
 
         $instrumentNames = [];
         foreach ($instrumentNamesList as $testName => $fullName) {

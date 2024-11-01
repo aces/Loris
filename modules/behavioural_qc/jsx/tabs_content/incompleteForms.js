@@ -82,48 +82,48 @@ class IncompleteForms extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'Visit':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+    case 'Visit':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
               '/instrument_list/?candID=' +
               rowData['DCCID'] +
               '&sessionID=' +
               rowData['sessionID']
-            }>
-              {rowData['Visit']}
-            </a>
-          </td>
-        );
-        break;
-      case 'PSCID':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+          }>
+            {rowData['Visit']}
+          </a>
+        </td>
+      );
+      break;
+    case 'PSCID':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
             '/' +
             rowData['DCCID']
-            }>
-              {rowData['PSCID']}
-            </a>
-          </td>
-        );
-        break;
-      case 'DCCID':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+          }>
+            {rowData['PSCID']}
+          </a>
+        </td>
+      );
+      break;
+    case 'DCCID':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
             '/' +
             rowData['DCCID']
-            }>
-              {rowData['DCCID']}
-            </a>
-          </td>
-        );
-        break;
-      case 'Instrument':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+          }>
+            {rowData['DCCID']}
+          </a>
+        </td>
+      );
+      break;
+    case 'Instrument':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
             '/instruments/' +
             rowData['test_name'] +
             '/?candID=' +
@@ -132,16 +132,16 @@ class IncompleteForms extends Component {
             rowData['sessionID'] +
             '&commentID=' +
             rowData['commentID']
-            }>
-              {rowData['Instrument']}
-            </a>
-          </td>
-        );
-        break;
-      default:
-        reactElement = (
-          <td>{cell}</td>
-        );
+          }>
+            {rowData['Instrument']}
+          </a>
+        </td>
+      );
+      break;
+    default:
+      reactElement = (
+        <td>{cell}</td>
+      );
     }
     return reactElement;
   }
@@ -167,8 +167,8 @@ class IncompleteForms extends Component {
           name: 'Instrument',
           type: 'select',
           options: Object.assign({}, ...Object.entries(
-              {...Object.values(options.instruments)})
-              .map(([, b]) => ({[b]: b}))
+            {...Object.values(options.instruments)})
+            .map(([, b]) => ({[b]: b}))
           ),
         },
       },

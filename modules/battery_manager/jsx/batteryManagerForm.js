@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    ButtonElement,
-    FormElement,
-    StaticElement,
-    SelectElement,
-    NumericElement,
+  ButtonElement,
+  FormElement,
+  StaticElement,
+  SelectElement,
+  NumericElement,
 } from 'jsx/Form';
 
 /**
@@ -43,7 +43,7 @@ class BatteryManagerForm extends Component {
              entry.<br/>
              If the duplicate entry is inactive, you will be given the option
              to active it.
-             <br/>
+            <br/>
             <br/>
           </span>
         );
@@ -145,7 +145,15 @@ class BatteryManagerForm extends Component {
           max={127} // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
         />
-         <ButtonElement
+        <SelectElement
+          name="DoubleDataEntryEnabled"
+          label="Enable Double Data Entry"
+          options={options.DoubleDataEntryEnabled}
+          onUserInput={setTest}
+          required={false}
+          value={test.DoubleDataEntryEnabled}
+        />
+        <ButtonElement
           label="Submit"
         />
       </FormElement>

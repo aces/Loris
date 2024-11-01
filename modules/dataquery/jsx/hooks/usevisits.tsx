@@ -16,36 +16,36 @@ type UseVisitsReturn = {
  * @returns {UseVisitsReturn} - list of default and all visits
  */
 function useVisits(): UseVisitsReturn {
-    const [allVisits, setAllVisits] = useState<string[]>([]);
-    const [defaultVisits, setDefaultVisits] = useState<string[]>([]);
-    useEffect(() => {
-          fetch('/dataquery/visitlist', {credentials: 'same-origin'})
-          .then((resp) => {
-                  if (!resp.ok) {
-                      throw new Error('Invalid response');
-                  }
-                  return resp.json();
-          }).then((result) => {
-                  setDefaultVisits(result.Visits);
-                  setAllVisits(result.Visits);
-                  }
-          ).catch( (error) => {
-                  console.error(error);
-                  });
-    }, []);
-    return {
-        all: allVisits,
-        default_: defaultVisits,
-        /**
-         * Modify the default visits to use
-         *
-         * @param {VisitOption[]} values - The selected options from ReactSelect
-         * @returns {void}
-         */
-        modifyDefault: (values: readonly VisitOption[]) => {
-            setDefaultVisits(values.map((el) => el.value));
-        },
-    };
+  const [allVisits, setAllVisits] = useState<string[]>([]);
+  const [defaultVisits, setDefaultVisits] = useState<string[]>([]);
+  useEffect(() => {
+    fetch('/dataquery/visitlist', {credentials: 'same-origin'})
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Invalid response');
+        }
+        return resp.json();
+      }).then((result) => {
+        setDefaultVisits(result.Visits);
+        setAllVisits(result.Visits);
+      }
+      ).catch( (error) => {
+        console.error(error);
+      });
+  }, []);
+  return {
+    all: allVisits,
+    default_: defaultVisits,
+    /**
+     * Modify the default visits to use
+     *
+     * @param {VisitOption[]} values - The selected options from ReactSelect
+     * @returns {void}
+     */
+    modifyDefault: (values: readonly VisitOption[]) => {
+      setDefaultVisits(values.map((el) => el.value));
+    },
+  };
 }
 
 export default useVisits;

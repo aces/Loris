@@ -57,23 +57,23 @@ class FixConflictForm extends Component {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({conflictid: name, correctanswer: value}),
     })
-    .then((resp) => {
-      return resp.ok ? {} : resp.json();
-    })
-    .then((json) => {
-      if (json.error) {
-        throw json.error;
-      }
-      this.setState({success: true, error: false, emptyOption: false, value});
-    })
-    .catch((error) => {
-      swal('Error!', error, 'error');
-      this.setState({error: true, success: false, emptyOption: true});
-    });
+      .then((resp) => {
+        return resp.ok ? {} : resp.json();
+      })
+      .then((json) => {
+        if (json.error) {
+          throw json.error;
+        }
+        this.setState({success: true, error: false, emptyOption: false, value});
+      })
+      .catch((error) => {
+        swal('Error!', error, 'error');
+        this.setState({error: true, success: false, emptyOption: true});
+      });
   }
 
   /**

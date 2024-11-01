@@ -10,23 +10,23 @@ import PropTypes from 'prop-types';
  * @return {object}
  */
 function CandidateIssuesWidget(props) {
-    const issues = props.Issues.map(function(issue) {
-        let comments;
-        if (issue.comments && issue.comments != '0' ) {
-            comments = ' ('+ issue.comments + ' comment';
-            if (issue.comments != '1') {
-                comments += 's';
-            }
-            comments += ')';
-        }
-        return (<li key={issue.ID}>
-                  <a href={props.BaseURL + '/issue_tracker/issue/' + issue.ID}>
-                    {issue.Title}
-                  </a>
-                  {comments}
-            </li>);
-    });
-    return <ul>{issues}</ul>;
+  const issues = props.Issues.map(function(issue) {
+    let comments;
+    if (issue.comments && issue.comments != '0' ) {
+      comments = ' ('+ issue.comments + ' comment';
+      if (issue.comments != '1') {
+        comments += 's';
+      }
+      comments += ')';
+    }
+    return (<li key={issue.ID}>
+      <a href={props.BaseURL + '/issue_tracker/issue/' + issue.ID}>
+        {issue.Title}
+      </a>
+      {comments}
+    </li>);
+  });
+  return <ul>{issues}</ul>;
 }
 CandidateIssuesWidget.propTypes = {
   Issues: PropTypes.array,

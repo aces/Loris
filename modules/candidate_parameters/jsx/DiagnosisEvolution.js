@@ -37,7 +37,7 @@ class DiagnosisEvolution extends Component {
    */
   componentDidMount() {
     this.fetchData()
-    .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -62,41 +62,41 @@ class DiagnosisEvolution extends Component {
     const dxEvolution = this.state.data.diagnosisEvolution;
     let formattedDxEvolution = [];
     try {
-    dxEvolution.map((record) => {
-      let formattedDiagnosis = [];
-      Object.entries(JSON.parse(record.Diagnosis)).map((entry, index) => {
-        const [fieldName, dx] = entry;
-        formattedDiagnosis.push(
-          <p key={index}>{fieldName}: <strong>{dx}</strong></p>
+      dxEvolution.map((record) => {
+        let formattedDiagnosis = [];
+        Object.entries(JSON.parse(record.Diagnosis)).map((entry, index) => {
+          const [fieldName, dx] = entry;
+          formattedDiagnosis.push(
+            <p key={index}>{fieldName}: <strong>{dx}</strong></p>
+          );
+        });
+        let sourceFields = [];
+        record.sourceField.split(',').map((field, index) => {
+          sourceFields.push(<p key={index}>{field}</p>);
+        });
+        const confirmed = record.Confirmed === 'Y' ?
+          <p style={{color: 'green', fontSize: '3rem', textAlign: 'center'}}>
+          &#10004;
+          </p> :
+          <p style={{color: 'red', fontSize: '3rem', textAlign: 'center'}}>
+          &#10007;
+          </p>;
+        formattedDxEvolution.push(
+          [
+            record.TrajectoryName,
+            record.Project,
+            record.OrderNumber,
+            record.visitLabel,
+            record.instrumentName,
+            sourceFields,
+            formattedDiagnosis,
+            confirmed,
+            record.LastUpdate,
+          ]
         );
       });
-      let sourceFields = [];
-      record.sourceField.split(',').map((field, index) => {
-        sourceFields.push(<p key={index}>{field}</p>);
-      });
-      const confirmed = record.Confirmed === 'Y' ?
-        <p style={{color: 'green', fontSize: '3rem', textAlign: 'center'}}>
-          &#10004;
-        </p> :
-        <p style={{color: 'red', fontSize: '3rem', textAlign: 'center'}}>
-          &#10007;
-        </p>;
-      formattedDxEvolution.push(
-        [
-          record.TrajectoryName,
-          record.Project,
-          record.OrderNumber,
-          record.visitLabel,
-          record.instrumentName,
-          sourceFields,
-          formattedDiagnosis,
-          confirmed,
-          record.LastUpdate,
-        ]
-      );
-    });
     } catch (error) {
-        console.error('Error parsing JSON:', error);
+      console.error('Error parsing JSON:', error);
     }
     return formattedDxEvolution;
   }
@@ -144,24 +144,24 @@ class DiagnosisEvolution extends Component {
    */
   render() {
     if (this.state.error) {
-        return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occured while loading the page.</h3>;
     }
 
     if (!this.state.isLoaded) {
-        return <Loader/>;
+      return <Loader/>;
     }
 
     const latestConfirmedProjectDiagnosisIDs =
       this.state.data.latestConfirmedProjectDiagnosis.length > 0 ?
-      this.state.data.latestConfirmedProjectDiagnosis.map((item) => {
-      return item.DxEvolutionID;
-    }) : null;
+        this.state.data.latestConfirmedProjectDiagnosis.map((item) => {
+          return item.DxEvolutionID;
+        }) : null;
 
     const latestProjectDiagnosisIDs =
       this.state.data.latestProjectDiagnosis.length > 0 ?
-      this.state.data.latestProjectDiagnosis.map((item) => {
-      return item.DxEvolutionID;
-    }) : null;
+        this.state.data.latestProjectDiagnosis.map((item) => {
+          return item.DxEvolutionID;
+        }) : null;
 
     // Unset diagnosis in latest project diagnosis list if it also exists
     // in the confirmed latest project diagnosis list
@@ -169,8 +169,8 @@ class DiagnosisEvolution extends Component {
     if (latestConfirmedProjectDiagnosisIDs != null) {
       latestProjectDiagnosisIDs.map((dxEvolutionID, index) => {
         if (latestConfirmedProjectDiagnosisIDs.find(
-            (element) => (element === dxEvolutionID)
-          ) != undefined
+          (element) => (element === dxEvolutionID)
+        ) != undefined
         ) {
           latestProjectDiagnosis.splice(index, 1);
         }
