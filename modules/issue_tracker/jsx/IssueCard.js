@@ -293,7 +293,7 @@ const IssueCard = React.memo(function IssueCard({
         <div className="issue-dates">
           <span>Created: {issue.dateCreated}</span>
           <span>Last Updated: {issue.lastUpdate}</span>
-          <span>Assignee: {issue.assignee}</span>
+          <span>Assignee: {issue.assignee || 'None'}</span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
