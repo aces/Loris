@@ -36,7 +36,7 @@ const IssueCard = React.memo(function IssueCard({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!tempEditedIssue.title.trim()) {
+    if (!tempEditedIssue.title || !tempEditedIssue.title.trim()) {
       showAlertMessage('error', 'Title cannot be empty');
       return;
     }
