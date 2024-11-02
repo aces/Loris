@@ -1,6 +1,6 @@
 ALTER TABLE `issues`
     ADD `instrument` int(10) unsigned DEFAULT NULL
-    AFTER `category`;
+    AFTER `description`;
 
 ALTER TABLE `issues`
     ADD CONSTRAINT `fk_issues_instrument`
