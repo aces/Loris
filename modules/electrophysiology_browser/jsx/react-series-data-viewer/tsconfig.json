@@ -1,6 +1,10 @@
 {
     "extends": "../../../../tsconfig",
     "compilerOptions": {
-        "strict": false
+        "strict": false,
+        "composite": true,
+        "outDir": "node_modules/.typescript",
+        "noEmit": false,
+        "emitDeclarationOnly": true
     }
 }

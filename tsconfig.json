@@ -1,21 +1,33 @@
 {
+  "ts-node": {
+    "swc": true,
+    "compilerOptions": {
+      "target": "es5"
+    }
+  },
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
       "*": ["*", "jsx/*"]
     },
-    "sourceMap": true,
     "jsx": "preserve",
-    "jsxFactory": "h",
+    "lib": [
+      "dom", "es2015", "es2017"
+    ],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "downlevelIteration": true,
-    "lib": [
-      "es6", "dom", "es2017"
-    ],
-    "strict" : true
-  }
+    "strict" : true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "outDir": "node_modules/.typescript",
+    "noEmit": true
+  },
+  "references": [
+    {
+      "path": "modules/electrophysiology_browser/jsx/react-series-data-viewer"
+    }
+  ]
 }

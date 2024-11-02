@@ -7,6 +7,9 @@ import rspack, {
   IgnorePlugin,
   SwcJsMinimizerRspackPlugin,
 } from '@rspack/core';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 // An object mapping each LORIS module to its entry points.
 let lorisModules: Record<string, string[]> = {
@@ -117,7 +120,9 @@ const optimization: rspack.Optimization = {
       new SwcJsMinimizerRspackPlugin({
         minimizerOptions: {
           compress: false,
-          format: {ecma: 2015},
+          format: {
+            ecma: 2015,
+          },
           mangle: false,
         },
         extractComments: false,
@@ -165,10 +170,12 @@ const module: rspack.ModuleOptions = {
           options: {
             jsc: {
               parser: {
-                syntax: 'ecmascript',
+                syntax: 'typescript',
                 jsx: true,
+                tsx: true,
               },
             },
+            sourceMaps: true
           },
         },
       ],
@@ -180,23 +187,17 @@ const module: rspack.ModuleOptions = {
         'css-loader',
       ],
     },
-    {
-      test: /\.tsx?$/,
-      use: [
-        {
-          loader: 'ts-loader',
-          options: {
-            onlyCompileBundledFiles: true
-          },
-        },
-      ],
-    },
   ],
 };
 
-const isDev = process.env.NODE_ENV === 'development';
-
-const plugins: rspack.RspackPluginInstance[] = [];
+const plugins: rspack.RspackPluginInstance[] = [
+  new ForkTsCheckerWebpackPlugin({
+    typescript: {
+      mode: 'write-references',
+      build: true,
+    }
+  }) as any,
+];
 
 plugins.push(new CopyRspackPlugin({
   patterns: [
@@ -209,8 +210,8 @@ plugins.push(new CopyRspackPlugin({
       force: true,
     },
     {
-      from: `node_modules/react-dom/umd/${isDev ?
-        'react-dom.development.js'
+      from: `node_modules/react-dom/umd/${isDev
+        ? 'react-dom.development.js'
         : 'react-dom.production.min.js'
       }`,
       to: 'htdocs/vendor/js/react',

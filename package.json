@@ -33,6 +33,7 @@
         "@babel/preset-react": "^7.6.3",
         "@rspack/cli": "^1.0.14",
         "@rspack/core": "^1.0.14",
+        "@swc/core": "^1.8.0",
         "@types/c3": "^0.7.8",
         "@types/d3": "^7.4.0",
         "@types/node": "^20.12.7",
@@ -52,6 +53,7 @@
         "eslint-plugin-jsdoc": "^39.6.4",
         "eslint-plugin-no-jquery": "^2.6.0",
         "eslint-plugin-react": "^7.16.0",
+        "fork-ts-checker-webpack-plugin": "^9.0.2",
         "style-loader": "^1.1.3",
         "ts-loader": "^9.5.1",
         "ts-node": "^10.9.2",
@@ -69,6 +71,7 @@
         "tests:integration": "./test/dockerized-integration-tests.sh",
         "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
         "build": "rspack build",
+        "compile": "rspack build --mode=development",
         "serve": "rspack serve",
         "postinstall": "node npm-postinstall.js"
     },
