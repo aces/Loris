@@ -320,7 +320,7 @@ Next steps:
   in module getWidgets function
 EOF;
 if ($jsx) {
-    print "\n- Update webpack.config.ts to ensure module entrypoint is compiled";
+    print "\n- Update rspack.config.ts to ensure module entrypoint is compiled";
 }
 
 /**

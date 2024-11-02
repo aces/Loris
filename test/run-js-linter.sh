@@ -30,6 +30,6 @@ files="$files jsx/"
 files="$files htdocs/js/ jslib/"
 
 # Other files
-files="$files webpack.config.ts npm-postinstall.js"
+files="$files rspack.config.ts npm-postinstall.js"
 
 eslint ${flags} ${files}

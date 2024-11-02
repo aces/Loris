@@ -1,12 +1,15 @@
 import cp from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
+import rspack, {
+  CopyRspackPlugin,
+  DefinePlugin,
+  IgnorePlugin,
+  SwcJsMinimizerRspackPlugin,
+} from '@rspack/core';
 
 // An object mapping each LORIS module to its entry points.
-let lorisModules: { [x: string]: string[] } = {
+let lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
   login: ['loginIndex'],
@@ -45,6 +48,7 @@ let lorisModules: { [x: string]: string[] } = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
+    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
@@ -107,14 +111,13 @@ if ('EEG_VIS_ENABLED' in process.env) {
   }
 }
 
-const optimization = {
+const optimization: rspack.Optimization = {
   minimizer: [
-    (compiler: webpack.Compiler) => {
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
+    (compiler: rspack.Compiler) => {
+      new SwcJsMinimizerRspackPlugin({
+        minimizerOptions: {
           compress: false,
-          ecma: 2015,
+          format: {ecma: 2015},
           mangle: false,
         },
         extractComments: false,
@@ -123,7 +126,7 @@ const optimization = {
   ],
 };
 
-const resolve: webpack.ResolveOptions = {
+const resolve: rspack.ResolveOptions = {
   alias: {
     jsx: path.resolve(__dirname, './jsx'),
     jslib: path.resolve(__dirname, './jslib'),
@@ -151,14 +154,22 @@ const resolve: webpack.ResolveOptions = {
   },
 };
 
-const module: webpack.ModuleOptions = {
+const module: rspack.ModuleOptions = {
   rules: [
     {
       test: /\.(jsx?|tsx?)$/,
       exclude: /node_modules/,
       use: [
         {
-          loader: 'babel-loader?cacheDirectory',
+          loader: 'builtin:swc-loader',
+          options: {
+            jsc: {
+              parser: {
+                syntax: 'ecmascript',
+                jsx: true,
+              },
+            },
+          },
         },
       ],
     },
@@ -174,47 +185,36 @@ const module: webpack.ModuleOptions = {
       use: [
         {
           loader: 'ts-loader',
-          options: {onlyCompileBundledFiles: true},
+          options: {
+            onlyCompileBundledFiles: true
+          },
         },
       ],
     },
   ],
 };
 
-const plugins: webpack.WebpackPluginInstance[] = [];
+const isDev = process.env.NODE_ENV === 'development';
 
-plugins.push(new CopyPlugin({
+const plugins: rspack.RspackPluginInstance[] = [];
+
+plugins.push(new CopyRspackPlugin({
   patterns: [
     {
-      from: path.resolve(__dirname, 'node_modules/react/umd'),
-      to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+      from: `node_modules/react/umd/${isDev
+        ? 'react.development.js'
+        : 'react.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
       force: true,
-      globOptions: {
-        ignore: ['react.profiling.min.js'],
-      },
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
-      filter: async (path) => {
-        const file = path.split(/\\|\//).pop() as string;
-        const keep = [
-          'react.development.js',
-          'react.production.min.js',
-        ];
-        return keep.includes(file);
-      },
     },
     {
-      from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
-      to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+      from: `node_modules/react-dom/umd/${isDev ?
+        'react-dom.development.js'
+        : 'react-dom.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
       force: true,
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
-      filter: async (path) => {
-        const file = path.split(/\\|\//).pop() as string;
-        const keep = [
-          'react-dom.development.js',
-          'react-dom.production.min.js',
-        ];
-        return keep.includes(file);
-      },
     },
   ],
 }));
@@ -232,11 +232,11 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 }
 
 /**
- * Get the webpack entries of a given module, which is described by its name
+ * Get the rspack entries of a given module, which is described by its name
  * and its entry points.
  *
  * @returns A list of two-element tuples mapping each entry name (exemple
- * 'login/loginIndex') to its webpack entry.
+ * 'login/loginIndex') to its rspack entry.
  */
 function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
@@ -255,10 +255,10 @@ function makeModuleEntries(moduleName: string, files: string[]) {
 }
 
 // Add entries for project overrides.
-if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projectModules: { [x: string]: string[] }
+if (fs.existsSync('./project/rspack-project.config.js')) {
+  const projectModules: Record<string, string[]>
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    = require('./project/webpack-project.config.js');
+    = require('./project/rspack-project.config.js');
 
   for (const [moduleName, files] of Object.entries(projectModules)) {
     if (moduleName in lorisModules) {
@@ -273,26 +273,27 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
 // environment.
 const target = process.env.target;
 if (target) {
-  if (target in lorisModules) {
-    lorisModules = {
-      [target]: lorisModules[target],
-    };
-  } else {
-    console.error(`Target module '${target}' not found.`);
+  if (!(target in lorisModules)) {
+    console.error(`Target module '${target}' not found`);
     process.exit(1);
   }
+
+  console.log(`Building module ${target}`);
+  lorisModules = {
+    [target]: lorisModules[target],
+  };
+} else {
+  console.log('Building all modules');
 }
 
-// Transform the mapping of LORIS modules to a mapping of webpack entry points.
+// Transform the mapping of LORIS modules to a mapping of rspack entry points.
 const entries = Object.fromEntries(
   Object.entries(lorisModules)
     .map(([name, files]) => makeModuleEntries(name, files))
     .flat()
 );
 
-const configs: webpack.Configuration[] = [];
-
-configs.push({
+export default {
   entry: {
     PaginationLinks: './jsx/PaginationLinks.js',
     StaticDataTable: './jsx/StaticDataTable.js',
@@ -315,42 +316,4 @@ configs.push({
   resolve,
   module,
   stats: 'errors-warnings',
-});
-
-// HACK: For some reason, the electrophysiology session view only compiles if
-// it uses a separate (although possibly identical) configuration.
-if (!target || target === 'electrophysiology_browser') {
-  configs.push({
-    entry: {
-      electrophysiology_browser: {
-        import: './modules/electrophysiology_browser/'
-          + 'jsx/electrophysiologySessionView',
-        filename: './modules/electrophysiology_browser/'
-          + 'js/electrophysiologySessionView.js',
-        library: {
-          name: [
-            'lorisjs',
-            'electrophysiology_browser',
-            'electrophysiologySessionView',
-          ],
-          type: 'window',
-        },
-      },
-    },
-    output: {
-      path: __dirname,
-      filename: './htdocs/js/components/[name].js',
-      library: ['lorisjs', '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
-    devtool: 'source-map',
-    plugins,
-    optimization,
-    resolve,
-    module,
-    stats: 'errors-warnings',
-  });
-}
-
-export default configs;
+} satisfies rspack.Configuration;

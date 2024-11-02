@@ -13,7 +13,7 @@ Currently Loris is in the process of "reactification" of its existing modules. T
 ## Coding Guidelines
 - All new React components and major updates to existing React components should follow `ES6 standard`
 - All new and existing Javascript code should pass `ESLint` validation
-- All new components should be compiled using `webpack`
+- All new components should be compiled using `rspack`
 - All new modules and major module updates should use a single javascript entry-point `index.js` and rely on ES6 modules to include additional components
 
 ---
@@ -36,7 +36,7 @@ In many cases, React components are designed for a specific LORIS module. In suc
 
 ## Set up
 
-In order to use `webpack`, we need to install `Node.js`, `NPM` and additional dependencies.
+In order to use `rspack`, we need to install `Node.js`, `NPM` and additional dependencies.
 
 ### 1. Get Node.js
 
@@ -86,7 +86,7 @@ curl -L https://www.npmjs.com/install.sh | sudo sh
 
 ### 3. Get LORIS dependencies
 
-Once `Node.js` and `npm` are installed, you are ready to install all necessary `Node.js` dependencies. (i.e `webpack`)
+Once `Node.js` and `npm` are installed, you are ready to install all necessary `Node.js` dependencies. (i.e `rspack`)
 
 Follow these steps in your terminal:
 
@@ -106,11 +106,11 @@ sudo chown -R $USER:$(id -gn $USER) ./node_modules
 
 ## Transpiling React code
 
-We need to use `webpack` in order to transpile `JSX` and `ES6` syntax used in our React code into `ES5` syntax understood by all browsers.
+We need to use `rspack` in order to transpile `JSX` and `ES6` syntax used in our React code into `ES5` syntax understood by all browsers.
 
-**Step 1: Update `webpack.config.ts`**
+**Step 1: Update `rspack.config.ts`**
 
-When you create a new `ES6/JSX file`, ensure you add it to the `webpack.config.ts` file under the `lorisModules` object with the following format:
+When you create a new `ES6/JSX file`, ensure you add it to the `rspack.config.ts` file under the `lorisModules` object with the following format:
 
 ```js
 'module_name' : ['FooFileName', 'BarFileName'],
@@ -121,27 +121,27 @@ When you create a new `ES6/JSX file`, ensure you add it to the `webpack.config.t
 To compile all `ES6/JSX` files in LORIS, use the following command:
 
 ```
-npm run compile
+npm run build
 ```
 
 which is a short-cut for:
 
 ```
-./node_modules/.bin/webpack
+./node_modules/.bin/rspack build
 ```
 
 **Step 3: Watch all files (optional)**
 
-You can have webpack watch for changes to all revelant files and compile them on the fly:
+You can have rspack watch for changes to all revelant files and compile them on the fly:
 
 ```
-npm run watch
+npm run serve
 ```
 
 which is a short-cut for:
 
 ```
-./node_modules/.bin/webpack --watch
+./node_modules/.bin/rspack serve
 ```
 
 ---

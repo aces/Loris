@@ -57,7 +57,7 @@ class ParentTree extends Component {
       >
         <i className="fa fa-folder-open" aria-hidden="true"></i>
         <span style={divStyle}>
-          {Object.values(node)[1]} >
+          {Object.values(node)[1]} &gt;
         </span>
       </span>
     ));
