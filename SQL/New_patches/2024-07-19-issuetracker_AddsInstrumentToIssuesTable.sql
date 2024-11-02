@@ -8,4 +8,4 @@ ALTER TABLE `issues`
     ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE `issues_history`
-    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','instrument') NOT NULL DEFAULT 'comment';
+    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment';
