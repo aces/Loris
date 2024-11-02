@@ -29,7 +29,7 @@ const IssueCard = React.memo(function IssueCard({
   const handleInputChange = (field, value) => {
     setTempEditedIssue((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: value === '' ? null : value,
     }));
   };
 
@@ -376,9 +376,8 @@ const IssueCard = React.memo(function IssueCard({
                   onChange={(e) =>
                     handleInputChange('centerID', e.target.value)
                   }
-                  required
                 >
-                  <option value="">No Site</option>
+                  <option value="">All Sites</option>
                   {Object.entries(sites).map(([id, name]) => (
                     <option
                       key={id}
@@ -417,7 +416,7 @@ const IssueCard = React.memo(function IssueCard({
                 <label>Site:&nbsp;</label>
                 <span>
                   {sites[String(tempEditedIssue.centerID)] ||
-                    'No Site'}
+                    'All Sites'}
                 </span>
               </div>
             </>
