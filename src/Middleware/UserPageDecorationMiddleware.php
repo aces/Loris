@@ -185,13 +185,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // add projects to nav bar
         $project_arr = $this->user->getProjectIDs();
 
-        // Check if the user is associated with any study sites
-        $oneIsStudySite = $this->user->hasStudySite();
-
         $tpl_data['user'] = [];
         $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
-        $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
+        $tpl_data['user']['user_from_study_site'] = $this->user->hasStudySite();
         $tpl_data['userNumSites']    = count($site_arr);
         $tpl_data['userNumProjects'] = count($project_arr);
 
