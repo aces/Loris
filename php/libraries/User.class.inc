@@ -155,7 +155,7 @@ class User extends UserPermissions implements
 
         $examiner_info = [];
 
-        if (!empty($examiner_check)&& !is_null($examiner_check)) {
+        if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     // Store pending approval status if examiner is active
@@ -257,7 +257,7 @@ class User extends UserPermissions implements
                 replaced with getData('Sites')"
             );
         } else {
-            return $this->userInfo[$var] ?? null;
+            return $this->userInfo[$var];
         }
     }
 
