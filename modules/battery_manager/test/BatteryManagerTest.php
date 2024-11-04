@@ -170,7 +170,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > $instrument > option:nth-child(2)"
+                "#lorisworkspace > ".self::$instrument." > option:nth-child(2)"
             )
         );
 
@@ -237,8 +237,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) ".
-                "> form > div > div:nth-child(2)>div>div>select>option:nth-child(2)"
+                "#lorisworkspace > ".self::$instrument." > option:nth-child(2)"
             )
         );
 
