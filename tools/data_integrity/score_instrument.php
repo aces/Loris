@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tool scores any registered instrument that was built using the
  * NDB_BVL_Instrument class and that has a working score() method.

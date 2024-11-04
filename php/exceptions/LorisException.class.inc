@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is a wrapper around any Database exceptions thrown Loris
  * It represents the base of the exception hierarchy, as well as any

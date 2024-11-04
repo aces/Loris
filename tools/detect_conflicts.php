@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * - Option to detect conflicts for the given instrument
  * and create corresponding CSV file
@@ -120,7 +121,9 @@ if (($change && $change_all)
 /// Initialization
 $config = NDB_Config::singleton();
 $db     = $lorisInstance->getDatabaseConnection();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+$ddeInstruments = array_keys(
+    \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
+);
 $db_config      = $config->getSetting('database');
 $paths          = $config->getSetting('paths');
 $dataDir        = $paths['base'] . $config->getSetting('log');

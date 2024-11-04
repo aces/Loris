@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the PSR15 ResponseInterface implementation for
  * Not Modified responses.

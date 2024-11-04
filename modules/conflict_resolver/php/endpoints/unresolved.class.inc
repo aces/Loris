@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to be processed as part of the conflict resolver
@@ -95,12 +96,14 @@ class Unresolved extends Endpoint implements ETagCalculator
         $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
+        $cohorts     = array_values(\Utility::getCohortList());
 
         return [
             'site'       => array_combine($sites, $sites),
             'instrument' => \NDB_BVL_Instrument::getInstrumentNamesList($loris),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
             'project'    => array_combine($projects, $projects),
+            'cohort'     => array_combine($cohorts, $cohorts),
         ];
     }
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Detects the duplicated commentids for the given instrument
  *
@@ -74,11 +75,9 @@ if ($opts['r']!=null) {
 /**
  * Initialization
  */
-$config         = NDB_Config::singleton();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$dataDir        = "logs";
-$diff           = null;
-$commentids     = [];
+$dataDir    = "logs";
+$diff       = null;
+$commentids = [];
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();

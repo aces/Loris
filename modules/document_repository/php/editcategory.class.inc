@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class handles a post request to upload a new category.
  * PHP Version 7

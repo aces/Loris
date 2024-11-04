@@ -51,7 +51,7 @@ class IssueForm extends Component {
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
     this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
-                                      .bind(this);
+      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
@@ -155,10 +155,10 @@ class IssueForm extends Component {
 
     const fileCollection = this.state.isNewIssue || (
       <AttachmentsList issue={this.props.issue}
-                       baseURL={this.props.baseURL}
-                       attachments={this.state.issueData['attachments']}
-                       userHasPermission={this.props.userHasPermission}
-                       whoami={this.state.issueData.whoami}
+        baseURL={this.props.baseURL}
+        attachments={this.state.issueData['attachments']}
+        userHasPermission={this.props.userHasPermission}
+        whoami={this.state.issueData.whoami}
       />
     );
 
@@ -269,8 +269,8 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-                                               // different if the user doesn't have
-                                               // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'

@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script resets a user's password. It assumes it's being
  * run by an administer on the server and doesn't validate the

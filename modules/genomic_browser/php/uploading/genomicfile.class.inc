@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Used for uploading file with Genomic Browser.
  *

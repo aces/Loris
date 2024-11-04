@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the survey accounts menu page.
@@ -67,8 +68,8 @@ class SurveyAccountsProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = new \CenterID($row['CenterID']);
-        $pid = new \ProjectID($row['ProjectID']);
+        $cid = \CenterID::singleton(intval($row['CenterID']));
+        $pid = \ProjectID::singleton((intval($row['ProjectID'])));
         return new SurveyAccountsRow($row, $cid, $pid);
     }
 }

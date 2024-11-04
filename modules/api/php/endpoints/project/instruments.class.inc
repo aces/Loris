@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Instruments page class under Project
  *
@@ -41,10 +42,13 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \Project $project    The requested project
+     * @param string   $apiversion The version of the API being used
      */
-    public function __construct(\Project $project)
-    {
+    public function __construct(
+        \Project $project,
+        private string $apiversion = 'v0.0.3'
+    ) {
         $this->_project = $project;
     }
 
@@ -145,7 +149,8 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $array = (new \LORIS\api\Views\Project\Instruments(
             $this->_project,
-            iterator_to_array($instruments)
+            iterator_to_array($instruments),
+            $this->apiversion
         ))->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);

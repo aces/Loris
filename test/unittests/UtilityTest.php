@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Unit test for Candidate class
  *
@@ -413,22 +414,16 @@ class UtilityTest extends TestCase
      */
     public function testGetAllDDEInstruments()
     {
-        $test_names = [
-            ['Test_name' => 'test_name1',
-                'Full_name' => 'full_name1'
-            ],
-            ['Test_name' => 'test_name2',
+        $test_battery = [
+            [
+                'Test_name' => 'test_name2',
                 'Full_name' => 'full_name2'
             ]
         ];
-        $doubleDataEntryInstruments = ['test_name2'];
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn($test_names);
-        $this->_configMock->expects($this->any())
-            ->method('getSetting')
-            ->willReturn($doubleDataEntryInstruments);
+            ->willReturn($test_battery);
 
         $this->assertEquals(
             ['test_name2' => 'full_name2'],
