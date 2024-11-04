@@ -59,7 +59,7 @@ const Modal = ({
    * Manages form submission with loading and success states, calling
    * `onSubmit` and handling modal state based on success or failure.
    */
-  const submit = async () => {
+  const handleSubmit = async () => {
     if (!onSubmit) return; // Ensure onSubmit exists
 
     setLoading(true); // Show loader
@@ -88,7 +88,7 @@ const Modal = ({
     if (onSubmit && !(loading || success)) { // Show button if conditions met
       return (
         <div style={submitStyle}>
-          <ButtonElement onUserInput={submit}/>
+          <ButtonElement onUserInput={handleSubmit}/>
         </div>
       );
     }
@@ -147,13 +147,6 @@ const Modal = ({
     transition: '0.4s ease',
   };
 
-  /**
-   * Renders the modal children if `show` is true.
-   *
-   * @returns {JSX.Element | null} - The children to render or null if hidden
-   */
-  const renderChildren = () => show && children;
-
   const footerStyle: CSSProperties = {
     borderTop: '1px solid #DDDDDD',
     display: 'flex',
@@ -208,7 +201,7 @@ const Modal = ({
           <span style={glyphStyle} onClick={handleClose}>×</span>
         </div>
         <div>
-          <div style={bodyStyle}>{renderChildren()}</div>
+          <div style={bodyStyle}>{show && children}</div>
           <div style={footerStyle}>
             {loader}
             {successDisplay}
