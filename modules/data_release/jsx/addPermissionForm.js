@@ -29,6 +29,7 @@ class AddPermissionForm extends Component {
       errorMessage: {},
       isLoaded: false,
       loadedData: 0,
+      specificReleaseId: null,
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -59,7 +60,21 @@ class AddPermissionForm extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData().then(() => this.setState({isLoaded: true}));
+    // if data was not provided from manageFileForm, fetch it.
+    if (!this.props.data) {
+      this.fetchData()
+        .then(() => this.setState({isLoaded: true}));
+    } else {
+      this.setState({
+        data: this.props.data,
+        fieldOptions: this.props.fieldOptions,
+        isLoaded: true,
+        specificReleaseId: this.props.specificReleaseId,
+        formData: {
+          data_release_id: this.props.specificReleaseId,
+        },
+      });
+    }
   }
 
   /**
@@ -99,33 +114,50 @@ class AddPermissionForm extends Component {
           errorMessage={this.state.errorMessage.Username}
           required={true}
           value={this.state.formData.userid}
-        />
-        <h3>Choose a specific file or an entire release below</h3><br/>
-        <SelectElement
-          name='data_release_id'
-          label='Data Release File'
-          options={this.state.fieldOptions.filenames}
-          onUserInput={this.setFormData}
-          ref='data_release_id'
-          hasError={this.state.hasError.Filename}
-          errorMessage={this.state.errorMessage.Filename}
-          required={false}
-          value={this.state.formData.data_release_id}
           autoSelect={false}
         />
-        <h4>OR</h4><br/>
-        <SelectElement
-          name='data_release_version'
-          label='Data Release Version'
-          options={this.state.fieldOptions.versions}
-          onUserInput={this.setFormData}
-          ref='data_release_version'
-          hasError={this.state.hasError.Version}
-          errorMessage={this.state.errorMessage.Version}
-          required={false}
-          value={this.state.formData.data_release_version}
-          autoSelect={false}
-        />
+        {this.state.specificReleaseId === null ?
+          <>
+            <h3>Choose a specific file or an entire release below</h3><br/>
+            <SelectElement
+              name='data_release_id'
+              label='Data Release File'
+              options={this.state.fieldOptions.filenames}
+              onUserInput={this.setFormData}
+              ref='data_release_id'
+              hasError={this.state.hasError.Filename}
+              errorMessage={this.state.errorMessage.Filename}
+              required={false}
+              value={this.state.formData.data_release_id}
+              autoSelect={false}
+            />
+            <h4>OR</h4><br/>
+            <SelectElement
+              name='data_release_version'
+              label='Data Release Version'
+              options={this.state.fieldOptions.versions}
+              onUserInput={this.setFormData}
+              ref='data_release_version'
+              hasError={this.state.hasError.Version}
+              errorMessage={this.state.errorMessage.Version}
+              required={false}
+              value={this.state.formData.data_release_version}
+              autoSelect={false}
+            />
+          </>
+          :
+          // If from manageFileForm, don't allow user to change the file
+          <SelectElement
+            name='data_release_id'
+            label='Data Release File'
+            options={this.state.fieldOptions.filenames}
+            onUserInput={() => {}}
+            ref='data_release_id'
+            disabled={true}
+            value={this.state.specificReleaseId}
+            autoSelect={false}
+          />
+        }
         <ButtonElement label='Add Permission'/>
       </FormElement>
     );
@@ -241,6 +273,10 @@ AddPermissionForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   fetchData: PropTypes.func,
+  data_release_id: PropTypes.number,
+  specificReleaseId: PropTypes.number,
+  fieldOptions: PropTypes.object,
+  data: PropTypes.object,
 };
 
 export default AddPermissionForm;

@@ -45,7 +45,8 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 IF(version is null or version ='','Unversioned', version) AS version,
                 upload_date AS uploadDate,
                 p.Name as ProjectName,
-                dr.id as dataReleaseID
+                dr.id as dataReleaseID,
+                hidden_by_id AS hiddenById
             FROM data_release dr
             LEFT JOIN Project p on p.ProjectID = dr.ProjectID";
 
@@ -60,7 +61,9 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         dr.ProjectID IS NULL OR dr.ProjectID IN
                         (SELECT ProjectID FROM user_project_rel
                         WHERE UserID = ".$user->getID().")
-                    )";
+                    )
+                AND drp.UserID=" . $user->getID()
+                . " AND (dr.hidden_by_id IS NULL OR dr.hidden_by_id=u.ID)";
         }
 
         $query .= " ORDER BY uploadDate";

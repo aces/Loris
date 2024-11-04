@@ -57,13 +57,35 @@ class Files extends \NDB_Page
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
-        switch ($request->getMethod()) {
-        case 'GET':
-            return $this->_handleGet($request);
-        case 'POST':
-            return $this->_handleUpload($request);
-        default:
-            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
+        $action = $request->getQueryParams()['action'];
+        if (!empty($action)
+            && ($action == 'deleteFile'
+            || $action == 'hideFile'
+            || $action == 'unhideFile')
+        ) {
+            switch ($action) {
+            case 'deleteFile':
+                return $this->_deleteFile($request);
+            case 'hideFile':
+                return $this->_changeHideFile($request, true);
+            case 'unhideFile':
+                return $this->_changeHideFile($request, false);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    ['DELETE', 'HIDE']
+                );
+            }
+        } else {
+            switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGet($request);
+            case 'POST':
+                return $this->_handleUpload($request);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    ['GET', 'POST']
+                );
+            }
         }
     }
 
@@ -116,7 +138,7 @@ class Files extends \NDB_Page
             $request,
             $posted['version'],
             $overwrite,
-            $posted['project'],
+            $posted['project']
         );
     }
 
@@ -190,8 +212,7 @@ class Files extends \NDB_Page
      * @param ?string                   $version     The user submitted file version.
      * @param bool                      $overwrite   Flag to indicate if existing
      *                                               file should be overwritten.
-     * @param ?string                   $projectName The name of the project the file
-     *                                               belongs to
+     * @param ?string                   $projectName Name of the project
      *
      * @return ResponseInterface
      */
@@ -215,6 +236,14 @@ class Files extends \NDB_Page
             ['project' => $projectName]
         );
 
+        // Get information on users with permission to the version
+        $releasePage = $this->Module->loadPage(
+            $this->loris,
+            'data_release',
+        );
+        assert($releasePage instanceof Data_Release);
+        $userVersionFiles = $releasePage->getUserVersionFiles($DB);
+
         $upload_date = date('Y-m-d');
         if ($overwrite) {
             // update file in data_release table.
@@ -229,15 +258,15 @@ class Files extends \NDB_Page
             );
         } else {
             // insert the file into the data_release table
-                $DB->insert(
-                    'data_release',
-                    [
-                        'file_name'   => $fileName,
-                        'version'     => $version,
-                        'upload_date' => $upload_date,
-                        'ProjectID'   => $ProjectID,
-                    ]
-                );
+            $DB->insert(
+                'data_release',
+                [
+                    'file_name'   => $fileName,
+                    'version'     => $version,
+                    'upload_date' => $upload_date,
+                    'ProjectID'   => $ProjectID,
+                ]
+            );
 
         }
 
@@ -252,6 +281,20 @@ class Files extends \NDB_Page
                 'data_release_id' => $fileID,
             ]
         );
+        // add permission for file to users with permission to the version
+        foreach ($userVersionFiles as $userid => $userVersionFile) {
+            if (array_key_exists('versions', $userVersionFile)
+                && in_array($version, $userVersionFile['versions'])
+            ) {
+                $DB->insertIgnore(
+                    'data_release_permissions',
+                    [
+                        'userid'          => $userid,
+                        'data_release_id' => $fileID,
+                    ]
+                );
+            }
+        }
         return $files->handle($request);
     }
 
@@ -322,7 +365,7 @@ class Files extends \NDB_Page
             []
         );
 
-        $dataReleaseFiles = array_column(iterator_to_array($filesList), 'file_name');
+        $dataReleaseFiles = array_column($filesList, 'file_name');
 
         $results = [
             'files'         => $dataReleaseFiles,
@@ -330,5 +373,83 @@ class Files extends \NDB_Page
         ];
 
         return new \LORIS\Http\Response\JSON\OK($results);
+    }
+
+    /**
+     * Deletes a file from the database, returning an appropriate HTTP response.
+     *
+     * @param ServerRequestInterface $request The incoming request.
+     *
+     * @return ?ResponseInterface
+     */
+    private function _deleteFile(
+        ServerRequestInterface $request
+    ) : ?ResponseInterface {
+        // Get ID
+        $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
+        if (!$data_release_id) {
+            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+        }
+
+        $user = $request->getAttribute("user");
+
+        if (!$user->hasPermission('data_release_delete')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "Permission denied."
+            );
+        }
+
+        $DB = $this->loris->getDatabaseConnection();
+
+        $DB->delete(
+            'data_release',
+            [
+                'id' => $data_release_id,
+            ]
+        );
+
+        return new \LORIS\Http\Response\JSON\OK();
+    }
+
+    /**
+     * Modifies the hidden_by_id attribute of a file in the database.
+     *
+     * @param ServerRequestInterface $request The incoming request.
+     * @param bool                   $hide    Whether it is hiding or unhiding
+     *
+     * @return ?ResponseInterface
+     */
+    private function _changeHideFile(
+        ServerRequestInterface $request,
+        bool $hide
+    ) : ?ResponseInterface {
+        // Get ID
+        $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
+        if (!$data_release_id) {
+            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+        }
+
+        $user = $request->getAttribute("user");
+
+        if (!$user->hasPermission('data_release_hide')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "Permission denied."
+            );
+        }
+
+        $DB = $this->loris->getDatabaseConnection();
+
+        error_log(print_r($user->getId(), true));
+        $DB->update(
+            'data_release',
+            [
+                'hidden_by_id' => ($hide ? $user->getId() : null),
+            ],
+            [
+                'id' => $data_release_id,
+            ]
+        );
+
+        return new \LORIS\Http\Response\JSON\OK();
     }
 }
