@@ -377,22 +377,36 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1) .views button"
+                "#statistics_widgets .panel:nth-child(2) .views button"
             )
         );
         $views->click();
 
         $assertText1 = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1)".
+                "#statistics_widgets .panel:nth-child(2)".
                 " .dropdown-menu li:nth-child(1)"
             )
         )->getText();
 
         $assertText2 = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1)".
+                "#statistics_widgets .panel:nth-child(2)".
                 " .dropdown-menu li:nth-child(2)"
+            )
+        )->getText();
+
+        $assertText3 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(2)".
+                " .dropdown-menu li:nth-child(3)"
+            )
+        )->getText();
+
+        $assertText4 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(2)".
+                " .dropdown-menu li:nth-child(4)"
             )
         )->getText();
 
@@ -400,6 +414,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertStringContainsString(
             "Recruitment - site breakdown",
             $assertText2
+        );
+        $this->assertStringContainsString(
+            "Recruitment - project breakdown",
+            $assertText3
+        );
+        $this->assertStringContainsString(
+            "Recruitment - cohort breakdown",
+            $assertText4
         );
     }
 

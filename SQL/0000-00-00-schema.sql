@@ -341,6 +341,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
+  `DoubleDataEntryEnabled` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -2095,7 +2096,9 @@ CREATE TABLE `data_release` (
  `file_name` varchar(255),
  `version` varchar(255),
  `upload_date` date,
- PRIMARY KEY (`id`)
+ `ProjectID` INT(10) UNSIGNED NULL,
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (
