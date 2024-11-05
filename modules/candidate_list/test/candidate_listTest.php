@@ -309,22 +309,20 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
         $btn = self::$openProfile;
-        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->safeClick(WebDriverBy::cssSelector($btn),1);
         // input PSCID and DCCID
-        $dccid = "#lorisworkspace > div > div:nth-child(1) > div >".
-                 " div:nth-child(2)>form>div>div:nth-child(1)>div>div>input";
-        $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
-                 " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
+        $dccid = 'input[name="CandID"]:nth-child(1)';
+        $pscid = 'input[name="PSCID"]:nth-child(1)';
         // to do react input value
         $this->safeFindElement(
-            WebDriverBy::cssSelector($dccid)
+            WebDriverBy::cssSelector($dccid),1
         )->sendKeys('300001');
         $this->safeFindElement(
-            WebDriverBy::cssSelector($pscid)
+            WebDriverBy::cssSelector($pscid),1
         )->sendKeys('MTL001');
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
-        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->safeClick(WebDriverBy::cssSelector($btn),1);
         sleep(2);
         $URL =  $this->webDriver->executeScript("return window.location.href;");
         $this->assertStringContainsString("300001", $URL);
