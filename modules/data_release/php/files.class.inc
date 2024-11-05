@@ -360,12 +360,10 @@ class Files extends \NDB_Page
             }
         }
 
-        $filesList = $DB->pselect(
-            "SELECT id, file_name FROM data_release",
+        $filesList = $DB->pselectCol(
+            "SELECT file_name FROM data_release",
             []
         );
-
-        $dataReleaseFiles = array_column($filesList, 'file_name');
 
         $results = [
             'files'         => $dataReleaseFiles,
@@ -380,11 +378,11 @@ class Files extends \NDB_Page
      *
      * @param ServerRequestInterface $request The incoming request.
      *
-     * @return ?ResponseInterface
+     * @return ResponseInterface
      */
     private function _deleteFile(
         ServerRequestInterface $request
-    ) : ?ResponseInterface {
+    ) : ResponseInterface {
         // Get ID
         $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
         if (!$data_release_id) {
@@ -417,12 +415,12 @@ class Files extends \NDB_Page
      * @param ServerRequestInterface $request The incoming request.
      * @param bool                   $hide    Whether it is hiding or unhiding
      *
-     * @return ?ResponseInterface
+     * @return ResponseInterface
      */
     private function _changeHideFile(
         ServerRequestInterface $request,
         bool $hide
-    ) : ?ResponseInterface {
+    ) : ResponseInterface {
         // Get ID
         $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
         if (!$data_release_id) {
