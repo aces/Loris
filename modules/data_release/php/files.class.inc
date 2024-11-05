@@ -366,7 +366,7 @@ class Files extends \NDB_Page
         );
 
         $results = [
-            'files'         => $dataReleaseFiles,
+            'files'         => $filesList,
             'maxUploadSize' => \Utility::getMaxUploadSize(),
         ];
 

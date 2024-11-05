@@ -238,7 +238,7 @@ class Data_Release extends \DataFrameworkMenu
 
         $users     = $this->getUsersList($db);
         $resultObj = [];
-        foreach ($result as $key => $value) {
+        foreach ($result as $_ => $value) {
             $data_release_id = $value['data_release_id'];
             if (!array_key_exists($data_release_id, $resultObj)) {
                 $resultObj[$data_release_id] = [];
