@@ -59,8 +59,7 @@ class AddPermissionForm extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    this.fetchData().then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -112,6 +111,7 @@ class AddPermissionForm extends Component {
           errorMessage={this.state.errorMessage.Filename}
           required={false}
           value={this.state.formData.data_release_id}
+          autoSelect={false}
         />
         <h4>OR</h4><br/>
         <SelectElement
@@ -124,6 +124,7 @@ class AddPermissionForm extends Component {
           errorMessage={this.state.errorMessage.Version}
           required={false}
           value={this.state.formData.data_release_version}
+          autoSelect={false}
         />
         <ButtonElement label='Add Permission'/>
       </FormElement>
@@ -181,7 +182,6 @@ class AddPermissionForm extends Component {
         }).then(function() {
           window.location.assign('/data_release');
         });
-        this.props.fetchData();
       } else {
         let msg = response.statusText ?
           response.statusText :

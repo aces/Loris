@@ -336,6 +336,11 @@ class BatteryManagerIndex extends Component {
         name: 'instrumentOrder',
         type: 'text',
       }},
+      {label: 'Double Data Entry Enabled', show: true, filter: {
+        name: 'DoubleDataEntryEnabled',
+        type: 'select',
+        options: options.DoubleDataEntryEnabled,
+      }},
       {label: 'Active', show: true, filter: {
         name: 'active',
         type: 'select',
@@ -365,6 +370,7 @@ class BatteryManagerIndex extends Component {
         test.centerId,
         test.firstVisit,
         test.instrumentOrder,
+        test.DoubleDataEntryEnabled,
         test.active,
       ];
     });
@@ -420,7 +426,8 @@ class BatteryManagerIndex extends Component {
           test.cohort == testCheck.cohort &&
           test.visitLabel == testCheck.visitLabel &&
           test.centerId == testCheck.centerId &&
-          test.firstVisit == testCheck.firstVisit
+          test.firstVisit == testCheck.firstVisit &&
+          test.DoubleDataEntryEnabled == testCheck.DoubleDataEntryEnabled
         ) {
           duplicate = testCheck;
         }
