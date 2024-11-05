@@ -174,45 +174,47 @@ class BatteryManagerTest extends LorisIntegrationTest
             )
         );
 
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) > ".
+                "div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
+                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) >".
+                " div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >" .
+                " option:nth-child(3)"
+            ),
+            5
+        );
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div> div:nth-child(2) > div > div:nth-child(2)".
-                " > form > div > div:nth-child(3) > div > div > input"
+                "div:nth-child(3) > div:nth-child(1) >".
+                " div:nth-child(2) > input:nth-child(1)",
+                1
             )
         )->clear()->sendKeys('0');
+
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace>div> div:nth-child(2) > div > div:nth-child(2) ".
-                "> form > div > div:nth-child(4) > div > div > input"
-            )
+                "div.col-sm-12:nth-child(4)>div:nth-child(1)".
+                ">div:nth-child(2)>input:nth-child(1)"
+            ),
+            1
         )->clear()->sendKeys('1');
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace>div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                "div>div:nth-child(5) > div > div > select > option:nth-child(7)"
-            )
+                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > ".
+                "select:nth-child(1) > option:nth-child(2)"
+            ),
+            1
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2)>".
-                "form>div>div:nth-child(6) > div > div >select> option:nth-child(2)"
-            )
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div >div:nth-child(2) > div > div:nth-child(2) >".
-                "form>div>div:nth-child(7) >div > div > select > option:nth-child(5)"
-            )
-        );
-
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace>div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(11) > div > div > button"
-            )
+                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
+            ),
+            1
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
+            WebDriverBy::cssSelector("#swal2-title"),
+            1
         )->getText();
         $this->assertStringContainsString(
             "Submission successful!",
@@ -237,36 +239,47 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > ".self::$instrument." > option:nth-child(2)"
-            )
+                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) >".
+                " div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
+                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) > ".
+                "div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >".
+                " option:nth-child(3)"
+            ),
+            5
         );
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div ".
-                "> div:nth-child(2)>form>div>div:nth-child(3) > div > div > input"
+                "div:nth-child(3) > div:nth-child(1) > ".
+                "div:nth-child(2) > input:nth-child(1)",
+                1
             )
         )->clear()->sendKeys('0');
+
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div >".
-                " div:nth-child(2)>form > div > div:nth-child(4) > div > div >input"
-            )
+                "div.col-sm-12:nth-child(4)>div:nth-child(1)>".
+                "div:nth-child(2) >input:nth-child(1)"
+            ),
+            1
         )->clear()->sendKeys('1');
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2)>div>div:nth-child(2)>form".
-                " > div > div:nth-child(5) > div > div >select > option:nth-child(7)"
-            )
+                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) >".
+                " select:nth-child(1) > option:nth-child(2)
+"
+            ),
+            1
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div >div:nth-child(2)>div>div:nth-child(2)>form ".
-                "> div > div:nth-child(11) > div > div > button"
-            )
+                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
+            ),
+            1
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
+            WebDriverBy::cssSelector("#swal2-title"),
+            1
         )->getText();
         $this->assertStringContainsString(
             "Submission successful!",
