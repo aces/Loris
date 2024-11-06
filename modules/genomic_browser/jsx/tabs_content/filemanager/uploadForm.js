@@ -152,7 +152,6 @@ class GenomicUploadForm extends Component {
               options={this.state.options.fileTypes}
               onUserInput={this.setFileUploadFormData}
               ref='fileType'
-              hasError={false}
               required={true}
               value={this.state.formData.fileType}
             />

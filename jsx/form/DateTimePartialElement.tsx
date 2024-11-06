@@ -137,7 +137,6 @@ interface DateTimePartialElementProps {
   dateFormat: string;
   required?: boolean;
   disabled?: boolean;
-  hasError?: boolean;
   errorMessage?: string;
   onUserInput: (name: string, value: string) => void;
 }
@@ -185,7 +184,7 @@ function DateTimePartialElement(props: DateTimePartialElementProps) {
   if (props.required && value == '') {
     errorMessage = <span>This field is required</span>;
     elementClass += ' has-error';
-  } else if (props.hasError) {
+  } else if (props.errorMessage) {
     errorMessage = <span>{props.errorMessage}</span>;
     elementClass += ' has-error';
   }
