@@ -359,8 +359,8 @@ class UploadForm extends Component {
       };
     }
     for (const [key, error] of Object.entries(errorMessage)) {
-      errorMessage[key] = error.toString();
       if (error.length) {
+        errorMessage[key] = error.toString();
         messageToPrint += error + '\n';
       } else {
         errorMessage[key] = null;
