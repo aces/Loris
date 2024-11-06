@@ -105,6 +105,17 @@ class NDB_BVL_InstrumentStatus
         // set the _commentID property
         $this->_commentID = $commentID;
 
+        $instrumentName   = NDB_BVL_Battery::getInstrumentNameForCommentId(
+            $this->_commentID
+        );
+        $instrument       = NDB_BVL_Instrument::factory(
+            $this->loris,
+            $instrumentName,
+            $this->_commentID,
+            '',
+        );
+        $instrument->updateRequiredElementsCompletedFlag();
+
         $db = \NDB_Factory::singleton()->database();
 
         // get candidate data from database
