@@ -179,7 +179,11 @@ class CandidateDOB extends Component {
             title: 'Success!',
             text: 'Date of birth updated!',
             type: 'success',
-            confrimButtonText: 'OK',
+            confirmButtonText: 'OK',
+          }).then((result) => {
+            if (result.value) {
+              location.reload();
+            }
           });
           if (resp.value) {
             this.fetchData();
