@@ -287,7 +287,14 @@ class CouchDBMRIImporter
     {
         $date = $file->getParameter($type);
         if (preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $date, $array)) {
-            $date = (mktime(12, 0, 0, intval($array[2]), intval($array[3]), intval($array[1])));
+            $date = mktime(
+                12,
+                0,
+                0,
+                intval($array[2]),
+                intval($array[3]),
+                intval($array[1])
+            );
             return date('Y-m-d', $date);
         } else {
             return "";
