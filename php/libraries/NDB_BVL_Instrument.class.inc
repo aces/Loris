@@ -1053,7 +1053,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['tst_name' => $this->testName]
             );
             $results = $db->pselectWithIndexKey(
-                "SELECT c.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
@@ -1073,7 +1073,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $results = $db->pselectWithIndexKey(
-                "SELECT e.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
