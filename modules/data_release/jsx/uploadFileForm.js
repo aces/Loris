@@ -29,7 +29,6 @@ class UploadFileForm extends Component {
       formData: {},
       uploadResult: null,
       errorMessage: {},
-      hasError: {},
       isLoaded: false,
       uploadProgress: -1,
     };
@@ -127,22 +126,15 @@ class UploadFileForm extends Component {
       Filesize: undefined,
     };
 
-    let hasError = {
-      Filename: undefined,
-      Filesize: undefined,
-    };
-
     if (!formData.file) {
       errorMessage.Filename = 'You must select a file to upload';
-      hasError.Filename = true;
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 
     if (!formData.project) {
       errorMessage.Project = 'You must select a project';
-      hasError.Project = true;
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 
@@ -154,14 +146,13 @@ class UploadFileForm extends Component {
                 + maxSizeAllowed
                 + ')';
       errorMessage['Filesize'] = msg;
-      hasError['Filesize'] = true;
       swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
         showCancelButton: true,
       });
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 

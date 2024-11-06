@@ -515,7 +515,7 @@ class IssueForm extends Component {
       if (formDataToCheck[field]) {
         requiredFields[field] = formDataToCheck[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required';
         isValidForm = false;
       }
     });

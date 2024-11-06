@@ -25,7 +25,6 @@ class AddPermissionForm extends Component {
       data: {},
       fieldOptions: {},
       formData: {},
-      hasError: {},
       errorMessage: {},
       isLoaded: false,
       loadedData: 0,
@@ -95,7 +94,6 @@ class AddPermissionForm extends Component {
           options={this.state.fieldOptions.users}
           onUserInput={this.setFormData}
           ref='userid'
-          hasError={this.state.hasError.Username}
           errorMessage={this.state.errorMessage.Username}
           required={true}
           value={this.state.formData.userid}
@@ -107,7 +105,6 @@ class AddPermissionForm extends Component {
           options={this.state.fieldOptions.filenames}
           onUserInput={this.setFormData}
           ref='data_release_id'
-          hasError={this.state.hasError.Filename}
           errorMessage={this.state.errorMessage.Filename}
           required={false}
           value={this.state.formData.data_release_id}
@@ -120,7 +117,6 @@ class AddPermissionForm extends Component {
           options={this.state.fieldOptions.versions}
           onUserInput={this.setFormData}
           ref='data_release_version'
-          hasError={this.state.hasError.Version}
           errorMessage={this.state.errorMessage.Version}
           required={false}
           value={this.state.formData.data_release_version}
@@ -208,16 +204,9 @@ class AddPermissionForm extends Component {
       Version: undefined,
     };
 
-    let hasError = {
-      Username: false,
-      Filename: false,
-      Version: false,
-    };
-
     // make sure a user was selected
     if (!formData.userid) {
       errorMessage.Username = 'You must select a user!';
-      hasError.Username = true;
       isValid = false;
     }
 
@@ -227,12 +216,10 @@ class AddPermissionForm extends Component {
       let msg = 'You must select a file OR a version to grant permission on!';
       errorMessage.Filename = msg;
       errorMessage.Version = msg;
-      hasError.Filename = true;
-      hasError.Version = true;
       isValid = false;
     }
 
-    this.setState({errorMessage, hasError});
+    this.setState({errorMessage});
     return isValid;
   }
 }

@@ -451,7 +451,7 @@ SearchableDropdown.defaultProps = {
   disabled: false,
   required: false,
   sortByValue: true,
-  errorMessage: '',
+  errorMessage: null,
   placeHolder: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -554,7 +554,7 @@ export class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError
+    if (this.props.errorMessage
        || (this.props.required && this.props.value === '')
     ) {
       errorMessage = <span>{this.props.errorMessage}</span>;
@@ -660,7 +660,6 @@ SelectElement.propTypes = {
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
   autoSelect: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
@@ -680,8 +679,7 @@ SelectElement.defaultProps = {
   sortByValue: true,
   emptyOption: true,
   autoSelect: true,
-  hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -978,11 +976,10 @@ TagsElement.defaultProps = {
   required: false,
   disabled: false,
   emptyOption: true,
-  hasError: false,
   allowDupl: false,
   useSearch: false,
   strictSearch: false, // only accept items specified in options
-  errorMessage: '',
+  errorMessage: null,
   pendingValKey: '',
   btnLabel: 'Add Tag',
   onUserInput: function() {
@@ -1213,7 +1210,7 @@ TextboxElement.defaultProps = {
   autoComplete: null,
   disabled: false,
   required: false,
-  errorMessage: '',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1345,7 +1342,7 @@ EmailElement.defaultProps = {
   autoComplete: null,
   disabled: false,
   required: false,
-  errorMessage: '',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1506,7 +1503,7 @@ PasswordElement.defaultProps = {
   disabled: false,
   required: false,
   autoComplete: null,
-  errorMessage: '',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1560,7 +1557,7 @@ export class DateElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError
+    if (this.props.errorMessage
        || (this.props.required && this.props.value === '')
     ) {
       errorMessage = <span>{this.props.errorMessage}</span>;
@@ -1640,7 +1637,6 @@ DateElement.propTypes = {
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -1655,8 +1651,7 @@ DateElement.defaultProps = {
   dateFormat: 'YMd',
   disabled: false,
   required: false,
-  hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -2039,7 +2034,7 @@ export class FileElement extends Component {
     };
 
     // Add error message
-    if (this.props.hasError) {
+    if (this.props.errorMessage) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
     }
@@ -2125,7 +2120,6 @@ FileElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   allowMultiple: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -2138,8 +2132,7 @@ FileElement.defaultProps = {
   disabled: false,
   required: false,
   allowMultiple: false,
-  hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -2396,7 +2389,7 @@ CheckboxElement.defaultProps = {
   id: null,
   disabled: false,
   required: false,
-  errorMessage: '',
+  errorMessage: null,
   offset: 'col-sm-offset-3',
   class: 'checkbox-inline',
   elementClass: 'checkbox-inline col-sm-offset-3',
@@ -2760,7 +2753,7 @@ RadioElement.defaultProps = {
   disabled: false,
   required: false,
   vertical: false,
-  errorMessage: '',
+  errorMessage: null,
   elementClass: 'row form-group',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -2905,7 +2898,7 @@ SliderElement.defaultProps = {
   maxWidth: 'auto',
   disabled: false,
   required: false,
-  errorMessage: '',
+  errorMessage: null,
   elementClass: 'row form-group',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
