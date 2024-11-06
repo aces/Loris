@@ -146,7 +146,7 @@ class ExaminerIndex extends Component {
 
     switch (column) {
       case 'Examiner':
-        if (this.state.data.useCertification) {
+        if (this.state.data.fieldOptions.useCertification) {
           const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
                     row.ID;
           result = <td><a href={url}>{cell}</a></td>;
