@@ -72,3 +72,7 @@
   max-height: 300px;
   overflow: scroll;
 }
+.affiliations-dropdown {
+    max-height: 50vh;
+    overflow-y: auto;
+}
