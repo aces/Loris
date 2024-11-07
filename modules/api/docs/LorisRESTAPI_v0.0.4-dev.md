@@ -895,6 +895,8 @@ acquired for that visit. It will return an object of the form:
 The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET
 scans, respectively.
 
+### 5.2 Upload candidate DICOMs
+
 ```
 POST /candidates/$CandID/$VisitLabel/dicoms
 ```
@@ -916,12 +918,10 @@ The JSON can optionally have a boolean `Overwrite` attribute that can be used
 to overwrite an existing file (`false` if not present).
 A successful request will be answered by a `303 See Other` response with its
 `Location` header pointing to the processes list of the new upload.
-(See 5.3 Tar Level processes)
+(See 5.3 Download DICOM archive)
 
-### 5.2 Tar Level Data
+### 5.3 Download DICOM archive
 
-This section describe how to upload DICOM studies and how to start and monitor
-`mri_upload` processes.
 DICOM studies that have been successfully uploaded and processed can be downloaded with
 the following `GET` request:
 
@@ -932,6 +932,8 @@ GET /candidates/$CandID/$VisitLabel/dicoms/$ArchiveName
 Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$VisitLabel/dicoms`.
+
+### 5.4 MRI upload processes
 
 To get a list of the processes and their status for a given DICOM study previously uploaded use the following:
 
@@ -967,6 +969,9 @@ Response shape:
 
 ** An empty `Processes` array means that there has never been a process launched on
 that MRI upload.
+
+### 5.5 Run MRI upload process
+
 To start an MRI upload process on a previously uploaded DICOM study, a POST request
 containing the `MriUploadID` attribute in the request body should be sent.
 
@@ -984,6 +989,9 @@ The request body must contain:
 ```
 
 Expected response: 202 Accepted with `Location` header pointing to the new process.
+
+### 5.6 MRI upload process
+
 To obtain a specific process state, use the following:
 
 ```
