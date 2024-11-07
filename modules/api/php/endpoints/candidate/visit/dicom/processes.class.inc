@@ -226,11 +226,12 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $process_type
         );
 
-        $loris_path = $request->getQueryParams()['lorispath'] ?? '';
-        $new_path   = $loris_path . '/' .$process_id;
+        $api_version = $request->getAttribute("LORIS-API-Version");
+        $api_path    = $request->getUri()->getPath();
+        $path        = "/api/{$api_version}/{$api_path}/{$process_id}";
 
         $process_location = $request->getUri()
-            ->withPath($new_path)
+            ->withPath($path)
             ->withQuery('');
 
         $body = [
