@@ -41,7 +41,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var string
      */
-    private $_tarname;
+    private $_tar_name;
     /**
      * A cache of the endpoint results, so that it doesn't need to be
      * recalculated for the ETag and handler.
@@ -51,13 +51,13 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit   The requested visit
-     * @param string     $tarname The DICOM study filename
+     * @param \Timepoint $visit    The requested visit
+     * @param string     $tar_name The DICOM study filename
      */
-    public function __construct(\Timepoint $visit, string $tarname)
+    public function __construct(\Timepoint $visit, string $tar_name)
     {
-        $this->_visit   = $visit;
-        $this->_tarname = $tarname;
+        $this->_visit    = $visit;
+        $this->_tar_name = $tar_name;
     }
 
     /**
@@ -93,8 +93,8 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) === 0) {
+        $path_parts = $request->getAttribute('pathparts');
+        if (count($path_parts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
                 return $this->_handleGET($request);
@@ -116,7 +116,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // Delegate to sub-endpoints
         $handler = new Process\Process(
             $this->_visit,
-            $this->_tarname
+            $this->_tar_name
         );
 
         return $handler->process(
@@ -147,15 +147,15 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $mriuploads = $this->_visit->getMRIUploadsByFilename(
+            $mri_uploads = $this->_visit->getMRIUploadsByFilename(
                 $user,
-                $this->_tarname
+                $this->_tar_name
             );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $array = (new \LORIS\api\Views\Visit\Dicom\Processes($mriuploads))
+        $array = (new \LORIS\api\Views\Visit\Dicom\Processes($mri_uploads))
             ->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
@@ -180,25 +180,25 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        $data        = json_decode($request->getBody()->__toString(), true);
-        $processtype = $data['ProcessType'] ?? null;
-        if (!in_array($processtype, ['mri_upload'])) {
+        $data         = json_decode($request->getBody()->__toString(), true);
+        $process_type = $data['ProcessType'] ?? null;
+        if (!in_array($process_type, ['mri_upload'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid ProcessType.'
             );
         }
 
-        $mriuploadid = $data['MriUploadID'] ?? null;
-        if (!is_numeric($mriuploadid)) {
+        $mri_upload_id = $data['MriUploadID'] ?? null;
+        if (!is_numeric($mri_upload_id)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid ProcessType.'
             );
         }
 
         try {
-            $mriupload = $this->_visit->getMRIUploadsById(
+            $mri_upload = $this->_visit->getMRIUploadsById(
                 $user,
-                (int) $mriuploadid
+                (int) $mri_upload_id
             );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound(
@@ -207,9 +207,9 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $processid = (new ServerProcessLauncher())->mriupload(
-                $mriuploadid,
-                $mriupload->getUploadLocation()
+            $process_id = (new ServerProcessLauncher())->mriupload(
+                $mri_upload_id,
+                $mri_upload->getUploadLocation()
             );
         } catch (\LorisException $e) {
             $this->logger->log(\Psr\Log\LogLevel::ERROR, $e->getMessage());
@@ -218,24 +218,24 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $ids = [$processid];
-        $serverProcessesMonitor = new ServerProcessesMonitor();
-        $processesState         = $serverProcessesMonitor->getProcessesState(
+        $ids = [$process_id];
+        $server_processes_monitor = new ServerProcessesMonitor();
+        $processes_state          = $server_processes_monitor->getProcessesState(
             $ids,
             $user->getUsername(),
-            $processtype
+            $process_type
         );
 
-        $lorispath = $request->getQueryParams()['lorispath'] ?? '';
-        $newpath   = $lorispath . '/' .$processid;
+        $loris_path = $request->getQueryParams()['lorispath'] ?? '';
+        $new_path   = $loris_path . '/' .$process_id;
 
-        $processlocation = $request->getUri()
-            ->withPath($newpath)
+        $process_location = $request->getUri()
+            ->withPath($new_path)
             ->withQuery('');
 
         $body = [
-            'Link'         => (string) $processlocation,
-            'ProcessState' => $processesState,
+            'Link'         => (string) $process_location,
+            'ProcessState' => $processes_state,
         ];
 
         return new \LORIS\Http\Response\JSON\Accepted($body);
