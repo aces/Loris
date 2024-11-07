@@ -1,4 +1,5 @@
-import {ChangeEvent, ReactNode, useState} from 'react';
+import React, {ChangeEvent, ReactNode, useState} from 'react';
+import InputLabel from 'jsx/form/InputLabel';
 
 const format = 'YYYY-MM-DD hh:mm:ss';
 
@@ -91,7 +92,7 @@ function formatDatetime(oldDateTime: string, newDateTime: string) {
   return newDateTime;
 }
 
-interface MaskProps {
+type MaskProps = {
   value: string;
   children: ReactNode;
 }
@@ -102,34 +103,32 @@ interface MaskProps {
  * @param props The props of the component
  * @returns The corresponding React element
  */
-function Mask(props: MaskProps) {
-  // '\u00A0' is a non-breakable space.
-  return (
-    <div style={{position: 'relative'}}>
-      {props.children}
-      <div className="form-control" style={{
-        position: 'absolute',
-        top: 0, left: 0,
-        backgroundColor: 'transparent',
-        borderColor: 'transparent',
-        boxShadow: 'none',
-        pointerEvents: 'none',
+const Mask: React.FC<MaskProps> = ({value, children}) => (
+  <div style={{position: 'relative'}}>
+    {children}
+    <div className="form-control" style={{
+      position: 'absolute',
+      top: 0, left: 0,
+      backgroundColor: 'transparent',
+      borderColor: 'transparent',
+      boxShadow: 'none',
+      pointerEvents: 'none',
+    }}>
+      <div style={{
+        fontFamily: 'monospace',
+        color: '#777777',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
       }}>
-        <div style={{
-          fontFamily: 'monospace',
-          color: '#777777',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-        }}>
-          {'\u00A0'.repeat(props.value.length)}
-          {format.slice(props.value.length)}
-        </div>
+        {/* '\u00A0' is a non-breakable space */}
+        {'\u00A0'.repeat(value.length)}
+        {format.slice(value.length)}
       </div>
     </div>
-  );
-}
+  </div>
+);
 
-interface DateTimePartialElementProps {
+type DateTimePartialElementProps = {
   name: string;
   label: string;
   value?: string;
@@ -149,7 +148,9 @@ interface DateTimePartialElementProps {
  * @param props The props of the component
  * @returns The corresponding React element
  */
-function DateTimePartialElement(props: DateTimePartialElementProps) {
+const DateTimePartialElement: React.FC<DateTimePartialElementProps> = (
+  props,
+) => {
   const onUserInput = props.onUserInput !== undefined
     ? props.onUserInput
     : () => console.warn('onUserInput() callback is not set');
@@ -176,8 +177,6 @@ function DateTimePartialElement(props: DateTimePartialElementProps) {
     );
   }
 
-  const required = props.required ?? false;
-  const disabled = props.disabled ?? false;
   let errorMessage = null;
   let elementClass = 'row form-group';
 
@@ -189,27 +188,13 @@ function DateTimePartialElement(props: DateTimePartialElementProps) {
     elementClass += ' has-error';
   }
 
-  let labelHTML;
-  let classSz = 'col-sm-12';
-  if (props.label) {
-    classSz = 'col-sm-9';
-    labelHTML = (
-      <label
-        className="col-sm-3 control-label"
-        htmlFor={props.label}
-      >
-        {props.label}
-        {required
-          ? (<span className="text-danger">*</span>)
-          : null}
-      </label>
-    );
-  }
-
+  const wrapperClass = props.label ? 'col-sm-9' : 'col-sm-12';
   return (
     <div className={elementClass}>
-      {labelHTML}
-      <div className={classSz}>
+      {props.label && (
+        <InputLabel label={props.label} required={props.required} />
+      )}
+      <div className={wrapperClass}>
         <Mask value={value}>
           <input
             className="form-control"
@@ -217,8 +202,8 @@ function DateTimePartialElement(props: DateTimePartialElementProps) {
             id={props.id}
             onChange={handleChange}
             value={value}
-            required={required}
-            disabled={disabled}
+            required={props.required}
+            disabled={props.disabled}
             style={{fontFamily: 'monospace'}}
           />
         </Mask>
@@ -226,6 +211,6 @@ function DateTimePartialElement(props: DateTimePartialElementProps) {
       </div>
     </div>
   );
-}
+};
 
 export default DateTimePartialElement;
