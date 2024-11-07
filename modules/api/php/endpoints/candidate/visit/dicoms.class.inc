@@ -322,7 +322,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $is_phantom,
             );
         } catch (\Throwable $e) {
-            error_log($e->getMessage());
+            $this->logger->log(\Psr\Log\LogLevel::ERROR, $e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Database insertion failed, please contact your LORIS '
                     . 'administrator.'
