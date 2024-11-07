@@ -967,7 +967,7 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type
+            "SELECT DISTINCT ID, Scan_type
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
             []
