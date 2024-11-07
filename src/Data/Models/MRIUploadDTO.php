@@ -23,21 +23,9 @@ namespace LORIS\Data\Models;
  */
 class MRIUploadDTO implements \LORIS\Data\DataInstance
 {
-    private $mri_upload_id;
-    private $uploaded_by;
-    private $upload_date;
-    private $upload_location;
-    private $decompress_location;
-    private $insertion_complete;
-    private $inserting;
-    private $patient_name;
-    private $inserted_minc_count;
-    private $created_minc_count;
-    private $tarchive_id;
-    private $session_id;
-    private $is_candidate_info_validated;
-    private $is_tarchive_validated;
-    private $is_phantom;
+    private bool $insertion_complete;
+    private bool $is_tarchive_validated;
+    private bool $is_phantom;
 
     /**
      * Constructor
@@ -59,37 +47,25 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
      * @param bool|null   $is_phantom                  The IsPhantom
      */
     public function __construct(
-        ?int $mri_upload_id,
-        ?string $uploaded_by,
-        \DateTime $upload_date,
-        ?string $upload_location,
-        ?string $decompress_location,
+        private ?int $mri_upload_id,
+        private ?string $uploaded_by,
+        private \DateTime $upload_date,
+        private ?string $upload_location,
+        private ?string $decompress_location,
         ?bool $insertion_complete,
-        ?bool $inserting,
-        ?string $patient_name,
-        ?int $inserted_minc_count,
-        ?int $created_minc_count,
-        ?int $tarchive_id,
-        ?int $session_id,
-        ?bool $is_candidate_info_validated,
+        private ?bool $inserting,
+        private ?string $patient_name,
+        private ?int $inserted_minc_count,
+        private ?int $created_minc_count,
+        private ?int $tarchive_id,
+        private ?int $session_id,
+        private ?bool $is_candidate_info_validated,
         ?bool $is_tarchive_validated,
         ?bool $is_phantom
     ) {
-        $this->mri_upload_id       = $mri_upload_id;
-        $this->uploaded_by         = $uploaded_by;
-        $this->upload_date         = $upload_date;
-        $this->upload_location     = $upload_location;
-        $this->decompress_location = $decompress_location;
-        $this->insertion_complete  = $insertion_complete ?? false;
-        $this->inserting           = $inserting;
-        $this->patient_name        = $patient_name;
-        $this->inserted_minc_count = $inserted_minc_count;
-        $this->created_minc_count  = $created_minc_count;
-        $this->tarchive_id         = $tarchive_id;
-        $this->session_id          = $session_id;
-        $this->is_candidate_info_validated = $is_candidate_info_validated;
-        $this->is_tarchive_validated       = $is_tarchive_validated ?? false;
-        $this->is_phantom = $is_phantom ?? false;
+        $this->insertion_complete    = $insertion_complete ?? false;
+        $this->is_tarchive_validated = $is_tarchive_validated ?? false;
+        $this->is_phantom            = $is_phantom ?? false;
     }
 
     /**
