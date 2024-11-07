@@ -939,7 +939,7 @@ To get a list of the processes and their status for a given DICOM study previous
 GET /candidates/$CandID/$VisitLabel/dicoms/$TarName/processes
 ```
 
-The response contains all `mri_upload` attempts with the specified `$tarname`. And for
+The response contains all `mri_upload` attempts with the specified `$TarName`. And for
 each of them, a list of processes status.
 Response shape:
 
