@@ -836,7 +836,7 @@ GET /candidates/$CandID/$VisitLabel/dicoms
 ```
 
 A GET request to `/candidates/$CandID/$VisitLabel/dicoms` will return a JSON object of
-all the DICOM archives (A.K.A. one DICOM archive per `StudyInstanceUID`) which have been
+all the DICOM archives (that is, one DICOM archive per `StudyInstanceUID`) which have been
 acquired for that visit. It will return an object of the form:
 
 ```js
