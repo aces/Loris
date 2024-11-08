@@ -5,7 +5,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 
-type ModalProps = PropsWithChildren<{
+export type ModalProps = PropsWithChildren<{
   throwWarning?: boolean;
   show: boolean;
   onClose: () => void;
