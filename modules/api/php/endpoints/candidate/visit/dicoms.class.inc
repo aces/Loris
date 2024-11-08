@@ -202,9 +202,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($files) === 0) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'No file found, there should be one file uploaded per request. '
-                    . 'If a file was uploaded, check that it is not larger than '
-                    . 'the max file size PHP setting or take a look at the '
-                    . 'Apache logs.'
+                    . 'If a file was uploaded, it might be larger than the maximum '
+                    . 'upload file size that is configured on this server.'
             );
         }
 
