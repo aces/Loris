@@ -4,6 +4,7 @@ import Form from 'jsx/Form';
 
 interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
   label: string; // Label for the default CTA trigger button
+  onClose?: ModalProps['onClose'];
   onUserInput?: () => void; // Optional callback when the trigger is activated
   TriggerTag?: ElementType; // Custom component for the modal trigger
 }
