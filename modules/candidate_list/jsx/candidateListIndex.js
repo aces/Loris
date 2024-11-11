@@ -65,7 +65,7 @@ class CandidateListIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    fetch('options',
+    fetch(loris.BaseURL+'/candidate_list/options',
         {credentials: 'same-origin'}).then(
             (resp) => resp.json()
         ).then(
