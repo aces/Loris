@@ -11,6 +11,7 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Filter component
@@ -24,6 +25,8 @@ import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
  * @return {JSX}
  */
 function Filter(props) {
+  const {t} = useTranslation();
+
   /**
    * Takes query params from url and triggers an update of the fields that are
    * associated with those params, if they exist.
@@ -160,7 +163,7 @@ function Filter(props) {
       {filterPresets()}
       <li>
         <a role='button' name='reset' onClick={props.clearFilters}>
-          Clear Filter
+          {t('Clear filters')}
         </a>
       </li>
     </ul>

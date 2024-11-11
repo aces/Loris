@@ -3,6 +3,7 @@ import FilterableDataTable from 'FilterableDataTable';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import ProtocolModal from './protocolModal.js';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Entry point for the MRI Violatons module.
@@ -11,6 +12,7 @@ import ProtocolModal from './protocolModal.js';
  * @return {JSX}
  */
 function MRIViolationsIndex(props) {
+  const {t} = useTranslation();
   const [fieldOptions, setFieldOptions] = useState({});
   const [violationModal, setViolationModal] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -259,59 +261,59 @@ function MRIViolationsIndex(props) {
     }
     return [
       {
-        label: 'Patient Name', show: true, filter: {
+        label: t('Patient name'), show: true, filter: {
           name: 'patientName',
           type: 'text',
         },
       },
       {
-        label: 'Project', show: true, filter: {
+        label: t('Project'), show: true, filter: {
           name: 'project',
           type: 'select',
           options: fieldoptions.projects,
         },
       },
       {
-        label: 'Cohort', show: true, filter: {
+        label: t('Cohort'), show: true, filter: {
           name: 'cohort',
           type: 'select',
           options: fieldoptions.cohorts,
         },
       },
       {
-        label: 'Site', show: true, filter: {
+        label: t('Site'), show: true, filter: {
           name: 'site',
           type: 'select',
           options: fieldoptions.sites,
         },
       },
       {
-        label: 'Time Run', show: true, filter: {
+        label: t('Time run'), show: true, filter: {
           name: 'timeRun',
           type: 'datetime',
         },
       },
       {
-        label: 'Image File', show: true, filter: {
+        label: t('Image file'), show: true, filter: {
           name: 'mincFile',
           type: 'text',
         },
       },
       {
-        label: 'Series Description or Scan Type', show: true, filter: {
+        label: t('Series description or scan type'), show: true, filter: {
           name: 'seriesOrType',
           type: 'text',
         },
       },
       {
-        label: 'Type of Problem', show: true, filter: {
+        label: t('Type of problem'), show: true, filter: {
           name: 'typeOfProblem',
           type: 'select',
           options: problemtypes,
         },
       },
       {
-        label: 'Resolution Status', show: true, filter: {
+        label: t('Resolution status'), show: true, filter: {
           name: 'resolutionStatus',
           type: 'select',
           options: {
@@ -326,7 +328,7 @@ function MRIViolationsIndex(props) {
         },
       },
       {
-        label: 'Series UID', show: false, filter: {
+        label: t('Series UID'), show: false, filter: {
           name: 'seriesUID',
           type: 'text',
         },

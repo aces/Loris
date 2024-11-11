@@ -35,17 +35,27 @@ class PageDecorationMiddleware implements MiddlewareInterface
         $loris   = $request->getAttribute("loris");
         $page    = $request->getAttribute("pageclass")
         ?? new \NDB_Page($loris, new \NullModule($loris), "", "", "", "");
+
+        $DB            = \NDB_Factory::singleton()->database();
+        $language_rows = $DB->pselect("SELECT language_code, language_label FROM language", []);
+        $supported_languages = [];
+        foreach ($language_rows as $language_row) {
+            $supported_languages[] = [
+                                      'code' => $language_row['language_code'],
+                                      'name' => $language_row['language_label'],
+                                     ];
+        }
+
         if ($this->user instanceof \LORIS\AnonymousUser) {
             return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
                 $baseURL ?? "",
                 $config,
                 $page->getJSDependencies(),
-                $page->getCSSDependencies()
+                $page->getCSSDependencies(),
+                $supported_languages,
             )
             )->process($request, $handler);
         }
-
-        $DB = \NDB_Factory::singleton()->database();
 
         return (new \LORIS\Middleware\UserPageDecorationMiddleware(
             $this->user,
@@ -54,7 +64,7 @@ class PageDecorationMiddleware implements MiddlewareInterface
             $config,
             $page->getJSDependencies(),
             $page->getCSSDependencies(),
-            $DB
+            $supported_languages,
         )
         )->process($request, $handler);
     }
