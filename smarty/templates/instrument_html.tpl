@@ -14,13 +14,11 @@
   <thead>
   <tr class="info">
     <th>
-      DOB
+      Derived Age
     </th>
-    {if $candidate.EDC!=""}
-      <th>
-        EDC
-      </th>
-    {/if}
+    <th>
+        EDC Age
+    </th>
     <th>
       Biological Sex
     </th>
@@ -64,12 +62,14 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    <td>
-      {$candidate.DoB}
-    </td>
-    {if $candidate.EDC!=""}
+    {if $dob_age!=""}
       <td>
-        {$candidate.EDC}
+        {$dob_age}
+      </td>
+    {/if}
+    {if $edc_age!=""}
+      <td>
+        {$edc_age}
       </td>
     {/if}
     <td>

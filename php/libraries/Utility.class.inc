@@ -263,11 +263,10 @@ class Utility
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
+            AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
         // The result has several columns; we only want the visit labels.
@@ -581,24 +580,18 @@ class Utility
             most accurate Full_name value and should be replaced by
             getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
-        $Factory       = \NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $config        = $Factory->config();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+        $Factory = \NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+        $ddeInstruments = $DB->pselect(
+            "SELECT DISTINCT test_battery.Test_name, Full_name
+            FROM test_battery
+            JOIN test_names ON test_battery.Test_name = test_names.Test_name
+            WHERE DoubleDataEntryEnabled = 'Y'",
             []
         );
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
-
-        $instruments = [];
-        foreach ($instruments_q as $row) {
-            if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
-                    $instruments[$row['Test_name']] = $row['Full_name'];
-                }
-            }
+        $instruments    = [];
+        foreach ($ddeInstruments as $instrument) {
+            $instruments[$instrument['Test_name']] = $instrument['Full_name'];
         }
         return $instruments;
     }
@@ -781,11 +774,10 @@ class Utility
             "SELECT DISTINCT t.Test_name, t.Full_name
             FROM session s
             JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN psc ON (s.CenterID=psc.CenterID)
             JOIN flag f ON (f.sessionID=s.id)
             JOIN test_names t ON (f.test_name=t.Test_name)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
-            AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+            AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
             ['vl' => $visit_label],
             'Test_name'

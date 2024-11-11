@@ -86,7 +86,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
         state.timeSelection
         && (
           Math.abs(state.timeSelection[1] - state.timeSelection[0]
-        ) < MIN_INTERVAL)
+          ) < MIN_INTERVAL)
       ) {
         return setTimeSelection(null);
       } else {
