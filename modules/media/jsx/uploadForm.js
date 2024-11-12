@@ -148,7 +148,6 @@ class MediaUploadForm extends Component {
               options={this.state.Data.candidates}
               onUserInput={this.setFormData}
               ref='pscid'
-              hasError={false}
               required={true}
               value={this.state.formData.pscid}
             />
@@ -419,7 +418,7 @@ class MediaUploadForm extends Component {
       if (formData[field]) {
         requiredFields[field] = formData[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required.';
         isValidForm = false;
       }
     });

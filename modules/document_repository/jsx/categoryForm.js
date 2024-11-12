@@ -107,7 +107,6 @@ class DocCategoryForm extends React.Component {
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               disabled={disabled}
-              hasError={false}
               value={this.state.formData.parentId}
             />
             <TextareaElement

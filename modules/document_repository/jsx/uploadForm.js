@@ -109,7 +109,6 @@ class DocUploadForm extends Component {
               label="Category"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
-              hasError={false}
               required={true}
               value={this.state.formData.category}
             />

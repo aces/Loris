@@ -101,7 +101,6 @@ class DocEditForm extends React.Component {
             label="Category"
             options={this.state.data.categories}
             onUserInput={this.setFormData}
-            hasError={false}
             required={true}
             disabled={categoryDisabled}
             value={this.state.docData.category}

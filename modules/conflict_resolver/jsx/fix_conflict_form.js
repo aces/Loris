@@ -32,7 +32,7 @@ class FixConflictForm extends Component {
     this.state = {
       value: null,
       success: false,
-      error: false,
+      error: null,
       emptyOption: true,
     };
 
@@ -68,11 +68,11 @@ class FixConflictForm extends Component {
         if (json.error) {
           throw json.error;
         }
-        this.setState({success: true, error: false, emptyOption: false, value});
+        this.setState({success: true, error: null, emptyOption: false, value});
       })
       .catch((error) => {
         swal('Error!', error, 'error');
-        this.setState({error: true, success: false, emptyOption: true});
+        this.setState({error, success: false, emptyOption: true});
       });
   }
 
@@ -95,8 +95,7 @@ class FixConflictForm extends Component {
           onUserInput={this.resolveConflict}
           options={this.props.options}
           emptyOption={emptyOption}
-          hasError={error}
-          errorMessage={''}
+          errorMessage={error}
           noMargins={true}
         />
       </td>

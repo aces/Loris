@@ -121,10 +121,18 @@ function IssueTrackerBatchMode({options}) {
   }
 
   // Pagination functions
+  /**
+   *
+   * @param pageNumber
+   */
   function changePage(pageNumber) {
     setPage((prevPage) => ({...prevPage, number: pageNumber}));
   }
 
+  /**
+   *
+   * @param e
+   */
   function updatePageRows(e) {
     const newRowsPerPage = parseInt(e.target.value, 10);
     setPage({number: 1, rows: newRowsPerPage});
