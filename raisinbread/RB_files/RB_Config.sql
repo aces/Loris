@@ -108,8 +108,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (123,127,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (124,128,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/data/EEGUploadIncomingPath/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'EEGS3DataPath');
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
