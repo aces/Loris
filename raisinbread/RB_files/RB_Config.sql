@@ -23,7 +23,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (22,12,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/var/www/loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (26,30,'/PATH/TO/EXTERNAL/LIBRARY/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (28,32,'/data/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (29,33,'tools/logs/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (30,34,'/data/incoming/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (31,35,'/data/demo/bin/mri/');
