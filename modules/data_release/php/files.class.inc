@@ -400,10 +400,12 @@ class Files extends \NDB_Page
         $DB = $this->loris->getDatabaseConnection();
 
         $DB->delete(
+            'data_release_permissions',
+            ['data_release_id' => $data_release_id,]
+        );
+        $DB->delete(
             'data_release',
-            [
-                'id' => $data_release_id,
-            ]
+            ['id' => $data_release_id,]
         );
 
         return new \LORIS\Http\Response\JSON\OK();
