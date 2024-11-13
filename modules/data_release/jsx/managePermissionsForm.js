@@ -26,7 +26,6 @@ class ManagePermissionsForm extends Component {
     this.state = {
       data: {},
       originalData: {},
-      hasError: {},
       errorMessage: {},
       isLoaded: false,
       user: null,

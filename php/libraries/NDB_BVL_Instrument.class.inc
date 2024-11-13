@@ -2123,7 +2123,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         'CommentId1'     => $this->getCommentID(),
                         'Value1'         => $value,
                         'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key],
+                        'Value2'         => $otherData[$key] ?? null,
                     ];
                 }
             }
