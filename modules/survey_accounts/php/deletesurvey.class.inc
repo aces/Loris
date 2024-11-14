@@ -126,7 +126,7 @@ class DeleteSurvey extends \NDB_Page
                 ]
             );
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
