@@ -99,7 +99,7 @@
                         <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
                             data-target="#example-navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
-                            <span class="/usr/bin/phpcs
+                            <span class="
 toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
                         <span class='help-container navbar-toggle'></span>
