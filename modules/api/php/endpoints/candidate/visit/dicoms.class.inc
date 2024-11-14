@@ -314,7 +314,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_visit->addMRIUpload(
+            $this->_visit->getOrAddMRIUpload(
                 $user,
                 $file_info,
                 $patient_name,

@@ -1180,12 +1180,62 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             'UploadLocation' => $file->getPathname(),
             'SessionID'      => $this->getSessionID(),
             'PatientName'    => $patientname,
-            'IsPhantom'      => ($isphantom ? 'Y' : 'N'),
+            'IsPhantom'      => $isphantom ? 'Y' : 'N',
         ];
 
         $db = \NDB_Factory::singleton()->database();
         $db->insert('mri_upload', $values);
         return (int) $db->getLastInsertId();
+    }
+
+    /**
+     * Try to get an existing MRI upload ID for this session and a given file, or
+     * insert a new one if no corresponding MRI upload exists.
+     *
+     * @param \User        $user        The user inserting the file.
+     * @param \SplFileInfo $file        The file on the file system.
+     * @param string       $patientname The patient name
+     * @param bool         $isphantom   True if it's a phantom file
+     *
+     * @return int The UploadID from the mri_upload table sequence.
+     */
+    public function getOrAddMRIUpload(
+        \User $user,
+        \SplFileInfo $file,
+        string $patientname,
+        bool $isphantom
+    ) {
+        // We try to re-use an existing MRI upload if there already is one for the
+        // file to insert. There may be several uploads per file, so we choose to
+        // re-use the last upload when that is the case.
+        $db = \NDB_Factory::singleton()->database();
+        $mri_upload = $db->pselect(
+            '
+                SELECT UploadID
+                FROM mri_upload
+                WHERE
+                    UploadedBy     = :UploadedBy     AND
+                    UploadLocation = :UploadLocation AND
+                    SessionID      = :SessionID      AND
+                    PatientName    = :PatientName    AND
+                    IsPhantom      = :IsPhantom
+                ORDER BY UploadID DESC
+                LIMIT 1
+            ',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        if ($mri_upload->count() !== 0) {
+            return $mri_upload->getFirstRow()['UploadID'];
+        }
+
+        return $this->addMRIUpload($user, $file, $patientname, $isphantom);
     }
 
     /**
