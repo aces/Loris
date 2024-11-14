@@ -116,9 +116,9 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-	    $this->_centerid            = \CenterID::singleton(intval
-		                           ($dbrow['centerid'])
-	                                  );
+            $this->_centerid            = \CenterID::singleton(
+                intval($dbrow['centerid'])
+            );
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];

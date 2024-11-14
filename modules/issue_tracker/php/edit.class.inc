@@ -562,9 +562,9 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         return $centerID == null
             ? 'All Sites'
-	    : \Site::singleton(
-		    \CenterID::singleton(intval($centerID))
-	    )->getCenterName();
+        : \Site::singleton(
+            \CenterID::singleton(intval($centerID))
+        )->getCenterName();
     }
 
     /**
