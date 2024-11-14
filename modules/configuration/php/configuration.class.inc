@@ -88,13 +88,9 @@ class Configuration extends \NDB_Form
             'emergency' => 'Emergency',
         ];
 
-        $password_algos = array_merge(
-            ['PASSWORD_DEFAULT'],
-            password_algos()
-        );
         $this->tpl_data['password_algos'] = array_combine(
-            $password_algos,
-            $password_algos
+            password_algos(),
+            password_algos()
         );
 
         $this->tpl_data['date_format']   = $date_format;

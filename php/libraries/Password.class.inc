@@ -205,9 +205,9 @@ class Password
         $this->_validate($value);
         // Don't store the value in the object; instead use the hashed version
         // This mitigates the risk of accidentally revealing the plaintext.
-        $config =& \NDB_Config::singleton();
+        $config        =& \NDB_Config::singleton();
         $password_algo = $config->getSetting("passwordAlgorithm");
-        $this->_hash = password_hash($value, $password_algo);
+        $this->_hash   = password_hash($value, $password_algo);
     }
 
     /**

@@ -47,9 +47,9 @@ $path_to_file = '../SQL/0000-00-05-ElectrophysiologyTables.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$config =& \NDB_Config::singleton();
+$config        =& \NDB_Config::singleton();
 $password_algo = $config->getSetting("passwordAlgorithm");
-$pw = password_hash($password, $password_algo);
+$pw            = password_hash($password, $password_algo);
 
 $conn->query(
     "UPDATE users SET Password_hash=" . $conn->quote($pw) .

@@ -4,4 +4,4 @@ MODIFY COLUMN DataType enum('text','boolean','email','instrument','textarea','sc
 INSERT INTO `ConfigSettings` (`Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`)
 VALUES ('passwordAlgorithm','Which PHP password algorithm to use for hashing the passwords',1,0,'password_algo',1,'Password Algorithm',28);
 
-INSERT INTO Config (`ConfigID`, `Value`) VALUES (LAST_INSERT_ID(), 'PASSWORD_DEFAULT');
+INSERT INTO Config (`ConfigID`, `Value`) VALUES (LAST_INSERT_ID(), '2y');

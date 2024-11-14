@@ -535,7 +535,7 @@ class Installer
             return false;
         }
 
-        $stmt = $DB->prepare(
+        $stmt          = $DB->prepare(
             "UPDATE users
              SET
                UserID=:q_userID,
@@ -543,7 +543,7 @@ class Installer
                Active='Y'
              WHERE ID=1"
         );
-        $config =& \NDB_Config::singleton();
+        $config        =& \NDB_Config::singleton();
         $password_algo = $config->getSetting("passwordAlgorithm");
         return $stmt->execute(
             [

@@ -287,7 +287,7 @@ class SinglePointLogin
         // Validate passsword
         $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
-            $config =& \NDB_Config::singleton();
+            $config        =& \NDB_Config::singleton();
             $password_algo = $config->getSetting("passwordAlgorithm");
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, $password_algo)) {

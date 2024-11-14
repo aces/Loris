@@ -283,7 +283,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'PASSWORD_DEFAULT'  FROM ConfigSettings WHERE Name="passwordAlgorithm";
+INSERT INTO Config (ConfigID, Value) SELECT ID, '2y'  FROM ConfigSettings WHERE Name="passwordAlgorithm";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'Y-m-d H:i:s'  FROM ConfigSettings WHERE Name="dateDisplayFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, '/data/issue_tracker/' FROM ConfigSettings WHERE Name="IssueTrackerDataPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, ''  FROM ConfigSettings WHERE Name="adminContactEmail";
