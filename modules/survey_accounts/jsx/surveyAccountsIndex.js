@@ -74,10 +74,10 @@ class SurveyAccountsIndex extends Component {
           return;
       }
       result = <td>
-      <button onClick={() => this.deleteclick(row.Instrument,row.Edit)}
+      <button onClick={() => this.deleteclick(row.Instrument, row.Edit)}
         className="btn btn-danger" >Delete</button>
       <button
-        className="btn btn-warning" onClick={() => this.archiveclick(row.Instrument,row.Edit)}
+        className="btn btn-warning" onClick={() => this.archiveclick(row.Instrument, row.Edit)}
 	>Archive</button>
       </td>;
       break;
@@ -85,9 +85,11 @@ class SurveyAccountsIndex extends Component {
     return result;
   }
   /**
+   * @param Instrument
+   * @param commentid
    * @deleteclick
    */
-         deleteclick(Instrument,commentid) {
+         deleteclick(Instrument, commentid) {
           swal.fire({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this!',
@@ -117,7 +119,7 @@ class SurveyAccountsIndex extends Component {
            }
           });
          }
-         archiveclick(Instrument,commentid) {
+         archiveclick(Instrument, commentid) {
           swal.fire({
             title: 'Are you sure?',
             text: 'You won\'t see this survey in the table!',
@@ -191,7 +193,7 @@ class SurveyAccountsIndex extends Component {
       }},
       {label: 'Edit', show: true},
       {label: 'centerID', show: false},
-      {label: 'projectID', show: false},	    
+      {label: 'projectID', show: false},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
