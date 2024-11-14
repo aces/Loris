@@ -101,7 +101,7 @@ class User extends UserPermissions implements
         $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = \CenterID::singleton($val['CenterID']);
+            $user_cid[$key] = \CenterID::singleton(intval($val['CenterID']));
             $sitenames[]    = $val['Name'];
         }
         $row['Sites'] = implode(';', $sitenames);

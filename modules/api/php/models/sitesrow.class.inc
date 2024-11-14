@@ -54,6 +54,6 @@ class SitesRow implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return \CenterID::singleton($this->_id);
+        return \CenterID::singleton(intval($this->_id));
     }
 }

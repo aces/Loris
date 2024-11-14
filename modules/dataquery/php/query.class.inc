@@ -615,7 +615,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     ? \ProjectID::singleton($row['RegistrationProjectID'])
                     : null,
                     registrationCenterID: $row['RegistrationCenterID'] !== null
-                    ? \CenterID::singleton($row['RegistrationCenterID'])
+                    ? \CenterID::singleton(intval($row['RegistrationCenterID']))
                     : null,
                     timepoints: [],
                 );
@@ -626,7 +626,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     new \TimePointData(
                         new \SessionID(strval($row['sessionID'])),
                         \ProjectID::singleton($row['SProjectID']),
-                        \CenterID::singleton($row['SCenterID']),
+                        \CenterID::singleton(intval($row['SCenterID'])),
                     )
                 );
             }

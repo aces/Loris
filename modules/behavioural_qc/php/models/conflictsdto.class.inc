@@ -112,7 +112,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return \CenterID::singleton($this->_site);
+        return \CenterID::singleton(intval($this->_site));
     }
 
     /**

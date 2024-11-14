@@ -80,7 +80,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return \CenterID::singleton($this->centerid);
+        return \CenterID::singleton(intval($this->centerid));
     }
 
     /**

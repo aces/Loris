@@ -257,7 +257,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $candid = \Candidate::createNew(
-                \CenterID::singleton($centerid),
+                \CenterID::singleton(intval($centerid)),
                 $data['Candidate']['DoB'] ?? null,
                 $data['Candidate']['EDC'] ?? null,
                 $sex,

@@ -318,7 +318,7 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return \CenterID::singleton($this->_centerID);
+        return \CenterID::singleton(intval($this->_centerID));
     }
 
     /**

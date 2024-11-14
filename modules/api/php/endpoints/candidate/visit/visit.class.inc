@@ -228,7 +228,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if ($centerid === false
-            || !in_array(\CenterID::singleton($centerid), $user->getCenterIDs())
+            || !in_array(\CenterID::singleton(intval($centerid)), $user->getCenterIDs())
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 "You can't create or modify candidates visit for the site " .
@@ -238,7 +238,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // \Utility::getSiteList key was a string. Now that the
         // validation is done, convert to an object.
-        $centerid = \CenterID::singleton($centerid);
+        $centerid = \CenterID::singleton(intval($centerid));
 
         $cohortid = array_search(
             $visitinfo['Battery'],
