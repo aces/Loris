@@ -43,7 +43,9 @@ echo "New password: ";
 // Don't echo the password being typed
 `/bin/stty -echo`;
 $newPass = trim(fgets(STDIN));
-$newHash = password_hash($newPass, PASSWORD_DEFAULT);
+$config =& \NDB_Config::singleton();
+$password_algo = $config->getSetting("passwordAlgorithm");
+$newHash = password_hash($newPass, $password_algo);
 `/bin/stty echo`;
 
 ;

@@ -287,8 +287,10 @@ class SinglePointLogin
         // Validate passsword
         $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
+            $config =& \NDB_Config::singleton();
+            $password_algo = $config->getSetting("passwordAlgorithm");
             // Rehash according to latest standards if necessary.
-            if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+            if (password_needs_rehash($oldhash, $password_algo)) {
                 try {
                     $newHash = new \Password($password);
                     \User::factory($username)->updatePassword(
@@ -302,7 +304,7 @@ class SinglePointLogin
                     // update the password here without using the Password class
                     $newHash = password_hash(
                         $password,
-                        PASSWORD_DEFAULT
+                        $password_algo
                     );
                     \NDB_Factory::singleton()->database()->update(
                         'users',
