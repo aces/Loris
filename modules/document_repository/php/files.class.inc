@@ -16,7 +16,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Files extends \NDB_Page
 {
-    const COMMA_IN_FILENAME = 'Filename cannot contain a comma.';
     const FILE_EXISTS_IN_DB = 'A file with this name already exists in the ' .
         'database. If the file does not appear in the document repository, ' .
         'please contact your administrator.';
@@ -344,10 +343,6 @@ class Files extends \NDB_Page
 
         foreach ($uploadedFiles as $uploadedFile) {
             $filename = urldecode($uploadedFile->getClientFilename());
-
-            if (strpos($filename, ',') !== false) {
-                $responseMessages[] = "$filename: " . self::COMMA_IN_FILENAME;
-            }
 
             if ($this->existFilename($filename)) {
                 // If a record of this a file with the same name already exists
