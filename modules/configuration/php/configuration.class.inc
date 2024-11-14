@@ -88,13 +88,14 @@ class Configuration extends \NDB_Form
             'emergency' => 'Emergency',
         ];
 
-        $this->tpl_data['password_algos'] = [
-            '' => '',
-            'PASSWORD_DEFAULT' => 'PASSWORD_DEFAULT',
-            'PASSWORD_BCRYPT' => 'PASSWORD_BCRYPT',
-            'PASSWORD_ARGON2I' => 'PASSWORD_ARGON2I',
-            'PASSWORD_ARGON2ID' => 'PASSWORD_ARGON2ID'
-        ];
+        $password_algos = array_merge(
+            ['PASSWORD_DEFAULT'],
+            password_algos()
+        );
+        $this->tpl_data['password_algos'] = array_combine(
+            $password_algos,
+            $password_algos
+        );
 
         $this->tpl_data['date_format']   = $date_format;
         $this->tpl_data['lookup_center'] = [
