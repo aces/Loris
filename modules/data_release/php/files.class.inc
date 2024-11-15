@@ -439,7 +439,6 @@ class Files extends \NDB_Page
 
         $DB = $this->loris->getDatabaseConnection();
 
-        error_log(print_r($user->getId(), true));
         $DB->update(
             'data_release',
             [
