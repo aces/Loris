@@ -375,10 +375,6 @@ class Instrument_Manager extends \DataFrameworkMenu
         $this->_path    =  $this->loris->getConfiguration()->getSetting('base');
         $instrument_dir = $this->_path . 'project/instruments';
 
-        error_log(
-            $instrument_dir . ' writeable? ' .
-            (is_writable($instrument_dir) ? 'Y':'N')
-        );
         return is_writable($instrument_dir);
     }
 

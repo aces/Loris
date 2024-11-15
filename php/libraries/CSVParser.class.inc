@@ -63,7 +63,6 @@ class CSVParser
             return false;
         }
 
-        echo error_log(json_encode($headers));
         $matchingHeaders = true;
         foreach ($expectedHeaders as $expectedHeader) {
             if (!in_array($expectedHeader, $headers)) {

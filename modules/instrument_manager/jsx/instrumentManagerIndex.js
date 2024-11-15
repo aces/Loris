@@ -241,19 +241,19 @@ class InstrumentManagerIndex extends Component {
       tabs.push({id: 'upload', label: 'Upload'});
     }
 
-    const feedback = () => {};
-      // if (!this.state.data.fieldOptions.caninstall
-      //   && this.props.hasPermission('instrument_manager_write')) {
-      //   return (
-      //     <div className='alert alert-warning'>
-      //       Instrument installation is not possible given the current server
-      //       configuration; the LORIS 'adminUser' is not configured properly.
-      //       File upload is still possible but instruments will need to be
-      //       installed manually
-      //     </div>
-      //   );
-      // }
-    // };
+    const feedback = () => {
+      if (!this.state.data.fieldOptions.caninstall
+        && this.props.hasPermission('instrument_manager_write')) {
+        return (
+          <div className='alert alert-warning'>
+            Instrument installation is not possible given the current server
+            configuration; the LORIS 'adminUser' is not configured properly.
+            File upload is still possible but instruments will need to be
+            installed manually
+          </div>
+        );
+      }
+    };
 
     const uploadTab = () => {
       let content = null;

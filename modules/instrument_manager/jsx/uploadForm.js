@@ -245,8 +245,7 @@ InstrumentUploadForm.propTypes = {
 export default InstrumentUploadForm;
 
 /**
- * Create a componenet to select permissions from a list of available
- * permissions.
+ * Panel containing upload form
  *
  * @param {object} props - react props
  * @return {JSX.Element}
