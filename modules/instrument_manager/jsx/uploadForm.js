@@ -26,7 +26,6 @@ class InstrumentUploadForm extends Component {
     this.getInstrumentOptions = this.getInstrumentOptions.bind(this);
     this.dataFileSelected = this.dataFileSelected.bind(this);
     this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
-
   }
 
   /**
@@ -131,10 +130,17 @@ class InstrumentUploadForm extends Component {
             });
           });
         } else {
+          let message = '<div>';
+          message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+          data.message.forEach((error) => {
+            message += (error + '<br/>');
+          });
+          message += '</div>';
+
           swal.fire({
             title: 'No data uploaded',
-            type: 'warn',
-            text: data.message,
+            type: 'warning',
+            html: message,
           });
         }
       })
@@ -155,16 +161,17 @@ class InstrumentUploadForm extends Component {
   }
 
 
-
   /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @return {JSX.Element} - React markup for the component
    */
   render() {
-    const uploadInstrumentDisabled = () => this.state.selectedInstrumentFile === null;
+    const uploadInstrumentDisabled
+      = () => this.state.selectedInstrumentFile === null;
     const instrumentSelected = this.state.selectedInstrument !== '';
-    const uploadDataDisabled = () => !instrumentSelected || this.state.selectedDataFile === null;
+    const uploadDataDisabled
+      = () => !instrumentSelected || this.state.selectedDataFile === null;
 
     return (
       <>
@@ -225,7 +232,10 @@ class InstrumentUploadForm extends Component {
                 <a
                   className="btn btn-default"
                   disabled={!instrumentSelected}
-                  href={`${this.props.action}?instrument=${this.state.selectedInstrument}`}
+                  href={
+                    `${this.props.action}?instrument` +
+                    `=${this.state.selectedInstrument}`
+                  }
                 >
                     Download Expected Template
                 </a>
