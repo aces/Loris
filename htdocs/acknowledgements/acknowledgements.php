@@ -24,14 +24,14 @@ $db     = \NDB_Factory::singleton()->database();
 $publication_date = $_GET["date"];
 
 $columns = [
-    'full_name'     => 'Full Name',
-    'citation_name' => 'Citation Name',
-    'affiliations'  => 'Affiliations',
-    'degrees'       => 'Degrees',
-    'roles'         => 'Roles',
-    'start_date'    => 'Start Date',
-    'end_date'      => 'End Date',
-    'present'       => 'Present?',
+    'full_name'     => _('Full Name'),
+    'citation_name' => _('Citation Name'),
+    'affiliations'  => _('Affiliations'),
+    'degrees'       => _('Degrees'),
+    'roles'         => _('Roles'),
+    'start_date'    => _('Start Date'),
+    'end_date'      => _('End Date'),
+    'present'       => _('Present?'),
 ];
 
 $keysAsString   = implode(', ', array_keys($columns));

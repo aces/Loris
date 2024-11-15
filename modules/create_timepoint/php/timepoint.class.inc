@@ -60,7 +60,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // Verify identifier from GET query.
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Forbidden'
+                _('Forbidden')
             );
         }
 
@@ -129,13 +129,13 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values = json_decode((string) $request->getBody(), true);
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                _('Invalid request')
             );
         }
 
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Forbidden'
+                _('Forbidden')
             );
         }
 
@@ -243,22 +243,22 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $conflict           = [];
         if ($num_sites == 0) {
             $conflict['psc']
-                = "You must be affiliated with a site to create a timepoint.";
+                = _("You must be affiliated with a site to create a timepoint.");
         } else if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
             $conflict['psc']
-                = "Site must be selected from the available dropdown.";
+                = _("Site must be selected from the available dropdown.");
         }
 
         //Project
         $user_list_of_projects = $user->getProjectIDs();
         if (count($user_list_of_projects) == 0) {
             $conflict['project']
-                = "You must be affiliated with a project to create a timepoint.";
+                = _("You must be affiliated with a project to create a timepoint.");
         } else if (count($user_list_of_projects) > 1
             && is_null($values['project'])
         ) {
             $conflict['project']
-                = "A project must be selected from the available dropdown.";
+                = _("A project must be selected from the available dropdown.");
         }
 
         $candid    = $values['candID'];
@@ -289,7 +289,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // validate language
         $languages = \Utility::getLanguageList();
         if (count($languages) > 1 && empty($values['languages'])) {
-            $conflict['languages'] = 'A language must be selected.';
+            $conflict['languages'] = _('A language must be selected.');
         }
         // set form message if exists.
         if ($conflict) {

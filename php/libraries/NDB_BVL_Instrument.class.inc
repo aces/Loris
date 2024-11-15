@@ -15,8 +15,8 @@ use \LORIS\Data\Dictionary\DictionaryItem;
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
     protected const ERROR_CERTIFICATION_BAD_FORMATTING
-        = 'Certification settings are not formatted correctly in the '
-        . 'configuration file. Cannot continue.';
+        = _('Certification settings are not formatted correctly in the '
+        . 'configuration file. Cannot continue.');
     /**
      * Determines whether this instrument should load data in
      * JSON format from the "Data" column of the flag table, or
@@ -265,7 +265,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 && ($guarantee_exists === true
                 && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
-                throw new NotFound("Instrument does not exist");
+                throw new NotFound(_("Instrument does not exist"));
             }
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
@@ -435,7 +435,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     "Scoring script $scorer exists but is not executable"
                 );
                 throw new \ConfigurationException(
-                    "Scoring script not executable"
+                    _("Scoring script not executable")
                 );
             }
             $output = [];
@@ -448,8 +448,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
             if ($retVal != 0) {
                 $this->logger->warning(
-                    "An error occurred while running the scoring
-                    algorithm of instrument ".$this->testName."."
+                    _("An error occurred while running the scoring
+                    algorithm of instrument ").$this->testName."."
                 );
             }
         }
@@ -492,7 +492,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
-                'Save Data',
+                _('Save Data'),
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
@@ -556,7 +556,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             && $defaults['Window_Difference'] != 0
         ) {
             $defaults['Candidate_Age']
-                = $defaults['Candidate_Age'] . " (Age out of range)";
+                = $defaults['Candidate_Age'] . " " . _("Age out of range)");
         }
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
@@ -644,7 +644,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $DB  = $this->loris->getDatabaseConnection();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
-                throw new LorisException("Candidate age could not be found.");
+                throw new LorisException(_("Candidate age could not be found."));
             }
 
             $agedays   = $this->calculateAgeDays($age);
@@ -905,23 +905,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate('Date_taken', _('Date of Administration'), $dateOptions);
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    _('Candidate Age (Months)')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    _('Candidate Age at Death (Months)')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                _('Window Difference (+/- Days)')
             );
         }
         $examiners = $this->_getExaminerNames();
@@ -929,11 +929,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->addRule(
             'Date_taken',
-            'Date of Administration is required',
+            _('Date of Administration is required'),
             'required'
         );
 
-        $this->addRule('Examiner', 'Examiner is required', 'required');
+        $this->addRule('Examiner', _('Examiner is required'), 'required');
     }
 
     /**
@@ -1219,13 +1219,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
-                    $errors[$elname] = "Required.";
+                    $errors[$elname] = _("Required.");
                     if ($this->XINDebug) {
-                        echo "Required by default";
+                        echo _("Required by default");
                     }
                 } else {
                     if ($this->XINDebug) {
-                        echo "Status' not required by default";
+                        echo _("Status' not required by default");
                     }
                 }
             }
@@ -1642,9 +1642,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $label,
             [
                 ''             => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+                'yes'          => _('Yes'),
+                'no'           => _('No'),
+                'not_answered' => _('Not Answered'),
             ]
         );
 
@@ -1731,9 +1731,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''               => '',
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => 'Not Answered',
+                "88_refused"     => _("88 Refused"),
+                "99_do_not_know" => _("99 Do not know"),
+                'not_answered'   => _('Not Answered'),
             ]
         );
 
@@ -1778,7 +1778,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''             => '',
-                'not_answered' => 'Not Answered',
+                'not_answered' => _('Not Answered'),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -1813,8 +1813,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ?string $rule_message = null
     ): void {
         if ($rule_message === null) {
-            $rule_message = "You are required to select a status "
-                . "if you want to leave this time blank.";
+            $rule_message = _("You are required to select a status "
+                . "if you want to leave this time blank.");
         }
 
         $group   = [];
@@ -1829,9 +1829,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''             => null,
-                "dnk"          => "DNK",
-                "refusal"      => "Refusal",
-                'not_answered' => 'Not Answered',
+                "dnk"          => _("DNK"),
+                "refusal"      => _("Refusal"),
+                'not_answered' => _('Not Answered'),
             ]
         );
         $this->addGroup($group, $field . "_group", $label, '');
@@ -1882,7 +1882,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''             => '',
-                'not_answered' => "Not Answered",
+                'not_answered' => _("Not Answered"),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -1898,7 +1898,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $name . "_date",
             [$name . "_date_status{@}=={@}"],
-            "A Date, or Not Answered is required.",
+            _("A Date, or Not Answered is required."),
             $name . "_date_group"
         );
     }
@@ -1949,9 +1949,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''               => '',
-                '88_refused'     => "88 Refused",
-                '99_do_not_know' => "99 Do not know",
-                'not_answered'   => "Not Answered",
+                '88_refused'     => _("88 Refused"),
+                '99_do_not_know' => _("99 Do not know"),
+                'not_answered'   => _("Not Answered"),
             ]
         );
         $this->addGroup(
@@ -1964,13 +1964,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $name . "_date",
             [$name . "_date_status{@}=={@}"],
-            "You must specify or select from the drop-down",
+            _("You must specify or select from the drop-down"),
             $name . "_date_group"
         );
         $this->XINRegisterRule(
             $name . "_date_status",
             [$name . "_date{@}=={@}"],
-            "You must specify or select from the drop-down",
+            _("You must specify or select from the drop-down"),
             $name . "_date_group"
         );
 
@@ -2000,7 +2000,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''             => '',
-                'not_answered' => "Not Answered",
+                'not_answered' => _("Not Answered"),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -2013,7 +2013,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $field,
             [$field . '_status{@}=={@}'],
-            'This field is required',
+            _('This field is required'),
             $field . '_group'
         );
     }
@@ -2036,9 +2036,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''               => '',
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => "Not Answered",
+                "88_refused"     => _("88 Refused"),
+                "99_do_not_know" => _("99 Do not know"),
+                'not_answered'   => _("Not Answered"),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -2051,7 +2051,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $field,
             [$field . '_status{@}=={@}'],
-            'This field is required',
+            _('This field is required'),
             $field . '_group'
         );
     }
@@ -2249,7 +2249,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
-                "Must bulk load from instrument loaded without commentID"
+                _("Must bulk load from instrument loaded without commentID")
             );
         }
         $db = $this->loris->getNewDatabaseConnection();

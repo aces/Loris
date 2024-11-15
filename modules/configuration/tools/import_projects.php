@@ -31,7 +31,7 @@ $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("cohorts");
 if (!is_array($subprojs)) {
     throw new \ConfigurationException(
-        'Config setting "Projects" must be an array'
+        _('Config setting "Projects" must be an array')
     );
 }
 $db        = $factory->database();
@@ -73,7 +73,7 @@ if ($argv[$optionpos] === "-p" || $argv[$optionpos] === "-a") {
     $projects = $config->getSettingFromXML("Projects");
     if (!is_array($projects)) {
         throw new \ConfigurationException(
-            'Config setting "Projects" must be an array'
+            _('Config setting "Projects" must be an array')
         );
     }
     $db = $factory->database();

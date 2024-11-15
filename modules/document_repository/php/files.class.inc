@@ -69,7 +69,7 @@ class Files extends \NDB_Page
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
             return (new \LORIS\Http\Response\JSON\OK(
-                ['message' => 'File deleted.']
+                ['message' => _('File deleted.')]
             ));
         case "GET":
             $route = explode('/', $request->getUri()->getPath());
@@ -117,7 +117,7 @@ class Files extends \NDB_Page
         $db      = $factory->database();
         if (! $user->hasPermission('document_repository_upload_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                self::FORBIDDEN
+                _(self::FORBIDDEN)
             );
         }
         $req          = json_decode((string)$req->getBody(), true);
@@ -150,7 +150,7 @@ class Files extends \NDB_Page
             ];
             $Notifier->notify($msg_data);
             return (new \LORIS\Http\Response\JSON\OK(
-                ['message' => 'File updated.']
+                ['message' => _('File updated.')]
             ));
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
@@ -256,7 +256,7 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenFile'  => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'  => ['yes' => _("Yes"), 'no' => _("No")],
         ];
 
         return $result;
@@ -283,8 +283,8 @@ class Files extends \NDB_Page
                 $value     = $DB->pselectRow($query, $where);
                 if (is_null($value)) {
                     throw new \LorisException(
-                        'No parent category found for specified parentID. '
-                        . 'Cannot parse categories.'
+                        _('No parent category found for specified parentID. '
+                        . 'Cannot parse categories.')
                     );
                 }
                 $categoryName = $value['category_name'] . ">" . $categoryName;
@@ -319,7 +319,7 @@ class Files extends \NDB_Page
         // Do some validation and fail early on bad inputs.
         $body = $request->getParsedBody();
         if (!is_array($body)) {
-            throw new \LorisException("Expected parsed body to be an array");
+            throw new \LorisException(_("Expected parsed body to be an array"));
         }
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
 
@@ -331,7 +331,7 @@ class Files extends \NDB_Page
         if (!\Utility::valueIsPositiveInteger(strval($category))) {
             // $category is a string representation of an ID, and so should be
             // at least equal to zero.
-            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
+            return new \LORIS\Http\Response\JSON\BadRequest(_(self::BAD_CATEGORY));
         }
 
         $uploadedFiles = is_array($uploadedFiles)
@@ -347,7 +347,7 @@ class Files extends \NDB_Page
             if ($this->existFilename($filename)) {
                 // If a record of this a file with the same name already exists
                 // in the database, don't proceed with upload.
-                $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
+                $responseMessages[] = "$filename: " . _(self::FILE_EXISTS_IN_DB);
                 $errorCounter      += 1;
                 continue;
             }
@@ -432,7 +432,7 @@ class Files extends \NDB_Page
                 "upload"
             );
             $msg_data       = [
-                'newDocument' => 'Document Repository',
+                'newDocument' => _('Document Repository'),
                 'documents'   => $addedFiles,
             ];
             $uploadNotifier->notify($msg_data);

@@ -54,12 +54,12 @@ class Queries extends \LORIS\Http\Endpoint
             $requestdata = json_decode($requestjson, true);
             if ($requestdata === false) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Invalid JSON data'
+                    _('Invalid JSON data')
                 );
             }
             if ($this->_validateQuery($requestdata, $user) === false) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Invalid query'
+                    _('Invalid query')
                 );
             }
             $queryID = $this->_storeQuery($requestjson);

@@ -52,7 +52,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Reports";
+        return _("Reports");
     }
 
     /**
@@ -62,6 +62,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Publications";
+        return _("Publications");
     }
 }

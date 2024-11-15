@@ -188,11 +188,11 @@ class NDB_BVL_InstrumentStatus
     function setDataEntryStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
-            throw new Exception("No instrument instance selected");
+            throw new Exception(_("No instrument instance selected"));
         }
 
         if (!in_array($status, $this->_dataEntryOptions)) {
-            throw new Exception('Invalid data entry status');
+            throw new Exception(_('Invalid data entry status'));
         }
 
         $GLOBALS['DB']->update(
@@ -265,11 +265,11 @@ class NDB_BVL_InstrumentStatus
     function setAdministrationStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
-            throw new Exception("No instrument instance selected");
+            throw new Exception(_("No instrument instance selected"));
         }
 
         if (!in_array($status, $this->_administrationOptions)) {
-            throw new Exception('Invalid administration status');
+            throw new Exception(_('Invalid administration status'));
         }
 
         $GLOBALS['DB']->update(
@@ -291,11 +291,11 @@ class NDB_BVL_InstrumentStatus
     function setValidityStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
-            throw new Exception("No instrument instance selected");
+            throw new Exception(_("No instrument instance selected"));
         }
 
         if (!in_array($status, $this->_validityOptions)) {
-            throw new Exception('Invalid administration status');
+            throw new Exception(_('Invalid administration status'));
         }
 
         $GLOBALS['DB']->update(
@@ -316,11 +316,11 @@ class NDB_BVL_InstrumentStatus
     function setExclusionStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
-            throw new Exception("No instrument instance selected");
+            throw new Exception(_("No instrument instance selected"));
         }
 
         if (!in_array($status, $this->_exclusionOptions)) {
-            throw new Exception('Invalid exclusion status');
+            throw new Exception(_('Invalid exclusion status'));
         }
 
         $GLOBALS['DB']->update(

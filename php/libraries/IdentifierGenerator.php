@@ -134,7 +134,7 @@ abstract class IdentifierGenerator
         if (count($this->getExistingIDs()) < 1) {
             if (!is_int($this->length)) {
                 throw new Exception(
-                    "minimum ID length not configured in project/config.xml"
+                    _("minimum ID length not configured in project/config.xml")
                 );
             }
             return str_pad(
@@ -160,7 +160,7 @@ abstract class IdentifierGenerator
             // value, then all possible IDs have been exhausted (since IDs
             // cannot be re-used without causing ambiguity in the data).
             if (strcmp(strval($newID), strval($this->maxValue)) >= 0) {
-                throw new \LorisException(self::RANGE_FULL);
+                throw new \LorisException(_(self::RANGE_FULL));
             }
 
             // Make sure $newID is greater than or equal to minimum and less

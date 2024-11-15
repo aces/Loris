@@ -688,20 +688,20 @@ class Edit_User extends \NDB_Form
         // it is a new user
         if ($this->identifier == '') {
             // user name
-            $this->addBasicText('UserID', 'User name', ['required' => true]);
+            $this->addBasicText('UserID', _('User name'), ['required' => true]);
             $this->addCheckbox(
                 'NA_UserID',
-                'Make user name match email address',
+                _('Make user name match email address'),
                 []
             );
 
         } else {
             // It is an existing user:
             //     display user name and account request date
-            $this->addScoreColumn('UserID', 'User name');
+            $this->addScoreColumn('UserID', _('User name'));
         }
         // Account Request Date - always displayed
-        $this->addScoreColumn('account_request_date', 'Account Request Date');
+        $this->addScoreColumn('account_request_date', _('Account Request Date'));
 
         // password
         if ($this->isCreatingNewUser()) {
@@ -710,9 +710,9 @@ class Edit_User extends \NDB_Form
             $pwd_attribs = [];
         }
 
-        $this->addPassword('Password_hash', 'Password', $pwd_attribs);
-        $this->addCheckbox('NA_Password', 'Generate new password', []);
-        $this->addPassword('__Confirm', 'Confirm Password', $pwd_attribs);
+        $this->addPassword('Password_hash', _('Password'), $pwd_attribs);
+        $this->addCheckbox('NA_Password', _('Generate new password'), []);
+        $this->addPassword('__Confirm', _('Confirm Password'), $pwd_attribs);
 
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters
@@ -723,7 +723,7 @@ class Edit_User extends \NDB_Form
             . "should not exceed 120 characters')";
         $this->addBasicText(
             'First_name',
-            'First name',
+            _('First name'),
             [],
             [
                 'oninvalid' => $onInvalidMsg,
@@ -741,7 +741,7 @@ class Edit_User extends \NDB_Form
             . "should not exceed 120 characters')";
         $this->addBasicText(
             'Last_name',
-            'Last name',
+            _('Last name'),
             [],
             [
                 'oninvalid' => $onInvalidMsg,
@@ -756,28 +756,28 @@ class Edit_User extends \NDB_Form
         // if the option is not set or if it's and it's true then display it
 
         if ($additional_user_info) {
-            $this->addBasicText('Degree', 'Degree');
-            $this->addBasicText('Position_title', 'Academic Position');
-            $this->addBasicText('Institution', 'Institution');
-            $this->addBasicText('Department', 'Department');
-            $this->addBasicText('Address', 'Street Address');
-            $this->addBasicText('City', 'City');
-            $this->addBasicText('State', 'State/Province');
-            $this->addBasicText('Zip_code', 'Zip/Postal Code');
-            $this->addBasicText('Country', 'Country');
-            $this->addBasicText('Fax', 'FAX');
+            $this->addBasicText('Degree', _('Degree'));
+            $this->addBasicText('Position_title', _('Academic Position'));
+            $this->addBasicText('Institution', _('Institution'));
+            $this->addBasicText('Department', _('Department'));
+            $this->addBasicText('Address', _('Street Address'));
+            $this->addBasicText('City', _('City'));
+            $this->addBasicText('State', _('State/Province'));
+            $this->addBasicText('Zip_code', _('Zip/Postal Code'));
+            $this->addBasicText('Country', _('Country'));
+            $this->addBasicText('Fax', _('FAX'));
         }
 
         // email address
-        $this->addBasicText('Email', 'Email address', ['required' => true]);
-        $this->addCheckbox('SendEmail', 'Send email to user', []);
+        $this->addBasicText('Email', _('Email address'), ['required' => true]);
+        $this->addCheckbox('SendEmail', _('Send email to user'), []);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
         if ($this->isCreatingNewUser()) {
             $this->addBasicText(
                 '__ConfirmEmail',
-                'Confirm Email',
+                _('Confirm Email'),
                 [],
                 ['required' => true]
             );
@@ -851,40 +851,40 @@ class Edit_User extends \NDB_Form
                 );
             }
             $groupB[] = $this->createLabel(
-                "Radiologist: "
+                _("Radiologist: ")
             );
             $groupB[] = $this->createSelect(
                 "examiner_radiologist",
-                "Radiologist: ",
+                _("Radiologist: "),
                 [
                     ''  => "",
-                    'Y' => 'Yes',
-                    'N' => 'No',
+                    'Y' => _('Yes'),
+                    'N' => _('No'),
                 ]
             );
 
             $groupB[] = $this->createLabel(
-                "Pending Approval:"
+                _("Pending Approval:")
             );
             $groupB[] = $this->createSelect(
                 "examiner_pending",
-                "Pending Approval: ",
+                _("Pending Approval: "),
                 [
                     ''  => "",
-                    'Y' => 'Yes',
-                    'N' => 'No',
+                    'Y' => _('Yes'),
+                    'N' => _('No'),
                 ]
             );
             $this->addGroup(
                 $groupA,
                 'examiner_sites',
-                'Examiner At:',
+                _('Examiner At:'),
                 $this->_GUIDelimiter
             );
             $this->addGroup(
                 $groupB,
                 "examiner_group",
-                "Examiner Status",
+                _("Examiner Status"),
                 $this->_GUIDelimiter
             );
             unset($groupA);
@@ -897,10 +897,10 @@ class Edit_User extends \NDB_Form
         if (!$this->_isEditingOwnAccount()) {
             $this->addSelect(
                 "Pending_approval",
-                "Pending approval",
+                _("Pending approval"),
                 [
-                    'Y' => 'Yes',
-                    'N' => 'No',
+                    'Y' => _('Yes'),
+                    'N' => _('No'),
                 ]
             );
 
@@ -908,8 +908,8 @@ class Edit_User extends \NDB_Form
                 'Active',
                 'Active',
                 [
-                    'Y' => 'Yes',
-                    'N' => 'No'
+                    'Y' => _('Yes'),
+                    'N' => _('No')
                 ]
             );
 
@@ -923,14 +923,14 @@ class Edit_User extends \NDB_Form
 
             $this->addBasicDate(
                 'active_from',
-                'Active from',
+                _('Active from'),
                 $dateOptions,
                 $dateAttributes
             );
 
             $this->addBasicDate(
                 'active_to',
-                'Active to',
+                _('Active to'),
                 $dateOptions,
                 $dateAttributes
             );
@@ -981,7 +981,7 @@ class Edit_User extends \NDB_Form
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "");
+        $this->addGroup($group, 'PermID_Group', _('Permissions'), "");
         unset($group);
 
         //getting users name and emails to create checkboxes
@@ -1015,7 +1015,7 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "");
+        $this->addGroup($group, 'Supervisors_Group', _('Supervisors'), "");
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
@@ -1080,13 +1080,13 @@ class Edit_User extends \NDB_Form
             // Clicked on "UID == email" and specified a UID
             if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
                 $errors['UserID_Group']
-                    = 'You cannot enter a user name '
-                    . 'if you want it to match the email address';
+                    = _('You cannot enter a user name '
+                    . 'if you want it to match the email address');
             } elseif (empty($values['UserID']) && $values['NA_UserID'] != 'on') {
                 // Not clicked on "UID == email" and not specified a UID
                 $errors['UserID_Group']
-                    = 'You must enter a user name '
-                    . 'or choose to make it match the email address';
+                    = _('You must enter a user name '
+                    . 'or choose to make it match the email address');
             } elseif (!empty($values['UserID'])
                 || ($values['NA_UserID'] == 'on' && $values['Email'])
             ) {
@@ -1104,12 +1104,12 @@ class Edit_User extends \NDB_Form
                 );
 
                 if ($result > 0) {
-                    $errors['UserID_Group'] = 'The user name already exists';
+                    $errors['UserID_Group'] = _('The user name already exists');
                 }
 
                 if (strlen($effectiveUID) > 255) {
                     $errors['UserID_Group']
-                        = 'The user name must not exceed 255 characters';
+                        = _('The user name must not exceed 255 characters');
                 }
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
@@ -1117,11 +1117,11 @@ class Edit_User extends \NDB_Form
                     // can contain spaces
                     if ($values['NA_UserID'] == 'on') {
                         $errors['UserID_Group']
-                            = 'You cannot have the user name match an email address'
-                            . ' that contains a whitespace character';
+                            = _('You cannot have the user name match an email address'
+                            . ' that contains a whitespace character');
                     } else {
                         $errors['UserID_Group']
-                            = 'Whitespace characters are not allowed in user names';
+                            = _('Whitespace characters are not allowed in user names');
                     }
                 }
             }
@@ -1138,7 +1138,7 @@ class Edit_User extends \NDB_Form
         if ($values['Email'] === $values['Password_hash']
             && $values['Password_hash'] !== ''
         ) {
-            $errors['Password'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password'] = _(self::PASSWORD_ERROR_IS_EMAIL);
         }
 
         // Make sure the user is not using their username as their password.
@@ -1151,7 +1151,7 @@ class Edit_User extends \NDB_Form
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
         ) {
-            $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password'] = _(self::PASSWORD_ERROR_IS_USER);
         }
 
         if (!is_null($this->identifier)) {
@@ -1169,7 +1169,7 @@ class Edit_User extends \NDB_Form
                 && $values['NA_Password'] != 'on'
             ) {
                 $errors['Password']
-                    = 'Please specify password or click Generate new password';
+                    = _('Please specify password or click Generate new password');
             }
         }
         // Ensure that the password and confirm password fields match.
@@ -1191,7 +1191,7 @@ class Edit_User extends \NDB_Form
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
-                    $errors['Password'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password'] = _(self::PASSWORD_ERROR_NO_CHANGE);
                 }
             } catch (\InvalidArgumentException $e) {
                 $errors['Password'] = $e->getMessage();
@@ -1204,23 +1204,23 @@ class Edit_User extends \NDB_Form
             && $values['SendEmail'] != "on"
         ) {
             $errors['Email']
-                = 'When generating a new password, '
-                . 'please notify the user by checking Send email to user box';
+                = _('When generating a new password, '
+                . 'please notify the user by checking Send email to user box');
         }
 
         if (isset($values['NA_Password'])
             && $values['NA_Password'] == 'on'
             && $plaintext != ''
         ) {
-            $errors['Password'] = 'You must leave the password field empty '
-                . 'if you want the system to generate one for you';
+            $errors['Password'] = _('You must leave the password field empty '
+                . 'if you want the system to generate one for you');
         }
 
         if (is_null($this->identifier)
             && (!isset($values['NA_Password']) || $values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
-            $errors['Password'] = 'Password is required';
+            $errors['Password'] = _('Password is required');
         }
 
         //======================================
@@ -1234,13 +1234,13 @@ class Edit_User extends \NDB_Form
                 $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
-                    $errors['__ConfirmEmail'] = 'Email and confirmed email '
-                        . ' do not match';
+                    $errors['__ConfirmEmail'] = _('Email and confirmed email '
+                        . ' do not match');
                 }
             }
         } else {
             // No email entered: error
-            $errors['Email'] = 'You must enter an email address';
+            $errors['Email'] = _('You must enter an email address');
         }
 
         //======================================
@@ -1248,8 +1248,8 @@ class Edit_User extends \NDB_Form
         //======================================
         // Ensure that at least one site is selected
         if (empty($values['CenterIDs'])) {
-            $errors['sites_group'] = "You must select at least one " .
-                "site/affiliation";
+            $errors['sites_group'] = _("You must select at least one " .
+                "site/affiliation");
         }
 
         //======================================
@@ -1257,8 +1257,8 @@ class Edit_User extends \NDB_Form
         //======================================
         // Ensure that at least one site is selected
         if (empty($values['ProjectIDs'])) {
-            $errors['projects_group'] = "You must select at least one " .
-                "project/affiliation";
+            $errors['projects_group'] = _("You must select at least one " .
+                "project/affiliation");
         }
 
         //======================================
@@ -1270,15 +1270,15 @@ class Edit_User extends \NDB_Form
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
-                        $errors['examiner_group'] = "Please specify if examiner " .
-                            "is a radiologist";
+                        $errors['examiner_group'] = _("Please specify if examiner " .
+                            "is a radiologist");
 
                     }
                     if ($values['examiner_radiologist'] !== ''
                         && $values['examiner_pending'] == ''
                     ) {
-                        $errors['examiner_group'] = "Please set pending " .
-                            "approval Yes or No";
+                        $errors['examiner_group'] = _("Please set pending " .
+                            "approval Yes or No");
                     }
                 }
             }
@@ -1286,9 +1286,9 @@ class Edit_User extends \NDB_Form
                 && ($values['examiner_radiologist'] !== ''
                 || $values['examiner_pending'] ?? '' !== '')
             ) {
-                $errors['examiner_sites'] = "Please select at least one examiner
+                $errors['examiner_sites'] = _("Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
-                'Radiologist' and 'Pending Approval').";
+                'Radiologist' and 'Pending Approval').");
             }
         }
 
@@ -1304,8 +1304,8 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from"
-                date should be lesser or equal to the "Active to" date.';
+                = _('Please notice that the "Active from"
+                date should be lesser or equal to the "Active to" date.');
         }
         return $errors;
     }
@@ -1325,11 +1325,11 @@ class Edit_User extends \NDB_Form
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
             // addresses containing them
-            return 'Email address can not contain any the following '.
-                'characters: <, >, & and "';
+            return _('Email address can not contain any the following '.
+                'characters: <, >, & and "');
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return "Invalid email address";
+            return _("Invalid email address");
         }
 
         // check email address' uniqueness
@@ -1343,7 +1343,7 @@ class Edit_User extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return self::EMAIL_NOT_UNIQUE;
+            return _(self::EMAIL_NOT_UNIQUE);
         }
 
         return null;

@@ -75,8 +75,8 @@ class User_Accounts extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $yesNoOptions = [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => _('Yes'),
+            'N' => _('No'),
         ];
 
         return [

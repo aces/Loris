@@ -151,7 +151,7 @@ class ImageInfo extends \NDB_Page
                     break;
                 default:
                     // FIXME: Bad request
-                    throw new \Exception("Not implemented");
+                    throw new \Exception(_("Not implemented"));
 
                 }
             } else {
@@ -229,7 +229,7 @@ class ImageInfo extends \NDB_Page
                              WHERE ID IN (" . join(",", $params) . ")";
                 break;
             default:
-                throw new \Exception("Invalid query type");
+                throw new \Exception(_("Invalid query type"));
 
             }
         }
@@ -269,7 +269,7 @@ class ImageInfo extends \NDB_Page
                        . "/" . $row['FileID'];
                 break;
             default:
-                throw new \Exception("Invalid Source");
+                throw new \Exception(_("Invalid Source"));
             }
 
             if (preg_match('/nii(\.gz)?/i', $filename)) {

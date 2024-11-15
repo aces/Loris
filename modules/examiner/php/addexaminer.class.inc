@@ -71,13 +71,13 @@ class AddExaminer extends \NDB_Page
             && !in_array($siteID, $user->getCenterIDs())
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Permission denied: You cannot assign examiner to this Site.'
+                _('Permission denied: You cannot assign examiner to this Site.')
             );
         };
 
         if ($this->examinerExists($fullName, $siteID)) {
             return  new \LORIS\Http\Response\JSON\Conflict(
-                'This examiner already exists.'
+                _('This examiner already exists.')
             );
         }
 
@@ -130,7 +130,7 @@ class AddExaminer extends \NDB_Page
             ->withHeader("Content-Type", "text/plain")
             ->withBody(
                 new \LORIS\Http\StringStream(
-                    json_encode("Added!")
+                    json_encode(_("Added!"))
                 )
             );
     }

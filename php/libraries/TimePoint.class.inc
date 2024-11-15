@@ -324,7 +324,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // The page will create "V1" when this is the case without this check.
         if (empty($visitName)) {
             throw new \LorisException(
-                'A visit label is required.'
+                _('A visit label is required.')
             );
         }
 
@@ -337,7 +337,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         )
         ) {
             throw new \LorisException(
-                'This visit label is not valid for this cohort.'
+                _('This visit label is not valid for this cohort.')
             );
         }
 
@@ -350,7 +350,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
-                    'This visit label is not unique.'
+                    _('This visit label is not unique.')
                 );
             }
         }
@@ -399,7 +399,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
          */
         if (empty($newData)) {
             throw new LorisException(
-                'TimePoint::setData() cannot be called with an empty array!'
+                _('TimePoint::setData() cannot be called with an empty array!')
             );
         }
 
@@ -709,7 +709,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         // if not $stage is passed, evaluate the current stage
         if (empty($stage)) {
-            throw new Exception("Study Stage Not Specified");
+            throw new Exception(_("Study Stage Not Specified"));
         } else {
             return in_array($stage, $this->_dynamicStageOptions);
         }
@@ -845,7 +845,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $db = \NDB_Factory::singleton()->database();
 
         if (!in_array($type, $this->bvlQcTypes)) {
-            throw new Exception("You need to specify a valid BVL QC Type");
+            throw new Exception(_("You need to specify a valid BVL QC Type"));
         }
 
         $setArray = ['BVLQCType' => $type];
@@ -882,7 +882,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // can't set the status to Complete unless the type is set
         if ($status == 'Complete' && empty($qcType)) {
-            throw new Exception("Cannot complete QC until the type is defined");
+            throw new Exception(_))))("Cannot complete QC until the type is defined");
         }
 
         $setArray = ['BVLQCStatus' => $status];
@@ -912,10 +912,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // check the status
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
-            throw new Exception(
+            throw new Exception(_(
                 "TimePoint::setBVLQCExclusion: "
                 . "You need to specify a valid BVL QC Exclusion Status"
-            );
+            ));
         }
 
         // fields to update

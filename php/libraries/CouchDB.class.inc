@@ -91,7 +91,7 @@ class SocketWrapper
     {
         $status = fclose($this->socket);
         if ($status === false) {
-            throw new \LorisException("Could not close CouchDB network socket");
+            throw new \LorisException(_("Could not close CouchDB network socket"));
         };
     }
 
@@ -139,7 +139,7 @@ class SocketWrapper
     {
         $status = fwrite($this->socket, $str);
         if ($status === false) {
-            throw new \LorisException("Could not write to CouchDB server");
+            throw new \LorisException(_("Could not write to CouchDB server"));
         }
     }
 }
@@ -274,9 +274,9 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    _("LORIS Deprecation Warning: CouchDB::getInstance() will no
                     longer auto-loading CouchDB credentials, make sure to specify
-                    all necessary parameters in the function call."
+                    all necessary parameters in the function call.")
                 );
             } else if (!empty($database)
                 && empty($host)
@@ -295,9 +295,9 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    _("LORIS Deprecation Warning: CouchDB::getInstance() will no
                     longer support accepting only a database name, make sure to
-                    specify all necessary parameters in the function call."
+		    specify all necessary parameters in the function call.")
                 );
             } else if (empty($database)
                 || empty($host)
@@ -309,7 +309,7 @@ class CouchDB
                 // enter any of the above IF statements. this behaviour was never
                 // supported and should be an error.
                 throw new ConfigurationException(
-                    "CouchDB::getInstance() requires all parameters to be supplied."
+                    _("CouchDB::getInstance() requires all parameters to be supplied.")
                 );
             }
 
@@ -538,7 +538,7 @@ class CouchDB
         $data = json_decode($json, true);
         if (is_null($data)) {
             throw new \LorisException(
-                'Decoded JSON data returned null. Cannot continue.'
+                _('Decoded JSON data returned null. Cannot continue.')
             );
         }
 
@@ -725,7 +725,7 @@ class CouchDB
         $data = json_decode($query ?? '', true);
         if (is_null($data)) {
             throw new \LorisException(
-                'Decoded JSON data returned null. Cannot continue.'
+                _('Decoded JSON data returned null. Cannot continue.')
             );
         }
 

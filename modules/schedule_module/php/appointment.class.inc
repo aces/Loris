@@ -219,14 +219,14 @@ class Appointment extends \NDB_Page
                 $response = $success
                 ? new \LORIS\Http\Response\JSON\OK(['appointment modified'])
                 : new \LORIS\Http\Response\JSON\BadRequest(
-                    'Appointment modification failed'
+                    _('Appointment modification failed')
                 );
             } else {
                 $success  = $this->addAppointment($data);
                 $response = $success
                 ? new \LORIS\Http\Response\JSON\OK(['appointment added'])
                 : new \LORIS\Http\Response\JSON\BadRequest(
-                    'Appointment addition failed'
+                    _('Appointment addition failed')
                 );
             }
             return $response;

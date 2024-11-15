@@ -53,7 +53,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return _("Tools");
     }
 
     /**
@@ -63,7 +63,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Document Repository";
+        return _("Document Repository");
     }
 
     /**
@@ -108,7 +108,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Document Repository Notifications",
+                        _("Document Repository Notifications"),
                         $this->renderTemplate(
                             "docnotifications.tpl",
                             [

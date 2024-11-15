@@ -48,7 +48,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Clinical";
+        return _("Clinical");
     }
 
     /**
@@ -58,6 +58,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Behavioural Quality Control";
+        return _("Behavioural Quality Control");
     }
 }

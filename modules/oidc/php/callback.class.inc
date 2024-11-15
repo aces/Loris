@@ -28,10 +28,10 @@ class Callback extends \NDB_Page
     {
         $params = $request->getQueryParams();
         if (!isset($params['code'])) {
-            return new \LORIS\Http\Response\JSON\BadRequest("No code");
+            return new \LORIS\Http\Response\JSON\BadRequest(_("No code"));
         }
         if (!isset($params['state'])) {
-            return new \LORIS\Http\Response\JSON\BadRequest("Missing state");
+            return new \LORIS\Http\Response\JSON\BadRequest(_("Missing state"));
         }
         $DB = $this->loris->getDatabaseConnection();
 
@@ -44,7 +44,7 @@ class Callback extends \NDB_Page
             ['thestate' => $params['state']]
         );
         if (empty($oidcstate)) {
-            return new \LORIS\Http\Response\JSON\BadRequest("Invalid state");
+            return new \LORIS\Http\Response\JSON\BadRequest(_("Invalid state"));
         }
         $DB->delete('openid_connect_csrf', ['State' => $params['state']]);
 
@@ -62,7 +62,7 @@ class Callback extends \NDB_Page
         );
         if (empty($clientsettings)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "Could not find provider settings"
+                _("Could not find provider settings")
             );
         }
 
@@ -75,12 +75,12 @@ class Callback extends \NDB_Page
         $openid_config = $this->_getOpenIDConfiguration($client);
         if ($openid_config == null) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "OpenID Identity Provider is missing discovery endpoint."
+                _("OpenID Identity Provider is missing discovery endpoint.")
             );
         }
         if (!isset($openid_config['token_endpoint'])) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "OpenID Identity Provider is missing token_endpoint"
+                _("OpenID Identity Provider is missing token_endpoint")
             );
         }
 
@@ -94,7 +94,7 @@ class Callback extends \NDB_Page
         );
         if ($userinfo === null) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "Could not get token"
+                _("Could not get token")
             );
         }
         if (isset($userinfo->email_verified) && $userinfo->email_verified == true) {
@@ -109,7 +109,7 @@ class Callback extends \NDB_Page
                 $user = \User::factory($UserID);
                 if ($user->isPendingApproval()) {
                     return new \LORIS\Http\Response\JSON\OK(
-                        ["error" =>"Account is pending approval"],
+                        ["error" =>_("Account is pending approval")],
                     );
                 }
 
@@ -136,7 +136,7 @@ class Callback extends \NDB_Page
             // Not clear what the correct response here is. We can't trust the email,
             // but everything is configured correctly and the workflow worked..
             return new \LORIS\Http\Response\JSON\OK(
-                ["error" => "Email not verified"],
+                ["error" => _("Email not verified")],
             );
         }
     }

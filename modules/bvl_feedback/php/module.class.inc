@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Behavioural Feedback";
+        return _("Behavioural Feedback");
     }
 
     /**
@@ -133,7 +133,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Behavioural Feedback Notifications",
+                        _("Behavioural Feedback Notifications"),
                         $this->renderTemplate(
                             "dashboardwidget.tpl",
                             [

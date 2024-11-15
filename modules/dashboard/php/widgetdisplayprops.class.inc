@@ -47,7 +47,7 @@ class WidgetDisplayProps
         array $menus = []
     ) {
         if (!in_array($size, ["small", "normal"])) {
-            throw new \DomainException("Invalid value for widget size");
+            throw new \DomainException(_("Invalid value for widget size"));
         }
 
         $this->_size  = $size;

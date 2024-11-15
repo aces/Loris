@@ -82,7 +82,7 @@ class Permissions extends \NDB_Page
     {
         $action = $request->getQueryParams()['action'];
         if (empty($action)) {
-            return new \LORIS\Http\Response\JSON\BadRequest("Missing action");
+            return new \LORIS\Http\Response\JSON\BadRequest(_("Missing action"));
         }
         switch ($action) {
         case 'add':
@@ -90,7 +90,7 @@ class Permissions extends \NDB_Page
         case 'manage':
             return $this->_managePermissions($request);
         default:
-            return new \LORIS\Http\Response\JSON\BadRequest("Invalid action");
+            return new \LORIS\Http\Response\JSON\BadRequest(_("Invalid action"));
         }
     }
 
@@ -109,12 +109,12 @@ class Permissions extends \NDB_Page
 
         if (empty($posted)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No data was sent in the POST request"
+                _("No data was sent in the POST request")
             );
         }
         if (empty($posted['userid'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing user to grant access to"
+                _("Missing user to grant access to")
             );
         }
 
@@ -145,7 +145,7 @@ class Permissions extends \NDB_Page
         } elseif (empty($releaseid) && !empty($version)) {
             // If there is no release id but there is a version, give
             // access to every file with that version.
-            if ($version == 'Unversioned') {
+            if ($version == _('Unversioned')) {
                 $IDs = $DB->pselectCol(
                     "SELECT id FROM data_release WHERE
                         version IS NULL OR version=''",
@@ -170,7 +170,7 @@ class Permissions extends \NDB_Page
             }
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must select either specific file OR version to grant access to",
+                _("Must select either specific file OR version to grant access to"),
             );
         }
 
@@ -198,7 +198,7 @@ class Permissions extends \NDB_Page
         $body = $request->getParsedBody();
         if ($body === null || !is_array($body)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No valid data was sent in the request"
+                _("No valid data was sent in the request")
             );
         }
 

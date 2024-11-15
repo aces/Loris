@@ -48,31 +48,31 @@ class UploadException extends \LorisException
     {
         switch ($code) {
         case UPLOAD_ERR_INI_SIZE:
-            $message = 'The uploaded file exceeds the upload_max_filesize ' .
-                       'directive in php.ini';
+            $message = _('The uploaded file exceeds the upload_max_filesize ' .
+                       'directive in php.ini');
             break;
         case UPLOAD_ERR_FORM_SIZE:
-            $message = 'The uploaded file exceeds the MAX_FILE_SIZE ' .
-                       'directive that was specified in the HTML form';
+            $message = _('The uploaded file exceeds the MAX_FILE_SIZE ' .
+                       'directive that was specified in the HTML form');
             break;
         case UPLOAD_ERR_PARTIAL:
-            $message = 'The uploaded file was only partially uploaded';
+            $message = _('The uploaded file was only partially uploaded');
             break;
         case UPLOAD_ERR_NO_FILE:
-            $message = 'No file was uploaded';
+            $message = _('No file was uploaded');
             break;
         case UPLOAD_ERR_NO_TMP_DIR:
-            $message = 'Temporary folder not found';
+            $message = _('Temporary folder not found');
             break;
         case UPLOAD_ERR_CANT_WRITE:
-            $message = 'Failed to write file to disk';
+            $message = _('Failed to write file to disk');
             break;
         case UPLOAD_ERR_EXTENSION:
-            $message = 'File upload stopped by extension';
+            $message = _('File upload stopped by extension');
             break;
 
         default:
-            $message = 'Unknown upload error';
+            $message = _('Unknown upload error');
             break;
         }
         return $message;

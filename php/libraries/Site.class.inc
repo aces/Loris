@@ -63,7 +63,7 @@ class Site implements
                 $this->_siteInfo[$key] = strval($value);
             }
         } else {
-            throw new Exception("Invalid site");
+            throw new Exception(_("Invalid site"));
         }
     }
 

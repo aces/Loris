@@ -152,7 +152,7 @@ class Issue extends \NDB_Form
         if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
-            return new \Loris\Http\Error($request, 404, "Issue not found");
+            return new \Loris\Http\Error($request, 404, _("Issue not found"));
         }
         // FIXME: This should negotiate the content type it returns (JSON vs HTML)
         // based on the HTTP Accept header, and determine whether to update or
@@ -172,7 +172,7 @@ class Issue extends \NDB_Form
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Issue',
+                _('Issue'),
                 "/issue_tracker/issue/$this->issueID"
             )
         );

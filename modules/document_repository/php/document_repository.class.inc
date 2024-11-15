@@ -106,7 +106,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'     => ['yes' => _("Yes"), 'no' => _("No")],
         ];
     }
     /**
@@ -129,8 +129,8 @@ class Document_Repository extends \DataFrameworkMenu
                 $value     = $DB->pselectRow($query, []);
                 if (is_null($value)) {
                     throw new \LorisException(
-                        'Could not find data for specified parent ID. '
-                        . 'Cannot parse category.'
+                        _('Could not find data for specified parent ID. '
+                        . 'Cannot parse category.')
                     );
                 }
                 $categoryName = $value['category_name'] . ">" . $categoryName;

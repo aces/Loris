@@ -149,7 +149,7 @@ class Project implements \JsonSerializable
     ): \Project {
 
         if (empty($projectName)) {
-            throw new \LorisException("ProjectName can't be null");
+            throw new \LorisException(_("ProjectName can't be null"));
         }
 
         $factory   = \NDB_Factory::singleton();
@@ -262,8 +262,8 @@ class Project implements \JsonSerializable
     {
         if (strlen($projectAlias) > 4 ) {
             throw new InvalidArgumentException(
-                "The length of the project's alias can not be longer than ".
-                "4 characters."
+                _("The length of the project's alias can not be longer than ".
+                "4 characters.")
             );
         }
         $this->_projectAlias = $projectAlias;
@@ -504,7 +504,7 @@ class Project implements \JsonSerializable
 
         if (empty($projectsData)) {
             throw new \NotFound(
-                "No projects found for cohort: " . $cohort->title
+                _("No projects found for cohort: ") . $cohort->title
             );
         }
         $projects = [];

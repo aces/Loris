@@ -18,7 +18,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Candidate Parameters";
+        return _("Candidate Parameters");
     }
 
     /**
@@ -64,7 +64,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Consent Summary",
+                    _("Consent Summary"),
                     $baseurl . "/candidate_parameters/js/ConsentWidget.js",
                     "lorisjs.candidate_parameters.ConsentWidget.default",
                     [
@@ -99,8 +99,8 @@ class Module extends \Module
             // Participant Status
             $entries = [
                 new CandidateInfo(
-                    "Participant Status",
-                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
+                    _("Participant Status"),
+                    $candidate->getParticipantStatusDescription($db) ?: _('N/A'),
                 ),
             ];
 

@@ -57,7 +57,7 @@ class UserProjectMatchOrNull implements \LORIS\Data\Filter
             return true;
         }
         throw new \LorisException(
-            "Can not implement filter on a resource type that has no projects."
+            _("Can not implement filter on a resource type that has no projects.")
         );
     }
 }

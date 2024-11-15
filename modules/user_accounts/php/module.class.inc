@@ -50,7 +50,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Admin";
+        return _("Admin");
     }
 
     /**
@@ -60,7 +60,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "User Accounts";
+        return _("User Accounts");
     }
 
     /**
@@ -83,7 +83,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Pending account approval",
+                    _("Pending account approval"),
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)

@@ -72,7 +72,7 @@ class TimePointData
     public function getSessionID() : SessionID
     {
         if ($this->sessionID === null) {
-            throw new \LogicException("No SessionID loaded into data model");
+            throw new \LogicException(_("No SessionID loaded into data model"));
         }
         return $this->sessionID;
     }
@@ -86,7 +86,7 @@ class TimePointData
     public function getProjectID() : ProjectID
     {
         if ($this->projectID === null) {
-            throw new \LogicException("No ProjectID loaded into data model");
+            throw new \LogicException(_("No ProjectID loaded into data model"));
         }
         return $this->projectID;
     }
@@ -100,7 +100,7 @@ class TimePointData
     public function getCenterID() : \CenterID
     {
         if ($this->centerID === null) {
-            throw new \LogicException("No CenterID loaded into data model");
+            throw new \LogicException(_("No CenterID loaded into data model"));
         }
         return $this->centerID;
     }

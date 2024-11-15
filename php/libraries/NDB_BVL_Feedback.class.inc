@@ -80,8 +80,8 @@ class NDB_BVL_Feedback
         // at least one of the args have to be passed
         if (empty($candID) && empty($sessionID) && empty($commentID)) {
             throw new Exception(
-                "You need to pass at least one of the following when creating "
-                . " the Feedback Object: CandID, SessionID, or CommentID"
+                _("You need to pass at least one of the following when creating "
+                . " the Feedback Object: CandID, SessionID, or CommentID")
             );
         }
 
@@ -108,7 +108,7 @@ class NDB_BVL_Feedback
             } catch (Exception $e) {
                 unset($feedbackList[$objectName]);
                 throw new Exception(
-                    "Could not instantiate feedback object",
+                    _("Could not instantiate feedback object"),
                     0,
                     $e
                 );
@@ -147,8 +147,8 @@ class NDB_BVL_Feedback
             $this->_feedbackLevel = 'profile';
         } else {
             throw new Exception(
-                "You need to pass at least one of the following to setup the "
-                . "Feedback Object: CandID, SessionID, or CommentID"
+                _("You need to pass at least one of the following to setup the "
+                . "Feedback Object: CandID, SessionID, or CommentID")
             );
         }
 
@@ -197,8 +197,8 @@ class NDB_BVL_Feedback
             $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
             throw new InvalidArgumentException(
-                "You need to pass at least one of the following to setup "
-                . "the Feedback Object: CandID, SessionID, or CommentID"
+                _("You need to pass at least one of the following to setup "
+                . "the Feedback Object: CandID, SessionID, or CommentID")
             );
         }
         $query .= " LIMIT 1";
@@ -206,7 +206,7 @@ class NDB_BVL_Feedback
         $result = iterator_to_array($db->pselect($query, $qparams));
         if (!is_array($result) || count($result) == 0) {
             throw new LorisException(
-                "Error, unable to select data for the feedback object"
+                _("Error, unable to select data for the feedback object")
             );
         }
 
@@ -292,9 +292,9 @@ class NDB_BVL_Feedback
     ): int {
         if (empty($name) || strlen($name) > 100 ) {
             throw new InvalidArgumentException(
-                "Invalid feedback type name: name must not be empty and must "
+                _("Invalid feedback type name: name must not be empty and must "
                 . "not exceed 100 characters"
-            );
+            ));
         }
 
         if (empty($description)) {
@@ -605,8 +605,8 @@ class NDB_BVL_Feedback
             );
         } else {
             throw new Exception(
-                "You need to pass at least one of the following to retrieve the"
-                . " list of thread: CandID, SessionID, or CommentID"
+                _("You need to pass at least one of the following to retrieve the"
+                . " list of thread: CandID, SessionID, or CommentID")
             );
         }
 
@@ -692,8 +692,8 @@ class NDB_BVL_Feedback
             $status = 'comment';
         } else {
             throw new Exception(
-                "Please select a 'Required Action?'"
-                . " for the new feedback you want to create"
+                _("Please select a 'Required Action?'"
+                . " for the new feedback you want to create")
             );
         }
         $today = date("Y-m-d");
@@ -950,7 +950,7 @@ class NDB_BVL_Feedback
             );
         } else {
             // at least one of the above has to be true
-            throw new Exception("Error: No threads selected to activate");
+            throw new Exception(_("Error: No threads selected to activate"));
         }
 
         $db->update('feedback_bvl_thread', $setArray, $whereArray);
@@ -994,7 +994,7 @@ class NDB_BVL_Feedback
         } else {
             // at least one of the above has to be true
             throw new Exception(
-                "Error: No threads selected were selected to be closed"
+                _("Error: No threads selected were selected to be closed")
             );
         }
         // close the threads - update feedback_bvl_thread table
@@ -1052,8 +1052,8 @@ class NDB_BVL_Feedback
     {
         if (empty($statusID)) {
             throw new Exception(
-                "NDB_BVL_Feedback::getFeedbackStatusVerbose "
-                . "Error, empty status ID\n"
+                _("NDB_BVL_Feedback::getFeedbackStatusVerbose "
+                . "Error, empty status ID\n")
             );
         }
         $db = \NDB_Factory::singleton()->database();

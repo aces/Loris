@@ -50,7 +50,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return _("Imaging");
     }
 
     /**
@@ -60,7 +60,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "MRI Violated Scans";
+        return _("MRI Violated Scans");
     }
 
     /**
@@ -87,9 +87,9 @@ class Module extends \Module
             $provisioner = new Provisioner();
 
             if ($user->hasPermission('violated_scans_view_allsites')) {
-                $siteLabel = 'Site: All';
+                $siteLabel = _('Site: All');
             } else {
-                $siteLabel   = 'Site: All User Sites';
+                $siteLabel   = _('Site: All User Sites');
                 $provisioner = $provisioner->filter(new UserCenterMatchOrNull())
                     ->filter(new UserProjectMatchOrNull());
             }
@@ -104,7 +104,7 @@ class Module extends \Module
                 }
             }
 
-            $label = $number >  1 ? 'Violated scans' : 'Violated scan';
+            $label = $number >  1 ? _('Violated scans') : _('Violated scan');
 
             $widget = new \LORIS\dashboard\TaskWidget(
                 $label,

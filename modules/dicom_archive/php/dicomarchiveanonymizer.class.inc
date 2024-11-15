@@ -53,7 +53,7 @@ class DICOMArchiveAnonymizer implements Mapper
 
         $newrow = json_decode(json_encode($resource), true);
         if (!is_array($newrow)) {
-            throw new \Exception("Error converting DataInstance to array");
+            throw new \Exception(_("Error converting DataInstance to array"));
         }
 
         // escape any forward slashes
@@ -92,10 +92,10 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         if (!$isValid) {
-            $newrow['patientName'] = 'INVALID - HIDDEN';
+            $newrow['patientName'] = _('INVALID - HIDDEN');
         }
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {
-            $newrow['patientID'] = 'INVALID - HIDDEN';
+            $newrow['patientID'] = _('INVALID - HIDDEN');
         }
 
         if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {

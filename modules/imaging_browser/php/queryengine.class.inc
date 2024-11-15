@@ -34,13 +34,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     {
         $scope  = new Scope(Scope::SESSION);
         $images = new \LORIS\Data\Dictionary\Category(
-            "Images",
-            "Image Acquisitions",
+            _("Images"),
+            _("Image Acquisitions"),
         );
         $items  = [
             new DictionaryItem(
                 "ScanDone",
-                "Does the session have any imaging scan done?",
+                _("Does the session have any imaging scan done?"),
                 $scope,
                 new \LORIS\Data\Types\BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
@@ -182,7 +182,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                             AND mri_scan_type.Scan_type='{$modality}')";
         }
 
-        throw new \DomainException("Invalid field " . $item->getName());
+        throw new \DomainException(_("Invalid field: ") . $item->getName());
     }
 
     /**
@@ -195,7 +195,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     public function getCorrespondingKeyFieldType(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : string {
-        return "Imaging Filename";
+        return _("Imaging Filename");
     }
 
     /**
@@ -216,7 +216,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
         throw new \Exception(
-            "Unhandled Cardinality::MANY field " . $item->getName()
+            _("Unhandled Cardinality::MANY field: ") . $item->getName()
         );
     }
 }

@@ -73,13 +73,13 @@ class FilesUploadHandler implements RequestHandlerInterface
 
         if (! $this->uploadDirectory->isDir()) {
             throw new \ConfigurationException(
-                'Upload directory is not a directory'
+                _('Upload directory is not a directory')
             );
         }
 
         if (! $this->uploadDirectory->isWritable()) {
             throw new \ConfigurationException(
-                'Upload directory is not writable'
+                _('Upload directory is not writable')
             );
         }
     }
@@ -169,7 +169,7 @@ class FilesUploadHandler implements RequestHandlerInterface
              */
             if (file_exists($targetPath) && $this->overwrite !== true) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'This file has already been uploaded.'
+                    _('This file has already been uploaded.')
                 );
             }
 
@@ -182,7 +182,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                 )
                 ) {
                     return new \LORIS\Http\Response\JSON\Forbidden(
-                        'File type not allowed'
+                        _('File type not allowed')
                     );
                 }
             }
@@ -192,17 +192,17 @@ class FilesUploadHandler implements RequestHandlerInterface
                 $file->moveTo($targetPath);
             } catch (\Exception $e) {
                 error_log(
-                    'Could not upload file: ' . $e->getMessage()
+                    _('Could not upload file: ') . $e->getMessage()
                 );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
-                    'Could not upload file'
+                    _('Could not upload file')
                 );
             }
             chmod($targetPath, $this->permissions);
         }
 
         return new \LORIS\Http\Response\JSON\Created(
-            ['message' => 'File uploaded successfully']
+            ['message' => _('File uploaded successfully')]
         );
     }
 }

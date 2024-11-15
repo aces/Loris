@@ -51,7 +51,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Electrophysiology";
+        return _("Electrophysiology");
     }
 
     /**
@@ -61,6 +61,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Electrophysiology Browser";
+        return _("Electrophysiology Browser");
     }
 }

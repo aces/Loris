@@ -269,7 +269,7 @@ class Statistics_Site extends \NDB_Menu
             $centerID = \CenterID::singleton(intval($_REQUEST['CenterID']));
             $name     = $center['Name'] ?? '';
         } else {
-            $name     = 'All';
+            $name     = _('All');
             $centerID = null;
         }
         if (!empty($_REQUEST['ProjectID'])) {

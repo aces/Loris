@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Candidate";
+        return _("Candidate");
     }
 
     /**
@@ -57,6 +57,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "New Profile";
+        return _("New Profile");
     }
 }

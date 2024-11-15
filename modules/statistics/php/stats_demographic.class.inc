@@ -300,7 +300,7 @@ class Stats_Demographic extends \NDB_Form
         );
 
         $sites     = [];
-        $sites[''] ='All sites';
+        $sites[''] = _('All sites');
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
@@ -516,7 +516,7 @@ class Stats_Demographic extends \NDB_Form
         //START BIG TABLE
         $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
-            [ '' => 'Recruit Breakdown by Sex'],
+            [ '' => _('Recruit Breakdown by Sex')],
             $instrumentList
         );
         $this->tpl_data['all_instruments'] = $instrumentList;
@@ -574,7 +574,7 @@ class Stats_Demographic extends \NDB_Form
                 )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                'Breakdown of Registered Candidates',
+                _('Breakdown of Registered Candidates'),
                 'Data Entry Completion Status for '.
                     $instrumentList[$demographicInstrument],
                 $subcategories,
@@ -615,8 +615,8 @@ class Stats_Demographic extends \NDB_Form
                 )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                'Breakdown of Registered Candidates',
-                'Breakdown by Sex',
+                _('Breakdown of Registered Candidates'),
+                _('Breakdown by Sex'),
                 $subcategories,
                 $visits,
                 'DemographicInstrument',

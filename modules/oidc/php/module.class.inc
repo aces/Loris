@@ -26,6 +26,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return 'OpenID Connect';
+        return _('OpenID Connect');
     }
 }

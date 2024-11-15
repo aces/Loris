@@ -108,7 +108,7 @@ class Login extends Endpoint
 
             if ($user === null || $password === null) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Missing username or password'
+                    _('Missing username or password')
                 );
             }
 
@@ -122,7 +122,7 @@ class Login extends Endpoint
                     );
                 } else {
                     return new \LORIS\Http\Response\JSON\InternalServerError(
-                        'Unacceptable JWT key'
+                        _('Unacceptable JWT key')
                     );
                 }
             }

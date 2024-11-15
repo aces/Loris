@@ -74,7 +74,7 @@ class Module extends \Module
         if (empty($commentID)) {
             return (new \Laminas\Diactoros\Response())
                 ->withStatus(400)
-                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"));
+                ->withBody(new \LORIS\Http\StringStream(_("Missing CommentID")));
         }
 
         $loris      = $request->getAttribute("loris");
@@ -89,7 +89,7 @@ class Module extends \Module
         if ($instrument->_hasAccess($user) == false) {
             return (new \Laminas\Diactoros\Response())
                 ->withStatus(403)
-                ->withBody(new \LORIS\Http\StringStream("Permission denied"));
+                ->withBody(new \LORIS\Http\StringStream(_("Permission denied")));
         }
 
         $request = $request->withAttribute('pageclass', $instrument);
@@ -104,7 +104,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Instruments";
+        return _("Instruments");
     }
 
     /**
@@ -127,7 +127,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Incomplete form",
+                    _("Incomplete form"),
                     $DB,
                     "SELECT COUNT(*) FROM flag
                         LEFT JOIN session s ON (s.ID=flag.SessionID)
@@ -148,7 +148,7 @@ class Module extends \Module
 
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Behavioural Data",
+                    _("Behavioural Data"),
                     $baseurl . "/instruments/js/CandidateInstrumentList.js",
                     'lorisjs.instruments.CandidateInstrumentList.default',
                     [],

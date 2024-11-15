@@ -220,18 +220,18 @@ class My_Preferences extends \NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->addScoreColumn('UserID', 'User name');
+        $this->addScoreColumn('UserID', _('User name'));
 
         // full name
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $firstNameInvalidMsg = "First name is required and "
-            . "should not exceed 120 characters";
+        $firstNameInvalidMsg = _("First name is required and "
+            . "should not exceed 120 characters");
         $this->addBasicText(
             'First_name',
-            'First name',
+            _('First name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
@@ -244,11 +244,11 @@ class My_Preferences extends \NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $lastNameInvalidMsg = "Last name is required and "
-            . "should not exceed 120 characters";
+        $lastNameInvalidMsg = _("Last name is required and "
+            . "should not exceed 120 characters");
         $this->addBasicText(
             'Last_name',
-            'Last name',
+            _('Last name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
@@ -261,7 +261,7 @@ class My_Preferences extends \NDB_Form
         // email address
         $this->addBasicText(
             'Email',
-            'Email address',
+            _('Email address'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('Email address is required')",
@@ -270,21 +270,21 @@ class My_Preferences extends \NDB_Form
         );
 
         // email address rules
-        $this->addRule('Email', 'Email address is required', 'required');
+        $this->addRule('Email', _('Email address is required'), 'required');
         $this->addRule(
             'Email',
-            'Your email address must be less than 255 characters long',
+            _('Your email address must be less than 255 characters long'),
             'maxlength',
             "255"
         );
 
         // password
-        $this->form->addElement('password', 'Password_hash', 'New Password');
-        $this->form->addElement('password', '__Confirm', 'Confirm Password');
+        $this->form->addElement('password', 'Password_hash', _('New Password'));
+        $this->form->addElement('password', '__Confirm', _('Confirm Password'));
 
         // language preference
         $languages = \Utility::getLanguageList();
-        $this->addSelect('language_preference', 'Language preference', $languages);
+        $this->addSelect('language_preference', _('Language preference'), $languages);
 
         // Notification headers
         $nGroup   = [];
@@ -392,18 +392,18 @@ class My_Preferences extends \NDB_Form
         $plaintext = $values['Password_hash'];
 
         if ($values['Email'] === $plaintext) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password_Group'] = _(self::PASSWORD_ERROR_IS_EMAIL);
         }
 
         // Make sure the user is not using their username as their password.
         if ($this->identifier === $plaintext) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password_Group'] = _(self::PASSWORD_ERROR_IS_USER);
         }
 
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($values['Password_hash'] !== $values['__Confirm']) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            $errors['Password_Group'] = _(self::PASSWORD_ERROR_NO_MATCH);
             return $errors;
         }
 
@@ -420,7 +420,7 @@ class My_Preferences extends \NDB_Form
                     $decoded
                 )
                 ) {
-                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password_Group'] = _(self::PASSWORD_ERROR_NO_CHANGE);
                 }
             } catch (\InvalidArgumentException $e) {
                 $errors['Password_Group'] = $e->getMessage();
@@ -452,7 +452,7 @@ class My_Preferences extends \NDB_Form
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return "Invalid email address";
+            return _("Invalid email address");
         }
 
         // check email address' uniqueness
@@ -466,7 +466,7 @@ class My_Preferences extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return 'The email address already exists';
+            return _('The email address already exists');
         }
 
         return null;

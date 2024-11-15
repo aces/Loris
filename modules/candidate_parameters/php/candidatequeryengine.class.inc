@@ -28,22 +28,22 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $sesscope  = new Scope(Scope::SESSION);
 
         $ids = new \LORIS\Data\Dictionary\Category(
-            "Identifiers",
-            "Candidate Identifiers"
+            _("Identifiers"),
+            _("Candidate Identifiers")
         );
 
         $ids = $ids->withItems(
             [
                 new DictionaryItem(
                     "CandID",
-                    "LORIS Candidate Identifier",
+                    _("LORIS Candidate Identifier"),
                     $candscope,
                     new \LORIS\Data\Types\IntegerType(999999),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
                     "PSCID",
-                    "Project Candidate Identifier",
+                    _("Project Candidate Identifier"),
                     $candscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
@@ -52,8 +52,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
 
         $demographics = new \LORIS\Data\Dictionary\Category(
-            "Demographics",
-            "Candidate Demographics",
+            _("Demographics"),
+            _("Candidate Demographics"),
         );
         $sexList      = array_keys(\Utility::getSexList());
         $t            = new Enumeration(...$sexList);
@@ -61,28 +61,28 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             [
                 new DictionaryItem(
                     "DoB",
-                    "Date of Birth",
+                    _("Date of Birth"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "DoD",
-                    "Date of Death",
+                    _("Date of Death"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::OPTIONAL),
                 ),
                 new DictionaryItem(
                     "Sex",
-                    "Candidate's biological sex",
+                    _("Candidate's biological sex"),
                     $candscope,
                     $t,
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "EDC",
-                    "Expected Data of Confinement",
+                    _("Expected Data of Confinement"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::OPTIONAL),
@@ -90,7 +90,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             ]
         );
 
-        $meta = new \LORIS\Data\Dictionary\Category("Meta", "Other parameters");
+        $meta = new \LORIS\Data\Dictionary\Category("Meta", _("Other parameters"));
 
         $db = $this->loris->getDatabaseConnection();
         $participantstatus_options = $db->pselectCol(
@@ -101,56 +101,56 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             [
                 new DictionaryItem(
                     "VisitLabel",
-                    "The study visit label",
+                    _("The study visit label"),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
                     "Project",
-                    "The LORIS project to categorize this session",
+                    _("The LORIS project to categorize this session"),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "Cohort",
-                    "The LORIS cohort used for battery selection",
+                    _("The LORIS cohort used for battery selection"),
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "Site",
-                    "The Site at which a visit occurred",
+                    _("The Site at which a visit occurred"),
                     $sesscope,
                     new \LORIS\Data\Types\Enumeration(...\Utility::getSiteList()),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "EntityType",
-                    "The type of entity which this candidate represents",
+                    _("The type of entity which this candidate represents"),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration('Human', 'Scanner'),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "ParticipantStatus",
-                    "The status of the participant within the study",
+                    _("The status of the participant within the study"),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration(...$participantstatus_options),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "RegistrationSite",
-                    "The site at which this candidate was initially registered",
+                    _("The site at which this candidate was initially registered"),
                     $candscope,
                     new \LORIS\Data\Types\Enumeration(...\Utility::getSiteList()),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "RegistrationProject",
-                    "The project for which this candidate was initially registered",
+                    _("The project for which this candidate was initially registered"),
                     $candscope,
                     new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
                     new Cardinality(Cardinality::SINGLE),
@@ -256,7 +256,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
             return 'pso.Description';
         default:
-            throw new \DomainException("Invalid field " . $item->getName());
+            throw new \DomainException(_("Invalid field: ") . $item->getName());
         }
     }
 
@@ -273,7 +273,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         // There are no cardinality::many fields in this query engine, so this
         // should never get called
         throw new \Exception(
-            "Unhandled Cardinality::MANY field " . $item->getName()
+            _("Unhandled Cardinality::MANY field: ") . $item->getName()
         );
     }
 
@@ -288,7 +288,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : string {
         throw new \Exception(
-            "Unhandled Cardinality::MANY field " . $item->getName()
+            _("Unhandled Cardinality::MANY field: ") . $item->getName()
         );
     }
 }

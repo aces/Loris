@@ -287,7 +287,7 @@ class SiteIDGenerator extends IdentifierGenerator
         // Validation
         if (count($seqAttributes) > 1) {
             throw new \ConfigurationException(
-                'Too many values found for config setting: ' . $setting
+                _('Too many values found for config setting: ') . $setting
             );
         }
 
@@ -362,7 +362,7 @@ class SiteIDGenerator extends IdentifierGenerator
         $generation = $this->_getIDSetting('generation');
         if (!in_array($generation, ['sequential', 'random'], true)) {
             throw new \ConfigurationException(
-                'Generation method must be either `sequential` or `random`.'
+                _('Generation method must be either `sequential` or `random`.')
             );
         }
         return $generation;

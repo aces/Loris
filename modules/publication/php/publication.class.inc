@@ -129,21 +129,21 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->query   = $query;
         $this->headers = [
-            'Title',
-            'Lead Investigator',
-            'Date Proposed',
-            'Approval Status',
-            'Project',
-            'Journal',
-            'Link',
-            'Publishing Status',
-            'Date published',
-            'Project Proposal Creator',
-            'Description',
-            'Collaborators',
-            'Variables Of Interest',
-            'Keywords',
-            'Publication ID',
+            _('Title'),
+            _('Lead Investigator'),
+            _('Date Proposed'),
+            _('Approval Status'),
+            _('Project'),
+            _('Journal'),
+            _('Link'),
+            _('Publishing Status'),
+            _('Date published'),
+            _('Project Proposal Creator'),
+            _('Description'),
+            _('Collaborators'),
+            _('Variables Of Interest'),
+            _('Keywords'),
+            _('Publication ID'),
         ];
 
         $this->validFilters = [
@@ -197,58 +197,58 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->addBasicText(
             'title',
-            'Title'
+            _('Title')
         );
         $this->addSelect(
             'approvalStatus',
-            'Approval Status',
+            _('Approval Status'),
             $statusOptions
         );
 
         // filters by name
         $this->addBasicText(
             'leadInvestigator',
-            'Lead Investigator'
+            _('Lead Investigator')
         );
 
         //also filters by name
         $this->addBasicText(
             'collaborators',
-            'Collaborators'
+            _('Collaborators')
         );
 
         $this->addBasicText(
             'keywords',
-            'Keywords'
+            _('Keywords')
         );
 
         $this->addBasicText(
             'variablesOfInterest',
-            'Variables of Interest'
+            _('Variables of Interest')
         );
 
         $this->addBasicText(
             'journal',
-            'Journal'
+            _('Journal')
         );
 
         $this->addSelect(
             'project',
-            'Project',
+            _('Project'),
             $projectOptions
         );
 
         $this->addBasicText(
             'link',
-            'Link'
+            _('Link')
         );
 
         $this->addSelect(
             'publishingStatus',
-            'Publishing Status',
+            _('Publishing Status'),
             [
-                'Published'   => 'Published',
-                'In Progress' => 'In Progress'
+                'Published'   => _('Published'),
+                'In Progress' => _('In Progress')
             ]
         );
     }

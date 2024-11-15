@@ -152,7 +152,7 @@ class Configuration extends \NDB_Form
                     }
                 }
             } catch (\ConfigurationException $e) {
-                $setting['Disabled'] = 'No';
+                $setting['Disabled'] = _('No');
             }
         }
 

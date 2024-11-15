@@ -68,7 +68,7 @@ class Upload extends \NDB_Page
         $qParams = $request->getQueryParams();
         if (!isset($qParams['upload_id'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "upload_id query parameter is required"
+                _("upload_id query parameter is required")
             );
         }
 
@@ -84,7 +84,7 @@ class Upload extends \NDB_Page
 
         if (empty($file)) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                "File not found."
+                _("File not found.")
             );
         }
 
@@ -126,14 +126,14 @@ class Upload extends \NDB_Page
         if (empty($request->getUploadedFiles()) && empty($values)) {
             $upload_max_size = \Utility::getMaxUploadSize();
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "The uploaded file size exceeds the upload_max_filesize " .
-                "or post_max_size directive in php.ini ($upload_max_size)"
+                _("The uploaded file size exceeds the upload_max_filesize " .
+                "or post_max_size directive in php.ini") . " ($upload_max_size)"
             );
         }
 
         if (is_null($uploadedFile)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'No file uploaded'
+                _('No file uploaded')
             );
         }
 
@@ -152,7 +152,7 @@ class Upload extends \NDB_Page
 
         if (is_null($candStatus)) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                'Candidate with matching CandID/PSCID pair does not exist'
+                _('Candidate with matching CandID/PSCID pair does not exist')
             );
         }
 
@@ -190,7 +190,7 @@ class Upload extends \NDB_Page
         $filename = urldecode($uploadedFile->getClientFilename());
         if ($filename !== "{$pscid}_{$candID}_{$visitLabel}_bids.tar.gz") {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Filename does not match expected name, please verify.'
+                _('Filename does not match expected name, please verify.')
             );
         }
 
