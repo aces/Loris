@@ -287,6 +287,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        error_log("commentID: $commentID");
+
         // Set page name to testName
         $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
@@ -551,6 +553,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Performs post-processing on valid data
+     *
+     * @return void
+     * @access public
+     */
+    function scoreAndPropagateData()
+    {
+        $this->score();
+        $this->updateRequiredElementsCompletedFlag();
+        $this->propagateData();
+    }
+
+    /**
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
@@ -561,9 +576,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
-            $this->score();
-            $this->updateRequiredElementsCompletedFlag();
-            $this->propagateData();
+            $this->scoreAndPropagateData();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -2269,7 +2282,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
-                $conditions[] = "CommentID IN 
+                $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
@@ -2343,7 +2356,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . ' ';
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
-            $query = "SELECT 
+            $query = "SELECT
 		    session.CandID as CandID,
 		    t.CommentID as CommentID,
                     session.Visit_Label as VisitLabel,
@@ -2419,8 +2432,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // for this instrument with current session's visit & project
         $dxEvolutionID = $DB->pselectOne(
             "SELECT DxEvolutionID FROM diagnosis_evolution
-            WHERE instrumentName=:tn 
-            AND ProjectID=:pid 
+            WHERE instrumentName=:tn
+            AND ProjectID=:pid
             AND visitLabel=:vl",
             [
                 'tn'  => $this->testName,
@@ -2448,7 +2461,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Get the fields that correspond to a configured diagnosis
         $sourceFields = $DB->pselectOne(
-            "SELECT sourceField 
+            "SELECT sourceField
             FROM diagnosis_evolution
             WHERE DxEvolutionID=:dxEvID",
             ['dxEvID' => $dxEvolutionID]
