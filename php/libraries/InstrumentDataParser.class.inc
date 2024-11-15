@@ -226,22 +226,27 @@ class InstrumentDataParser extends CSVParser
     public function validateData(
         array $instrumentData, array $injectedColumns
     ): array {
-        try {
-            foreach ($instrumentData as &$dataRow) {
+        $errors = [];
+        foreach ($instrumentData as &$dataRow) {
+            try {
                 // Validate Session
                 $sessionID            = $this->obtainSessionID(
                     $dataRow['PSCID'],
                     $dataRow['Visit_label']
                 );
                 $dataRow['SessionID'] = $sessionID;
+
+                // Inject columns
                 $dataRow = array_merge($dataRow, $injectedColumns);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
             }
-            return $instrumentData;
-        } catch (\Exception $e) {
-            throw new RuntimeException(
-                "Invalid data: {$e->getMessage()}"
-            );
         }
+
+        return [
+            'data'   => $instrumentData,
+            'errors' => $errors,
+        ];
     }
 
 
