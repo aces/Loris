@@ -123,7 +123,6 @@ class AddPermissionForm extends Component {
               options={this.state.fieldOptions.filenames}
               onUserInput={this.setFormData}
               ref='data_release_id'
-              hasError={this.state.hasError.Filename}
               errorMessage={this.state.errorMessage.Filename}
               required={false}
               value={this.state.formData.data_release_id}
@@ -136,7 +135,6 @@ class AddPermissionForm extends Component {
               options={this.state.fieldOptions.versions}
               onUserInput={this.setFormData}
               ref='data_release_version'
-              hasError={this.state.hasError.Version}
               errorMessage={this.state.errorMessage.Version}
               required={false}
               value={this.state.formData.data_release_version}
