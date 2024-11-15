@@ -92,10 +92,16 @@ class Instrument_Manager extends \DataFrameworkMenu
             $instrument = $params['instrument'];
 
             if ($this->instrumentExists($instrument)) {
-                $headers = InstrumentDataParser::getCSVHeaders($this->loris, $instrument);
+                $headers = InstrumentDataParser::getCSVHeaders(
+                    $this->loris,
+                    $instrument
+                );
 
                 $fileName   = "${instrument}_headers.csv";
-                $fileObject = new \SplFileObject(sys_get_temp_dir() . "/$fileName", 'w');
+                $fileObject = new \SplFileObject(
+                    sys_get_temp_dir() . "/$fileName",
+                    'w'
+                );
                 $fileObject->fputcsv($headers);
 
                 $downloader = new \LORIS\FilesDownloadHandler(
@@ -123,8 +129,9 @@ class Instrument_Manager extends \DataFrameworkMenu
      *
      * @return ResponseInterface The PSR15 response for the page.
      */
-    protected function handlePOST(ServerRequestInterface $request): ResponseInterface
-    {
+    protected function handlePOST(
+        ServerRequestInterface $request
+    ): ResponseInterface {
         // Ensure the user is allowed to upload.
         if (! $request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
@@ -155,8 +162,8 @@ class Instrument_Manager extends \DataFrameworkMenu
 
 
     /**
-     * Handle a POST request for uploading a new instrument. It moves the uploaded file
-     * in the project/instruments directory then call the php script from the
+     * Handle a POST request for uploading a new instrument. It moves the uploaded
+     * file in the project/instruments directory then call the php script from the
      * tools directory to generate sql statement required for the installation
      * of the instrument. Finally, it sources the sql file to complete the
      * installation.
@@ -165,8 +172,9 @@ class Instrument_Manager extends \DataFrameworkMenu
      *
      * @return ResponseInterface The PSR15 response for the page.
      */
-    protected function handleInstrumentUpload(ServerRequestInterface $request): ResponseInterface
-    {
+    protected function handleInstrumentUpload(
+        ServerRequestInterface $request
+    ): ResponseInterface {
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
@@ -175,7 +183,9 @@ class Instrument_Manager extends \DataFrameworkMenu
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                self::ALREADY_INSTALLED
+            );
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -252,8 +262,9 @@ class Instrument_Manager extends \DataFrameworkMenu
      *
      * @return ResponseInterface The PSR15 response for the page.
      */
-    protected function handleDataUpload(ServerRequestInterface $request): ResponseInterface
-    {
+    protected function handleDataUpload(
+        ServerRequestInterface $request
+    ): ResponseInterface {
         $data_file    = $request->getUploadedFiles()['data_file'];
         $request_body = (array)$request->getParsedBody();
 
@@ -277,18 +288,23 @@ class Instrument_Manager extends \DataFrameworkMenu
                     $validData = $dataParser->validateData(
                         $data,
                         [
-                            'UserID' => $userID,
+                            'UserID'   => $userID,
                             'Examiner' => $userID
                         ]
                     );
 
-                    $result = $dataParser->insertInstrumentData($this->loris, $validData);
+                    $result = $dataParser->insertInstrumentData(
+                        $this->loris,
+                        $validData
+                    );
 
                     return new \LORIS\Http\Response\JSON\Created($result);
-                } catch (\LorisException | \Exception $e) {
-                    return new \LORIS\Http\Response\JSON\OK([
-                        'message' => $e->getMessage()
-                    ]);
+                } catch (\Exception $e) {
+                    return new \LORIS\Http\Response\JSON\OK(
+                        [
+                            'message' => $e->getMessage()
+                        ]
+                    );
                 }
             }
 
@@ -359,7 +375,10 @@ class Instrument_Manager extends \DataFrameworkMenu
         $this->_path    =  $this->loris->getConfiguration()->getSetting('base');
         $instrument_dir = $this->_path . 'project/instruments';
 
-        error_log($instrument_dir . ' writeable? ' . (is_writable($instrument_dir) ? 'Y':'N'));
+        error_log(
+            $instrument_dir . ' writeable? ' .
+            (is_writable($instrument_dir) ? 'Y':'N')
+        );
         return is_writable($instrument_dir);
     }
 

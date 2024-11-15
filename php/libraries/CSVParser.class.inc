@@ -51,16 +51,19 @@ class CSVParser
      *
      * @param array $headers         Headers parsed from csv file
      * @param array $expectedHeaders Expected headers (ex: from instrument)
-     * @param bool  $strict          If true, $headers cannot be a superset of $expectedHeaders
+     * @param bool  $strict          If true, $headers cannot be a superset
+     *                               of $expectedHeaders
      *
-     * @return bool                     Returns true if headers are valid
+     * @return bool                  Returns true if headers are valid
      */
-    private function _validateHeaders(array $headers, array $expectedHeaders, bool $strict = false): bool
-    {
+    private function _validateHeaders(
+        array $headers, array $expectedHeaders, bool $strict = false
+    ): bool {
         if ($strict && count($headers) !== count($expectedHeaders)) {
             return false;
         }
 
+        echo error_log(json_encode($headers));
         $matchingHeaders = true;
         foreach ($expectedHeaders as $expectedHeader) {
             if (!in_array($expectedHeader, $headers)) {
@@ -75,27 +78,25 @@ class CSVParser
     /**
      * Parses the csv file
      *
-     * @param array  $expectedHeaders Expected headers. Leave empty to skip validation
-     *
+     * @param array  $expectedHeaders Expected headers. Leave empty to
+     *                                skip validation
      * @param string $separator       The field delimiter (one character only).
      *                                Defaults as a comma.
-     *
-     * @param string $enclosure       The field enclosure character (one character only).
+     * @param string $enclosure       The field enclosure character
+     *                                (one character only).
      *                                Defaults as a double quotation mark
-     *
      * @param string $escape          The escape character (one character only).
-     *                                Defaults as a backslash (\)
-     *
+     *                                Defaults as backslash
      * @param int    $flags           Bit mask of the flags to set.
      *                                See SplFileObject constants
      *                                for the available flags.
      *                                Default is:
      *                                SplFileObject::READ_CSV |
-     *                                SplFileObject::DROP_NEW_LINE
-     *                                | SplFileObject::SKIP_EMPTY |
-     *                                SplFileObject::READ_AHEADSplFileObject::READ_AHEAD
+     *                                SplFileObject::DROP_NEW_LINE |
+     *                                SplFileObject::SKIP_EMPTY |
+     *                                SplFileObject::READ_AHEAD
      *
-     * @return array                    Returns array of header to row value mapping
+     * @return array                  Returns array of header->value mapping
      *
      * Example with defaults:
      * csv file:    A,B,C
@@ -112,7 +113,8 @@ class CSVParser
         string $separator = ',',
         string $enclosure = '"',
         string $escape = '\\',
-        int $flags =
+        int $flags
+        =
         SplFileObject::READ_CSV |
         SplFileObject::DROP_NEW_LINE |
         SplFileObject::SKIP_EMPTY |
@@ -120,12 +122,15 @@ class CSVParser
     ): array {
         $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
-        $csvHeaders = $fileObject->fgetcsv();
+
+        $csvHeaders = $fileObject->fgetcsv($separator, $enclosure, $escape);
 
         // Validate expected headers, if provided
         if (count($expectedHeaders) > 0) {
             if (!$this->_validateHeaders($csvHeaders, $expectedHeaders)) {
-                throw new \RuntimeException('Headers do not match expected headers');
+                throw new \RuntimeException(
+                    'File headers do not match expected headers'
+                );
             }
         }
 

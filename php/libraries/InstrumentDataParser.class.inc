@@ -17,12 +17,12 @@ namespace LORIS;
 require_once 'NDB_Factory.class.inc';
 require_once 'CSVParser.class.inc';
 
-use _PHPStan_c875e8309\Nette\Neon\Exception;
 use DatabaseException;
-use NDB_BVL_Battery;
+use RuntimeException;
 use NDB_Factory;
 use NotFound;
 use SplFileInfo;
+use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 
 /**
  * This class is used as a helper for parsing csv files
@@ -42,8 +42,8 @@ class InstrumentDataParser extends CSVParser
     /**
      * Construct parser
      *
-     * @param string        $instrumentName Instrument name
-     * @param SplFileInfo   $csvFile        csv file path
+     * @param string      $instrumentName Instrument name
+     * @param SplFileInfo $csvFile        csv file path
      *
      * @return void
      */
@@ -59,7 +59,7 @@ class InstrumentDataParser extends CSVParser
      * @param LorisInstance $loris Loris instance
      *
      * @return array    Returns array of column names as strings
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function parseCSV(LorisInstance $loris): array
     {
@@ -67,25 +67,28 @@ class InstrumentDataParser extends CSVParser
             $expectedHeaders = self::getCSVHeaders($loris, $this->instrumentName);
             return $this->parse($expectedHeaders);
         } catch (\Exception $e) {
-            throw new Exception("An error occurred while parsing: {$e->getMessage()}");
+            throw new RuntimeException(
+                "An error occurred while parsing: {$e->getMessage()}"
+            );
         }
     }
 
     /**
      * Get expected csv columns for an instrument
      *
-     * @param LorisInstance $loris Loris instance
-     * @param string $instrumentName Instrument name
+     * @param LorisInstance $loris          Loris instance
+     * @param string        $instrumentName Instrument name
      *
      * @return array    Returns array of column names as strings
      * @throws NotFound
      */
-    public static function getCSVHeaders(LorisInstance $loris, string $instrumentName): array
-    {
+    public static function getCSVHeaders(
+        LorisInstance $loris, string $instrumentName
+    ): array {
         return array_merge(
             ['PSCID', 'Visit_label'],   // SessionID
             // Convert to static list of flag fields
-            self::getFlagHeaders(   // Whitelist would prevent invalid columns -- write tests
+            self::getFlagHeaders(   // Whitelist would prevent invalid columns
                 [
                     'ID', 'SessionID', 'Test_name', 'TestID',
                     'CommentID', 'UserID', 'Data', 'DataID',
@@ -119,14 +122,16 @@ class InstrumentDataParser extends CSVParser
     /**
      * Get columns from DB table
      *
-     * @param array $excluded Excluded columns. Default is
-     *                        single-item array with empty
-     *                        string
+     * @param string $tableName DB table name
+     * @param array  $excluded  Excluded columns. Default is
+     *                          single-item array with empty
+     *                          string
      *
      * @return array            Returns columns from DB table
      */
-    public static function getDBColumns(string $tableName, array $excluded = ['']): array
-    {
+    public static function getDBColumns(
+        string $tableName, array $excluded = ['']
+    ): array {
         $db = NDB_Factory::singleton()->database();
 
         $query   = "SELECT column_name
@@ -157,35 +162,70 @@ class InstrumentDataParser extends CSVParser
     }
 
     /**
-     * Get expected columns from the instrument's table
+     * Convert instrument data dictionary to columns
      *
-     * @param LorisInstance $loris Loris instance
-     * @param string $instrumentName Instrument name
-     * @param array $excluded Excluded columns. Default is
-     *                        single-item array with empty
-     *                        string
+     * @param DictionaryItem[] $dataDict       Data dictionary
+     * @param string           $instrumentName Instrument name
+     * @param array            $excluded       Excluded columns. Default is
+     *                                         single-item array with empty
+     *                                         string
      *
-     * @return array    Returns columns from flag table
+     * @return array    Returns instrument columns
+     */
+    protected static function convertDictionaryToColumns(
+        array $dataDict, string $instrumentName, array $excluded = ['']
+    ): array {
+        return array_reduce(
+            $dataDict,
+            function ($columns, $field) use ($instrumentName, $excluded) {
+                $fieldName = implode(
+                    '',     // Strip first occurrence of prefix
+                    explode("${instrumentName}_", $field->getName(), 2)
+                );
+                if (!in_array($fieldName, $excluded)) {
+                    $columns[] = $fieldName;
+                }
+                return $columns;
+            },
+            []
+        );
+    }
+
+    /**
+     * Get instrument columns
+     *
+     * @param LorisInstance $loris          Loris instance
+     * @param string        $instrumentName Instrument name
+     * @param array         $excluded       Excluded columns. Default is
+     *                                      single-item array with empty
+     *                                      string
+     *
+     * @return array    Returns instrument columns
      * @throws NotFound
      */
-    protected static function getInstrumentHeaders(LorisInstance $loris, string $instrumentName, array $excluded = ['']): array
-    {
-        $instrumentType = self::checkInstrumentType($instrumentName);
-
-        return match ($instrumentType) {
-//            'SQL' => self::getDBColumns($instrumentName, $excluded),    // TODO: Below should be good for all
-            'PHP', 'Instrument Builder' => self::getDataDictionary($loris, $instrumentName, $excluded),
-            default  => self::getDataDictionary($loris, $instrumentName, $excluded),
-        };
+    protected static function getInstrumentHeaders(
+        LorisInstance $loris, string $instrumentName, array $excluded = ['']
+    ): array {
+        $instrument = \NDB_BVL_Instrument::factory($loris, $instrumentName);
+        $dataDict   = $instrument->getDataDictionary();
+        return self::convertDictionaryToColumns(
+            $dataDict,
+            $instrumentName,
+            $excluded,
+        );
     }
 
     /**
      * Validate Instrument data
      *
+     * @param array $instrumentData  Instrument data from csv row
+     * @param array $injectedColumns Columns to inject to every row
+     *
      * @return array    Returns array of column names as strings
      */
-    public function validateData(array $instrumentData, array $injectedColumns): array
-    {
+    public function validateData(
+        array $instrumentData, array $injectedColumns
+    ): array {
         try {
             foreach ($instrumentData as &$dataRow) {
                 // Validate Session
@@ -194,27 +234,28 @@ class InstrumentDataParser extends CSVParser
                     $dataRow['Visit_label']
                 );
                 $dataRow['SessionID'] = $sessionID;
-                $dataRow              = array_merge($dataRow, $injectedColumns);
+                $dataRow = array_merge($dataRow, $injectedColumns);
             }
             return $instrumentData;
         } catch (\Exception $e) {
-            error_log("Invalid data: {$e->getMessage()}");
-            return [];
+            throw new RuntimeException(
+                "Invalid data: {$e->getMessage()}"
+            );
         }
     }
 
 
     /**
      * Get the session ID from PSCID and Visit_label
+     *  TODO: Timepoint/getTimepointFormPSCIDandVisitLabel(,)
      *
-     * @param string $pscID candidate PSCID
+     * @param string $pscID      candidate PSCID
      * @param string $visitLabel session Visit_label
      *
      * @return int                  Returns SessionID
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function obtainSessionID(string $pscID, string $visitLabel): int
-    // TODO: Timepoint/getTimepointFormPSCIDandVisitLabel(,)
     {
         $db = NDB_Factory::singleton()->database();
 
@@ -233,7 +274,7 @@ class InstrumentDataParser extends CSVParser
         );
 
         if (is_null($sessionID)) {
-            throw new Exception(
+            throw new RuntimeException(
                 "Session not found for PSCID: $pscID
                         and Visit_label: $visitLabel"
             );
@@ -244,29 +285,22 @@ class InstrumentDataParser extends CSVParser
     /**
      * Insert instrument data in DB
      *
-     * @param LorisInstance $loris      Loris instance
-     * @param array $instrumentData     Instrument data to insert
+     * @param LorisInstance $loris          Loris instance
+     * @param array         $instrumentData Instrument data to insert
      *
      * @return array    Returns insertion results
      * @throws NotFound
      */
-    public function insertInstrumentData(LorisInstance $loris, array $instrumentData): array
-    {
+    public function insertInstrumentData(
+        LorisInstance $loris, array $instrumentData
+    ): array {
         $db = NDB_Factory::singleton()->database();
-
-        $testID = $db->pselectOneInt(
-            "SELECT ID
-            FROM test_names
-            WHERE Test_name = :testName",
-            [
-                'testName' => $this->instrumentName,
-            ]
+        $instrumentHeaders = $this->getInstrumentHeaders(
+            $loris,
+            $this->instrumentName,
         );
 
-        $instrumentHeaders = $this->getInstrumentHeaders($loris, $this->instrumentName);
-
-        $useInstrumentDataTable = !$db->tableExists($this->instrumentName);
-        // TODO: INSTEAD USE ->usesJSONData
+        // TODO: Conditional rollback?
 
         $errors = [];
         try {
@@ -274,83 +308,35 @@ class InstrumentDataParser extends CSVParser
             try {
                 foreach ($instrumentData as $data) {
                     try {
-                        // TODO: addInstrument then _save() (or save() with validation/score -- checkbox)
-                        $data['CommentID'] = NDB_BVL_Battery::generateCommentID(
-                            new \SessionID(strval($data['SessionID'])),
+                        $battery = new \NDB_BVL_Battery();
+                        $battery->selectBattery(
+                            new \SessionID(strval($data['SessionID']))
+                        );
+                        $commentID = $battery->addInstrument(
+                            $loris,
+                            $this->instrumentName
+                        );
+
+                        $instrument = \NDB_BVL_Instrument::factory(
+                            $loris,
                             $this->instrumentName,
+                            $commentID
                         );
-
-                        error_log('trying to save');
-                        error_log(json_encode(array_reduce(
-                            $instrumentHeaders,
-                            function($columns, $columnName) use ($data) {
-                                $columns[$columnName] =
-                                    strlen($data[$columnName]) > 0
-                                        ? $data[$columnName]
-                                        : null;
-                                return $columns;
-                            },
-                            []
-                        ))
+                        $instrument->_saveValues(
+                            array_reduce(
+                                $instrumentHeaders,
+                                function ($columns, $columnName) use ($data) {
+                                    $columns[$columnName]
+                                        = strlen($data[$columnName]) > 0
+                                            ? $data[$columnName]
+                                            : null;
+                                    return $columns;
+                                },
+                                []
+                            )
                         );
-
-                        $dataID = null;
-
-                        if ($useInstrumentDataTable) {
-                            // Insert as JSON string -- TODO: unsafe?
-                            $db->unsafeinsert(
-                                'instrument_data',
-                                [
-                                    'Data' => json_encode(array_reduce(
-                                        $instrumentHeaders,
-                                        function($columns, $columnName) use ($data) {
-                                            $columns[$columnName] =
-                                                strlen($data[$columnName]) > 0
-                                                    ? $data[$columnName]
-                                                    : null;
-                                            return $columns;
-                                        },
-                                        []
-                                    ))
-                                ]
-                            );
-                            $dataID = $db->getLastInsertId();
-                        } else {
-                            // Insert in instrument's table
-                            $db->insert(
-                                $this->instrumentName,
-                                array_reduce(
-                                    $instrumentHeaders,
-                                    function($columns, $columnName) use ($data) {
-                                        $columns[$columnName] =
-                                            strlen($data[$columnName]) > 0
-                                                ? $data[$columnName]
-                                                : null;
-                                        return $columns;
-                                    },
-                                    []
-                                ),
-                            );
-                        }
-
-                        // Insert flag data
-                        $db->insert(
-                            'flag',
-                            [
-                                'SessionID'                   => $data['SessionID'],
-                                'TestID'                      => $testID,
-                                'CommentID'                   => $data['CommentID'],
-                                'Data_entry'                  => $data['Data_entry'],
-                                'Required_elements_completed' => $data['Required_elements_completed'],
-                                'Administration'              => $data['Administration'],
-                                'Validity'                    => $data['Validity'],
-                                'Exclusion'                   => $data['Exclusion'],
-                                'UserID'                      => $data['UserID'],
-                                'Testdate'                    => $data['Testdate'],
-                                'DataID'                      => $dataID,
-                            ]
-                        );
-                    } catch (PDOException $e) {
+                        $instrument->scoreAndPropagateData();
+                    } catch (\Exception $e) {
                         error_log("Error caught: {$e->getMessage()}");
                         $errors[] = [
                             'row'     => $data,
@@ -378,12 +364,14 @@ class InstrumentDataParser extends CSVParser
                     ];
                 }
             } catch (\Exception $e) {
-                error_log("Rolling back due to unexpected error: {$e->getMessage()}");
+                error_log(
+                    "Rolling back due to unexpected error: {$e->getMessage()}"
+                );
                 $db->rollBack();
                 return [
                     'success' => false,
                     'errors'  => [],
-                    'message' => "Unexpected error: {$e->getMessage()}"
+                    'message' => "Data error: {$e->getMessage()}"
                 ];
             }
         } catch (DatabaseException $e) {
@@ -394,41 +382,6 @@ class InstrumentDataParser extends CSVParser
                 'message' => "DB Error: {$e->getMessage()}"
             ];
         }
-    }
-
-
-    /**
-     * Get columns from NDB_BVL_Instrument
-     *
-     * @param LorisInstance $loris      Loris instance
-     * @param string $instrumentName    Instrument name
-     * @param array $excluded           Excluded columns. Default is
-     *                                  single-item array with empty
-     *                                  string
-     *
-     * @return array                    Returns columns from DB table
-     * @throws NotFound
-     */
-    public static function getDataDictionary(LorisInstance $loris, string $instrumentName, array $excluded = ['']): array
-    {
-        $instrument = \NDB_BVL_Instrument::factory($loris, $instrumentName);
-        $dataDict = $instrument->getDataDictionary();
-
-        // TODO: Find out whave _/save needs to works
-
-        return array_reduce(
-            $dataDict,
-            function($columns, $field) use ($instrumentName, $excluded) {
-                $fieldName = $field->getName();
-                // Strip prefix
-                $fieldName = str_replace("${instrumentName}_", '', $fieldName);
-                if (!in_array($fieldName, $excluded)) {
-                    $columns[] = $fieldName;
-                }
-                return $columns;
-            },
-            []
-        );
     }
 
 
@@ -467,10 +420,8 @@ class InstrumentDataParser extends CSVParser
     }
 }
 
-
-
 // TODO: Tech debt
 /*
- * Seems like Examiner can't be put in the csv -- so selected in dropdown and one per file
- *
+ * Seems like Examiner can't be put in the csv --
+ * so selected in dropdown and one per file
  */

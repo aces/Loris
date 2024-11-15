@@ -273,6 +273,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        error_log("commentID: $commentID");
+
         // Set page name to testName
         $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
@@ -558,6 +560,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Performs post-processing on valid data
+     *
+     * @return void
+     * @access public
+     */
+    function scoreAndPropagateData()
+    {
+        $this->score();
+        $this->updateRequiredElementsCompletedFlag();
+        $this->propagateData();
+    }
+
+    /**
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
@@ -568,9 +583,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
-            $this->score();
-            $this->updateRequiredElementsCompletedFlag();
-            $this->propagateData();
+            $this->scoreAndPropagateData();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
