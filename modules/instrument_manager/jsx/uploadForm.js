@@ -125,8 +125,10 @@ class InstrumentUploadForm extends Component {
             title: 'Upload Successful!',
             type: 'success',
             text: data.message,
-          }).then(function() {
-            // window.location.assign(loris.BaseURL + '/instrument_manager/');
+          }).then(() => {
+            this.setState({
+              selectedDataFile: null,
+            });
           });
         } else {
           swal.fire({
@@ -186,8 +188,6 @@ class InstrumentUploadForm extends Component {
               </button>
             </UploadPanel>
           </div>
-        {/* </div> */}
-        {/* <div className="row"> */}
           <div className="col-xs-4">
             <UploadPanel
               title={'Upload Instrument Data'}
