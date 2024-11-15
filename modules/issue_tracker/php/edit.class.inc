@@ -725,9 +725,9 @@ class Edit extends \NDB_Page implements ETagCalculator
             "/issue_tracker/issue/" . $issueID;
         $msg_data['issueID'] = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
-        $msg_data['title']       = $emailItems['title'];
-        $msg_data['priority']    = $emailItems['priority'];
-        $msg_data['status']      = $emailItems['status'];
+        $msg_data['title']       = $emailItems['title'] ?? null;
+        $msg_data['priority']    = $emailItems['priority'] ?? null;
+        $msg_data['status']      = $emailItems['status'] ?? null;
         $msg_data['comment']     = $values['comment'];
 
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
