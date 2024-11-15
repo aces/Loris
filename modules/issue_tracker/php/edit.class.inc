@@ -711,19 +711,23 @@ class Edit extends \NDB_Page implements ETagCalculator
     ) {
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
+        $study   = \NDB_Factory::singleton()->config()->getSetting('title');
 
-        $title = $db->pSelectOne(
-            "SELECT title FROM issues
+        $emailItems = $db->pselectRow(
+            "SELECT `title`,`priority`,`status` FROM issues
             WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
 
         $msg_data            = [];
+        $msg_data['study']   = $study;
         $msg_data['url']     = $baseurl .
             "/issue_tracker/issue/" . $issueID;
         $msg_data['issueID'] = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
-        $msg_data['title']       = $title;
+        $msg_data['title']       = $emailItems['title'];
+        $msg_data['priority']    = $emailItems['priority'];
+        $msg_data['status']      = $emailItems['status'];
         $msg_data['comment']     = $values['comment'];
 
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
