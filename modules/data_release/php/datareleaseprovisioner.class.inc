@@ -63,7 +63,8 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         WHERE UserID = ".$user->getID().")
                     )
                 AND drp.UserID=" . $user->getID()
-                . " AND (dr.hidden_by_id IS NULL OR dr.hidden_by_id=" . $user->getID() . ")";
+                . " AND (dr.hidden_by_id IS NULL OR dr.hidden_by_id="
+                . $user->getID() . ")";
         }
 
         $query .= " ORDER BY uploadDate";
