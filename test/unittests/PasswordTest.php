@@ -49,7 +49,11 @@ class PasswordTest extends TestCase
      */
     private $_factory;
 
-    private $_configInfo = [0 => ['65' => 'false']];
+    private $_configInfo = [
+        ['65' => 'false'],
+        ['133','2y',],
+    
+    ];
 
     /**
      * Setup
@@ -141,15 +145,8 @@ class PasswordTest extends TestCase
      */
     public function testWellFormedPassword(): void
     {
-        $this->_configMap = [
-            [
-                'passwordAlgorithm',
-                '2y',
-            ],
-        ];
-
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->will($this->returnValueMap($this->_configInfo));
         $this->assertInstanceOf('Password', new \Password(self::VALID_PASSWORD));
     }
 
