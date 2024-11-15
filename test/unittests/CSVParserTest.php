@@ -25,30 +25,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CSVParserTest extends TestCase
 {
-    protected const VALID_PASSWORD = 'correct horse battery staple';
-
-    /**
-     * Test double for NDB_Config object
-     *
-     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
-     */
-    private $_configMock;
-
-    /**
-     * Test double for Database object
-     *
-     * @var \Database | PHPUnit\Framework\MockObject\MockObject
-     */
-    private $_dbMock;
-
-    /**
-     * NDB_Factory used in tests.
-     * Test doubles are injected to the factory object.
-     *
-     * @var NDB_Factory
-     */
-    private $_factory;
-
     /**
      * Setup
      *
@@ -57,18 +33,6 @@ class CSVParserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $dbMock     = $this->getMockBuilder('Database')->getMock();
-        '@phan-var \NDB_Config $configMock';
-        '@phan-var \Database $dbMock';
-
-        $this->_configMock = $configMock;
-        $this->_dbMock     = $dbMock;
-
-        $this->_factory = NDB_Factory::singleton();
-        $this->_factory->setConfig($this->_configMock);
-        $this->_factory->setDatabase($this->_dbMock);
     }
 
     /**
@@ -80,7 +44,6 @@ class CSVParserTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->_factory->reset();
     }
 
     /**
@@ -152,7 +115,7 @@ CSV;    // Empty line above was left intentionally
         file_put_contents($invalidExtensionFilePath, '');
         $filePaths[] = [$invalidExtensionFilePath];
 
-        $incongruentData         = <<<CSV
+        $incongruentData = <<<CSV
 header1,header2,header3
 value1,value2
 value4,value5,value6
@@ -163,7 +126,7 @@ CSV;
         file_put_contents($incongruentDataFilePath, $incongruentData);
         $filePaths[] = [$incongruentDataFilePath];
 
-        $unexpectedHeaders         = <<<CSV
+        $unexpectedHeaders = <<<CSV
 header5,header6,header7
 value1,value2, value3
 value4,value5,value6
@@ -173,17 +136,6 @@ CSV;
             = tempnam(sys_get_temp_dir(), '_RuntimeException_') . '.csv';
         file_put_contents($unexpectedHeadersFilePath, $unexpectedHeaders);
         $filePaths[] = [$unexpectedHeadersFilePath];
-
-
-//        $unpairedEnclosure       = <<<CSV
-//header1,header2,header3
-//value1,value2,value3
-//value4,value5,value6
-//CSV;
-//        $unpairedEnclosureFilePath
-//            = tempnam(sys_get_temp_dir(), '__') . '.csv';
-//        file_put_contents($unpairedEnclosureFilePath, $unpairedEnclosure);
-//        $filePaths[] = [$unpairedEnclosureFilePath];
 
         return $filePaths;
     }

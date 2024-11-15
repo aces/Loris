@@ -276,7 +276,6 @@ class Instrument_Manager extends \DataFrameworkMenu
         if (isset($request_body['instrument'])) {
             $instrument = $request_body['instrument'];
             if ($this->instrumentExists($instrument)) {
-
                 // Parse
                 $dataParser = new InstrumentDataParser(
                     $instrument,
@@ -293,9 +292,17 @@ class Instrument_Manager extends \DataFrameworkMenu
                         ]
                     );
 
+                    if (count($validData['errors']) > 0) {
+                        return new \LORIS\Http\Response\JSON\OK(
+                            [
+                                'message' => $validData['errors'],
+                            ]
+                        );
+                    }
+
                     $result = $dataParser->insertInstrumentData(
                         $this->loris,
-                        $validData
+                        $validData['data']
                     );
 
                     return new \LORIS\Http\Response\JSON\Created($result);
