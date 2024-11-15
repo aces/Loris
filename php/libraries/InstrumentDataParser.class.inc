@@ -388,41 +388,6 @@ class InstrumentDataParser extends CSVParser
             ];
         }
     }
-
-
-    /**
-     * Determine the instrument type between LINST and PHP
-     *
-     * @param string $instrument The instrument name
-     *
-     * @return string The instrument type
-     */
-    public static function checkInstrumentType(string $instrument): string
-    {
-        // TODO: COPIED FROM modules/instrument_manager/php/instrumentrow.class.inc
-        $db = NDB_Factory::singleton()->database();
-
-        if ($db->tableExists($instrument)) {
-            return 'SQL';
-        }
-
-        $_factory = \NDB_Factory::singleton();
-        $_path    = $_factory->config()->getSetting("base");
-
-        $linst = $_path . "/project/instruments/$instrument.linst";
-        if (file_exists($linst)) {
-            return 'Instrument Builder';
-        }
-
-        $php = $_path .
-            "/project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
-
-        if (file_exists($php)) {
-            return 'PHP';
-        }
-
-        return 'Missing';
-    }
 }
 
 // TODO: Tech debt
