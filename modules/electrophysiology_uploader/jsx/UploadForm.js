@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    FileElement,
-    TextboxElement,
-    StaticElement,
-    ButtonElement,
+  FormElement,
+  FileElement,
+  TextboxElement,
+  StaticElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -18,7 +18,6 @@ import {
  */
 export default function UploadForm(props) {
   const [formData, setFormData] = useState({});
-  const [hasError, setHasError] = useState({});
   const [errorMessage, setErrorMessage] = useState({});
   const [uploadProgress, setuploadProgress] = useState(-1);
 
@@ -28,7 +27,6 @@ export default function UploadForm(props) {
   const resetForm = () => {
     setFormData({});
     setErrorMessage({});
-    setHasError({});
     setuploadProgress(-1);
   };
 
@@ -84,13 +82,6 @@ export default function UploadForm(props) {
         visit: null,
       });
 
-      setHasError({
-        eegFile: true,
-        candID: false,
-        pscid: false,
-        visit: false,
-      });
-
       return;
     }
 
@@ -108,13 +99,6 @@ export default function UploadForm(props) {
         candID: null,
         pscid: null,
         visit: null,
-      });
-
-      setHasError({
-        eegFile: true,
-        candID: false,
-        pscid: false,
-        visit: false,
       });
 
       return;
@@ -147,7 +131,7 @@ export default function UploadForm(props) {
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
         // Upon successful upload:
-        // - Resets errorMessage and hasError so no errors are displayed on form
+        // - Resets errorMessage so no errors are displayed on form
         // - Displays pop up window with success message
         // - Returns to Browse tab
         setErrorMessage({
@@ -155,12 +139,6 @@ export default function UploadForm(props) {
           candID: null,
           pscid: null,
           visit: null,
-        });
-        setHasError({
-          eegFile: false,
-          candID: false,
-          pscid: false,
-          visit: false,
         });
 
         let text = '';
@@ -195,7 +173,7 @@ export default function UploadForm(props) {
   const processError = (xhr) => {
     // Upon errors in upload:
     // - Displays pop up window with submission error message
-    // - Updates errorMessage and hasError so relevant errors are displayed on form
+    // - Updates errorMessage so relevant errors are displayed on form
     // - Returns to Upload tab
 
     console.error(xhr.status + ': ' + xhr.statusText);
@@ -239,7 +217,6 @@ export default function UploadForm(props) {
             label='File to Upload'
             onUserInput={onFormChange}
             required={true}
-            hasError={hasError.eegFile}
             errorMessage={errorMessage.eegFile}
             value={formData.eegFile}
           />
@@ -248,7 +225,6 @@ export default function UploadForm(props) {
             label='CandID'
             disabled={true}
             required={false}
-            hasError={hasError.candID}
             errorMessage={errorMessage.candID}
             value={formData.candID}
           />
@@ -257,7 +233,6 @@ export default function UploadForm(props) {
             label='PSCID'
             disabled={true}
             required={false}
-            hasError={hasError.pscid}
             errorMessage={errorMessage.pscid}
             value={formData.pscid}
           />
@@ -266,7 +241,6 @@ export default function UploadForm(props) {
             label='Visit Label'
             disabled={true}
             required={false}
-            hasError={hasError.visit}
             errorMessage={errorMessage.visit}
             value={formData.visit}
           />

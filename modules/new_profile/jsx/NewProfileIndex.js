@@ -4,12 +4,12 @@ import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
-    DateElement,
-    TextboxElement,
-    FormElement,
-    ButtonElement,
-    FieldsetElement,
+  SelectElement,
+  DateElement,
+  TextboxElement,
+  FormElement,
+  ButtonElement,
+  FieldsetElement,
 } from 'jsx/Form';
 
 /**
@@ -124,61 +124,61 @@ class NewProfileIndex extends React.Component {
       credentials: 'same-origin',
       body: JSON.stringify(candidateObject),
     })
-    .then((resp) => {
-      if (resp.ok && resp.status === 201) {
-        resp.json().then((data) => {
-          swal.fire({
-            type: 'success',
-            title: 'New Candidate Created',
-            html: 'DCCID: ' + data.CandID + ' '
+      .then((resp) => {
+        if (resp.ok && resp.status === 201) {
+          resp.json().then((data) => {
+            swal.fire({
+              type: 'success',
+              title: 'New Candidate Created',
+              html: 'DCCID: ' + data.CandID + ' '
                   + 'PSCID: ' + data.PSCID + ' ',
-            confirmButtonText: 'Access Profile',
-            // Repurpose "cancel" as "recruit another candidate".
-            // Use the same colour for both buttons, since one
-            // isn't more "right" than the other.
-            showCancelButton: true,
-            cancelButtonColor: '#3085d6',
-            cancelButtonText: 'Recruit another candidate',
-          }).then((result) => {
+              confirmButtonText: 'Access Profile',
+              // Repurpose "cancel" as "recruit another candidate".
+              // Use the same colour for both buttons, since one
+              // isn't more "right" than the other.
+              showCancelButton: true,
+              cancelButtonColor: '#3085d6',
+              cancelButtonText: 'Recruit another candidate',
+            }).then((result) => {
             // Go to the candidate profile or reload the page, depending
             // on whether the user clicked on 'Access Profile' or
             // 'Recruit another candidate' respectively
-            window.location.href = result.value === true
+              window.location.href = result.value === true
                 ? '/' + data.CandID
                 : window.location.href;
-          });
-        } )
-        .catch((error) => {
-          swal.fire({
-            type: 'error',
-            title: 'Error!',
-            text: error,
-          });
-          console.error(error);
-        });
-      } else {
-        resp.json().then((message) => {
+            });
+          } )
+            .catch((error) => {
+              swal.fire({
+                type: 'error',
+                title: 'Error!',
+                text: error,
+              });
+              console.error(error);
+            });
+        } else {
+          resp.json().then((message) => {
           // enable button for form resubmission.
-          this.setState({submitDisabled: false});
-          swal.fire('Error!', message.error, 'error');
-        }).catch((error) => {
-          swal.fire({
-            type: 'error',
-            title: 'Error!',
-            text: error,
+            this.setState({submitDisabled: false});
+            swal.fire('Error!', message.error, 'error');
+          }).catch((error) => {
+            swal.fire({
+              type: 'error',
+              title: 'Error!',
+              text: error,
+            });
+            console.error(error);
           });
-          console.error(error);
+        }
+      })
+      .catch((error) => {
+        swal.fire({
+          type: 'error',
+          title: 'Error!',
+          text: error,
         });
-      }
-    })
-    .catch((error) => {
-      swal.fire({
-        type: 'error',
-        title: 'Error!',
-        text: error,
+        console.error(error);
       });
-      console.error(error);
-    });
   }
 
   /**

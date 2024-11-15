@@ -98,40 +98,40 @@ class LoadPane extends Component {
     };
     // Set up declared alerts, if there is any.
     switch (this.state.alert) {
-      case 'success':
-        alert = {
-          message: 'Success!',
-          details: 'Instrument Loaded',
-          display: 'block',
-          class: 'alert alert-success alert-dismissible',
-        };
-        break;
-      case 'typeError':
-        alert = {
-          message: 'Error!',
-          details: 'Wrong file format',
-          display: 'block',
-          class: 'alert alert-danger alert-dismissible',
-        };
-        break;
-      case 'duplicateEntry':
-        alert = {
-          message: 'Error!',
-          details: this.state.alertMessage,
-          display: 'block',
-          class: 'alert alert-danger alert-dismissible',
-        };
-        break;
-      default:
-        break;
+    case 'success':
+      alert = {
+        message: 'Success!',
+        details: 'Instrument Loaded',
+        display: 'block',
+        class: 'alert alert-success alert-dismissible',
+      };
+      break;
+    case 'typeError':
+      alert = {
+        message: 'Error!',
+        details: 'Wrong file format',
+        display: 'block',
+        class: 'alert alert-danger alert-dismissible',
+      };
+      break;
+    case 'duplicateEntry':
+      alert = {
+        message: 'Error!',
+        details: this.state.alertMessage,
+        display: 'block',
+        class: 'alert alert-danger alert-dismissible',
+      };
+      break;
+    default:
+      break;
     }
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
           <div id='load_alert'
-               style={{display: alert.display}}
-               className={alert.class}
-               role='alert'
+            style={{display: alert.display}}
+            className={alert.class}
+            role='alert'
           >
             <button type='button' className='close' onClick={this.resetAlert}>
               <span aria-hidden='true'>&times;</span>
@@ -206,12 +206,12 @@ class SavePane extends Component {
     });
   }
 
-   /**
-    * On change instrument
-    * Keep track of the instrument name, saving it in the state
-    *
-    * @param {object} e - Event object
-    */
+  /**
+   * On change instrument
+   * Keep track of the instrument name, saving it in the state
+   *
+   * @param {object} e - Event object
+   */
   onChangeInst(e) {
     let value = e.target.value;
     this.setState({
@@ -233,9 +233,9 @@ class SavePane extends Component {
             <label className='col-sm-2 control-label'>Filename: </label>
             <div className='col-sm-4'>
               <input className='form-control'
-                     type='text' id='filename'
-                     value={value}
-                     onChange={this.onChangeFile}
+                type='text' id='filename'
+                value={value}
+                onChange={this.onChangeFile}
               />
             </div>
           </div>
@@ -243,17 +243,17 @@ class SavePane extends Component {
             <label className='col-sm-2 control-label'>Instrument Name: </label>
             <div className='col-sm-4'>
               <input className='form-control'
-                     type='text' id='longname'
-                     value={this.state.instrumentName}
-                     onChange={this.onChangeInst}
+                type='text' id='longname'
+                value={this.state.instrumentName}
+                onChange={this.onChangeInst}
               />
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
             <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
               <input className='btn btn-primary col-xs-12'
-                     type='submit' value='Save'
-                     onClick={this.props.save}
+                type='submit' value='Save'
+                onClick={this.props.save}
               />
             </div>
           </div>
@@ -397,10 +397,10 @@ class DisplayElements extends Component {
         // If you are editing an element, show element as an AddElement object
         row = (
           <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}
           >
             <td className="col-xs-2" colSpan="3">
               <AddElement
@@ -414,10 +414,10 @@ class DisplayElements extends Component {
         // Else display element in regular way
         row = (
           <tr data-id={i}
-              key={i}
-              draggable={this.props.draggable}
-              onDragEnd={this.dragEnd}
-              onDragStart={this.dragStart}>
+            key={i}
+            draggable={this.props.draggable}
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}>
             <td style={colStyles}>
               {element.Name}
             </td>
@@ -426,12 +426,12 @@ class DisplayElements extends Component {
             </td>
             <td style={colStyles}>
               <button onClick={this.props.editElement.bind(null, i)}
-                      className="button"
+                className="button"
               >
                 Edit
               </button>
               <button onClick={this.props.deleteElement.bind(null, i)}
-                      className="button"
+                className="button"
               >
                 Delete
               </button>
@@ -459,14 +459,14 @@ class DisplayElements extends Component {
     return (
       <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
-        <tr>
-          <th className='col-xs-2'>Database Name</th>
-          <th className='col-xs-6'>Question Display (Front End)</th>
-          <th className='col-xs-4'>Edit</th>
-        </tr>
+          <tr>
+            <th className='col-xs-2'>Database Name</th>
+            <th className='col-xs-6'>Question Display (Front End)</th>
+            <th className='col-xs-4'>Edit</th>
+          </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
-        {tableRows}
+          {tableRows}
         </tbody>
       </table>
     );
@@ -705,14 +705,14 @@ class BuildPane extends Component {
       <TabPane Title='Build Instrument' {...this.props}>
         <div className='form-group col-xs-12'>
           <label htmlFor='selected-input'
-                 className='col-xs-2 col-sm-1 control-label'
+            className='col-xs-2 col-sm-1 control-label'
           >Page:</label>
           <div className='col-sm-4'>
             <div className='btn-group'>
               <button id='selected-input'
-                      type='button'
-                      className='btn btn-default dropdown-toggle'
-                      data-toggle='dropdown'
+                type='button'
+                className='btn btn-default dropdown-toggle'
+                data-toggle='dropdown'
               >
                 <span id='search_concept'>
                   {this.state.Elements[this.state.currentPage].Description}

@@ -219,7 +219,8 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                          CohortID,
                          Visit_label,
                          CenterID,
-                         firstVisit
+                         firstVisit,
+                         DoubleDataEntryEnabled as DDE_enabled
                   FROM test_battery";
         // Select duplicate entry from Test Battery
         $entries = $this->db->pselect($query, []);
@@ -235,6 +236,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
+                && $testArray['DoubleDataEntryEnabled'] == $entry['DDE_enabled']
             ) {
                 return true;
             }

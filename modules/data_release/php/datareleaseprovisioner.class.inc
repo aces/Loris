@@ -44,8 +44,10 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 file_name AS fileName,
                 IF(version is null or version ='','Unversioned', version) AS version,
                 upload_date AS uploadDate,
+                p.Name as ProjectName,
                 dr.id as dataReleaseID
-            FROM data_release dr";
+            FROM data_release dr
+            LEFT JOIN Project p on p.ProjectID = dr.ProjectID";
 
         if (!$user->hasPermission("superuser")) {
             $query .= "
@@ -54,7 +56,11 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 ON
                     (dr.id=drp.data_release_id)
                 WHERE
-                    drp.UserID=".$user->getID();
+                    drp.UserID=".$user->getID()." AND (
+                        dr.ProjectID IS NULL OR dr.ProjectID IN
+                        (SELECT ProjectID FROM user_project_rel
+                        WHERE UserID = ".$user->getID().")
+                    )";
         }
 
         $query .= " ORDER BY uploadDate";

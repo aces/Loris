@@ -91,7 +91,7 @@ class PaginationLinks extends Component {
       lastShownPage = 1;
     }
 
-        // If there is only 1 page, don't display pagination links
+    // If there is only 1 page, don't display pagination links
     if (startPage === lastShownPage) {
       return <div />;
     }
@@ -124,7 +124,7 @@ class PaginationLinks extends Component {
 
     return (
       <ul className='pagination pagination-table'>
-          {pageLinks}
+        {pageLinks}
       </ul>
     );
   }

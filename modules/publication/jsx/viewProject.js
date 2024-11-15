@@ -193,10 +193,10 @@ class ViewProject extends React.Component {
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
       toReturn.push(
-          <StaticElement
-            label={'Download ' + uploadType}
-            text={link}
-          />
+        <StaticElement
+          label={'Download ' + uploadType}
+          text={link}
+        />
       );
       if (f.Citation) {
         toReturn.push(
@@ -346,7 +346,7 @@ class ViewProject extends React.Component {
         {vois}
         {files}
       </div>
-   );
+    );
   }
 
   /**

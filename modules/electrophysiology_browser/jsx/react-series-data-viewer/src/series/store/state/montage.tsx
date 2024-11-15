@@ -39,17 +39,17 @@ export const montageReducer: Reducer = (
     return state;
   }
   switch (action.type) {
-    case SET_ELECTRODES: {
-      return R.assoc('electrodes', action.payload, state);
-    }
-    case SET_HIDDEN: {
-      return R.assoc('hidden', action.payload, state);
-    }
-    case SET_COORDINATE_SYSTEM: {
-      return R.assoc('coordinateSystem', action.payload, state);
-    }
-    default: {
-      return state;
-    }
+  case SET_ELECTRODES: {
+    return R.assoc('electrodes', action.payload, state);
+  }
+  case SET_HIDDEN: {
+    return R.assoc('hidden', action.payload, state);
+  }
+  case SET_COORDINATE_SYSTEM: {
+    return R.assoc('coordinateSystem', action.payload, state);
+  }
+  default: {
+    return state;
+  }
   }
 };

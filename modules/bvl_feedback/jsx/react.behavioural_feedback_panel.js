@@ -380,7 +380,7 @@ class FeedbackPanelRow extends Component {
                 value={entry.Comment}
                 date={entry.Date}
               />
-            : null}
+              : null}
           </React.Fragment>
         );
       });
@@ -392,9 +392,9 @@ class FeedbackPanelRow extends Component {
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
         <span
-        className='glyphicon glyphicon-comment'
-        onClick={this.props.commentToggle}
-      />
+          className='glyphicon glyphicon-comment'
+          onClick={this.props.commentToggle}
+        />
       );
     }
 
@@ -515,8 +515,8 @@ class CommentEntryForm extends Component {
         <td colSpan='100%'>
           {
             this.state.entryID < 0 ?
-            <span> Add a comment: </span> :
-            <span> Update comment: </span>
+              <span> Add a comment: </span> :
+              <span> Update comment: </span>
           }
           <div className='input-group' style={{width: '100%'}}>
             <textarea

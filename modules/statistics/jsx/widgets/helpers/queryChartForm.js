@@ -31,7 +31,7 @@ const QueryChartForm = (props) => {
       let cohortOptions = {};
       for (
         const [key, value] of Object.entries(json['options']['cohorts'])
-        ) {
+      ) {
         cohortOptions[key] = value;
       }
       setOptionsCohorts(cohortOptions);
@@ -47,8 +47,8 @@ const QueryChartForm = (props) => {
       setOptionsVisits(visitOptions);
       let participantStatusOptions = {};
       for (const [key, value] of Object.entries(
-          json['options']['participantStatus']
-        )) {
+        json['options']['participantStatus']
+      )) {
         participantStatusOptions[key] = value;
       }
       setOptionsStatus(participantStatusOptions);

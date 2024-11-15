@@ -54,10 +54,10 @@ class Card extends Component {
       boxSizing: 'border-box',
     };
     if (this.props.style) {
-        divStyling = {...divStyling, ...this.props.style};
+      divStyling = {...divStyling, ...this.props.style};
     }
     if (this.props.cardSize) {
-        divStyling.height = this.props.cardSize;
+      divStyling.height = this.props.cardSize;
     }
     return (
       <div style={divStyling}>
@@ -65,8 +65,8 @@ class Card extends Component {
           id={this.props.id}
           title={this.props.title}
           initCollapsed={this.props.initCollapsed}
-            style={{overflow: 'auto'}}
-           panelSize={this.props.cardSize}
+          style={{overflow: 'auto'}}
+          panelSize={this.props.cardSize}
           collapsing={this.props.collapsing}
         >
           <div
@@ -74,10 +74,10 @@ class Card extends Component {
             style={cursorStyle}
           >
             {this.state.hasError ? <div>
-                      <strong>Something went wrong rendering this panel.
+              <strong>Something went wrong rendering this panel.
                           Please open a bug report.</strong>
-                      </div>
-                      : this.props.children}
+            </div>
+              : this.props.children}
           </div>
         </Panel>
       </div>

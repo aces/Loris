@@ -66,15 +66,15 @@ class CandidateListIndex extends Component {
    */
   componentDidMount() {
     fetch('options',
-        {credentials: 'same-origin'}).then(
-            (resp) => resp.json()
-        ).then(
-            (json) => {
-            this.setState({
-                fieldOptions: json,
-            });
-        }
-        );
+      {credentials: 'same-origin'}).then(
+      (resp) => resp.json()
+    ).then(
+      (json) => {
+        this.setState({
+          fieldOptions: json,
+        });
+      }
+    );
 
     this.fetchData();
 
@@ -92,15 +92,15 @@ class CandidateListIndex extends Component {
    * @return {object}
    */
   fetchData() {
-        fetchDataStream(this.props.dataURL,
-            (row) => this.state.data.push(row),
-            (end) => {
-                this.setState({data: this.state.data});
-            },
-            () => {
-                this.setState({isLoaded: true});
-            },
-        );
+    fetchDataStream(this.props.dataURL,
+      (row) => this.state.data.push(row),
+      (end) => {
+        this.setState({data: this.state.data});
+      },
+      () => {
+        this.setState({isLoaded: true});
+      },
+    );
   }
 
   /**
@@ -128,20 +128,20 @@ class CandidateListIndex extends Component {
     if (column === 'PSCID') {
       let url;
       if (this.props.betaProfileLink) {
-          url = this.props.baseURL + '/candidate_profile/' + row['DCCID'] + '/';
+        url = this.props.baseURL + '/candidate_profile/' + row['DCCID'] + '/';
       } else {
-          url = this.props.baseURL + '/' + row['DCCID'] + '/';
+        url = this.props.baseURL + '/' + row['DCCID'] + '/';
       }
 
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
-        default: return <td>None</td>;
+      case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+      case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+      case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+      case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
+      default: return <td>None</td>;
       }
     }
     if (column === 'Scan Done' && cell === 'Y') {

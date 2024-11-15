@@ -142,10 +142,11 @@ class CouchDBInstrumentImporter
         $from = "FROM flag f
             JOIN session s ON(s.ID=f.SessionID)
             JOIN candidate c ON(c.CandID=s.CandID)
-            LEFT JOIN flag ddef ON(ddef.CommentID=CONCAT('DDE_', f.CommentID))";
+            LEFT JOIN flag ddef ON(ddef.CommentID=CONCAT('DDE_', f.CommentID))
+            LEFT JOIN test_names tn ON(f.TestID = tn.ID)";
 
         $where = "WHERE f.CommentID NOT LIKE 'DDE%'
-            AND f.Test_name=:inst AND s.Active='Y' AND c.Active='Y'";
+            AND tn.Test_name=:inst AND s.Active='Y' AND c.Active='Y'";
 
         if ($tablename === "") {
             // the data is in the flag table, add the data column to the query
@@ -212,7 +213,7 @@ class CouchDBInstrumentImporter
                 if ($JSONData) {
                     //Transform JSON object into an array and add treat it the
                     //same as SQL
-                    $instrumentData = json_decode($row['Data'], true) ?? [];
+                    $instrumentData = json_decode($row['Data'] ?? '', true) ?? [];
                     unset($row['Data']);
                     $docdata = $row + $instrumentData;
                 } else {

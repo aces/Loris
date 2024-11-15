@@ -63,7 +63,7 @@ class ParentTree extends Component {
     ));
     return (
       <div>
-       {parentList}
+        {parentList}
       </div>
     );
   }

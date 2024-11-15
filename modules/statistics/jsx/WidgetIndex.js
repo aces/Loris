@@ -29,7 +29,7 @@ const WidgetIndex = (props) => {
     let {sizing, title, chartType, options} = chartDetails[section][chartID];
     return <div
       className={'col-lg-' + sizing + ' col-md-' + sizing + ' col-sm-' + sizing}
-      >
+    >
       <div
         style={{
           display: 'flex',
@@ -42,22 +42,22 @@ const WidgetIndex = (props) => {
         </h5>
         {Object.keys(chartDetails[section][chartID].options).length > 1 &&
           <SelectElement
-          className='col-md-3'
-          emptyOption={false}
-          options={options}
-          value={options[chartType]}
-          onUserInput={(name, value) => {
+            className='col-md-3'
+            emptyOption={false}
+            options={options}
+            value={options[chartType]}
+            onUserInput={(name, value) => {
             // set the chart type in the chartDetails object for that chartID
-            setChartDetails(
-              {...chartDetails,
-                [section]: {
-                  ...chartDetails[section],
-                  [chartID]: {
-                    ...chartDetails[section][chartID],
-                    chartType: options[value],
+              setChartDetails(
+                {...chartDetails,
+                  [section]: {
+                    ...chartDetails[section],
+                    [chartID]: {
+                      ...chartDetails[section][chartID],
+                      chartType: options[value],
+                    },
                   },
-                },
-              });
+                });
               setupCharts(
                 false,
                 {[section]: {[chartID]: {
@@ -65,7 +65,7 @@ const WidgetIndex = (props) => {
                   chartType: options[value]},
                 }}
               );
-          }}
+            }}
           />
         }
       </div>
@@ -265,21 +265,21 @@ const WidgetIndex = (props) => {
           && modalChart.chartType
           && modalChart.chartType !== 'line'
           && <a
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-              }}
-              onClick={() => {
-                exportChartAsImage('dashboardModal');
-              }}
-              className='btn btn-info'>
-              <span
-                className='glyphicon glyphicon-download'
-                aria-hidden='true'
-              />
-              {' '}Download as image (png)
-            </a>
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+            }}
+            onClick={() => {
+              exportChartAsImage('dashboardModal');
+            }}
+            className='btn btn-info'>
+            <span
+              className='glyphicon glyphicon-download'
+              aria-hidden='true'
+            />
+            {' '}Download as image (png)
+          </a>
         }
       </Modal>
       <Recruitment

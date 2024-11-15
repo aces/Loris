@@ -158,7 +158,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                   };
                 })
                 .filter(({interval}) =>
-                    interval[1] - interval[0] < MAX_VIEWED_CHUNKS
+                  interval[1] - interval[0] < MAX_VIEWED_CHUNKS
                 )
                 .reverse();
 

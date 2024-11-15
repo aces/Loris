@@ -208,14 +208,14 @@ class PublicationUploadForm extends React.Component {
           title: 'Submission Successful!',
           type: 'success',
         }).then(function() {
-          window.location.replace(loris.BaseURL + '/publication/');
-        });
+        window.location.replace(loris.BaseURL + '/publication/');
+      });
     }).catch((error) => {
       // Network error
       console.error(error);
       swal.fire('Something went wrong!', '', 'error');
     });
-   }
+  }
 
   /**
    * Renders the React component.
@@ -262,7 +262,7 @@ class PublicationUploadForm extends React.Component {
             value={this.state.formData.title}
           />
         </div>
-    );
+      );
       // if not in edit mode, shrink form for consistent display
       formClass = 'col-md-8 col-lg-7';
     }

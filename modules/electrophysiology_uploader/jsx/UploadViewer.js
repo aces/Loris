@@ -19,20 +19,20 @@ export default function UploadViewer(props) {
    */
   const formatColumn = (column, cell, row) => {
     switch (column) {
-      case 'Upload Location':
-        const downloadURL =
+    case 'Upload Location':
+      const downloadURL =
           loris.BaseURL
           + '/electrophysiology_uploader/upload?'
           + `upload_id=${row['Upload ID']}`;
-        return (
-          <td>
-            <a href={downloadURL} target="_blank" download={row['File Name']}>
-              {cell}
-            </a>
-          </td>
-        );
-      default:
-        return <td>{cell}</td>;
+      return (
+        <td>
+          <a href={downloadURL} target="_blank" download={row['File Name']}>
+            {cell}
+          </a>
+        </td>
+      );
+    default:
+      return <td>{cell}</td>;
     }
   };
 

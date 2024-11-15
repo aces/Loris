@@ -23,11 +23,11 @@ export const currentAnnotationReducer: Reducer = (state = null, action) => {
     return state;
   }
   switch (action.type) {
-    case SET_CURRENT_ANNOTATION: {
-      return action.payload;
-    }
-    default: {
-      return state;
-    }
+  case SET_CURRENT_ANNOTATION: {
+    return action.payload;
+  }
+  default: {
+    return state;
+  }
   }
 };

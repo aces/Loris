@@ -85,10 +85,10 @@ class MediaIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-      case 'Site':
-        return this.state.fieldOptions.sites[value];
-      default:
-        return value;
+    case 'Site':
+      return this.state.fieldOptions.sites[value];
+    default:
+      return value;
     }
   }
 
@@ -137,22 +137,22 @@ class MediaIndex extends Component {
       break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
-          return;
+        return;
       }
       const editButton = (
-            <TriggerableModal title="Edit Media File" label="Edit">
-              <MediaEditForm
-                DataURL={loris.BaseURL
+        <TriggerableModal title="Edit Media File" label="Edit">
+          <MediaEditForm
+            DataURL={loris.BaseURL
                         + '/media/ajax/FileUpload.php'
                         + '?action=getData&idMediaFile='
                         + row['Edit Metadata']}
-                action={loris.BaseURL
+            action={loris.BaseURL
                        + '/media/ajax/FileUpload.php?action=edit'}
-                /* this should be passed to onSubmit function
+            /* this should be passed to onSubmit function
                    upon refactoring editForm.js*/
-                fetchData={this.fetchData }
-                    />
-            </TriggerableModal>
+            fetchData={this.fetchData }
+          />
+        </TriggerableModal>
       );
       result = <td className={style}>{editButton}</td>;
       break;
@@ -178,10 +178,10 @@ class MediaIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in media.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in media.class.inc
+     */
     const options = this.state.fieldOptions;
     let fields = [
       {label: 'File Name', show: true, filter: {
@@ -220,7 +220,7 @@ class MediaIndex extends Component {
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
-        }},
+      }},
       {label: 'Date Taken', show: true},
       {label: 'Comments', show: true},
       {label: 'Last Modified', show: true},

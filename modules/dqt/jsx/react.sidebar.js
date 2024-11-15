@@ -97,14 +97,14 @@ class FieldsSidebar extends Component {
         let fieldInfo = this.props.Fields[i].split(',');
         fieldList.push(
           <div className='list-group-item row hideScrollbar'
-               style={{
-                 overflowX: 'scroll',
-                 color: '#fff',
-                 backgroundColor: '#4c8ad5',
-               }}
-               key={this.props.Fields[i]}>
+            style={{
+              overflowX: 'scroll',
+              color: '#fff',
+              backgroundColor: '#4c8ad5',
+            }}
+            key={this.props.Fields[i]}>
             <h4 className='list-group-item-heading col-xs-12'
-                style={{color: '#fff'}}
+              style={{color: '#fff'}}
             >
               {fieldInfo[0]}
             </h4>
@@ -119,7 +119,7 @@ class FieldsSidebar extends Component {
       <Sidebar Name='Fields'>
         <div className='form-group'>
           <button className='btn btn-primary'
-                  onClick={this.props.resetQuery}>Clear Query</button>
+            onClick={this.props.resetQuery}>Clear Query</button>
         </div>
         {fieldList}
       </Sidebar>);

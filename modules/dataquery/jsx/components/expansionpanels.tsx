@@ -21,7 +21,7 @@ const ExpansionPanels = (props: {
 }) => {
   return (
     <div className={'container-fluid'}
-         style={{margin: '0 auto', maxWidth: '900px'}}>
+      style={{margin: '0 auto', maxWidth: '900px'}}>
       { props.panels.map((panel, index) => (
         <Panel
           key={index}

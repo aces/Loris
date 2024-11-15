@@ -122,38 +122,38 @@ export const datasetReducer = (
     return state;
   }
   switch (action.type) {
-    case SET_EPOCHS: {
-      return R.assoc('epochs', action.payload, state);
-    }
-    case SET_FILTERED_EPOCHS: {
-      return R.assoc('filteredEpochs', action.payload, state);
-    }
-    case SET_ACTIVE_EPOCH: {
-      return R.assoc('activeEpoch', action.payload, state);
-    }
-    case SET_PHYSIOFILE_ID: {
-      return R.assoc('physioFileID', action.payload, state);
-    }
-    case SET_HED_SCHEMA_DOCUMENT: {
-      return R.assoc('hedSchema', action.payload, state);
-    }
-    case SET_DATASET_TAGS: {
-      return R.assoc('datasetTags', action.payload, state);
-    }
-    case SET_HED_REL_OVERRIDES: {
-      return R.assoc('hedRelOverrides', action.payload, state);
-    }
-    case SET_ADDED_TAGS: {
-      return R.assoc('addedTags', action.payload, state);
-    }
-    case SET_DELETED_TAGS: {
-      return R.assoc('deletedTags', action.payload, state);
-    }
-    case SET_DATASET_METADATA: {
-      return R.merge(state, action.payload);
-    }
-    default: {
-      return state;
-    }
+  case SET_EPOCHS: {
+    return R.assoc('epochs', action.payload, state);
+  }
+  case SET_FILTERED_EPOCHS: {
+    return R.assoc('filteredEpochs', action.payload, state);
+  }
+  case SET_ACTIVE_EPOCH: {
+    return R.assoc('activeEpoch', action.payload, state);
+  }
+  case SET_PHYSIOFILE_ID: {
+    return R.assoc('physioFileID', action.payload, state);
+  }
+  case SET_HED_SCHEMA_DOCUMENT: {
+    return R.assoc('hedSchema', action.payload, state);
+  }
+  case SET_DATASET_TAGS: {
+    return R.assoc('datasetTags', action.payload, state);
+  }
+  case SET_HED_REL_OVERRIDES: {
+    return R.assoc('hedRelOverrides', action.payload, state);
+  }
+  case SET_ADDED_TAGS: {
+    return R.assoc('addedTags', action.payload, state);
+  }
+  case SET_DELETED_TAGS: {
+    return R.assoc('deletedTags', action.payload, state);
+  }
+  case SET_DATASET_METADATA: {
+    return R.merge(state, action.payload);
+  }
+  default: {
+    return state;
+  }
   }
 };

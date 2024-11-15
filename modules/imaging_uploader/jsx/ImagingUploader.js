@@ -140,14 +140,14 @@ class ImagingUploader extends Component {
         const inserted = row['Number Of Files Inserted'];
         return (
           <td style={cellStyle}>
-          {cell} ({inserted} out of {created})
+            {cell} ({inserted} out of {created})
           </td>
         );
       }
 
       // cell == 'Not started'
       return (
-          <td style={cellStyle}>{cell}</td>
+        <td style={cellStyle}>{cell}</td>
       );
     }
 

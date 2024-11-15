@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    StaticElement,
-    SelectElement,
-    TextboxElement,
-    EmailElement,
-    CheckboxElement,
-    ButtonElement,
+  FormElement,
+  StaticElement,
+  SelectElement,
+  TextboxElement,
+  EmailElement,
+  CheckboxElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -150,7 +150,7 @@ class RequestAccount extends Component {
     const captcha = this.state.form.captcha ? (
       <div className='form-group'>
         <div className='g-recaptcha'
-             data-sitekey={this.state.form.captcha}/>
+          data-sitekey={this.state.form.captcha}/>
         <span id='helpBlock' className='help-block'>
           <b className='text-danger'>Please complete the reCaptcha!</b>
         </span>
@@ -240,7 +240,7 @@ class RequestAccount extends Component {
           />
         </FormElement>
         <a onClick={() => this.props.setMode('login')}
-           style={{cursor: 'pointer'}}>Back to login page</a>
+          style={{cursor: 'pointer'}}>Back to login page</a>
       </div>
     ) : (
       <div className={'success-message'}>
@@ -249,7 +249,7 @@ class RequestAccount extends Component {
         <p>Please contact your project administrator to activate
           this account.</p>
         <a onClick={() => window.location.href = window.location.origin}
-           style={{cursor: 'pointer'}}>Return to Login Page</a>
+          style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (
