@@ -1,11 +1,24 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\configurations;
 
 /**
  * This reprensents a REDCap instance configuration.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapConfigurationInstance
 {
@@ -62,7 +75,9 @@ class RedcapConfigurationInstance
     {
         if ($this->hasProject($pid)) {
             $n = $this->_name;
-            throw new \LorisException("[redcap][config] project ID '$pid' already exists in instance '$n'.");
+            throw new \LorisException(
+                "[redcap][config] project ID '$pid' already exists in instance '$n'."
+            );
         }
         $this->_projects[$pid] = new RedcapConfigurationProject($pid, $token);
     }
@@ -101,6 +116,7 @@ class RedcapConfigurationInstance
      * Clean an given URL.
      *
      * @param string $url an URL
+     *
      * @return string a cleaned URL.
      */
     private static function _cleanURL(string $url): string
@@ -182,7 +198,9 @@ class RedcapConfigurationInstance
     {
         if (!$this->hasProject($pid)) {
             $n = $this->_name;
-            throw new \LorisException("[redcap][config] project ID '$pid' does not exist in instance '$n'.");
+            throw new \LorisException(
+                "[redcap][config] project ID '$pid' does not exist in instance '$n'."
+            );
         }
         unset($this->_projects[$pid]);
     }
