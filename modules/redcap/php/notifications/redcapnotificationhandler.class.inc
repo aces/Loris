@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -168,8 +169,8 @@ class RedcapNotificationHandler
                 fn($k) => $records[$k]->getInstrumentName(),
                 $notUpdated
             );
-            $recMsg        = implode(',', $recNotUpdated);
-            $msg = "[redcap] [pscid:$recordId][visit:$visitName]"
+            $recMsg = implode(',', $recNotUpdated);
+            $msg    = "[redcap] [pscid:$recordId][visit:$visitName]"
                 . " repeating instruments not updated: $recMsg.";
             throw new \LorisException($msg);
         }
@@ -302,10 +303,12 @@ class RedcapNotificationHandler
                     if ($value == '1') {
                         // The value is selected
                         $value     = [$matches[2]];
-                        $new_value = [implode(
-                            '{@}',
-                            array_merge($prev_value, $value)
-                        )];
+                        $new_value = [
+                            implode(
+                                '{@}',
+                                array_merge($prev_value, $value)
+                            )
+                        ];
                     }
 
                     $value      = array_shift($new_value);
@@ -601,17 +604,16 @@ class RedcapNotificationHandler
                 AND handled_dt IS NULL"
         );
 
-        $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-
-        $dformat = 'Y-m-d H:i:s';
-        $dt = $notification->getReceivedDt();
+        $dform = 'Y-m-d H:i:s';
+        $dtNow = new \DateTimeImmutable();
+        $dt    = $notification->getReceivedDt();
         $notification_params = [
-            'v_received_dt'       => $dt->format($dformat),
+            'v_received_dt'       => $dt->format($dform),
             'v_project_id'        => $notification->getProjectId(),
             'v_record'            => $notification->getRecord(),
             'v_redcap_event_name' => $notification->getRedcapEventName(),
             'v_instrument'        => $notification->getInstrument(),
-            'handled_dt'          => $now
+            'handled_dt'          => $dtNow->format($dform)
         ];
 
         $stmt->execute($notification_params);

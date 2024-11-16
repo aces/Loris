@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -293,7 +294,8 @@ class Notifications extends Endpoint
         $username = $assignee->getUsername();
 
         // insert new issue
-        $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $dtNow     = new \DateTimeImmutable();
+        $now       = $dtNow->format('Y-m-d H:i:s');
         $issueData = [
             'title'         => $title,
             'reporter'      => $username,
