@@ -1,11 +1,24 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\notifications;
 
 /**
  * This reprensents a redcap notification.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapNotification
 {
@@ -40,14 +53,18 @@ class RedcapNotification
         // Make sure all the required properties exists
         foreach ($requiredprops as $required) {
             if (empty($props[$required] ?? null)) {
-                throw new \UnexpectedValueException("[redcap] Error: missing property $required");
+                throw new \UnexpectedValueException(
+                    "[redcap] Error: missing property $required"
+                );
             }
         }
 
         // ${instrument}_complete is required as well.
         $complete_key = $props['instrument'] . '_complete';
         if (!isset($props[$complete_key])) {
-            throw new \UnexpectedValueException("[redcap] Error: missing property $complete_key");
+            throw new \UnexpectedValueException(
+                "[redcap] Error: missing property $complete_key"
+            );
         }
 
         $this->_instrument        = $props['instrument'];
