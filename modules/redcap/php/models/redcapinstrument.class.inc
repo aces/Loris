@@ -1,9 +1,27 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models;
 
 use LORIS\redcap\models\RedcapProp;
 
+/**
+ * This represents a Redcap Instrument
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class RedcapInstrument extends RedcapProp
 {
 
@@ -46,7 +64,8 @@ class RedcapInstrument extends RedcapProp
      *
      * @return string
      */
-    public function getInstrumentName(): string {
+    public function getInstrumentName(): string
+    {
         return $this->_name;
     }
 
@@ -55,11 +74,18 @@ class RedcapInstrument extends RedcapProp
      *
      * @return string
      */
-    public function getInstrumentLabel(): string {
+    public function getInstrumentLabel(): string
+    {
         return $this->_label;
     }
 
-    public function toArray(): array {
+    /**
+     * Props array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             'instrument_name'  => $this->_name,
             'instrument_label' => $this->_label,

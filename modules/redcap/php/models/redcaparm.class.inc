@@ -1,9 +1,27 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models;
 
 use LORIS\redcap\models\RedcapProp;
 
+/**
+ * This represents a REDCap Arm
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class RedcapArm extends RedcapProp
 {
     /**
@@ -45,7 +63,8 @@ class RedcapArm extends RedcapProp
      *
      * @return int
      */
-    public function getArmNum(): int {
+    public function getArmNum(): int
+    {
         return $this->_num;
     }
 
@@ -54,11 +73,18 @@ class RedcapArm extends RedcapProp
      *
      * @return string
      */
-    public function getArmName(): string {
+    public function getArmName(): string
+    {
         return $this->_name;
     }
 
-    public function toArray(): array {
+    /**
+     * Props to array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             'arm_num' => $this->_num,
             'name'    => $this->_name

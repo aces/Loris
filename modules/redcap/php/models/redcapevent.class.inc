@@ -1,4 +1,13 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models;
 
@@ -7,7 +16,11 @@ use LORIS\redcap\models\RedcapProp;
 /**
  * This represents a redcap event.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapEvent extends RedcapProp
 {
@@ -69,9 +82,14 @@ class RedcapEvent extends RedcapProp
 
         // check unique event name
         // format should be: "<event_name>_arm_<arm_num>"
-        $tmpUniqueEvent = strtolower($props['event_name'] . "_arm_" . $props['arm_num']);
+        $tmpUniqueEvent = strtolower(
+            $props['event_name'] . "_arm_" . $props['arm_num']
+        );
         if ($props['unique_event_name'] !== $tmpUniqueEvent) {
-            throw new \LorisException("[redcap:event] 'unique_event_name' format, expected '$tmpUniqueEvent' found " . $props['unique_event_name']);
+            throw new \LorisException(
+                "[redcap:event] 'unique_event_name' format, expected "
+                . "'$tmpUniqueEvent' found " . $props['unique_event_name']
+            );
         }
 
         $this->_id           = intval($props['event_id']);
@@ -86,7 +104,8 @@ class RedcapEvent extends RedcapProp
      *
      * @return int
      */
-    public function getId(): int {
+    public function getId(): int
+    {
         return $this->_id;
     }
 
@@ -95,7 +114,8 @@ class RedcapEvent extends RedcapProp
      *
      * @return int
      */
-    public function getArmNum(): int {
+    public function getArmNum(): int
+    {
         return $this->_arm_num;
     }
 
@@ -104,7 +124,8 @@ class RedcapEvent extends RedcapProp
      *
      * @return string
      */
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
@@ -113,7 +134,8 @@ class RedcapEvent extends RedcapProp
      *
      * @return string
      */
-    public function getEventUniqueName(): string {
+    public function getEventUniqueName(): string
+    {
         return $this->_unique_name;
     }
 
@@ -122,11 +144,18 @@ class RedcapEvent extends RedcapProp
      *
      * @return string
      */
-    public function getCustomLabel(): string {
+    public function getCustomLabel(): string
+    {
         return $this->_custom_label;
     }
 
-    public function toArray(): array {
+    /**
+     * Props array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             'event_id'           => $this->_id,
             'event_name'         => $this->_arm_num,

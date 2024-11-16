@@ -1,4 +1,13 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models;
 
@@ -7,7 +16,11 @@ use LORIS\redcap\models\RedcapProp;
 /**
  * This represents a redcap dictionary entry.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapDictionaryRecord extends RedcapProp
 {
@@ -69,14 +82,18 @@ class RedcapDictionaryRecord extends RedcapProp
         $this->_section_header                 = $props['section_header'] ?? '';
         $this->_field_type                     = $props['field_type'];
         $this->_field_label                    = $props['field_label'];
-        $this->_select_choices_or_calculations = $props['select_choices_or_calculations'] ?? '';
+        $this->_select_choices_or_calculations
+            = $props['select_choices_or_calculations'] ?? '';
         $this->_field_note                     = $props['field_note'] ?? '';
-        $this->_text_validation_type           = $props['text_validation_type_or_show_slider_number'] ?? '';
+        $this->_text_validation_type
+            = $props['text_validation_type_or_show_slider_number'] ?? '';
         $this->_text_validation_min            = $props['text_validation_min'] ?? '';
         $this->_text_validation_max            = $props['text_validation_max'] ?? '';
         $this->_identifier                     = $props['identifier'] ?? '';
         $this->_branching_logic                = $props['branching_logic'] ?? '';
-        $this->_required_field                 = !is_null($props['required_field']) ? (strtolower($props['required_field']) === 'y') : false;
+        $this->_required_field                 = !is_null($props['required_field'])
+            ? (strtolower($props['required_field']) === 'y')
+            : false;
         $this->_custom_alignment               = $props['custom_alignment'] ?? '';
         $this->_question_number                = $props['question_number'] ?? '';
         $this->_matrix_group_name              = $props['matrix_group_name'] ?? '';
@@ -84,78 +101,191 @@ class RedcapDictionaryRecord extends RedcapProp
         $this->_field_annotation               = $props['field_annotation'] ?? '';
     }
 
-    public function getFieldName(): string {
+    /**
+     * Get field name.
+     *
+     * @return string
+     */
+    public function getFieldName(): string
+    {
         return $this->_field_name;
     }
 
-    public function getFormName(): string {
+    /**
+     * Get form name.
+     *
+     * @return string
+     */
+    public function getFormName(): string
+    {
         return $this->_form_name;
     }
 
-    public function getSectionHeader(): string {
+    /**
+     * Get seciton header.
+     *
+     * @return string
+     */
+    public function getSectionHeader(): string
+    {
         return $this->_section_header;
     }
 
-    public function getFieldType(): string {
+    /**
+     * Get field type.
+     *
+     * @return string
+     */
+    public function getFieldType(): string
+    {
         return $this->_field_type;
     }
 
-    public function getFieldLabel(): string {
+    /**
+     * Get field label.
+     *
+     * @return string
+     */
+    public function getFieldLabel(): string
+    {
         return $this->_field_label;
     }
 
-    public function getSelectChoicesOrCalculations(): string {
+    /**
+     * Get the select choices or calculation.
+     *
+     * @return string
+     */
+    public function getSelectChoicesOrCalculations(): string
+    {
         return $this->_select_choices_or_calculations;
     }
 
-    public function getFieldNote(): string {
+    /**
+     * Get field note.
+     *
+     * @return string
+     */
+    public function getFieldNote(): string
+    {
         return $this->_field_note;
     }
 
-    public function getTextValidationType(): string {
+    /**
+     * Get text validation Type.
+     *
+     * @return string
+     */
+    public function getTextValidationType(): string
+    {
         return $this->_text_validation_type;
     }
 
-    public function getTextValidationMin(): string {
+    /**
+     * Get text validation Min.
+     *
+     * @return string
+     */
+    public function getTextValidationMin(): string
+    {
         return $this->_text_validation_min;
     }
 
-    public function getTextValidationMax(): string {
+    /**
+     * Get text validation Max.
+     *
+     * @return string
+     */
+    public function getTextValidationMax(): string
+    {
         return $this->_text_validation_max;
     }
 
-    public function getIdentifier(): string {
+    /**
+     * Get identifier.
+     *
+     * @return string
+     */
+    public function getIdentifier(): string
+    {
         return $this->_identifier;
     }
 
-    public function getBranchingLogic(): string {
+    /**
+     * Get branching logic.
+     *
+     * @return string
+     */
+    public function getBranchingLogic(): string
+    {
         return $this->_branching_logic;
     }
 
-    public function isRequiredField(): bool {
+    /**
+     * Get field required.
+     *
+     * @return bool
+     */
+    public function isRequiredField(): bool
+    {
         return $this->_required_field;
     }
 
-    public function getCustomAlignment(): string {
+    /**
+     * Get custom alignment
+     *
+     * @return string
+     */
+    public function getCustomAlignment(): string
+    {
         return $this->_custom_alignment;
     }
 
-    public function getQuestionNumber(): string {
+    /**
+     * Get question number.
+     *
+     * @return string
+     */
+    public function getQuestionNumber(): string
+    {
         return $this->_question_number;
     }
 
-    public function getMatrixGroupName(): string {
+    /**
+     * Get matrix group name.
+     *
+     * @return string
+     */
+    public function getMatrixGroupName(): string
+    {
         return $this->_matrix_group_name;
     }
 
-    public function getMatrixRanking(): string {
+    /**
+     * Get matrix ranking.
+     *
+     * @return string
+     */
+    public function getMatrixRanking(): string
+    {
         return $this->_matrix_ranking;
     }
 
-    public function getFieldAnnotation(): string {
+    /**
+     * Get field annotation.
+     *
+     * @return string
+     */
+    public function getFieldAnnotation(): string
+    {
         return $this->_field_annotation;
     }
 
+    /**
+     * Get header values.
+     *
+     * @return array
+     */
     public function getHeader(): array
     {
         return [
@@ -180,26 +310,34 @@ class RedcapDictionaryRecord extends RedcapProp
         ];
     }
 
-    public function toArray(): array {
+    /**
+     * Props to array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
-            'field_name'                                 => $this->_field_name,
-            'form_name'                                  => $this->_form_name,
-            'section_header'                             => $this->_section_header,
-            'field_type'                                 => $this->_field_type,
-            'field_label'                                => $this->_field_label,
-            'select_choices_or_calculations'             => $this->_select_choices_or_calculations,
-            'field_note'                                 => $this->_field_note,
-            'text_validation_type_or_show_slider_number' => $this->_text_validation_type,
-            'text_validation_min'                        => $this->_text_validation_min,
-            'text_validation_max'                        => $this->_text_validation_max,
-            'identifier'                                 => $this->_identifier,
-            'branching_logic'                            => $this->_branching_logic,
-            'required_field'                             => $this->_required_field,
-            'custom_alignment'                           => $this->_custom_alignment,
-            'question_number'                            => $this->_question_number,
-            'matrix_group_name'                          => $this->_matrix_group_name,
-            'matrix_ranking'                             => $this->_matrix_ranking,
-            'field_annotation'                           => $this->_field_annotation,
+            'field_name'           => $this->_field_name,
+            'form_name'            => $this->_form_name,
+            'section_header'       => $this->_section_header,
+            'field_type'           => $this->_field_type,
+            'field_label'          => $this->_field_label,
+            'select_choices_or_calculations'
+                => $this->_select_choices_or_calculations,
+            'field_note'           => $this->_field_note,
+            'text_validation_type_or_show_slider_number'
+                => $this->_text_validation_type,
+            'text_validation_min'  => $this->_text_validation_min,
+            'text_validation_max'  => $this->_text_validation_max,
+            'identifier'           => $this->_identifier,
+            'branching_logic'      => $this->_branching_logic,
+            'required_field'       => $this->_required_field,
+            'custom_alignment'     => $this->_custom_alignment,
+            'question_number'      => $this->_question_number,
+            'matrix_group_name'    => $this->_matrix_group_name,
+            'matrix_ranking'       => $this->_matrix_ranking,
+            'field_annotation'     => $this->_field_annotation,
         ];
     }
 }
