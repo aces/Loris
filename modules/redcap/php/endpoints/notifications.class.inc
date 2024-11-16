@@ -1,4 +1,13 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\Endpoints;
 
@@ -8,10 +17,15 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
 use \LORIS\redcap\notifications\RedcapNotification;
 use \LORIS\redcap\notifications\RedcapNotificationHandler;
+
 /**
  * This is the handler for redcap notifications
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Notifications extends Endpoint
 {
@@ -25,7 +39,8 @@ class Notifications extends Endpoint
     /**
      * Construct an endpoint
      *
-     * @param \LORIS\LorisInstance $loris
+     * @param \LORIS\LorisInstance    $loris a Loris instance
+     * @param REDCapHTTPClientHandler $rch   a REDCap client handler
      */
     public function __construct(
         protected \LORIS\LorisInstance $loris,
@@ -98,7 +113,7 @@ class Notifications extends Endpoint
             $notification = new RedcapNotification($data);
 
             // should the notification be ignored?
-            if ($this->ignoreNotification($notification)) {
+            if ($this->_ignoreNotification($notification)) {
                 return new \LORIS\Http\Response();
             }
 
@@ -109,7 +124,7 @@ class Notifications extends Endpoint
             );
         } catch (\UnexpectedValueException $e) {
             $body = (string) $request->getBody();
-            $this->createIssue(
+            $this->_createIssue(
                 'Invalid notification received',
                 $e->getMessage(),
                 $body
@@ -117,7 +132,7 @@ class Notifications extends Endpoint
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         } catch (\DatabaseException $e) {
             $body = (string) $request->getBody();
-            $this->createIssue(
+            $this->_createIssue(
                 'Database exception',
                 $e->getMessage(),
                 $body
@@ -125,7 +140,7 @@ class Notifications extends Endpoint
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\Throwable $e) {
             $body = (string) $request->getBody();
-            $this->createIssue(
+            $this->_createIssue(
                 'Unknown exception',
                 $e->getMessage(),
                 $body
@@ -144,7 +159,7 @@ class Notifications extends Endpoint
                 $rc
             );
         } catch (\LorisException $le) {
-            $this->createIssue(
+            $this->_createIssue(
                 'Instrument data not updated - REDCap client error',
                 $le->getMessage(),
                 ""
@@ -160,7 +175,7 @@ class Notifications extends Endpoint
                 . "PSCID: " . $notification->getRecord()
                 . "Visit: " . $notification->getRedcapEventName()
                 . "instrument: " . $notification->getInstrument();
-            $this->createIssue(
+            $this->_createIssue(
                 'Instrument data not updated - Database exception',
                 $e->getMessage(),
                 $rec
@@ -171,21 +186,21 @@ class Notifications extends Endpoint
                 . "PSCID: " . $notification->getRecord()
                 . "Visit: " . $notification->getRedcapEventName()
                 . "instrument: " . $notification->getInstrument();
-            $this->createIssue(
+            $this->_createIssue(
                 'Instrument data not updated - Domain exception',
                 $e->getMessage(),
                 $rec
             );
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\ConfigurationException $ce) {
-            $this->createIssue(
+            $this->_createIssue(
                 'Instrument data not updated - Configuration/Permission exception',
                 $ce->getMessage(),
                 json_encode($notification->toDatabaseArray())
             );
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\Throwable $e) {
-            $this->createIssue(
+            $this->_createIssue(
                 'Instrument data not updated',
                 $e->getMessage(),
                 json_encode($notification->toDatabaseArray())
@@ -205,7 +220,8 @@ class Notifications extends Endpoint
      *
      * @return true if the notification should be ignored, else false.
      */
-    private function ignoreNotification(RedcapNotification $notif): bool {
+    private function _ignoreNotification(RedcapNotification $notif): bool
+    {
         $notifData = json_encode($notif->toDatabaseArray());
 
         // is that notification coming from a known instance/project?
@@ -214,7 +230,9 @@ class Notifications extends Endpoint
             $notif->getProjectId()
         );
         if (!$sourceExists) {
-            error_log("[redcap][notification:skip] unknown source/project: $notifData");
+            error_log(
+                "[redcap][notification:skip] unknown source/project: $notifData"
+            );
             return true;
         }
 
@@ -224,13 +242,17 @@ class Notifications extends Endpoint
 
         // ignore instruments that are not in the authorized list
         if (!in_array($notif->getInstrument(), $authInstr, true)) {
-            error_log("[redcap][notification:skip] unauthorized instrument: $notifData");
+            error_log(
+                "[redcap][notification:skip] unauthorized instrument: $notifData"
+            );
             return true;
         }
 
         // ignore notifications that are not 'complete'
         if (!$notif->isComplete()) {
-            error_log("[redcap][notification:skip] instrument not complete: $notifData");
+            error_log(
+                "[redcap][notification:skip] instrument not complete: $notifData"
+            );
             return true;
         }
 
@@ -247,12 +269,11 @@ class Notifications extends Endpoint
      *
      * @return void
      */
-    private function createIssue(
+    private function _createIssue(
         string $title,
         string $error,
         string $data
-    ): void
-    {
+    ): void {
         $db = $this->loris->getDatabaseConnection();
 
         // get redcap module ID
