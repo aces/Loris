@@ -5,13 +5,13 @@
  *
  * PHP Version 8
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Behavioural
- * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\redcap;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +22,13 @@ use \LORIS\redcap\RedcapHTTPClientHandler;
  * This sets specific bahaviours or the redcap module and provides
  * the initial request routing.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Module extends \Module
 {
@@ -31,7 +37,7 @@ class Module extends \Module
      *
      * @var RedcapHTTPClientHandler
      */
-    private static RedcapHTTPClientHandler $redcapClientHandler;
+    private static RedcapHTTPClientHandler $_redcapClientHandler;
 
     /**
      * This needs to be true since redcap wont authenticate.
@@ -56,17 +62,21 @@ class Module extends \Module
     /**
      * Get the current Redcap client handler
      *
+     * @param \LORIS\LorisInstance $loris a loris instance
+     *
      * @return RedcapHTTPClientHandler
      */
     protected static function getRedcapHandler(
         \Loris\LORISInstance $loris
-    ): RedcapHTTPClientHandler
-    {
+    ): RedcapHTTPClientHandler {
         // load the redcap client handler once
-        if (!isset(self::$redcapClientHandler)) {
-            self::$redcapClientHandler = RedcapHTTPClientHandler::factory($loris, false);
+        if (!isset(self::$_redcapClientHandler)) {
+            self::$_redcapClientHandler = RedcapHTTPClientHandler::factory(
+                $loris,
+                false
+            );
         }
-        return self::$redcapClientHandler;
+        return self::$_redcapClientHandler;
     }
 
     /**
