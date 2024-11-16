@@ -1,4 +1,13 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\configurations;
 
@@ -6,9 +15,13 @@ use LORIS\redcap\RedcapHTTPClient;
 use LORIS\redcap\configurations\RedcapConfiguration;
 
 /**
- * This reprensents a REDCap configuration.
+ * This reprensents a REDCap configuration parser.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapConfigurationParser
 {
@@ -34,7 +47,10 @@ class RedcapConfigurationParser
     private static $_instance;
 
     /**
-     * Singleton. Private instance.
+     * Constructor.
+     *
+     * @param \LORIS\LorisInstance $loris   a loris instance
+     * @param bool                 $verbose verbose mode
      */
     private function __construct(
         \LORIS\LorisInstance $loris,
@@ -48,13 +64,15 @@ class RedcapConfigurationParser
     /**
      * Factory for singleton instance.
      *
+     * @param \LORIS\LorisInstance $loris   a loris instance
+     * @param bool                 $verbose verbose mode
+     *
      * @return RedcapConfigurationParser
      */
     public static function &factory(
         \LORIS\LorisInstance $loris,
         bool $verbose = false
-    ): RedcapConfigurationParser
-    {
+    ): RedcapConfigurationParser {
         if (!isset(self::$_instance)) {
             self::$_instance = new self($loris, $verbose);
         }
@@ -64,6 +82,7 @@ class RedcapConfigurationParser
     /**
      * Get REDCap configuration from 'config.xml' file.
      *
+     * Structure:
      * assignee => \User
      * instance_name_aaa => [
      *   url     => https://someURL.com
@@ -77,8 +96,6 @@ class RedcapConfigurationParser
      *     333 => token_3
      *   ]
      * ]
-     *
-     * @param \LORIS\LorisInstance $loris a loris instance
      *
      * @return RedcapConfiguration
      */
@@ -90,6 +107,7 @@ class RedcapConfigurationParser
     /**
      * Build REDCap configuration from 'config.xml' file.
      *
+     * Structure:
      * assignee => \User
      * instance_name_aaa => [
      *   url     => https://someURL.com
@@ -104,7 +122,7 @@ class RedcapConfigurationParser
      *   ]
      * ]
      *
-     * @param \LORIS\LorisInstance $loris a loris instance
+     * @return void
      */
     private function _loadREDCapConfig(): void
     {
@@ -121,7 +139,9 @@ class RedcapConfigurationParser
         // add main assignee
         $assignee = $redcap['issuesAssignee'];
         if (!isset($assignee) || empty($assignee)) {
-            throw new \LorisException("[redcap][init] no REDCap 'issuesAssignee' in configuration.");
+            throw new \LorisException(
+                "[redcap][init] no REDCap 'issuesAssignee' in configuration."
+            );
         }
         $assigneeUserID = $db->pselectOne(
             "SELECT u.userID
@@ -136,14 +156,19 @@ class RedcapConfigurationParser
             ['usid' => $assignee]
         );
         if (is_null($assigneeUserID)) {
-            throw new \LorisException("[redcap][init] assignee '$assignee' does not exist or does not have enough privilege.");
+            throw new \LorisException(
+                "[redcap][init] assignee '$assignee' does not exist"
+                . " or does not have enough privilege."
+            );
         }
         $u = \User::factory($assigneeUserID);
         $this->_config = new RedcapConfiguration($u);
 
         // no instance described
         if (!isset($redcap['instance'])) {
-            throw new \LorisException("[redcap][init] no REDCap instance in configuration.");
+            throw new \LorisException(
+                "[redcap][init] no REDCap instance in configuration."
+            );
         }
 
         // multiple instances
@@ -154,7 +179,9 @@ class RedcapConfigurationParser
             // only one instances
             $instances = [$redcap['instance']];
         } else {
-            throw new \LorisException("[redcap][init] wrong REDCap instance structure in configuration.");
+            throw new \LorisException(
+                "[redcap][init] wrong REDCap instance structure in configuration."
+            );
         }
 
         // iterate on instances
@@ -165,10 +192,16 @@ class RedcapConfigurationParser
 
             // check name/url
             if (empty($name)) {
-                throw new \LorisException("[redcap][init] wrong REDCap configuration: missing instance 'name'.");
+                throw new \LorisException(
+                    "[redcap][init] wrong REDCap configuration:"
+                    ." missing instance 'name'."
+                );
             }
             if (empty($url)) {
-                throw new \LorisException("[redcap][init] wrong REDCap configuration: missing instance 'url'.");
+                throw new \LorisException(
+                    "[redcap][init] wrong REDCap configuration:"
+                    ." missing instance 'url'."
+                );
             }
 
             // multiple projects
@@ -179,7 +212,10 @@ class RedcapConfigurationParser
                 // only one projects
                 $projects = [$instance['project']];
             } else {
-                throw new \LorisException("[redcap][init] wrong REDCap configuration: no projects for instance '$name'.");
+                throw new \LorisException(
+                    "[redcap][init] wrong REDCap configuration:"
+                    ." no projects for instance '$name'."
+                );
 
             }
 
@@ -193,10 +229,16 @@ class RedcapConfigurationParser
 
                 // check pid/token
                 if (empty($pid)) {
-                    throw new \LorisException("[redcap][init] wrong REDCap configuration: missing a 'projectID' for instance '$name'.");
+                    throw new \LorisException(
+                        "[redcap][init] wrong REDCap configuration:"
+                        ." missing a 'projectID' for instance '$name'."
+                    );
                 }
                 if (empty($token)) {
-                    throw new \LorisException("[redcap][init] wrong REDCap configuration: missing a 'token' for instance '$name'.");
+                    throw new \LorisException(
+                        "[redcap][init] wrong REDCap configuration:"
+                        ." missing a 'token' for instance '$name'."
+                    );
                 }
 
                 // add the list of projects
@@ -207,6 +249,8 @@ class RedcapConfigurationParser
 
     /**
      * Test instances and remove those triggering a connction error.
+     *
+     * @param bool $verbose verbose mode
      *
      * @return void
      */
@@ -232,7 +276,12 @@ class RedcapConfigurationParser
                 try {
                     $rc->checkConnection();
                 } catch (\LorisException $le) {
-                    error_log("[redcap][config] cannot connect to REDCap instance '$iname', project '$pid'. Check configuration and connection." . $le->getMessage());
+                    error_log(
+                        "[redcap][config] cannot connect to REDCap"
+                        . " instance '$iname', project '$pid'."
+                        . " Check configuration and connection."
+                        . $le->getMessage()
+                    );
                     $this->_config->removeProjectFromInstance($iname, $pid);
                 }
             }
@@ -240,7 +289,10 @@ class RedcapConfigurationParser
 
         // check if at least one cnofiguration is accessible
         if (!$this->_config->hasInstances()) {
-            throw new \LorisException("[redcap][config] none of the REDCap configurations declared in 'config.xml' file can be accessed.");
+            throw new \LorisException(
+                "[redcap][config] none of the REDCap configurations declared"
+                ." in 'config.xml' file can be accessed."
+            );
         }
 
         // log
@@ -251,7 +303,10 @@ class RedcapConfigurationParser
                 foreach ($instance->yieldProjects() as $project) {
                     $pid = $project->getProjectId();
                     $url = $instance->getURL();
-                    error_log("[redcap][config]  - instance '$iname' at '$url', project '$pid'");
+                    error_log(
+                        "[redcap][config]  - instance '$iname'"
+                        ." at '$url', project '$pid'"
+                    );
                 }
             }
         }
