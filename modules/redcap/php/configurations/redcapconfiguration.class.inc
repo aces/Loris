@@ -102,7 +102,7 @@ class RedcapConfiguration
     ): ?RedcapConfigurationInstance {
         // normalize the given URL
         $searchedURL = self::_normalizeURL($instanceURL);
-        $i = null;
+        $i           = null;
         foreach ($this->_instances as $instance) {
             // normalize instance URL
             $iURL = self::_normalizeURL($instance->getURL());

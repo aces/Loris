@@ -165,12 +165,12 @@ class RedcapNotificationHandler
         }
         // repeating instruments case: some were update, some not
         if ($nNotUpdated > 0) {
-            $recNotUpdated = array_map(
+            $recNotUp = array_map(
                 fn($k) => $records[$k]->getInstrumentName(),
                 $notUpdated
             );
-            $recMsg = implode(',', $recNotUpdated);
-            $msg    = "[redcap] [pscid:$recordId][visit:$visitName]"
+            $recMsg   = implode(',', $recNotUp);
+            $msg      = "[redcap] [pscid:$recordId][visit:$visitName]"
                 . " repeating instruments not updated: $recMsg.";
             throw new \LorisException($msg);
         }

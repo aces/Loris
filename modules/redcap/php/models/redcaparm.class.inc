@@ -46,7 +46,7 @@ class RedcapArm extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'arm';
+        $propType      = 'arm';
         $expectedProps = [
             'arm_num',
             'name'

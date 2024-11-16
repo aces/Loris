@@ -47,7 +47,7 @@ class RedcapInstrument extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'instrument';
+        $propType      = 'instrument';
         $expectedProps = [
             'instrument_name',
             'instrument_label'

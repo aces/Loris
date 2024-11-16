@@ -93,12 +93,12 @@ class REDCapHTTPClient
         string $projectToken,
         bool $verbose = false
     ) {
-        $this->_loris = $loris;
-        $this->_verbose = $verbose;
-        $this->_url = $instanceAPIURL;
+        $this->_loris     = $loris;
+        $this->_verbose   = $verbose;
+        $this->_url       = $instanceAPIURL;
         $this->_projectId = $projectId;
-        $this->_token = $projectToken;
-        $this->_client = new Client($instanceAPIURL);
+        $this->_token     = $projectToken;
+        $this->_client    = new Client($instanceAPIURL);
     }
 
     /**
@@ -174,8 +174,8 @@ class REDCapHTTPClient
         $data = array_merge(
             $data,
             [
-                'token' => $this->_token,
-                'format' => 'json',
+                'token'        => $this->_token,
+                'format'       => 'json',
                 'returnFormat' => 'json'
             ]
         );
@@ -183,10 +183,10 @@ class REDCapHTTPClient
         // send request
         if ($this->_verbose) {
             // anonymize token
-            $dataMsg = $data;
+            $dataMsg          = $data;
             $dataMsg['token'] = 'XXXXX';
-            $url = $this->_url;
-            $jsonPayload = json_encode($dataMsg);
+            $url              = $this->_url;
+            $jsonPayload      = json_encode($dataMsg);
             error_log(
                 "[redcap] Sending request to '$url' with payload: $jsonPayload"
             );
@@ -414,7 +414,7 @@ class REDCapHTTPClient
         if (empty($recordId)) {
             throw new \LorisException("[redcap] Error: 'recordId' null or empty.");
         }
-        $event = empty($event) ? null : $event;
+        $event          = empty($event) ? null : $event;
         $repeatInstance = empty($repeatInstance) ? null : $repeatInstance;
 
         // check mapping exists
@@ -427,10 +427,10 @@ class REDCapHTTPClient
 
         // data to send
         $data = [
-            'content' => 'surveyLink',
+            'content'    => 'surveyLink',
             'instrument' => $instrument,
-            'event' => $event,
-            'record' => $recordId,
+            'event'      => $event,
+            'record'     => $recordId,
         ];
 
         // send request
@@ -519,7 +519,7 @@ class REDCapHTTPClient
         }
         $data = [
             'content' => 'surveyQueueLink',
-            'record' => $recordId
+            'record'  => $recordId
         ];
         return $this->_sendRequest($data);
     }
@@ -651,8 +651,8 @@ class REDCapHTTPClient
             $completed,
             function ($a, $b) use ($instrument) {
                 $dttField = $instrument . "_dtt";
-                $a_date = new \DateTimeImmutable($a[$dttField]);
-                $b_date = new \DateTimeImmutable($b[$dttField]);
+                $a_date   = new \DateTimeImmutable($a[$dttField]);
+                $b_date   = new \DateTimeImmutable($b[$dttField]);
                 return $a_date <=> $b_date;
             }
         );
@@ -701,18 +701,18 @@ class REDCapHTTPClient
 
         // data to send
         $data = [
-            'content' => 'record',
-            'action' => 'export',
-            'type' => 'flat',
-            'csvDelimiter' => '',
-            'forms' => $instruments,
-            'fields' => [],
-            'events' => $events,
-            'records' => $records,
-            'rawOrLabel' => 'raw',
-            'rawOrLabelHeaders' => 'raw',
-            'exportCheckboxLabel' => true,
-            'exportSurveyFields' => true,
+            'content'                => 'record',
+            'action'                 => 'export',
+            'type'                   => 'flat',
+            'csvDelimiter'           => '',
+            'forms'                  => $instruments,
+            'fields'                 => [],
+            'events'                 => $events,
+            'records'                => $records,
+            'rawOrLabel'             => 'raw',
+            'rawOrLabelHeaders'      => 'raw',
+            'exportCheckboxLabel'    => true,
+            'exportSurveyFields'     => true,
             'exportDataAccessGroups' => true,
         ];
 

@@ -68,7 +68,7 @@ class RedcapEvent extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'event';
+        $propType      = 'event';
         $expectedProps = [
             'event_id',
             'event_name',

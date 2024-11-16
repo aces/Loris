@@ -55,7 +55,7 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'repeating_instrument';
+        $propType      = 'repeating_instrument';
         $expectedProps = [
             'form_name',
             'event_name',

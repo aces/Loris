@@ -216,7 +216,7 @@ class RedcapProject extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'project';
+        $propType      = 'project';
         $expectedProps = [
             'project_id',
             'project_title',
@@ -249,18 +249,33 @@ class RedcapProject extends RedcapProp
         self::checkPropIsNotNull($props, $propType, 'project_id');
         self::checkPropIsNotNull($props, $propType, 'project_title');
 
-        $this->_project_id             = intval($props['project_id']);
-        $this->_project_title          = $props['project_title'];
-        $this->_creation_time          = !empty($props['creation_time']) ? new \DateTimeImmutable($props['creation_time']) : null;
-        $this->_production_time        = !empty($props['production_time']) ? new \DateTimeImmutable($props['production_time']) : null;
-        $this->_in_production          = !empty($props['in_production']) && $props['in_production'] == 1;
-        $this->_project_language       = $props['project_language'];
-        $this->_purpose                = intval($props['purpose']);
-        $this->_purpose_other          = intval($props['purpose_other']);
-        $this->_project_notes          = $props['project_notes'];
-        $this->_custom_record_label    = $props['custom_record_label'];
+        $this->_project_id
+            = intval($props['project_id']);
+        $this->_project_title
+            = $props['project_title'];
+        $this->_creation_time
+            = !empty($props['creation_time'])
+            ? new \DateTimeImmutable($props['creation_time'])
+            : null;
+        $this->_production_time
+            = !empty($props['production_time'])
+            ? new \DateTimeImmutable($props['production_time'])
+            : null;
+        $this->_in_production
+            = !empty($props['in_production']) && $props['in_production'] == 1;
+        $this->_project_language
+            = $props['project_language'];
+        $this->_purpose
+            = intval($props['purpose']);
+        $this->_purpose_other
+            = intval($props['purpose_other']);
+        $this->_project_notes
+            = $props['project_notes'];
+        $this->_custom_record_label
+            = $props['custom_record_label'];
         $this->_secondary_unique_field = $props['secondary_unique_field'];
-        $this->_is_longitudinal        = !empty($props['is_longitudinal'])
+        $this->_is_longitudinal
+            = !empty($props['is_longitudinal'])
             && $props['is_longitudinal'] == 1;
         $this->_has_repeating_instruments_or_events
             = !empty($props['has_repeating_instruments_or_events'])
@@ -277,17 +292,23 @@ class RedcapProject extends RedcapProp
         $this->_randomization_enabled
             = !empty($props['randomization_enabled'])
             && $props['randomization_enabled'] == 1;
-        $this->_ddp_enabled                         = !empty($props['ddp_enabled'])
-            && $props['ddp_enabled'] == 1;
-        $this->_project_irb_number                  = $props['project_irb_number'];
-        $this->_project_grant_number                = $props['project_grant_number'];
-        $this->_project_pi_firstname                = $props['project_pi_firstname'];
-        $this->_project_pi_lastname                 = $props['project_pi_lastname'];
+        $this->_ddp_enabled
+            = !empty($props['ddp_enabled']) && $props['ddp_enabled'] == 1;
+        $this->_project_irb_number
+            = $props['project_irb_number'];
+        $this->_project_grant_number
+            = $props['project_grant_number'];
+        $this->_project_pi_firstname
+            = $props['project_pi_firstname'];
+        $this->_project_pi_lastname
+            = $props['project_pi_lastname'];
         $this->_display_today_now_button
             = !empty($props['display_today_now_button'])
             && $props['display_today_now_button'] == 1;
-        $this->_missing_data_codes                  = $props['missing_data_codes'];
-        $this->_external_modules                    = $props['external_modules'];
+        $this->_missing_data_codes
+            = $props['missing_data_codes'];
+        $this->_external_modules
+            = $props['external_modules'];
         $this->_bypass_branching_erase_field_prompt
             = !empty($props['bypass_branching_erase_field_prompt'])
             && $props['bypass_branching_erase_field_prompt'] == 1;
@@ -562,34 +583,56 @@ class RedcapProject extends RedcapProp
     public function toArray(): array
     {
         return [
-            'project_id'                          => $this->_project_id,
-            'project_title'                       => $this->_project_title,
-            'creation_time'                       => $this->_creation_time,
-            'production_time'                     => $this->_production_time,
-            'in_production'                       => $this->_in_production,
-            'project_language'                    => $this->_project_language,
-            'purpose'                             => $this->_purpose,
-            'purpose_other'                       => $this->_purpose_other,
-            'project_notes'                       => $this->_project_notes,
-            'custom_record_label'                 => $this->_custom_record_label,
-            'secondary_unique_field'              => $this->_secondary_unique_field,
-            'is_longitudinal'                     => $this->_is_longitudinal,
+            'project_id'
+                => $this->_project_id,
+            'project_title'
+                => $this->_project_title,
+            'creation_time'
+                => $this->_creation_time,
+            'production_time'
+                => $this->_production_time,
+            'in_production'
+                => $this->_in_production,
+            'project_language'
+                => $this->_project_language,
+            'purpose'
+                => $this->_purpose,
+            'purpose_other'
+                => $this->_purpose_other,
+            'project_notes'
+                => $this->_project_notes,
+            'custom_record_label'
+                => $this->_custom_record_label,
+            'secondary_unique_field'
+                => $this->_secondary_unique_field,
+            'is_longitudinal'
+                => $this->_is_longitudinal,
             'has_repeating_instruments_or_events'
                 => $this->_has_repeating_instruments_or_events,
-            'surveys_enabled'                     => $this->_surveys_enabled,
-            'scheduling_enabled'                  => $this->_scheduling_enabled,
+            'surveys_enabled'
+                => $this->_surveys_enabled,
+            'scheduling_enabled'
+                => $this->_scheduling_enabled,
             'record_autonumbering_enabled'
                 => $this->_record_autonumbering_enabled,
-            'randomization_enabled'               => $this->_randomization_enabled,
-            'ddp_enabled'                         => $this->_ddp_enabled,
-            'project_irb_number'                  => $this->_project_irb_number,
-            'project_grant_number'                => $this->_project_grant_number,
-            'project_pi_firstname'                => $this->_project_pi_firstname,
-            'project_pi_lastname'                 => $this->_project_pi_lastname,
+            'randomization_enabled'
+                => $this->_randomization_enabled,
+            'ddp_enabled'
+                => $this->_ddp_enabled,
+            'project_irb_number'
+                => $this->_project_irb_number,
+            'project_grant_number'
+                => $this->_project_grant_number,
+            'project_pi_firstname'
+                => $this->_project_pi_firstname,
+            'project_pi_lastname'
+                => $this->_project_pi_lastname,
             'display_today_now_button'
                 => $this->_display_today_now_button,
-            'missing_data_codes'                  => $this->_missing_data_codes,
-            'external_modules'                    => $this->_external_modules,
+            'missing_data_codes'
+                => $this->_missing_data_codes,
+            'external_modules'
+                => $this->_external_modules,
             'bypass_branching_erase_field_prompt'
                 => $this->_bypass_branching_erase_field_prompt,
         ];

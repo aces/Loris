@@ -53,7 +53,7 @@ class RedcapInstrumentEventMap extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType = 'instrument_event_mapping';
+        $propType      = 'instrument_event_mapping';
         $expectedProps = [
             'arm_num',
             'unique_event_name',
