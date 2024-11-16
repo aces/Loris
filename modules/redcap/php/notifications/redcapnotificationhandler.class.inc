@@ -1,4 +1,13 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\notifications;
 
@@ -7,6 +16,16 @@ use \LORIS\redcap\REDCapHTTPClient;
 use \LORIS\redcap\notifications\RedcapNotification;
 use \LORIS\redcap\models\records\IRedcapRecord;
 
+declare(strict_types=1);
+/**
+ * This represents a REDCap notification handler.
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class RedcapNotificationHandler
 {
     /**
@@ -35,8 +54,16 @@ class RedcapNotificationHandler
      */
     private REDCapHTTPClient $_redcapClient;
 
-    public function __construct(LorisInstance $loris, REDCapHTTPClient $client)
-    {
+    /**
+     * Contructor.
+     *
+     * @param \LORIS\LorisInstance           $loris  a loris instance
+     * @param \LORIS\redcap\REDCapHTTPClient $client a REDCap Client
+     */
+    public function __construct(
+        LorisInstance $loris,
+        REDCapHTTPClient $client
+    ) {
         $this->_loris        = $loris;
         $this->_redcapClient = $client;
     }
@@ -45,7 +72,9 @@ class RedcapNotificationHandler
      * Handle a notification.
      *
      * @param RedcapNotification $notification a REDCap notification
+     *
      * @throws \LorisException
+     *
      * @return void
      */
     public function handle(RedcapNotification $notification): void
@@ -109,7 +138,8 @@ class RedcapNotificationHandler
             if (!$instrument->determineDataEntryAllowed()) {
                 fprintf(
                     STDERR,
-                    "[redcap] [pscid:$recordId][visit:$visitName][instrument:$instrumentName] instrument already 'complete'."
+                    "[redcap] [pscid:$recordId][visit:$visitName]"
+                    . "[instrument:$instrumentName] instrument already 'complete'."
                 );
                 continue;
             }
@@ -129,19 +159,25 @@ class RedcapNotificationHandler
         $notUpdated  = array_filter($updated, fn($v) => $v);
         $nNotUpdated = count($notUpdated);
         if ($nNotUpdated == $nRecords) {
-            $msg = "[redcap] [pscid:$recordId][visit:$visitName][instrument:$instrumentName] instrument(s) not updatable.";
+            $msg = "[redcap] [pscid:$recordId][visit:$visitName]"
+                ."[instrument:$instrumentName] instrument(s) not updatable.";
             throw new \LorisException($msg);
         }
         // repeating instruments case: some were update, some not
         if ($nNotUpdated > 0) {
-            $recNotUpdated = array_map(fn($k) => $records[$k]->getInstrumentName(), $notUpdated);
+            $recNotUpdated = array_map(
+                fn($k) => $records[$k]->getInstrumentName(),
+                $notUpdated
+            );
             $recMsg        = implode(',', $recNotUpdated);
-            $msg = "[redcap] [pscid:$recordId][visit:$visitName] repeating instruments not updated: $recMsg.";
+            $msg = "[redcap] [pscid:$recordId][visit:$visitName]"
+                . " repeating instruments not updated: $recMsg.";
             throw new \LorisException($msg);
         }
         sprintf(
             STDOUT,
-            "[redcap] [pscid:$recordId][visit:$visitName][instrument:$instrumentName] instrument updated."
+            "[redcap] [pscid:$recordId][visit:$visitName]"
+            ."[instrument:$instrumentName] instrument updated."
         );
     }
 
@@ -149,7 +185,7 @@ class RedcapNotificationHandler
      * Check that REDCap and LORIS dictionaries matchfor this instrument.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument object
-     * @param IRedcapRecord $record           a REDCap instrument record
+     * @param IRedcapRecord       $record     a REDCap instrument record
      *
      * @throws \LorisException if a REDCap field not in LORIS instrument
      *
@@ -259,13 +295,18 @@ class RedcapNotificationHandler
                 if (!empty($matches[1])) {
                     // It is an enum field
                     $new_fieldname = $matches[1];
-                    $prev_value    = isset($carry[$new_fieldname]) ? [$carry[$new_fieldname]] : [];
+                    $prev_value    = isset($carry[$new_fieldname])
+                        ? [$carry[$new_fieldname]]
+                        : [];
                     $new_value     = $prev_value;
 
                     if ($value == '1') {
                         // The value is selected
                         $value     = [$matches[2]];
-                        $new_value = [implode('{@}', array_merge($prev_value, $value))];
+                        $new_value = [implode(
+                            '{@}',
+                            array_merge($prev_value, $value)
+                        )];
                     }
 
                     $value      = array_shift($new_value);
@@ -291,7 +332,7 @@ class RedcapNotificationHandler
      * Update a LORIS instrument data with a REDCap record data.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument instance
-     * @param IRedcapRecord $record           a REDCap record
+     * @param IRedcapRecord       $record     a REDCap record
      *
      * @return void
      */
@@ -327,17 +368,28 @@ class RedcapNotificationHandler
         // Finally, if still null/undefined use current datetime
         $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $instrument_values['dtt']);
         if (!$dt) {
-            error_log("[redcap] Could not parse 'dtt': " . $instrument_values['dtt']);
+            error_log(
+                "[redcap] Could not parse 'dtt': "
+                . $instrument_values['dtt']
+            );
         } else {
             $instrument_values['Date_taken'] = $dt->format('Y-m-d');
         }
 
         // if null/empty, try getting that based on the timestamp
-        if (is_null($instrument_values['Date_taken']) || empty($instrument_values['Date_taken'])) {
+        if (is_null($instrument_values['Date_taken'])
+            || empty($instrument_values['Date_taken'])
+        ) {
             if (isset($instrument_values['timestamp'])) {
-                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $instrument_values['timestamp']);
+                $dt = \DateTime::createFromFormat(
+                    'Y-m-d H:i:s',
+                    $instrument_values['timestamp']
+                );
                 if (!$dt) {
-                    error_log("[redcap] Could not parse 'timestamp': " . $instrument_values['timestamp']);
+                    error_log(
+                        "[redcap] Could not parse 'timestamp': "
+                        . $instrument_values['timestamp']
+                    );
                 } else {
                     $instrument_values['Date_taken'] = $dt->format('Y-m-d');
                 }
@@ -345,11 +397,19 @@ class RedcapNotificationHandler
         }
 
         // if null/empty, try getting that based on the timestamp_start
-        if (is_null($instrument_values['Date_taken']) || empty($instrument_values['Date_taken'])) {
+        if (is_null($instrument_values['Date_taken'])
+            || empty($instrument_values['Date_taken'])
+        ) {
             if (isset($instrument_values['timestamp_start'])) {
-                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $instrument_values['timestamp_start']);
+                $dt = \DateTime::createFromFormat(
+                    'Y-m-d H:i:s',
+                    $instrument_values['timestamp_start']
+                );
                 if (!$dt) {
-                    error_log("[redcap] Could not parse 'timestamp_start': " . $instrument_values['timestamp_start']);
+                    error_log(
+                        "[redcap] Could not parse 'timestamp_start': "
+                        . $instrument_values['timestamp_start']
+                    );
                 } else {
                     $instrument_values['Date_taken'] = $dt->format('Y-m-d');
                 }
@@ -357,8 +417,11 @@ class RedcapNotificationHandler
         }
 
         // if still null/empty, get the current date
-        if (is_null($instrument_values['Date_taken']) || empty($instrument_values['Date_taken'])) {
-            $instrument_values['Date_taken'] = (new \DateTimeImmutable())->format('Y-m-d');
+        if (is_null($instrument_values['Date_taken'])
+            || empty($instrument_values['Date_taken'])
+        ) {
+            $dtNow = new \DateTimeImmutable();
+            $instrument_values['Date_taken'] = $dtNow->format('Y-m-d');
         }
 
         // add the timestamp_stop in the values based on the last timestamp
@@ -385,18 +448,20 @@ class RedcapNotificationHandler
                 Administration = 'All',
                 Validity = 'Valid'
             WHERE
-                CommentID = :commentid
-        ");
+                CommentID = :commentid"
+        );
         $stmt->execute(['commentid' => $commentid]);
     }
 
     /**
      * Get a commentID for a given participant/instrument/visit tuple.
      *
-     * @param string $pscid
-     * @param string $visitName
-     * @param string $instrumentName
+     * @param string $pscid          a PSCID
+     * @param string $visitName      a visit label
+     * @param string $instrumentName an instrument backend name
+     *
      * @throws \LorisException
+     *
      * @return string
      */
     private function _getCommentID(
@@ -423,12 +488,14 @@ class RedcapNotificationHandler
                 ]
             );
         } catch (\Throwable $th) {
-            $msg = "[redcap] Error: issue selecting the commentID for pscid:$pscid, visit:$visitName, instrument:$instrumentName";
+            $msg = "[redcap] Error: issue selecting the commentID for"
+                ." pscid:$pscid, visit:$visitName, instrument:$instrumentName";
             throw new \LorisException($msg);
         }
 
         if (is_null($commentID)) {
-            $msg = "[redcap] Error: no record in flag table for pscid:$pscid, visit:$visitName, instrument:$instrumentName";
+            $msg = "[redcap] Error: no record in flag table for pscid:$pscid,"
+                ." visit:$visitName, instrument:$instrumentName";
             throw new \LorisException($msg);
         }
 
@@ -454,6 +521,7 @@ class RedcapNotificationHandler
 
     /**
      * Get the REDCap event mapping.
+     *
      * @return array an associative array (unique event name => event name)
      */
     private function _getREDCapEventMapping(): array
@@ -491,8 +559,9 @@ class RedcapNotificationHandler
             FOR UPDATE
         ";
 
+        $dt = $notification->getReceivedDt();
         $notification_params = [
-            'v_received_dt'       => $notification->getReceivedDt()->format('Y-m-d H:i:s'),
+            'v_received_dt'       => $dt->format('Y-m-d H:i:s'),
             'v_project_id'        => $notification->getProjectId(),
             'v_record'            => $notification->getRecord(),
             'v_redcap_event_name' => $notification->getRedcapEventName(),
@@ -515,25 +584,30 @@ class RedcapNotificationHandler
      * Mark a REDCap notification as answered.
      *
      * @param RedcapNotification $notification a REDCap notification
+     *
      * @return void
      */
-    private function _markNotificationAsHandled(RedcapNotification $notification): void
-    {
+    private function _markNotificationAsHandled(
+        RedcapNotification $notification
+    ): void {
         $db   = $this->_loris->getDatabaseConnection();
-        $stmt = $db->prepare("UPDATE redcap_notification as lock_1
+        $stmt = $db->prepare(
+            "UPDATE redcap_notification as lock_1
             SET handled_dt = :handled_dt
             WHERE received_dt = :v_received_dt
                 AND project_id = :v_project_id
                 AND record = :v_record
                 AND redcap_event_name = :v_redcap_event_name
                 AND instrument = :v_instrument
-                AND handled_dt IS NULL
-        ");
+                AND handled_dt IS NULL"
+        );
 
         $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
 
+        $dformat = 'Y-m-d H:i:s';
+        $dt = $notification->getReceivedDt();
         $notification_params = [
-            'v_received_dt'       => $notification->getReceivedDt()->format('Y-m-d H:i:s'),
+            'v_received_dt'       => $dt->format($dformat),
             'v_project_id'        => $notification->getProjectId(),
             'v_record'            => $notification->getRecord(),
             'v_redcap_event_name' => $notification->getRedcapEventName(),
