@@ -15,7 +15,7 @@ use LORIS\redcap\RedcapHTTPClient;
 use LORIS\redcap\configurations\RedcapConfiguration;
 
 /**
- * This reprensents a REDCap configuration parser.
+ * This represents a REDCap configuration parser.
  *
  * @category REDCap
  * @package  Main
