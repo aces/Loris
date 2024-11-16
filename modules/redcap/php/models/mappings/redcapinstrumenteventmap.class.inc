@@ -1,9 +1,27 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models\mappings;
 
 use LORIS\redcap\models\RedcapProp;
 
+/**
+ * This represents a REDCap mapping between instruments and events
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class RedcapInstrumentEventMap extends RedcapProp
 {
     /**
@@ -55,7 +73,8 @@ class RedcapInstrumentEventMap extends RedcapProp
      *
      * @return int
      */
-    public function getArmNum(): int {
+    public function getArmNum(): int
+    {
         return $this->_arm_num;
     }
 
@@ -64,7 +83,8 @@ class RedcapInstrumentEventMap extends RedcapProp
      *
      * @return string
      */
-    public function getEventName(): string {
+    public function getEventName(): string
+    {
         return $this->_unique_event_name;
     }
 
@@ -73,11 +93,18 @@ class RedcapInstrumentEventMap extends RedcapProp
      *
      * @return string
      */
-    public function getFormName(): string {
+    public function getFormName(): string
+    {
         return $this->_form_name;
     }
 
-    public function toArray(): array {
+    /**
+     * Get an array representation.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             'arm_num'           => $this->_arm_num,
             'unique_event_name' => $this->_unique_event_name,

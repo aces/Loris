@@ -1,13 +1,26 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\models\mappings;
 
 use LORIS\redcap\models\RedcapProp;
 
 /**
- * This represents a redcap repeated instrument.
+ * This represents a REDCap mapping between repeated instruments and events.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapRepeatingInstrumentEvent extends RedcapProp
 {
@@ -61,7 +74,8 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      *
      * @return string
      */
-    public function getEventName(): string {
+    public function getEventName(): string
+    {
         return $this->_event_name;
     }
 
@@ -70,7 +84,8 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      *
      * @return string
      */
-    public function getFormName(): string {
+    public function getFormName(): string
+    {
         return $this->_form_name;
     }
 
@@ -79,11 +94,18 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      *
      * @return string|null
      */
-    public function getCustomFormName(): ?string {
+    public function getCustomFormName(): ?string
+    {
         return $this->_custom_label;
     }
 
-    public function toArray(): array {
+    /**
+     * Get an array representation.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
         return [
             'form_name'         => $this->_form_name,
             'event_name'        => $this->_event_name,
