@@ -1,11 +1,25 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap\configurations;
 
+
 /**
- * This reprensents a REDCap configuration.
+ * This represents a REDCap configuration.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapConfiguration
 {
@@ -25,8 +39,11 @@ class RedcapConfiguration
 
     /**
      * Constructor.
+     *
+     * @param \User $user a LORIS User
      */
-    public function __construct(\User $user) {
+    public function __construct(\User $user)
+    {
         $this->_assignee  = $user;
         $this->_instances = [];
     }
@@ -52,7 +69,9 @@ class RedcapConfiguration
     public function addInstance(string $name, string $url): void
     {
         if ($this->hasInstanceName($name)) {
-            throw new \LorisException("[redcap][config] instance '$name' already exists.");
+            throw new \LorisException(
+                "[redcap][config] instance '$name' already exists."
+            );
         }
         $this->_instances[$name] = new RedcapConfigurationInstance($name, $url);
     }
@@ -64,8 +83,9 @@ class RedcapConfiguration
      *
      * @return ?RedcapConfigurationInstance a REDCap instance or null.
      */
-    public function getInstanceByName(string $instanceName): ?RedcapConfigurationInstance
-    {
+    public function getInstanceByName(
+        string $instanceName
+    ): ?RedcapConfigurationInstance {
         return $this->_instances[$instanceName] ?? null;
     }
 
@@ -76,8 +96,9 @@ class RedcapConfiguration
      *
      * @return ?RedcapConfigurationInstance a REDCap instance or null.
      */
-    public function getInstanceByURL(string $instanceURL): ?RedcapConfigurationInstance
-    {
+    public function getInstanceByURL(
+        string $instanceURL
+    ): ?RedcapConfigurationInstance {
         // normalize the given URL
         $searchedURL = self::_normalizeURL($instanceURL);
         $i = null;
@@ -132,10 +153,11 @@ class RedcapConfiguration
         string $instanceName,
         string $projectID,
         string $projectToken
-    ): void
-    {
+    ): void {
         if (!$this->hasInstanceName($instanceName)) {
-            throw new \LorisException("[redcap][config] instance '$instanceName' does not exist.");
+            throw new \LorisException(
+                "[redcap][config] instance '$instanceName' does not exist."
+            );
         }
         $this->_instances[$instanceName]->addProject($projectID, $projectToken);
     }
@@ -170,11 +192,16 @@ class RedcapConfiguration
     public function removeInstance(string $instanceName): void
     {
         if (!$this->hasInstanceName($instanceName)) {
-            throw new \LorisException("[redcap][config] instance '$instanceName' does not exist.");
+            throw new \LorisException(
+                "[redcap][config] instance '$instanceName' does not exist."
+            );
         }
         // cannot remove an instance with projects
         if ($this->_instances[$instanceName]->hasProjects()) {
-            throw new \LorisException("[redcap][config] cannot remove instance '$instanceName' because it has projects.");
+            throw new \LorisException(
+                "[redcap][config] cannot remove instance"
+                ." '$instanceName' because it has projects."
+            );
         }
         unset($this->_instances[$instanceName]);
     }
@@ -190,10 +217,14 @@ class RedcapConfiguration
      *
      * @return void
      */
-    public function removeProjectFromInstance(string $instanceName, string $projectID): void
-    {
+    public function removeProjectFromInstance(
+        string $instanceName,
+        string $projectID
+    ): void {
         if (!$this->hasInstanceName($instanceName)) {
-            throw new \LorisException("[redcap][config] instance '$instanceName' does not exist.");
+            throw new \LorisException(
+                "[redcap][config] instance '$instanceName' does not exist."
+            );
         }
 
         //
