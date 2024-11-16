@@ -16,7 +16,6 @@ use \LORIS\redcap\REDCapHTTPClient;
 use \LORIS\redcap\notifications\RedcapNotification;
 use \LORIS\redcap\models\records\IRedcapRecord;
 
-declare(strict_types=1);
 /**
  * This represents a REDCap notification handler.
  *
