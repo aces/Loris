@@ -1,4 +1,13 @@
 <?php declare(strict_types=1);
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 namespace LORIS\redcap;
 
@@ -7,28 +16,36 @@ use LORIS\redcap\configurations\RedcapConfiguration;
 use LORIS\redcap\configurations\RedcapConfigurationParser;
 use LORIS\redcap\configurations\RedcapConfigurationInstance;
 
+
 /**
- * This reprensents a REDCap configuration.
+ * This reprensents a REDCap client handler.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapHTTPClientHandler
 {
     /**
      * A Loris instance
+     *
      * @var \LORIS\LorisInstance
      */
     private \LORIS\LorisInstance $_loris;
 
     /**
      * Verbose mode.
+     *
      * @var bool
      */
     private bool $_verbose;
 
     /**
      * Instances defined in configuration.
-     * @var array
+     *
+     * @var RedcapConfiguration
      */
     private RedcapConfiguration $_config;
 
@@ -48,7 +65,10 @@ class RedcapHTTPClientHandler
     private static $_instance;
 
     /**
-     * Singleton. Private instance.
+     * Constructor.
+     *
+     * @param \LORIS\LorisInstance $loris   a loris instance
+     * @param bool                 $verbose verbose mode
      */
     private function __construct(
         \LORIS\LorisInstance $loris,
@@ -56,20 +76,27 @@ class RedcapHTTPClientHandler
     ) {
         $this->_loris           = $loris;
         $this->_verbose         = $verbose;
-        $this->_config          = RedcapConfigurationParser::factory($loris, $verbose)->getConfig();
         $this->_clientInstances = [];
+
+        $rc            = RedcapConfigurationParser::factory(
+            $loris,
+            $verbose
+        );
+        $this->_config = $rc->getConfig();
     }
 
     /**
      * Factory for singleton instance.
+     *
+     * @param \LORIS\LorisInstance $loris   a loris instance
+     * @param bool                 $verbose verbose mode
      *
      * @return RedcapHTTPClientHandler
      */
     public static function &factory(
         \LORIS\LorisInstance $loris,
         bool $verbose = false
-    ): RedcapHTTPClientHandler
-    {
+    ): RedcapHTTPClientHandler {
         if (!isset(self::$_instance)) {
             self::$_instance = new self($loris, $verbose);
         }
@@ -97,7 +124,8 @@ class RedcapHTTPClientHandler
     public function hasInstanceProject(string $redcapURL, string $pid): bool
     {
         $redcapInstance = $this->_config->getInstanceByURL($redcapURL);
-        return !is_null($redcapInstance) && !is_null($redcapInstance->hasProject($pid));
+        return !is_null($redcapInstance)
+            && !is_null($redcapInstance->hasProject($pid));
     }
 
     /**
@@ -110,12 +138,16 @@ class RedcapHTTPClientHandler
      *
      * @return REDCapHTTPClient
      */
-    public function getClientByURL(string $redcapInstanceURL, string $pid): REDCapHTTPClient
-    {
+    public function getClientByURL(
+        string $redcapInstanceURL,
+        string $pid
+    ): REDCapHTTPClient {
         // checks
         $redcapInstance = $this->_config->getInstanceByURL($redcapInstanceURL);
         if (is_null($redcapInstance)) {
-            throw new \LorisException("[redcap] no instance found with URL '$redcapInstanceURL'.");
+            throw new \LorisException(
+                "[redcap] no instance found with URL '$redcapInstanceURL'."
+            );
         }
         return $this->_getClient($redcapInstance, $pid);
     }
@@ -130,12 +162,16 @@ class RedcapHTTPClientHandler
      *
      * @return REDCapHTTPClient
      */
-    public function getClientByName(string $redcapInstanceName, string $pid): REDCapHTTPClient
-    {
+    public function getClientByName(
+        string $redcapInstanceName,
+        string $pid
+    ): REDCapHTTPClient {
         // checks
         $redcapInstance = $this->_config->getInstanceByName($redcapInstanceName);
         if (is_null($redcapInstance)) {
-            throw new \LorisException("[redcap] no instance found with URL '$redcapInstanceName'.");
+            throw new \LorisException(
+                "[redcap] no instance found with URL '$redcapInstanceName'."
+            );
         }
         return $this->_getClient($redcapInstance, $pid);
     }
@@ -153,12 +189,13 @@ class RedcapHTTPClientHandler
     private function _getClient(
         RedcapConfigurationInstance $redcapInstance,
         string $pid
-    ): REDCapHTTPClient
-    {
+    ): REDCapHTTPClient {
         $iname         = $redcapInstance->getName();
         $redcapProject = $redcapInstance->getProject($pid);
         if (is_null($redcapProject)) {
-            throw new \LorisException("[redcap] no project '$pid' found for instance '$iname'.");
+            throw new \LorisException(
+                "[redcap] no project '$pid' found for instance '$iname'."
+            );
         }
 
         // check if the client instance exists, if not create it.
