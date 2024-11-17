@@ -185,8 +185,8 @@ class REDCapHTTPClient
             // anonymize token
             $dataMsg          = $data;
             $dataMsg['token'] = 'XXXXX';
-            $url              = $this->_url;
-            $jsonPayload      = json_encode($dataMsg);
+            $url         = $this->_url;
+            $jsonPayload = json_encode($dataMsg);
             error_log(
                 "[redcap] Sending request to '$url' with payload: $jsonPayload"
             );
