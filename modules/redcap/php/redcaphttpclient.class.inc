@@ -427,10 +427,10 @@ class REDCapHTTPClient
 
         // data to send
         $data = [
-            'content'         => 'surveyLink',
-            'instrument'      => $instrument,
-            'event'           => $event,
-            'record'          => $recordId,
+            'content'    => 'surveyLink',
+            'instrument' => $instrument,
+            'event'      => $event,
+            'record'     => $recordId,
         ];
 
         if (!is_null($repeatInstance)) {
