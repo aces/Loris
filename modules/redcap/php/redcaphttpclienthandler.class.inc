@@ -115,6 +115,23 @@ class RedcapHTTPClientHandler
     }
 
     /**
+     * Tells if an instance name and project ID exist and are linked.
+     *
+     * @param string $redcapName a REDCap instance name
+     * @param string $pid        a REDCap project ID
+     *
+     * @return bool true if they exist and are linked, else false
+     */
+    public function hasInstanceProjectByName(
+        string $redcapName,
+        string $pid
+    ): bool {
+        $redcapInstance = $this->_config->getInstanceByName($redcapName);
+        return !is_null($redcapInstance)
+            && !is_null($redcapInstance->hasProject($pid));
+    }
+
+    /**
      * Tells if an instance URL and project ID exist and are linked.
      *
      * @param string $redcapURL a REDCap instance URL
@@ -122,8 +139,10 @@ class RedcapHTTPClientHandler
      *
      * @return bool true if they exist and are linked, else false
      */
-    public function hasInstanceProject(string $redcapURL, string $pid): bool
-    {
+    public function hasInstanceProjectByURL(
+        string $redcapURL,
+        string $pid
+    ): bool {
         $redcapInstance = $this->_config->getInstanceByURL($redcapURL);
         return !is_null($redcapInstance)
             && !is_null($redcapInstance->hasProject($pid));

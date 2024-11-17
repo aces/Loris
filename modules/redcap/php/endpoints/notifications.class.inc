@@ -226,7 +226,7 @@ class Notifications extends Endpoint
         $notifData = json_encode($notif->toDatabaseArray());
 
         // is that notification coming from a known instance/project?
-        $sourceExists = $this->redcapClientHandler->hasInstanceProject(
+        $sourceExists = $this->redcapClientHandler->hasInstanceProjectByURL(
             $notif->getRedcapURL(),
             $notif->getProjectId()
         );
