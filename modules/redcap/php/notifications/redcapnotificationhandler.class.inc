@@ -426,7 +426,7 @@ class RedcapNotificationHandler
         }
 
         // add the timestamp_stop in the values based on the last timestamp
-        if (!is_null($instrument_values['timestamp'])
+        if (isset($instrument_values['timestamp'])
             && !empty($instrument_values['timestamp'])
         ) {
             // rename var to uniformize with other LORIS instruments

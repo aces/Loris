@@ -173,13 +173,15 @@ class RedcapConfigurationParser
         }
 
         // multiple instances
-        $instances = [];
+        $instances = null;
         if (array_key_exists(0, $redcap['instance'])) {
             $instances = $redcap['instance'];
         } else if (array_key_exists('url', $redcap['instance'])) {
             // only one instances
             $instances = [$redcap['instance']];
-        } else {
+        }
+
+        if (is_null($instances)) {
             throw new \LorisException(
                 "[redcap][init] wrong REDCap instance structure in configuration."
             );
@@ -206,18 +208,19 @@ class RedcapConfigurationParser
             }
 
             // multiple projects
-            $projects = [];
+            $projects = null;
             if (array_key_exists(0, $instance['project'])) {
                 $projects = $instance['project'];
             } else if (array_key_exists('projectID', $instance['project'])) {
                 // only one projects
                 $projects = [$instance['project']];
-            } else {
+            }
+
+            if (is_null($projects)) {
                 throw new \LorisException(
                     "[redcap][init] wrong REDCap configuration:"
                     ." no projects for instance '$name'."
                 );
-
             }
 
             // add instance
