@@ -219,7 +219,7 @@ class Notifications extends Endpoint
      *
      * @param RedcapNotification $notif the REDCap notification.
      *
-     * @return true if the notification should be ignored, else false.
+     * @return bool if the notification should be ignored, else false.
      */
     private function _ignoreNotification(RedcapNotification $notif): bool
     {

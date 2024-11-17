@@ -167,15 +167,14 @@ class RedcapNotificationHandler
         if ($nNotUpdated > 0) {
             $recNotUp = array_map(
                 fn($k) => $records[$k]->getInstrumentName(),
-                $notUpdated
+                array_keys($notUpdated)
             );
             $recMsg   = implode(',', $recNotUp);
             $msg      = "[redcap] [pscid:$recordId][visit:$visitName]"
                 . " repeating instruments not updated: $recMsg.";
             throw new \LorisException($msg);
         }
-        sprintf(
-            STDOUT,
+        error_log(
             "[redcap] [pscid:$recordId][visit:$visitName]"
             ."[instrument:$instrumentName] instrument updated."
         );
@@ -205,7 +204,7 @@ class RedcapNotificationHandler
         // E.g. from 'form_name_and_field_name' to 'and_field_name'
         foreach ($instrument->getDataDictionary() as $field) {
             $dict_names[] = preg_replace(
-                "/^${instrument_name}_/",
+                "/^{$instrument_name}_/",
                 "",
                 $field->getName()
             );
@@ -507,9 +506,9 @@ class RedcapNotificationHandler
     /**
      * Get the 'redcap' examiner ID.
      *
-     * @return string the redcap examiner ID.
+     * @return ?string the redcap examiner ID.
      */
-    private function _getRedcapExaminerId(): string
+    private function _getRedcapExaminerId(): ?string
     {
         $db = $this->_loris->getDatabaseConnection();
         return $db->pselectOne(

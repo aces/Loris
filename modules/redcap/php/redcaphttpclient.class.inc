@@ -165,7 +165,7 @@ class REDCapHTTPClient
      *
      * @param array $data the data to send.
      *
-     * @return string string representation, data results
+     * @return ?string string representation, data results
      */
     private function _sendRequest(array $data): ?string
     {

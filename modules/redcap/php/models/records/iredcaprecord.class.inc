@@ -43,4 +43,11 @@ interface IRedcapRecord
      * @return array
      */
     public function getPropertyNames(): array;
+
+    /**
+     * Props array.
+     *
+     * @return array
+     */
+    public function toArray(): array;
 }

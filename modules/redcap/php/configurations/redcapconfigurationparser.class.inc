@@ -27,9 +27,9 @@ use LORIS\redcap\configurations\RedcapConfiguration;
 class RedcapConfigurationParser
 {
     /**
-     * Instances defined in configuration.
+     * REDCap configuration.
      *
-     * @var array
+     * @var RedcapConfiguration
      */
     private RedcapConfiguration $_config;
 
