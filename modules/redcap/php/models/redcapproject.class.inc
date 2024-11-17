@@ -110,11 +110,11 @@ class RedcapProject extends RedcapProp
     private bool $_is_longitudinal;
 
     /**
-     * The project has_repeating_instruments_or_events.
+     * The project has_repeating_instruments.
      *
      * @var bool
      */
-    private bool $_has_repeating_instruments_or_events;
+    private bool $_has_repeating_instruments;
 
     /**
      * The project surveys_enabled.
@@ -203,11 +203,11 @@ class RedcapProject extends RedcapProp
     private string $_external_modules;
 
     /**
-     * The project bypass_branching_erase_field_prompt.
+     * The project bypass_branching.
      *
      * @var bool
      */
-    private bool $_bypass_branching_erase_field_prompt;
+    private bool $_bypass_branching;
 
     /**
      * Constructor
@@ -230,7 +230,7 @@ class RedcapProject extends RedcapProp
             'custom_record_label',
             'secondary_unique_field',
             'is_longitudinal',
-            'has_repeating_instruments_or_events',
+            'has_repeating_instruments',
             'surveys_enabled',
             'scheduling_enabled',
             'record_autonumbering_enabled',
@@ -243,7 +243,7 @@ class RedcapProject extends RedcapProp
             'display_today_now_button',
             'missing_data_codes',
             'external_modules',
-            'bypass_branching_erase_field_prompt',
+            'bypass_branching',
         ];
         self::checkExpectedProps($expectedProps, $props, $propType);
         self::checkPropIsNotNull($props, $propType, 'project_id');
@@ -264,24 +264,25 @@ class RedcapProject extends RedcapProp
         $this->_purpose          = intval($props['purpose']);
         $this->_purpose_other    = intval($props['purpose_other']);
         $this->_project_notes    = $props['project_notes'];
-        $this->_custom_record_label    = $props['custom_record_label'];
-        $this->_secondary_unique_field = $props['secondary_unique_field'];
-        $this->_is_longitudinal        = !empty($props['is_longitudinal'])
+        $this->_custom_record_label       = $props['custom_record_label'];
+        $this->_secondary_unique_field    = $props['secondary_unique_field'];
+        $this->_is_longitudinal           = !empty($props['is_longitudinal'])
             && $props['is_longitudinal'] == 1;
-        $this->_has_repeating_instruments_or_events
-            = !empty($props['has_repeating_instruments_or_events'])
-            && $props['has_repeating_instruments_or_events'] == 1;
-        $this->_surveys_enabled    = !empty($props['surveys_enabled'])
+        $this->_has_repeating_instruments
+            = !empty($props['has_repeating_instruments'])
+            && $props['has_repeating_instruments'] == 1;
+        $this->_surveys_enabled           = !empty($props['surveys_enabled'])
             && $props['surveys_enabled'] == 1;
-        $this->_scheduling_enabled
-            = !empty($props['scheduling_enabled'])
+        $this->_scheduling_enabled        = !empty($props['scheduling_enabled'])
             && $props['scheduling_enabled'] == 1;
         $this->_record_autonumbering_enabled
             = !empty($props['record_autonumbering_enabled'])
             && $props['record_autonumbering_enabled'] == 1;
-        $this->_randomization_enabled        = !empty($props['randomization_enabled'])
-            && $props['randomization_enabled'] == 1;
-        $this->_ddp_enabled          = !empty($props['ddp_enabled']) && $props['ddp_enabled'] == 1;
+        $this->_randomization_enabled        = !empty(
+            $props['randomization_enabled']
+        ) && $props['randomization_enabled'] == 1;
+        $this->_ddp_enabled          = !empty($props['ddp_enabled'])
+            && $props['ddp_enabled'] == 1;
         $this->_project_irb_number   = $props['project_irb_number'];
         $this->_project_grant_number
             = $props['project_grant_number'];
@@ -293,9 +294,8 @@ class RedcapProject extends RedcapProp
             && $props['display_today_now_button'] == 1;
         $this->_missing_data_codes       = $props['missing_data_codes'];
         $this->_external_modules         = $props['external_modules'];
-        $this->_bypass_branching_erase_field_prompt
-            = !empty($props['bypass_branching_erase_field_prompt'])
-            && $props['bypass_branching_erase_field_prompt'] == 1;
+        $this->_bypass_branching         = !empty($props['bypass_branching'])
+            && $props['bypass_branching'] == 1;
     }
 
 
@@ -426,7 +426,7 @@ class RedcapProject extends RedcapProp
      */
     public function hasRepeatingInstrumentsOrEvents(): bool
     {
-        return $this->_has_repeating_instruments_or_events;
+        return $this->_has_repeating_instruments;
     }
 
     /**
@@ -556,7 +556,7 @@ class RedcapProject extends RedcapProp
      */
     public function getBypassBranchingEraseFieldPrompt(): bool
     {
-        return $this->_bypass_branching_erase_field_prompt;
+        return $this->_bypass_branching;
     }
 
     /**
@@ -567,32 +567,32 @@ class RedcapProject extends RedcapProp
     public function toArray(): array
     {
         return [
-            'project_id'                          => $this->_project_id,
-            'project_title'                       => $this->_project_title,
-            'creation_time'                       => $this->_creation_time,
-            'production_time'                     => $this->_production_time,
-            'in_production'                       => $this->_in_production,
-            'project_language'                    => $this->_project_language,
-            'purpose'                             => $this->_purpose,
-            'purpose_other'                       => $this->_purpose_other,
-            'project_notes'                       => $this->_project_notes,
-            'custom_record_label'                 => $this->_custom_record_label,
-            'secondary_unique_field'              => $this->_secondary_unique_field,
-            'is_longitudinal'                     => $this->_is_longitudinal,
-            'has_repeating_instruments_or_events' => $this->_has_repeating_instruments_or_events,
-            'surveys_enabled'                     => $this->_surveys_enabled,
-            'scheduling_enabled'                  => $this->_scheduling_enabled,
-            'record_autonumbering_enabled'        => $this->_record_autonumbering_enabled,
-            'randomization_enabled'               => $this->_randomization_enabled,
-            'ddp_enabled'                         => $this->_ddp_enabled,
-            'project_irb_number'                  => $this->_project_irb_number,
-            'project_grant_number'                => $this->_project_grant_number,
-            'project_pi_firstname'                => $this->_project_pi_firstname,
-            'project_pi_lastname'                 => $this->_project_pi_lastname,
-            'display_today_now_button'            => $this->_display_today_now_button,
-            'missing_data_codes'                  => $this->_missing_data_codes,
-            'external_modules'                    => $this->_external_modules,
-            'bypass_branching_erase_field_prompt' => $this->_bypass_branching_erase_field_prompt,
+            'project_id'                   => $this->_project_id,
+            'project_title'                => $this->_project_title,
+            'creation_time'                => $this->_creation_time,
+            'production_time'              => $this->_production_time,
+            'in_production'                => $this->_in_production,
+            'project_language'             => $this->_project_language,
+            'purpose'                      => $this->_purpose,
+            'purpose_other'                => $this->_purpose_other,
+            'project_notes'                => $this->_project_notes,
+            'custom_record_label'          => $this->_custom_record_label,
+            'secondary_unique_field'       => $this->_secondary_unique_field,
+            'is_longitudinal'              => $this->_is_longitudinal,
+            'has_repeating_instruments'    => $this->_has_repeating_instruments,
+            'surveys_enabled'              => $this->_surveys_enabled,
+            'scheduling_enabled'           => $this->_scheduling_enabled,
+            'record_autonumbering_enabled' => $this->_record_autonumbering_enabled,
+            'randomization_enabled'        => $this->_randomization_enabled,
+            'ddp_enabled'                  => $this->_ddp_enabled,
+            'project_irb_number'           => $this->_project_irb_number,
+            'project_grant_number'         => $this->_project_grant_number,
+            'project_pi_firstname'         => $this->_project_pi_firstname,
+            'project_pi_lastname'          => $this->_project_pi_lastname,
+            'display_today_now_button'     => $this->_display_today_now_button,
+            'missing_data_codes'           => $this->_missing_data_codes,
+            'external_modules'             => $this->_external_modules,
+            'bypass_branching'             => $this->_bypass_branching,
         ];
     }
 }

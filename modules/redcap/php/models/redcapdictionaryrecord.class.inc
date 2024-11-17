@@ -30,7 +30,7 @@ class RedcapDictionaryRecord extends RedcapProp
     private string $_section_header;
     private string $_field_type;
     private string $_field_label;
-    private string $_select_choices_or_calculations;
+    private string $_select_choices;
     private string $_field_note;
     private string $_text_validation_type;
     private string $_text_validation_min;
@@ -58,9 +58,9 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header',
             'field_type',
             'field_label',
-            'select_choices_or_calculations',
+            'select_choices',
             'field_note',
-            'text_validation_type_or_show_slider_number',
+            'text_validation_type',
             'text_validation_min',
             'text_validation_max',
             'identifier',
@@ -78,17 +78,14 @@ class RedcapDictionaryRecord extends RedcapProp
         self::checkPropIsNotNull($props, $propType, 'field_type');
         self::checkPropIsNotNull($props, $propType, 'field_label');
 
-        $this->_field_name     = $props['field_name'];
-        $this->_form_name      = $props['form_name'];
-        $this->_section_header
-            = $props['section_header'] ?? '';
-        $this->_field_type     = $props['field_type'];
-        $this->_field_label    = $props['field_label'];
-        $this->_select_choices_or_calculations
-            = $props['select_choices_or_calculations'] ?? '';
+        $this->_field_name           = $props['field_name'];
+        $this->_form_name            = $props['form_name'];
+        $this->_section_header       = $props['section_header'] ?? '';
+        $this->_field_type           = $props['field_type'];
+        $this->_field_label          = $props['field_label'];
+        $this->_select_choices       = $props['select_choices'] ?? '';
         $this->_field_note           = $props['field_note'] ?? '';
-        $this->_text_validation_type
-            = $props['text_validation_type_or_show_slider_number'] ?? '';
+        $this->_text_validation_type = $props['text_validation_type'] ?? '';
         $this->_text_validation_min  = $props['text_validation_min'] ?? '';
         $this->_text_validation_max  = $props['text_validation_max'] ?? '';
         $this->_identifier           = $props['identifier'] ?? '';
@@ -158,9 +155,9 @@ class RedcapDictionaryRecord extends RedcapProp
      *
      * @return string
      */
-    public function getSelectChoicesOrCalculations(): string
+    public function getSelectChoices(): string
     {
-        return $this->_select_choices_or_calculations;
+        return $this->_select_choices;
     }
 
     /**
@@ -296,9 +293,9 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header',
             'field_type',
             'field_label',
-            'select_choices_or_calculations',
+            'select_choices',
             'field_note',
-            'text_validation_type_or_show_slider_number',
+            'text_validation_type',
             'text_validation_min',
             'text_validation_max',
             'identifier',
@@ -320,24 +317,24 @@ class RedcapDictionaryRecord extends RedcapProp
     public function toArray(): array
     {
         return [
-            'field_name'                                 => $this->_field_name,
-            'form_name'                                  => $this->_form_name,
-            'section_header'                             => $this->_section_header,
-            'field_type'                                 => $this->_field_type,
-            'field_label'                                => $this->_field_label,
-            'select_choices_or_calculations'             => $this->_select_choices_or_calculations,
-            'field_note'                                 => $this->_field_note,
-            'text_validation_type_or_show_slider_number' => $this->_text_validation_type,
-            'text_validation_min'                        => $this->_text_validation_min,
-            'text_validation_max'                        => $this->_text_validation_max,
-            'identifier'                                 => $this->_identifier,
-            'branching_logic'                            => $this->_branching_logic,
-            'required_field'                             => $this->_required_field,
-            'custom_alignment'                           => $this->_custom_alignment,
-            'question_number'                            => $this->_question_number,
-            'matrix_group_name'                          => $this->_matrix_group_name,
-            'matrix_ranking'                             => $this->_matrix_ranking,
-            'field_annotation'                           => $this->_field_annotation,
+            'field_name'           => $this->_field_name,
+            'form_name'            => $this->_form_name,
+            'section_header'       => $this->_section_header,
+            'field_type'           => $this->_field_type,
+            'field_label'          => $this->_field_label,
+            'select_choices'       => $this->_select_choices,
+            'field_note'           => $this->_field_note,
+            'text_validation_type' => $this->_text_validation_type,
+            'text_validation_min'  => $this->_text_validation_min,
+            'text_validation_max'  => $this->_text_validation_max,
+            'identifier'           => $this->_identifier,
+            'branching_logic'      => $this->_branching_logic,
+            'required_field'       => $this->_required_field,
+            'custom_alignment'     => $this->_custom_alignment,
+            'question_number'      => $this->_question_number,
+            'matrix_group_name'    => $this->_matrix_group_name,
+            'matrix_ranking'       => $this->_matrix_ranking,
+            'field_annotation'     => $this->_field_annotation,
         ];
     }
 }
