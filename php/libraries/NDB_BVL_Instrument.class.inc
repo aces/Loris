@@ -858,6 +858,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $newData = array_merge($oldData ?? [], $values);
 
+        $DB->insertOnDuplicateUpdate(
+            "flag_editors",
+            [
+                'UserID'    => $newData['UserID'],
+                'CommentID' => $this->getCommentID()
+            ],
+        );
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
         $jsonencoded = json_encode($newData);
