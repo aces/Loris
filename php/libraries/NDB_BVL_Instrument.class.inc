@@ -879,6 +879,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['CommentID' => $this->getCommentID()],
         );
 
+        if (!$this->jsonData) {
+            $newData = array_merge($this->getInstanceData() ?? [], $values);
+        }
         $this->instanceData = $newData;
     }
 
