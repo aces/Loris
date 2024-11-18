@@ -230,7 +230,7 @@ class RedcapProject extends RedcapProp
             'custom_record_label',
             'secondary_unique_field',
             'is_longitudinal',
-            'has_repeating_instruments',
+            'has_repeating_instruments_or_events',
             'surveys_enabled',
             'scheduling_enabled',
             'record_autonumbering_enabled',
@@ -243,7 +243,7 @@ class RedcapProject extends RedcapProp
             'display_today_now_button',
             'missing_data_codes',
             'external_modules',
-            'bypass_branching',
+            'bypass_branching_erase_field_prompt',
         ];
         self::checkExpectedProps($expectedProps, $props, $propType);
         self::checkPropIsNotNull($props, $propType, 'project_id');
@@ -269,8 +269,8 @@ class RedcapProject extends RedcapProp
         $this->_is_longitudinal           = !empty($props['is_longitudinal'])
             && $props['is_longitudinal'] == 1;
         $this->_has_repeating_instruments
-            = !empty($props['has_repeating_instruments'])
-            && $props['has_repeating_instruments'] == 1;
+            = !empty($props['has_repeating_instruments_or_events'])
+            && $props['has_repeating_instruments_or_events'] == 1;
         $this->_surveys_enabled           = !empty($props['surveys_enabled'])
             && $props['surveys_enabled'] == 1;
         $this->_scheduling_enabled        = !empty($props['scheduling_enabled'])
@@ -294,8 +294,9 @@ class RedcapProject extends RedcapProp
             && $props['display_today_now_button'] == 1;
         $this->_missing_data_codes       = $props['missing_data_codes'];
         $this->_external_modules         = $props['external_modules'];
-        $this->_bypass_branching         = !empty($props['bypass_branching'])
-            && $props['bypass_branching'] == 1;
+        $this->_bypass_branching         = !empty(
+            $props['bypass_branching_erase_field_prompt']
+        ) && $props['bypass_branching_erase_field_prompt'] == 1;
     }
 
 
