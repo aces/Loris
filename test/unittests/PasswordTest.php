@@ -52,7 +52,6 @@ class PasswordTest extends TestCase
     private $_configInfo = [
         ['65' => 'false'],
         ['133','2y',],
-    
     ];
 
     /**
