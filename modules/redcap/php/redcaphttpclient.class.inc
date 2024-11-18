@@ -318,9 +318,11 @@ class REDCapHTTPClient
     /**
      * Get the list of instruments with their associated title.
      *
+     * @param bool $toMapping get a mapping [instrument name => label] instead.
+     *
      * @return RedcapInstrument[] all instruments
      */
-    public function getInstruments(): array
+    public function getInstruments(bool $toMapping = false): array
     {
         $data = [
             'content' => 'instrument',
@@ -334,7 +336,18 @@ class REDCapHTTPClient
             $instData = array_map(fn($i) => new RedcapInstrument($i), $instruments);
             $this->_updateCache('instrument', $instData);
         }
-        return $this->_cache['instrument'];
+
+        // return raw list
+        if (!$toMapping) {
+            return $this->_cache['instrument'];
+        }
+
+        // mapping between instrument backend name and instrument title
+        $m = [];
+        foreach ($this->_cache['instrument'] as $i) {
+            $m[$i->getInstrumentName()] = $i->getInstrumentLabel();
+        }
+        return $m;
     }
 
     /**
