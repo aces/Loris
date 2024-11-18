@@ -298,7 +298,7 @@ class RedcapDictionaryRecord extends RedcapProp
      *
      * @return array
      */
-    public function getHeader(): array
+    public static function getHeaders(): array
     {
         return [
             'field_name',
