@@ -37,9 +37,9 @@ class CommentList extends Component {
       let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
         carry[label] = {
-            data: {},
-            user: item.addedBy,
-            date: new Date(item.dateAdded),
+          data: {},
+          user: item.addedBy,
+          date: new Date(item.dateAdded),
         };
       }
       carry[label].data[item.fieldChanged] = item.newValue;
@@ -51,10 +51,10 @@ class CommentList extends Component {
       const item = changes[key];
       const textItems = Object.keys(item.data).map(function(index, j) {
         if (index == 'comment') {
-            comment = <div className='history-comment'>
-              <Markdown content={item.data[index]} />
-            </div>;
-            return;
+          comment = <div className='history-comment'>
+            <Markdown content={item.data[index]} />
+          </div>;
+          return;
         }
         return (
           <li key={j} className='row' style={{color: 'rgb(149, 149, 149)'}}>
@@ -71,15 +71,15 @@ class CommentList extends Component {
       const datediffSec = (now.getTime() - item.date.getTime()) / 1000;
       let timestr;
       if (datediffSec < 60) {
-          timestr = <span> {Math.round(datediffSec)} seconds ago</span>;
+        timestr = <span> {Math.round(datediffSec)} seconds ago</span>;
       } else if (datediffSec < 60*60) {
-          timestr = <span> {Math.round(datediffSec / 60)} minutes ago</span>;
+        timestr = <span> {Math.round(datediffSec / 60)} minutes ago</span>;
       } else if (datediffSec < 60*60*24) {
-          timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
+        timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
       } else {
-          timestr = <span>
+        timestr = <span>
             on {item.date.toLocaleDateString()} at {item.date.toTimeString()}
-          </span>;
+        </span>;
       }
 
       return (

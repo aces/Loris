@@ -95,38 +95,38 @@ const SearchableDropdown = (props) => {
   return (
     <>
       <div className='container-fluid'
-           style={{margin: '0 auto', maxWidth: '900px'}}>
+        style={{margin: '0 auto', maxWidth: '900px'}}>
         <div className='form-group has-feedback'>
           <div className='input-group'>
             <span className='input-group-addon'
-                  style={{
-                    height: '50px',
-                    backgroundColor: '#FFFFFF',
-                    borderTopLeftRadius: '25px',
-                    borderBottomLeftRadius: '25px',
-                  }}
+              style={{
+                height: '50px',
+                backgroundColor: '#FFFFFF',
+                borderTopLeftRadius: '25px',
+                borderBottomLeftRadius: '25px',
+              }}
             >
               <span className='glyphicon glyphicon-hand-right'/>
             </span>
             <input type='text'
-                   name={props.name + '_input'}
-                   value={value}
-                   id={props.id}
-                   list={props.name + '_list'}
-                   className='form-control'
-                   disabled={disabled}
-                   placeholder={props.placeHolder}
-                   onChange={handleChange}
-                   onBlur={handleBlur}
-                   required={required}
-                   autoComplete={'off'}
-                   style={{
-                     height: '50px',
-                     borderLeft: '0',
-                     fontSize: '16pt',
-                     borderTopRightRadius: '25px',
-                     borderBottomRightRadius: '25px',
-                   }}
+              name={props.name + '_input'}
+              value={value}
+              id={props.id}
+              list={props.name + '_list'}
+              className='form-control'
+              disabled={disabled}
+              placeholder={props.placeHolder}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              required={required}
+              autoComplete={'off'}
+              style={{
+                height: '50px',
+                borderLeft: '0',
+                fontSize: '16pt',
+                borderTopRightRadius: '25px',
+                borderBottomRightRadius: '25px',
+              }}
             />
           </div>
         </div>

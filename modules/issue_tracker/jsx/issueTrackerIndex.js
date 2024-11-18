@@ -1,9 +1,11 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Tabs, TabPane} from 'Tabs';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 /**
  * Issue Tracker Index component
@@ -20,10 +22,12 @@ class IssueTrackerIndex extends Component {
       data: {},
       error: false,
       isLoaded: false,
+      activeTab: 'browse',
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   /**
@@ -32,6 +36,21 @@ class IssueTrackerIndex extends Component {
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
+  }
+
+  /**
+   * Called by React when the component updates.
+   * @param {object} prevProps - Previous props
+   * @param {object} prevState - Previous state
+   */
+  componentDidUpdate(prevProps, prevState) {
+    // If the activeTab has changed to 'browse', refetch data
+    if (prevState.activeTab !== 'browse' && this.state.activeTab === 'browse') {
+      this.setState({isLoaded: false}, () => {
+        this.fetchData()
+          .then(() => this.setState({isLoaded: true}));
+      });
+    }
   }
 
   /**
@@ -49,6 +68,15 @@ class IssueTrackerIndex extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Handle tab changes
+   *
+   * @param {string} newTab - The ID of the newly selected tab
+   */
+  handleTabChange(newTab) {
+    this.setState({activeTab: newTab});
   }
 
   /**
@@ -107,15 +135,15 @@ class IssueTrackerIndex extends Component {
     case 'Site':
       // if cell is an array containing all sites values
       if (
-          JSON.stringify(
-              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+        JSON.stringify(
+          Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
         result = <td>All Sites</td>;
       } else {
         result = <td>
-              {cell.map((v) =>
-                  this.state.data.fieldOptions.sites[v]).filter(
-                      (v) => v != undefined).join(', ')}
+          {cell.map((v) =>
+            this.state.data.fieldOptions.sites[v]).filter(
+            (v) => v != undefined).join(', ')}
         </td>;
       }
       break;
@@ -162,10 +190,10 @@ class IssueTrackerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in media.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in media.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Issue ID', show: true, filter: {
@@ -200,26 +228,26 @@ class IssueTrackerIndex extends Component {
         name: 'status',
         type: 'multiselect',
         options: options.statuses,
-        }},
+      }},
       {label: 'Priority', show: true, filter: {
         name: 'priority',
         type: 'select',
         sortByValue: false,
         options: options.priorities,
-        }},
+      }},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,
-        }},
+      }},
       {label: 'PSCID', show: true, filter: {
         name: 'pscid',
         type: 'text',
-        }},
+      }},
       {label: 'Visit Label', show: true, filter: {
         name: 'visitLabel',
         type: 'text',
-        }},
+      }},
       {label: 'Date Created', show: false, filter: {
         name: 'dateCreated',
         type: 'date',
@@ -262,15 +290,50 @@ class IssueTrackerIndex extends Component {
       {label: 'New Issue', action: addIssue},
     ];
 
+    const tabList = [
+      {
+        id: 'browse',
+        label: 'Browse Issues',
+      },
+    ];
+
+    // Only display the Batch mode tab if user has the required permission
+    if (this.props.hasPermission('issue_tracker_developer')) {
+      tabList.push({
+        id: 'batch',
+        label: 'Batch Edit',
+      });
+    }
+
     return (
-      <FilterableDataTable
-        name="issuesTracker"
-        data={this.state.data.data}
-        fields={fields}
-        filterPresets={filterPresets}
-        actions={actions}
-        getFormattedCell={this.formatColumn}
-      />
+      <Tabs
+        tabs={tabList}
+        defaultTab={this.state.activeTab}
+        updateURL={true}
+        onTabChange={this.handleTabChange}
+      >
+        <TabPane TabId="browse">
+          <FilterableDataTable
+            name="issuesTracker"
+            data={this.state.data.data}
+            fields={fields}
+            filterPresets={filterPresets}
+            actions={actions}
+            getFormattedCell={this.formatColumn}
+          />
+        </TabPane>
+        <TabPane TabId="batch">
+          <IssueTrackerBatchMode
+            issues={this.state.data.data}
+            options={{
+              priorities: this.state.data.fieldOptions.priorities,
+              statuses: this.state.data.fieldOptions.statuses,
+              categories: this.state.data.fieldOptions.categories,
+              sites: this.state.data.fieldOptions.sites,
+            }}
+          />
+        </TabPane>
+      </Tabs>
     );
   }
 }

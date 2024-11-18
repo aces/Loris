@@ -31,8 +31,8 @@ const HelpEditorForm = (props) => {
         subtest={loris.Subtest}
         baseURL={loris.BaseURL}
       >
-          <h1>{title}</h1>
-          <Markdown content={content} />
+        <h1>{title}</h1>
+        <Markdown content={content} />
       </Help>,
       helpContainer
     ));
@@ -40,12 +40,12 @@ const HelpEditorForm = (props) => {
 
   const onUserInput = (formElement, value) => {
     switch (formElement) {
-      case 'title':
-        setTitle(value);
-        break;
-      case 'content':
-        setContent(value);
-        break;
+    case 'title':
+      setTitle(value);
+      break;
+    case 'content':
+      setContent(value);
+      break;
     }
   };
 
@@ -64,15 +64,15 @@ const HelpEditorForm = (props) => {
       method: 'POST',
       body: formData,
     }).then((response) => {
-        if (response.status !== 200) {
-          console.error(response.status);
-          return;
-        }
-        swal.fire({
-          title: 'Content update successful!',
-          type: 'success',
-          confirmButtonText: 'Close',
-        });
+      if (response.status !== 200) {
+        console.error(response.status);
+        return;
+      }
+      swal.fire({
+        title: 'Content update successful!',
+        type: 'success',
+        confirmButtonText: 'Close',
+      });
     }).catch((error) => {
       console.error(error);
       swal.fire({

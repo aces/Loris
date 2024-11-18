@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import {
-    FormElement,
-    StaticElement,
-    TextboxElement,
-    ButtonElement,
+  FormElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -122,14 +122,14 @@ class ResetPassword extends Component {
           />
         </FormElement>
         <a onClick={() => this.props.setMode('login')}
-           style={{cursor: 'pointer'}}>Back to login page</a>
+          style={{cursor: 'pointer'}}>Back to login page</a>
       </div>
     ) : (
       <div className={'success-message'}>
         <h1>Thank you!</h1>
         <p>Password reset. You should receive an email within a few minutes.</p>
         <a onClick={() => window.location.href = window.location.origin}
-           style={{cursor: 'pointer'}}>Return to Login Page</a>
+          style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (

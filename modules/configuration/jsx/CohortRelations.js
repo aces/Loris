@@ -32,13 +32,13 @@ class CohortRelations extends Component {
     });
 
     return (
-            <div>
-                <h2>Related Cohorts</h2>
-                <ul>
-                    {cohortList}
-                </ul>
-            </div>
-        );
+      <div>
+        <h2>Related Cohorts</h2>
+        <ul>
+          {cohortList}
+        </ul>
+      </div>
+    );
   }
 }
 

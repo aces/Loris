@@ -25,11 +25,11 @@ export const timeSelectionReducer: Reducer = (state = null, action) => {
   }
 
   switch (action.type) {
-    case SET_TIME_SELECTION: {
-      return action.payload;
-    }
-    default: {
-      return state;
-    }
+  case SET_TIME_SELECTION: {
+    return action.payload;
+  }
+  default: {
+    return state;
+  }
   }
 };

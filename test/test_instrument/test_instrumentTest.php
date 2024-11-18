@@ -35,7 +35,24 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex'                   => 'Female'
+                'ExternalID'            => null,
+                'DoB'                   => '2003-10-31',
+                'DoD'                   => null,
+                'EDC'                   => '2003-11-30',
+                'Sex'                   => 'Male',
+                'Ethnicity'             => null,
+                'Active'                => 'Y',
+                'Date_active'           => '2016-01-23',
+                'RegisteredBy'          => null,
+                'Date_registered'       => '2016-01-23',
+                'flagged_caveatemptor'  => 'false',
+                'flagged_reason'        => null,
+                'flagged_other'         => null,
+                'flagged_other_status'  => null,
+                'Testdate'              => '2019-06-20 12:10:04',
+                'Entity_type'           => 'Human',
+                'ProbandSex'            => null,
+                'ProbandDoB'            => null
             ]
         );
         $this->DB->insert(
@@ -95,7 +112,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     private function _testContent($content)
     {
         $this->_landing();
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#page"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
@@ -248,4 +265,3 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         );
     }
 }
-

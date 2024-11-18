@@ -63,6 +63,11 @@ class Cohort extends \NDB_Form
                 '1' => 'Yes',
                 '0' => 'No',
             ];
+        $this->tpl_data['useDoBOptions']
+            = [
+                '1' => 'Yes',
+                '0' => 'No',
+            ];
 
         $this->tpl_data['WindowDifferenceOptions']
             = [

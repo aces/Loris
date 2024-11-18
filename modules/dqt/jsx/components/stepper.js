@@ -113,13 +113,13 @@ const Step = (props) => {
   return (
     <div style={styles.step}>
       <div style={styleCircle}
-           onClick={props.onClick}>
+        onClick={props.onClick}>
         {contentStepCircle}
         <div style={styleLineLeft}/>
         <div style={styleLineRight}/>
       </div>
       <div style={styleTitleText}
-           onClick={props.onClick}>
+        onClick={props.onClick}>
         {props.title}
       </div>
     </div>
@@ -148,9 +148,9 @@ Step.propTypes = {
 const Stepper = (props) => {
   return (
     <div className={'stepperContainer'} style={(props.visible
-           ? null
-           : {opacity: 0, position: 'absolute', right: '9999px'}
-         )}>
+      ? null
+      : {opacity: 0, position: 'absolute', right: '9999px'}
+    )}>
       <div className={'stepper'}>
         { props.steps.map((step, index) => (
           <Step
@@ -184,7 +184,7 @@ Stepper.propTypes = {
 const StepperPanel = (props) => {
   return (
     <div id={props.TabId}
-         className={props.active ? 'tab-pane active' : 'tab-pane'}>
+      className={props.active ? 'tab-pane active' : 'tab-pane'}>
       {props.content}
     </div>
   );

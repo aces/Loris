@@ -200,8 +200,8 @@ export const getTagsForEpoch = (
  */
 const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
   if (n < 1) {
-return tagString.length;
-}
+    return tagString.length;
+  }
 
   let membersToFind = n;
   let openParenthesesCount = 0;
@@ -326,8 +326,8 @@ export const getNthMemberTrailingBadgeIndex = (
   n: number
 ) => {
   if (n === 0) {
-return tagBadgeGroup.length;
-}
+    return tagBadgeGroup.length;
+  }
 
   let membersToFind = n;
   let openParenthesesCount = 0;

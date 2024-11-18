@@ -12,27 +12,27 @@ import PropTypes from 'prop-types';
  * @return {object} - The JSX component
  */
 function CandidateInstrumentList(props) {
-    const visits = props.Visits.map((visit) => {
-        return (
-            <VisitInstrumentList
-                BaseURL={props.BaseURL}
-                Candidate={props.Candidate}
-                VisitMap={props.VisitMap}
-                Visit={visit} />
-        );
-    });
+  const visits = props.Visits.map((visit) => {
+    return (
+      <VisitInstrumentList
+        BaseURL={props.BaseURL}
+        Candidate={props.Candidate}
+        VisitMap={props.VisitMap}
+        Visit={visit} />
+    );
+  });
 
-    const style={
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-        padding: 0,
-        margin: 0,
-    };
-    return <div style={style}>
-        {visits}
-        </div>;
+  const style={
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    padding: 0,
+    margin: 0,
+  };
+  return <div style={style}>
+    {visits}
+  </div>;
 }
 CandidateInstrumentList.propTypes = {
   Visits: PropTypes.array,

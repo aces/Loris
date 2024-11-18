@@ -99,7 +99,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
                 'Content-Disposition',
-                'attachment; filename=' . $filename
+                'attachment; filename=' . urlencode($filename)
             )
             ->withHeader(
                 'Content-Type',

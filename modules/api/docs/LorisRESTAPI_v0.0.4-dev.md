@@ -189,11 +189,13 @@ Will return a JSON object of the form:
             "FullName" :  "Long Name",
             "Subgroup" : "Subgroup Name",
             "DoubleDataEntryEnabled" : boolean
+            "DoubleDataEntryVisits" : array
         },
         "Instrument2" : {
             "FullName" :  "Long Name",
             "Subgroup" : "Subgroup Name",
             "DoubleDataEntryEnabled" : boolean
+            "DoubleDataEntryVisits" : array
         },
         ...
     }

@@ -23,11 +23,11 @@ export const panelReducer: Reducer = (state = null, action) => {
     return state;
   }
   switch (action.type) {
-    case SET_RIGHT_PANEL: {
-      return action.payload;
-    }
-    default: {
-      return state;
-    }
+  case SET_RIGHT_PANEL: {
+    return action.payload;
+  }
+  default: {
+    return state;
+  }
   }
 };

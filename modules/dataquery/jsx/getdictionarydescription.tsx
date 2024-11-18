@@ -10,20 +10,20 @@ import {FullDictionary} from './types';
  * @returns {string} - the description if available, otherwise the fieldname
  */
 function getDictionaryDescription(
-    module: string,
-    category: string,
-    fieldname: string,
-    dict: FullDictionary,
+  module: string,
+  category: string,
+  fieldname: string,
+  dict: FullDictionary,
 ): string {
-    if (!dict
+  if (!dict
         || !dict[module]
         || !dict[module][category]
         || !dict[module][category][fieldname]
-    ) {
-        return fieldname;
-    }
+  ) {
+    return fieldname;
+  }
 
-    return dict[module][category][fieldname].description;
+  return dict[module][category][fieldname].description;
 }
 
 export default getDictionaryDescription;

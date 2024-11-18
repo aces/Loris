@@ -57,7 +57,7 @@ class PublicationIndex extends React.Component {
             isLoaded: true,
           })
         );
-    }).catch((error) => console.error(error));
+      }).catch((error) => console.error(error));
   }
 
   /**

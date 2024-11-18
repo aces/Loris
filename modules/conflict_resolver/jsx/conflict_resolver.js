@@ -45,16 +45,16 @@ class ConflictResolver extends Component {
 
     let filtertable;
     switch (this.state.activeTab) {
-      case 'unresolved':
-        filtertable = (
-          <UnresolvedFilterableDataTable />
-        );
-        break;
-      case 'resolved':
-        filtertable = (
-          <ResolvedFilterableDataTable />
-        );
-        break;
+    case 'unresolved':
+      filtertable = (
+        <UnresolvedFilterableDataTable />
+      );
+      break;
+    case 'resolved':
+      filtertable = (
+        <ResolvedFilterableDataTable />
+      );
+      break;
     }
     return (
       <Tabs

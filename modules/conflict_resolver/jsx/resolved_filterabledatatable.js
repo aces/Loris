@@ -45,7 +45,7 @@ class ResolvedFilterableDataTable extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     return (
-        <td>{cell}</td>
+      <td>{cell}</td>
     );
   }
 
@@ -75,9 +75,9 @@ class ResolvedFilterableDataTable extends Component {
    */
   fetchData() {
     return fetch(
-        loris.BaseURL.concat('/conflict_resolver/resolved'),
-        {credentials: 'same-origin'}
-      )
+      loris.BaseURL.concat('/conflict_resolver/resolved'),
+      {credentials: 'same-origin'}
+    )
       .then((resp) => resp.json())
       .then((json) => {
         if (json.error) {
@@ -131,6 +131,11 @@ class ResolvedFilterableDataTable extends Component {
         name: 'Project',
         type: 'select',
         options: options.project,
+      }},
+      {label: 'Cohort', show: true, filter: {
+        name: 'Cohort',
+        type: 'select',
+        options: options.cohort,
       }},
       {label: 'Site', show: true, filter: {
         name: 'Site',

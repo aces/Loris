@@ -37,6 +37,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
     protected $conflictid;
     protected $projectid;
     protected $project;
+    protected $cohort;
     protected $centerid;
     protected $site;
     protected $candid;
@@ -58,6 +59,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
         return [
             'ConflictID'  => $this->conflictid,
             'Project'     => $this->project,
+            'Cohort'      => $this->cohort,
             'Site'        => $this->site,
             'CandID'      => $this->candid,
             'PSCID'       => $this->pscid,

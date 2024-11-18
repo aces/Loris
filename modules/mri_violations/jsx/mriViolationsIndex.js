@@ -33,23 +33,23 @@ function MRIViolationsIndex(props) {
           setIsLoaded(true);
           setData(result.Data);
           if (setFieldOptions) {
-              setFieldOptions(result.fieldOptions);
+            setFieldOptions(result.fieldOptions);
           }
         },
         (error) => {
-           setIsError(true);
+          setIsError(true);
         }
       );
   }, []);
 
- /**
-  * onResolutionUpdate
-  * Callback executed when the resolution
-  * status is updated
-  *
-  * @param {string} value - New resolution status value
-  * @param {string} hashname - The violation hash
-  */
+  /**
+   * onResolutionUpdate
+   * Callback executed when the resolution
+   * status is updated
+   *
+   * @param {string} value - New resolution status value
+   * @param {string} hashname - The violation hash
+   */
   const onResolutionUpdate = (value, hashname) => {
     if (value) {
       fetch(props.ModuleURL + '/resolve', {
@@ -89,173 +89,173 @@ function MRIViolationsIndex(props) {
     }
   };
 
- /**
-  * Formatter to handle the violations
-  *
-  * @param {function} mapper - a data mapper to map from ID to display
-  * @param {function} setPage - a callback to set the current page
-  * @return {function} a formatter callback which uses mapper for data mapping
-  */
+  /**
+   * Formatter to handle the violations
+   *
+   * @param {function} mapper - a data mapper to map from ID to display
+   * @param {function} setPage - a callback to set the current page
+   * @return {function} a formatter callback which uses mapper for data mapping
+   */
   const formatColumn = (
     mapper,
     setPage,
   ) => {
     const Mapper = function(column, cell, rowData) {
-        cell = mapper(column, cell);
-        const hashname = rowData.hash;
+      cell = mapper(column, cell);
+      const hashname = rowData.hash;
 
-        // Create the mapping between rowHeaders and rowData in a row object.
-        let fontColor = {color: '#FFFFFF'};
-        let resolutionStatusStyle;
-        let resolutionStatus;
+      // Create the mapping between rowHeaders and rowData in a row object.
+      let fontColor = {color: '#FFFFFF'};
+      let resolutionStatusStyle;
+      let resolutionStatus;
 
-        if (column === 'Type of Problem' && cell === 'Protocol Violation') {
-          return (
-            <td>
-              <a href="#" onClick={
-                () => setPage({
-                  ViolationType: 'protocolcheck',
-                  PatientName: rowData['Patient Name'],
-                  SeriesUID: rowData['Series UID'],
-                  TarchiveID: rowData['TarchiveID'],
-                  CandID: rowData.CandId,
-                })
-              }>Protocol Violation</a>
-            </td>
-          );
-        }
+      if (column === 'Type of Problem' && cell === 'Protocol Violation') {
+        return (
+          <td>
+            <a href="#" onClick={
+              () => setPage({
+                ViolationType: 'protocolcheck',
+                PatientName: rowData['Patient Name'],
+                SeriesUID: rowData['Series UID'],
+                TarchiveID: rowData['TarchiveID'],
+                CandID: rowData.CandId,
+              })
+            }>Protocol Violation</a>
+          </td>
+        );
+      }
 
-        if (
-          column === 'Type of Problem' &&
+      if (
+        column === 'Type of Problem' &&
           cell === 'Could not identify scan type'
-        ) {
-          const seriesDescription = rowData[
-            'Series Description or Scan Type'
-          ];
-          return (
-            <td>
-              <a href= "#"
-                onClick={() => setPage({
-                  ViolationType: 'protocolviolation',
-                  PatientName: rowData['Patient Name'],
-                  SeriesUID: rowData['Series UID'],
-                  TarchiveID: rowData['TarchiveId'],
-                  CandID: rowData.CandID,
-                  PSCID: rowData.PSCID,
-                  TimeRun: rowData['Time Run'],
-                  SeriesDescription: seriesDescription,
-                })}
-              >Could not identify scan type</a>
-            </td>
-          );
+      ) {
+        const seriesDescription = rowData[
+          'Series Description or Scan Type'
+        ];
+        return (
+          <td>
+            <a href= "#"
+              onClick={() => setPage({
+                ViolationType: 'protocolviolation',
+                PatientName: rowData['Patient Name'],
+                SeriesUID: rowData['Series UID'],
+                TarchiveID: rowData['TarchiveId'],
+                CandID: rowData.CandID,
+                PSCID: rowData.PSCID,
+                TimeRun: rowData['Time Run'],
+                SeriesDescription: seriesDescription,
+              })}
+            >Could not identify scan type</a>
+          </td>
+        );
+      }
+
+      if (column === 'Resolution Status') {
+        switch (rowData['Resolution Status']) {
+        case 'unresolved':
+          fontColor = {color: '#000000'};
+          resolutionStatus = 'Unresolved';
+          break;
+
+        case 'reran':
+          resolutionStatusStyle = 'label-success';
+          resolutionStatus = 'Reran';
+          break;
+
+        case 'emailed':
+          resolutionStatusStyle = 'label-info';
+          resolutionStatus = 'Emailed site/pending';
+          break;
+
+        case 'rejected':
+          resolutionStatusStyle = 'label-danger';
+          resolutionStatus = 'Rejected';
+          break;
+
+        case 'inserted':
+          resolutionStatusStyle = 'label-warning';
+          resolutionStatus = 'Inserted';
+          break;
+
+        case 'other':
+          resolutionStatusStyle = 'label-primary';
+          resolutionStatus = 'Other';
+          break;
+
+        case 'inserted_flag':
+          resolutionStatusStyle = 'label-default';
+          resolutionStatus = 'Inserted with flag';
+          break;
+        }
+        return (
+          <td className={resolutionStatusStyle} style={fontColor}>
+            {resolutionStatus}
+          </td>
+        );
+      }
+      if (column === 'Select Resolution') {
+        return (
+          <td>
+            <select
+              name={hashname}
+              className="form-control input-sm"
+              id={`select-resolution-${hashname}`}
+              style={{width: '13em'}}
+              onChange={(e) => {
+                const value = e.target.value;
+                onResolutionUpdate(value, hashname);
+              }}
+            >
+              <option value=""> </option>
+              <option value="unresolved">Unresolved</option>
+              <option value="reran">Reran</option>
+              <option value="emailed">Emailed site/pending</option>
+              <option value="inserted">Inserted</option>
+              <option value="rejected">Rejected</option>
+              <option value="inserted_flag">Inserted with flag</option>
+              <option value="other">Other</option>
+            </select>
+          </td>
+        );
+      }
+      if (column === 'Image File') {
+        let log;
+        if (rowData['Type of Problem'] === 'Could not identify scan type') {
+          log = 1;
+        } else if (rowData['Type of Problem'] === 'Protocol Violation') {
+          log = 2;
+        } else {
+          log = 3;
         }
 
-        if (column === 'Resolution Status') {
-          switch (rowData['Resolution Status']) {
-            case 'unresolved':
-              fontColor = {color: '#000000'};
-              resolutionStatus = 'Unresolved';
-              break;
-
-            case 'reran':
-              resolutionStatusStyle = 'label-success';
-              resolutionStatus = 'Reran';
-              break;
-
-            case 'emailed':
-              resolutionStatusStyle = 'label-info';
-              resolutionStatus = 'Emailed site/pending';
-              break;
-
-            case 'rejected':
-              resolutionStatusStyle = 'label-danger';
-              resolutionStatus = 'Rejected';
-              break;
-
-            case 'inserted':
-              resolutionStatusStyle = 'label-warning';
-              resolutionStatus = 'Inserted';
-              break;
-
-            case 'other':
-              resolutionStatusStyle = 'label-primary';
-              resolutionStatus = 'Other';
-              break;
-
-            case 'inserted_flag':
-              resolutionStatusStyle = 'label-default';
-              resolutionStatus = 'Inserted with flag';
-              break;
-          }
-          return (
-            <td className={resolutionStatusStyle} style={fontColor}>
-              {resolutionStatus}
-            </td>
-          );
-        }
-        if (column === 'Select Resolution') {
-          return (
-            <td>
-              <select
-                name={hashname}
-                className="form-control input-sm"
-                id={`select-resolution-${hashname}`}
-                style={{width: '13em'}}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  onResolutionUpdate(value, hashname);
-                }}
-              >
-                <option value=""> </option>
-                <option value="unresolved">Unresolved</option>
-                <option value="reran">Reran</option>
-                <option value="emailed">Emailed site/pending</option>
-                <option value="inserted">Inserted</option>
-                <option value="rejected">Rejected</option>
-                <option value="inserted_flag">Inserted with flag</option>
-                <option value="other">Other</option>
-              </select>
-            </td>
-          );
-        }
-        if (column === 'Image File') {
-          let log;
-          if (rowData['Type of Problem'] === 'Could not identify scan type') {
-            log = 1;
-          } else if (rowData['Type of Problem'] === 'Protocol Violation') {
-            log = 2;
-          } else {
-            log = 3;
-          }
-
-          let url = loris.BaseURL +
+        let url = loris.BaseURL +
             '/brainbrowser/?minc_id=' +
             log +
             'l' +
             rowData.JoinID;
-          return (
-            <td>
-              <a href={url} target="_blank">{cell}</a>
-            </td>
-          );
-        }
-        return (<td>{cell}</td>);
+        return (
+          <td>
+            <a href={url} target="_blank">{cell}</a>
+          </td>
+        );
+      }
+      return (<td>{cell}</td>);
     };
     return Mapper;
   };
 
-/**
- * List of filter objects
- *
- * @param {object} fieldoptions - The dynamic field options
- * @return {array}
- */
-const filters = (fieldoptions) => {
+  /**
+   * List of filter objects
+   *
+   * @param {object} fieldoptions - The dynamic field options
+   * @return {array}
+   */
+  const filters = (fieldoptions) => {
     let problemtypes = {};
     if (fieldoptions.problemtypes) {
-        for (const ptype of fieldoptions.problemtypes) {
-            problemtypes[ptype] = ptype;
-        }
+      for (const ptype of fieldoptions.problemtypes) {
+        problemtypes[ptype] = ptype;
+      }
     }
     return [
       {
@@ -269,21 +269,21 @@ const filters = (fieldoptions) => {
           name: 'project',
           type: 'select',
           options: fieldoptions.projects,
-       },
+        },
       },
       {
         label: 'Cohort', show: true, filter: {
           name: 'cohort',
           type: 'select',
           options: fieldoptions.cohorts,
-       },
+        },
       },
       {
         label: 'Site', show: true, filter: {
           name: 'site',
           type: 'select',
           options: fieldoptions.sites,
-       },
+        },
       },
       {
         label: 'Time Run', show: true, filter: {
@@ -308,7 +308,7 @@ const filters = (fieldoptions) => {
           name: 'typeOfProblem',
           type: 'select',
           options: problemtypes,
-       },
+        },
       },
       {
         label: 'Resolution Status', show: true, filter: {
@@ -349,16 +349,16 @@ const filters = (fieldoptions) => {
         <Loader/> :
         isError ?
           <h3>An error occurred while loading the page.</h3> :
-        <FilterableDataTable
-          name="violations"
-          data={data}
-          fields={filters(fieldOptions)}
-          getFormattedCell={formatColumn(
-            mapper,
-            setViolationModal
-          )}
-          getMappedCell={mapper}
-        />
+          <FilterableDataTable
+            name="violations"
+            data={data}
+            fields={filters(fieldOptions)}
+            getFormattedCell={formatColumn(
+              mapper,
+              setViolationModal
+            )}
+            getMappedCell={mapper}
+          />
       }
     </div>
   );
@@ -382,17 +382,17 @@ function columnMapper(fieldOptions) {
     switch (column) {
     case 'Project':
       if (fieldOptions.projects) {
-          return fieldOptions.projects[value];
+        return fieldOptions.projects[value];
       }
       break;
     case 'Cohort':
       if (fieldOptions.cohorts) {
-          return fieldOptions.cohorts[value];
+        return fieldOptions.cohorts[value];
       }
       break;
     case 'Site':
       if (fieldOptions.sites) {
-          return fieldOptions.sites[value];
+        return fieldOptions.sites[value];
       }
       break;
     }

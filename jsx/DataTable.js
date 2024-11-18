@@ -21,8 +21,8 @@ class DataTable extends Component {
         rows: 20,
       },
       sort: {
-       column: -1,
-       ascending: true,
+        column: -1,
+        ascending: true,
       },
     };
 
@@ -120,17 +120,17 @@ class DataTable extends Component {
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
-      .map((row, i) => this.props.fields
-        .flatMap((field, j) => this.props.getMappedCell(
+        .map((row, i) => this.props.fields
+          .flatMap((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
             this.props.fields.map(
-                (val) => val.label,
+              (val) => val.label,
             ),
             j
-        ))
-      );
+          ))
+        );
     }
 
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
@@ -175,7 +175,7 @@ class DataTable extends Component {
     let hasFilters = (filterValuesCount !== 0);
     if (hasFilters === false) {
       for (let i = 0; i < tableData.length; i++) {
-          filteredIndexes.push(i);
+        filteredIndexes.push(i);
       }
       return filteredIndexes;
     }
@@ -206,7 +206,7 @@ class DataTable extends Component {
       if (headerCount === filterValuesCount &&
         ((useKeyword === true && keywordMatch > 0) ||
           (useKeyword === false && keywordMatch === 0))) {
-          filteredIndexes.push(i);
+        filteredIndexes.push(i);
       }
     }
 
@@ -338,31 +338,31 @@ class DataTable extends Component {
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
       switch (typeof data) {
-        case 'object':
-          // Handles the case where the data is an array (typeof 'object')
-          // and you want to search through it for
-          // the string you are filtering by
-          let searchArray = data.map((e) => e.toLowerCase());
-          if (exactMatch) {
-            result = searchArray.includes(searchKey);
-          } else {
-            result = (
-              searchArray.find(
-                (e) => (e.indexOf(searchKey) > -1)
-              )
-            ) !== undefined;
-          }
-          break;
-        default:
-            searchString = data ? data.toString().toLowerCase() : '';
-            if (exactMatch) {
-              result = (searchString === searchKey);
-            } else if (opposite) {
-              result = searchString !== searchKey;
-            } else {
-              result = (searchString.indexOf(searchKey) > -1);
-            }
-          break;
+      case 'object':
+        // Handles the case where the data is an array (typeof 'object')
+        // and you want to search through it for
+        // the string you are filtering by
+        let searchArray = data.map((e) => e.toLowerCase());
+        if (exactMatch) {
+          result = searchArray.includes(searchKey);
+        } else {
+          result = (
+            searchArray.find(
+              (e) => (e.indexOf(searchKey) > -1)
+            )
+          ) !== undefined;
+        }
+        break;
+      default:
+        searchString = data ? data.toString().toLowerCase() : '';
+        if (exactMatch) {
+          result = (searchString === searchKey);
+        } else if (opposite) {
+          result = searchString !== searchKey;
+        } else {
+          result = (searchString.indexOf(searchKey) > -1);
+        }
+        break;
       }
     }
 
@@ -459,9 +459,9 @@ class DataTable extends Component {
         if (this.props.fields[i].freezeColumn === true) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                onClick={() => {
-                  this.setSortColumn(i);
-                }}>
+              onClick={() => {
+                this.setSortColumn(i);
+              }}>
               {this.props.fields[i].label}
             </th>
           );
@@ -485,59 +485,59 @@ class DataTable extends Component {
 
     // Format each cell for the data table.
     for (let i = currentPageRow;
-         (i < filteredCount) && (rows.length < rowsPerPage);
-         i++
+      (i < filteredCount) && (rows.length < rowsPerPage);
+      i++
     ) {
-        let rowIndex = index[i].RowIdx;
-        let rowData = this.props.data[rowIndex];
-        let curRow = [];
+      let rowIndex = index[i].RowIdx;
+      let rowData = this.props.data[rowIndex];
+      let curRow = [];
 
-        // Iterates through headers to populate row columns
-        // with corresponding data
-        for (let j = 0; j < this.props.fields.length; j += 1) {
-            if (this.props.fields[j].show === false) {
-                continue;
-            }
-
-            let celldata = rowData[j];
-            let cell = null;
-
-            let row = {};
-            this.props.fields
-              .forEach((field, k) => row[field.label] = rowData[k]);
-
-            const headers = this.props.fields.map(
-                (val) => val.label
-            );
-
-            // Get custom cell formatting if available
-            if (this.props.getFormattedCell) {
-                cell = this.props.getFormattedCell(
-                    this.props.fields[j].label,
-                    celldata,
-                    row,
-                    headers,
-                    j
-                );
-            } else {
-                cell = <td>{celldata}</td>;
-            }
-            if (cell !== null) {
-                curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
-            } else {
-                curRow.push(createFragment({celldata}));
-            }
+      // Iterates through headers to populate row columns
+      // with corresponding data
+      for (let j = 0; j < this.props.fields.length; j += 1) {
+        if (this.props.fields[j].show === false) {
+          continue;
         }
 
-        const rowIndexDisplay = index[i].Content;
-        rows.push(
-            <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-              {this.props.hide.defaultColumn === true ? null : (
-              <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
-              )}
-              {curRow}
-            </tr>
+        let celldata = rowData[j];
+        let cell = null;
+
+        let row = {};
+        this.props.fields
+          .forEach((field, k) => row[field.label] = rowData[k]);
+
+        const headers = this.props.fields.map(
+          (val) => val.label
         );
+
+        // Get custom cell formatting if available
+        if (this.props.getFormattedCell) {
+          cell = this.props.getFormattedCell(
+            this.props.fields[j].label,
+            celldata,
+            row,
+            headers,
+            j
+          );
+        } else {
+          cell = <td>{celldata}</td>;
+        }
+        if (cell !== null) {
+          curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
+        } else {
+          curRow.push(createFragment({celldata}));
+        }
+      }
+
+      const rowIndexDisplay = index[i].Content;
+      rows.push(
+        <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+          {this.props.hide.defaultColumn === true ? null : (
+            <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+          )}
+          {curRow}
+        </tr>
+      );
     }
 
     let rowsPerPageDropdown = (
@@ -586,12 +586,12 @@ class DataTable extends Component {
             }}>
               {this.renderActions()}
               {this.props.hide.downloadCSV === true ? '' : (
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-                  >
+                <button
+                  className="btn btn-primary"
+                  onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                >
                 Download Table as CSV
-              </button>)
+                </button>)
               }
               <PaginationLinks
                 Total={filteredCount}
@@ -650,7 +650,7 @@ class DataTable extends Component {
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
-            {this.props.folder}
+          {this.props.folder}
           <tbody>
             {rows}
           </tbody>

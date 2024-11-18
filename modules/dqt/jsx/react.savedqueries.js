@@ -34,21 +34,21 @@ const ManageSavedQueryFilters = (props) => {
       if (filter.instrument) {
         let operator;
         switch (filter.operator) {
-          case 'equal':
-            operator = '=';
-            break;
-          case 'notEqual':
-            operator = '!=';
-            break;
-          case 'lessThanEqual':
-            operator = '<=';
-            break;
-          case 'greaterThanEqual':
-            operator = '>=';
-            break;
-          default:
-            operator = filter.operator;
-            break;
+        case 'equal':
+          operator = '=';
+          break;
+        case 'notEqual':
+          operator = '!=';
+          break;
+        case 'lessThanEqual':
+          operator = '<=';
+          break;
+        case 'greaterThanEqual':
+          operator = '>=';
+          break;
+        default:
+          operator = filter.operator;
+          break;
         }
         filterItem = (
           <span>{filter.instrument},
@@ -71,36 +71,36 @@ const ManageSavedQueryFilters = (props) => {
 const ManageSavedQueryRow = (props) => {
   const [fieldsVisible, setFields] = useState(null);
   const [filtersVisible, setFilters] = useState(null);
-function publicquerydelete() {
-           const id = props.Query['_id'];
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-           }).then((result) => {
-           if (result.value) {
-            let deleteurl = loris.BaseURL +
+  function publicquerydelete() {
+    const id = props.Query['_id'];
+    swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.value) {
+        let deleteurl = loris.BaseURL +
               '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
               + encodeURIComponent(id);
-              fetch(deleteurl, {
-              cache: 'no-cache',
-              credentials: 'same-origin',
-              }).then((resp) => {
-                  if (resp.status == 200) {
-                   swal.fire('delete Successful!', '', 'success');
-                  } else {
-                   swal.fire('delete Not Successful!', '', 'error');
-                  }
-              }).then(()=>{
-                  location.reload();
-              });
-           }
-          });
-        }
+        fetch(deleteurl, {
+          cache: 'no-cache',
+          credentials: 'same-origin',
+        }).then((resp) => {
+          if (resp.status == 200) {
+            swal.fire('delete Successful!', '', 'success');
+          } else {
+            swal.fire('delete Not Successful!', '', 'error');
+          }
+        }).then(()=>{
+          location.reload();
+        });
+      }
+    });
+  }
   useEffect(() => {
     let fields = [];
     let filters = [];
@@ -187,21 +187,21 @@ function publicquerydelete() {
     setFilters(filters);
     setFields(fields);
   }, []);
-     let docName = props.Query.Meta['name'];
-     let docAuthor = docName.substring(0, docName.lastIndexOf(':'));
-     let btn = '';
-    if (props.author == docAuthor) {
-      btn = (
-             <button className='btn btn-danger'
+  let docName = props.Query.Meta['name'];
+  let docAuthor = docName.substring(0, docName.lastIndexOf(':'));
+  let btn = '';
+  if (props.author == docAuthor) {
+    btn = (
+      <button className='btn btn-danger'
              onClick={()=> { // eslint-disable-line
                       publicquerydelete(); // eslint-disable-line
                            } // eslint-disable-line
              } // eslint-disable-line
-           >
+      >
             delete
-          </button>
-      );
-    }
+      </button>
+    );
+  }
   return (
     <tr>
       <td>
@@ -269,9 +269,9 @@ const SavedQueriesList = (props) => {
       );
       queryRows.push(
         <ManageSavedQueryRow key={name}
-                             Name={queryName}
-                             Query={query}
-                             author={props.author}
+          Name={queryName}
+          Query={query}
+          author={props.author}
         />
       );
     }
@@ -293,15 +293,15 @@ const SavedQueriesList = (props) => {
       <table className='table table-hover table-primary
        table-bordered colm-freeze'>
         <thead>
-        <tr key='info' className='info'>
-          <th>Query Name</th>
-          <th>Fields</th>
-          <th>Filters</th>
-          <th>Delete</th>
-        </tr>
+          <tr key='info' className='info'>
+            <th>Query Name</th>
+            <th>Fields</th>
+            <th>Filters</th>
+            <th>Delete</th>
+          </tr>
         </thead>
         <tbody>
-        {queryRows}
+          {queryRows}
         </tbody>
       </table>
     </>

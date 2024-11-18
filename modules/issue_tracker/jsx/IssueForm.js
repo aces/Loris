@@ -51,7 +51,7 @@ class IssueForm extends Component {
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
     this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
-                                      .bind(this);
+      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
@@ -155,10 +155,10 @@ class IssueForm extends Component {
 
     const fileCollection = this.state.isNewIssue || (
       <AttachmentsList issue={this.props.issue}
-                       baseURL={this.props.baseURL}
-                       attachments={this.state.issueData['attachments']}
-                       userHasPermission={this.props.userHasPermission}
-                       whoami={this.state.issueData.whoami}
+        baseURL={this.props.baseURL}
+        attachments={this.state.issueData['attachments']}
+        userHasPermission={this.props.userHasPermission}
+        whoami={this.state.issueData.whoami}
       />
     );
 
@@ -269,8 +269,8 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-                                               // different if the user doesn't have
-                                               // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'
@@ -282,6 +282,15 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
             sortByValue={false}
+          />
+          <SelectElement
+            name='instrument'
+            label='Instrument'
+            emptyOption={true}
+            options={this.state.Data.instruments}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.instrument}
           />
           <SelectElement
             name='category'
@@ -388,6 +397,10 @@ class IssueForm extends Component {
             // a NULL centerID (= All Sites) is converted to the ALL Sites option
             if (formData.centerID == null) {
               formData.centerID = 'all';
+            }
+
+            if (formData.instrument_name) {
+              formData.instrument = formData.instrument_name;
             }
           }
 
@@ -515,7 +528,7 @@ class IssueForm extends Component {
       if (formDataToCheck[field]) {
         requiredFields[field] = formDataToCheck[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required';
         isValidForm = false;
       }
     });

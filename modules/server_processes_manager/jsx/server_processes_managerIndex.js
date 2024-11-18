@@ -81,10 +81,10 @@ class ServerProcessesManagerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in server_processes_manager.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in server_processes_manager.class.inc
+     */
     const fields = [
       {label: 'PID', show: true, filter: {
         name: 'pid',
@@ -108,12 +108,12 @@ class ServerProcessesManagerIndex extends Component {
     ];
 
     return (
-          <FilterableDataTable
-            name="server_processes_manager"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
+      <FilterableDataTable
+        name="server_processes_manager"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }

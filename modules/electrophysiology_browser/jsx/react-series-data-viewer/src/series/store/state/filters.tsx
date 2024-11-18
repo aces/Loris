@@ -33,18 +33,18 @@ export const filtersReducer = (
     return state;
   }
   switch (action.type) {
-    case SET_FILTER: {
-      return R.assoc(
-        action.payload.key,
-        {
-          name: action.payload.name,
-          fn: action.payload.fn,
-        },
-        state
-      );
-    }
-    default: {
-      return state;
-    }
+  case SET_FILTER: {
+    return R.assoc(
+      action.payload.key,
+      {
+        name: action.payload.name,
+        fn: action.payload.fn,
+      },
+      state
+    );
+  }
+  default: {
+    return state;
+  }
   }
 };

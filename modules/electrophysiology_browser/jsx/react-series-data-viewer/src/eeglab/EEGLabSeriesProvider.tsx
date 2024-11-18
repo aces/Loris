@@ -18,8 +18,8 @@ import {
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
-    setCoordinateSystem,
-    setElectrodes,
+  setCoordinateSystem,
+  setElectrodes,
 } from '../series/store/state/montage';
 import {EventMetadata, HEDSchemaElement} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
@@ -224,9 +224,9 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
           console.error('ERROR: EPOCH EXISTS');
         }
       });
-        return epochs;
+      return epochs;
     }).then((epochs) => {
-        const sortedEpochs = epochs
+      const sortedEpochs = epochs
         .flat()
         .sort(function(a, b) {
           return a.onset - b.onset;
@@ -316,7 +316,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                   </a>
                   <span style={{marginLeft: '15px'}}>
                   Dataset Tag Manager
-                </span>
+                  </span>
                 </div>
                 <div style={{fontSize: '12px'}}>
                   More about HED

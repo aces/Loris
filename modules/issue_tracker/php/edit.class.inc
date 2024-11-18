@@ -58,6 +58,15 @@ class Edit extends \NDB_Page implements ETagCalculator
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
 
+        // Check if batch mode is enabled
+        $batch_mode = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_BOOLEAN);
+
+        if ($batch_mode) {
+            // Fetch all issues
+            $allIssues = $this->_getAllIssues($user);
+            return new \LORIS\Http\Response\JsonResponse($allIssues);
+        }
+
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
 
@@ -180,6 +189,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $modules[$key] = $m->getLongName();
         }
 
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
+
         // Now get issue values
         $issueData = $this->getIssueData(null, $user);
         if (!empty($values['issueID'])
@@ -262,6 +273,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priorities'        => $priorities,
             'categories'        => $categories,
             'modules'           => $modules,
+            'instruments'       => $instruments,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
             'hasEditPermission' => $user->hasPermission(
@@ -273,6 +285,85 @@ class Edit extends \NDB_Page implements ETagCalculator
         return new \LORIS\Http\Response\JsonResponse(
             $result
         );
+    }
+
+    /**
+     * Fetches all issues and includes top 3 comments per issue.
+     *
+     * @param \User $user The current user.
+     *
+     * @return array List of issues with top comments.
+     */
+    private function _getAllIssues(\User $user): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $query = "SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+                  FROM issues AS i
+                  LEFT JOIN candidate c ON (i.candID = c.CandID)
+                  LEFT JOIN session s ON (i.sessionID = s.ID)";
+
+        // Add permission check if needed
+        if (!$user->hasPermission('access_all_profiles')) {
+            $query .= " WHERE i.centerID IN (" .
+            implode(',', $user->getCenterIDs()) . ")";
+        }
+
+        $query .= " ORDER BY i.issueID DESC";
+
+        $issues = $db->pselect($query, []);
+
+        // Ensure $issues is an array
+        if (!is_array($issues)) {
+            $issues = iterator_to_array($issues);
+        }
+
+        // Format the issues data
+        foreach ($issues as &$issue) {
+            $issue['reporter']      = $this->formatUserInformation(
+                $issue['reporter']
+            );
+            $issue['lastUpdatedBy'] = $this->formatUserInformation(
+                $issue['lastUpdatedBy']
+            );
+            $issue['topComments']   = $this->getTopComments(
+                (int)$issue['issueID']
+            );
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Fetches the top 3 most recent comments for an issue.
+     *
+     * @param int $issueID The ID of the issue.
+     *
+     * @return array Top 3 comments with comment text, date, and author.
+     */
+    function getTopComments(int $issueID): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $comments = $db->pselect(
+            "SELECT issueComment, dateAdded, addedBy
+             FROM issues_comments
+             WHERE issueID = :issueID
+             ORDER BY dateAdded DESC 
+             LIMIT 3",
+            ['issueID' => $issueID]
+        );
+
+        $topComments = [];
+        foreach ($comments as $comment) {
+            $topComments[] = [
+                'issueComment' => $comment['issueComment'],
+                'dateAdded'    => $comment['dateAdded'],
+                'addedBy'      => $this->formatUserInformation($comment['addedBy']),
+            ];
+        }
+
+        return $topComments;
     }
 
     /**
@@ -293,11 +384,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 "SELECT
                             i.*,
                             c.PSCID,
-                            s.Visit_label AS visitLabel
+                            s.Visit_label AS visitLabel,
+                            t.Test_name as instrument_name
                         FROM
                             issues AS i
                             LEFT JOIN candidate c ON (i.candID = c.CandID)
                             LEFT JOIN session s ON (i.sessionID = s.ID)
+                            LEFT JOIN test_names t ON (i.instrument = t.ID)
                         WHERE
                             issueID = :issueID",
                 ['issueID' => $issueID]
@@ -335,6 +428,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'visitLabel'    => null,
             'category'      => null,
             'lastUpdatedBy' => null,
+            'instrument'    => null,
         ];
     }
 
@@ -397,6 +491,12 @@ class Edit extends \NDB_Page implements ETagCalculator
             ) {
                 $comment['newValue']
                     = $this->formatUserInformation($comment['newValue']);
+            } else if ($comment['fieldChanged'] === 'instrument') {
+                $instrumentName      = $db->pselectOne(
+                    "SELECT Test_name FROM test_names WHERE ID=:id",
+                    ['id' => $comment['newValue']]
+                );
+                $comment['newValue'] = $instrumentName;
             }
         }
         return $unformattedComments; //now formatted I guess
@@ -496,6 +596,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'description',
             'category',
             'module',
+            'instrument',
         ];
         $fieldsToValidateFirst = [
             'PSCID',
@@ -512,7 +613,16 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $value = null;
             }
             if (isset($field)) {
-                $issueValues[$field] = $value;
+                if ($field === 'instrument' && $value !== null) {
+                    // Value coming from frontend will be the instrument name
+                    $instrumentID        = $db->pselectOne(
+                        "SELECT ID FROM test_names WHERE Test_name=:name",
+                        ['name' => $value]
+                    );
+                    $issueValues[$field] = $instrumentID;
+                } else {
+                    $issueValues[$field] = $value;
+                }
             }
         }
         foreach ($fieldsToValidateFirst as $vField) {

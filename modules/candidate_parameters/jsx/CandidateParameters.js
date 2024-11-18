@@ -113,8 +113,8 @@ class CandidateParameters extends Component {
     return (
       <div>
         <a className='btn btn-sm btn-primary'
-           href={loris.BaseURL + '/' + this.props.candID}
-           style={{marginBottom: '20px'}}
+          href={loris.BaseURL + '/' + this.props.candID}
+          style={{marginBottom: '20px'}}
         >
           Return to timepoint list
         </a>
