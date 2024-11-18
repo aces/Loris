@@ -58,9 +58,9 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header',
             'field_type',
             'field_label',
-            'select_choices',
+            'select_choices_or_calculations',
             'field_note',
-            'text_validation_type',
+            'text_validation_type_or_show_slider_number',
             'text_validation_min',
             'text_validation_max',
             'identifier',
@@ -78,14 +78,27 @@ class RedcapDictionaryRecord extends RedcapProp
         self::checkPropIsNotNull($props, $propType, 'field_type');
         self::checkPropIsNotNull($props, $propType, 'field_label');
 
-        $this->_field_name           = $props['field_name'];
-        $this->_form_name            = $props['form_name'];
+        $fieldName = $props['field_name'];
+        $formName  = $props['form_name'];
+        if ($trimFormName) {
+            if (strpos($fieldName, $formName) !== 0) {
+                $msg = "[redcap:redcapdictionaryrecord] Field '$fieldName' does not have form name '$formName' as a prefix";
+                throw new \LorisException($msg);
+            } else {
+                $pattern = "/^" . preg_quote($formName) . "(_*)/";
+                $fieldName = preg_replace($pattern, "", $fieldName);
+            }
+        }
+
+        $this->_field_name           = $fieldName;
+        $this->_form_name            = $formName;
         $this->_section_header       = $props['section_header'] ?? '';
         $this->_field_type           = $props['field_type'];
         $this->_field_label          = $props['field_label'];
-        $this->_select_choices       = $props['select_choices'] ?? '';
+        $this->_select_choices       = $props['select_choices_or_calculations'] ?? '';
         $this->_field_note           = $props['field_note'] ?? '';
-        $this->_text_validation_type = $props['text_validation_type'] ?? '';
+        $this->_text_validation_type = $props['text_validation_type_or_show_slider_number']
+            ?? '';
         $this->_text_validation_min  = $props['text_validation_min'] ?? '';
         $this->_text_validation_max  = $props['text_validation_max'] ?? '';
         $this->_identifier           = $props['identifier'] ?? '';
@@ -293,9 +306,9 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header',
             'field_type',
             'field_label',
-            'select_choices',
+            'select_choices_or_calculations',
             'field_note',
-            'text_validation_type',
+            'text_validation_type_or_show_slider_number',
             'text_validation_min',
             'text_validation_max',
             'identifier',
@@ -322,9 +335,9 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header'       => $this->_section_header,
             'field_type'           => $this->_field_type,
             'field_label'          => $this->_field_label,
-            'select_choices'       => $this->_select_choices,
+            'select_choices_or_calculations'       => $this->_select_choices,
             'field_note'           => $this->_field_note,
-            'text_validation_type' => $this->_text_validation_type,
+            'text_validation_type_or_show_slider_number' => $this->_text_validation_type,
             'text_validation_min'  => $this->_text_validation_min,
             'text_validation_max'  => $this->_text_validation_max,
             'identifier'           => $this->_identifier,
