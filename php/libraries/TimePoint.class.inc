@@ -1208,7 +1208,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // We try to re-use an existing MRI upload if there already is one for the
         // file to insert. There may be several uploads per file, so we choose to
         // re-use the last upload when that is the case.
-        $db = \NDB_Factory::singleton()->database();
+        $db         = \NDB_Factory::singleton()->database();
         $mri_upload = $db->pselect(
             '
                 SELECT UploadID
