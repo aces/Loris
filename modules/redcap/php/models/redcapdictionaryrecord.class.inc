@@ -350,4 +350,94 @@ class RedcapDictionaryRecord extends RedcapProp
             'field_annotation'     => $this->_field_annotation,
         ];
     }
+
+    /**
+     * Get the LINST version of that dicitonary record
+     *
+     * @throws \LorisException
+     *
+     * @return string a LINST string representing the record.
+     */
+    public function toLINST(): string
+    {
+        $fieldType  = $this->getFieldType();
+        $fieldName  = $this->getFieldName();
+        $fieldLabel = str_replace("\n", "<br /><br />", $this->getFieldLabel());
+        $fieldDesc  = "$fieldName{@}$fieldLabel";
+
+        //
+        switch ($fieldType) {
+        case 'text':
+            // text maps directly to LORIS
+            return "text{@}$fieldDesc";
+        case 'descriptive':
+            // descriptive maps to label with no field.
+            return "static{@}$fieldDesc";
+        case 'radio':
+        case 'dropdown':
+            // Radio or dropdown maps to a select and the options are in the
+            // same format in the dictionary.
+            $selectoptions = $this->_optionsToLINST();
+            if (!empty($selectoptions)) {
+                $selectoptions = "NULL=>''{-}$selectoptions";
+            }
+            return "select{@}$fieldDesc{@}$selectoptions";
+        case 'checkbox':
+            // checkboxes are the same format as radios but allow multiple options,
+            // so map to a selectmultiple instead of a select
+            return "selectmultiple{@}$fieldDesc{@}"
+                . $this->_optionsToLINST();
+        case 'yesno':
+            // Map yes/no fields to dropdowns with yes and no options.
+            return "select{@}$fieldDesc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+        case 'calc':
+            // Calc maps to a score field. We create the DB field but don't do the score.
+            return "static{@}$fieldDesc";
+        case 'sql':
+            // The "SQL" data type is used for a dynamic display of enum options. Since
+            // we don't have access to the redcap database that the sql is selecting from,
+            // we treat it the same way as a score/calc field so that data can be imported.
+            return "static{@}$fieldDesc";
+        case'slider':
+            return "numeric{@}$fieldDesc{@}0{@}100";
+        case 'file':
+            // File upload - NOT SUPPORTED BY LINST
+            return "";
+        case 'notes':
+            // REDCap calls textareas notes
+            return "textarea{@}$fieldDesc";
+        default:
+            throw new \LorisException("Unhandled REDCap type '$fieldType'");
+        }
+    }
+
+    /**
+     * Take the options column from a dictionary record and convert it to the
+     * linst format for select/multiselect.
+     *
+     * @return string a LINST option string
+     */
+    private function _optionsToLINST() : string
+    {
+        $dictionary = $this->getSelectChoices();
+        $dictionary = str_replace(' | | ', ' | ', $dictionary);
+        if (str_starts_with($dictionary, '| ')) {
+            $dictionary = substr($dictionary, 2);
+        }
+
+        $choices      = explode('|', $dictionary);
+        $linstChoices = [];
+        foreach ($choices as $choice) {
+            $matches = [];
+            if (preg_match("/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/", $choice, $matches) !== 1) {
+                throw new \DomainException("Could not parse radio option: '$choice'");
+
+            }
+            $backend        = $matches[2];
+            $linstFormat    = "'$backend'=>'" . trim($matches[4]) . '\'';
+            $linstChoices[] = $linstFormat;
+
+        }
+        return join('{-}', $linstChoices);
+    }
 }
