@@ -299,7 +299,6 @@ CREATE TABLE `flag` (
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `DataID` int(10) unsigned default NULL,
   PRIMARY KEY  (`CommentID`),
@@ -309,10 +308,26 @@ CREATE TABLE `flag` (
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
-  KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
   CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `flag_editors` (
+  `userID` int(10) unsigned NOT NULL default '0',
+  `CommentID` VARCHAR(255) NOT NULL default '',
+  PRIMARY KEY  (`userID`,`CommentID`),
+  KEY `FK_flag_editors_2` (`CommentID`),
+  CONSTRAINT `FK_flag_editors_2`
+  FOREIGN KEY (`CommentID`)
+    REFERENCES `flag` (`CommentID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_flag_editors_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
