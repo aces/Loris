@@ -128,7 +128,7 @@ class RedcapHTTPClientHandler
     ): bool {
         $redcapInstance = $this->_config->getInstanceByName($redcapName);
         return !is_null($redcapInstance)
-            && !is_null($redcapInstance->hasProject($pid));
+            && $redcapInstance->hasProject($pid);
     }
 
     /**
@@ -145,7 +145,7 @@ class RedcapHTTPClientHandler
     ): bool {
         $redcapInstance = $this->_config->getInstanceByURL($redcapURL);
         return !is_null($redcapInstance)
-            && !is_null($redcapInstance->hasProject($pid));
+            && $redcapInstance->hasProject($pid);
     }
 
     /**
