@@ -49,7 +49,7 @@ class RedcapDictionaryRecord extends RedcapProp
      *
      * @param array $props The dictionary entry properties from redcap.
      */
-    public function __construct(array $props)
+    public function __construct(array $props, bool $trimFormName = false)
     {
         $propType      = 'dictionary';
         $expectedProps = [
