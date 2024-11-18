@@ -546,11 +546,14 @@ class REDCapHTTPClient
      * instruments.
      *
      * @param array $givenInstruments an array of instruments to select
+     * @param array $hasStream        if true, returns as a stream
      *
      * @return RedcapDictionaryRecord[] selected data dictionary records.
      */
-    public function getDataDictionary(array $givenInstruments = []): array
-    {
+    public function getDataDictionary(
+        array $givenInstruments = [],
+        bool $trimFormName = false
+    ): array {
         $data = [
             'content' => 'metadata'
         ];
@@ -561,10 +564,26 @@ class REDCapHTTPClient
             if (is_null($instruments)) {
                 return [];
             }
-            $instData = array_map(
-                fn($i) => new RedcapDictionaryRecord($i),
-                $instruments
-            );
+            $badMap   = 0;
+            $mapped   = 0;
+            $instData = [];
+            foreach ($instruments as $instrument) {
+                try {
+                    $dd = new RedcapDictionaryRecord($instrument, $trimFormName);
+                    $mapped++;
+                } catch (\LorisException $le) {
+                    fprintf(STDERR, $le->getMessage() . "\n");
+                    $dd = new RedcapDictionaryRecord($instrument, false);
+                    $badMap++;
+                }
+                $instData[] = $dd;
+            }
+
+            // bad map
+            if ($trimFormName) {
+                fwrite(STDERR, "\nCould not map $badMap fields\nMapped $mapped fields\n");
+            }
+
             $this->_updateCache('dictionary', $instData);
         }
 
