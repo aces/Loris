@@ -77,17 +77,20 @@ class SurveyAccountsIndex extends Component {
       <button onClick={() => this.deleteclick(row.Instrument, row.Edit)}
         className="btn btn-danger" >Delete</button>
       <button
-        className="btn btn-warning" onClick={() => this.archiveclick(row.Instrument, row.Edit)}
-	>Archive</button>
+        className="btn btn-warning" onClick={
+             () => this.archiveclick(row.Instrument, row.Edit)
+        }
+      >Archive</button>
       </td>;
       break;
     }
     return result;
   }
   /**
+   * Handle delete click function
+   *
    * @param Instrument
    * @param commentid
-   * @deleteclick
    */
          deleteclick(Instrument, commentid) {
           swal.fire({
@@ -100,7 +103,7 @@ class SurveyAccountsIndex extends Component {
             confirmButtonText: 'Yes, delete it!',
            }).then((result) => {
            if (result.value) {
-		   console.log(Instrument);
+              console.log(Instrument);
             let deleteurl = loris.BaseURL +
               '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
               fetch(deleteurl, {
