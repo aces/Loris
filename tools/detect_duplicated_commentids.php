@@ -75,11 +75,9 @@ if ($opts['r']!=null) {
 /**
  * Initialization
  */
-$config         = NDB_Config::singleton();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$dataDir        = "logs";
-$diff           = null;
-$commentids     = [];
+$dataDir    = "logs";
+$diff       = null;
+$commentids = [];
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
@@ -107,7 +105,8 @@ foreach ($instruments as $instrument => $full_name) {
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
-                    WHERE s.candID = :cid AND f.test_name = :fname AND
+                    JOIN test_names tn ON tn.ID = f.TestID
+                    WHERE s.candID = :cid AND tn.test_name = :fname AND
                     s.cohortid = :subid",
                     [
                         'cid'   => $candid,

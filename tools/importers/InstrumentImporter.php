@@ -76,9 +76,10 @@ class InstrumentImporter extends DataImporter
             FROM flag f
             INNER JOIN session s ON s.ID = f.SessionID
             INNER JOIN candidate c ON c.CandID = s.CandID
+            JOIN test_names tn ON tn.ID = f.TestID
             WHERE c.CandID = :newCandID 
             AND s.Visit_label = :visitLabel 
-            AND f.test_name = :table
+            AND tn.test_name = :table
             AND f.CommentID NOT LIKE "DDE%"';
 
         $newCommentID = $this->DB->pselectOne(

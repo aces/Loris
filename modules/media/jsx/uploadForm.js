@@ -4,14 +4,14 @@ import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    HeaderElement,
-    StaticElement,
-    SelectElement,
-    DateElement,
-    TextareaElement,
-    FileElement,
-    ButtonElement,
+  FormElement,
+  HeaderElement,
+  StaticElement,
+  SelectElement,
+  DateElement,
+  TextareaElement,
+  FileElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -119,7 +119,7 @@ class MediaUploadForm extends Component {
                         && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
-          {};
+      {};
     const visitErrMsg = visits && visits.length === 0 ?
       'No visits available for this candidate' :
       '';
@@ -148,7 +148,6 @@ class MediaUploadForm extends Component {
               options={this.state.Data.candidates}
               onUserInput={this.setFormData}
               ref='pscid'
-              hasError={false}
               required={true}
               value={this.state.formData.pscid}
             />
@@ -221,11 +220,11 @@ class MediaUploadForm extends Component {
     );
   }
 
-/**
- * *******************************************************************************
- *                      ******     Helper methods     *******
- ********************************************************************************
- */
+  /**
+   * *******************************************************************************
+   *                      ******     Helper methods     *******
+   ********************************************************************************
+   */
 
   /**
    * Returns a valid name for the file to be uploaded
@@ -357,7 +356,7 @@ class MediaUploadForm extends Component {
           }
         }
         if (xhr.status === 413) {
-           msg = JSON.stringify('File too large!');
+          msg = JSON.stringify('File too large!');
         }
 
         this.setState({
@@ -419,7 +418,7 @@ class MediaUploadForm extends Component {
       if (formData[field]) {
         requiredFields[field] = formData[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required.';
         isValidForm = false;
       }
     });

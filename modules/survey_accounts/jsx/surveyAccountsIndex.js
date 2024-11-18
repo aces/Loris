@@ -182,6 +182,10 @@ class SurveyAccountsIndex extends Component {
       return <Loader />;
     }
 
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in survey_accounts.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'PSCID', show: true, filter: {name: 'pscid', type: 'text'}},
@@ -215,9 +219,8 @@ class SurveyAccountsIndex extends Component {
     ];
 
     const addSurvey = () => {
-      location.href = '/survey_accounts/addSurvey/';
+      location.href='/survey_accounts/addSurvey/';
     };
-
     const actions = [
       {label: 'Add Survey', action: addSurvey},
     ];

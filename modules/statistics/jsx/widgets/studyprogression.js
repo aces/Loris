@@ -76,39 +76,39 @@ const StudyProgression = (props) => {
         views={[
           {
             content: json['studyprogression']['total_scans'] > 0 ?
-            <>
-              <QueryChartForm
-                Module={'statistics'}
-                name={'studyprogression'}
-                id={'studyprogressionSiteScansForm'}
-                data={props.data}
-                callback={(formDataObj) => {
-                  updateFilters(formDataObj, 'total_scans');
-                }}
-              />
-              {showChart('total_scans', 'scans_bymonth')}
-            </> :
-            <p>There have been no scans yet.</p>,
+              <>
+                <QueryChartForm
+                  Module={'statistics'}
+                  name={'studyprogression'}
+                  id={'studyprogressionSiteScansForm'}
+                  data={props.data}
+                  callback={(formDataObj) => {
+                    updateFilters(formDataObj, 'total_scans');
+                  }}
+                />
+                {showChart('total_scans', 'scans_bymonth')}
+              </> :
+              <p>There have been no scans yet.</p>,
             title: 'Study Progression - site scans',
           },
           {
             content:
             json['studyprogression']['recruitment']
-            ['overall']['total_recruitment']
+              ['overall']['total_recruitment']
             > 0 ?
-            <>
-              <QueryChartForm
-                Module={'statistics'}
-                name={'studyprogression'}
-                id={'studyprogressionSiteRecruitmentForm'}
-                data={props.data}
-                callback={(formDataObj) => {
-                  updateFilters(formDataObj, 'total_recruitment');
-                }}
-              />
-              {showChart('total_recruitment', 'siterecruitment_line')}
-            </> :
-            <p>There have been no candidates registered yet.</p>,
+              <>
+                <QueryChartForm
+                  Module={'statistics'}
+                  name={'studyprogression'}
+                  id={'studyprogressionSiteRecruitmentForm'}
+                  data={props.data}
+                  callback={(formDataObj) => {
+                    updateFilters(formDataObj, 'total_recruitment');
+                  }}
+                />
+                {showChart('total_recruitment', 'siterecruitment_line')}
+              </> :
+              <p>There have been no candidates registered yet.</p>,
             title: 'Study Progression - site recruitment',
           },
         ]}

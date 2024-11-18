@@ -32,36 +32,36 @@ class ImagingQCIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-      let result = <td>{cell}</td>;
-      switch (column) {
-      case 'Scan Done in MRI PF':
-        if (cell == 'Yes') {
-          let mpfURL = loris.BaseURL
+    let result = <td>{cell}</td>;
+    switch (column) {
+    case 'Scan Done in MRI PF':
+      if (cell == 'Yes') {
+        let mpfURL = loris.BaseURL
                        + '/instruments/mri_parameter_form/?commentID='
                        + row.CommentID
                        + '&sessionID='
                        + row['Session ID']
                        + '&candID='
                        + row.DCCID;
-          result = <td><a href={mpfURL}>{cell}</a></td>;
-        }
-        break;
-      case 'Scan Location':
-        if (cell == 'In Imaging Browser') {
-          let imgURL = loris.BaseURL
+        result = <td><a href={mpfURL}>{cell}</a></td>;
+      }
+      break;
+    case 'Scan Location':
+      if (cell == 'In Imaging Browser') {
+        let imgURL = loris.BaseURL
                        + '/imaging_browser/viewSession/?sessionID='
                        + row['Session ID'];
-          result = <td><a href={imgURL}>{cell}</a></td>;
-        }
-        break;
-      case 'Tarchive':
-        if (cell == 'In DICOM') {
-          let tarchiveURL = loris.BaseURL +
-              '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-          result = <td><a href = {tarchiveURL}>{cell}</a></td>;
-        }
+        result = <td><a href={imgURL}>{cell}</a></td>;
       }
-      return result;
+      break;
+    case 'Tarchive':
+      if (cell == 'In DICOM') {
+        let tarchiveURL = loris.BaseURL +
+              '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
+        result = <td><a href = {tarchiveURL}>{cell}</a></td>;
+      }
+    }
+    return result;
   }
 
   /**
@@ -69,7 +69,7 @@ class ImagingQCIndex extends Component {
    */
   componentDidMount() {
     this.fetchData(this.props.ImgDataURL, 'ImgData')
-        .then(() => this.setState({isLoadedImg: true}));
+      .then(() => this.setState({isLoadedImg: true}));
   }
 
   /**
@@ -92,7 +92,7 @@ class ImagingQCIndex extends Component {
         }
       })
       .catch((error) => {
-          this.setState({error: error});
+        this.setState({error: error});
       });
   }
 
@@ -211,36 +211,36 @@ class ImagingQCIndex extends Component {
       ];
 
       const datatable = (
-          <FilterableDataTable
-            name="imaging_qc"
-            data={this.state.ImgData.Data}
-            fields={ImgFields}
-            getFormattedCell={this.formatColumn}
-          />
+        <FilterableDataTable
+          name="imaging_qc"
+          data={this.state.ImgData.Data}
+          fields={ImgFields}
+          getFormattedCell={this.formatColumn}
+        />
       );
       return (
         <div>
-            {datatable}
+          {datatable}
         </div>
       );
     } else {
       return (
         <div>
-            {this.state.error === 'MRI Parameter Form table does not exist' ?
-              <>
-                <h3>
+          {this.state.error === 'MRI Parameter Form table does not exist' ?
+            <>
+              <h3>
                   The MRI parameter form instrument must be
                   installed in-order to use this module.
-                </h3>
-                <p>
+              </h3>
+              <p>
                   Please contact your administrator
                   if you require this functionality.
-                </p>
-              </> :
-              <h3>
+              </p>
+            </> :
+            <h3>
                 An error occurred while loading the page.
-              </h3>
-            }
+            </h3>
+          }
         </div>
       );
     }
