@@ -604,8 +604,10 @@ function getConsentStatusHistory($pscid)
         $params
     );
 
-    $historyData = is_array($historyData) ? $historyData : iterator_to_array($historyData);
-    $directHistoryData = is_array($directHistoryData) ? $directHistoryData : iterator_to_array($directHistoryData);
+    $historyData       = is_array($historyData) ?
+        $historyData : iterator_to_array($historyData);
+    $directHistoryData = is_array($directHistoryData) ?
+        $directHistoryData : iterator_to_array($directHistoryData);
 
     $allHistory = array_merge($historyData, $directHistoryData);
 

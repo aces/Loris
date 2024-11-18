@@ -2305,19 +2305,6 @@ CREATE TABLE `candidate_consent_rel` (
   CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `candidate_consent_history` (
-  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `DateGiven` date DEFAULT NULL,
-  `DateWithdrawn` date DEFAULT NULL,
-  `PSCID` varchar(255) NOT NULL,
-  `ConsentName` varchar(255) NOT NULL,
-  `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
-  `EntryStaff` varchar(255) DEFAULT NULL,
-  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `consent_display` (
   `ConsentDisplayID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Title` text DEFAULT NULL,
