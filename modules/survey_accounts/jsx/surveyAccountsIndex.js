@@ -1,5 +1,5 @@
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Loader from 'Loader';
@@ -31,7 +31,7 @@ class SurveyAccountsIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -42,11 +42,11 @@ class SurveyAccountsIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data }))
+      .then((data) => this.setState({data}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -62,38 +62,38 @@ class SurveyAccountsIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'URL': {
-        const url = loris.BaseURL + '/survey.php?key=' + row.URL;
-        result = <td><a href={url}>{cell}</a></td>;
-        break;
+    case 'URL': {
+      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
+      result = <td><a href={url}>{cell}</a></td>;
+      break;
+    }
+    case 'Instrument': {
+      const instruments = this.state.data.fieldOptions.instruments;
+      result = <td>{instruments[cell]}</td>;
+      break;
+    }
+    case 'Edit': {
+      if (!loris.userHasPermission('user_account')) {
+        return;
       }
-      case 'Instrument': {
-        const instruments = this.state.data.fieldOptions.instruments;
-        result = <td>{instruments[cell]}</td>;
-        break;
-      }
-      case 'Edit': {
-        if (!loris.userHasPermission('user_account')) {
-          return;
-        }
-        result = (
-          <td>
-            <button
-              onClick={() => this.deleteclick(row.Instrument, row.Edit)}
-              className="btn btn-danger"
-            >
+      result = (
+        <td>
+          <button
+            onClick={() => this.deleteclick(row.Instrument, row.Edit)}
+            className="btn btn-danger"
+          >
               Delete
-            </button>
-            <button
-              className="btn btn-warning"
-              onClick={() => this.archiveclick(row.Instrument, row.Edit)}
-            >
+          </button>
+          <button
+            className="btn btn-warning"
+            onClick={() => this.archiveclick(row.Instrument, row.Edit)}
+          >
               Archive
-            </button>
-          </td>
-        );
-        break;
-      }
+          </button>
+        </td>
+      );
+      break;
+    }
     }
     return result;
   }
@@ -188,11 +188,11 @@ class SurveyAccountsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      { label: 'PSCID', show: true, filter: { name: 'pscid', type: 'text' } },
+      {label: 'PSCID', show: true, filter: {name: 'pscid', type: 'text'}},
       {
         label: 'Visit',
         show: true,
-        filter: { name: 'visit', type: 'select', options: options.visits },
+        filter: {name: 'visit', type: 'select', options: options.visits},
       },
       {
         label: 'Instrument',
@@ -203,7 +203,7 @@ class SurveyAccountsIndex extends Component {
           options: options.instruments,
         },
       },
-      { label: 'URL', show: true },
+      {label: 'URL', show: true},
       {
         label: 'Status',
         show: true,
@@ -213,16 +213,16 @@ class SurveyAccountsIndex extends Component {
           options: options.statusOptions,
         },
       },
-      { label: 'Edit', show: true },
-      { label: 'centerID', show: false },
-      { label: 'projectID', show: false },
+      {label: 'Edit', show: true},
+      {label: 'centerID', show: false},
+      {label: 'projectID', show: false},
     ];
 
     const addSurvey = () => {
       location.href = '/survey_accounts/addSurvey/';
     };
     const actions = [
-      { label: 'Add Survey', action: addSurvey },
+      {label: 'Add Survey', action: addSurvey},
     ];
 
     return (
