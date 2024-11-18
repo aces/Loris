@@ -47,7 +47,7 @@ class CSVParserTest extends TestCase
     }
 
     /**
-     * DataProviders for constructor valid CSV files
+     * DataProviders with valid CSV files
      *
      * @return array[]
      */
@@ -60,7 +60,8 @@ header1,header2,header3
 value1,"value2",value3\n
 
 value4,value5,value6
-CSV;    // Empty line above was left intentionally
+CSV;    // The empty row is intentional
+        // Tests: All flags + Field enclosure character (")
         file_put_contents($filePath, $csvData);
         $filePaths[] = [$filePath];
 
@@ -82,7 +83,6 @@ CSV;    // Empty line above was left intentionally
         $csvParser       = new \LORIS\CSVParser(new SplFileInfo($validCSVPath));
         $expectedHeaders = ['header1', 'header2', 'header3'];
         $data            = $csvParser->parse($expectedHeaders);
-        // Tests: All flags and Field enclosure character (")
         $this->assertEquals(
             [
                 [
@@ -101,7 +101,7 @@ CSV;    // Empty line above was left intentionally
     }
 
     /**
-     * DataProviders for constructor valid CSV files
+     * DataProviders with invalid CSV files
      *
      * @return array[]
      */
