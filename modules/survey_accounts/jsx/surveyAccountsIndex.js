@@ -57,163 +57,180 @@ class SurveyAccountsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'URL':
-      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
-      result = <td><a href={url}>{cell}</a></td>;
-      break;
-    case 'Instrument':
-      result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
-      break;
-    case 'Edit':
-      if (!loris.userHasPermission('user_account')) {
-          return;
+      case 'URL': {
+        const url = loris.BaseURL + '/survey.php?key=' + row.URL;
+        result = <td><a href={url}>{cell}</a></td>;
+        break;
       }
-      result = <td>
-      <button onClick={() => this.deleteclick(row.Instrument, row.Edit)}
-        className="btn btn-danger" >Delete</button>
-      <button
-        className="btn btn-warning" onClick={
-             () => this.archiveclick(row.Instrument, row.Edit)
+      case 'Instrument': {
+        const instruments = this.state.data.fieldOptions.instruments;
+        result = <td>{instruments[cell]}</td>;
+        break;
+      }
+      case 'Edit': {
+        if (!loris.userHasPermission('user_account')) {
+          return;
         }
-      >Archive</button>
-      </td>;
-      break;
+        result = (
+          <td>
+            <button
+              onClick={() => this.deleteclick(row.Instrument, row.Edit)}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
+            <button
+              className="btn btn-warning"
+              onClick={() => this.archiveclick(row.Instrument, row.Edit)}
+            >
+              Archive
+            </button>
+          </td>
+        );
+        break;
+      }
     }
     return result;
   }
+
   /**
    * Handle delete click function
    *
-   * @param Instrument
-   * @param commentid
+   * @param {string} Instrument - Instrument name
+   * @param {string} commentid - Comment ID
    */
-         deleteclick(Instrument, commentid) {
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-           }).then((result) => {
-           if (result.value) {
-              console.log(Instrument);
-            let deleteurl = loris.BaseURL +
-              '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
-              fetch(deleteurl, {
-              method: 'DELETE',
-              cache: 'no-cache',
-              credentials: 'same-origin',
-              }).then((resp) => {
-                  if (resp.status == 200) {
-                   swal.fire('delete Successful!', '', 'success');
-                  } else {
-                   swal.fire('delete Not Successful!', '', 'error');
-                  }
-              }).then(()=>{
-                  location.reload();
-              });
-           }
-          });
-         }
-         archiveclick(Instrument, commentid) {
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t see this survey in the table!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, archive it!',
-           }).then((result) => {
-           if (result.value) {
-            let deleteurl = loris.BaseURL +
-              '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
-              fetch(deleteurl, {
-              method: 'POST',
-              cache: 'no-cache',
-              credentials: 'same-origin',
-              }).then((resp) => {
-                  if (resp.status == 200) {
-                   swal.fire('archive Successful!', '', 'success');
-                  } else {
-                   swal.fire('archive Not Successful!', '', 'error');
-                  }
-              }).then(()=>{
-                  location.reload();
-              });
-           }
-          });
-         }
+  deleteclick(Instrument, commentid) {
+    swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.value) {
+        const deleteurl = `${loris.BaseURL}/survey_accounts/` +
+          `deleteSurvey/${Instrument}/${commentid}`;
+        fetch(deleteurl, {
+          method: 'DELETE',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+        })
+          .then((resp) => {
+            const message = resp.status === 200 ?
+              'Delete Successful!' : 'Delete Not Successful!';
+            const type = resp.status === 200 ? 'success' : 'error';
+            swal.fire(message, '', type);
+          })
+          .then(() => location.reload());
+      }
+    });
+  }
+
+  /**
+   * Handle archive click function
+   *
+   * @param {string} Instrument - Instrument name
+   * @param {string} commentid - Comment ID
+   */
+  archiveclick(Instrument, commentid) {
+    swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t see this survey in the table!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive it!',
+    }).then((result) => {
+      if (result.value) {
+        const archiveurl = `${loris.BaseURL}/survey_accounts/` +
+          `archiveSurvey/${Instrument}/${commentid}`;
+        fetch(archiveurl, {
+          method: 'POST',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+        })
+          .then((resp) => {
+            const message = resp.status === 200 ?
+              'Archive Successful!' : 'Archive Not Successful!';
+            const type = resp.status === 200 ? 'success' : 'error';
+            swal.fire(message, '', type);
+          })
+          .then(() => location.reload());
+      }
+    });
+  }
+
   /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    // If error occurs, return a message.
-    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
-    // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in survey_accounts.class.inc
-    */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'PSCID', show: true, filter: {
-        name: 'pscid',
-        type: 'text',
-      }},
-      {label: 'Visit', show: true, filter: {
-        name: 'visit',
-        type: 'select',
-        options: options.visits,
-      }},
-      {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'select',
-        options: options.instruments,
-      }},
+      {label: 'PSCID', show: true, filter: {name: 'pscid', type: 'text'}},
+      {
+        label: 'Visit',
+        show: true,
+        filter: {name: 'visit', type: 'select', options: options.visits},
+      },
+      {
+        label: 'Instrument',
+        show: true,
+        filter: {
+          name: 'instrument',
+          type: 'select',
+          options: options.instruments,
+        },
+      },
       {label: 'URL', show: true},
-      {label: 'Status', show: true, filter: {
-        name: 'Status',
-        type: 'select',
-        options: options.statusOptions,
-      }},
+      {
+        label: 'Status',
+        show: true,
+        filter: {
+          name: 'Status',
+          type: 'select',
+          options: options.statusOptions,
+        },
+      },
       {label: 'Edit', show: true},
       {label: 'centerID', show: false},
       {label: 'projectID', show: false},
     ];
-  const addSurvey = () => {
-    location.href='/survey_accounts/addSurvey/';
-  };
-  const actions = [
-    {label: 'Add Survey', action: addSurvey},
-  ];
+
+    const addSurvey = () => {
+      location.href = '/survey_accounts/addSurvey/';
+    };
+
+    const actions = [
+      {label: 'Add Survey', action: addSurvey},
+    ];
 
     return (
-       <FilterableDataTable
-         name="surveyAccounts"
-         title="Survey Accounts"
-         data={this.state.data.Data}
-         fields={fields}
-         getFormattedCell={this.formatColumn}
-         actions={actions}
-       />
+      <FilterableDataTable
+        name="surveyAccounts"
+        title="Survey Accounts"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+        actions={actions}
+      />
     );
   }
 }
@@ -223,11 +240,10 @@ SurveyAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  createRoot(
-    document.getElementById('lorisworkspace')
-  ).render(
+  createRoot(document.getElementById('lorisworkspace')).render(
     <SurveyAccountsIndex
       dataURL={`${loris.BaseURL}/survey_accounts/?format=json`}
     />
   );
 });
+
