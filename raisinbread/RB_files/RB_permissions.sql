@@ -67,6 +67,9 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (73,'schedule_module','Schedule Module: edit and delete appointment',48,'View/Create/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (74,'document_repository_categories','Categories',16,'Edit/Upload/Delete',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (75,'document_repository_hidden','Restricted files',16,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (76,'biobank_specimen_view','View Specimens',51,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (77,'biobank_container_view','View Containers',51,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (78,'biobank_pool_view','View Pools',51,'View',2);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
