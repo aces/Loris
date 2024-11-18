@@ -292,7 +292,7 @@ CREATE TABLE `instrument_data` (
 CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
-  `Test_name` varchar(255) NOT NULL default '',
+  `TestID` int(10) unsigned NOT NULL,
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
   `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
@@ -305,15 +305,14 @@ CREATE TABLE `flag` (
   PRIMARY KEY  (`CommentID`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
-  KEY `flag_Test_name` (`Test_name`),
   KEY `flag_Exclusion` (`Exclusion`),
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
   KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
-  CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`)
+  CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
+  CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
@@ -342,6 +341,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
+  `DoubleDataEntryEnabled` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1529,6 +1529,7 @@ CREATE TABLE `issues` (
   `candID` int(6) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
+  `instrument` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`issueID`),
   KEY `fk_issues_1` (`reporter`),
   KEY `fk_issues_2` (`assignee`),
@@ -1537,20 +1538,22 @@ CREATE TABLE `issues` (
   KEY `fk_issues_5` (`centerID`),
   KEY `fk_issues_6` (`lastUpdatedBy`),
   KEY `fk_issues_8` (`category`),
+  KEY `fk_issues_instrument` (`instrument`),
   CONSTRAINT `fk_issues_8` FOREIGN KEY (`category`) REFERENCES `issues_categories` (`categoryName`),
   CONSTRAINT `fk_issues_1` FOREIGN KEY (`reporter`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `fk_issues_instrument` FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -2096,7 +2099,9 @@ CREATE TABLE `data_release` (
  `file_name` varchar(255),
  `version` varchar(255),
  `upload_date` date,
- PRIMARY KEY (`id`)
+ `ProjectID` INT(10) UNSIGNED NULL,
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (

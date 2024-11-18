@@ -2,9 +2,9 @@
 import React, {Component} from 'react';
 import Panel from 'Panel';
 import {
-    FormElement,
-    SelectElement,
-    TextareaElement,
+  FormElement,
+  SelectElement,
+  TextareaElement,
 } from 'jsx/Form';
 
 /**

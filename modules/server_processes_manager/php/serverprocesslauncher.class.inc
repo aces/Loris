@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a way to asynchronously execute a process on the server.
  * The process will be run in the background, as a stand-alone Unix process

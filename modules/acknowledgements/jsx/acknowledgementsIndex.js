@@ -8,11 +8,11 @@ import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import {
-    SelectElement,
-    FormElement,
-    TextboxElement,
-    DateElement,
-    ButtonElement,
+  SelectElement,
+  FormElement,
+  TextboxElement,
+  DateElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -228,16 +228,16 @@ class AcknowledgementsIndex extends Component {
     let result = <td>{cell}</td>;
 
     switch (column) {
-      case 'Affiliations':
-        result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
-        break;
-      case 'Degrees':
-        result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
-        break;
+    case 'Affiliations':
+      result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
+      break;
+    case 'Degrees':
+      result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
+      break;
 
-      case 'Roles':
-        result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
-        break;
+    case 'Roles':
+      result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
+      break;
     }
     return result;
   }

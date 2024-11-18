@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -89,7 +90,7 @@ class Methylation
             []
         );
         return array_reduce(
-            $results,
+            iterator_to_array($results),
             function ($carry, $item) {
                 $value = array_values($item)[0];
                 if (!empty($value)) {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script fixes all candidate ages in the database by recalculating the
@@ -82,8 +82,10 @@ foreach ($instruments as $testName=>$instrument) {
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
             JOIN candidate c ON c.CandID=s.CandID
+            JOIN test_names tn ON tn.ID=f.TestID
         WHERE c.Active='Y' AND s.Active='Y'
-        AND f.Test_name=:tn",
+
+        AND tn.Test_name=:tn",
         ['tn' => $testName]
     );
 

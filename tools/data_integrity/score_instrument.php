@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tool scores any registered instrument that was built using the
  * NDB_BVL_Instrument class and that has a working score() method.
@@ -143,9 +144,10 @@ foreach ($testNames as $test) {
         FROM candidate c 
             JOIN session s ON c.CandID=s.CandID
             JOIN flag f ON s.ID=f.SessionID
+            JOIN test_names tn ON tn.ID = f.TestID
         WHERE s.Active = 'Y' 
             AND c.Active='Y' 
-            AND f.Test_name = :tnm 
+            AND tn.Test_name = :tnm 
             AND f.Administration <> 'None' 
             AND f.Administration IS NOT NULL
             ";

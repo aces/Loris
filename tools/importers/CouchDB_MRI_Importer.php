@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Wrapper around CouchDB MRI functions
  *
@@ -235,7 +236,7 @@ class CouchDBMRIImporter
         );
         $header['FileInsertDate_'.$type]      = date(
             'Y-m-d',
-            $FileObj->getParameter('InsertTime')
+            intval($FileObj->getParameter('InsertTime'))
         );
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
         $header['SeriesNumber_'.$type]        = $FileObj->getParameter($ser_num);
@@ -248,11 +249,11 @@ class CouchDBMRIImporter
             2
         );
         $header['SliceThickness_'.$type]      = number_format(
-            $FileObj->getParameter('slice_thickness'),
+            floatval($FileObj->getParameter('slice_thickness')) ?? 0,
             2
         );
         $header['Time_'.$type]          = number_format(
-            $FileObj->getParameter('time'),
+            $FileObj->getParameter('time') ?? 0,
             2
         );
         $header['Comment_'.$type]       = $FileObj->getParameter('Comment');
@@ -280,13 +281,21 @@ class CouchDBMRIImporter
      * @param MRIFile $file file object
      * @param string  $type type of the date
      *
-     * @return date if exists, if not an empty string
+     * @return string if exists, if not an empty string
      */
     function _getDate($file, $type)
     {
         $date = $file->getParameter($type);
         if (preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $date, $array)) {
-            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
+            $date = mktime(
+                12,
+                0,
+                0,
+                intval($array[2]),
+                intval($array[3]),
+                intval($array[1])
+            );
+            return date('Y-m-d', $date);
         } else {
             return "";
         }
@@ -321,7 +330,7 @@ class CouchDBMRIImporter
     {
         $parameterName = 'processing:' . $type . '_rejected';
         $param         = $file->getParameter($parameterName);
-        if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $param, $array)) {
+        if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $param ?? '', $array)) {
             $dirList = preg_split('/\,/', $array[2]);
             if (count($dirList) > 1) {
                 sort($dirList);
@@ -477,7 +486,8 @@ class CouchDBMRIImporter
     {
         $query         = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, []);
-        foreach ($CandidateData as &$row) {
+
+        foreach ($CandidateData as $row) {
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_' . $scan_type])) {
@@ -486,7 +496,7 @@ class CouchDBMRIImporter
                         ['fname' => $row['Selected_' . $scan_type]]
                     );
                     if (!empty($fileID)) {
-                        $FileObj            = new MRIFile($fileID);
+                        $FileObj            = new MRIFile(intval($fileID));
                         $mri_header_results = $this->_addMRIHeaderInfo(
                             $FileObj,
                             $scan_type
@@ -500,8 +510,8 @@ class CouchDBMRIImporter
                         // instantiate feedback mri object
 
                         $mri_feedback     = new FeedbackMRI(
-                            $fileID,
-                            new \SessionID($row['SessionID'])
+                            intval($fileID),
+                            new \SessionID(strval($row['SessionID']))
                         );
                         $current_feedback = $mri_feedback->getComments();
                         $mri_qc_results   = $this->_addMRIFeedback(

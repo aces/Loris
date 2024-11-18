@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script removes the 'ignored' fields from the Conflict Resolver table.
@@ -68,7 +68,9 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
     $instruments[0]      = $argv[1];
     $instrumentSpecified = true;
 } else {
-    $instruments = $config->getSetting('DoubleDataEntryInstruments');
+    $instruments = array_keys(
+        \NDB_BVL_Instrument::getDDEInstrumentNamesList($loris)
+    );
 }
 
 if (isset($instruments)) {

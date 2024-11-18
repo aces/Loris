@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class represents an attempt to re-implement the API for
  * HTML_QuickForm (Version 1) in Loris since QuickForm1 isn't
@@ -700,7 +701,7 @@ class LorisForm
                         }
                     } else {
                         // Submitted value not an array: trim it
-                        $newValue = trim($value);
+                        $newValue = trim(strval($value));
                     }
                 }
             }
@@ -1055,7 +1056,7 @@ class LorisForm
             $value = $timeStamp;
         } else if (preg_match(
             '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
-            $timeStamp,
+            $timeStamp ?? '',
             $bits
         )
         ) {
@@ -1089,7 +1090,7 @@ class LorisForm
     {
         $year   = $this->getValue($el['name']);
         $smarty = new Smarty_NeuroDB;
-        $value  = explode('-', $year)[0];
+        $value  = explode('-', $year ?? '')[0];
 
         $smarty->assign('name', $el['name']);
         $smarty->assign('minYear', $el['options']['minYear']);
@@ -1607,13 +1608,13 @@ class LorisForm
         }
         /// XXX: There seems to be a problem when using &nbsp; to separate the
         //  checkbox from the label. Both Firefox and Chrome will still put a
-        //  linebreak between the space and the checkbox. Instead, we wrap use
+        //  linebreak between the space and the checkbox. Instead, we use
         //  CSS to wrap the tag which avoids the label from being separated from the
         //  checkbox. We don't wrap the whole label in it because if it's a long
         //  label it's still allowed to have linebreaks.
-        return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\""
-            . " type=\"checkbox\" $checked $value "
-            . "$disabled $required/>"
+        return "<span style='white-space: nowrap;vertical-align: middle;'>"
+            . "<input name='$el[name]' type='checkbox' $checked $value "
+            . "$disabled $required style='vertical-align: baseline; margin-top: 0'/>"
             . " </span>$el[label]";
     }
 

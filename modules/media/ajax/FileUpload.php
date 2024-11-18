@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Media uploader.
  *
@@ -188,11 +189,13 @@ function uploadFile()
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
-            $result = $db->pselect(
-                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+            $result = iterator_to_array(
+                $db->pselect(
+                    'SELECT ID, CandID, CenterID, ProjectID, Visit_label
                             from session
                         where ID=:ID',
-                $qparam
+                    $qparam
+                )
             )[0];
             echo json_encode(
                 [
@@ -261,11 +264,11 @@ function getUploadFields()
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
     $sessionQuery = "SELECT
-                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                      c.PSCID, s.Visit_label, s.CenterID, tn.Test_name, tn.Full_name
                      FROM candidate c
                       LEFT JOIN session s USING (CandID)
                       LEFT JOIN flag f ON (s.ID=f.SessionID)
-                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
+                      LEFT JOIN test_names tn ON (f.TestID=tn.ID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -273,9 +276,11 @@ function getUploadFields()
     } else {
         $sessionQuery .= " ORDER BY c.PSCID ASC";
     }
-    $sessionRecords = $db->pselect(
-        $sessionQuery,
-        $qparam
+    $sessionRecords = iterator_to_array(
+        $db->pselect(
+            $sessionQuery,
+            $qparam
+        )
     );
 
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
