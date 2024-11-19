@@ -260,7 +260,6 @@ class NDB_BVL_Battery
             [
                 'userID'    => $userID,
                 'CommentID' => $this->getCommentID(),
-                
             ],
         );
 
@@ -279,7 +278,6 @@ class NDB_BVL_Battery
                 [
                     'userID'    => $userID,
                     'CommentID' => $this->ddeCommentID(),
-                    
                 ],
             );
         }
