@@ -255,13 +255,15 @@ class NDB_BVL_Battery
             "SELECT ID FROM users WHERE UserID=:uid",
             ['uid' => $sessionData['UserID']]
         );
-        $db->insertOnDuplicateUpdate(
-            "flag_editors",
-            [
-                'userID'    => $userID,
-                'CommentID' => $this->getCommentID(),
-            ],
-        );
+        if (($userID ?? "") != "") {
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->getCommentID(),
+                ],
+            );
+        }
 
         // insert the dde into the flag table
         if ($DDEEnabled) {
@@ -273,13 +275,15 @@ class NDB_BVL_Battery
                     'CommentID' => $ddeCommentID,
                 ]
             );
-            $db->insertOnDuplicateUpdate(
-                "flag_editors",
-                [
-                    'userID'    => $userID,
-                    'CommentID' => $this->ddeCommentID(),
-                ],
-            );
+            if (($userID ?? "") != "") {
+                $db->insertOnDuplicateUpdate(
+                    "flag_editors",
+                    [
+                        'userID'    => $userID,
+                        'CommentID' => $ddeCommentID,
+                    ],
+                );
+            }
         }
 
         return $commentID ?? '';

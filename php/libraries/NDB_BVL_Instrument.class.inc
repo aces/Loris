@@ -858,11 +858,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $newData = array_merge($oldData ?? [], $values);
 
-        if (!empty($newData['UserID'])) {
-            $userID = $db->pselectOne(
-                "SELECT ID FROM users WHERE UserID=:uid",
-                ['uid' => $newData['UserID']]
-            );
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $newData['UserID']]
+        );
+        if (($userID ?? "") != "") {
             $db->insertOnDuplicateUpdate(
                 "flag_editors",
                 [
