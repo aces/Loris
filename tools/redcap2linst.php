@@ -3,8 +3,6 @@
 
 require_once __DIR__ . "/generic_includes.php";
 
-use LORIS\redcap\models\RedcapDictionaryRecord;
-
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -12,6 +10,7 @@ use LORIS\redcap\models\RedcapDictionaryRecord;
 // load redcap module to use the client
 $lorisInstance->getModule('redcap')->registerAutoloader();
 use LORIS\redcap\RedcapHTTPClientHandler;
+use LORIS\redcap\models\RedcapDictionaryRecord;
 
 // options
 $opts = getopt(
