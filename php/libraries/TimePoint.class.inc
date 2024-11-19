@@ -1204,7 +1204,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         \SplFileInfo $file,
         string $patientname,
         bool $isphantom
-    ) {
+    ): int {
         // We try to re-use an existing MRI upload if there already is one for the
         // file to insert. There may be several uploads per file, so we choose to
         // re-use the last upload when that is the case.
