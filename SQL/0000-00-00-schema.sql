@@ -316,6 +316,7 @@ CREATE TABLE `flag` (
 CREATE TABLE `flag_editors` (
   `userID` int(10) unsigned NOT NULL default '0',
   `CommentID` VARCHAR(255) NOT NULL default '',
+  `editDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`userID`,`CommentID`),
   KEY `FK_flag_editors_2` (`CommentID`),
   CONSTRAINT `FK_flag_editors_2`
