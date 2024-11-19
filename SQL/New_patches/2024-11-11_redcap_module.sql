@@ -2,7 +2,7 @@
 -- --------------------------------------------------------------
 -- redcap module
 
-INSERT IGNORE INTO modules (Name, Active) VALUES ('redcap', 'Y');
+INSERT IGNORE INTO modules (Name, Active) VALUES ('redcap', 'N');
 
 -- --------------------------------------------------------------
 -- redcap notifications table
