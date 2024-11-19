@@ -332,7 +332,8 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
  *
  * @return LORIS\Database\Query $conflicts An Query object of conflicts detected
  */
-function getCurrentUnresolvedConflicts($test_name, $visit_label = null): LORIS\Database\Query
+function getCurrentUnresolvedConflicts($test_name, $visit_label = null):
+\LORIS\Database\Query
 {
     global $db;
     $params = [];
@@ -490,7 +491,7 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
 {
     global $lorisInstance;
     $conflicts_to_excluded = [];
-    foreach($commentids as $cid) {
+    foreach ($commentids as $cid) {
         $instance1      =& NDB_BVL_Instrument::factory(
             $lorisInstance,
             $instrument,
