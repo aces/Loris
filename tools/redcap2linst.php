@@ -1,6 +1,21 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
+/**
+ * Script that generates LINST instrument files from REDCap data dictionary.
+ * REDCap data dictionary can be presented as a file or a direct API call.
+ * REDCap instances and projects targetd by API calls must be must be properly
+ * defined `config.xml` file to be used.
+ *
+ * PHP version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 require_once __DIR__ . "/generic_includes.php";
 
 // ini_set('display_errors', 1);
@@ -85,6 +100,10 @@ fwrite(STDOUT, "\n-- end\n");
 
 /**
  * Get the dictionary from a CSV file.
+ *
+ * @param string $inputFile             a file path
+ * @param array  $importableInstruments a list of importable instruments
+ * @param bool   $trimName              should the instrument name be trimmed?
  *
  * @return RedcapDictionaryRecord[] dictionary
  */
@@ -193,10 +212,10 @@ function zip(array &$headers, array &$metadata): array
 /**
  * Write LINST file and its associated META file.
  *
- * @param string $outputDir the output directory
- * @param string $instname  the instrument name
- * @param string $instTitle the instrument title/label
- * @param array $instrument the instrument data
+ * @param string $outputDir  the output directory
+ * @param string $instname   the instrument name
+ * @param string $instTitle  the instrument title/label
+ * @param array  $instrument the instrument data
  *
  * @return void
  */
@@ -328,7 +347,10 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
             exit(1);
         }
         if (!is_file($inputFile)) {
-            fprintf(STDERR, "Input file '$inputFile' does not exist or is not readable.\n");
+            fprintf(
+                STDERR,
+                "Input file '$inputFile' does not exist or is not readable.\n"
+            );
             exit(1);
         }
     }
