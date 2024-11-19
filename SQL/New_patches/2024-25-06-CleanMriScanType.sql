@@ -1,22 +1,22 @@
 -- Rename foreign key fields for consistency
 
 ALTER TABLE `mri_scan_type`
-  RENAME COLUMN `ID` TO `MriScanTypeID`;
+  CHANGE `ID` `MriScanTypeID` int(11) unsigned NOT NULL auto_increment;
 
 ALTER TABLE `mri_scan_type`
-  RENAME COLUMN `Scan_type` TO `MriScanTypeName`;
+  CHANGE `Scan_type` `MriScanTypeName` VARCHAR(255) NOT NULL;
 
 ALTER TABLE `mri_protocol`
-  RENAME COLUMN `Scan_type` TO `MriScanTypeID`;
+  CHANGE `Scan_type` `MriScanTypeID` int(10) unsigned NOT NULL;
 
 ALTER TABLE `mri_protocol_checks`
-  RENAME COLUMN `Scan_type` TO `MriScanTypeID`;
+  CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
 
 ALTER TABLE `mri_violations_log`
-  RENAME COLUMN `Scan_type` TO `MriScanTypeID`;
+  CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
 
 ALTER TABLE `files`
-  RENAME COLUMN `AcquisitionProtocolID` TO `MriScanTypeID`;
+  CHANGE `AcquisitionProtocolID` `MriScanTypeID` int(10) unsigned default NULL;
 
 -- Add unique constraints on table that benefit from them
 
