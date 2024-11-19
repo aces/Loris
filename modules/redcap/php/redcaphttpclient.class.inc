@@ -546,7 +546,7 @@ class REDCapHTTPClient
      * instruments.
      *
      * @param array $givenInstruments an array of instruments to select
-     * @param array $hasStream        if true, returns as a stream
+     * @param array $trimFormName     if true, returns as a stream
      *
      * @return RedcapDictionaryRecord[] selected data dictionary records.
      */
@@ -581,7 +581,10 @@ class REDCapHTTPClient
 
             // bad map
             if ($trimFormName) {
-                fwrite(STDERR, "\nCould not map $badMap fields\nMapped $mapped fields\n");
+                fwrite(
+                    STDERR,
+                    "\nCould not map $badMap fields\nMapped $mapped fields\n"
+                );
             }
 
             $this->_updateCache('dictionary', $instData);
