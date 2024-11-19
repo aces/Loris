@@ -546,7 +546,7 @@ class REDCapHTTPClient
      * instruments.
      *
      * @param array $givenInstruments an array of instruments to select
-     * @param array $trimFormName     if true, returns as a stream
+     * @param bool  $trimFormName     if true, returns as a stream
      *
      * @return RedcapDictionaryRecord[] selected data dictionary records.
      */
