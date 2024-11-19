@@ -47,7 +47,8 @@ class RedcapDictionaryRecord extends RedcapProp
     /**
      * Constructor
      *
-     * @param array $props The dictionary entry properties from redcap.
+     * @param array $props        The dictionary entry properties from redcap.
+     * @param bool  $trimFormName Should the instrument name be trimmed?
      */
     public function __construct(array $props, bool $trimFormName = false)
     {
@@ -82,7 +83,8 @@ class RedcapDictionaryRecord extends RedcapProp
         $formName  = $props['form_name'];
         if ($trimFormName) {
             if (strpos($fieldName, $formName) !== 0) {
-                $msg = "[redcap:redcapdictionaryrecord] Field '$fieldName' does not have form name '$formName' as a prefix";
+                $msg = "[redcap:redcapdictionaryrecord] Field '$fieldName'"
+                . " does not have form name '$formName' as a prefix";
                 throw new \LorisException($msg);
             } else {
                 $pattern = "/^" . preg_quote($formName) . "(_*)/";
@@ -95,9 +97,12 @@ class RedcapDictionaryRecord extends RedcapProp
         $this->_section_header       = $props['section_header'] ?? '';
         $this->_field_type           = $props['field_type'];
         $this->_field_label          = $props['field_label'];
-        $this->_select_choices       = $props['select_choices_or_calculations'] ?? '';
+        $this->_select_choices       = $props['select_choices_or_calculations']
+            ?? '';
         $this->_field_note           = $props['field_note'] ?? '';
-        $this->_text_validation_type = $props['text_validation_type_or_show_slider_number']
+        $this->_text_validation_type = $props[
+            'text_validation_type_or_show_slider_number'
+            ]
             ?? '';
         $this->_text_validation_min  = $props['text_validation_min'] ?? '';
         $this->_text_validation_max  = $props['text_validation_max'] ?? '';
@@ -335,9 +340,10 @@ class RedcapDictionaryRecord extends RedcapProp
             'section_header'       => $this->_section_header,
             'field_type'           => $this->_field_type,
             'field_label'          => $this->_field_label,
-            'select_choices_or_calculations'       => $this->_select_choices,
+            'select_choices_or_calculations' => $this->_select_choices,
             'field_note'           => $this->_field_note,
-            'text_validation_type_or_show_slider_number' => $this->_text_validation_type,
+            'text_validation_type_or_show_slider_number'
+                => $this->_text_validation_type,
             'text_validation_min'  => $this->_text_validation_min,
             'text_validation_max'  => $this->_text_validation_max,
             'identifier'           => $this->_identifier,
@@ -391,12 +397,14 @@ class RedcapDictionaryRecord extends RedcapProp
             // Map yes/no fields to dropdowns with yes and no options.
             return "select{@}$fieldDesc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
         case 'calc':
-            // Calc maps to a score field. We create the DB field but don't do the score.
+            // Calc maps to a score field. We create the DB field but don't do
+            // the score.
             return "static{@}$fieldDesc";
         case 'sql':
-            // The "SQL" data type is used for a dynamic display of enum options. Since
-            // we don't have access to the redcap database that the sql is selecting from,
-            // we treat it the same way as a score/calc field so that data can be imported.
+            // The "SQL" data type is used for a dynamic display of enum options.
+            // Since we don't have access to the redcap database that the sql is
+            // selecting from, we treat it the same way as a score/calc field so
+            // that data can be imported.
             return "static{@}$fieldDesc";
         case'slider':
             return "numeric{@}$fieldDesc{@}0{@}100";
@@ -427,10 +435,13 @@ class RedcapDictionaryRecord extends RedcapProp
 
         $choices      = explode('|', $dictionary);
         $linstChoices = [];
+        $pattern = "/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/";
         foreach ($choices as $choice) {
             $matches = [];
-            if (preg_match("/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/", $choice, $matches) !== 1) {
-                throw new \DomainException("Could not parse radio option: '$choice'");
+            if (preg_match($pattern, $choice, $matches) !== 1) {
+                throw new \DomainException(
+                    "Could not parse radio option: '$choice'"
+                );
 
             }
             $backend        = $matches[2];
