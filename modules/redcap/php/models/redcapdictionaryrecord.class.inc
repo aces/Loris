@@ -87,7 +87,7 @@ class RedcapDictionaryRecord extends RedcapProp
                 . " does not have form name '$formName' as a prefix";
                 throw new \LorisException($msg);
             } else {
-                $pattern = "/^" . preg_quote($formName) . "(_*)/";
+                $pattern   = "/^" . preg_quote($formName) . "(_*)/";
                 $fieldName = preg_replace($pattern, "", $fieldName);
             }
         }
@@ -100,9 +100,8 @@ class RedcapDictionaryRecord extends RedcapProp
         $this->_select_choices       = $props['select_choices_or_calculations']
             ?? '';
         $this->_field_note           = $props['field_note'] ?? '';
-        $this->_text_validation_type = $props[
-            'text_validation_type_or_show_slider_number'
-            ]
+        $this->_text_validation_type
+            = $props['text_validation_type_or_show_slider_number']
             ?? '';
         $this->_text_validation_min  = $props['text_validation_min'] ?? '';
         $this->_text_validation_max  = $props['text_validation_max'] ?? '';
@@ -335,25 +334,28 @@ class RedcapDictionaryRecord extends RedcapProp
     public function toArray(): array
     {
         return [
-            'field_name'           => $this->_field_name,
-            'form_name'            => $this->_form_name,
-            'section_header'       => $this->_section_header,
-            'field_type'           => $this->_field_type,
-            'field_label'          => $this->_field_label,
-            'select_choices_or_calculations' => $this->_select_choices,
-            'field_note'           => $this->_field_note,
-            'text_validation_type_or_show_slider_number'
-                => $this->_text_validation_type,
-            'text_validation_min'  => $this->_text_validation_min,
-            'text_validation_max'  => $this->_text_validation_max,
-            'identifier'           => $this->_identifier,
-            'branching_logic'      => $this->_branching_logic,
-            'required_field'       => $this->_required_field,
-            'custom_alignment'     => $this->_custom_alignment,
-            'question_number'      => $this->_question_number,
-            'matrix_group_name'    => $this->_matrix_group_name,
-            'matrix_ranking'       => $this->_matrix_ranking,
-            'field_annotation'     => $this->_field_annotation,
+            'field_name'                                 => $this->_field_name,
+            'form_name'                                  => $this->_form_name,
+            'section_header'                             => $this->_section_header,
+            'field_type'                                 => $this->_field_type,
+            'field_label'                                => $this->_field_label,
+            'select_choices_or_calculations'             => $this->_select_choices,
+            'field_note'                                 => $this->_field_note,
+            'text_validation_type_or_show_slider_number' =>
+                $this->_text_validation_type,
+            'text_validation_min'                        =>
+                $this->_text_validation_min,
+            'text_validation_max'                        =>
+                $this->_text_validation_max,
+            'identifier'                                 => $this->_identifier,
+            'branching_logic'                            => $this->_branching_logic,
+            'required_field'                             => $this->_required_field,
+            'custom_alignment'                           => $this->_custom_alignment,
+            'question_number'                            => $this->_question_number,
+            'matrix_group_name'                          =>
+                $this->_matrix_group_name,
+            'matrix_ranking'                             => $this->_matrix_ranking,
+            'field_annotation'                           => $this->_field_annotation,
         ];
     }
 
@@ -435,7 +437,7 @@ class RedcapDictionaryRecord extends RedcapProp
 
         $choices      = explode('|', $dictionary);
         $linstChoices = [];
-        $pattern = "/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/";
+        $pattern      = "/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/";
         foreach ($choices as $choice) {
             $matches = [];
             if (preg_match($pattern, $choice, $matches) !== 1) {
