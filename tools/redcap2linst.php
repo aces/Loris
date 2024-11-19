@@ -162,8 +162,16 @@ function getDictionaryCSVStream(
 }
 
 /**
- * Zips values from the first array has keys, and values of the second array
- * as values. Both arrays must have the same length.
+ * Zips values from the first array as keys with the values from the second
+ * array as values. Such as:
+ * ```
+ * # input
+ * $a1 = [0 => 'a', 1 => 'b', 2 => 'c']
+ * $a2 = [0 => 'yes', 1 => 'no', 2 => 'maybe']
+ * # result
+ * $zipped = ['a' => 'yes', 'b' => 'no', 'c' => 'maybe']
+ * ```
+ * Both arrays must have the same length.
  *
  * @param array $headers  the key array
  * @param array $metadata the value array.
