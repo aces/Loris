@@ -248,8 +248,20 @@ class NDB_BVL_Battery
                 'SessionID' => $sessionData['SessionID'],
                 'TestID'    => $testId,
                 'CommentID' => $commentID,
-                'UserID'    => $sessionData['UserID'],
             ]
+        );
+
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $sessionData['UserID']]
+        );
+        $db->insertOnDuplicateUpdate(
+            "flag_editors",
+            [
+                'userID'    => $userID,
+                'CommentID' => $this->getCommentID(),
+                
+            ],
         );
 
         // insert the dde into the flag table
@@ -260,8 +272,15 @@ class NDB_BVL_Battery
                     'SessionID' => $sessionData['SessionID'],
                     'TestID'    => $testId,
                     'CommentID' => $ddeCommentID,
-                    'UserID'    => $sessionData['UserID'],
                 ]
+            );
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->ddeCommentID(),
+                    
+                ],
             );
         }
 

@@ -867,7 +867,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "flag_editors",
                 [
                     'userID'    => $userID,
-                    'CommentID' => $this->getCommentID()
+                    'CommentID' => $this->getCommentID(),
                 ],
             );
         }

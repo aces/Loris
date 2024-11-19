@@ -16,7 +16,7 @@ CREATE TABLE `flag_editors` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO flag_editors (UserID, CommentID)
+INSERT INTO flag_editors (userID, CommentID)
 SELECT users.ID, CommentID from flag JOIN users ON flag.UserID = users.UserID;
 
 ALTER TABLE flag DROP COLUMN UserID;
