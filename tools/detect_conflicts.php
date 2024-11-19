@@ -180,7 +180,7 @@ if ($delete_ignored_conflicts) {
             print  "instrument is $instrument \n";
 
             //Run the script for all the instruments
-            $commentids = getCommentIDs($instrument, $visit_label);
+            $commentids = getCommentIDs($instrument, $visit_label)->getIterator();
 
 
             //check to make sure that the commentids are set
@@ -330,9 +330,9 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
  * @param String  $test_name   The instrument been searched
  * @param ?string $visit_label The visit_label been searched
  *
- * @return array $conflicts An array of conflicts detected
+ * @return LORIS\Database\Query $conflicts An Query object of conflicts detected
  */
-function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
+function getCurrentUnresolvedConflicts($test_name, $visit_label = null): LORIS\Database\Query
 {
     global $db;
     $params = [];
@@ -371,6 +371,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
  */
 function detectConflicts($test_name, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $detected_conflicts = [];
     /**
      * Go through each commentid
@@ -380,6 +381,7 @@ function detectConflicts($test_name, $commentids, $current_conflicts)
          * Detect new conflicts
          */
         $diff =ConflictDetector::detectConflictsForCommentIds(
+            $lorisInstance,
             $test_name,
             $cid['CommentID'],
             $cid['DDECommentID']
@@ -486,19 +488,23 @@ function getInfoUsingCommentID($commentid)
  */
 function detectConflictsTobeExcluded($instrument, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $conflicts_to_excluded = [];
-    $instance1      =& NDB_BVL_Instrument::factory(
-        $instrument,
-        $commentids[0]['CommentID'],
-        null
-    );
-    $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
-    foreach ($current_conflicts as $conflict) {
-         // if the field is part of the ignore_columns,
-         // and it doesn exist in the conflict array
-         // then track it
-        if (in_array($conflict['FieldName'], $ignore_columns)) {
-            $conflicts_to_excluded[] = $conflict;
+    foreach($commentids as $cid) {
+        $instance1      =& NDB_BVL_Instrument::factory(
+            $lorisInstance,
+            $instrument,
+            $commentids['CommentID'],
+            null
+        );
+        $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
+        foreach ($current_conflicts as $conflict) {
+            // if the field is part of the ignore_columns,
+            // and it doesn exist in the conflict array
+            // then track it
+            if (in_array($conflict['FieldName'], $ignore_columns)) {
+                $conflicts_to_excluded[] = $conflict;
+            }
         }
     }
     return $conflicts_to_excluded;
@@ -593,7 +599,7 @@ function detectIgnoreColumns($instruments, $confirm)
             $commentids = getCommentIDs($instrument, null)->getIterator();
 
             foreach ($commentids as $cid) {
-                $instance        =& NDB_BVL_Instrument::factory(
+                $instance        = NDB_BVL_Instrument::factory(
                     $lorisInstance,
                     $instrument,
                     $cid['CommentID']
