@@ -21,7 +21,7 @@ CREATE TABLE `redcap_notification` (
   `handled_dt` datetime NULL,
   PRIMARY KEY (`id`),
   KEY `i_redcap_notif_received_dt` (`received_dt`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------------
 -- redcap examiner
