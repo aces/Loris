@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<config>
+    <!-- REDCap Client config -->
+    <REDCap>
+        <!-- Should be aassigneeisting userID -->
+        <issuesAssignee>assignee</issuesAssignee>
+        <instance>
+            <name>aaa</name>
+            <url>https://someURL.com</url>
+            <!-- one instance can have multiple projects -->
+            <project>
+                <projectID>111</projectID>
+                <token>token_1</token>
+            </project>
+            <project>
+                <projectID>222</projectID>
+                <token>token_2</token>
+            </project>
+        </instance>
+        <instance>
+            <name>bbb</name>
+            <url>https://someOtherURL.com</url>
+            <!-- one instance can have multiple projects -->
+            <project>
+                <projectID>333</projectID>
+                <token>token_3</token>
+            </project>
+        </instance>
+    </REDCap>
+</config>

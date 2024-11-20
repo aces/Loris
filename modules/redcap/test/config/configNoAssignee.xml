@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<config>
+    <REDCap>
+        <instance>
+            <name>aaa</name>
+            <url>https://someURL.com</url>
+            <project>
+                <projectID>111</projectID>
+                <token>token_1</token>
+            </project>
+        </instance>
+    </REDCap>
+</config>
