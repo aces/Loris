@@ -216,14 +216,13 @@ class RedcapConfigurationParser
                 );
             }
 
-            $projects   = null;
+            $projects = null;
             if (array_key_exists(0, $projectTag)) {
                 $projects = $projectTag;
             } else if (array_key_exists('projectID', $projectTag)) {
                 // only one projects
                 $projects = [$projectTag];
             }
-
 
             // add instance
             $this->_config->addInstance($name, $url);
