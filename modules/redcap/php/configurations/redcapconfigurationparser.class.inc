@@ -138,7 +138,7 @@ class RedcapConfigurationParser
         }
 
         // add main assignee
-        $assignee = $redcap['issuesAssignee'];
+        $assignee = $redcap['issuesAssignee'] ?? null;
         if (!isset($assignee) || empty($assignee)) {
             throw new \LorisException(
                 "[redcap][init] no REDCap 'issuesAssignee' in configuration."
@@ -208,20 +208,22 @@ class RedcapConfigurationParser
             }
 
             // multiple projects
-            $projects = null;
-            if (array_key_exists(0, $instance['project'])) {
-                $projects = $instance['project'];
-            } else if (array_key_exists('projectID', $instance['project'])) {
-                // only one projects
-                $projects = [$instance['project']];
-            }
-
-            if (is_null($projects)) {
+            $projectTag = $instance['project'] ?? null;
+            if (is_null($projectTag)) {
                 throw new \LorisException(
                     "[redcap][init] wrong REDCap configuration:"
                     ." no projects for instance '$name'."
                 );
             }
+
+            $projects   = null;
+            if (array_key_exists(0, $projectTag)) {
+                $projects = $projectTag;
+            } else if (array_key_exists('projectID', $projectTag)) {
+                // only one projects
+                $projects = [$projectTag];
+            }
+
 
             // add instance
             $this->_config->addInstance($name, $url);
