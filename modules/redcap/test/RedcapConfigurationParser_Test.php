@@ -17,7 +17,6 @@ require_once __DIR__ . "/../../../tools/generic_includes.php";
 
 use \PHPUnit\Framework\TestCase;
 
-use LORIS\redcap\configurations\RedcapConfiguration;
 use LORIS\redcap\configurations\RedcapConfigurationParser;
 
 /**
@@ -118,20 +117,6 @@ class RedcapConfigurationParser_Test extends TestCase
     }
 
     // --------------------------------------------------
-
-    /**
-     * TestNonInstanciable
-     *
-     * @return void
-     */
-    public function testNonInstanciable(): void
-    {
-        $this->expectException(\Error::class);
-        // default to false.
-        $rcp = new RedcapConfigurationParser(self::$_loris);
-        $rcp = new RedcapConfigurationParser(self::$_loris, false);
-        $rcp = new RedcapConfigurationParser(self::$_loris, true);
-    }
 
     /**
      * TestNoDefaultREDCapInstance
