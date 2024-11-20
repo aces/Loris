@@ -860,7 +860,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $userID = $db->pselectOne(
             "SELECT ID FROM users WHERE UserID=:uid",
-            ['uid' => $newData['UserID']]
+            ['uid' => $newData['UserID'] ?? ""]
         );
         if (($userID ?? "") != "") {
             $db->insertOnDuplicateUpdate(
