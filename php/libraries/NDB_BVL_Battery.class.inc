@@ -253,14 +253,14 @@ class NDB_BVL_Battery
 
         $userID = $DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:uid",
-            ['uid' => $sessionData['UserID']]
+            ['uid' => $sessionData['UserID'] ?? ""]
         );
         if (($userID ?? "") != "") {
             $DB->insertOnDuplicateUpdate(
                 "flag_editors",
                 [
                     'userID'    => $userID,
-                    'CommentID' => $this->getCommentID(),
+                    'CommentID' => $commentID,
                 ],
             );
         }
