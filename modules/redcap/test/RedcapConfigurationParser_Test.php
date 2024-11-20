@@ -29,11 +29,12 @@ use LORIS\redcap\configurations\RedcapConfigurationParser;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class redcapconfigurationparser_Test extends TestCase
+class RedcapConfigurationParser_Test extends TestCase
 {
     private static ?\LORIS\LorisInstance $_loris;
 
-    private static string $RBConfigFile = __DIR__ . "/../../../raisinbread/config/config.xml";
+    private static string $_RBConfigFile
+        = __DIR__ . "/../../../raisinbread/config/config.xml";
 
     /**
      * Provide an autoloader for the redcap module namespace.
@@ -47,7 +48,7 @@ class redcapconfigurationparser_Test extends TestCase
         // default RB config file
         self::$_loris = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
-            \NDB_Config::singleton(self::$RBConfigFile),
+            \NDB_Config::singleton(self::$_RBConfigFile),
             [
                 __DIR__ . "/../../../project/modules",
                 __DIR__ . "/../../../modules/",
@@ -70,7 +71,7 @@ class redcapconfigurationparser_Test extends TestCase
         // default RB config file
         self::$_loris = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
-            \NDB_Config::singleton(self::$RBConfigFile),
+            \NDB_Config::singleton(self::$_RBConfigFile),
             [
                 __DIR__ . "/../../../project/modules",
                 __DIR__ . "/../../../modules/",
@@ -88,6 +89,15 @@ class redcapconfigurationparser_Test extends TestCase
         self::$_loris = null;
     }
 
+    /**
+     * Change the config file.
+     *
+     * @param string $configFile the config file to use.
+     *
+     * @throws \Error
+     *
+     * @return \LORIS\LorisInstance a new loris instance with the given config file.
+     */
     public static function setConfigFile(string $configFile): \LORIS\LorisInstance
     {
         if (empty($configFile)) {
@@ -110,6 +120,7 @@ class redcapconfigurationparser_Test extends TestCase
     // --------------------------------------------------
 
     /**
+     * TestNonInstanciable
      *
      * @return void
      */
@@ -123,6 +134,7 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestNoDefaultREDCapInstance
      *
      * @return void
      */
@@ -130,12 +142,15 @@ class redcapconfigurationparser_Test extends TestCase
     {
         // default file does not have any accessible REDCap
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage("[redcap][config] none of the REDCap"
-        . " configurations declared in 'config.xml' file can be accessed.");
+        $this->expectExceptionMessage(
+            "[redcap][config] none of the REDCap configurations declared"
+            . " in 'config.xml' file can be accessed."
+        );
         RedcapConfigurationParser::factory(self::$_loris);
     }
 
     /**
+     * TestSingleton
      *
      * @return void
      */
@@ -149,14 +164,17 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestSingletonVerbose
      *
      * @return void
      */
     public function testSingletonVerbose(): void
     {
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage("[redcap][config] none of the REDCap"
-        . " configurations declared in 'config.xml' file can be accessed.");
+        $this->expectExceptionMessage(
+            "[redcap][config] none of the REDCap configurations declared"
+            . " in 'config.xml' file can be accessed."
+        );
         // verbose is not an attribute of this class.
         $s1 = RedcapConfigurationParser::factory(self::$_loris, false);
         $s2 = RedcapConfigurationParser::factory(self::$_loris, true);
@@ -164,6 +182,7 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestNoREDCapTagConfigFile
      *
      * @return void
      */
@@ -179,14 +198,16 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestNoAssigneeConfigFile
      *
      * @return void
      */
     public function testNoAssigneeConfigFile(): void
     {
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage("[redcap][init] no REDCap 'issuesAssignee'"
-        . " in configuration.");
+        $this->expectExceptionMessage(
+            "[redcap][init] no REDCap 'issuesAssignee' in configuration."
+        );
         $configFile    = __DIR__ . "/config/configNoAssignee.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
@@ -194,14 +215,16 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestNoInstanceConfigFile
      *
      * @return void
      */
     public function testNoInstanceConfigFile(): void
     {
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage("[redcap][init] no REDCap instance in"
-        . " configuration.");
+        $this->expectExceptionMessage(
+            "[redcap][init] no REDCap instance in configuration."
+        );
         $configFile    = __DIR__ . "/config/configNoInstance.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
@@ -209,14 +232,17 @@ class redcapconfigurationparser_Test extends TestCase
     }
 
     /**
+     * TestNoProjectConfigFile
      *
      * @return void
      */
     public function testNoProjectConfigFile(): void
     {
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage("[redcap][init] wrong REDCap configuration:"
-        . " no projects for instance 'aaa'.");
+        $this->expectExceptionMessage(
+            "[redcap][init] wrong REDCap configuration: no projects for"
+            . " instance 'aaa'."
+        );
         $configFile    = __DIR__ . "/config/configNoProject.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
