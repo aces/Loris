@@ -135,17 +135,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response = $this->client->request(
             'PATCH',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
-                'json'    => $json
+                'json'    => []
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
@@ -162,17 +157,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PUT',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
-                'json'    => $json
+                'json'    => []
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
@@ -246,17 +236,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertNotEmpty($body);
 
         // Test that it should be forbidden to modify an instrument that is flagged as Complete
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PATCH',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
-                'json'    => $json,
+                'json'    => [],
                 'http_errors' => false
             ]
         );
@@ -266,17 +251,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertNotEmpty($body);
 
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PATCH',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
-                'json'    => $json,
+                'json'    => [],
                 'http_errors' => false
             ]
         );
@@ -321,17 +301,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertNotEmpty($body);
 
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PUT',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
-                'json'    => $json,
+                'json'    => [],
                 'http_errors' => false
             ]
         );
@@ -386,9 +361,6 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
         ];
         $response   = $this->client->request(
             'PATCH',
@@ -419,9 +391,6 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
         ];
         $response   = $this->client->request(
             'PUT',
@@ -503,17 +472,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertNotEmpty($body);
 
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PATCH',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'headers' => $this->headers,
-                'json'    => $json,
+                'json'    => [],
                 'http_errors' => false
             ]
         );
@@ -558,17 +522,12 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertNotEmpty($body);
 
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
-        $json = [
-            $this->instrumentTest => [
-                'UserID' => "2"
-            ]
-        ];
         $response   = $this->client->request(
             'PUT',
             "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'headers' => $this->headers,
-                'json'    => $json,
+                'json'    => [],
                 'http_errors' => false
             ]
         );
