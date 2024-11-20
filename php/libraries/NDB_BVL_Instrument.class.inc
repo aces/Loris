@@ -868,6 +868,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 [
                     'userID'    => $userID,
                     'CommentID' => $this->getCommentID(),
+                    'editDate'  => null,
                 ],
             );
         }
