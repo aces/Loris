@@ -55,11 +55,11 @@
       <div class="form-group">
         <input 
           type="email" 
-          name="form" 
-          class="{$form.lastname.class}" 
+          name="from" 
+          class="{$form.from.class}" 
           required 
           placeholder="Email" 
-          value="{$form|escape:'html'}"
+          value="{$from|escape:'html'}"
         />
           {if $form.from.error}
             <span id="helpBlock" class="help-block">
