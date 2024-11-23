@@ -23,7 +23,14 @@
     </p>
     <form method="POST" name="form1" id="form1">
       <div class="form-group">
-          {$form.firstname.html}
+        <input 
+          type="text" 
+          name="firstname" 
+          class="{$form.lastname.class}"
+          required 
+          placeholder="First Name" 
+          value="{$firstname|escape:'html'}"
+        />
           {if $form.firstname.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.firstname.error}</b>
@@ -31,7 +38,14 @@
           {/if}
       </div>
       <div class="form-group">
-          {$form.lastname.html}
+        <input 
+          type="text" 
+          name="lastname" 
+          class="{$form.lastname.class}" 
+          required 
+          placeholder="Last Name" 
+          value="{$lastname|escape:'html'}"
+        />
           {if $form.lastname.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.lastname.error}</b>
@@ -39,7 +53,14 @@
           {/if}
       </div>
       <div class="form-group">
-          {$form.from.html}
+        <input 
+          type="email" 
+          name="form" 
+          class="{$form.lastname.class}" 
+          required 
+          placeholder="Email" 
+          value="{$form|escape:'html'}"
+        />
           {if $form.from.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.from.error}</b>
