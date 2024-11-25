@@ -147,7 +147,7 @@ class AcknowledgementsIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
-      e.preventDefault(); // prevent default form submission
+    e.preventDefault(); // prevent default form submission
     const {formData, submitting} = this.state;
 
     if (submitting) return; // prevent multiple submits
