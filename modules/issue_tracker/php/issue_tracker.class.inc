@@ -183,6 +183,13 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             }
         }
 
+        $userIssueCount = $db->pselectOne(
+            "SELECT COUNT(*) FROM issues
+                WHERE assignee=:username
+                AND status <> 'closed'",
+            ['username' => $user->getUsername()]
+        );
+
         $fieldOptions = [
             'modules'    => $modules,
             'categories' => $categories,
@@ -191,7 +198,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             'statuses'   => $statuses,
             'priorities' => $priorities,
             'sites'      => $sites,
-            'userID'     => $user->getUsername(),
+            'userID'     => $user->getFullname(),
         ];
 
         $table = (new \LORIS\Data\Table())
@@ -204,9 +211,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
         return json_encode(
             [
-                'data'         => $arr,
-                'fieldOptions' => $fieldOptions,
-                'centerIDs'    => \Utility::getSiteList()
+                'data'           => $arr,
+                'fieldOptions'   => $fieldOptions,
+                'centerIDs'      => \Utility::getSiteList(),
+                'userIssueCount' => $userIssueCount,
             ]
         );
     }
