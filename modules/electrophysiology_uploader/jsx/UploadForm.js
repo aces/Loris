@@ -179,6 +179,10 @@ export default function UploadForm(props) {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
+        }).then((result) => {
+          if (result.value) {
+            this.props.refreshPage();
+          }
         });
 
         resetForm();
