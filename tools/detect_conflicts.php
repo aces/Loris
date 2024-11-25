@@ -295,7 +295,7 @@ if ($delete_ignored_conflicts) {
  * @param ?string $visit_label The  visit_label been searched
  * @param ?string $candid      The  candid been searched
  *
- * @return array $commentids An array of commentids found
+ * @return LORIS\Database\Query $commentids A Query object of commentids found
  */
 function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
@@ -495,7 +495,7 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
         $instance1      =& NDB_BVL_Instrument::factory(
             $lorisInstance,
             $instrument,
-            $commentids['CommentID'],
+            $cid['CommentID'],
             null
         );
         $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
