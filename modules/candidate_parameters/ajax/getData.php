@@ -612,7 +612,7 @@ function getConsentStatusHistory($pscid)
     $allHistory = array_merge($historyData, $directHistoryData);
 
     $formattedHistory = [];
-    foreach ($historyData as $entry) {
+    foreach ($allHistory as $entry) {
           $formattedHistory[] = [
               'data_entry_date' => array_key_exists('EntryDate', $entry) ?
                     $entry['EntryDate'] : null,
