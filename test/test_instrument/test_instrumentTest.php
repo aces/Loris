@@ -85,6 +85,15 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'CommentID'  => '11111111111111111',
             ]
         );
+        $this->DB->insert(
+            'participant_accounts',
+            [
+                'ID'        => '999999',
+                'Test_name' => 'testtest',
+                'SessionID' => '999999',
+                'Status'    => 'Created',
+            ]
+        );
         // Set up database wrapper and config
     }
 
@@ -99,6 +108,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("candidate", ['CandID' => '900000']);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
+        $this->DB->delete("participant_accounts", ['ID' => '999999']);
         parent::tearDown();
     }
 
