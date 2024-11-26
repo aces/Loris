@@ -264,7 +264,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $project = \Project::getProjectFromID($registrationProjectID);
 
-        $user = \User::singleton($_SESSION['State']->getUsername());
+        if (isset($_SESSION['State'])) {
+            $user = \User::singleton($_SESSION['State']->getUsername());
+        } elseif (!empty(getenv('USER'))) {
+            $user = \User::singleton(getenv('USER'));
+        } else {
+            throw new \LorisException(
+                "No username found to associate with the creation of this candidate"
+            );
+        }
 
         // figure out how to generate PSCID
         $config        = $factory->config();
