@@ -13,6 +13,8 @@ import InfoPanel from 'jsx/InfoPanel';
 
 import Select from 'react-select';
 import swal from 'sweetalert2';
+import TriggerableModal from "../../../jsx/TriggerableModal";
+import {FileElement, SelectElement} from "../../../jsx/Form";
 
 /**
  * Instrument Manager Index component
@@ -30,10 +32,13 @@ class InstrumentManagerIndex extends Component {
       error: false,
       isLoaded: false,
       modifyPermissions: false,
+      selectedDataFile: null,
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.dataFileSelected = this.dataFileSelected.bind(this);
+    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
   }
 
   /**
@@ -42,6 +47,18 @@ class InstrumentManagerIndex extends Component {
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
+  }
+
+  /**
+   * Update selectedDataFile on data file selection
+   *
+   * @param {string} element - Element name
+   * @param {string} file
+   */
+  dataFileSelected(element, file) {
+    this.setState({
+      selectedDataFile: file,
+    });
   }
 
   /**
@@ -58,6 +75,62 @@ class InstrumentManagerIndex extends Component {
       .catch((error) => {
         this.setState({error: true});
       });
+  }
+
+  /**
+   * Upload instrument data
+   */
+  uploadInstrumentData(instrument) {
+    const data = new FormData();
+    data.append('upload_type', 'data'); // TODO: Remove
+    data.append('instrument', instrument);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/');
+
+    return new Promise(
+    (resolve, reject) => {
+      fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: data,
+      }).then((response) => {
+        if (!response.ok) {
+          console.error(response.status);
+          throw new Error('Unexpected error');
+        }
+        return response.json();
+      }).then((data) => {
+        if (data.success) {
+          swal.fire({
+            title: 'Upload Successful!',
+            type: 'success',
+            text: data.message,
+          }).then(() => {
+            resolve();
+          });
+        } else {
+          let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+          if (Array.isArray(data.message)) {
+            message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+            data.message.forEach((error) => {
+              message += (JSON.stringify(error) + '<br/>');
+            });
+          } else {
+            message += data.message;
+          }
+          message += '</div>';
+          throw new Error(message);
+        }
+      }).catch((e) => {
+        swal.fire({
+          title: 'No data was uploaded',
+          type: 'warning',
+          html: e.message,
+        });
+        reject();
+      });
+    });
   }
 
   /**
@@ -106,6 +179,61 @@ class InstrumentManagerIndex extends Component {
               )
             }
           </div>
+        </td>
+      );
+    }
+
+
+    if (column === 'Upload') {
+      return (
+        <td style={{verticalAlign: 'middle'}}>
+          <TriggerableModal
+            label={'Upload Data'}
+            title={'Upload Instrument Data'}
+            onClose={() => {
+              this.setState({
+                selectedDataFile: null,
+              });
+            }}
+            onSubmit={(e) => {
+              if (this.state.selectedDataFile === null) {
+                e.preventDefault();
+                return;
+              }
+              return this.uploadInstrumentData(row.Instrument);
+            }}
+          >
+            <>
+              <div
+                className="row"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}>
+                <div className='col-sm-11'>
+                  <FileElement
+                    name='install_data_file'
+                    label={`Upload csv file for ${row.Instrument}`}
+                    onUserInput={this.dataFileSelected}
+                    value={this.state.selectedDataFile}
+                  />
+                </div>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'center'}}>
+                <a
+                  className="btn btn-default"
+                  href={
+                    `${this.props.BaseURL}/instrument_manager/instrument_data` +
+                    `?instrument=${row.Instrument}`
+                  }
+                  target={'_blank'}
+                >
+                  <span className="glyphicon glyphicon-download-alt"></span>
+                  &nbsp;Download Expected Template
+                </a>
+              </div>
+            </>
+          </TriggerableModal>
         </td>
       );
     }
@@ -165,6 +293,7 @@ class InstrumentManagerIndex extends Component {
         name: 'permissionsRequired',
         type: 'text',
       }},
+      {label: 'Upload', show: true, filter: {}},
     ];
 
     const tabs = [

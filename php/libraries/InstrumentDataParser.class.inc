@@ -25,7 +25,7 @@ use SplFileInfo;
 use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 
 /**
- * This class is used as a helper for parsing csv files
+ * This class is used to parse instrument data
  *
  * PHP Version 8
  *
@@ -88,6 +88,8 @@ class InstrumentDataParser extends CSVParser
         return array_merge(
             ['PSCID', 'Visit_label'],   // SessionID
             // Convert to static list of flag fields
+            // List: Data_entry, Required_elements_completed, Administration,
+            //       Validity, Exclusion, Testdate
             self::getFlagHeaders(   // Whitelist would prevent invalid columns
                 [
                     'ID', 'SessionID', 'Test_name', 'TestID',
@@ -280,8 +282,8 @@ class InstrumentDataParser extends CSVParser
 
         if (is_null($sessionID)) {
             throw new RuntimeException(
-                "Session not found for PSCID: $pscID
-                        and Visit_label: $visitLabel"
+                "Session not found for PSCID: $pscID" .
+                " and Visit_label: $visitLabel"
             );
         }
         return $sessionID;
@@ -327,44 +329,52 @@ class InstrumentDataParser extends CSVParser
                             $this->instrumentName,
                             $commentID
                         );
-                        $instrument->_saveValues(
-                            array_reduce(
-                                $instrumentHeaders,
-                                function ($columns, $columnName) use ($data) {
-                                    $columns[$columnName]
-                                        = strlen($data[$columnName]) > 0
-                                            ? $data[$columnName]
-                                            : null;
-                                    return $columns;
-                                },
-                                []
-                            )
+
+                        $rowData = array_reduce(
+                            $instrumentHeaders,
+                            function ($columns, $columnName) use ($data) {
+                                $columns[$columnName]
+                                    = strlen($data[$columnName]) > 0
+                                    ? $data[$columnName]
+                                    : null;
+                                return $columns;
+                            },
+                            []
                         );
-                        $instrument->scoreAndPropagateData();
+
+                        // TODO: Tech debt -- can be reset between getGV and save
+                        $_FILES = [];
+                        $_REQUEST = $rowData;
+                        $_POST = $rowData;
+
+                        $instrument->form->getGroupValues(array_keys($rowData), $out);
+                        $success = $instrument->save();
+                        if (!$success) {
+                            throw new RuntimeException(
+                                "This row failed data validation."
+                            );
+                        }
                     } catch (\Exception $e) {
                         error_log("Error caught: {$e->getMessage()}");
                         $errors[] = [
                             'row'     => $data,
-                            'error'   => $e->getMessage(),
                             'message' => "Error caught: {$e->getMessage()}",
                         ];
                     }
                 }
 
                 if (count($errors) > 0) {
-                    error_log('Errors found:'.json_encode($errors));
+                    error_log('Errors found:' . json_encode($errors));
                     $db->rollBack();
                     return [
                         'success' => false,
-                        'errors'  => $errors,
-                        'message' => 'Errors found:'.json_encode($errors),
+                        'message' => $errors,
                     ];
                 } else {
                     $db->commit();
                     error_log("Saved " . count($instrumentData) . " row(s)");
                     return [
                         'success' => true,
-                        'errors'  => [],
                         'message' => "Saved " . count($instrumentData) . " row(s)",
                     ];
                 }
@@ -375,7 +385,6 @@ class InstrumentDataParser extends CSVParser
                 $db->rollBack();
                 return [
                     'success' => false,
-                    'errors'  => [],
                     'message' => "Data error: {$e->getMessage()}"
                 ];
             }
@@ -383,7 +392,6 @@ class InstrumentDataParser extends CSVParser
             error_log("DB exception: {$e->getMessage()}");
             return [
                 'success' => false,
-                'errors'  => [],
                 'message' => "DB Error: {$e->getMessage()}"
             ];
         }
