@@ -343,11 +343,14 @@ class InstrumentDataParser extends CSVParser
                         );
 
                         // TODO: Tech debt -- can be reset between getGV and save
-                        $_FILES = [];
+                        $_FILES   = [];
                         $_REQUEST = $rowData;
-                        $_POST = $rowData;
+                        $_POST    = $rowData;
 
-                        $instrument->form->getGroupValues(array_keys($rowData), $out);
+                        $instrument->form->getGroupValues(
+                            array_keys($rowData),
+                            $out
+                        );
                         $success = $instrument->save();
                         if (!$success) {
                             throw new RuntimeException(

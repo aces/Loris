@@ -13,8 +13,8 @@ import InfoPanel from 'jsx/InfoPanel';
 
 import Select from 'react-select';
 import swal from 'sweetalert2';
-import TriggerableModal from "../../../jsx/TriggerableModal";
-import {FileElement, SelectElement} from "../../../jsx/Form";
+import TriggerableModal from '../../../jsx/TriggerableModal';
+import {FileElement} from '../../../jsx/Form';
 
 /**
  * Instrument Manager Index component
@@ -79,6 +79,8 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Upload instrument data
+   *
+   * @param instrument  Instrument name
    */
   uploadInstrumentData(instrument) {
     const data = new FormData();
@@ -89,48 +91,48 @@ class InstrumentManagerIndex extends Component {
     const url = loris.BaseURL.concat('/instrument_manager/');
 
     return new Promise(
-    (resolve, reject) => {
-      fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: data,
-      }).then((response) => {
-        if (!response.ok) {
-          console.error(response.status);
-          throw new Error('Unexpected error');
-        }
-        return response.json();
-      }).then((data) => {
-        if (data.success) {
-          swal.fire({
-            title: 'Upload Successful!',
-            type: 'success',
-            text: data.message,
-          }).then(() => {
-            resolve();
-          });
-        } else {
-          let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
-          if (Array.isArray(data.message)) {
-            message += `<br/># Errors: ${data.message.length}<br/><br/>`;
-            data.message.forEach((error) => {
-              message += (JSON.stringify(error) + '<br/>');
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              text: data.message,
+            }).then(() => {
+              resolve();
             });
           } else {
-            message += data.message;
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
           }
-          message += '</div>';
-          throw new Error(message);
-        }
-      }).catch((e) => {
-        swal.fire({
-          title: 'No data was uploaded',
-          type: 'warning',
-          html: e.message,
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
         });
-        reject();
       });
-    });
   }
 
   /**
