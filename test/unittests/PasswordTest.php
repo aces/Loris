@@ -168,7 +168,7 @@ class PasswordTest extends TestCase
             ->willReturn(PASSWORD_BCRYPT);
 
         // Instantiate the Password object with the valid password and config
-        $password = new \Password(self::VALID_PASSWORD, $configMock);
+        $password = new \Password(self::VALID_PASSWORD, $this->_configMock);
 
         // Assert that the password can be verified with the hashed value
         $this->assertTrue(
