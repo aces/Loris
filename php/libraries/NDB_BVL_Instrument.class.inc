@@ -558,19 +558,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Performs post-processing on valid data
-     *
-     * @return void
-     * @access public
-     */
-    function scoreAndPropagateData()
-    {
-        $this->score();
-        $this->updateRequiredElementsCompletedFlag();
-        $this->propagateData();
-    }
-
-    /**
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
@@ -581,7 +568,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
-            $this->scoreAndPropagateData();
+            $this->score();
+            $this->updateRequiredElementsCompletedFlag();
+            $this->propagateData();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
