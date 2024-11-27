@@ -41,18 +41,21 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               Project.Name as project,
 	      conflicts_resolved.FieldName as question,
 	      CASE
-    		WHEN conflicts_resolved.FieldName <> "Examiner"
-        	THEN conflicts_resolved.OldValue1
-    	      	    ELSE
-	      CONCAT(conflicts_resolved.OldValue1, " - ",
-			(SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue1))
- 		END as value1,
-	      CASE
-    		WHEN conflicts_resolved.FieldName <> "Examiner"
-        	    THEN conflicts_resolved.OldValue2
-		    ELSE CONCAT(conflicts_resolved.OldValue2, " - ",
-			(SELECT full_name FROM examiners WHERE examinerID = conflicts_resolved.OldValue2))
-		END as value2,
+            WHEN conflicts_resolved.NewValue <> 1 
+                AND conflicts_resolved.FieldName <> "Examiner"
+                THEN conflicts_resolved.OldValue1
+            WHEN conflicts_resolved.NewValue <> 1 
+                AND conflicts_resolved.FieldName = "Examiner"
+                THEN CONCAT(conflicts_resolved.OldValue1, " - ", 
+                (SELECT full_name FROM examiners 
+                WHERE examinerID = conflicts_resolved.OldValue1))
+            WHEN conflicts_resolved.NewValue = 1 
+            AND conflicts_resolved.FieldName = "Examiner"
+                THEN CONCAT(conflicts_resolved.OldValue2, " - ", 
+                (SELECT full_name FROM examiners 
+                WHERE examinerID = conflicts_resolved.OldValue2))
+            ELSE conflicts_resolved.OldValue2
+            END AS oldValue,
 	      CASE
 		WHEN conflicts_resolved.NewValue = 1
 			AND conflicts_resolved.FieldName <> "Examiner"
@@ -73,6 +76,8 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               session.CenterID as centerid,
               Project.ProjectID as projectid,
               cohort.title as cohort
+
+
              FROM
               conflicts_resolved
              LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)

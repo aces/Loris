@@ -85,16 +85,14 @@ class Resolved extends Endpoint implements ETagCalculator
      */
     private function _getFieldOptions(\LORIS\LorisInstance $loris) : array
     {
-        $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
-        $projects    = array_values(\Utility::getProjectList());
         $cohorts     = array_values(\Utility::getCohortList());
 
         return [
-            'site'       => array_combine($sites, $sites),
+            'site'       => \Utility::getSiteList(false),
             'instrument' => \NDB_BVL_Instrument::getInstrumentNamesList($loris),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
-            'project'    => array_combine($projects, $projects),
+            'project'    => \Utility::getProjectList(),
             'cohort'     => array_combine($cohorts, $cohorts),
         ];
     }
