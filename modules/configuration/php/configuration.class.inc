@@ -90,7 +90,12 @@ class Configuration extends \NDB_Form
 
         $this->tpl_data['password_algos'] = array_combine(
             password_algos(),
-            password_algos()
+            array_map(
+                function ($algo) {
+                    return $algo === '2y' ? 'Blake2b' : $algo;
+                },
+                password_algos()
+            )
         );
 
         $this->tpl_data['date_format']   = $date_format;

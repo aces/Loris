@@ -157,9 +157,21 @@ class PasswordTest extends TestCase
      */
     public function testToString(): void
     {
-        $password = new \Password(self::VALID_PASSWORD);
+        // Create a mock NDB_Config object
+        $configMock = $this->createMock(NDB_Config::class);
+
+        // Configure the mock to return a valid password algorithm
+        $configMock->method('getSetting')
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
+
+        // Instantiate the Password object with the valid password and config
+        $password = new \Password(self::VALID_PASSWORD, $configMock);
+
+        // Assert that the password can be verified with the hashed value
         $this->assertTrue(
-            password_verify(self::VALID_PASSWORD, (string) $password)
+            password_verify(self::VALID_PASSWORD, (string) $password),
+            "Password string should correctly verify against the original value."
         );
     }
 }
