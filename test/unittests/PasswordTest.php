@@ -145,8 +145,13 @@ class PasswordTest extends TestCase
     public function testWellFormedPassword(): void
     {
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configInfo));
-        $this->assertInstanceOf('Password', new \Password(self::VALID_PASSWORD));
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
+
+        $this->assertInstanceOf(
+            'Password',
+            new \Password(self::VALID_PASSWORD, $this->_configMock)
+        );
     }
 
     /**
