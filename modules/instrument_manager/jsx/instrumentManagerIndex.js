@@ -84,7 +84,6 @@ class InstrumentManagerIndex extends Component {
    */
   uploadInstrumentData(instrument) {
     const data = new FormData();
-    data.append('upload_type', 'data'); // TODO: Remove
     data.append('instrument', instrument);
     data.append('data_file', this.state.selectedDataFile);
 
