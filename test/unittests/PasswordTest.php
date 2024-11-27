@@ -162,11 +162,8 @@ class PasswordTest extends TestCase
      */
     public function testToString(): void
     {
-        // Create a mock NDB_Config object
-        $configMock = $this->createMock(NDB_Config::class);
-
         // Configure the mock to return a valid password algorithm
-        $configMock->method('getSetting')
+        $this->_configMock->method('getSetting')
             ->with('passwordAlgorithm')
             ->willReturn(PASSWORD_BCRYPT);
 
