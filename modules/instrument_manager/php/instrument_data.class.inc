@@ -12,13 +12,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_Data extends \NDB_Page
 {
-    /**
-     * The LORIS base path
-     *
-     * @var string
-     */
-    private string $_path;
-
     const PERMISSIONS = [
         'instrument_manager_read'
     ];
