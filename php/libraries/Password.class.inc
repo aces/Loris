@@ -195,8 +195,8 @@ class Password
      * Creates a new Password object when the $value param is well-formed.
      * well-formed.
      *
-     * @param string     $value  The proposed password value.
-     * @param NDB_Config $config The config
+     * @param string      $value  The proposed password value.
+     * @param ?NDB_Config $config The config
      *
      * @throws InvalidArgumentException When passsword is too short or too simple.
      */
