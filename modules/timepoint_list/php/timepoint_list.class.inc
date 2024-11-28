@@ -328,7 +328,7 @@ class Timepoint_List extends \NDB_Menu
     protected function handleDelete(
         ServerRequestInterface $request
     ): ResponseInterface {
-        $body     = $request->getBody();
+        $body     = $request->getBody()->getContents();
         $jsonBody = json_decode($body, true);
         $id       = null;
         if (is_array($jsonBody) && array_key_exists('sessionID', $jsonBody)) {
@@ -353,7 +353,7 @@ class Timepoint_List extends \NDB_Menu
      */
     protected function handlePost(ServerRequestInterface $request): ResponseInterface
     {
-        $body     = $request->getBody();
+        $body     = $request->getBody()->getContents();
         $jsonBody = json_decode($body, true);
         // Check if $jsonBody is an array before accessing its keys
         $id = $date = $subproject = null;
