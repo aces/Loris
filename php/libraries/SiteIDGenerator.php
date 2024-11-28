@@ -143,14 +143,71 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         return $ids;
     }
+
+    /**
+     * Helper function used for extracting the values from the config
+     * settings relating to the PSCID structure.
+     * Analogous to '_getIDSetting()' but for alphabetical gen.
+     *
+     * @return array<int,int|string>
+     */
+    private function _getIDSettingAlphabet(): array
+    {
+        $config = \NDB_Factory::singleton()->config();
+        $kind   = $config->getSetting($this->kind);
+
+        if (!is_array($kind)) {
+            throw new \LorisException("Invalid config for $this->kind");
+        };
+
+        // Values other than 'generation' are found within 'seq' elements and
+        // require more complex processing.
+        $idStructure = $kind['structure']['seq'];
+
+        if (!$idStructure[0]) {
+            // There's only one seq tag so the param format
+            // needs to be fixed
+            $temp        = [];
+            $temp[]      = $idStructure;
+            $idStructure = $temp;
+        }
+
+        try {
+            $seqValue = self::getSeqAttribute($idStructure, 'alphabet');
+        } catch (\ConfigurationException $e) {
+            /* Throw a new exception so that we can inform developers whether
+             * the ConfigurationException arose due to ExternalID or PSCID
+             * settings.
+             */
+            throw new \LorisException(
+                "Cannot create new candidate because of a configuration " .
+                "error in settings for {$this->kind} structure. Details: "
+                . $e->getMessage()
+            );
+        }
+        switch ($seqValue) {
+        case 'alpha':
+            return range('A', 'Z');
+        case 'numeric':
+            return range('0', '9');
+        case 'alphanumeric':
+            return array_merge(
+                range('0', '9'),
+                range('A', 'Z')
+            );
+        }
+        throw new ConfigurationException(
+            "Incorrect option $seqValue alphabet selected for PSCID generation."
+        );
+    }
+
     /**
      * Helper function used for extracting the values from the config
      * settings relating to the PSCID structure.
      *
-     * @param string $setting One of: 'generation', 'length', 'alphabet',
-     *                        'min', 'max'.
+     * @param string $setting One of: 'generation', 'length', 'min', 'max'.
      *
-     * @return array<int,int|string>|string|null
+     * @return string|null
      */
     private function _getIDSetting(
         string $setting
@@ -190,16 +247,6 @@ class SiteIDGenerator extends IdentifierGenerator
                 "error in settings for {$this->kind} structure. Details: "
                 . $e->getMessage()
             );
-        }
-        if ($setting === 'alphabet') {
-            switch ($seqValue) {
-            case 'alpha':
-                return range('A', 'Z');
-            case 'numeric':
-                return range('0', '9');
-            case 'alphanumeric':
-                return array_merge(range('0', '9'), range('A', 'Z'));
-            }
         }
 
         if ($setting === 'prefix') {
@@ -326,11 +373,11 @@ class SiteIDGenerator extends IdentifierGenerator
     /**
      * Initializes the alphabet property.
      *
-     * @return array<int,int|float|string>
+     * @return array<int,int|string>
      */
     private function _getAlphabet(): array
     {
-        $alphabet = $this->_getIDSetting('alphabet');
+        $alphabet = $this->_getIDSettingAlphabet();
         if (!is_array($alphabet)) {
             throw new \ConfigurationException(
                 'Expecting variable $alphabet to be an array but got '
