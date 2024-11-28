@@ -60,7 +60,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div.col-xs-12.row > a:nth-child(2)"
+                "#page-content-wrapper > div > div:nth-child(2) > ".
+                "div.col-xs-12.row > a:nth-child(2)";
             )
         )->click();
         $bodyText = $this->safeFindElement(
