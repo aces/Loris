@@ -41,7 +41,6 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         '',
         '',
         '',
-        'Edit Archive',
     ];
 
     /**
