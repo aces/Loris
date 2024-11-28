@@ -1,4 +1,4 @@
 parameters:
-    excludes_analyse:
+    excludePaths:
         - %currentWorkingDirectory%/modules/*/ajax/*
         - %currentWorkingDirectory%/modules/*/test/*
