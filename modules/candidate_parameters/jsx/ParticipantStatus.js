@@ -141,6 +141,7 @@ class ParticipantStatus extends Component {
     }
 
     let required = this.state.Data.required;
+    let commentRequired = this.state.Data.commentRequired;
     let subOptions = {};
     let suboptionsRequired = false;
     let participantStatus = (
@@ -155,11 +156,8 @@ class ParticipantStatus extends Component {
     }
 
     let commentsRequired = false;
-    let statusOpts = this.state.Data.statusOptions;
-    if (
-      statusOpts &&
-          statusOpts[participantStatus] !== 'Active' &&
-          statusOpts[participantStatus] !== 'Complete'
+    if (participantStatus &&
+        commentRequired.indexOf(parseInt(participantStatus)) > -1
     ) {
       commentsRequired = true;
     }

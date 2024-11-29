@@ -324,16 +324,22 @@ function getParticipantStatusFields()
         ['candid' => $candID]
     );
 
-    $statusOptions = \Candidate::getParticipantStatusOptions();
     $reasonOptions = [];
 
-    $req      = $db->pselect(
-        'SELECT ID from participant_status_options where Required=1',
+    $req             = $db->pselect(
+        'SELECT ID, Required, commentRequired from participant_status_options
+        WHERE Required=1 OR commentRequired=1',
         []
     );
-    $required = [];
+    $required        = [];
+    $commentRequired = [];
     foreach ($req as $k=>$row) {
-        $required[$k] = $row['ID'];
+        if ($row['Required'] == 1) {
+            $required[] = $row['ID'];
+        }
+        if ($row['commentRequired'] == 1) {
+            $commentRequired[] = $row['ID'];
+        }
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
@@ -357,7 +363,6 @@ function getParticipantStatusFields()
             }
         }
     }
-
     $query = "SELECT participant_status, participant_suboptions, 
     reason_specify FROM participant_status WHERE CandID=:candid";
     $row   = $db->pselectRow($query, ['candid' => $candID]);
@@ -373,8 +378,8 @@ function getParticipantStatusFields()
     $result = [
         'pscid'                 => $pscid,
         'candID'                => $candID->__toString(),
-        'statusOptions'         => $statusOptions,
         'required'              => $required,
+        'commentRequired'       => $commentRequired,
         'reasonOptions'         => $reasonOptions,
         'parentIDs'             => $parentIDMap,
         'participantStatus'     => $status,
