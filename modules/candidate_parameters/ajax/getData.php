@@ -326,12 +326,12 @@ function getParticipantStatusFields()
 
     $reasonOptions = [];
 
-    $req             = $db->pselect(
+    $req      = $db->pselect(
         'SELECT ID, Required, commentRequired from participant_status_options
         WHERE Required=1 OR commentRequired=1',
         []
     );
-    $required        = [];
+    $required = [];
     $commentRequired = [];
     foreach ($req as $k=>$row) {
         if ($row['Required'] == 1) {
