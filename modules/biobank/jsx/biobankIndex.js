@@ -250,7 +250,6 @@ class BiobankIndex extends React.Component {
    */
   createSpecimens(list, current, print) {
     const {options, data} = this.state;
-    const labelParams = [];
     const projectIds = current.projectIds;
     const centerId = current.centerId;
     const availableId = Object.keys(options.container.stati).find(
@@ -305,10 +304,6 @@ class BiobankIndex extends React.Component {
 
       // if specimen type id is not set yet, this will throw an error
       if (specimen.typeId) {
-        labelParams.push({
-          barcode: container.barcode,
-          type: options.specimen.types[specimen.typeId].label,
-        });
       }
 
       specimen.container = container;
@@ -337,7 +332,7 @@ class BiobankIndex extends React.Component {
       return Promise.reject(errors);
     }
 
-    const printBarcodes = () => {
+    const printBarcodes = (entities) => {
       return new Promise((resolve) => {
         if (print) {
           Swal.fire({
@@ -347,19 +342,39 @@ class BiobankIndex extends React.Component {
             cancelButtonText: 'No',
             showCancelButton: true,
           })
-            .then((result) => result.value && this.printLabel(labelParams))
-            .then(() => resolve());
+            .then((result) => {
+              if (result.value) {
+                const labelParams = [];
+                Object.values(entities.specimens).forEach((specimen) => {
+                  labelParams.push({
+                    barcode: specimen.barcode,
+                    type: options.specimen.types[specimen.typeId].label,
+                    pscid: specimen.candidatePSCID,
+                    sampleNumber: specimen.sampleNumber,
+                  });
+                });
+                return this.printLabel(labelParams);
+              }
+            })
+            .then(() => resolve())
+            .catch((error) => {
+              console.error('Printing error:', error);
+              resolve();
+            });
         } else {
           resolve();
         }
       });
     };
 
-    return printBarcodes()
-      .then(() => post(list, this.props.specimenAPI, 'POST'))
+
+    return post(list, this.props.specimenAPI, 'POST')
       .then((entities) => {
-        this.setData('containers', entities.containers);
-        this.setData('specimens', entities.specimens);
+        return printBarcodes(entities)
+          .then(() => {
+            this.setData('containers', entities.containers);
+            this.setData('specimens', entities.specimens);
+          });
       })
       .then(() => Promise.resolve());
   }

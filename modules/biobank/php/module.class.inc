@@ -90,6 +90,7 @@ class Module extends \Module
             || $path == 'poolendpoint'
             || $path == 'containerendpoint'
             || $path == 'specimenendpoint'
+            || $path == 'barcodes'
         ) {
             // There is a subpage
             $pagename = explode("/", $path)[0];

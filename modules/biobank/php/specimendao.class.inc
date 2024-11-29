@@ -122,6 +122,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       bs.SpecimenID,
                       bs.ContainerID,
                       bc.Barcode,
+                      LPAD(bs.SampleNumber, 3, '0') AS SampleNumber,
                       bs.SpecimenTypeID,
                       bs.Quantity,
                       bs.UnitID,
@@ -601,6 +602,29 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         }
     }
 
+
+    /**
+     * Saves the Specimen Project to the database.
+     *
+     * @param string $candId - The candidate for which to generate the sample number
+     *
+     * @return string The sample number of the specimen
+     */
+    private function _getSampleNumber($candId)
+    {
+        // Query to get the maximum SampleNumber for the given candidate
+        $query = "
+            SELECT IFNULL(MAX(bs.SampleNumber), 0) AS max_sample_number
+            FROM biobank_specimen bs
+            JOIN session s ON bs.SessionID = s.ID
+            WHERE s.CandID = :candId
+        ";
+
+        $sampleNumber = $this->db->pselectOneInt($query, ['candId' => $candId]);
+
+        return (string) $sampleNumber + 1;
+    }
+
     /**
      * This function takes a Specimen Instance and prepares the data to be
      * inserted into the database by converting it to a data array. This one to
@@ -621,6 +645,13 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             'UnitID'         => $specimen->getUnitId(),
             'SessionID'      => $specimen->getSessionId(),
         ];
+
+        // I'd prefere a better way of doing this, but for now this is the simplest
+        // way to ensure that the Sample Number does NOT get updated.
+        if (!$specimen->getId()) {
+            $sampleNumber = $this->_getSampleNumber($specimen->getCandidateId());
+            $specimenData['SampleNumber'] = $sampleNumber;
+        }
 
         $freezeThawData = [
             'SpecimenID'      => $specimen->getId(),
@@ -714,6 +745,9 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         }
         if (isset($data['Barcode'])) {
             $specimen->setBarcode((string) $data['Barcode']);
+        }
+        if (isset($data['SampleNumber'])) {
+            $specimen->setSampleNumber((string) $data['SampleNumber']);
         }
         if (isset($data['SpecimenTypeID'])) {
             $specimen->setTypeId((int) $data['SpecimenTypeID']);

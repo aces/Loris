@@ -141,8 +141,10 @@ class Header extends Component {
     const barcodePathDisplay = this.props.getBarcodePathDisplay(parentBarcodes);
     const printBarcode = () => {
       const labelParams = [{
-        barcode: container.barcode,
+        barcode: specimen.barcode,
         type: options.specimen.types[specimen.typeId].label,
+        pscid: specimen.candidatePSCID,
+        sampleNumber: specimen.sampleNumber,
       }];
       this.props.printLabel(labelParams)
         .then(() => (Swal.fire('Print Barcode Number: ' + container.barcode)));
