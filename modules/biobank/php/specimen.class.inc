@@ -43,6 +43,7 @@ class Specimen implements
      * @var int         $id
      * @var int         $containerId
      * @var string      $barcode
+     * @var string      $sampleNumber
      * @var int         $typeId
      * @var string      $quantity
      * @var int         $unitId
@@ -64,6 +65,7 @@ class Specimen implements
     private $id;
     private $containerId;
     private string $barcode;
+    private string $sampleNumber;
     private $typeId;
     private $quantity;
     private $unitId;
@@ -150,6 +152,28 @@ class Specimen implements
     public function getBarcode() : string
     {
         return $this->barcode;
+    }
+
+    /**
+     * Sets the specimen's sample number
+     *
+     * @param string $sampleNumber The specimen's sample number.
+     *
+     * @return void
+     */
+    public function setSampleNumber($sampleNumber) : void
+    {
+        $this->sampleNumber = $sampleNumber;
+    }
+
+    /**
+     * Gets the specimen's sampleNumber
+     *
+     * @return string
+     */
+    public function getSampleNumber() : string
+    {
+        return $this->sampleNumber;
     }
 
     /**
@@ -564,6 +588,9 @@ class Specimen implements
         if (isset($data['barcode'])) {
             $this->setBarcode((string) $data['barcode']);
         }
+        if (isset($data['sampleNumber'])) {
+            $this->setSampleNumber((string) $data['sampleNumber']);
+        }
         if (isset($data['typeId'])) {
             $this->setTypeId((int) $data['typeId']);
         }
@@ -651,6 +678,7 @@ class Specimen implements
             'id'                     => $this->id,
             'containerId'            => $this->containerId,
             'barcode'                => $this->barcode,
+            'sampleNumber'           => $this->sampleNumber,
             'typeId'                 => $this->typeId,
             'quantity'               => $this->quantity,
             'unitId'                 => $this->unitId,
