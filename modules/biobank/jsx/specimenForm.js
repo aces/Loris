@@ -157,25 +157,40 @@ class SpecimenForm extends React.Component {
   }
 
   /**
+   * Fetch Barcodes from the backend.
+   *
+   * @param {number} limit - the number of barcodes to be generated
+   * @return {array} an array of barcodes
+   */
+  async fetchBarcodes(limit) {
+    try {
+      const response = await fetch(`${loris.BaseURL}/biobank/barcodes?limit=${limit}`);
+      const data = await response.json();
+      return data.barcodes;
+    } catch (error) {
+      console.error('Error fetching barcodes:', error);
+      return [];
+    }
+  }
+
+  /**
    * Generate barcodes and store in the component state.
    */
-  generateBarcodes() {
+  async generateBarcodes() {
     const {options} = this.props;
     let {list, current} = this.state;
-    const pscid = options.candidates[current.candidateId].pscid;
-    [list] = Object.keys(list)
-      .reduce(
-        ([result, increment], key, i) => {
-          const specimen = this.state.list[key];
-          if (!specimen.container.barcode) {
-            const barcode = padBarcode(pscid, increment);
-            specimen.container.barcode = barcode;
-            increment = this.incrementBarcode(pscid, increment);
-          }
-          result[key] = specimen;
-          return [result, increment];
-        }, [{}, this.incrementBarcode(pscid)]
-      );
+    const limit = Object.keys(list).length;
+
+    const barcodes = await this.fetchBarcodes(limit);
+    console.log(barcodes);
+
+    list = Object.keys(list).reduce((result, key, index) => {
+      const specimen = list[key];
+      specimen.container.barcode = barcodes[index];
+      result[key] = specimen;
+      return result;
+    }, {});
+
     this.setState({list});
   }
 
