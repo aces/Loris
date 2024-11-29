@@ -403,7 +403,7 @@ class BarcodeInput extends PureComponent {
                 && !inList
                 && candidateMatch
                 && sessionMatch
-                typeMatch
+                && typeMatch
             ) {              
               result[container.id] = container.barcode;
             }
