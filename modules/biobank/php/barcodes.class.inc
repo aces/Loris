@@ -56,6 +56,10 @@ class Barcodes extends Endpoint
      */
     protected function getSubHandler(string $subpath): ?Endpoint
     {
+        // No sub-handler exists, but acknowledge the parameter to avoid linting
+        // warnings -- in the future another solution might be more optimal.
+        unset($subpath);
+
         return null;
     }
 
@@ -66,7 +70,7 @@ class Barcodes extends Endpoint
      *
      * @return array The data to be returned as JSON
      */
-    protected function index(QueryParams $params): array
+    protected function get(QueryParams $params): array
     {
         if ($params->limit > MAX_BARCODES_PER_REQUEST) {
             throw new \InvalidArgumentException(
