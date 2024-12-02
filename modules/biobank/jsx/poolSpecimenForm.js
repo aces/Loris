@@ -21,7 +21,7 @@ const initialState = {
     candidateId: null,
     sessionid: null,
     typeId: null,
-    centerId: null
+    centerId: null,
   },
   poolId: null,
   count: 0,
@@ -40,7 +40,7 @@ class PoolSpecimenForm extends React.Component {
     super();
     this.state = initialState;
     this.setPool = this.setPool.bind(this);
-    this.setFilter = this.setFilter.bind(this);    
+    this.setFilter = this.setFilter.bind(this);
     this.validateListItem = this.validateListItem.bind(this);
     this.setPoolList = this.setPoolList.bind(this);
   }
@@ -64,7 +64,6 @@ class PoolSpecimenForm extends React.Component {
    * @param {string} value - the filter values
    */
   setFilter(name, value) {
-    console.log(name+': '+value);
     const {filter} = clone(this.state);
 
     if (name == 'candidateId') {
@@ -73,7 +72,7 @@ class PoolSpecimenForm extends React.Component {
 
     filter[name] = value;
     this.setState({filter});
-  }  
+  }
 
   /**
    * Sets the current pool list
@@ -81,7 +80,7 @@ class PoolSpecimenForm extends React.Component {
    * @param {number} containerId - specimen to be added to pool via containerId
    */
   setPoolList(containerId) {
-    let {current, list, pool, count} = clone(this.state);
+    let {filter, list, pool, count} = clone(this.state);
 
     // Increase count
     count++;
@@ -95,7 +94,7 @@ class PoolSpecimenForm extends React.Component {
       filter.candidateId = specimen.candidateId;
       filter.sessionId = specimen.sessionId;
       filter.typeId = specimen.typeId;
-      filter.centerId = container.centerId;      
+      filter.centerId = container.centerId;
     }
 
     // Set list values
@@ -147,7 +146,7 @@ class PoolSpecimenForm extends React.Component {
     const specimen = this.props.data.specimens[container.specimenId];
 
     // Throw error if new list item does not meet requirements.
-    if (!isEmpty(list) 
+    if (!isEmpty(list)
       && (specimen.candidateId != filter.candidateId
       || specimen.sessionId != filter.sessionId
       || specimen.typeId != filter.typeId
@@ -236,7 +235,10 @@ class PoolSpecimenForm extends React.Component {
               onUserInput={this.setFilter}
               disabled={!isEmpty(list) || !filter.candidateId}
               value={filter.sessionId}
-              options={mapFormOptions((options?.candidateSessions?.[filter.candidateId] || {}), 'label')}
+              options={mapFormOptions(
+                (options?.candidateSessions?.[filter.candidateId] || {}),
+                'label'
+              )}
             />
             <div className='row'>
               <div className='col-xs-6'>
@@ -348,12 +350,8 @@ PoolSpecimenForm.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  filter: PropTypes.shape({
-    candidateId: PropTypes.string,
-    sessionId: PropTypes.string,
-    typeId: PropTypes.string,
-  }).isRequired,
   options: PropTypes.shape({
+    candidateSessions: PropTypes.obj,
     specimen: PropTypes.shape({
       units: PropTypes.string,
       types: PropTypes.arrayOf(PropTypes.string),
@@ -395,7 +393,7 @@ class BarcodeInput extends PureComponent {
             const sessionMatch = !filter.sessionId
               || specimen.sessionId == filter.sessionId;
             const typeMatch = !filter.typeId
-              || specimen.typeId == filter.typeId;            
+              || specimen.typeId == filter.typeId;
 
             if (specimen.quantity > 0
                 && container.statusId == availableId
@@ -404,7 +402,7 @@ class BarcodeInput extends PureComponent {
                 && candidateMatch
                 && sessionMatch
                 && typeMatch
-            ) {              
+            ) {
               result[container.id] = container.barcode;
             }
           }
@@ -443,6 +441,11 @@ BarcodeInput.propTypes = {
         // Define specimen-specific properties if necessary
       })
     ).isRequired,
+  }).isRequired,
+  filter: PropTypes.shape({
+    candidateId: PropTypes.string,
+    sessionId: PropTypes.string,
+    typeId: PropTypes.string,
   }).isRequired,
   options: PropTypes.shape({
     container: PropTypes.shape({
