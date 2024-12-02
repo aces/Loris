@@ -1158,37 +1158,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Adds a file to the mri_upload table for that session
-     *
-     * @param \User        $user        The user inserting the file.
-     * @param \SplFileInfo $file        The file on the file system.
-     * @param string       $patientname The patient name
-     * @param bool         $isphantom   True if it's a phantom file
-     *
-     * @return int The UploadID from the mri_upload table sequence.
-     */
-    public function addMRIUpload(
-        \User $user,
-        \SplFileInfo $file,
-        string $patientname,
-        bool $isphantom
-    ): int {
-
-        $values = [
-            'UploadedBy'     => $user->getUsername(),
-            'UploadDate'     => date('Y-m-d H:i:s'),
-            'UploadLocation' => $file->getPathname(),
-            'SessionID'      => $this->getSessionID(),
-            'PatientName'    => $patientname,
-            'IsPhantom'      => $isphantom ? 'Y' : 'N',
-        ];
-
-        $db = \NDB_Factory::singleton()->database();
-        $db->insert('mri_upload', $values);
-        return (int) $db->getLastInsertId();
-    }
-
-    /**
      * Try to get an existing MRI upload ID for this session and a given file, or
      * insert a new one if no corresponding MRI upload exists.
      *
@@ -1235,7 +1204,19 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             return $mri_upload->getFirstRow()['UploadID'];
         }
 
-        return $this->addMRIUpload($user, $file, $patientname, $isphantom);
+        $db->insert(
+            'mri_upload',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadDate'     => date('Y-m-d H:i:s'),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        return (int) $db->getLastInsertId();
     }
 
     /**
