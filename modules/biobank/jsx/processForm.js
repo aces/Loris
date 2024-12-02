@@ -51,7 +51,7 @@ const SpecimenProcessForm = (props) => {
     processStage,
     typeId,
     options,
-    errors,
+    errors = {},
     edit,
   } = props;
 
