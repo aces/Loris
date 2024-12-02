@@ -6,7 +6,7 @@ namespace LORIS\biobank;
  * Class QueryParamsHandler
  *
  * Handles the parsing of query parameters into a `QueryParams` object.
- * This includes parsing fields, conditions, includes, limits, offsets, and
+ * This includes parsing fields, conditions, limits, offsets, and
  * count-only queries from the provided array of query parameters.
  *
  * @package    LORIS
@@ -44,7 +44,6 @@ final class QueryParamsHandler
         $queryParams = new QueryParams();
         $queryParams->select(...$this->parseFields())
             ->where(...$this->parseConditions())
-            ->include(...$this->parseIncludes()) // New include parsingi
             ->limit($this->parseLimit())
             ->offset($this->parseOffset())
             ->count($this->parseCount());  // Handle count
@@ -70,68 +69,6 @@ final class QueryParamsHandler
         return !empty($this->queryParams['fields']) ?
             explode(',', $this->queryParams['fields']) :
             [];
-    }
-
-    /**
-     * Parses the 'include' query parameter for relationships.
-     *
-     * @return array The parsed includes as With objects.
-     */
-    protected function parseIncludes(): array
-    {
-        $includes = [];
-
-        if (isset($this->queryParams['include'])) {
-            $includes = $this->parseNestedIncludes(
-                explode(',', $this->queryParams['include'])
-            );
-        }
-
-        return $includes;
-    }
-
-    /**
-     * Recursively parses nested includes.
-     *
-     * @param array $includes The array of includes to process.
-     *
-     * @return array The parsed includes as With objects.
-     */
-    protected function parseNestedIncludes(array $includes): array
-    {
-        $result = [];
-
-        foreach ($includes as $include) {
-            $result[] = $this->createWithObject($include);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Creates a With object representing an included relation.
-     *
-     * @param string $include The include string representing the relation.
-     *
-     * @return With The With object representing the relation.
-     */
-    protected function createWithObject(string $include): With
-    {
-        // Split the include string into parts
-        $parts = explode('.', $include);
-        $name  = array_shift($parts);
-
-        // Recursively build the nested With structure
-        $subIncludes = [];
-        if (!empty($parts)) {
-            $subIncludes[] = $this->createWithObject(implode('.', $parts));
-        }
-
-        // Parse conditions for the include, if any exist (this is a placeholder for
-        // actual logic)
-        $conditions = []; // This should be replaced with actual condition parsing
-
-        return new With($name, $conditions, $subIncludes);
     }
 
     /**

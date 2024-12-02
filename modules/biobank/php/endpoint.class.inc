@@ -53,6 +53,54 @@ abstract class Endpoint
     abstract protected function getSubHandler(string $subpath): ?Endpoint;
 
     /**
+     * //TODO: to be moved to a service layer.
+     * Handles getting multiple resources.
+     *
+     * @param QueryParams $params The number of requested barcodes
+     *
+     * @return array The data to be returned as JSON
+     */
+    abstract protected function get(QueryParams $params): array;
+
+    /**
+     * //TODO: to be moved to a service layer.
+     * Shows a specific resource.
+     *
+     * @param string $resourceId The resource identifier that is requested
+     *
+     * @return array
+     */
+    abstract protected function getOne(string $resourceId): array;
+
+    /**
+     * //TODO: to be moved to a service layer.
+     * Handles updating a specific resource.
+     *
+     * @param array $resource The resource to be updated
+     *
+     * @return array
+     */
+    abstract protected function update(string $resource): array;
+
+    /**
+     * //TODO: to be moved to a service layer.
+     * Handles file upload requests.
+     *
+     * @param array $uploadedFiles The files to be uploaded
+     *
+     * @return void
+     */
+    abstract protected function upload(array $uploadedFiles): void;
+
+    /**
+     * //TODO: to be moved to a service layer.
+     * Handles creating a new resource.
+     *
+     * @return array
+     */
+    abstract protected function create(): array;
+
+    /**
      * Defines the allowed HTTP methods for this endpoint.
      *
      * @return array The array of allowed HTTP methods.
@@ -77,7 +125,7 @@ abstract class Endpoint
     ) : void {
         if (!$user->hasPermission($this->getPermission($permission))) {
             throw new Forbidden(
-                get_called_class() . ": {$permission->name()} Permission Denied"
+                get_called_class() . ": {$permission->value} Permission Denied"
             );
         }
     }
@@ -100,7 +148,7 @@ abstract class Endpoint
         // Determine subendpoint handler based on the subpath
         if (count($pathparts) > 1) {
             $subpath    = $pathparts[1];
-            $subhandler = $this->getSubHandler($pathparts[1]);
+            $subhandler = $this->getSubHandler($subpath);
 
             if ($subhandler !== null) {
                 // Remove the handled part of the path and pass the remainder

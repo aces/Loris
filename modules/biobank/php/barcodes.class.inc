@@ -4,8 +4,6 @@ namespace LORIS\biobank;
 
 define('MAX_BARCODES_PER_REQUEST', 1000); // Adjust this value as needed
 
-use Psr\Http\Message\ServerRequestInterface;
-
 /**
  * {@inheritDoc}
  *
@@ -85,7 +83,7 @@ class Barcodes extends Endpoint
                   FROM biobank_container
                     WHERE SUBSTRING(Barcode, 1, 2) = :year";
         $qparams         = [':year' => $currentYear];
-        $maxNumberResult = $this->loris->getDatabaseConnection()
+        $maxNumberResult = (array) $this->loris->getDatabaseConnection()
             ->pselectOne($query, $qparams);
 
         $maxNumber = $maxNumberResult['max_number'] ?? 0;

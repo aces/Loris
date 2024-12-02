@@ -244,7 +244,7 @@ const SpecimenProcessForm = (props) => {
 
 // ProcessForm.propTypes
 SpecimenProcessForm.propTypes = {
-  edit: PropTypes.bool.isRequired,
+  edit: PropTypes.bool,
   process: PropTypes.shape({
     data: PropTypes.object,
     protocolId: PropTypes.number,
@@ -271,7 +271,7 @@ SpecimenProcessForm.propTypes = {
           label: PropTypes.string.isRequired,
         })
       ),
-      units: PropTypes.obj.isRequired,
+      units: PropTypes.obj,
       protocols: PropTypes.arrayOf(PropTypes.string),
       processes: PropTypes.arrayOf(PropTypes.string),
       protocolAttributes: PropTypes.arrayOf(
@@ -300,7 +300,7 @@ SpecimenProcessForm.propTypes = {
       typeId: PropTypes.string,
     }),
   }).isRequired,
-  hideProtocol: PropTypes.bool.isRequired,
+  hideProtocol: PropTypes.bool,
   increaseCoordinate: PropTypes.func.isRequired,
   createSpecimens: PropTypes.func.isRequired,
   printLabel: PropTypes.func.isRequired,

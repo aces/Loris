@@ -67,19 +67,6 @@ class QueryParams
     }
 
     /**
-     * Sets the group-by clause for the query.
-     *
-     * @param string $groupBy The field to group by.
-     *
-     * @return self
-     */
-    public function groupBy(string $groupBy): self
-    {
-        $this->groupBy = $groupBy;
-        return $this;
-    }
-
-    /**
      * Sets the limit for the query results.
      *
      * @param ?int $limit The maximum number of results.

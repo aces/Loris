@@ -606,11 +606,11 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Saves the Specimen Project to the database.
      *
-     * @param string $candId - The candidate for which to generate the sample number
+     * @param int $candId - The candidate for which to generate the sample number
      *
-     * @return string The sample number of the specimen
+     * @return int The sample number of the specimen
      */
-    private function _getSampleNumber($candId)
+    private function _getSampleNumber(int $candId)
     {
         // Query to get the maximum SampleNumber for the given candidate
         $query = "
@@ -622,7 +622,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
 
         $sampleNumber = $this->db->pselectOneInt($query, ['candId' => $candId]);
 
-        return (string) $sampleNumber + 1;
+        return $sampleNumber + 1;
     }
 
     /**
@@ -646,9 +646,9 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             'SessionID'      => $specimen->getSessionId(),
         ];
 
-        // I'd prefere a better way of doing this, but for now this is the simplest
+        // I'd prefer a better way of doing this, but for now this is the simplest
         // way to ensure that the Sample Number does NOT get updated.
-        if (!$specimen->getId()) {
+        if ($specimen->getId() == null) {
             $sampleNumber = $this->_getSampleNumber($specimen->getCandidateId());
             $specimenData['SampleNumber'] = $sampleNumber;
         }
