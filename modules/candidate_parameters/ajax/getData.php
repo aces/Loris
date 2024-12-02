@@ -333,7 +333,7 @@ function getParticipantStatusFields()
     );
     $required = [];
     $commentRequired = [];
-    foreach ($req as $k=>$row) {
+    foreach ($req as $_=>$row) {
         if ($row['Required'] == 1) {
             $required[] = $row['ID'];
         }
