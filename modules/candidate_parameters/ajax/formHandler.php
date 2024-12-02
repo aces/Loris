@@ -442,6 +442,9 @@ function editConsentStatusFields(\Database $db)
         $withdrawal = (isset($_POST[$consentName . '_withdrawal']) &&
                           $_POST[$consentName . '_withdrawal'] !== 'null') ?
                           $_POST[$consentName . '_withdrawal'] : null;
+        $comment    = (isset($_POST[$consentName . '_comment']) &&
+                          $_POST[$consentName . '_comment'] !== 'null') ?
+                          $_POST[$consentName . '_comment'] : null;
 
         $updateStatus  = [
             'CandidateID'   => $candID,
@@ -449,6 +452,7 @@ function editConsentStatusFields(\Database $db)
             'Status'        => $status,
             'DateGiven'     => $date,
             'DateWithdrawn' => $withdrawal,
+            'Comment'       => $comment === 'null' ? null : $comment,
         ];
         $updateHistory = [
             'PSCID'         => $pscid,
@@ -458,6 +462,7 @@ function editConsentStatusFields(\Database $db)
             'DateGiven'     => $date,
             'DateWithdrawn' => $withdrawal,
             'EntryStaff'    => $uid,
+            'Comment'       => $comment === 'null' ? null : $comment,
         ];
 
         // Validate data
@@ -465,6 +470,7 @@ function editConsentStatusFields(\Database $db)
         $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
         $oldDate       = $candidateConsent[$consentID]['DateGiven'] ?? null;
         $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
+        $oldComment    = $candidateConsent[$consentID]['Comment'] ?? null;
         $validated     = false;
 
         switch ($status) {
@@ -547,8 +553,14 @@ function editConsentStatusFields(\Database $db)
             break;
         }
 
-        // Submit data
-        if ($validated) {
+        // Submit data only if there are updates to be submitted.
+        $newDateWithdrawn = $updateStatus['DateWithdrawn'];
+        $newDateGiven     = $updateStatus['DateGiven'];
+        if ($validated && ($oldStatus !== $updateStatus['Status']
+            || substr($oldWithdrawal, 0, 10) !== substr($newDateWithdrawn, 0, 10)
+            || substr($oldDate, 0, 10) !== substr($newDateGiven, 0, 10)
+            || $oldComment !== $updateStatus['Comment'])
+        ) {
             if ($recordExists) {
                 $db->update(
                     'candidate_consent_rel',

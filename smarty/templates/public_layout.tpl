@@ -12,6 +12,13 @@
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
+  <script language="javascript" type="text/javascript">
+  let loris = {
+    BaseURL: "{$baseurl}"
+  };
+  </script>
+
   {section name=jsfile loop=$jsfiles}
     <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
   {/section}
@@ -41,7 +48,8 @@
     </div>
   </header>
 
-  <section class="main-content">
+
+  <section id="lorisworkspace" class="main-content">
     {$workspace}
   </section>
 

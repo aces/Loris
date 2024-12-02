@@ -264,7 +264,9 @@ class CouchDBDemographicsImporter
                 $consentFields  = ",
                 $cField.Status AS " . $consentName . ",
                 $cField.DateGiven AS " . $consentName . "_date,
-                $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
+                $cField.DateWithdrawn AS " . $consentName . "_withdrawal,
+                $cField.Comment AS " . $consentName . "_comment,
+                ";
                 $fieldsInQuery .= $consentFields;
                 $tablesToJoin  .= "
                                 LEFT JOIN candidate_consent_rel $cField
@@ -275,7 +277,8 @@ class CouchDBDemographicsImporter
                 $groupBy       .= ",
                             $cField.Status,
                             $cField.DateGiven,
-                            $cField.DateWithdrawn";
+                            $cField.DateWithdrawn,
+                            $cField.Comment";
             }
         }
 
@@ -371,6 +374,11 @@ class CouchDBDemographicsImporter
                 $this->Dictionary[$consentName . "_withdrawal"] = [
                     'Description' => $consentLabel . ' Withdrawal Date',
                     'Type'        => "date",
+                ];
+
+                $this->Dictionary[$consentName . "_comment"] = [
+                    'Description' => $consentLabel . ' Comment',
+                    'Type'        => "varchar(255)",
                 ];
             }
         }

@@ -2303,24 +2303,81 @@ CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
   `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
-  `DateGiven` date DEFAULT NULL,
-  `DateWithdrawn` date DEFAULT NULL,
+  `DateGiven` datetime DEFAULT NULL,
+  `DateWithdrawn` datetime DEFAULT NULL,
+  `Comment` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
   CONSTRAINT `FK_candidate_consent_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `consent_display` (
+  `ConsentDisplayID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Title` text DEFAULT NULL,
+  `Media` text DEFAULT NULL,
+  `Description` text DEFAULT NULL,
+  `training` text DEFAULT NULL,
+  `Reset_period_days` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`ConsentDisplayID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `consent_display_rel` (
+  `ConsentGroupID` int(10) unsigned NOT NULL,
+  `CenterID` int(10) unsigned DEFAULT NULL,
+  `ConsentDisplayID` int(10) unsigned NOT NULL,
+  `version` DECIMAL(5,2) NOT NULL DEFAULT 1.0,
+  UNIQUE KEY `consent_display_rel_row` (`ConsentGroupID`,`CenterID`,`ConsentDisplayID`),
+  KEY `version` (`version`),
+  CONSTRAINT `FK_consent_group_consent_display_rel_1` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_psc_consent_display_rel_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_consent_display_consent_display_rel_1` FOREIGN KEY (`ConsentDisplayID`) REFERENCES `consent_display` (`ConsentDisplayID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `direct_consent` (
+  `CandidateID` int(6) NOT NULL,
+  `ConsentGroupID` integer unsigned NOT NULL,
+  `Email_hash` varchar(255) DEFAULT NULL,
+  `OneTimeKey` varchar(16) DEFAULT NULL,
+  `Request_status` enum('created','sent','in_progress','complete','expired') NOT NULL DEFAULT 'created',
+  `Date_sent` date DEFAULT NULL,
+  `Data_cleared` tinyint(1) DEFAULT NULL,
+  `trainingProgress` varchar(255) DEFAULT NULL,
+  `UserID` int(10) unsigned DEFAULT NULL,
+  `version` DECIMAL(5,2) NOT NULL DEFAULT 1.0,
+  PRIMARY KEY `direct_consent_cand_ConsentGroupID` (`CandidateID`,`ConsentGroupID`),
+  CONSTRAINT `FK_direct_consent_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_direct_consent_2` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_direct_consent_3` FOREIGN KEY (`version`) REFERENCES `consent_display_rel`(`version`),
+  CONSTRAINT `FK_direct_consent_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `direct_consent_history` (
+  `DirectConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `PSCID` varchar(255) NOT NULL,
+  `ConsentGroupID` varchar(255) NOT NULL,
+  `Request_status` enum('created','sent','in_progress','complete','expired') DEFAULT NULL,
+  `UserID` varchar(255) DEFAULT NULL,
+  `version` DECIMAL(5,2) NOT NULL DEFAULT 1.0,
+  `Comment` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`DirectConsentHistoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 CREATE TABLE `candidate_consent_history` (
   `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `DirectConsentHistoryID` int(10) unsigned DEFAULT NULL,
   `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
+  `Status` enum('yes','no') DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
-  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
+  `version` DECIMAL(5,2) DEFAULT NULL,
+  `Comment` varchar(255) DEFAULT NULL,
+  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`),
+  CONSTRAINT `FK_candidate_consent_history_direct_consent` FOREIGN KEY (`DirectConsentHistoryID`) REFERENCES `direct_consent_history`(`DirectConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `visit` (

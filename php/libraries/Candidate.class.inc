@@ -935,9 +935,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $candID = $this->getCandID();
 
-        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
-            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
-            WHERE CandidateID=:cid";
+        $query = "SELECT ConsentID, Name, Status, DateGiven,
+            DateWithdrawn,
+            Label,
+            Comment
+        FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
+        WHERE CandidateID=:cid";
         $where = ['cid' => $candID];
         $key   = "ConsentID";
 

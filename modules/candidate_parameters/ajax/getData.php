@@ -442,6 +442,19 @@ function getConsentStatusFields()
     // Get list of consents for candidate
     $candidateConsent = $candidate->getConsents();
 
+    // Set only specified consentID if coming from consent module
+    if (array_key_exists('consent', $_GET) && !is_null($_GET['consent'])) {
+        $id = $_GET['consent'];
+        $consentDetails   = [
+            $id => $consentDetails[$id]
+        ];
+        $candidateConsent = [
+            $id => $candidateConsent[$id]
+        ];
+    }
+
+    $comments = [];
+
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
         $consentList[$consentName] = $consent['Label'];
@@ -451,14 +464,28 @@ function getConsentStatusFields()
         $consentGroups[$groupID]['Children'][] = $consentName;
 
         if (isset($candidateConsent[$consentID])) {
-            $candidateConsentID           = $candidateConsent[$consentID];
-            $status[$consentName]         = $candidateConsentID['Status'];
-            $date[$consentName]           = $candidateConsentID['DateGiven'];
-            $withdrawalDate[$consentName] = $candidateConsentID['DateWithdrawn'];
+            $candidateConsentID     = $candidateConsent[$consentID];
+            $status[$consentName]   = $candidateConsentID['Status'];
+            $comments[$consentName] = $candidateConsentID['Comment'];
+
+            // Process dates from datetime to date
+            $dateGiven = '';
+            if (!empty($candidateConsentID['DateGiven'])) {
+                $dateGiven = strtotime($candidateConsentID['DateGiven']);
+                $dateGiven = date('Y-m-d', $dateGiven);
+            }
+            $dateWithdrawn = '';
+            if (!empty($candidateConsentID['DateWithdrawn'])) {
+                $dateWithdrawn = strtotime($candidateConsentID['DateWithdrawn']);
+                $dateWithdrawn = date('Y-m-d', $dateWithdrawn);
+            }
+            $date[$consentName]           = $dateGiven;
+            $withdrawalDate[$consentName] = $dateWithdrawn;
         } else {
             $status[$consentName]         = null;
             $date[$consentName]           = null;
             $withdrawalDate[$consentName] = null;
+            $comments[$consentName]       = null;
         }
     }
     $history = getConsentStatusHistory($pscid);
@@ -472,6 +499,7 @@ function getConsentStatusFields()
         'consents'        => $consentList,
         'history'         => $history,
         'consentGroups'   => $consentGroups,
+        'comments'        => $comments,
     ];
 
     return $result;
@@ -490,25 +518,122 @@ function getConsentStatusHistory($pscid)
 {
     $db = (\NDB_Factory::singleton())->database();
 
+    // Set only specified consentID if coming from consent module
+    if (array_key_exists('consent', $_GET) && !is_null($_GET['consent'])) {
+        $id     = $_GET['consent'];
+        $query  = "SELECT
+            cch.EntryDate,
+            cch.DateGiven,
+            cch.DateWithdrawn,
+            cch.PSCID,
+            cch.ConsentName,
+            cch.ConsentLabel,
+            cch.Status,
+            cch.EntryStaff,
+            cch.Comment,
+            dch.Request_status AS requestStatus,
+            dch.version
+         FROM candidate_consent_history cch
+         JOIN consent c ON c.Name=cch.ConsentName 
+         LEFT JOIN direct_consent_history dch
+            ON dch.DirectConsentHistoryID=cch.DirectConsentHistoryID
+         WHERE cch.PSCID=:pscid 
+         AND c.ConsentID=:cid
+         ORDER BY EntryDate ASC";
+        $params = [
+            'pscid' => $pscid,
+            'cid'   => $id
+        ];
+
+        $directQuery = "SELECT 
+            dch.UserID AS EntryStaff, 
+            dch.EntryDate, 
+            dch.PSCID, 
+            cg.Label AS ConsentLabel, 
+            dch.Request_status AS requestStatus, 
+            dch.version
+        FROM direct_consent_history dch 
+        JOIN consent_group cg ON dch.ConsentGroupID=cg.ConsentGroupID
+        WHERE dch.PSCID=:pscid
+        AND dch.ConsentGroupID=(
+            SELECT ConsentGroupID
+            FROM consent
+            WHERE ConsentID=:cid
+        )";
+    } else {
+        $query  = "SELECT
+            cch.EntryDate,
+            cch.DateGiven,
+            cch.DateWithdrawn,
+            cch.PSCID,
+            cch.ConsentName,
+            cch.ConsentLabel,
+            cch.Status,
+            cch.EntryStaff,
+            cch.Comment,
+            dch.Request_status,
+            dch.version
+         FROM candidate_consent_history cch
+         LEFT JOIN direct_consent_history dch
+            ON dch.DirectConsentHistoryID=cch.DirectConsentHistoryID
+         WHERE cch.PSCID=:pscid 
+         ORDER BY cch.EntryDate ASC";
+        $params = ['pscid' => $pscid];
+
+        $directQuery = "SELECT
+            dch.UserID AS EntryStaff,
+            dch.EntryDate,
+            dch.PSCID,
+            cg.Label AS ConsentLabel,
+            dch.Request_status AS requestStatus,
+            dch.version
+        FROM direct_consent_history dch 
+        JOIN consent_group cg ON dch.ConsentGroupID=cg.ConsentGroupID
+        WHERE dch.PSCID=:pscid";
+    }
+
+    // Get regular consent history data
+    // as well as direct consent history data
     $historyData = $db->pselect(
-        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
-         ConsentName, ConsentLabel, Status, EntryStaff 
-         FROM candidate_consent_history 
-         WHERE PSCID=:pscid 
-         ORDER BY EntryDate ASC",
-        ['pscid' => $pscid]
+        $query,
+        $params
     );
 
+    $directHistoryData = $db->pselect(
+        $directQuery,
+        $params
+    );
+
+    $historyData       = is_array($historyData) ?
+        $historyData : iterator_to_array($historyData);
+    $directHistoryData = is_array($directHistoryData) ?
+        $directHistoryData : iterator_to_array($directHistoryData);
+
+    $allHistory = array_merge($historyData, $directHistoryData);
+
     $formattedHistory = [];
-    foreach ($historyData as $entry) {
+    foreach ($allHistory as $entry) {
           $formattedHistory[] = [
-              'data_entry_date' => $entry['EntryDate'],
-              'entry_staff'     => $entry['EntryStaff'],
-              'consentStatus'   => $entry['Status'],
-              'date'            => $entry['DateGiven'],
-              'withdrawal'      => $entry['DateWithdrawn'],
-              'label'           => $entry['ConsentLabel'],
-              'consentType'     => $entry['ConsentName'],
+              'data_entry_date' => array_key_exists('EntryDate', $entry) ?
+                    $entry['EntryDate'] : null,
+              'entry_staff'     => array_key_exists('EntryStaff', $entry) ?
+                    $entry['EntryStaff'] : null,
+              'consentStatus'   => array_key_exists('Status', $entry) ?
+                    $entry['Status'] : null,
+              'date'            => array_key_exists('DateGiven', $entry) ?
+                    $entry['DateGiven'] : null,
+              'withdrawal'      => array_key_exists('DateWithdrawn', $entry) ?
+                    $entry['DateWithdrawn'] : null,
+              'label'           => array_key_exists('ConsentLabel', $entry) ?
+                    $entry['ConsentLabel'] : null,
+              'consentType'     => array_key_exists('ConsentName', $entry) ?
+                    $entry['ConsentName'] : null,
+              'requestStatus'   => array_key_exists('requestStatus', $entry) ?
+                    $entry['requestStatus'] : null,
+              'version'         => array_key_exists('version', $entry) ?
+                    $entry['version'] : null,
+              'Comment'         => array_key_exists('Comment', $entry) ?
+                    $entry['Comment'] : null,
           ];
     }
     return $formattedHistory;

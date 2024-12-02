@@ -1,0 +1,603 @@
+{
+    "schema" : {
+        "elements" : {
+            "page1_1" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "page1_1_title",
+                        "question_icon",
+                        "page1_1_paragraph1",
+                        "page1_1_info_sheet_link"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "page1_1_title" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "Why is this study being done?"
+                }
+            },
+            "question_icon" : {
+                "type" : "image",
+                "description" : {
+                    "EN" : ""
+                },
+                "src" : {
+                    "EN" : "/images/eConsent/questionIcon.png"
+                },
+                "options" : {
+                    "isDisplayedAsText" : false,
+                    "ifDisplayed" : "render"
+                }
+            },
+            "page1_1_paragraph1" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "The <b>Sourdough project</b> is an <b>online educational program</b> to teach you about breadmaking, provide you with lifestyle changes that can help keep you nourished and glutenated. <br><br>Your taking part will help us test how well breadmaking with sourdough is working and make changes before offering it as an entree at parties."
+                }
+            },
+            "page1_1_info_sheet_link" : {
+                "type" : "image",
+                "description" : {
+                    "EN" : "Click here to see this section on the information sheet"
+                },
+                "src" : {
+                    "EN" : "/images/eConsent/Why_study_being_done_info_sheet.png"
+                },
+                "options" : {
+                    "isDisplayedAsText" : true,
+                    "ifDisplayed" : "modal"
+                }
+            },
+            "page1_2" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "page1_2_title",
+                        "page1_2_header",
+                        "page1_2_question"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "page1_2_title" : {
+                "type": "text",
+                "description" : {
+                    "EN" : "Section: Why Is This Study Being Done?"
+                }
+            },
+            "page1_2_header" : {
+                "type": "text",
+                "description" : {
+                    "EN" : "Quiz:"
+                }
+            },
+            "page1_2_question" : {
+                "type" : "enum",
+                "description" : {
+                    "EN" : "2. What type of study are you being asked to participate in?"
+                },
+                "options" : {
+                    "values" : [
+                        {
+                            "description" : {
+                                "EN" : "a. A study about breadmaking with sourdough"
+                            },
+                            "value" : "breadmaking"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "b. A cake making study"
+                            },
+                            "value" : "cakemaking"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "c. Pasta making study"
+                            },
+                            "value" : "pastamaking"
+                        }
+                    ],
+                    "correctResponse" : "breadmaking",
+                    "allowMultipleValues": false,
+                    "requireResponse": true,
+                    "readOnly": false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false,
+                    "isSavable" : false
+                }
+            },
+            "page2_1" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "page2_1_title",
+                        "risks_icon",
+                        "page2_1_text"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "page2_1_title" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "What are the risks?"
+                }
+            },
+            "risks_icon" : {
+                "type" : "image",
+                "description" : {
+                    "EN" : ""
+                },
+                "src" : {
+                    "EN" : "/images/eConsent/risks.png"
+                },
+                "options" : {
+                    "isDisplayedAsText" : false,
+                    "ifDisplayed" : "render"
+                }
+            },
+            "page2_1_text" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "<b>Burns from the oven:</b> It is necessary to wear oven mitts while baking. If you do not wear oven-mitts, you may attain burns from the baking pan and/or oven door.<br><br><b>Bad tasting bread:</b>"
+                }
+            },
+            "page2_2" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "page2_2_title",
+                        "page1_2_header",
+                        "page2_2_question"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "page2_2_title" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "Section: What Are The Risks and Benefits?"
+                }
+            },
+            "page2_2_question" : {
+                "type" : "enum",
+                "description" : {
+                    "EN" : "1. Which of the following is a potential risk of Sourdough making?"
+                },
+                "options" : {
+                    "values" : [
+                        {
+                            "description" : {
+                                "EN" : "a. The risk of burns from the oven"
+                            },
+                            "value" : "oven_burns"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "b. The risk of burns from the yeast"
+                            },
+                            "value" : "yeast_burns"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "c. The risk of eating great bread"
+                            },
+                            "value" : "great_bread"
+                        }
+                    ],
+                    "correctResponse" : "oven_burns",
+                    "allowMultipleValues": false,
+                    "requireResponse": true,
+                    "readOnly": false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false,
+                    "isSavable" : false
+                }
+            },
+            "page2_3" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "page2_2_title",
+                        "page1_2_header",
+                        "page2_3_question"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "page2_3_question" : {
+                "type" : "enum",
+                "description" : {
+                    "EN" : "2. True or false: Is sourdough delicious?"
+                },
+                "options" : {
+                    "values" : [
+                        {
+                            "description" : {
+                                "EN" : "a. True"
+                            },
+                            "value" : "true"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "b. False"
+                            },
+                            "value" : "false"
+                        }
+                    ],
+                    "correctResponse" : "true",
+                    "allowMultipleValues": false,
+                    "requireResponse": true,
+                    "readOnly": false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false,
+                    "isSavable" : false
+                }
+            },
+            "acknowledgements" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "statement_consent",
+                        "signUpIcon",
+                        "confidential_info_collected",
+                        "sourdough_risks",
+                        "sourdough_secrets",
+                        "view_long_form",
+                        "download_review_pdf"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "confidential_info_collected" : {
+                "type" : "boolean",
+                "description" : {
+                    "EN" : "I understand that all of the information collected will be kept confidential and that the results will only be used for research purposes."
+                },
+                "options" : {
+                    "correctResponse" : true,
+                    "requireResponse" : true,
+                    "readOnly" : false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false
+                }
+            },
+            "sourdough_risks" : {
+                "type" : "boolean",
+                "description" : {
+                    "EN" : "I understand the risks of sourdough making."
+                },
+                "options" : {
+                    "correctResponse" : true,
+                    "requireResponse" : true,
+                    "readOnly" : false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false
+                }
+            },
+            "sourdough_secrets" : {
+                "type" : "boolean",
+                "description" : {
+                    "EN" : "I will not tell the secrets of sourdough breadmaking"
+                },
+                "options" : {
+                    "correctResponse" : true,
+                    "requireResponse" : true,
+                    "readOnly" : false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false
+                }
+            },
+            "study_consent" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "statement_consent",
+                        "signUpIcon",
+                        "consentText",
+                        "sourdough_consent",
+                        "view_long_form"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "statement_consent" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "Statement of Consent"
+                }
+            },
+            "signUpIcon" : {
+                "type" : "image",
+                "description" : {
+                    "EN" : ""
+                },
+                "src" : {
+                    "EN" : "/images/eConsent/signUp.png"
+                },
+                "options" : {
+                    "isDisplayedAsText" : false,
+                    "ifDisplayed" : "render"
+                }
+            },
+            "consentText" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "I freely and willingly choose to take part in the sourdough making study"
+                }
+            },
+            "sourdough_consent" : {
+                "type" : "enum",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "values" : [
+                        {
+                            "description" : {
+                                "EN" : "I agree"
+                            },
+                            "value" : "yes"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "I disagree"
+                            },
+                            "value" : "no"
+                        }
+                    ],
+                    "isSavable" : true,
+                    "allowMultipleValues": false,
+                    "requireResponse": true,
+                    "readOnly": false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false
+                }
+            },
+            "view_long_form" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "Click here to view a pdf version of the full Informed Consent document"
+                }
+            },
+            "download_review_pdf" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "Download long form"
+                }
+            },
+            "study_partner_consent" : {
+                "type" : "section",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "order": [
+                        "statement_consent",
+                        "signUpIcon",
+                        "studyPartnerConsentText",
+                        "sourdough_study_partner",
+                        "studyPartnerNoticeText"
+                    ],
+                    "showDesc" : false
+                }
+            },
+            "studyPartnerConsentText" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "I agree to having a study partner for the sourdough making study"
+                }
+            },
+            "sourdough_study_partner" : {
+                "type" : "enum",
+                "description" : {
+                    "EN" : ""
+                },
+                "options" : {
+                    "values" : [
+                        {
+                            "description" : {
+                                "EN" : "Yes"
+                            },
+                            "value" : "yes"
+                        },
+                        {
+                            "description" : {
+                                "EN" : "No"
+                            },
+                            "value" : "no"
+                        }
+                    ],
+                    "isSavable" : true,
+                    "allowMultipleValues": false,
+                    "requireResponse": true,
+                    "readOnly": false,
+                    "hideInSurvey" : false,
+                    "showDesc" : false
+                }
+            },
+            "studyPartnerNoticeText" : {
+                "type" : "text",
+                "description" : {
+                    "EN" : "If you select “yes”, a study team member will contact you for your Study Partner name and contact information."
+                }
+            }
+        },
+        "setup"  : [
+            {
+                "name" : "page1",
+                "image" : "/images/eConsent/questionIcon.png",
+                "description" : {
+                    "EN" : "Why is this study being done?"
+                },
+                "order": [
+                  "page1_1",
+                  "page1_2"
+                ]
+            },
+            {
+                "name" : "page3",
+                "image" : "/images/eConsent/risksBenefits.png",
+                "description" : {
+                    "EN" : "What are the risks and benefits?"
+                },
+                "order": [
+                  "page2_1",
+                  "page2_2",
+                  "page2_3"
+                ]
+            },
+            {
+                "name" : "consent",
+                "image" : "/images/eConsent/signUp.png",
+                "description" : {
+                    "EN" : "How do I sign up for this study?"
+                },
+                "order": [
+                  "acknowledgements",
+                  "study_consent",
+                  "study_partner_consent"
+                ]
+            }
+        ]
+    },
+    "ui" : {
+        "page1_1_title" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "question_icon" : {
+            "type" : "image",
+            "options" : {
+                "percentage" : "10"
+            }
+        },
+        "page1_1_paragraph1" : {
+            "type" : "label"
+        },
+        "page1_1_info_sheet_link" : {
+            "type" : "image",
+            "options" : {
+                "percentage" : "100"
+            }
+        },
+        "page1_2_title" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "page1_2_header" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "page1_2_question" : {
+            "type" : "select"
+        },
+        "page2_1_title" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "risks_icon" : {
+            "type" : "image",
+            "options" : {
+                "percentage" : "10"
+            }
+        }, 
+        "page2_1_text" : {
+            "type" : "label"
+        },
+        "page2_2_title" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "page2_2_question" : {
+            "type" : "select"
+        },
+        "page2_3_question" : {
+            "type" : "select"
+        },
+        "signUpIcon" : {
+            "type" : "image",
+            "options" : {
+                "percentage" : "10"
+            }
+        },
+        "statement_consent" : {
+            "type" : "header",
+            "options" : {
+                "level" : 1
+            }
+        },
+        "confidential_info_collected" : {
+            "type" : "checkbox"
+        },
+        "sourdough_risks" : {
+            "type" : "checkbox"
+        },
+        "sourdough_secrets" : {
+            "type" : "checkbox"
+        },
+        "consentText" : {
+            "type" : "label"
+        },
+        "sourdough_consent" : {
+            "type" : "select"
+        },
+        "view_long_form" : {
+            "type" : "link",
+            "options" : {
+                "href" : "/images/eConsent/Long_form.pdf",
+                "isDownloadable" : false
+            }
+        },
+        "download_review_pdf" : {
+            "type" : "link",
+            "options" : {
+                "href" : "/images/eConsent/Long_form.pdf",
+                "isDownloadable" : true
+            }
+        },
+        "studyPartnerConsentText" : {
+            "type" : "label"
+        },
+        "sourdough_study_partner" : {
+            "type" : "select"
+        },
+        "studyPartnerNoticeText" : {
+            "type" : "label"
+        }
+    }
+}
