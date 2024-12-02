@@ -99,11 +99,9 @@ abstract class Endpoint
         $pathparts = explode('/', $path);
 
         // Check if sub-handlers are supported
-        // TODO: This can later be replaced with a check for the subhandler interface
-        // implementation rather than just checking if the function exists.
-        if ($this instanceof SubHandlerInterface && count($pathparts) > 1) {
+        if ($this instanceof HasSubEndpoints && count($pathparts) > 1) {
             $subpath    = $pathparts[1];
-            $subhandler = $this->getSubHandler($subpath);
+            $subhandler = $this->getSubEndpoint($subpath);
 
             // Remove the handled part of the path and pass the remainder
             $remainingPath = implode('/', array_slice($pathparts, 1));
