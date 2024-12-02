@@ -44,15 +44,6 @@ abstract class Endpoint
     ): string;
 
     /**
-     * Returns a sub-handler for a given subpath, if any exists.
-     *
-     * @param string $subpath The subpath to check for a sub-handler.
-     *
-     * @return ?Endpoint       The sub-handler for the subpath, or null if none.
-     */
-    abstract protected function getSubHandler(string $subpath): ?Endpoint;
-
-    /**
      * //TODO: to be moved to a service layer.
      * Handles getting multiple resources.
      *
@@ -61,55 +52,6 @@ abstract class Endpoint
      * @return array The data to be returned as JSON
      */
     protected function get(QueryParams $params): array
-    {
-        return [];
-    }
-
-    /**
-     * //TODO: to be moved to a service layer and made abstract.
-     * Shows a specific resource.
-     *
-     * @param string $resourceId The resource identifier that is requested
-     *
-     * @return array
-     */
-    protected function getOne(string $resourceId): array
-    {
-        return [];
-    }
-
-    /**
-     * //TODO: to be moved to a service layer and made abstract.
-     * Handles updating a specific resource.
-     *
-     * @param array $resource The resource to be updated
-     *
-     * @return array
-     */
-    protected function update(array $resource): array
-    {
-        return [];
-    }
-
-    /**
-     * //TODO: to be moved to a service layer and made abstract.
-     * Handles file upload requests.
-     *
-     * @param array $uploadedFiles The files to be uploaded
-     *
-     * @return void
-     */
-    protected function upload(array $uploadedFiles): void
-    {
-    }
-
-    /**
-     * //TODO: to be moved to a service layer and made abstract.
-     * Handles creating a new resource.
-     *
-     * @return array
-     */
-    protected function create(): array
     {
         return [];
     }
@@ -192,8 +134,6 @@ abstract class Endpoint
     ) : ResponseInterface {
         return match ($request->getMethod()) {
             'GET' => $this->_handleGET($request),
-            'POST' => $this->_handlePOST($request),
-            'PUT' => $this->_handlePUT($request),
             'OPTIONS' => (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods()),
             default => new \LORIS\Http\Response\JSON\MethodNotAllowed(
@@ -224,65 +164,9 @@ abstract class Endpoint
             $request->getQueryParams()
         ))->parse();
 
-        if (count($pathparts) === 1) {
-            $data = $this->get($queryParams);
-        } else {
-            $data = $this->getOne($pathparts[1]);
-        }
+        $data = $this->get($queryParams);
 
         return new \LORIS\Http\Response\JSON\OK($data);
-    }
-
-    /**
-     * Handles PUT requests for this endpoint.
-     *
-     * This method checks the user's permission and processes the request to
-     * update a specific resource based on the URI path.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 PUT request.
-     *
-     * @return ResponseInterface              The response to the PUT request.
-     * @throws \LORIS\Http\Exception\NotFoundException If the path is invalid.
-     */
-    private function _handlePUT(
-        ServerRequestInterface $request
-    ): ResponseInterface {
-        $this->checkPermission($request->getAttribute('user'), Permission::PUT);
-
-        $path      = trim($request->getURI()->getPath(), "/");
-        $pathparts = explode('/', $path);
-
-        if (count($pathparts) === 2) {
-            return $this->update($request, $pathparts[1]);
-        } else {
-            throw new \LORIS\Http\Exception\NotFoundException("Invalid path.");
-        }
-    }
-
-    /**
-     * Handles POST requests for this endpoint.
-     *
-     * This method checks the user's permission and processes the request to
-     * either handle file uploads or create a new resource based on the request
-     * content type.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 POST request.
-     *
-     * @return ResponseInterface              The response to the POST request.
-     */
-    private function _handlePOST(
-        ServerRequestInterface $request
-    ): ResponseInterface {
-        $this->checkPermission($request->getAttribute('user'), Permission::POST);
-
-        $contentType = $request->getHeaderLine('Content-Type');
-
-        if (strpos($contentType, 'multipart/form-data') !== false) {
-            $uploadedFiles = $request->getUploadedFiles();
-            return $this->upload($request, $uploadedFiles);
-        } else {
-            return $this->create($request);
-        }
     }
 
     /**
