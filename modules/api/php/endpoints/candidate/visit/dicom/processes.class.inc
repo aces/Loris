@@ -214,7 +214,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\LorisException $e) {
             $this->logger->log(\Psr\Log\LogLevel::ERROR, $e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'MRI upload process can not be launched (see error log.)'
+                'MRI upload process can not be launched (see error log)'
             );
         }
 
