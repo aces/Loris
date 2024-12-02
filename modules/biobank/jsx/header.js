@@ -243,7 +243,7 @@ Header.propTypes = {
       typeId: PropTypes.number.isRequired,
     }).isRequired,
   }).isRequired,
-  data: PropTypes.obj.isRequired,
+  data: PropTypes.obj,
   setContainer: PropTypes.func.isRequired,
   updateContainer: PropTypes.func.isRequired,
   edit: PropTypes.func.isRequired,
