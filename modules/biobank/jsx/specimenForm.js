@@ -164,7 +164,9 @@ class SpecimenForm extends React.Component {
    */
   async fetchBarcodes(limit) {
     try {
-      const response = await fetch(`${loris.BaseURL}/biobank/barcodes?limit=${limit}`);
+      const response = await fetch(
+        `${loris.BaseURL}/biobank/barcodes?limit=${limit}`
+      );
       const data = await response.json();
       return data.barcodes;
     } catch (error) {
@@ -177,12 +179,10 @@ class SpecimenForm extends React.Component {
    * Generate barcodes and store in the component state.
    */
   async generateBarcodes() {
-    const {options} = this.props;
-    let {list, current} = this.state;
+    let {list} = this.state;
     const limit = Object.keys(list).length;
 
     const barcodes = await this.fetchBarcodes(limit);
-    console.log(barcodes);
 
     list = Object.keys(list).reduce((result, key, index) => {
       const specimen = list[key];

@@ -220,6 +220,9 @@ Header.propTypes = {
     coordinate: PropTypes.string,
   }).isRequired,
   specimen: PropTypes.shape({
+    barcode: PropTypes.string,
+    candidatePSCID: PropTypes.string,
+    sampleNumber: PropTypes.string,
     quantity: PropTypes.number,
     poolId: PropTypes.number,
     typeId: PropTypes.number.isRequired,
