@@ -576,6 +576,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             $projInsert['SpecimenID'] = $specimen->getId();
         }
 
+        $this->_saveProject($specimen, $data);
+
         return $this->getInstanceFromId($specimen->getId());
     }
 
@@ -644,6 +646,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             'Quantity'       => $specimen->getQuantity(),
             'UnitID'         => $specimen->getUnitId(),
             'SessionID'      => $specimen->getSessionId(),
+            'SampleNumber'   => $specimen->getSampleNumber(),
         ];
 
         // I'd prefer a better way of doing this, but for now this is the simplest

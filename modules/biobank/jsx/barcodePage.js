@@ -424,29 +424,29 @@ class BarcodePage extends Component {
 
 BarcodePage.propTypes = {
   data: PropTypes.shape({
-    containers: PropTypes.array.isRequired,
-    specimens: PropTypes.array.isRequired,
-    pools: PropTypes.array.isRequired,
-  }).isRequired,
+    containers: PropTypes.array,
+    specimens: PropTypes.array,
+    pools: PropTypes.array,
+  }),
   options: PropTypes.shape({
     container: PropTypes.shape({
       dimensions: PropTypes.object,
       stati: PropTypes.object,
-    }).isRequired,
-  }).isRequired,
-  updateContainer: PropTypes.func.isRequired,
-  updateSpecimen: PropTypes.func.isRequired,
-  printLabel: PropTypes.func.isRequired,
-  increaseCoordinate: PropTypes.func.isRequired,
-  createSpecimens: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  history: PropTypes.object.isRequired,
-  specimen: PropTypes.object.isRequired,
+    }),
+  }),
+  updateContainer: PropTypes.func,
+  updateSpecimen: PropTypes.func,
+  printLabel: PropTypes.func,
+  increaseCoordinate: PropTypes.func,
+  createSpecimens: PropTypes.func,
+  loading: PropTypes.bool,
+  history: PropTypes.object,
+  specimen: PropTypes.object,
   container: PropTypes.shape({
-    statusId: PropTypes.number.isRequired,
+    statusId: PropTypes.number,
     parentContainerId: PropTypes.number,
     coordinate: PropTypes.string,
-  }).isRequired,
+  }),
 };
 
 export default BarcodePage;

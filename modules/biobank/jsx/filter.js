@@ -97,18 +97,18 @@ class BiobankFilter extends Component {
 }
 
 BiobankFilter.propTypes = {
-  data: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
-  saveBatchEdit: PropTypes.func.isRequired,
-  createPool: PropTypes.func.isRequired,
-  createSpecimens: PropTypes.func.isRequired,
-  updateSpecimens: PropTypes.func.isRequired,
-  editSpecimens: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  increaseCoordinate: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  createContainers: PropTypes.func.isRequired,
-  setData: PropTypes.func.isRequired,
+  data: PropTypes.object,
+  options: PropTypes.object,
+  saveBatchEdit: PropTypes.func,
+  createPool: PropTypes.func,
+  createSpecimens: PropTypes.func,
+  updateSpecimens: PropTypes.func,
+  editSpecimens: PropTypes.func,
+  history: PropTypes.object,
+  increaseCoordinate: PropTypes.func,
+  loading: PropTypes.bool,
+  createContainers: PropTypes.func,
+  setData: PropTypes.func,
 };
 
 export default BiobankFilter;
