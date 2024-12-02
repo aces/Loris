@@ -101,7 +101,7 @@ abstract class Endpoint
         // Check if sub-handlers are supported
         // TODO: This can later be replaced with a check for the subhandler interface
         // implementation rather than just checking if the function exists.
-        if (method_exists($this, 'getSubHandler') && count($pathparts) > 1) {
+        if ($this instanceof SubHandlerInterface && count($pathparts) > 1) {
             $subpath    = $pathparts[1];
             $subhandler = $this->getSubHandler($subpath);
 
