@@ -60,45 +60,59 @@ abstract class Endpoint
      *
      * @return array The data to be returned as JSON
      */
-    abstract protected function get(QueryParams $params): array;
+    protected function get(QueryParams $params): array
+    {
+        return [];
+    }
 
     /**
-     * //TODO: to be moved to a service layer.
+     * //TODO: to be moved to a service layer and made abstract.
      * Shows a specific resource.
      *
      * @param string $resourceId The resource identifier that is requested
      *
      * @return array
      */
-    abstract protected function getOne(string $resourceId): array;
+    protected function getOne(string $resourceId): array
+    {
+        return [];
+    }
 
     /**
-     * //TODO: to be moved to a service layer.
+     * //TODO: to be moved to a service layer and made abstract.
      * Handles updating a specific resource.
      *
      * @param array $resource The resource to be updated
      *
      * @return array
      */
-    abstract protected function update(string $resource): array;
+    protected function update(array $resource): array
+    {
+        return [];
+    }
 
     /**
-     * //TODO: to be moved to a service layer.
+     * //TODO: to be moved to a service layer and made abstract.
      * Handles file upload requests.
      *
      * @param array $uploadedFiles The files to be uploaded
      *
      * @return void
      */
-    abstract protected function upload(array $uploadedFiles): void;
+    protected function upload(array $uploadedFiles): void
+    {
+    }
 
     /**
-     * //TODO: to be moved to a service layer.
+     * //TODO: to be moved to a service layer and made abstract.
      * Handles creating a new resource.
      *
      * @return array
      */
-    abstract protected function create(): array;
+    protected function create(): array
+    {
+        return [];
+    }
 
     /**
      * Defines the allowed HTTP methods for this endpoint.
@@ -211,23 +225,9 @@ abstract class Endpoint
         ))->parse();
 
         if (count($pathparts) === 1) {
-            if (method_exists($this, 'index')) {
-                $data = $this->index($queryParams);
-            } else {
-                $data = []; // Or some default behavior
-            }
+            $data = $this->get($queryParams);
         } else {
-            if (method_exists($this, 'show')) {
-                $data = $this->show(
-                    $request,
-                    $pathparts[1]
-                );
-            } else {
-                // Handle the case where no specific handler exists
-                throw new \LORIS\Http\Exception\NotFoundException(
-                    "Resource '{$pathparts[1]}' not found."
-                );
-            }
+            $data = $this->getOne($pathparts[1]);
         }
 
         return new \LORIS\Http\Response\JSON\OK($data);
@@ -253,7 +253,7 @@ abstract class Endpoint
         $pathparts = explode('/', $path);
 
         if (count($pathparts) === 2) {
-            return $this->handleUpdateRequest($request, $pathparts[1]);
+            return $this->update($request, $pathparts[1]);
         } else {
             throw new \LORIS\Http\Exception\NotFoundException("Invalid path.");
         }
@@ -279,9 +279,9 @@ abstract class Endpoint
 
         if (strpos($contentType, 'multipart/form-data') !== false) {
             $uploadedFiles = $request->getUploadedFiles();
-            return $this->handleFileUploadRequest($request, $uploadedFiles);
+            return $this->upload($request, $uploadedFiles);
         } else {
-            return $this->handleCreateRequest($request);
+            return $this->create($request);
         }
     }
 
