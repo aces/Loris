@@ -48,22 +48,6 @@ class Barcodes extends Endpoint
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param string $subpath The subpath to check for a sub-handler.
-     *
-     * @return ?Endpoint
-     */
-    protected function getSubHandler(string $subpath): ?Endpoint
-    {
-        // No sub-handler exists, but acknowledge the parameter to avoid linting
-        // warnings -- in the future another solution might be more optimal.
-        unset($subpath);
-
-        return null;
-    }
-
-    /**
      * Handles getting multiple resources
      *
      * @param QueryParams $params The number of requested barcodes
