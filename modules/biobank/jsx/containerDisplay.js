@@ -21,7 +21,7 @@ function ContainerDisplay(props) {
   const {
     barcodes,
     coordinates,
-    current,
+    current = {},
     data,
     dimensions,
     editable,

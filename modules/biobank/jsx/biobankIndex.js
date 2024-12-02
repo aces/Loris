@@ -1,16 +1,18 @@
+import {Component} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 
 import BiobankFilter from './filter';
 import BarcodePage from './barcodePage';
+
 import {clone, isEmpty, get, getStream, post} from './helpers.js';
 
 /**
  * The main React entrypoint for the biobank module. This component
  * renders the index page.
  */
-class BiobankIndex extends React.Component {
+class BiobankIndex extends Component {
   /**
    * Constructor
    */

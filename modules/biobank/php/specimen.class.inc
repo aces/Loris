@@ -567,7 +567,7 @@ class Specimen implements
      */
     public function getProjectIds() : array
     {
-        return $this->projectIds;
+        return $this->projectIds ?? [];
     }
 
     /**
