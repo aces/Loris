@@ -51,10 +51,7 @@ abstract class Endpoint
      *
      * @return array The data to be returned as JSON
      */
-    protected function get(QueryParams $params): array
-    {
-        return [];
-    }
+    abstract protected function get(QueryParams $params): array;
 
     /**
      * Defines the allowed HTTP methods for this endpoint.
@@ -101,21 +98,21 @@ abstract class Endpoint
         $path      = trim($request->getURI()->getPath(), "/");
         $pathparts = explode('/', $path);
 
-        // Determine subendpoint handler based on the subpath
-        if (count($pathparts) > 1) {
+        // Check if sub-handlers are supported
+        // TODO: This can later be replaced with a check for the subhandler interface
+        // implementation rather than just checking if the function exists.
+        if (method_exists($this, 'getSubHandler') && count($pathparts) > 1) {
             $subpath    = $pathparts[1];
             $subhandler = $this->getSubHandler($subpath);
 
-            if ($subhandler !== null) {
-                // Remove the handled part of the path and pass the remainder
-                $remainingPath = implode('/', array_slice($pathparts, 1));
+            // Remove the handled part of the path and pass the remainder
+            $remainingPath = implode('/', array_slice($pathparts, 1));
 
-                // Update the request URI path
-                $uri     = $request->getUri()->withPath($remainingPath);
-                $request = $request->withUri($uri);
+            // Update the request URI path
+            $uri     = $request->getUri()->withPath($remainingPath);
+            $request = $request->withUri($uri);
 
-                return $subhandler->process($request, $subhandler);
-            }
+            return $subhandler->process($request, $subhandler);
         }
 
         // Default processing for the main endpoint if no subendpoint matches
@@ -156,9 +153,6 @@ abstract class Endpoint
         ServerRequestInterface $request
     ): ResponseInterface {
         $this->checkPermission($request->getAttribute('user'), Permission::GET);
-
-        $path      = trim($request->getURI()->getPath(), "/");
-        $pathparts = explode('/', $path);
 
         $queryParams = (new QueryParamsHandler(
             $request->getQueryParams()
