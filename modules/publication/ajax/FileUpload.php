@@ -608,7 +608,6 @@ function editProject() : void
 
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
         // check if email exists in database
-        $cid = null;
         $cid = $db->pselectOne(
             'SELECT PublicationCollaboratorID '.
             'FROM publication_collaborator '.
