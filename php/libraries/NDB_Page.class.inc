@@ -98,7 +98,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      * The default dateOptions to send to LorisForm to render elements
      * on this page. This is usually set by subclasses of NDB_Page which
      * need to modify the options to show on a date (ie. min year, max year,
-     * etc.)
+     * etc.). Default values can be added here, which can be overriden.
      *
      * @var array
      */
