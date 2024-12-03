@@ -592,7 +592,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function createDate(
         $field,
         $label,
-        $dateOptions=null,
+        $dateOptions=[],
         $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
