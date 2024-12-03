@@ -102,7 +102,9 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      *
      * @var array
      */
-    public $dateOptions;
+    public $dateOptions = [
+        'maxYear' => '9999'
+    ];
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -315,9 +317,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             'style' => 'max-width:33%; display:inline-block;',
         ]
     ) {
-        if ($options === [] && !empty($this->dateOptions)) {
-            $options = $this->dateOptions;
-        }
+        $options = $options + $this->dateOptions;
         $this->form->addElement('date', $field, $label, $options, $attribs);
     }
 
@@ -598,11 +598,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             'style' => 'max-width:33%; display:inline-block;',
         ]
     ) {
+        
         return $this->form->createElement(
             "date",
             $field,
             $label,
-            $dateOptions,
+            $dateOptions + $this->dateOptions,
             $attribs
         );
     }
