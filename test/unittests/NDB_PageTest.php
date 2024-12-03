@@ -243,7 +243,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is not set. Since
-     * dateOptions is not set, the options array should remain empty.
+     * dateOptions is not set, the options array should just have the default maxYear.
      *
      * @covers NDB_Page::addBasicDate
      * @return void
@@ -267,14 +267,17 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is set. Since
-     * dateOptions is set, the options array should have information in it.
+     * dateOptions is set, the options array should have that information in it
      *
      * @covers NDB_Page::addBasicDate
      * @return void
      */
     public function testAddBasicDateWithDateOptionsSet()
     {
-        $this->_page->dateOptions = ['someOption' => 'true'];
+        $this->_page->dateOptions = [
+            'someOption' => 'true',
+            'maxYear'    => '2028'
+        ];
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
             ['name'    => 'test_name',
@@ -283,7 +286,7 @@ class NDB_PageTest extends TestCase
                 'class'   => 'form-control input-sm',
                 'options' => [
                     'someOption' => 'true',
-                    'maxYear' => '9999'    
+                    'maxYear'    => '2028'
                 ]
             ],
             $this->_page->form->form['test_name']
