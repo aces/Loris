@@ -603,7 +603,7 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => null
+                'options' => []
             ],
             $this->_page->createDate("test_field", "test_label")
         );
