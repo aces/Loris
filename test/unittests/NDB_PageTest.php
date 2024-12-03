@@ -256,7 +256,9 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => []
+                'options' => [
+                    'maxYear' => '9999'
+                ]
             ],
             $this->_page->form->form['test_name']
         );
@@ -279,7 +281,10 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => ['someOption' => 'true']
+                'options' => [
+                    'someOption' => 'true',
+                    'maxYear' => '9999'    
+                ]
             ],
             $this->_page->form->form['test_name']
         );
