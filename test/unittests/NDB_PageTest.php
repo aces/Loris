@@ -243,7 +243,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is not set. Since
-     * dateOptions is not set, the options array should just have the default maxYear.
+     * dateOptions is not set, the options array should have the default maxYear.
      *
      * @covers NDB_Page::addBasicDate
      * @return void

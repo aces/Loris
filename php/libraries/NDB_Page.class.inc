@@ -98,7 +98,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      * The default dateOptions to send to LorisForm to render elements
      * on this page. This is usually set by subclasses of NDB_Page which
      * need to modify the options to show on a date (ie. min year, max year,
-     * etc.). Default values can be added here, which can be overriden.g
+     * etc.). Default values can be added here, which can be overriden.
      *
      * @var array
      */
@@ -311,13 +311,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function addBasicDate(
         $field,
         $label,
-        $options=[],
+        $options,
         $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
         ]
     ) {
-        $options = $options + $this->dateOptions;
+        $options = ($options ?? []) + $this->dateOptions;
         $this->form->addElement('date', $field, $label, $options, $attribs);
     }
 
@@ -592,7 +592,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function createDate(
         $field,
         $label,
-        $dateOptions=[],
+        $dateOptions,
         $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
@@ -602,7 +602,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             "date",
             $field,
             $label,
-            $dateOptions + $this->dateOptions,
+            ($dateOptions ?? []) + $this->dateOptions,
             $attribs
         );
     }
