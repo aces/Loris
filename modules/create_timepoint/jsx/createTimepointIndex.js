@@ -305,6 +305,14 @@ class CreateTimepoint extends React.Component {
             // display conflicts on form.
             this.setState({messages: JSON.parse(data.error)});
           }
+        })
+        .catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
         });
       }
     }).catch((error) => {
