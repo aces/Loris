@@ -306,14 +306,14 @@ class CreateTimepoint extends React.Component {
             this.setState({messages: JSON.parse(data.error)});
           }
         })
-        .catch((error) => {
-          swal.fire({
-            type: 'error',
-            title: 'Error!',
-            text: error,
+          .catch((error) => {
+            swal.fire({
+              type: 'error',
+              title: 'Error!',
+              text: error,
+            });
+            console.error(error);
           });
-          console.error(error);
-        });
       }
     }).catch((error) => {
       console.error('Error! ' + error);
