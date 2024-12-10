@@ -44,7 +44,8 @@ class ResolvedDTO implements DataInstance, SiteHaver
     protected $instrument;
     protected $question;
     protected $description;
-    protected $oldValue;
+    protected $value1;
+    protected $value2;
     protected $correctanswer;
     protected $user1;
     protected $user2;
@@ -69,7 +70,8 @@ class ResolvedDTO implements DataInstance, SiteHaver
             'Instrument'          => $this->instrument,
             'Question'            => $this->question,
             'Description'         => "",
-            'Incorrect Answer'    => $this->oldValue,
+            'Value 1'             => $this->value1,
+            'Value 2'             => $this->value2,
             'Correct Answer'      => $this->correctanswer,
             'User 1'              => $this->user1,
             'User 2'              => $this->user2,
