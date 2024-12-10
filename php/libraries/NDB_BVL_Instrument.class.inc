@@ -25,13 +25,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * The form object for this instrument.
-     *
-     * @var LorisForm
-     */
-    public $form;
-
-    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -39,13 +32,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @var string
      */
     public $formType;
-
-    /**
-     * Array holding the date format
-     *
-     * @var array
-     */
-    public $dateOptions;
 
     /**
      * Type of instrument. Can be 'normal' or 'DirectEntry'
