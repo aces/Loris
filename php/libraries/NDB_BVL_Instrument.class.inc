@@ -843,24 +843,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
-        if (!$this->jsonData) {
-            $oldData = $this->getInstanceData() ?? [];
-        } else {
-            $oldData = $db->pselectOne(
-                "SELECT id.Data FROM flag f
-                        JOIN instrument_data id ON (id.ID=f.DataID)
-                    WHERE CommentID=:cid",
-                ['cid' => $this->getCommentID()]
-            );
-
-            // (The PDO driver seems to return null as "null" for JSON column types)
-            if (!empty($oldData) && $oldData !== "null") {
-                $oldData = json_decode($oldData, true);
-            } else {
-                $oldData = [];
-            }
-        }
-        $newData = array_merge($oldData ?? [], $values);
+        $newData = array_merge($this->getInstanceData() ?? [], $values);
 
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
