@@ -136,7 +136,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Instruments($this->_visit);
             break;
         case 'images':
-            $handler = new Images($this->_visit);
+            $handler = new Images($this->loris, $this->_visit);
             break;
         case 'qc':
             $handler = new Qc($this->_visit);

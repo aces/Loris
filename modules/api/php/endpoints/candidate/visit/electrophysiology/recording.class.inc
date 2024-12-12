@@ -106,6 +106,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );
@@ -156,6 +157,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );
@@ -202,6 +204,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );
