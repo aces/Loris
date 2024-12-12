@@ -113,7 +113,11 @@ class MediaIndex extends Component {
                             + encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>
-            <a href={downloadURL} target="_blank" download={encodeURIComponent(row['File Name'])}>
+            <a 
+              href={downloadURL} 
+              target="_blank" 
+              download={encodeURIComponent(row['File Name'])}
+            >
               {cell}
             </a>
           </td>
