@@ -68,6 +68,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
         //Use basename to remove path traversal characters.
         $filename = $request->getAttribute('filename');
+
         if (empty($filename)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 self::ERROR_EMPTY_FILENAME
