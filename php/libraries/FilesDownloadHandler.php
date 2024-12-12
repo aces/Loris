@@ -75,7 +75,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
 
         assert(is_string($filename) || $filename instanceof \Stringable);
-        $filename = \Utility::resolvePath(strval($filename));
+        $filename = urldecode(\Utility::resolvePath(strval($filename)));
 
         $targetPath = \Utility::appendForwardSlash(
             $this->downloadDirectory->getPathname()
