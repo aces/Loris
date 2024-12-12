@@ -108,6 +108,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withAttribute('pathparts', $pathparts);
 
         $handler = new Electrophysiology\Recording(
+            $this->loris,
             $this->_visit,
             $filename
         );
