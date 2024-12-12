@@ -38,7 +38,7 @@ function editFile()
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Read JSON from STDIN
@@ -91,7 +91,7 @@ function uploadFile()
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Validate media path and destination folder
