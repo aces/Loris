@@ -44,10 +44,14 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit The requested visit
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     * @param \Timepoint           $visit The requested visit
      */
-    public function __construct(\Timepoint $visit)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $visit
+    ) {
         $this->_visit = $visit;
     }
 
@@ -131,6 +135,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $images = $this->_visit->getImages(
+            $this->loris,
             $request->getAttribute('user')
         );
 

@@ -34,10 +34,15 @@ class CandidatesProvisioner extends DBRowProvisioner
     /**
      * Create a RowProvisioner, which gets rows for candidates/
      * endpoint.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
-    {
+    function __construct(
+        protected \LORIS\LorisInstance $loris
+    ) {
         parent::__construct(
+            $this->loris,
             '
              SELECT 
                c.CandID as CandID,

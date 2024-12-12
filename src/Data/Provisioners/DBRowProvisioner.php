@@ -31,9 +31,6 @@ use \LORIS\Data\DataInstance;
  */
 abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
 {
-    protected $query;
-    protected $params;
-
     /**
      * Construct a DB Row provisioner from the given SQL query and
      * bind parameters.
@@ -41,8 +38,11 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string $query  The SQL query to prepare and run
      * @param array  $params The prepared statement bind parameters
      */
-    public function __construct(string $query, array $params)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        protected string $query,
+        protected array $params
+    ) {
         $this->query  = $query;
         $this->params = $params;
     }
@@ -83,13 +83,10 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     public function getAllInstances() : \Traversable
     {
-        $DB      = (\NDB_Factory::singleton())->database();
-        $stmt    = $DB->prepare($this->query);
-        $results = $stmt->execute($this->params);
+        $DB = $this->loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
 
-        if ($results === false) {
-            throw new \Exception("Invalid SQL statement: " . $this->query);
-        }
+        $results = $DB->pselect($this->query, $this->params);
         foreach ($results as $row) {
             yield $this->getInstance($row);
         }

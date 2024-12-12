@@ -23,10 +23,14 @@ class ElectrophysiologyUploaderProvisioner
     /**
      * Create a ElectrophysiologyUploaderProvisioner, which gets rows for
      * the Electrophysiology Uploader menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT
                 e.UploadID,
                 psc.Name,
