@@ -115,16 +115,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
              */
             public function current() : DataInstance
             {
-                $row    = parent::current();
-                $newrow = [];
-                foreach ($row as $key => $val) {
-                    if ($val === null) {
-                        $newrow[$key] = null;
-                    } else {
-                        $newrow[$key] = strval($val);
-                    }
-                }
-                return $this->outer->getInstance($newrow);
+                return $this->outer->getInstance(parent::current());
             }
         };
         return $iterator;
