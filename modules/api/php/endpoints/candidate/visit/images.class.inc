@@ -111,6 +111,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withAttribute('pathparts', $pathparts);
 
         $handler = new Image\Image(
+            $this->loris,
             $this->_visit,
             $filename
         );

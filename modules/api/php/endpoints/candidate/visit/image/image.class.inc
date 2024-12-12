@@ -45,11 +45,16 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit    The requested visit
-     * @param string     $filename The requested image filename
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to retrieve data
+     *                                       from.
+     * @param \Timepoint           $visit    The requested visit
+     * @param string               $filename The requested image filename
      */
-    public function __construct(\Timepoint $visit, string $filename)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $visit,
+        string $filename
+    ) {
         $this->_visit    = $visit;
         $this->_filename = $filename;
     }
