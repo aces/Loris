@@ -1040,15 +1040,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = intval(
-            $db->pselectOne(
-                'SELECT JSON_EXTRACT(inst_d.Data, "$.Examiner") as examinerID
-                FROM instrument_data inst_d
-                JOIN flag f ON f.DataID = inst_d.ID
-                WHERE f.CommentID = :cmnt_id',
-                ['cmnt_id' => $this->getCommentID()]
-            )
-        ) ?? -1;
+        $curr_examinerID = $this->getFieldValue("Examiner");
 
         list(
             $CertificationEnabled,
