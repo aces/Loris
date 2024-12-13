@@ -182,7 +182,7 @@ function deleteTimepoint(
     $instruments = $DB->pselect(
         'SELECT Test_name, CommentID
          FROM flag
-         JOIN test_names ON test_names.ID = flag.TestID
+         JOIN test_names ON (test_names.ID = flag.TestID)
          WHERE SessionID=:sid',
         ['sid' => $sessionID]
     );

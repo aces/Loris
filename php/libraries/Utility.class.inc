@@ -716,7 +716,7 @@ class Utility
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
                 "SELECT Test_name FROM flag
-                 JOIN test_names ON test_names.ID = flag.TestID
+                 JOIN test_names ON (test_names.ID = flag.TestID)
                  WHERE CommentID = :cid",
                 ['cid' => $commentID]
             );

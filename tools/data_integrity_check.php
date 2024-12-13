@@ -40,7 +40,7 @@ foreach ($instruments as $instrument) {
         LEFT JOIN
             test_names
         ON
-            test_names.ID = flag.TestID
+            (test_names.ID = flag.TestID)
         WHERE
             Test_name = :instrument AND
             {$instrument}.CommentID IS NULL
@@ -87,7 +87,7 @@ $duplicate_flag_arr = $DB->pselect(
     JOIN
         test_names
     ON
-        test_names.ID = flag.TestID
+        (test_names.ID = flag.TestID)
     WHERE
         (
             flag.CommentID NOT LIKE 'DDE_%' AND
@@ -99,7 +99,7 @@ $duplicate_flag_arr = $DB->pselect(
                 JOIN
                     test_names
                 ON
-                    test_names.ID = flag.TestID
+                    (test_names.ID = flag.TestID)
                 WHERE
                     test.CommentID NOT LIKE 'DDE_%' AND
                     flag.SessionID = test.SessionID AND
@@ -116,7 +116,7 @@ $duplicate_flag_arr = $DB->pselect(
                 JOIN
                     test_names
                 ON
-                    test_names.ID = flag.TestID
+                    (test_names.ID = flag.TestID)
                 WHERE
                     test.CommentID LIKE 'DDE_%' AND
                     flag.SessionID = test.SessionID AND
