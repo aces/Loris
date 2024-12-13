@@ -92,7 +92,7 @@ class Configuration extends \NDB_Form
             password_algos(),
             array_map(
                 function ($algo) {
-                    return $algo === '2y' ? 'Blake2b' : $algo;
+                    return $algo === '2y' ? 'bcrypt' : $algo;
                 },
                 password_algos()
             )
