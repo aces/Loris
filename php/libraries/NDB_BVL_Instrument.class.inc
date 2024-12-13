@@ -3329,7 +3329,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     static function getDDEInstrumentNamesList(
         \LORIS\LorisInstance $loris,
-        String $Visit_label=null
+        ?string $Visit_label=null
     ) : array {
         $DB = $loris->getDatabaseConnection();
 

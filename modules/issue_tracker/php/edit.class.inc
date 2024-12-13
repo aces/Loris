@@ -375,7 +375,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @return array
      */
-    function getIssueData(int $issueID=null, \User $user): array
+    function getIssueData(?int $issueID=null, \User $user): array
     {
         $db = $this->loris->getDatabaseConnection();
 

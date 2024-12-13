@@ -72,4 +72,4 @@ if (isset($data['comment']) && isset($data['candID'])
     print json_encode($newEntryValues);
 }
 
-    exit();
+    exit(0);
