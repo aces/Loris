@@ -551,6 +551,13 @@ class SpecimenBarcodeForm extends React.Component {
     this.setSpecimen = this.setSpecimen.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // Check if typeId has changed
+    if (prevProps.item.typeId !== this.props.item.typeId) {
+      this.props.setListItem('collection', {}, this.props.itemKey);
+    }
+  }
+
   /**
    * Set the current container.
    *

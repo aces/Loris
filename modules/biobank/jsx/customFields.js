@@ -1,5 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  TextboxElement,
+  DateElement,
+  TimeElement,
+  CheckboxElement,
+  FileElement
+} from 'jsx/Form';
 
 /**
  * Biobank Custom Attribute Fields
@@ -7,23 +14,22 @@ import PropTypes from 'prop-types';
  * @param {object} props The component's props.
  */
 function CustomFields(props) {
-  const {options, errors, fields, object} = props;
+  const {options, errors, attributes, object} = props;
 
-  return Object.keys(fields).map(
+  return attributes.map(
     (attribute, key) => {
-      const datatype = options.specimen.attributeDatatypes[
-        fields[attribute]['datatypeId']
-      ].datatype;
+      const datatype = options.specimen.attributeDatatypes[attribute.datatypeId]
+        .datatype;
       if (datatype === 'text' || datatype === 'number') {
         return (
           <TextboxElement
             key={key}
-            name={attribute}
-            label={fields[attribute].label}
+            name={attribute.id}
+            label={attribute.label}
             onUserInput={props.setData}
-            required={fields[attribute].required}
-            value={object[attribute]}
-            errorMessage={errors[attribute]}
+            required={attribute.required}
+            value={object[attribute.id]}
+            errorMessage={errors[attribute.id]}
           />
         );
       }
@@ -31,12 +37,12 @@ function CustomFields(props) {
         return (
           <DateElement
             key={key}
-            name={attribute}
-            label={fields[attribute].label}
+            name={attribute.id}
+            label={attribute.label}
             onUserInput={props.setData}
-            required={fields[attribute].required}
-            value={object[attribute]}
-            errorMessage={errors[attribute]}
+            required={attribute.required}
+            value={object[attribute.id]}
+            errorMessage={errors[attribute.id]}
           />
         );
       }
@@ -44,42 +50,40 @@ function CustomFields(props) {
         return (
           <TimeElement
             key={key}
-            name={attribute}
-            label={fields[attribute].label}
+            name={attribute.id}
+            label={attribute.label}
             onUserInput={props.setData}
-            required={fields[attribute].required}
-            value={object[attribute]}
-            errorMessage={errors[attribute]}
+            required={attribute.required}
+            value={object[attribute.id]}
+            errorMessage={errors[attribute.id]}
           />
         );
       }
       if (datatype === 'boolean') {
-        // TODO: delete the following line.
-        // object[attribute] == null && props.setData(attribute, false);
         return (
           <CheckboxElement
             key={key}
-            name={attribute}
-            label={fields[attribute].label}
+            name={attribute.id}
+            label={attribute.label}
             onUserInput={props.setData}
-            required={fields[attribute].required}
-            value={object[attribute]}
-            errorMessage={errors[attribute]}
+            required={attribute.required}
+            value={object[attribute.id]}
+            errorMessage={errors[attribute.id]}
           />
         );
       }
       // Do not present the possibility of uploading if file is already set
       // File must instead be deleted or overwritten.
-      if (datatype === 'file' && !(props.data||{})[attribute]) {
+      if (datatype === 'file' && !(props.data||{})[attribute.id]) {
         return (
           <FileElement
             key={key}
-            name={attribute}
-            label={fields[attribute].label}
+            name={attribute.id}
+            label={attribute.label}
             onUserInput={props.setData}
-            required={fields[attribute].required}
-            value={props.current.files[object[attribute]]}
-            errorMessage={errors[attribute]}
+            required={attribute.required}
+            value={props.current.files[object[attribute.id]]}
+            errorMessage={errors[attribute.id]}
           />
         );
       }
@@ -88,7 +92,7 @@ function CustomFields(props) {
 }
 
 CustomFields.propTypes = {
-  fields: PropTypes.object.isRequired,
+  attributes: PropTypes.array.isRequired,
   options: PropTypes.object.isRequired,
   object: PropTypes.object.isRequired,
   setData: PropTypes.func.isRequired,
