@@ -1,4 +1,4 @@
-import {useState, PropsWithChildren, CSSProperties} from 'react';
+import {useState, PropsWithChildren, CSSProperties, ReactNode} from 'react';
 import Swal from 'sweetalert2';
 import Loader from './Loader';
 import {
@@ -6,13 +6,13 @@ import {
   FormElement,
 } from 'jsx/Form';
 
-type ModalProps = PropsWithChildren<{
+export type ModalProps = PropsWithChildren<{
   throwWarning?: boolean;
   show: boolean;
   onClose: () => void;
   onSubmit?: () => Promise<any>;
   onSuccess?: (data: any) => void;
-  title?: string;
+  title?: ReactNode;
 }>;
 
 /**
