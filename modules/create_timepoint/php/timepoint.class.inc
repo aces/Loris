@@ -110,10 +110,20 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if (empty($values['psc'])) {
             unset($values['psc']);
         } else {
-            // set default site value as site of the candidate
-            $candID    = new CandID($values['candID']);
-            $candidate = \Candidate::singleton($candID);
-            $values['defaultpsc'] = $candidate->getCenterID();
+            // Suggested site is the site of the last registered visit
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
+
+            $query  = "
+                SELECT CenterID 
+                FROM session 
+                WHERE CandID=:cid AND Date_visit IS NOT NULL 
+                ORDER BY Date_visit DESC LIMIT 1
+            ";
+            $where  = ['cid' => $values['candID']];
+            $result = iterator_to_array($DB->pselect($query, $where));
+
+            $values['defaultpsc'] = $result[0]['CenterID'];
         }
 
         return new \LORIS\Http\Response\JsonResponse(
