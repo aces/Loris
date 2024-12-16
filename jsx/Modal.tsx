@@ -199,7 +199,7 @@ const Modal = ({
         {submitButton()}
       </div>
     </>
-  );  
+  );
 
   return (
     <div style={modalContainer} onClick={handleClose}>
