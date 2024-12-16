@@ -63,7 +63,6 @@ const SpecimenProcessForm = (props) => {
   );
 
   let specimenProtocols = {};
-  let specimenProtocolAttributes = {};
   Object.entries(options.specimen.protocols).forEach(
     ([id, protocol]) => {
       // FIXME: I really don't like 'toLowerCase()' function, but it's the
@@ -73,19 +72,17 @@ const SpecimenProcessForm = (props) => {
       if (typeId == protocol.typeId && process == processStage
       ) {
         specimenProtocols[id] = protocol.label;
-        const attribute = options.specimen.protocolAttributes[id];
-        specimenProtocolAttributes[id] = attribute;
       }
     }
   );
 
   const renderProtocolFields = () => {
-    if (specimenProtocolAttributes[process.protocolId]) {
+    if (options.specimen.protocolAttributes[process.protocolId]) {
       if (process.data) {
         return <CustomFields
           options={options}
           errors={errors.data || {}}
-          fields={specimenProtocolAttributes[process.protocolId]}
+          attributes={options.specimen.protocolAttributes[process.protocolId]}
           object={process.data}
           setData={setData} />;
       } else {
@@ -178,29 +175,28 @@ const SpecimenProcessForm = (props) => {
       updateButton,
     ];
   } else if (edit === false) {
-    const protocolStaticFields = process.data &&
-    Object.keys(process.data).map(
-      (key) => {
-        let value = process.data[key];
-        if (process.data[key] === true) {
-          value = 'Yes';
-        } else if (process.data[key] === false) {
-          value = 'No';
-        }
-        // FIXME: The label used to be produced in the following way:
-        // label={options.specimen.protocolAttributes[process.protocolId][key].label}
-        // However, causes issues when there is data in the data
-        // object, but the protocolId is not associated with any attributes.
-        // This is a configuration/importing issue that should be fixed.
-        return (
-          <StaticElement
-            key={key}
-            label={options.specimen.attributes[key].label}
-            text={value}
-          />
-        );
+    const protocolAttributes = options.specimen.protocolAttributes[
+      process.protocolId
+    ] || [];
+    
+    const protocolStaticFields = protocolAttributes.map((attribute) => {
+      let value = process.data[attribute.id]; // Fetch the corresponding value from process.data
+
+      // Convert boolean values to "Yes" or "No"
+      if (value === true) {
+        value = 'Yes';
+      } else if (value === false) {
+        value = 'No';
       }
-    );
+
+      return (
+        <StaticElement
+          key={attribute.id}
+          label={attribute.label} // Use the attribute label from the ordered list
+          text={value || '—'} // Use an empty string if value is undefined
+        />
+      );
+    });
 
     const collectionStaticFields = (processStage === 'collection') && (
       <StaticElement
