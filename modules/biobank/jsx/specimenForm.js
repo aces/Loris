@@ -362,60 +362,58 @@ class SpecimenForm extends React.Component {
         onSubmit={this.handleSubmit}
         throwWarning={true}
       >
-        <FormElement>
-          <div className='row'>
-            <div className="col-xs-11">
-              {renderNote()}
-              {renderGlobalFields()}
-              <SelectElement
-                name='projectIds'
-                label='Project'
-                options={this.props.options.projects}
-                onUserInput={this.setProject}
-                required={true}
-                value={current.projectIds}
-                disabled={current.candidateId ? false : true}
-                errorMessage={errors.specimen.projectIds}
-              />
-              {renderRemainingQuantityFields()}
-            </div>
-          </div>
-          <ListForm
-            list={list}
-            errors={errors.list}
-            setList={this.setList}
-            listItem={{container: {}, collection: {}}}
-          >
-            <SpecimenBarcodeForm
-              typeId={current.typeId}
-              options={options}
+        <div className='row'>
+          <div className="col-xs-11">
+            {renderNote()}
+            {renderGlobalFields()}
+            <SelectElement
+              name='projectIds'
+              label='Project'
+              options={this.props.options.projects}
+              onUserInput={this.setProject}
+              required={true}
+              value={current.projectIds}
+              disabled={current.candidateId ? false : true}
+              errorMessage={errors.specimen.projectIds}
             />
-          </ListForm>
-          <br/>
-          <div className='form-top'/>
-          <ContainerParentForm
-            display={true}
-            data={data}
-            setContainer={this.setContainer}
-            setCurrent={this.setCurrent}
-            current={placeHolder}
+            {renderRemainingQuantityFields()}
+          </div>
+        </div>
+        <ListForm
+          list={list}
+          errors={errors.list}
+          setList={this.setList}
+          listItem={{container: {}, collection: {}}}
+        >
+          <SpecimenBarcodeForm
+            typeId={current.typeId}
             options={options}
           />
-          <div className='form-top'/>
-          <ButtonElement
-            name='generate'
-            label='Generate Barcodes'
-            type='button'
-            onUserInput={this.generateBarcodes}
-            disabled={current.candidateId ? false : true}
-          />
-          <CheckboxElement
-            name='printBarcodes'
-            label='Print Barcodes'
-            onUserInput={(name, value) => this.setState({[name]: value})}
-            value={this.state.printBarcodes}
-          />
-        </FormElement>
+        </ListForm>
+        <br/>
+        <div className='form-top'/>
+        <ContainerParentForm
+          display={true}
+          data={data}
+          setContainer={this.setContainer}
+          setCurrent={this.setCurrent}
+          current={placeHolder}
+          options={options}
+        />
+        <div className='form-top'/>
+        <ButtonElement
+          name='generate'
+          label='Generate Barcodes'
+          type='button'
+          onUserInput={this.generateBarcodes}
+          disabled={current.candidateId ? false : true}
+        />
+        <CheckboxElement
+          name='printBarcodes'
+          label='Print Barcodes'
+          onUserInput={(name, value) => this.setState({[name]: value})}
+          value={this.state.printBarcodes}
+        />
       </Modal>
     );
   }
