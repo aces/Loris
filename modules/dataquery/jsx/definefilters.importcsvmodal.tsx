@@ -127,80 +127,76 @@ function ImportCSVModal(props: {
     throwWarning={true}
     onClose={props.closeModal}
     onSubmit={submitPromise}>
-    <div>
-      <form>
-        <fieldset>
-          <div>
-            <dl>
-              <dt style={dtstyle}>CSV containing list of</dt>
-              <dd>
-                <input type="radio" name="csvtype"
-                  checked={csvType == 'candidate'}
-                  onChange={() => setCSVType('candidate')}
-                /> Candidates
-                <input type="radio" name="csvtype"
-                  style={{marginLeft: '1.5em'}}
-                  checked={csvType == 'session'}
-                  onChange={() => setCSVType('session')}
-                /> Sessions
-              </dd>
-              <dt style={dtstyle}>Candidate identifier type</dt>
-              <dd><input type="radio" name="candidtype"
-                checked={idType == 'CandID'}
-                onChange={() => setIdType('CandID')}
-              /> DCC ID
-              <input type="radio" name="candidtype"
-                style={{marginLeft: '1.5em'}}
-                checked={idType == 'PSCID'}
-                onChange={() => setIdType('PSCID')}
-              /> PSCID
-              </dd>
-              <dt style={dtstyle}>
-                                Does CSV contain a header line?
-              </dt>
-              <dd><input type="radio" name="header"
-                checked={csvHeader == true}
-                onChange={() => setCSVHeader(true)}
-              /> Yes
-              <input type="radio" name="header"
-                style={{marginLeft: '1.5em'}}
-                checked={csvHeader == false}
-                onChange={() => setCSVHeader(false)}
-              /> No
-              </dd>
-              <dt style={dtstyle}>CSV File</dt>
-              <dd><FileElement label='' name="csvfile"
-                value={csvFile}
-                onUserInput={
-                  (filename: string, file: string) => {
-                    setCSVFile(file);
-                    const papaparseConfig:
-                                            Papa.ParseConfig<any> = {
-                                              skipEmptyLines: true,
-                                              complete: csvParsed,
-                                              // Setting this to try would cause
-                                              // papaparse to return an object
-                                              // instead of string. We just skip
-                                              // the first row if the user says
-                                              // they have a header when parsing
-                                              // results.
-                                              header: false,
-                                            };
-                    // Only 1 column, papaparse can't detect
-                    // the delimiter if it's not explicitly
-                    // specified.
-                    if (csvType == 'candidate') {
-                      papaparseConfig.delimiter = ',';
-                    }
-                    Papa.parse(file, papaparseConfig);
-                  }
+    <fieldset>
+      <div>
+        <dl>
+          <dt style={dtstyle}>CSV containing list of</dt>
+          <dd>
+            <input type="radio" name="csvtype"
+              checked={csvType == 'candidate'}
+              onChange={() => setCSVType('candidate')}
+            /> Candidates
+            <input type="radio" name="csvtype"
+              style={{marginLeft: '1.5em'}}
+              checked={csvType == 'session'}
+              onChange={() => setCSVType('session')}
+            /> Sessions
+          </dd>
+          <dt style={dtstyle}>Candidate identifier type</dt>
+          <dd><input type="radio" name="candidtype"
+            checked={idType == 'CandID'}
+            onChange={() => setIdType('CandID')}
+          /> DCC ID
+          <input type="radio" name="candidtype"
+            style={{marginLeft: '1.5em'}}
+            checked={idType == 'PSCID'}
+            onChange={() => setIdType('PSCID')}
+          /> PSCID
+          </dd>
+          <dt style={dtstyle}>
+                            Does CSV contain a header line?
+          </dt>
+          <dd><input type="radio" name="header"
+            checked={csvHeader == true}
+            onChange={() => setCSVHeader(true)}
+          /> Yes
+          <input type="radio" name="header"
+            style={{marginLeft: '1.5em'}}
+            checked={csvHeader == false}
+            onChange={() => setCSVHeader(false)}
+          /> No
+          </dd>
+          <dt style={dtstyle}>CSV File</dt>
+          <dd><FileElement label='' name="csvfile"
+            value={csvFile}
+            onUserInput={
+              (filename: string, file: string) => {
+                setCSVFile(file);
+                const papaparseConfig:
+                                        Papa.ParseConfig<any> = {
+                                          skipEmptyLines: true,
+                                          complete: csvParsed,
+                                          // Setting this to try would cause
+                                          // papaparse to return an object
+                                          // instead of string. We just skip
+                                          // the first row if the user says
+                                          // they have a header when parsing
+                                          // results.
+                                          header: false,
+                                        };
+                // Only 1 column, papaparse can't detect
+                // the delimiter if it's not explicitly
+                // specified.
+                if (csvType == 'candidate') {
+                  papaparseConfig.delimiter = ',';
                 }
-              /></dd>
-            </dl>
-          </div>
-        </fieldset>
-      </form>
-    </div>
+                Papa.parse(file, papaparseConfig);
+              }
+            }
+          /></dd>
+        </dl>
+      </div>
+    </fieldset>
   </Modal>;
 }
 
