@@ -4,7 +4,6 @@ import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import {
-  FormElement,
   CheckboxElement,
   StaticElement,
   SearchableDropdown,
