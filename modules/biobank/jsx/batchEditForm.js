@@ -5,7 +5,6 @@ import Modal from 'Modal';
 import Loader from 'Loader';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
-  FormElement,
   TextboxElement,
   SelectElement,
   StaticElement,
@@ -497,49 +496,47 @@ class BatchEditForm extends React.PureComponent {
         onSubmit={Object.keys(list).length > 1 && handleSubmit}
         throwWarning={true}
       >
-        <FormElement>
-          <div className='row'>
-            <div className='col-sm-10 col-sm-offset-1'>
-              <StaticElement
-                label='Editing Note'
-                text="Select or Scan the specimens to be edited. Specimens
-                      must share the same Type."
-              />
-              <StaticElement
-                label='Specimen Type'
-                text={(options.specimen.types[current.typeId]||{}).label || '—'}
-              />
-              <div className='row'>
-                <div className='col-xs-6'>
-                  <h4>Barcode Input</h4>
-                  <div className='form-top'/>
-                  <BarcodeInput
-                    data={data}
-                    options={options}
-                    list={list}
-                    validateListItem={this.validateListItem}
-                    addListItem={this.addListItem}
-                  />
-                  <SearchableDropdown
-                    name={'poolId'}
-                    label={'Pool'}
-                    onUserInput={handlePoolInput}
-                    options={pools}
-                    value={poolId}
-                  />
-                </div>
-                <div className='col-xs-6'>
-                  <h4>Barcode List</h4>
-                  <div className='form-top'/>
-                  <div className='preparation-list'>
-                    {barcodeList}
-                  </div>
+        <div className='row'>
+          <div className='col-sm-10 col-sm-offset-1'>
+            <StaticElement
+              label='Editing Note'
+              text="Select or Scan the specimens to be edited. Specimens
+                    must share the same Type."
+            />
+            <StaticElement
+              label='Specimen Type'
+              text={(options.specimen.types[current.typeId]||{}).label || '—'}
+            />
+            <div className='row'>
+              <div className='col-xs-6'>
+                <h4>Barcode Input</h4>
+                <div className='form-top'/>
+                <BarcodeInput
+                  data={data}
+                  options={options}
+                  list={list}
+                  validateListItem={this.validateListItem}
+                  addListItem={this.addListItem}
+                />
+                <SearchableDropdown
+                  name={'poolId'}
+                  label={'Pool'}
+                  onUserInput={handlePoolInput}
+                  options={pools}
+                  value={poolId}
+                />
+              </div>
+              <div className='col-xs-6'>
+                <h4>Barcode List</h4>
+                <div className='form-top'/>
+                <div className='preparation-list'>
+                  {barcodeList}
                 </div>
               </div>
-              {editForms}
             </div>
+            {editForms}
           </div>
-        </FormElement>
+        </div>
       </Modal>
     );
   }
