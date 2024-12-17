@@ -34,7 +34,7 @@ class RedcapConfiguration
     /**
      * A list of REDCap instances.
      *
-     * @var RedcapConfigurationInstance[]
+     * @var array<string, RedcapConfigurationInstance> The list of instance-specific REDCap configurations, indexed by instance name.
      */
     private array $_instances;
 
@@ -136,11 +136,11 @@ class RedcapConfiguration
      */
     public function hasInstanceName(string $instanceName): bool
     {
-        return !is_null($this->getInstanceByName($instanceName));
+        return array_key_exists($instanceName, $this->_instances);
     }
 
     /**
-     * Add a REDCap proejct to a REDCap instance.
+     * Add a REDCap project to a REDCap instance.
      *
      * @param string $instanceName a REDCap instance name
      * @param string $projectID    a REDCap project ID

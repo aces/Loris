@@ -47,7 +47,7 @@ class RedcapConfigurationInstance
     /**
      * A list of projects accessible on this REDCap instance.
      *
-     * @var RedcapConfigurationProject[]
+     * @var array<string, RedcapConfigurationProject> The list of project-specific REDCap configurations, indexed by project ID.
      */
     private array $_projects;
 

@@ -25,7 +25,6 @@ use LORIS\redcap\models\RedcapProp;
  */
 class RedcapInstrument extends RedcapProp
 {
-
     /**
      * Redcap instrument num.
      *

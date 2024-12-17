@@ -100,7 +100,7 @@ class Notifications extends Endpoint
     {
         $db = $this->loris->getDatabaseConnection();
 
-        // Try url-endoded first
+        // Try url-encoded first
         $data = $request->getParsedBody();
         if (empty($data)) {
             // Fallback to application/json

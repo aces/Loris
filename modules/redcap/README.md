@@ -71,7 +71,7 @@ As such, **clearly defining event/visit and record/PSCID for studies is crucial 
 ### REDCap Instrument State
 
 REDCap DET notification `${instrument_backend_name}_complete` property defines the state of a REDCap instrument.
-It can only be one of the following trhree states:
+It can only be one of the following three states:
 
 - 0 = not complete.
 - 1 = unverified.
@@ -96,8 +96,8 @@ Only instruments defined there can be imported. **All others will be ignored**.
 
 ### LORIS Instrument State
 
-be To importable, LORIS version of REDCap instrument must:
+To be importable, the LORIS version of a REDCap instrument must:
 - have a associated instrument file.
 - have a database definition i.e. in test_names, session, test_battery tables.
 - have a started visit, with a populated battery.
-- have a visit that correspond to REDCap event name.
+- have a visit that corresponds to a REDCap event name.
