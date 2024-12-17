@@ -6,7 +6,6 @@ import Modal from 'Modal';
 import Loader from 'Loader';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
-  FormElement,
   StaticElement,
   SearchableDropdown,
 } from 'jsx/Form';
@@ -245,52 +244,50 @@ class BatchProcessForm extends React.PureComponent {
 
     const handlePoolInput = (name, value) => value && this.setPool(name, value);
     const form = (
-      <FormElement>
-        <div className='row'>
-          <div className='col-sm-10 col-sm-offset-1'>
-            <StaticElement
-              label='Processing Note'
-              text="Select or Scan the specimens to be prepared. Specimens must
-                    have a Status of 'Available', and share the same Type.
-                    Any previous value associated with a Specimen will be
-                    overwritten if one is added on this form."
-            />
-            <StaticElement
-              label='Specimen Type'
-              text={(options.specimen.types[current.typeId]||{}).label || '—'}
-            />
-            <div className='row'>
-              <div className='col-xs-6'>
-                <h4>Barcode Input</h4>
-                <div className='form-top'/>
-                <BarcodeInput
-                  data={data}
-                  options={options}
-                  list={list}
-                  containerId={containerId}
-                  validateListItem={this.validateListItem}
-                  addListItem={this.addListItem}
-                />
-                <SearchableDropdown
-                  name={'poolId'}
-                  label={'Pool'}
-                  onUserInput={handlePoolInput}
-                  options={pools}
-                  value={poolId}
-                />
-              </div>
-              <div className='col-xs-6'>
-                <h4>Barcode List</h4>
-                <div className='form-top'/>
-                <div className='preparation-list'>
-                  {barcodeList}
-                </div>
+      <div className='row'>
+        <div className='col-sm-10 col-sm-offset-1'>
+          <StaticElement
+            label='Processing Note'
+            text="Select or Scan the specimens to be prepared. Specimens must
+                  have a Status of 'Available', and share the same Type.
+                  Any previous value associated with a Specimen will be
+                  overwritten if one is added on this form."
+          />
+          <StaticElement
+            label='Specimen Type'
+            text={(options.specimen.types[current.typeId]||{}).label || '—'}
+          />
+          <div className='row'>
+            <div className='col-xs-6'>
+              <h4>Barcode Input</h4>
+              <div className='form-top'/>
+              <BarcodeInput
+                data={data}
+                options={options}
+                list={list}
+                containerId={containerId}
+                validateListItem={this.validateListItem}
+                addListItem={this.addListItem}
+              />
+              <SearchableDropdown
+                name={'poolId'}
+                label={'Pool'}
+                onUserInput={handlePoolInput}
+                options={pools}
+                value={poolId}
+              />
+            </div>
+            <div className='col-xs-6'>
+              <h4>Barcode List</h4>
+              <div className='form-top'/>
+              <div className='preparation-list'>
+                {barcodeList}
               </div>
             </div>
-            {editForms}
           </div>
+          {editForms}
         </div>
-      </FormElement>
+      </div>
     );
 
     const handleClose = () => this.setState(initialState, this.props.onClose);
