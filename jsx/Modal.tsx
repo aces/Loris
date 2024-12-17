@@ -1,18 +1,17 @@
-import {useState, PropsWithChildren, CSSProperties} from 'react';
+import {useState, PropsWithChildren, CSSProperties, ReactNode} from 'react';
 import Swal from 'sweetalert2';
 import Loader from './Loader';
 import {
   ButtonElement,
-  FormElement,
 } from 'jsx/Form';
 
-type ModalProps = PropsWithChildren<{
+export type ModalProps = PropsWithChildren<{
   throwWarning?: boolean;
   show: boolean;
   onClose: () => void;
   onSubmit?: () => Promise<any>;
   onSuccess?: (data: any) => void;
-  title?: string;
+  title?: ReactNode;
 }>;
 
 /**
@@ -87,7 +86,11 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return <div style={submitStyle}><ButtonElement/></div>;
+      return (
+        <div style={submitStyle}>
+          <ButtonElement onUserInput={handleSubmit}/>
+        </div>
+      );
     }
   };
 
@@ -190,17 +193,6 @@ const Modal = ({
     </div>
   );
 
-  const content = (
-    <>
-      <div style={bodyStyle}>{show && children}</div>
-      <div style={footerStyle}>
-        {loader}
-        {successDisplay}
-        {submitButton()}
-      </div>
-    </>
-  );  
-
   return (
     <div style={modalContainer} onClick={handleClose}>
       <div style={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -209,11 +201,12 @@ const Modal = ({
           <span style={glyphStyle} onClick={handleClose}>×</span>
         </div>
         <div>
-          {onSubmit ? (
-            <FormElement onSubmit={handleSubmit}>
-              {content}
-            </FormElement>
-          ) : content}
+          <div style={bodyStyle}>{show && children}</div>
+          <div style={footerStyle}>
+            {loader}
+            {successDisplay}
+            {submitButton()}
+          </div>
         </div>
       </div>
     </div>
