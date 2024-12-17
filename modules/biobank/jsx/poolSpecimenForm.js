@@ -3,7 +3,6 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
-  FormElement,
   SelectElement,
   StaticElement,
   TextboxElement,
@@ -201,113 +200,111 @@ class PoolSpecimenForm extends React.Component {
     // Generate Pool form.
     const specimenUnits = mapFormOptions(options.specimen.units, 'label');
     const form = (
-      <FormElement name="poolSpecimenForm">
-        <div className='row'>
-          <div className='col-sm-10 col-sm-offset-1'>
-            <StaticElement
-              label='Pooling Note'
-              text="Select or Scan the specimens to be pooled. Specimens must
-                    have a Status of 'Available', have a Quantity of greater
-                    than 0, and share the same Type, PSCID, Visit Label
-                    and Current Site. Pooled specimens cannot already belong to
-                    a pool. Once pooled, the Status of specimen will be changed
-                    to 'Dispensed' and there Quantity set to '0'"
-            />
-            <SearchableDropdown
-              name='typeId'
-              label='Specimen Type'
-              onUserInput={this.setFilter}
-              disabled={!isEmpty(list)}
-              value={filter.typeId}
-              options={mapFormOptions(options.specimen.types, 'label')}
-            />
-            <SearchableDropdown
-              name='candidateId'
-              label='PSCID'
-              onUserInput={this.setFilter}
-              disabled={!isEmpty(list)}
-              value={filter.candidateId}
-              options={mapFormOptions(options.candidates, 'pscid')}
-            />
-            <SearchableDropdown
-              name='sessionId'
-              label='Visit Label'
-              onUserInput={this.setFilter}
-              disabled={!isEmpty(list) || !filter.candidateId}
-              value={filter.sessionId}
-              options={mapFormOptions(
-                (options?.candidateSessions?.[filter.candidateId] || {}),
-                'label'
-              )}
-            />
-            <div className='row'>
-              <div className='col-xs-6'>
-                <h4>Barcode Input</h4>
-                <div className='form-top'/>
-                <BarcodeInput
-                  list={list}
-                  data={data}
-                  filter={filter}
-                  options={options}
-                  errors={errors}
-                  containerId={containerId}
-                  validateListItem={this.validateListItem}
-                  setPoolList={this.setPoolList}
-                />
-              </div>
-              <div className='col-xs-6'>
-                <h4>Barcode List</h4>
-                <div className='form-top'/>
-                <div className='preparation-list'>
-                  {barcodeList}
-                </div>
+      <div className='row'>
+        <div className='col-sm-10 col-sm-offset-1'>
+          <StaticElement
+            label='Pooling Note'
+            text="Select or Scan the specimens to be pooled. Specimens must
+                  have a Status of 'Available', have a Quantity of greater
+                  than 0, and share the same Type, PSCID, Visit Label
+                  and Current Site. Pooled specimens cannot already belong to
+                  a pool. Once pooled, the Status of specimen will be changed
+                  to 'Dispensed' and there Quantity set to '0'"
+          />
+          <SearchableDropdown
+            name='typeId'
+            label='Specimen Type'
+            onUserInput={this.setFilter}
+            disabled={!isEmpty(list)}
+            value={filter.typeId}
+            options={mapFormOptions(options.specimen.types, 'label')}
+          />
+          <SearchableDropdown
+            name='candidateId'
+            label='PSCID'
+            onUserInput={this.setFilter}
+            disabled={!isEmpty(list)}
+            value={filter.candidateId}
+            options={mapFormOptions(options.candidates, 'pscid')}
+          />
+          <SearchableDropdown
+            name='sessionId'
+            label='Visit Label'
+            onUserInput={this.setFilter}
+            disabled={!isEmpty(list) || !filter.candidateId}
+            value={filter.sessionId}
+            options={mapFormOptions(
+              (options?.candidateSessions?.[filter.candidateId] || {}),
+              'label'
+            )}
+          />
+          <div className='row'>
+            <div className='col-xs-6'>
+              <h4>Barcode Input</h4>
+              <div className='form-top'/>
+              <BarcodeInput
+                list={list}
+                data={data}
+                filter={filter}
+                options={options}
+                errors={errors}
+                containerId={containerId}
+                validateListItem={this.validateListItem}
+                setPoolList={this.setPoolList}
+              />
+            </div>
+            <div className='col-xs-6'>
+              <h4>Barcode List</h4>
+              <div className='form-top'/>
+              <div className='preparation-list'>
+                {barcodeList}
               </div>
             </div>
-            <div className='form-top'/>
-            <TextboxElement
-              name='label'
-              label='Label'
-              onUserInput={this.setPool}
-              required={true}
-              value={pool.label}
-              errorMessage={errors.label}
-            />
-            <TextboxElement
-              name='quantity'
-              label='Quantity'
-              onUserInput={this.setPool}
-              required={true}
-              value={pool.quantity}
-              errorMessage={errors.quantity}
-            />
-            <SelectElement
-              name='unitId'
-              label='Unit'
-              options={specimenUnits}
-              onUserInput={this.setPool}
-              required={true}
-              value={pool.unitId}
-              errorMessage={errors.unitId}
-            />
-            <DateElement
-              name='date'
-              label='Date'
-              onUserInput={this.setPool}
-              required={true}
-              value={pool.date}
-              errorMessage={errors.date}
-            />
-            <TimeElement
-              name='time'
-              label='Time'
-              onUserInput={this.setPool}
-              required={true}
-              value={pool.time}
-              errorMessage={errors.time}
-            />
           </div>
+          <div className='form-top'/>
+          <TextboxElement
+            name='label'
+            label='Label'
+            onUserInput={this.setPool}
+            required={true}
+            value={pool.label}
+            errorMessage={errors.label}
+          />
+          <TextboxElement
+            name='quantity'
+            label='Quantity'
+            onUserInput={this.setPool}
+            required={true}
+            value={pool.quantity}
+            errorMessage={errors.quantity}
+          />
+          <SelectElement
+            name='unitId'
+            label='Unit'
+            options={specimenUnits}
+            onUserInput={this.setPool}
+            required={true}
+            value={pool.unitId}
+            errorMessage={errors.unitId}
+          />
+          <DateElement
+            name='date'
+            label='Date'
+            onUserInput={this.setPool}
+            required={true}
+            value={pool.date}
+            errorMessage={errors.date}
+          />
+          <TimeElement
+            name='time'
+            label='Time'
+            onUserInput={this.setPool}
+            required={true}
+            value={pool.time}
+            errorMessage={errors.time}
+          />
         </div>
-      </FormElement>
+      </div>
     );
 
     const handleClose = () => this.setState(initialState, this.props.onClose);
