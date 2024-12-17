@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Modal from 'Modal';
 import {ListForm, ListItem} from './listForm.js';
 import {
-  FormElement,
   SelectElement,
   TextboxElement,
   DateElement,
@@ -84,29 +83,27 @@ class ContainerForm extends Component {
         onSubmit={this.handleSubmit}
         throwWarning={true}
       >
-        <FormElement>
-          <div className="row">
-            <div className="col-xs-11">
-              <SelectElement
-                name="centerId"
-                label="Site"
-                options={options.centers}
-                onUserInput={this.setCurrent}
-                required={true}
-                value={current.centerId}
-                errorMessage={(errors.container||{}).centerId}
-              />
-            </div>
+        <div className="row">
+          <div className="col-xs-11">
+            <SelectElement
+              name="centerId"
+              label="Site"
+              options={options.centers}
+              onUserInput={this.setCurrent}
+              required={true}
+              value={current.centerId}
+              errorMessage={(errors.container||{}).centerId}
+            />
           </div>
-          <ListForm
-            list={list}
-            errors={errors.list}
-            setList={this.setList}
-            listItem={{}}
-          >
-            <ContainerSubForm options={options}/>
-          </ListForm>
-        </FormElement>
+        </div>
+        <ListForm
+          list={list}
+          errors={errors.list}
+          setList={this.setList}
+          listItem={{}}
+        >
+          <ContainerSubForm options={options}/>
+        </ListForm>
       </Modal>
     );
   }

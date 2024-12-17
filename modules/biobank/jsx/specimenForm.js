@@ -5,7 +5,6 @@ import {ListForm, ListItem} from './listForm';
 import Modal from 'Modal';
 import {mapFormOptions, clone, padBarcode} from './helpers.js';
 import {
-  FormElement,
   SearchableDropdown,
   StaticElement,
   SelectElement,
