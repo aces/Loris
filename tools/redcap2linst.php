@@ -24,8 +24,10 @@ require_once __DIR__ . "/generic_includes.php";
 
 // load redcap module to use the client
 $lorisInstance->getModule('redcap')->registerAutoloader();
-use LORIS\redcap\RedcapHTTPClientHandler;
+
+use LORIS\redcap\config\RedcapConfigParser;
 use LORIS\redcap\models\RedcapDictionaryRecord;
+use LORIS\redcap\RedcapHttpClient;
 
 // options
 $opts = getopt(
@@ -44,15 +46,15 @@ $opts = getopt(
 $options = checkOptions($lorisInstance, $opts);
 
 // get REDCap importable instrument list
-$config  = $lorisInstance->getConfiguration();
-$impInst = $config->getSetting('redcap_importable_instrument');
+$config         = $lorisInstance->getConfiguration();
+$imp_instrument = $config->getSetting('redcap_importable_instrument');
 
 // this will only return the importable instruments
 if ($options['inputType'] === 'api') {
     // import only selected instruments from REDCap
     fwrite(STDOUT, "\n-- Getting metadata from REDCap connection.\n");
     $dict = $options['redcapConnection']->getDataDictionary(
-        $impInst,
+        $imp_instrument,
         $options['trimInstrumentName']
     );
 } else {
@@ -60,7 +62,7 @@ if ($options['inputType'] === 'api') {
     fwrite(STDOUT, "\n-- Getting metadata from input file.\n");
     $dict = getDictionaryCSVStream(
         $options['file'],
-        $impInst,
+        $imp_instrument,
         $options['trimInstrumentName']
     );
 }
@@ -68,27 +70,27 @@ if ($options['inputType'] === 'api') {
 // create LINST lines by instrument
 fwrite(STDOUT, "\n-- Parsing records...\n");
 $instruments = [];
-foreach ($dict as $dictRecord) {
-    $linst = $dictRecord->toLINST();
+foreach ($dict as $dict_record) {
+    $linst = $dict_record->toLINST();
     if (!empty($linst)) {
-        $instruments[$dictRecord->getFormName()][] = $linst;
+        $instruments[$dict_record->getFormName()][] = $linst;
     }
 }
 
 // output directory
-$outputDir = $options['outputDir'];
+$output_dir = $options['outputDir'];
 
 // back-end name/title instrument mapping
-$redcapIntrumentsMap = ($options['redcapConnection'])->getInstruments(true);
+$redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 
 // write instrument
-foreach ($instruments as $instname => $instrument) {
+foreach ($instruments as $instrument_name => $instrument) {
     writeLINSTFile(
         $options['outputDir'],
-        $instname,
-        $redcapIntrumentsMap[$instname],
+        $instrument_name,
+        $redcap_intruments_map[$instrument_name],
         $instrument
     );
 }
@@ -101,26 +103,26 @@ fwrite(STDOUT, "\n-- end\n");
 /**
  * Get the dictionary from a CSV file.
  *
- * @param string $inputFile             a file path
- * @param array  $importableInstruments a list of importable instruments
- * @param bool   $trimName              should the instrument name be trimmed?
+ * @param string $input_file             a file path
+ * @param array  $importable_instruments a list of importable instruments
+ * @param bool   $trim_name              should the instrument name be trimmed?
  *
  * @return RedcapDictionaryRecord[] dictionary
  */
 function getDictionaryCSVStream(
-    string $inputFile,
-    array $importableInstruments,
-    bool $trimName
+    string $input_file,
+    array $importable_instruments,
+    bool $trim_name,
 ): array {
-    if (empty($inputFile)) {
+    if (empty($input_file)) {
         fprintf(STDERR, "Required a REDCap dictionary file.\n");
         exit(1);
     }
 
     // If a local input file was specified just open it
-    $fp = fopen($inputFile, "r");
+    $fp = fopen($input_file, "r");
     if ($fp === false) {
-        fprintf(STDERR, "Could not open file $inputFile\n");
+        fprintf(STDERR, "Could not open file $input_file\n");
         exit(1);
     }
 
@@ -130,18 +132,18 @@ function getDictionaryCSVStream(
     $headers = RedcapDictionaryRecord::getHeaders();
 
     // read file
-    $dictionary      = [];
-    $badMap          = 0;
-    $mapped          = 0;
-    $lastREDCapError = '';
+    $dictionary        = [];
+    $badMap            = 0;
+    $mapped            = 0;
+    $last_redcap_error = '';
     while ($row = fgetcsv($fp)) {
         $inst = $row[1];
         // skip non importable instruments
-        if (!in_array($inst, $importableInstruments, true)) {
+        if (!in_array($inst, $importable_instruments, true)) {
             $msg = " -> instrument not importable '$inst', skipped.\n";
             // to avoid repeating same msg
-            if ($lastREDCapError !== $msg) {
-                $lastREDCapError = $msg;
+            if ($last_redcap_error !== $msg) {
+                $last_redcap_error = $msg;
                 fwrite(STDERR, $msg);
             }
             continue;
@@ -151,7 +153,7 @@ function getDictionaryCSVStream(
         $metadata = $row;
 
         // do not trim
-        if (!$trimName) {
+        if (!$trim_name) {
             $dd = new RedcapDictionaryRecord(zip($headers, $metadata));
             $mapped++;
         } else {
@@ -173,7 +175,7 @@ function getDictionaryCSVStream(
     fclose($fp);
 
     // bad map
-    if ($trimName) {
+    if ($trim_name) {
         fwrite(STDERR, "\nCould not map $badMap fields\nMapped $mapped fields\n");
     }
 
@@ -212,25 +214,25 @@ function zip(array &$headers, array &$metadata): array
 /**
  * Write LINST file and its associated META file.
  *
- * @param string $outputDir  the output directory
- * @param string $instname   the instrument name
- * @param string $instTitle  the instrument title/label
- * @param array  $instrument the instrument data
+ * @param string $output_dir       the output directory
+ * @param string $instrument_name  the instrument name
+ * @param string $instrument_title the instrument title/label
+ * @param array  $instrument       the instrument data
  *
  * @return void
  */
 function writeLINSTFile(
-    string $outputDir,
-    string $instname,
-    string $instTitle,
+    string $output_dir,
+    string $instrument_name,
+    string $instrument_title,
     array $instrument
 ): void {
-    fwrite(STDERR, " -> writing '$instname'\n");
+    fwrite(STDERR, " -> writing '$instrument_name'\n");
     //
-    $fp = fopen("$outputDir/$instname.linst", "w");
-    fwrite($fp, "{-@-}testname{@}$instname\n");
-    fwrite($fp, "table{@}$instname\n");
-    fwrite($fp, "title{@}$instTitle\n");
+    $fp = fopen("$output_dir/$instrument_name.linst", "w");
+    fwrite($fp, "{-@-}testname{@}$instrument_name\n");
+    fwrite($fp, "table{@}$instrument_name\n");
+    fwrite($fp, "title{@}$instrument_title\n");
 
     // Standard LORIS metadata fields that the instrument builder adds
     // and LINST class automatically adds to instruments.
@@ -259,12 +261,12 @@ function writeLINSTFile(
     fclose($fp);
 
     // META file
-    $fpMeta = fopen("$outputDir/$instname.meta", "w");
-    fwrite($fpMeta, "testname{@}$instname\n");
-    fwrite($fpMeta, "table{@}$instname\n");
-    fwrite($fpMeta, "jsondata{@}true\n");
-    fwrite($fpMeta, "norules{@}true");
-    fclose($fpMeta);
+    $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
+    fwrite($fp_meta, "testname{@}$instrument_name\n");
+    fwrite($fp_meta, "table{@}$instrument_name\n");
+    fwrite($fp_meta, "jsondata{@}true\n");
+    fwrite($fp_meta, "norules{@}true");
+    fclose($fp_meta);
 }
 
 /**
@@ -310,90 +312,98 @@ function showHelp()
 function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
 {
     // ouput dir
-    $outputDir = $options['o'] ?? $options['output-dir'] ?? null;
-    if (empty($outputDir)) {
+    $output_dir = $options['o'] ?? $options['output-dir'] ?? null;
+    if (empty($output_dir)) {
         fprintf(STDERR, "Output directory required.\n");
         showHelp();
         exit(1);
     }
-    if (!is_dir($outputDir)) {
-        fprintf(STDERR, "Output directory '$outputDir' does not exist.\n");
+    if (!is_dir($output_dir)) {
+        fprintf(STDERR, "Output directory '$output_dir' does not exist.\n");
         exit(1);
     }
-    if (!is_writeable($outputDir)) {
-        fprintf(STDERR, "Output directory '$outputDir' is not writeable.\n");
+    if (!is_writeable($output_dir)) {
+        fprintf(STDERR, "Output directory '$output_dir' is not writeable.\n");
         exit(1);
     }
 
     // source type
-    $sourceType = $options['i'] ?? $options['input-type'] ?? null;
-    if (empty($sourceType)) {
+    $source_type = $options['i'] ?? $options['input-type'] ?? null;
+    if (empty($source_type)) {
         fprintf(STDERR, "Source type required.\n");
         showHelp();
         exit(1);
     }
-    if (!in_array($sourceType, ['file','api'], true)) {
+    if (!in_array($source_type, ['file','api'], true)) {
         fprintf(STDERR, "Source type must be one of 'file' or 'api'.\n");
         showHelp();
         exit(1);
     }
 
     // file, only checked and used if inputType = 'file'
-    $inputFile = $options['f'] ?? $options['input-file'] ?? null;
-    if ($sourceType === 'file') {
-        if (empty($inputFile)) {
+    $input_file = $options['f'] ?? $options['input-file'] ?? null;
+    if ($source_type === 'file') {
+        if (empty($input_file)) {
             fprintf(STDERR, "Input file required.\n");
             showHelp();
             exit(1);
         }
-        if (!is_file($inputFile)) {
+        if (!is_file($input_file)) {
             fprintf(
                 STDERR,
-                "Input file '$inputFile' does not exist or is not readable.\n"
+                "Input file '$input_file' does not exist or is not readable.\n"
             );
             exit(1);
         }
     }
 
     // redcap instance and project
-    $rInstance = $options['r'] ?? $options['redcap-instance'] ?? null;
-    $rProject  = $options['p'] ?? $options['redcap-project'] ?? null;
-    $rc        = null;
-    if (empty($rInstance)) {
+    $redcap_instance = $options['r'] ?? $options['redcap-instance'] ?? null;
+    $redcap_project  = $options['p'] ?? $options['redcap-project'] ?? null;
+
+    if (empty($redcap_instance)) {
         fprintf(STDERR, "REDCap instance name required.\n");
         showHelp();
         exit(1);
     }
-    if (empty($rProject)) {
+    if (empty($redcap_project)) {
         fprintf(STDERR, "REDCap project ID required.\n");
         showHelp();
         exit(1);
     }
+
+    $config_parser = new RedcapConfigParser($loris);
+    $config        = $config_parser->parse($redcap_instance, $redcap_project);
+
     // client handler
-    $rh = RedcapHTTPClientHandler::factory($loris, false);
-    if (!$rh->hasInstanceProjectByName($rInstance, $rProject)) {
+    if ($config === null) {
         fprintf(
             STDERR,
-            "REDCap instance '$rInstance' with project ID"
-            . " '$rProject' does not exist in 'config.xml'.\n"
+            "REDCap instance '$redcap_instance' with project ID"
+            . " '$redcap_project' does not exist in 'config.xml'.\n"
         );
         showHelp();
         exit(1);
     }
-    // get client
-    $rc = $rh->getClientByName($rInstance, $rProject);
+
+    $redcap_client = new RedcapHttpClient(
+        $loris,
+        "{$redcap_instance}api/",
+        $redcap_project,
+        $config->redcap_api_token,
+    );
 
     // trim instrument name
-    $trimName = isset($options['t']) || isset($options['trim-formname']) || false;
+    $trim_name = isset($options['t']) || isset($options['trim-formname']) || false;
 
     // checked and clean options
     return [
-        'outputDir'          => $outputDir,
-        'inputType'          => $sourceType,
-        'file'               => $inputFile,
-        'redcapInstance'     => $rInstance,
-        'redcapProject'      => $rProject,
-        'redcapConnection'   => $rc,
-        'trimInstrumentName' => $trimName,
+        'outputDir'          => $output_dir,
+        'inputType'          => $source_type,
+        'file'               => $input_file,
+        'redcapInstance'     => $redcap_instance,
+        'redcapProject'      => $redcap_project,
+        'redcapConnection'   => $redcap_client,
+        'trimInstrumentName' => $trim_name,
     ];
 }

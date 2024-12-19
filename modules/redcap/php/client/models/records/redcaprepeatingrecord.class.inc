@@ -10,7 +10,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models\records;
+namespace LORIS\redcap\client\models\records;
 
 /**
  * This represents a redcap repeating record.

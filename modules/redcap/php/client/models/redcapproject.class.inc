@@ -10,9 +10,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models;
+namespace LORIS\redcap\client\models;
 
-use LORIS\redcap\models\RedcapProp;
+use LORIS\redcap\client\RedcapProps;
 
 /**
  * This represents a REDCap project.
@@ -23,7 +23,7 @@ use LORIS\redcap\models\RedcapProp;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapProject extends RedcapProp
+class RedcapProject
 {
     /**
      * The project project_id.
@@ -42,16 +42,16 @@ class RedcapProject extends RedcapProp
     /**
      * The project creation_time.
      *
-     * @var \DateTimeImmutable
+     * @var ?\DateTimeImmutable
      */
-    private \DateTimeImmutable $_creation_time;
+    private ?\DateTimeImmutable $_creation_time;
 
     /**
      * The project production_time.
      *
-     * @var \DateTimeImmutable
+     * @var ?\DateTimeImmutable
      */
-    private \DateTimeImmutable $_production_time;
+    private ?\DateTimeImmutable $_production_time;
 
     /**
      * The project in_production.
@@ -216,89 +216,49 @@ class RedcapProject extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType      = 'project';
-        $expectedProps = [
-            'project_id',
-            'project_title',
-            'creation_time',
-            'production_time',
-            'in_production',
-            'project_language',
-            'purpose',
-            'purpose_other',
-            'project_notes',
-            'custom_record_label',
-            'secondary_unique_field',
-            'is_longitudinal',
-            'has_repeating_instruments_or_events',
-            'surveys_enabled',
-            'scheduling_enabled',
-            'record_autonumbering_enabled',
-            'randomization_enabled',
-            'ddp_enabled',
-            'project_irb_number',
-            'project_grant_number',
-            'project_pi_firstname',
-            'project_pi_lastname',
-            'display_today_now_button',
-            'missing_data_codes',
-            'external_modules',
-            'bypass_branching_erase_field_prompt',
-        ];
-        self::checkExpectedProps($expectedProps, $props, $propType);
-        self::checkPropIsNotNull($props, $propType, 'project_id');
-        self::checkPropIsNotNull($props, $propType, 'project_title');
+        $props = new RedcapProps('project', $props);
 
-        $this->_project_id       = intval($props['project_id']);
-        $this->_project_title    = $props['project_title'];
-        $this->_creation_time    = !empty($props['creation_time'])
-            ? new \DateTimeImmutable($props['creation_time'])
-            : null;
-        $this->_production_time  = !empty($props['production_time'])
-            ? new \DateTimeImmutable($props['production_time'])
-            : null;
-        $this->_in_production    = !empty($props['in_production'])
-            && $props['in_production'] == 1;
-        $this->_project_language
-            = $props['project_language'];
-        $this->_purpose          = intval($props['purpose']);
-        $this->_purpose_other    = intval($props['purpose_other']);
-        $this->_project_notes    = $props['project_notes'];
-        $this->_custom_record_label       = $props['custom_record_label'];
-        $this->_secondary_unique_field    = $props['secondary_unique_field'];
-        $this->_is_longitudinal           = !empty($props['is_longitudinal'])
-            && $props['is_longitudinal'] == 1;
-        $this->_has_repeating_instruments
-            = !empty($props['has_repeating_instruments_or_events'])
-            && $props['has_repeating_instruments_or_events'] == 1;
-        $this->_surveys_enabled           = !empty($props['surveys_enabled'])
-            && $props['surveys_enabled'] == 1;
-        $this->_scheduling_enabled        = !empty($props['scheduling_enabled'])
-            && $props['scheduling_enabled'] == 1;
-        $this->_record_autonumbering_enabled
-            = !empty($props['record_autonumbering_enabled'])
-            && $props['record_autonumbering_enabled'] == 1;
-        $this->_randomization_enabled        = !empty(
-            $props['randomization_enabled']
-        ) && $props['randomization_enabled'] == 1;
-        $this->_ddp_enabled          = !empty($props['ddp_enabled'])
-            && $props['ddp_enabled'] == 1;
-        $this->_project_irb_number   = $props['project_irb_number'];
-        $this->_project_grant_number
-            = $props['project_grant_number'];
-        $this->_project_pi_firstname
-            = $props['project_pi_firstname'];
-        $this->_project_pi_lastname  = $props['project_pi_lastname'];
-        $this->_display_today_now_button
-            = !empty($props['display_today_now_button'])
-            && $props['display_today_now_button'] == 1;
-        $this->_missing_data_codes       = $props['missing_data_codes'];
-        $this->_external_modules         = $props['external_modules'];
-        $this->_bypass_branching         = !empty(
-            $props['bypass_branching_erase_field_prompt']
-        ) && $props['bypass_branching_erase_field_prompt'] == 1;
+        $this->_project_id       = $props->getInt('project_id');
+        $this->_project_title    = $props->getString('project_title');
+        $this->_creation_time    = $props->getDateTimeNullable('creation_time');
+        $this->_production_time  = $props->getDateTimeNullable('production_time');
+        $this->_in_production    = $props->getBool('in_production');
+        $this->_project_language = $props->getString('project_language');
+        $this->_purpose          = $props->getInt('purpose');
+        $this->_purpose_other    = $props->getInt('purpose_other');
+        $this->_project_notes    = $props->getString('project_notes');
+        $this->_custom_record_label       = $props->getString(
+            'custom_record_label'
+        );
+        $this->_secondary_unique_field    = $props->getString(
+            'secondary_unique_field'
+        );
+        $this->_is_longitudinal           = $props->getBool('is_longitudinal');
+        $this->_has_repeating_instruments = $props->getBool(
+            'has_repeating_instruments_or_events'
+        );
+        $this->_surveys_enabled           = $props->getBool('surveys_enabled');
+        $this->_scheduling_enabled        = $props->getBool('scheduling_enabled');
+        $this->_record_autonumbering_enabled = $props->getBool(
+            'record_autonumbering_enabled'
+        );
+        $this->_randomization_enabled        = $props->getBool(
+            'randomization_enabled'
+        );
+        $this->_ddp_enabled          = $props->getBool('ddp_enabled');
+        $this->_project_irb_number   = $props->getString('project_irb_number');
+        $this->_project_grant_number = $props->getString('project_grant_number');
+        $this->_project_pi_firstname = $props->getString('project_pi_firstname');
+        $this->_project_pi_lastname  = $props->getString('project_pi_lastname');
+        $this->_display_today_now_button = $props->getBool(
+            'display_today_now_button'
+        );
+        $this->_missing_data_codes       = $props->getString('missing_data_codes');
+        $this->_external_modules         = $props->getString('external_modules');
+        $this->_bypass_branching         = $props->getBool(
+            'bypass_branching_erase_field_prompt'
+        );
     }
-
 
     /**
      * Get ProjectId
@@ -323,9 +283,9 @@ class RedcapProject extends RedcapProp
     /**
      * Get CreationTime
      *
-     * @return \DateTimeImmutable
+     * @return ?\DateTimeImmutable
      */
-    public function getCreationTime(): \DateTimeImmutable
+    public function getCreationTime(): ?\DateTimeImmutable
     {
         return $this->_creation_time;
     }
@@ -333,9 +293,9 @@ class RedcapProject extends RedcapProp
     /**
      * Get ProductionTime
      *
-     * @return \DateTimeImmutable
+     * @return ?\DateTimeImmutable
      */
-    public function getProductionTime(): \DateTimeImmutable
+    public function getProductionTime(): ?\DateTimeImmutable
     {
         return $this->_production_time;
     }

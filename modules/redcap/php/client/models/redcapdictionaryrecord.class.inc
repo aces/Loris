@@ -10,9 +10,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models;
+namespace LORIS\redcap\client\models;
 
-use LORIS\redcap\models\RedcapProp;
+use LORIS\redcap\client\models\RedcapProp;
 
 /**
  * This represents a redcap dictionary entry.
@@ -79,21 +79,21 @@ class RedcapDictionaryRecord extends RedcapProp
         self::checkPropIsNotNull($props, $propType, 'field_type');
         self::checkPropIsNotNull($props, $propType, 'field_label');
 
-        $fieldName = $props['field_name'];
-        $formName  = $props['form_name'];
+        $field_name = $props['field_name'];
+        $form_name  = $props['form_name'];
         if ($trimFormName) {
-            if (strpos($fieldName, $formName) !== 0) {
-                $msg = "[redcap:redcapdictionaryrecord] Field '$fieldName'"
-                . " does not have form name '$formName' as a prefix";
+            if (strpos($field_name, $form_name) !== 0) {
+                $msg = "[redcap:redcapdictionaryrecord] Field '$field_name'"
+                . " does not have form name '$form_name' as a prefix";
                 throw new \LorisException($msg);
             } else {
-                $pattern   = "/^" . preg_quote($formName) . "(_*)/";
-                $fieldName = preg_replace($pattern, "", $fieldName);
+                $pattern    = "/^" . preg_quote($form_name) . "(_*)/";
+                $field_name = preg_replace($pattern, "", $field_name);
             }
         }
 
-        $this->_field_name           = $fieldName;
-        $this->_form_name            = $formName;
+        $this->_field_name           = $field_name;
+        $this->_form_name            = $form_name;
         $this->_section_header       = $props['section_header'] ?? '';
         $this->_field_type           = $props['field_type'];
         $this->_field_label          = $props['field_label'];
@@ -369,9 +369,9 @@ class RedcapDictionaryRecord extends RedcapProp
     public function toLINST(): string
     {
         $fieldType  = $this->getFieldType();
-        $fieldName  = $this->getFieldName();
+        $field_name = $this->getFieldName();
         $fieldLabel = str_replace("\n", "<br /><br />", $this->getFieldLabel());
-        $fieldDesc  = "$fieldName{@}$fieldLabel";
+        $fieldDesc  = "$field_name{@}$fieldLabel";
 
         //
         switch ($fieldType) {

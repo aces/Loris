@@ -10,7 +10,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models;
+namespace LORIS\redcap\client\models;
 
 /**
  * This abstract class REDCap prop
@@ -78,6 +78,18 @@ abstract class RedcapProp
         ) {
             throw new \LorisException("[redcap:$propObjectName] $propName required");
         }
+    }
+
+    /**
+     * Get a REDCap prop has a nullable string.
+     *
+     * @param string $string The REDCap prop as a potentially empty string.
+     *
+     * @return ?string The REDCap prop as a nullable string.
+     */
+    protected static function getNullableString(string $string): ?string
+    {
+        return $string !== "" ? $string : null;
     }
 
     /**

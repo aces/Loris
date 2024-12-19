@@ -10,9 +10,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models\records;
-
-use LORIS\redcap\models\RedcapProp;
+namespace LORIS\redcap\client\models\records;
 
 /**
  * This represents a redcap record.
@@ -23,7 +21,7 @@ use LORIS\redcap\models\RedcapProp;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapRecord extends RedcapProp implements IRedcapRecord
+class RedcapRecord implements IRedcapRecord
 {
     private string $_form_name;
 

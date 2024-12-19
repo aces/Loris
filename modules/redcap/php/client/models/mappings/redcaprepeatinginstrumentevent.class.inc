@@ -10,9 +10,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models\mappings;
+namespace LORIS\redcap\client\models\mappings;
 
-use LORIS\redcap\models\RedcapProp;
+use LORIS\redcap\client\RedcapProps;
 
 /**
  * This represents a REDCap mapping between repeated instruments and events.
@@ -23,7 +23,7 @@ use LORIS\redcap\models\RedcapProp;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapRepeatingInstrumentEvent extends RedcapProp
+class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
 {
     /**
      * Redcap Event name.
@@ -31,21 +31,21 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      *
      * @var string
      */
-    private string $_event_name;
+    public readonly string $event_name;
 
     /**
      * Redcap Form name.
      *
      * @var string
      */
-    private string $_form_name;
+    public readonly string $form_name;
 
     /**
      * If any, Custom form name.
      *
-     * @var string|null
+     * @var ?string
      */
-    private ?string $_custom_label;
+    public readonly ?string $custom_label;
 
 
     /**
@@ -55,49 +55,31 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
      */
     public function __construct(array $props)
     {
-        $propType      = 'repeating_instrument';
-        $expectedProps = [
-            'form_name',
-            'event_name',
-            'custom_form_label',
-        ];
-        self::checkExpectedProps($expectedProps, $props, $propType);
-        self::checkPropIsNotNull($props, $propType, 'form_name');
-        self::checkPropIsNotNull($props, $propType, 'event_name');
+        $props = new RedcapProps('repeating_instrument', $props);
 
-        $this->_event_name   = $props['event_name'];
-        $this->_form_name    = $props['form_name'];
-        $this->_custom_label = $props['custom_form_label'];
+        $this->event_name   = $props->getString('event_name');
+        $this->form_name    = $props->getString('form_name');
+        $this->custom_label = $props->getStringNullable('custom_form_label');
     }
 
     /**
-     * Get the Unique Event name.
+     * Get the REDCap event name.
      *
      * @return string
      */
     public function getEventName(): string
     {
-        return $this->_event_name;
+        return $this->event_name;
     }
 
     /**
-     * Get Form name.
+     * Get the REDCap form name.
      *
      * @return string
      */
     public function getFormName(): string
     {
-        return $this->_form_name;
-    }
-
-    /**
-     * Get Custom Form name.
-     *
-     * @return string|null
-     */
-    public function getCustomFormName(): ?string
-    {
-        return $this->_custom_label;
+        return $this->form_name;
     }
 
     /**
@@ -108,9 +90,9 @@ class RedcapRepeatingInstrumentEvent extends RedcapProp
     public function toArray(): array
     {
         return [
-            'form_name'         => $this->_form_name,
-            'event_name'        => $this->_event_name,
-            'custom_form_label' => $this->_custom_label
+            'form_name'         => $this->form_name,
+            'event_name'        => $this->event_name,
+            'custom_form_label' => $this->custom_label
         ];
     }
 }

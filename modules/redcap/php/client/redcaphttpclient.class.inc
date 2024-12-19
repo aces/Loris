@@ -10,22 +10,23 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap;
+namespace LORIS\redcap\client;
 
 use LORIS\Http\Client;
 use GuzzleHttp\Psr7\Request;
 
 // models
-use LORIS\redcap\models\RedcapProject;
-use LORIS\redcap\models\RedcapArm;
-use LORIS\redcap\models\RedcapEvent;
-use LORIS\redcap\models\RedcapDictionaryRecord;
-use LORIS\redcap\models\RedcapInstrument;
-use LORIS\redcap\models\mappings\RedcapRepeatingInstrumentEvent;
-use LORIS\redcap\models\mappings\RedcapInstrumentEventMap;
-use LORIS\redcap\models\records\IRedcapRecord;
-use LORIS\redcap\models\records\RedcapRecord;
-use LORIS\redcap\models\records\RedcapRepeatingRecord;
+use LORIS\redcap\client\models\RedcapArm;
+use LORIS\redcap\client\models\RedcapEvent;
+use LORIS\redcap\client\models\RedcapDictionaryRecord;
+use LORIS\redcap\client\models\RedcapInstrument;
+use LORIS\redcap\client\models\RedcapProject;
+use LORIS\redcap\client\models\RedcapSurveyParticipant;
+use LORIS\redcap\client\models\mappings\RedcapRepeatingInstrumentEvent;
+use LORIS\redcap\client\models\mappings\RedcapInstrumentEventMap;
+use LORIS\redcap\client\models\records\IRedcapRecord;
+use LORIS\redcap\client\models\records\RedcapRecord;
+use LORIS\redcap\client\models\records\RedcapRepeatingRecord;
 
 /**
  * A REDCap Client.
@@ -38,13 +39,8 @@ use LORIS\redcap\models\records\RedcapRepeatingRecord;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class REDCapHTTPClient
+class RedcapHttpClient
 {
-    /**
-     * A LORIS instance.
-     */
-    private \LORIS\LorisInstance $_loris;
-
     /**
      * Verbose mode.
      */
@@ -54,11 +50,6 @@ class REDCapHTTPClient
      * REDCap URL.
      */
     private string $_url;
-
-    /**
-     * REDCap projectID.
-     */
-    private string $_projectId;
 
     /**
      * REDCap access token.
@@ -78,27 +69,21 @@ class REDCapHTTPClient
     private array $_cache;
 
     /**
-     * Create a new REDCap Client for a sepcific REDCap instance and project ID.
+     * Create a new REDCap Client for a specific REDCap instance and project.
      *
-     * @param \LORIS\LorisInstance $loris          a loris instance
-     * @param string               $instanceAPIURL a REDCap instance API URL
-     * @param string               $projectId      a REDCap project ID
-     * @param string               $projectToken   a REDCap project token
-     * @param bool                 $verbose        verbose mode
+     * @param string $instance_api_url  A REDCap instance API URL.
+     * @param string $project_api_token A REDCap project API token.
+     * @param bool   $verbose           Verbose mode.
      */
     public function __construct(
-        \LORIS\LorisInstance $loris,
-        string $instanceAPIURL,
-        string $projectId,
-        string $projectToken,
+        string $instance_api_url,
+        string $project_api_token,
         bool $verbose = false
     ) {
-        $this->_loris     = $loris;
-        $this->_verbose   = $verbose;
-        $this->_url       = $instanceAPIURL;
-        $this->_projectId = $projectId;
-        $this->_token     = $projectToken;
-        $this->_client    = new Client($instanceAPIURL);
+        $this->_url     = $instance_api_url;
+        $this->_token   = $project_api_token;
+        $this->_client  = new Client($instance_api_url);
+        $this->_verbose = $verbose;
     }
 
     /**
@@ -191,6 +176,7 @@ class REDCapHTTPClient
                 "[redcap] Sending request to '$url' with payload: $jsonPayload"
             );
         }
+
         $response = $this->_client->sendRequest(
             new Request(
                 'POST',
@@ -263,34 +249,36 @@ class REDCapHTTPClient
         // update cache if first use
         if (empty($this->_cache['project'])) {
             $project = json_decode($this->_sendRequest($data), true);
-            if (is_null($project)) {
+            if ($project === null) {
                 return null;
             }
+
             $this->_updateCache('project', new RedcapProject($project));
         }
         return $this->_cache['project'];
     }
 
     /**
-     * Get arms.
+     * Get all the REDCap arms of the REDCap project.
      *
-     * @return RedcapArm[] all arms.
+     * @return RedcapArm[] The REDCap arms.
      */
     public function getArms(): array
     {
         $data = [
             'content' => 'arm'
         ];
+
         // update cache if first use
-        if (empty($this->_cache['arm'])) {
-            $arms = json_decode($this->_sendRequest($data), true);
-            if (is_null($arms)) {
-                return [];
-            }
-            $armsData = array_map(fn($e) => new RedcapArm($e), $arms);
-            $this->_updateCache('arm', $armsData);
+        $arms = json_decode($this->_sendRequest($data), true);
+        if ($arms === null) {
+            return [];
         }
-        return $this->_cache['arm'];
+
+        return array_map(
+            fn ($redcap_arm) => new RedcapArm($redcap_arm),
+            $arms,
+        );
     }
 
     /**
@@ -303,10 +291,11 @@ class REDCapHTTPClient
         $data = [
             'content' => 'event'
         ];
+
         // update cache if first use
         if (empty($this->_cache['event'])) {
             $events = json_decode($this->_sendRequest($data), true);
-            if (is_null($events)) {
+            if ($events === null) {
                 return [];
             }
             $eventData = array_map(fn($e) => new RedcapEvent($e), $events);
@@ -330,7 +319,7 @@ class REDCapHTTPClient
         // update cache if first use
         if (empty($this->_cache['instrument'])) {
             $instruments = json_decode($this->_sendRequest($data), true);
-            if (is_null($instruments)) {
+            if ($instruments === null) {
                 return [];
             }
             $instData = array_map(fn($i) => new RedcapInstrument($i), $instruments);
@@ -345,7 +334,7 @@ class REDCapHTTPClient
         // mapping between instrument backend name and instrument title
         $m = [];
         foreach ($this->_cache['instrument'] as $i) {
-            $m[$i->getInstrumentName()] = $i->getInstrumentLabel();
+            $m[$i->name] = $i->label;
         }
         return $m;
     }
@@ -366,9 +355,10 @@ class REDCapHTTPClient
         // update cache if first use
         if (empty($this->_cache['repeating_instrument_event'])) {
             $instruments = json_decode($this->_sendRequest($data), true);
-            if (is_null($instruments)) {
+            if ($instruments === null) {
                 return [];
             }
+
             $instData = array_map(
                 fn($i) => new RedcapRepeatingInstrumentEvent($i),
                 $instruments
@@ -391,9 +381,10 @@ class REDCapHTTPClient
         // update cache if first use
         if (empty($this->_cache['instrument_event_map'])) {
             $instruments = json_decode($this->_sendRequest($data), true);
-            if (is_null($instruments)) {
+            if ($instruments === null) {
                 return [];
             }
+
             $instData = array_map(
                 fn($i) => new RedcapInstrumentEventMap($i),
                 $instruments
@@ -446,7 +437,7 @@ class REDCapHTTPClient
             'record'     => $recordId,
         ];
 
-        if (!is_null($repeatInstance)) {
+        if ($repeatInstance !== null) {
             $data['repeat_instance'] = $repeatInstance;
         }
 
@@ -455,69 +446,91 @@ class REDCapHTTPClient
     }
 
     /**
+     * Get survey participants.
+     *
+     * @param string $instrument_name The REDCap instrument name.
+     * @param string $event_name      The REDCap event name.
+     *
+     * @return RedcapSurveyParticipant[] all events.
+     */
+    public function getSurveyParticipants(
+        string $instrument_name,
+        string $event_name,
+    ): array {
+        $data = [
+            'content'    => 'participantList',
+            'instrument' => $instrument_name,
+            'event'      => $event_name,
+        ];
+
+        $participants = json_decode($this->_sendRequest($data), true);
+        return array_map(
+            fn($participant) => new RedcapSurveyParticipant($participant),
+            $participants,
+        );
+    }
+
+    /**
      * Check if the instrument/event mapping exists.
      *
-     * @param string $instrument an instrument name
-     * @param string $event      an event name
+     * @param string $instrument_name an instrument name
+     * @param string $event_name      an event name
      *
      * @return bool true if couple is found, else false
      */
     public function hasMappingInstrumentEvent(
-        string $instrument,
-        string $event
+        string $instrument_name,
+        string $event_name,
     ): bool {
         $map = $this->getInstrumentEventMapping();
         return $this->_hasMappingElement(
             $map,
-            $instrument,
-            $event
+            $instrument_name,
+            $event_name,
         );
     }
 
     /**
      * Check if the repeating-instrument/event mapping exists.
      *
-     * @param string $instrument an repeating instrument name
-     * @param string $event      an event name
+     * @param string $instrument_name an repeating instrument name
+     * @param string $event_name      an event name
      *
      * @return bool true if couple is found, else false
      */
     public function hasRepeatingInstrumentEvent(
-        string $instrument,
-        string $event
+        string $instrument_name,
+        string $event_name,
     ): bool {
         $map = $this->getRepeatingInstrumentsAndEvents();
         return $this->_hasMappingElement(
             $map,
-            $instrument,
-            $event
+            $instrument_name,
+            $event_name,
         );
     }
 
     /**
      * Check if the instrument/event mapping exists in an arbitrary mapping array.
      *
-     * @param array  $instrumentEventMapping a mapping array
-     * @param string $instrument             an instrument name
-     * @param string $event                  an event name
+     * @param array  $instrument_event_mappings a mapping array
+     * @param string $instrument_name           an instrument name
+     * @param string $event_name                an event name
      *
      * @return bool true if couple is found in the array, else false
      */
     private function _hasMappingElement(
-        array &$instrumentEventMapping,
-        string $instrument,
-        string $event
+        array &$instrument_event_mappings,
+        string $instrument_name,
+        string $event_name
     ): bool {
-        $found = false;
-        foreach ($instrumentEventMapping as $mapping) {
-            if ($mapping->getEventName() === $event
-                && $mapping->getFormName() === $instrument
-            ) {
-                $found = true;
-                break;
-            }
-        }
-        return $found;
+        return array_any(
+            $instrument_event_mappings,
+            fn($mapping) => (
+                $mapping->getEventName() === $event_name
+                    && $mapping->getFormName() === $instrument_name
+            )
+        );
     }
 
     /**
@@ -534,10 +547,12 @@ class REDCapHTTPClient
         if (empty($recordId)) {
             throw new \LorisException("[redcap] Error: 'recordId' null or empty.");
         }
+
         $data = [
             'content' => 'surveyQueueLink',
             'record'  => $recordId
         ];
+
         return $this->_sendRequest($data);
     }
 
@@ -561,7 +576,7 @@ class REDCapHTTPClient
         // before anything, check the full DD before any call, update cache
         if (empty($this->_cache['dictionary'])) {
             $instruments = json_decode($this->_sendRequest($data), true);
-            if (is_null($instruments)) {
+            if ($instruments === null) {
                 return [];
             }
             $badMap   = 0;
@@ -597,7 +612,7 @@ class REDCapHTTPClient
 
         // select only non null values, check they are existing instruments
         $allInstruments = array_map(
-            fn($v) => $v->getInstrumentName(),
+            fn($v) => $v->name,
             $this->getInstruments()
         );
         foreach (array_filter($givenInstruments) as $instrument) {

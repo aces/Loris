@@ -17,7 +17,6 @@ namespace LORIS\redcap;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\redcap\RedcapHTTPClientHandler;
 
 /**
  * This sets specific bahaviours or the redcap module and provides
@@ -33,13 +32,6 @@ use \LORIS\redcap\RedcapHTTPClientHandler;
  */
 class Module extends \Module
 {
-    /**
-     * REDcap client handler.
-     *
-     * @var RedcapHTTPClientHandler
-     */
-    private static RedcapHTTPClientHandler $_redcapClientHandler;
-
     /**
      * This needs to be true since redcap wont authenticate.
      *
@@ -61,26 +53,6 @@ class Module extends \Module
     }
 
     /**
-     * Get the current Redcap client handler
-     *
-     * @param \LORIS\LorisInstance $loris a loris instance
-     *
-     * @return RedcapHTTPClientHandler
-     */
-    protected static function getRedcapHandler(
-        \Loris\LORISInstance $loris
-    ): RedcapHTTPClientHandler {
-        // load the redcap client handler once
-        if (!isset(self::$_redcapClientHandler)) {
-            self::$_redcapClientHandler = RedcapHTTPClientHandler::factory(
-                $loris,
-                false
-            );
-        }
-        return self::$_redcapClientHandler;
-    }
-
-    /**
      * Perform routing for this module's endpoints.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -89,16 +61,12 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // udpate redcap client handler
-        $redcapClientHandler = self::getRedcapHandler($this->loris);
-
         //
         $path = trim($request->getURI()->getPath(), "/");
         switch ($path) {
         case 'notifications':
             $handler = new Endpoints\Notifications(
                 $request->getAttribute('loris'),
-                $redcapClientHandler
             );
             break;
         // case 'dev_test':
@@ -113,4 +81,3 @@ class Module extends \Module
         return $handler->process($request, $handler);
     }
 }
-

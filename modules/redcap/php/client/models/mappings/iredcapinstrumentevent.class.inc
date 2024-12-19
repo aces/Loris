@@ -10,10 +10,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\models\records;
+namespace LORIS\redcap\client\models\mappings;
 
 /**
- * This interface allows for type abstraction of REDCap records
+ * This interface allows for type abstraction of REDCap instrument event mappings
  *
  * @category REDCap
  * @package  Main
@@ -21,33 +21,19 @@ namespace LORIS\redcap\models\records;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-interface IRedcapRecord
+interface IRedcapInstrumentEvent
 {
     /**
-     * Get the instrument name
+     * Get the REDCap event name.
+     *
+     * @return string
+     */
+    public function getEventName(): string;
+
+    /**
+     * Get the REDCap form name.
      *
      * @return string
      */
     public function getFormName(): string;
-
-    /**
-     * Get the instrument name
-     *
-     * @return string
-     */
-    public function getInstrumentName(): string;
-
-    /**
-     * Get the props names
-     *
-     * @return array
-     */
-    public function getPropertyNames(): array;
-
-    /**
-     * Props array.
-     *
-     * @return array
-     */
-    public function toArray(): array;
 }

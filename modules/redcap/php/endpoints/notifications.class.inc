@@ -12,12 +12,14 @@
 
 namespace LORIS\redcap\Endpoints;
 
-use LORIS\redcap\RedcapHTTPClientHandler;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
+use \LORIS\redcap\config\RedcapConfig;
+use \LORIS\redcap\config\RedcapConfigParser;
 use \LORIS\redcap\notifications\RedcapNotification;
 use \LORIS\redcap\notifications\RedcapNotificationHandler;
+use LORIS\redcap\client\RedcapHttpClient;
 
 /**
  * This is the handler for redcap notifications
@@ -31,24 +33,14 @@ use \LORIS\redcap\notifications\RedcapNotificationHandler;
 class Notifications extends Endpoint
 {
     /**
-     * A REDCap client handler.
-     *
-     * @var RedcapHTTPClientHandler
-     */
-    protected RedcapHTTPClientHandler $redcapClientHandler;
-
-    /**
      * Construct an endpoint
      *
-     * @param \LORIS\LorisInstance    $loris a Loris instance
-     * @param REDCapHTTPClientHandler $rch   a REDCap client handler
+     * @param \LORIS\LorisInstance $loris a Loris instance
      */
     public function __construct(
         protected \LORIS\LorisInstance $loris,
-        protected RedcapHTTPClientHandler $rch
     ) {
         parent::__construct($loris);
-        $this->redcapClientHandler = $rch;
     }
 
     /**
@@ -107,14 +99,21 @@ class Notifications extends Endpoint
             $data = json_decode((string) $request->getBody(), true);
         }
 
-        // timestamp
-        $data['received_dt'] = new \DateTimeImmutable();
-
         try {
-            $notification = new RedcapNotification($data);
+            $received_datetime = new \DateTimeImmutable();
+
+            $notification = new RedcapNotification($data, $received_datetime);
+
+            $config_parser = new RedcapConfigParser(
+                $this->loris,
+                $notification->instance_url,
+                $notification->project_id,
+            );
+
+            $config = $config_parser->parse();
 
             // should the notification be ignored?
-            if ($this->_ignoreNotification($notification)) {
+            if ($this->_ignoreNotification($notification, $config)) {
                 return new \LORIS\Http\Response();
             }
 
@@ -151,13 +150,16 @@ class Notifications extends Endpoint
 
         // get a new redcap client based on the notification info
         try {
-            $rc = $this->redcapClientHandler->getClientByURL(
-                $notification->getRedcapURL(),
-                $notification->getProjectId(),
+            $redcap_client = new RedcapHttpClient(
+                "{$config->redcap_instance_url}/api/",
+                $config->redcap_api_token,
             );
+
             $notification_handler = new RedcapNotificationHandler(
                 $this->loris,
-                $rc
+                $config,
+                $redcap_client,
+                $notification,
             );
         } catch (\LorisException $le) {
             $this->_createIssue(
@@ -169,13 +171,13 @@ class Notifications extends Endpoint
         }
 
         try {
-            $notification_handler->handle($notification);
+            $notification_handler->handle();
             error_log("notif handled");
         } catch (\DatabaseException $e) {
             $rec = "[redcap] Error: "
-                . "PSCID: " . $notification->getRecord()
-                . "Visit: " . $notification->getRedcapEventName()
-                . "instrument: " . $notification->getInstrument();
+                . "PSCID: " . $notification->record_id
+                . "Visit: " . $notification->event_name
+                . "instrument: " . $notification->instrument_name;
             $this->_createIssue(
                 'Instrument data not updated - Database exception',
                 $e->getMessage(),
@@ -184,9 +186,9 @@ class Notifications extends Endpoint
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\DomainException $e) {
             $rec = "[redcap] Error: "
-                . "PSCID: " . $notification->getRecord()
-                . "Visit: " . $notification->getRedcapEventName()
-                . "instrument: " . $notification->getInstrument();
+                . "PSCID: " . $notification->record_id
+                . "Visit: " . $notification->event_name
+                . "instrument: " . $notification->instrument_name;
             $this->_createIssue(
                 'Instrument data not updated - Domain exception',
                 $e->getMessage(),
@@ -217,22 +219,20 @@ class Notifications extends Endpoint
      * Ignored notifications will not trigger any issue creation.
      * Optionally prints an error in log on a case by case basis.
      *
-     * @param RedcapNotification $notif the REDCap notification.
+     * @param RedcapNotification $notif         The REDCap notification.
+     * @param RedcapConfif       $redcap_config The REDCap module configuration.
      *
      * @return bool if the notification should be ignored, else false.
      */
-    private function _ignoreNotification(RedcapNotification $notif): bool
-    {
-        $notifData = json_encode($notif->toDatabaseArray());
+    private function _ignoreNotification(
+        RedcapNotification $notif,
+        ?RedcapConfig $redcap_config,
+    ): bool {
+        $notif_data = json_encode($notif->toDatabaseArray());
 
-        // is that notification coming from a known instance/project?
-        $sourceExists = $this->redcapClientHandler->hasInstanceProjectByURL(
-            $notif->getRedcapURL(),
-            $notif->getProjectId()
-        );
-        if (!$sourceExists) {
+        if ($redcap_config === null) {
             error_log(
-                "[redcap][notification:skip] unknown source/project: $notifData"
+                "[redcap][notification:skip] unknown source/project: $notif_data"
             );
             return true;
         }
@@ -242,9 +242,9 @@ class Notifications extends Endpoint
         $authInstr = $config->getSetting('redcap_importable_instrument');
 
         // ignore instruments that are not in the authorized list
-        if (!in_array($notif->getInstrument(), $authInstr, true)) {
+        if (!in_array($notif->instrument_name, $authInstr, true)) {
             error_log(
-                "[redcap][notification:skip] unauthorized instrument: $notifData"
+                "[redcap][notification:skip] unauthorized instrument: $notif_data"
             );
             return true;
         }
@@ -252,7 +252,7 @@ class Notifications extends Endpoint
         // ignore notifications that are not 'complete'
         if (!$notif->isComplete()) {
             error_log(
-                "[redcap][notification:skip] instrument not complete: $notifData"
+                "[redcap][notification:skip] instrument not complete: $notif_data"
             );
             return true;
         }
@@ -290,8 +290,11 @@ class Notifications extends Endpoint
         );
 
         // get the main assignee from config
-        $assignee = $this->redcapClientHandler->getAssignee();
-        $username = $assignee->getUsername();
+        // $assignee = $this->redcapClientHandler->getAssignee();
+        // $username = $assignee->getUsername();
+        // TODO: Get the assignee from the module configuration.
+        // Change the parser to still return the assignee if no project is found.
+        $username = 'redcap';
 
         // insert new issue
         $dtNow     = new \DateTimeImmutable();
