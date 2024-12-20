@@ -7,6 +7,7 @@ CREATE TABLE `Project` (
     `Name` VARCHAR(255) NOT NULL,
     `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
+    `showSummaryOnLogin` BOOLEAN DEFAULT TRUE;
     PRIMARY KEY (`ProjectID`),
     UNIQUE KEY `u_ProjectName` (`Name`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;

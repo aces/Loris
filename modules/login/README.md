@@ -38,6 +38,13 @@ to provide references on the LORIS landing page.
 The configuration setting "StudyLogo" is the URL for an image to
 show above the login box.
 
+If a query is pinned to the login page from the dataquery module, then
+after the tools/update_login_summary_statistics.php tool is run, a summary of
+all the pinned queries will be displayed on the login page including the count. 
+If a query returns more than one row, the name will be appended with an 's'.
+Pinned queries must include the column Project in order to be displayed.
+
+
 ## Interactions with LORIS
 
 The login module redirects to the dashboard upon successful login.

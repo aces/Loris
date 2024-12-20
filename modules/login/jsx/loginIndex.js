@@ -14,6 +14,7 @@ import {
   PasswordElement,
   ButtonElement,
 } from 'jsx/Form';
+import SummaryStatistics from './summaryStatistics';
 
 /**
  * Login form.
@@ -53,6 +54,7 @@ class Login extends Component {
         requestAccount: null,
         expiredPassword: null,
       },
+      summaryStatistics: null,
       isLoaded: false,
     };
     // Bind component instance to custom methods
@@ -68,7 +70,6 @@ class Login extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -91,8 +92,18 @@ class Login extends Component {
         // request account setup.
         state.component.requestAccount = json.requestAccount;
         state.oidc = json.oidc;
-        state.isLoaded = true;
         this.setState(state);
+      }).then(() => {
+        fetch(window.location.origin + '/login/summary_statistics', {
+          method: 'GET',
+        })
+          .then((resp) => resp.json())
+          .then((json) => {
+            this.setState({
+              summaryStatistics: json,
+              isLoaded: true,
+            });
+          });
       }).catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -274,8 +285,18 @@ class Login extends Component {
                 collapsing={false}
                 bold={true}
               >
-                {study}
+                <div
+                  className='study-description'
+                >
+                  {
+                    this.state.summaryStatistics
+                    && <SummaryStatistics data={this.state.summaryStatistics}/>
+                  }
+                  {study}
+                </div>
               </Panel>
+            </section>
+            <section>
             </section>
           </div>
         </div>

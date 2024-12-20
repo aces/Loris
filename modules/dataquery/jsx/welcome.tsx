@@ -221,8 +221,7 @@ function QueryList(props: {
   const [fullQuery, setFullQuery]
         = useState<boolean>(!props.defaultCollapsed);
   const [unpinAdminQuery, setUnpinAdminQuery] = useState<number|null>(null);
-  const [adminPinAction, setAdminPinAction]
-        = useState<'top'|'dashboard'|'top,dashboard'>('top');
+  const [adminPinAction, setAdminPinAction] = useState<string>('');
 
   useEffect(() => {
     const modules = new Set<string>();
@@ -300,14 +299,17 @@ function QueryList(props: {
     setAdminModalID(null);
     setQueryName(null);
 
-    let param;
-    if (adminPinAction == 'top') {
-      param = 'adminname=' + encodeURIComponent(name);
-    } else if (adminPinAction == 'dashboard') {
-      param = 'dashboardname=' + encodeURIComponent(name);
-    } else if (adminPinAction == 'top,dashboard') {
-      param = 'adminname=' + encodeURIComponent(name)
-                + '&dashboardname=' + encodeURIComponent(name);
+    let param = '';
+    if (adminPinAction.includes('top')) {
+      param += 'adminname=' + encodeURIComponent(name);
+    }
+    if (adminPinAction.includes('dashboard')) {
+      if (param != '') param += '&';
+      param += 'dashboardname=' + encodeURIComponent(name);
+    }
+    if (adminPinAction.includes('login')) {
+      if (param != '') param += '&';
+      param += 'loginname=' + encodeURIComponent(name);
     }
     fetch(
       '/dataquery/queries/' + id
@@ -363,16 +365,15 @@ function QueryList(props: {
       />);
   const adminModal = adminModalID == null ? '' :
     <AdminQueryModal
-      onSubmit={(name, topQ, dashboardQ) => {
-        if (topQ && dashboardQ) {
-          setAdminPinAction('top,dashboard');
-        } else if (topQ) {
-          setAdminPinAction('top');
-        } else if (dashboardQ) {
-          setAdminPinAction('dashboard');
-        } else {
+      onSubmit={(name, topQ, dashboardQ, loginQ) => {
+        let boolList = '';
+        if (topQ) boolList += 'top';
+        if (dashboardQ) boolList += 'dashboard';
+        if (loginQ) boolList += 'login';
+        if (!topQ && !dashboardQ && !loginQ) {
           throw new Error('Modal promise should not have resolved');
         }
+        setAdminPinAction(boolList);
         setQueryName(name);
       }}
       closeModal={() => setAdminModalID(null)}
