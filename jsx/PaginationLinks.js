@@ -34,7 +34,7 @@ class PaginationLinks extends Component {
    * execyting this.props.onChangePage(i)
    *
    * @param {number} i - Page index
-   * @return {function(event)} - onClick Event Handler
+   * @return {function(Event): void} - onClick Event Handler 
    */
   changePage(i) {
     return function(evt) {
