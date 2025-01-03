@@ -258,6 +258,14 @@ jobs:
         apt-cache search libmagickwand
         apt-cache search protobuf-compiler
 
+    - name: Install protoc-gen-js plugin
+      run: npm install -g protoc-gen-js
+
+    - name: Verify installations
+      run: |
+        protoc --version
+        which protoc-gen-js
+
     - name: Install package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
