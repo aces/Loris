@@ -686,11 +686,11 @@ class RedcapHttpClient
             $completed = array_filter(
                 $r,
                 function ($record) use ($instrument) {
-                    return $record[$instrument . "_complete"] == 2;
+                    return $record["{$instrument}_complete"] == 2;
                 }
             );
 
-            if (count($completed) < 1) {
+            if (count($completed) === 0) {
                 throw new \LorisException(
                     "[redcap] Error: no complete record found."
                 );
@@ -704,7 +704,7 @@ class RedcapHttpClient
         usort(
             $completed,
             function ($a, $b) use ($instrument) {
-                $dttField = $instrument . "_dtt";
+                $dttField = "{$instrument}_dtt";
                 $a_date   = new \DateTimeImmutable($a[$dttField]);
                 $b_date   = new \DateTimeImmutable($b[$dttField]);
                 return $a_date <=> $b_date;
