@@ -252,6 +252,12 @@ jobs:
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
+    - name: Debug apt packages
+      run: |
+        apt-cache search libmagickcore
+        apt-cache search libmagickwand
+        apt-cache search protobuf
+
     - name: Install package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
