@@ -18,9 +18,9 @@ use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigLorisCandidateId;
 use \LORIS\redcap\config\RedcapConfigRedcapParticipantId;
-use \LORIS\redcap\notifications\RedcapNotification;
 use \LORIS\redcap\client\models\records\IRedcapRecord;
 use \LORIS\redcap\client\models\RedcapEvent;
+use \LORIS\redcap\client\models\RedcapNotification;
 
 /**
  * This represents a REDCap notification handler.

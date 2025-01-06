@@ -10,7 +10,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\redcap\notifications;
+namespace LORIS\redcap\client\models;
 
 /**
  * This reprensents a redcap notification.

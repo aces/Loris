@@ -18,8 +18,8 @@ use \LORIS\Http\Endpoint;
 use \LORIS\redcap\RedcapNotificationHandler;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigParser;
-use \LORIS\redcap\notifications\RedcapNotification;
-use LORIS\redcap\client\RedcapHttpClient;
+use \LORIS\redcap\client\RedcapHttpClient;
+use \LORIS\redcap\client\models\RedcapNotification;
 
 /**
  * This is the handler for redcap notifications
