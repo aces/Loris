@@ -25,9 +25,9 @@ require_once __DIR__ . "/generic_includes.php";
 // load redcap module to use the client
 $lorisInstance->getModule('redcap')->registerAutoloader();
 
+use LORIS\redcap\client\RedcapHttpClient;
+use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use LORIS\redcap\config\RedcapConfigParser;
-use LORIS\redcap\models\RedcapDictionaryRecord;
-use LORIS\redcap\RedcapHttpClient;
 
 // options
 $opts = getopt(
@@ -372,24 +372,16 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
         exit(1);
     }
 
-    $config_parser = new RedcapConfigParser($loris);
-    $config        = $config_parser->parse($redcap_instance, $redcap_project);
+    $config_parser = new RedcapConfigParser(
+        $loris,
+        $redcap_instance,
+        $redcap_project,
+    );
 
-    // client handler
-    if ($config === null) {
-        fprintf(
-            STDERR,
-            "REDCap instance '$redcap_instance' with project ID"
-            . " '$redcap_project' does not exist in 'config.xml'.\n"
-        );
-        showHelp();
-        exit(1);
-    }
+    $config = $config_parser->parse();
 
     $redcap_client = new RedcapHttpClient(
-        $loris,
-        "{$redcap_instance}api/",
-        $redcap_project,
+        "{$config->redcap_instance_url}/api/",
         $config->redcap_api_token,
     );
 
