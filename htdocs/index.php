@@ -18,8 +18,6 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
-ini_set("error_log", "/var/log/apache2/loris-error.log");
-
 // We don't want PHP to automatically add cache control headers unless
 // we explicitly generate them in the request response. (This needs
 // to be done before NDB_Client starts the PHP session.)
