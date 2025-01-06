@@ -398,6 +398,10 @@ class RedcapDictionaryRecord extends RedcapProp
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
             return "select{@}$fieldDesc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+        case 'truefalse':
+            // Map true/false fields to dropdowns with true and false options.
+            return "select{@}$fieldDesc{@}NULL=>''"
+                . "{-}'true'=>'True'{-}'false'=>'False'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.
