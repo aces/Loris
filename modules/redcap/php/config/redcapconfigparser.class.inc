@@ -276,7 +276,7 @@ class RedcapConfigParser
     private function _parseRedcapParticipantId(
         array $project_node,
     ): RedcapConfigRedcapParticipantId {
-        $redcap_participant_id = $project_node['redcap-participant-id'];
+        $redcap_participant_id = $project_node['redcap-participant-id'] ?? null;
 
         // Default value.
         if (empty($redcap_participant_id)) {
@@ -307,7 +307,7 @@ class RedcapConfigParser
     private function _parseCandidateId(
         array $project_node,
     ): RedcapConfigLorisCandidateId {
-        $loris_candidate_id = $project_node['candidate-id'];
+        $loris_candidate_id = $project_node['candidate-id'] ?? null;
 
         // Default value.
         if (empty($loris_candidate_id)) {
@@ -365,8 +365,8 @@ class RedcapConfigParser
     private function _parseVisit(array $visit_node): RedcapConfigVisit
     {
         $visit_label       = $visit_node['visit-label'];
-        $redcap_arm_name   = $visit_node['redcap-arm-name'];
-        $redcap_event_name = $visit_node['redcap-event-name'];
+        $redcap_arm_name   = $visit_node['redcap-arm-name'] ?? null;
+        $redcap_event_name = $visit_node['redcap-event-name'] ?? null;
 
         // TODO: Error handling.
 
