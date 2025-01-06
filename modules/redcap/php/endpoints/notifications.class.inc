@@ -15,10 +15,10 @@ namespace LORIS\redcap\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
+use \LORIS\redcap\RedcapNotificationHandler;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigParser;
 use \LORIS\redcap\notifications\RedcapNotification;
-use \LORIS\redcap\notifications\RedcapNotificationHandler;
 use LORIS\redcap\client\RedcapHttpClient;
 
 /**
