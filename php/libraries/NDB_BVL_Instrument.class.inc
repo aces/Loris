@@ -281,6 +281,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Get language labels
+        $obj->getLanguageMapping($instrument);
+
         // Set page name to testName
         $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
@@ -309,8 +312,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $obj->loadInstrumentRules(
             $base . "project/instruments/$instrument.rules"
         );
-
-        $obj->getLangageMapping();
 
         return $obj;
     }
@@ -434,38 +435,54 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Gets the instrument labels in the current object instance's language from a
      * json file. The return array is in the format [key => label]
      *
-     * @param string $fileName The name of the JSON file to be used.
+     * @param string $tn The name of the JSON file to be used.
      *
      * @return array
      */
-    function getLanguageMapping($fileName = null)
+    function getLanguageMapping($tn = null)
     {
-        // The default filename is the test name of the instrument
-        $fileName = $fileName ?? $this->testName;
-        // TODO: Put the default labels that are used in the library file
-        // in the json directory and added it to the labels array
-        if (!file_exists($base."project/instruments/language_jsons/{$fileName}.json")) {
-            throw new NotFound("Instrument language mapping json file does not exist");
+        $config = NDB_Config::singleton();
+        $base   = $config->getSetting('base');
+
+        // Get labels for Instrument class
+        // Check if a project-specific library file exists
+        $projectLibraryFile = $base .
+            "project/instruments/language_jsons/instrument_library_labels.json";
+
+        // If no project-specific library file exists, take default
+        $libraryLabelFile = file_exists($projectLibraryFile) ? $projectLibraryFile :
+            $base .
+            "modules/instruments/language_labels/instrument_library_labels.json";
+        if (!file_exists($libraryLabelFile)) {
+            $msg = "Instrument library labels JSON file does not exist";
+            throw new NotFound($msg);
         }
 
-        $map  = json_decode(
-            file_get_contents($base."project/instruments/language_jsons/{$fileName}.json"),
-            true
-        );
-        // TODO: Find a better place to put this file where it can be overridden for languages, but also always available
-        $libraryLabelMap = json_decode(
-            file_get_contents($base."modules/instruments/language_labels/instrument_library_labels.json"),
-            true
-        );
+        $libraryLabelMap = json_decode(file_get_contents($libraryLabelFile), true);
+
         $lang = $this->getLanguage();
 
-        return array_merge($map[$lang], $libraryLabelMap[$lang]);
+        $this->labels = $libraryLabelMap[$lang];
+
+        // Get labels for the instrument if they exist
+        $instLabelFile = $base."project/instruments/language_jsons/{$tn}.json";
+        if (file_exists($instLabelFile)) {
+            $instLabelMap = json_decode(
+                file_get_contents($instLabelFile),
+                true
+            );
+            $this->labels = array_merge(
+                $instLabelMap[$lang],
+                $libraryLabelMap[$lang]
+            );
+        }
     }
 
     /**
      * Returns the label that should be displayed if and only if it exists
      *
-     * @param  $name string name of the variable (key in the  array)
+     * @param $name string name of the variable (key in the  array)
+     *
      * @throws LorisException if the label name is not a key in the label array
      *
      * @return string
@@ -623,7 +640,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             && $defaults['Window_Difference'] != 0
         ) {
             $defaults['Candidate_Age']
-                = $defaults['Candidate_Age'] . $this->getLangLabel('age_out_of_range');
+                = $defaults['Candidate_Age'] .
+                $this->getLangLabel('age_out_of_range');
         }
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
@@ -656,7 +674,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $submittedData = $this->form->getSubmitValues();
 
             if (count($submittedData)) {
-                $data_entry_error_detected = $this->getLangLabel('data_entry_error_detected');
+                $data_entry_error_detected
+                    = $this->getLangLabel('data_entry_error_detected');
                 // the form WAS submitted but validate() failed...
                 // main error message
                 $this->form->addElement('static', 'mainError');
@@ -959,7 +978,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', $this->getLangLabel('date_of_administration'), $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            $this->getLangLabel('date_of_administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
@@ -987,7 +1010,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'required'
         );
 
-        $this->addRule('Examiner', $this->getLangLabel('examiner_required'), 'required');
+        $this->addRule(
+            'Examiner',
+            $this->getLangLabel('examiner_required'),
+            'required'
+        );
     }
 
     /**
@@ -1743,12 +1770,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $refusals = null
     ): void {
         $rule_message = $rule_message ?? $this->getLangLabel('field_required');
-        $refusals = $refusals ??  [
+        $refusals     = $refusals ??  [
             ''             => '',
             'not_answered' => $this->getLangLabel('not_answered'),
         ];
-        $group   = [];
-        $group[] = $this->createText($field, $label);
+        $group        = [];
+        $group[]      = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field."_status",
@@ -1782,8 +1809,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $rule_message=null
     ): void {
         $rule_message = $rule_message ?? $this->getLanglaebl('specify_or_select');
-        $group   = [];
-        $group[] = $this->form->createElement(
+        $group        = [];
+        $group[]      = $this->form->createElement(
             "textarea",
             $field,
             '',
@@ -1793,7 +1820,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'rows' => 4,
             ]
         );
-        $group[] = $this->createSelect(
+        $group[]      = $this->createSelect(
             $field."_status",
             "",
             [
@@ -1828,8 +1855,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $rule_message=null
     ): void {
         $rule_message = $rule_message ?? $this->getLangLabel('field_required');
-        $group   = [];
-        $group[] = $this->form->createElement(
+        $group        = [];
+        $group[]      = $this->form->createElement(
             "textarea",
             $field,
             $label,
@@ -1880,7 +1907,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules = [],
         ?string $rule_message = null
     ): void {
-        $rule_message = $rule_message ?? $this->getLangLabel('select_status_leave_blank');
+        $rule_message = $rule_message
+            ?? $this->getLangLabel('select_status_leave_blank');
 
         $group   = [];
         $group[] = $this->form->createElement(
