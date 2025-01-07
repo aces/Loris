@@ -44,20 +44,20 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              SELECT
                s.CandID as Candidate,
                c.PSCID as PSCID,
-               c.Entity_type as Entity_type, 
+               c.Entity_type as Entity_type,
                s.Visit_label as Visit,
                s.Date_visit as Visit_date,
                s.CenterID as CenterID,
                p.Name as Site,
                f.InsertTime as InsertTime,
                f.File as File,
-               mst.Scan_type as ScanType,
+               mst.MriScanTypeName AS ScanType,
                qc.QCStatus as QC_status,
                qc.Selected as Selected
              FROM
                files f
              LEFT JOIN mri_scan_type mst
-               ON (mst.ID = f.AcquisitionProtocolID)
+               ON (mst.MriScanTypeID = f.MriScanTypeID)
              LEFT JOIN session s
                ON (f.SessionID = s.ID)
              LEFT JOIN candidate c
