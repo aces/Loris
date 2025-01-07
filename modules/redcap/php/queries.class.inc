@@ -237,7 +237,7 @@ class Queries
      * @return ?string The comment ID, or `NULL` if no comment is found for the
      *                 comment parameter.
      */
-    public function getCommendId(
+    public function getCommentId(
         CandID $cand_id,
         string $visit_label,
         string $instrument_name,

@@ -688,7 +688,7 @@ class RedcapNotificationHandler
     ): string {
         $psc_id = $candidate->getPSCID();
 
-        $comment_id = $this->_queries->getCommendId(
+        $comment_id = $this->_queries->getCommentId(
             $candidate->getCandID(),
             $visit_label,
             $instrument_name,
