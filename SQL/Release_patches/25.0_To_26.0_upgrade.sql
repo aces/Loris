@@ -219,6 +219,12 @@ UPDATE
 SET cs1.Parent = cs2.ID
 WHERE cs1.Name = 'MINCToolsPath';
 
+-- Add the prePackagedDownloadPath Config
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+  SELECT 'prePackagedDownloadPath', 'Path to the directory where the prepackaged downloadable files are located', 1, 0, 'text', ID, 'Path to the directory where the prepackaged downloadable files are located', 32
+  FROM ConfigSettings
+  WHERE Name="imaging_pipeline";
+
 -- Add default value to electrophysiology_uploader UploadDate
 ALTER TABLE `electrophysiology_uploader` MODIFY COLUMN `UploadDate` DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP;
 SELECT 'Running: SQL/Archive/26.0/2023-06-06-add_NA_to_consent_status.sql';
