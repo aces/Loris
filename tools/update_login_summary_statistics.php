@@ -131,22 +131,25 @@ foreach ($pinnedqueries as $pin) {
     }
 }
 
-// Get SQL queries from ../project/tools/Login_Summary_Statistics
-// Filename should be the desired name of the query
-// TODO: How could we order them?
+// Try to get SQL queries from ../project/tools/Login_Summary_Statistics
+// Otherwise get them from SQL/Login_Summary_Statistics
+// Filename should be the desired name of the query, with a "#_" infront
+// Example: 01_Site.sql where 01 means it is the first query
 $folder = __DIR__ . "/../project/tools/Login_Summary_Statistics/";
 if (!is_dir($folder)) {
-    print_r("Folder $folder does not exist\n");
-} else {
-    $files = scandir($folder);
-    foreach ($files as $file) {
-        if (is_file($folder . $file)) {
-            print_r("Reading SQL File $file\n");
-            $result = $DB->pselect(file_get_contents($folder . $file), []);
-            $queryName = pathinfo($file, PATHINFO_FILENAME);
-            foreach ($result as $row) {
-                $data[$row['ProjectName']][$queryName] = $row['count'];
-            }
+    print_r("Folder $folder does not exist, using ../SQL/Login_Summary_Statistics instead \n");
+    $folder = __DIR__ . "/../SQL/Login_Summary_Statistics/";
+}
+
+$files = scandir($folder);
+foreach ($files as $file) {
+    if (is_file($folder . $file)) {
+        print_r("Reading SQL File $file\n");
+        $result = $DB->pselect(file_get_contents($folder . $file), []);
+        $queryName = pathinfo($file, PATHINFO_FILENAME);
+        $queryName = explode("_", $queryName)[1];
+        foreach ($result as $row) {
+            $data[$row['ProjectName']][$queryName] = $row['count'];
         }
     }
 }
