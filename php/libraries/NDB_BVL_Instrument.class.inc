@@ -25,13 +25,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * The form object for this instrument.
-     *
-     * @var LorisForm
-     */
-    public $form;
-
-    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -39,13 +32,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @var string
      */
     public $formType;
-
-    /**
-     * Array holding the date format
-     *
-     * @var array
-     */
-    public $dateOptions;
 
     /**
      * Type of instrument. Can be 'normal' or 'DirectEntry'
@@ -843,20 +829,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
-        $oldData = $db->pselectOne(
-            "SELECT id.Data FROM flag f
-                    JOIN instrument_data id ON (id.ID=f.DataID)
-                WHERE CommentID=:cid",
-            ['cid' => $this->getCommentID()]
-        );
-
-        // (The PDO driver seems to return null as "null" for JSON column types)
-        if (!empty($oldData) && $oldData !== "null") {
-            $oldData = json_decode($oldData, true);
-        } else {
-            $oldData = [];
-        }
-        $newData = array_merge($oldData ?? [], $values);
+        $newData = array_merge($this->getInstanceData() ?? [], $values);
 
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
@@ -2113,7 +2086,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Loop over this instance data
         foreach ($thisData AS $key=>$value) {
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if ($otherData[$key] != $value) {
+                if (($otherData[$key] ?? null) != $value) {
                     $diff[] = [
                         'TestName'       => $this->testName,
                         'ExtraKeyColumn' => null,
@@ -3356,7 +3329,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     static function getDDEInstrumentNamesList(
         \LORIS\LorisInstance $loris,
-        String $Visit_label=null
+        ?string $Visit_label=null
     ) : array {
         $DB = $loris->getDatabaseConnection();
 

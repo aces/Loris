@@ -195,10 +195,10 @@ class CouchDBMRIImporter
     {
         return "SELECT $whatToSelect "
              . 'FROM files f '
-             . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
+             . 'LEFT JOIN mri_scan_type mst USING (MriScanTypeID) '
              . 'LEFT JOIN files_qcstatus fqs USING (FileID) '
              . 'WHERE f.SessionID=s.ID '
-             . "AND msc.Scan_type='$scanType' "
+             . "AND mst.MriScanTypeName='$scanType' "
              . 'AND fqs.selected=\'true\'';
     }
 
@@ -462,13 +462,12 @@ class CouchDBMRIImporter
      */
     public function getScanTypes()
     {
-
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID
-             FROM mri_scan_type msc
-             JOIN files f ON msc.ID= f.AcquisitionProtocolID
-             JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
-             ORDER BY f.AcquisitionProtocolID",
+            "SELECT DISTINCT MriScanTypeID, MriScanTypeName AS ScanType
+             FROM mri_scan_type
+             JOIN files USING (MriScanTypeID)
+             JOIN files_qcstatus fqc USING (FileID)
+             ORDER BY MriScanTypeID",
             []
         );
 
@@ -489,7 +488,7 @@ class CouchDBMRIImporter
 
         foreach ($CandidateData as $row) {
             foreach ($ScanTypes as $scanType) {
-                $scan_type = $scanType['ScanType'];
+                $scan_type = $scanType['MriScanTypeName'];
                 if (!empty($row['Selected_' . $scan_type])) {
                     $fileID = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE BINARY File=:fname",
