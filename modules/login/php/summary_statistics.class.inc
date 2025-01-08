@@ -66,10 +66,18 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
             $projects = array_merge(['All Projects' => 'All Projects'], $projects);
         }
 
+        // csv version for exporting to clipboard
+        $reusable_response = iterator_to_array($response);
+        $csv = "Project,Statistic,Value\n";
+        foreach ($reusable_response as $row) {
+            $csv .= $row['Project'] . "," . $row['Title'] . "," . $row['Value'] . "\n";
+        }
+
         return new \LORIS\Http\Response\JsonResponse(
             [
-                'statistics' => iterator_to_array($response),
+                'statistics' => $reusable_response,
                 'projects'   => $projects,
+                'csv'        => $csv,
             ]
         );
     }

@@ -47,7 +47,16 @@ class SummaryStatistics extends Component {
             }}
             emptyOption={false}
           />
-          <div>Data in LORIS:</div>
+          <div>
+            <span
+              onClick={() => {
+                navigator.clipboard.writeText(this.state.data.csv);
+              }}
+            >
+              Data
+            </span>
+            {' '}in LORIS:
+          </div>
           {/* Statistics */}
           {(this.state.data.statistics).map((statistic) => {
             if (
