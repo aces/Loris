@@ -537,9 +537,10 @@ INSERT INTO `mri_scanner` (ID) VALUES (0);
 SET SQL_MODE=@OLD_SQL_MODE;
 
 CREATE TABLE `mri_scan_type` (
-  `ID` int(11) unsigned NOT NULL auto_increment,
-  `Scan_type` text NOT NULL,
-  PRIMARY KEY  (`ID`)
+  `MriScanTypeID` int(11) unsigned NOT NULL auto_increment,
+  `MriScanTypeName` VARCHAR(255) NOT NULL,
+  PRIMARY KEY  (`MriScanTypeID`),
+  CONSTRAINT `UK_mri_scan_type_name` UNIQUE KEY `MriScanTypeName` (`MriScanTypeName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
 
 INSERT INTO `mri_scan_type` VALUES
@@ -577,7 +578,7 @@ CREATE TABLE `files` (
   `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
-  `AcquisitionProtocolID` int(10) unsigned default NULL,
+  `MriScanTypeID` int(10) unsigned default NULL,
   `FileType` varchar(12) default NULL,
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default 0,
@@ -596,11 +597,11 @@ CREATE TABLE `files` (
   KEY `sessionid` (`SessionID`),
   KEY `outputtype` (`OutputType`),
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
-  KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
+  KEY `ScanIndex` (`MriScanTypeID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
   KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
-  CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
+  CONSTRAINT `FK_files_2` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
@@ -651,7 +652,7 @@ CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `CenterID` integer unsigned DEFAULT NULL,
   `ScannerID` int(10) unsigned DEFAULT NULL,
-  `Scan_type` int(10) unsigned NOT NULL default '0',
+  `MriScanTypeID` int(10) unsigned NOT NULL,
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
   `TE_min` DECIMAL(10,4) DEFAULT NULL,
@@ -683,11 +684,12 @@ CREATE TABLE `mri_protocol` (
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
   CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_mri_protocol_scan_type` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,MriScanTypeID,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
    (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
@@ -695,15 +697,17 @@ INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
    (NULL,45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
 
 CREATE TABLE `mri_protocol_group_target` (
-     `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
-     `CohortID`             INT(10) UNSIGNED DEFAULT NULL,
-     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
-     PRIMARY KEY (`MriProtocolGroupTargetID`),
-     CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
-     CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)       REFERENCES `cohort` (`CohortID`)
+    `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
+    `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
+    `CohortID`                 INT(10) UNSIGNED DEFAULT NULL,
+    `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+    PRIMARY KEY (`MriProtocolGroupTargetID`),
+    CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+    CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
+    CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)           REFERENCES `cohort` (`CohortID`),
+    CONSTRAINT `UK_mri_protocol_group_target`
+      UNIQUE (`ProjectID`, `CohortID`, `Visit_label`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
@@ -761,7 +765,7 @@ INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol ch
 
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `ValidMin` decimal(10,4) DEFAULT NULL,
@@ -769,9 +773,9 @@ CREATE TABLE `mri_protocol_checks` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY (`Scan_type`),
-  CONSTRAINT `FK_mriProtocolChecks_ScanType`
-    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
+  KEY (`MriScanTypeID`),
+  CONSTRAINT `FK_mri_protocol_checks_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -853,7 +857,7 @@ CREATE TABLE `bids_mri_scan_type_rel` (
   `BIDSPhaseEncodingDirectionID` int(3)  UNSIGNED DEFAULT NULL,
   PRIMARY KEY  (`MRIScanTypeID`),
   KEY `FK_bids_mri_scan_type_rel` (`MRIScanTypeID`),
-  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`MriScanTypeID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_bids_category`                 FOREIGN KEY (`BIDSCategoryID`)               REFERENCES `bids_category`(`BIDSCategoryID`),
   CONSTRAINT `FK_bids_scan_type_subcategory`    FOREIGN KEY (`BIDSScanTypeSubCategoryID`)    REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
   CONSTRAINT `FK_bids_scan_type`                FOREIGN KEY (`BIDSScanTypeID`)               REFERENCES `bids_scan_type` (`BIDSScanTypeID`),
@@ -866,35 +870,35 @@ INSERT INTO bids_mri_scan_type_rel
   (MRIScanTypeID, BIDSCategoryID, BIDSScanTypeSubCategoryID, BIDSScanTypeID, BIDSEchoNumber)
   VALUES
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'flair'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'flair'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='FLAIR'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'fMRI'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'fMRI'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='func'),
     (SELECT BIDSScanTypeSubCategoryID FROM bids_scan_type_subcategory WHERE BIDSScanTypeSubCategory='task-rest'),
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='bold'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 't1'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 't1'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='T1w'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 't2'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 't2'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='T2w'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'dti'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'dti'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='dwi'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='dwi'),
@@ -976,7 +980,7 @@ CREATE TABLE `mri_violations_log` (
   `CandID` int(6) DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `CheckID` int(11) DEFAULT NULL,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `Value` varchar(255) DEFAULT NULL,
@@ -988,6 +992,8 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violations_log_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
