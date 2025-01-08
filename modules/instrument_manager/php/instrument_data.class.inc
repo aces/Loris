@@ -4,6 +4,7 @@ namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \SplFileInfo;
 
 /**
  * Upload instrument data
@@ -103,23 +104,31 @@ class Instrument_Data extends \NDB_Page
         ServerRequestInterface $request
     ): ResponseInterface {
         // Ensure the user is allowed to upload.
-        if (! $request->getAttribute('user')->hasPermission(
+        if (!$request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
         )
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
-        $data_file    = $request->getUploadedFiles()['data_file'];
-        $request_body = (array)$request->getParsedBody();
 
-        $fileLocation = sys_get_temp_dir() . '/' . $data_file->getClientFilename();
-        $data_file->moveTo($fileLocation);  // TODO: Explore alternatives
-
-        $userID = $request->getAttribute('user')->getUsername();
+        $request_body  = (array)$request->getParsedBody();
 
         if (isset($request_body['instrument'])) {
             $instrument = $request_body['instrument'];
             if ($this->instrumentExists($instrument)) {
+                $data_file     = $request->getUploadedFiles()['data_file'];
+                $userID = $request->getAttribute('user')->getUsername();
+
+                $upload_folder = $this->loris
+                    ->getConfiguration()->getSetting('InstrumentDataFilePath');
+                $file_prefix   = $userID . '_' . time() . '_';
+                $fileLocation  = $upload_folder . "/$file_prefix"
+                    . $data_file->getClientFilename();
+                $data_file->moveTo($fileLocation);
+
+                // Insert file in database
+
+
                 // Parse
                 $dataParser = new InstrumentDataParser(
                     $instrument,

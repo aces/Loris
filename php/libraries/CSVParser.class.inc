@@ -30,7 +30,7 @@ use SplFileObject;
  */
 class CSVParser
 {
-    private SplFileInfo $csvFile;
+    protected SplFileInfo $csvFile;
     /**
      * Construct parser
      *

@@ -307,80 +307,99 @@ class InstrumentDataParser extends CSVParser
             $this->instrumentName,
         );
 
-        // TODO: Conditional rollback?
-
         $errors = [];
         try {
             $db->beginTransaction();
             try {
-                foreach ($instrumentData as $data) {
-                    try {
-                        $battery = new \NDB_BVL_Battery();
-                        $battery->selectBattery(
-                            new \SessionID(strval($data['SessionID']))
-                        );
-                        $commentID = $battery->addInstrument(
-                            $loris,
-                            $this->instrumentName
-                        );
+            foreach ($instrumentData as $data) {
+                // Create db entry for csv file
+                $db->insert('instrument_data_files', [
+                    'FilePath' => $this->csvFile->getFilename()
+                ]);
+                $instrumentDataID = $db->lastInsertID;
 
-                        $instrument = \NDB_BVL_Instrument::factory(
-                            $loris,
-                            $this->instrumentName,
-                            $commentID
-                        );
+                try {
+                    $battery = new \NDB_BVL_Battery();
+                    $battery->selectBattery(
+                        new \SessionID(strval($data['SessionID']))
+                    );
+                    $commentID = $battery->addInstrument(
+                        $loris,
+                        $this->instrumentName
+                    );
 
-                        $rowData = array_reduce(
-                            $instrumentHeaders,
-                            function ($columns, $columnName) use ($data) {
-                                $columns[$columnName]
-                                    = strlen($data[$columnName]) > 0
-                                    ? $data[$columnName]
-                                    : null;
-                                return $columns;
-                            },
-                            []
-                        );
+                    $instrument = \NDB_BVL_Instrument::factory(
+                        $loris,
+                        $this->instrumentName,
+                        $commentID
+                    );
 
-                        // TODO: Tech debt -- can be reset between getGV and save
-                        $_FILES   = [];
-                        $_REQUEST = $rowData;
-                        $_POST    = $rowData;
+                    $rowData = array_reduce(
+                        $instrumentHeaders,
+                        function ($columns, $columnName) use ($data) {
+                            $columns[$columnName]
+                                = strlen($data[$columnName]) > 0
+                                ? $data[$columnName]
+                                : null;
+                            return $columns;
+                        },
+                        []
+                    );
 
-                        $instrument->form->getGroupValues(
-                            array_keys($rowData),
-                            $out
+                    // TODO: Tech debt -- can be reset between getGV and save
+                    $_FILES   = [];
+                    $_REQUEST = $rowData;
+                    $_POST    = $rowData;
+
+                    $instrument->form->getGroupValues(
+                        array_keys($rowData),
+                        $out
+                    );
+                    $success = $instrument->save();
+
+                    if (!$success) {
+                        throw new RuntimeException(
+                            "This row failed data validation."
                         );
-                        $success = $instrument->save();
-                        if (!$success) {
-                            throw new RuntimeException(
-                                "This row failed data validation."
-                            );
-                        }
-                    } catch (\Exception $e) {
-                        error_log("Error caught: {$e->getMessage()}");
-                        $errors[] = [
-                            'row'     => $data,
-                            'message' => "Error caught: {$e->getMessage()}",
-                        ];
+                    } else {
+                        // Link file entry to DataID
+                        $query  = "SELECT DataID
+                                FROM flag
+                                WHERE CommentID = :commentID";
+                        $dataID = $db->pselectOneInt($query, [
+                            'commentID' => $instrument->getCommentID()
+                        ]);
+
+                        $db->update(
+                            'instrument_data_files',
+                            ['DataID' => $dataID],
+                            ['ID'     => $instrumentDataID]
+                        );
                     }
+                } catch (\Exception $e) {
+                    error_log("Error caught: {$e->getMessage()}");
+                    $errors[] = [
+                        'row'     => $data,
+                        'message' => "Error caught: {$e->getMessage()}",
+                    ];
                 }
+            }
 
-                if (count($errors) > 0) {
-                    error_log('Errors found:' . json_encode($errors));
-                    $db->rollBack();
-                    return [
-                        'success' => false,
-                        'message' => $errors,
-                    ];
-                } else {
-                    $db->commit();
-                    error_log("Saved " . count($instrumentData) . " row(s)");
-                    return [
-                        'success' => true,
-                        'message' => "Saved " . count($instrumentData) . " row(s)",
-                    ];
-                }
+            if (count($errors) > 0) {
+                error_log('Errors found:' . json_encode($errors));
+                $db->rollBack();
+                return [
+                    'success' => false,
+                    'message' => $errors,
+                ];
+            } else {
+                $db->commit();
+                error_log("Saved " . count($instrumentData) . " row(s)");
+                return [
+                    'success'   => true,
+                    'message'   => "Saved " . count($instrumentData) . " row(s)",
+                ];
+            }
             } catch (\Exception $e) {
                 error_log(
                     "Rolling back due to unexpected error: {$e->getMessage()}"
