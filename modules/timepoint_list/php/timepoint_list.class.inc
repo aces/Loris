@@ -32,7 +32,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class Timepoint_List extends \NDB_Menu
 {
     protected $candID;
-
+    protected $EditBTN = 0;
     /**
      * Overloading this method to allow access to timepoint list
      *
@@ -43,8 +43,12 @@ class Timepoint_List extends \NDB_Menu
     function _hasAccess(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
-
         // check user permissions
+        if ($user->hasPermission('candidate_edit')
+            || $user->hasPermission('superuser')
+        ) {
+                 $this->EditBTN = 1;
+        }
         return $user->hasPermission('access_all_profiles')
             || $candidate->isAccessibleBy($user);
     }
@@ -62,8 +66,19 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+
         // FIXME: At some point this class and related classes should use a
         // Candidate object rather than passing a CandID around.
+                $method = $request->getMethod();
+        if ($method == 'DELETE') {
+            return $this->handleDelete($request);
+        }
+        if ($method == 'POST') {
+            return $this->handlePost($request);
+        }
+        if ($method == 'GET' && isset($_GET['projectID'])) {
+            return $this->handleGET($_GET['projectID']);
+        }
         $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
     }
@@ -216,6 +231,8 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
+              $id = 'projectID';
+              $this->tpl_data['timePoints'][$x][$id] =$timePoint->getProjectID();
             $x++;
         } // end list
 
@@ -232,6 +249,7 @@ class Timepoint_List extends \NDB_Menu
         } // end list
 
         $this->tpl_data['actions'] = $this->getActionButtons();
+        $this->tpl_data['edit']    = $this->EditBTN;
     }
     /**
      * Determining Previous Stage
@@ -300,5 +318,85 @@ class Timepoint_List extends \NDB_Menu
             )
         );
     }
-}
+    /**
+     * Handle archive a visitlabel
+     *
+     * @param ServerRequestInterface $request The PSR15 ServerRequestInterface.
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
+    protected function handleDelete(
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $body     = $request->getBody()->getContents();
+        $jsonBody = json_decode($body, true);
+        $id       = null;
+        if (is_array($jsonBody) && array_key_exists('sessionID', $jsonBody)) {
+            $id = $jsonBody['sessionID'];
+        }
+        $set = ['Active' => 'N'];
+        $where_sessionID = ['ID' => $id];
+        $DB = \NDB_Factory::singleton()->database();
 
+                $DB->update('session', $set, $where_sessionID);
+
+        return new \LORIS\Http\Response\JSON\OK(
+            ['success' =>'successfully archived']
+        );
+    }
+    /**
+     * Handle handlePost
+     *
+     * @param ServerRequestInterface $request The PSR15 handler.
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
+    protected function handlePost(ServerRequestInterface $request): ResponseInterface
+    {
+        $body     = $request->getBody()->getContents();
+        $jsonBody = json_decode($body, true);
+        // Check if $jsonBody is an array before accessing its keys
+        $id = $date = $subproject = null;
+        if (is_array($jsonBody)) {
+            // Check and assign values if the keys exist in $jsonBody
+            $id         = $jsonBody['sessionID'] ?? null;
+            $date       = $jsonBody['date'] ?? null;
+            $subproject = $jsonBody['subProjectID'] ?? null;
+        }
+
+        // Prepare data for database update
+        $set = [
+            'Date_visit' => $date,
+            'CohortID'   => $subproject
+        ];
+
+        // Ensure $id is not null before proceeding with the database update
+        if ($id !== null) {
+            $where_sessionID = ['ID' => $id];
+            $DB = \NDB_Factory::singleton()->database();
+
+            // Perform the database update
+            $DB->update('session', $set, $where_sessionID);
+        }
+            return new \LORIS\Http\Response\JSON\OK(
+                ['success' =>'successfully updated']
+            );
+    }
+    /**
+     * Handle get getCohortsForProject
+     *
+     * @param String $projectID projectID
+     *
+     * @return \LORIS\Http\Response\JSON\OK
+     */
+    protected function handleGet($projectID): ResponseInterface
+    {
+
+        $cohortlist = \Utility::getCohortsForProject(
+            new \ProjectID(strval($projectID))
+        );
+        return new \LORIS\Http\Response\JSON\OK(
+            $cohortlist
+        );
+    }
+}
