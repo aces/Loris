@@ -82,6 +82,8 @@
             <!--directory>../modules/dashboard/ajax/</directory-->
         </include>
     </coverage>
-
+    <php>
+        <ini name="error_reporting" value="E_ALL & ~E_DEPRECATED" />
+    </php>
 </phpunit>
 
