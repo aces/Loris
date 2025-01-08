@@ -70,7 +70,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
         $reusable_response = iterator_to_array($response);
         $csv = "Project,Statistic,Value\n";
         foreach ($reusable_response as $row) {
-            $csv .= $row['Project'] . "," . $row['Title'] . "," . $row['Value'] . "\n";
+            $csv .= $row['Project'] .",". $row['Title'] .",". $row['Value'] . "\n";
         }
 
         return new \LORIS\Http\Response\JsonResponse(

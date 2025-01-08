@@ -3,14 +3,15 @@
 /**
  * This script updates the Login Summary Statistics table in the database
  * based on the queries that are pinned to the login page in the dataquery module,
- * and on the SQL queries in the project/tools/Login_Summary_Statistics folder.
- * Pinned DQT Queries must include the Project column. SQL query files must return
- * a result with columns Project.Name and count. The name of the file must be the desired
- * name of the query. Here is an example SQL query that counts the number of sites:
- * 
+ * and on the SQL queries in the project/tools/Login_Summary_Statistics folder,
+ * or if that does not exist, the SQL/Login_Summary_Statistics folder.
+ * Pinned DQT Queries must include the Project column. SQL query files must return a
+ * result with columns ProjectName and count. Here is an example SQL query that
+ * counts the number of sites:
+ *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * SELECT 
- * IFNULL(Project.Name, 'All Projects'), 
+ * SELECT
+ * IFNULL(Project.Name, 'All Projects') as ProjectName,
  * COUNT(DISTINCT CenterID) AS count
  * FROM psc
  * JOIN session s ON s.CenterID = psc.CenterID
@@ -125,8 +126,8 @@ foreach ($pinnedqueries as $pin) {
         unset($data['All Projects'][$queryName]);
     } else if (count($queryInProjects) == 0) {
         print_r(
-            "--- ERROR: Query $queryName has no data in any project. "
-            . "Please delete this query, and re-save with the Project column selected.\n"
+            "--- ERROR: Query $queryName has no data in any project. Please delete "
+            . "this query, and re-save with the Project column selected.\n"
         );
     }
 }
@@ -137,7 +138,10 @@ foreach ($pinnedqueries as $pin) {
 // Example: 01_Site.sql where 01 means it is the first query
 $folder = __DIR__ . "/../project/tools/Login_Summary_Statistics/";
 if (!is_dir($folder)) {
-    print_r("Folder $folder does not exist, using ../SQL/Login_Summary_Statistics instead \n");
+    print_r(
+        "Folder $folder does not exist, "
+        . "using ../SQL/Login_Summary_Statistics instead \n"
+    );
     $folder = __DIR__ . "/../SQL/Login_Summary_Statistics/";
 }
 
@@ -145,7 +149,7 @@ $files = scandir($folder);
 foreach ($files as $file) {
     if (is_file($folder . $file)) {
         print_r("Reading SQL File $file\n");
-        $result = $DB->pselect(file_get_contents($folder . $file), []);
+        $result    = $DB->pselect(file_get_contents($folder . $file), []);
         $queryName = pathinfo($file, PATHINFO_FILENAME);
         $queryName = explode("_", $queryName)[1];
         foreach ($result as $row) {
