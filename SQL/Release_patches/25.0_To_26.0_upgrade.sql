@@ -225,6 +225,12 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
   FROM ConfigSettings
   WHERE Name="imaging_pipeline";
 
+-- Add the EEGChunksPath Config
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+SELECT 'EEGChunksPath', 'Path to store the EEG chunks for Visualization', 1, 0, 'text', ID, 'EEG chunks path', 16
+  FROM ConfigSettings
+  WHERE Name="eeg_pipeline";
+
 -- Add default value to electrophysiology_uploader UploadDate
 ALTER TABLE `electrophysiology_uploader` MODIFY COLUMN `UploadDate` DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP;
 SELECT 'Running: SQL/Archive/26.0/2023-06-06-add_NA_to_consent_status.sql';
