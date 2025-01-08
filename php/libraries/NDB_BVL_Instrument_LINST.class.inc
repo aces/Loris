@@ -167,7 +167,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         //If this is an OR rule using two different controllers
                         //explode it at the pipe.
                         //ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                        if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
+                        if (str_contains($rule, "|") &&
+                            stristr(substr($rule, strpos($rule, "|")), "{@}")
+                        ) {
                             $rules_array = explode("|", $rule);
                         } else {
                             //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
