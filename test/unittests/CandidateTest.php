@@ -711,10 +711,10 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
-        $cohorts = $this->getMockBuilder('\LORIS\Database\Query')
+        $cohort = $this->getMockBuilder('\LORIS\Database\Query')
             ->disableOriginalConstructor()
             ->getMock();
-        $cohorts->method("getIterator")
+        $cohort->method("getIterator")
             ->willReturn(
                 new ArrayIterator(
                     []
@@ -1085,8 +1085,10 @@ class CandidateTest extends TestCase
             ],
         ];
 
+        // Use willReturnMap correctly here
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->_configMap);
+
         $this->assertEquals(
             1,
             Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
@@ -1455,7 +1457,7 @@ class CandidateTest extends TestCase
             ->willReturn(['Male','Female','Other']);
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->_configMap);
     }
 
     /**

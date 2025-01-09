@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * BreadcrumbTrail class tests
+ * BreadcrumbTrailTest
  *
  * PHP Version 7
  *
@@ -25,6 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class BreadcrumbTrailTest extends TestCase
 {
+    // @covers Breadcrumb::__toString
+
     /**
      * Breadcrumb list used for testing
      *
