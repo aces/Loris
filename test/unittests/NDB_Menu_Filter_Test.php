@@ -62,7 +62,7 @@ class NDB_Menu_Filter_Test extends TestCase
     {
         $method          = ['_resetFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $allOtherMethods = array_values($allOtherMethods);  // Ensure this is an indexed array
+        $allOtherMethods = array_values($allOtherMethods);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
