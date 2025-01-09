@@ -27,7 +27,7 @@ class NDB_Menu_Filter_Test extends TestCase
     {
         global $_SESSION;
         $this->Session = $this->getMockBuilder(stdClass::class)
-            ->addMethods(
+            ->onlyMethods(
                 ["setProperty","getProperty","getUsername","isLoggedIn"]
             )->getMock();
         $_SESSION      = [
