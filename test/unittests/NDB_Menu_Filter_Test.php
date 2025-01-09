@@ -62,20 +62,33 @@ class NDB_Menu_Filter_Test extends TestCase
     {
         $method          = ['_resetFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $allOtherMethods = array_values($allOtherMethods);
-        $stub            = $this->getMockBuilder('NDB_Menu_Filter')
+        $allOtherMethods = array_values(
+            array_filter(
+                $allOtherMethods,
+                function ($method) {
+                    return is_string($method) && !empty($method);
+                }
+            )
+        );
+
+        $stub = $this->getMockBuilder('NDB_Menu_Filter')
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
-        '@phan-var \NDB_Menu_Filter $stub';
 
-        // Reset calls
-        $this->Session->expects($this->exactly(2))
+        $this->Session = $this->getMockBuilder('Session')
+            ->onlyMethods(['setProperty'])
+            ->getMock();
+
+        $this->Session->expects($this->exactly(1))
             ->method('setProperty')
-            ->withConsecutive(
-                ['filter', null],
-                ['keyword', null]
-            );
+            ->with('filter', null);
+
+        $this->Session->expects($this->exactly(1))
+            ->method('setProperty')
+            ->with('keyword', null);
+
+        $stub->Session = $this->Session;
 
         $stub->_resetFilters();
     }
