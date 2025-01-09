@@ -180,16 +180,15 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);  // Updated to use willReturn
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);  // Updated to use willReturn
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->update("test", ['field' => '<b>Hello</b>'], []);
-
     }
 
     /**
@@ -209,16 +208,15 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);  // Updated to use willReturn
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);  // Updated to use willReturn
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
-
     }
 
     /**
@@ -238,10 +236,10 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -268,10 +266,10 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())->method("prepare")
-            ->will($this->returnValue($stmt));
+            ->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -823,10 +821,10 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -858,10 +856,10 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
