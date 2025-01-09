@@ -24,7 +24,7 @@ use Facebook\WebDriver\WebDriverBy;
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
+class Conflict_ResolverTest extends LorisIntegrationTest
 {
     //filter location on conflict_resolver page
     static $ForSite    = 'select[name="Site"]';

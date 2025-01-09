@@ -25,7 +25,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class MriViolationsTestIntegrationTest extends LorisIntegrationTest
+class Mri_ViolationsTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations

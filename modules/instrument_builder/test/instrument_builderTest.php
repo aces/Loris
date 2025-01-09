@@ -27,7 +27,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
+class Instrument_BuilderTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Instrument builder module, some

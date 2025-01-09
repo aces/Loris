@@ -26,7 +26,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
+class Survey_AccountsTest extends LorisIntegrationTest
 {
     // UI location on the page
     static $pscid      = 'input[name="pscid"]';

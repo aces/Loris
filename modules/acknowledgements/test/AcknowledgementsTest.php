@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * AcknowledgementsIntegrationTest automated integration tests
+ * AcknowledgementsTest automated integration tests
  *
  * PHP Version 5
  *
@@ -15,7 +15,7 @@ use Facebook\WebDriver\WebDriverBy;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * AcknowledgementsIntegrationTest
+ * AcknowledgementsTest
  *
  * @category Test
  * @package  Loris
@@ -23,7 +23,7 @@ use Facebook\WebDriver\WebDriverBy;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class AcknowledgementsIntegrationTest extends LorisIntegrationTest
+class AcknowledgementsTest extends LorisIntegrationTest
 {
     //filter location
     static $fullname     = 'input[name="fullName"]';

@@ -25,7 +25,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class UserAccountsIntegrationTest extends LorisIntegrationTest
+class User_AccountsTest extends LorisIntegrationTest
 {
     // The paths to the pages to which the form must submit.
     private const FILEPATH_EDITUSER = 'user_accounts';

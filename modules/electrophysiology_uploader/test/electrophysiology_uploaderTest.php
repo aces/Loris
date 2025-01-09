@@ -25,7 +25,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
+class Electrophysiology_UploaderTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = [

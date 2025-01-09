@@ -27,7 +27,7 @@ use \Laminas\Diactoros\ServerRequest;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LoginTest extends TestCase
+class login_Test extends TestCase
 {
     /**
      * A PSR Request object representing the incoming request

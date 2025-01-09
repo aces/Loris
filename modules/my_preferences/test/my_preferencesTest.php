@@ -9,7 +9,7 @@ require_once __DIR__
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class MyPreferencesIntegrationTest extends LorisIntegrationTest
+class My_PreferencesTest extends LorisIntegrationTest
 {
     // The paths to the pages to which the form must submit.
     private const FILEPATH_MYPREFERENCES = 'my_preferences';

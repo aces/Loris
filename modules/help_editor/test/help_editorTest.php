@@ -25,7 +25,7 @@ use Facebook\WebDriver\WebDriverBy;
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-class HelpEditorTestIntegrationTest extends LorisIntegrationTest
+class Help_EditorTest extends LorisIntegrationTest
 {
     /**
      * Insert testing data into the database
