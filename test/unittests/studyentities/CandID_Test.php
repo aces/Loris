@@ -36,7 +36,7 @@ class CandID_Test extends TestCase
      *
      * @return []
      */
-    public function invalidValues(): array
+    public static function invalidValues(): array
     {
         return [
             ['A'],

@@ -903,7 +903,7 @@ class UtilityTest extends TestCase
      *
      * @return array
      */
-    public function positiveIntegerValues(): array
+    public static function positiveIntegerValues(): array
     {
         return [
             [1],
