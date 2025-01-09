@@ -860,47 +860,51 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
+
+        // Replace onConsecutiveCalls with separate willReturn calls
         $this->_dbMock
             ->method('pselect')
-            ->will(
-                $this->onConsecutiveCalls(
+            ->willReturn(
+                [
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        => 98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ]
+            )
+            ->willReturn(
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        => 98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ]
+            )
+            ->willReturn(
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
-                )
+                    [
+                        "ID"        => 98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ]
             );
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -999,7 +1003,8 @@ class CandidateTest extends TestCase
         ];
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->_configMap);  // Replaced returnValueMap with willReturnMap
+
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA', 'BBB'),
