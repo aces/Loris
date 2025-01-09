@@ -23,7 +23,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class candidate_listTest extends LorisIntegrationTestWithCandidate
+class Candidate_ListTest extends LorisIntegrationTestWithCandidate
 {
     //filter location
     static $PSCID          = 'input[name="pscid"]';

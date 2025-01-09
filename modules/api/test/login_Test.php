@@ -27,7 +27,7 @@ use \Laminas\Diactoros\ServerRequest;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class login_Test extends TestCase
+class Login_Test extends TestCase
 {
     /**
      * A PSR Request object representing the incoming request
@@ -102,6 +102,7 @@ class login_Test extends TestCase
 
         $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
             ->onlyMethods(['getLoginAuthenticator', 'getEncodedToken'])
+            ->disableOriginalConstructor()
             ->getMock();
 
         $handler->expects($this->once())

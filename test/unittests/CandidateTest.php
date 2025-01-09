@@ -1003,7 +1003,7 @@ class CandidateTest extends TestCase
         ];
 
         $this->_configMock->method('getSetting')
-            ->willReturnMap($this->_configMap);  // Replaced returnValueMap with willReturnMap
+            ->willReturnMap($this->_configMap);
 
         $this->assertEquals(
             1,
