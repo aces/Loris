@@ -28,7 +28,7 @@ class NDB_Menu_Filter_Test extends TestCase
         global $_SESSION;
         $this->Session = $this->getMockBuilder(stdClass::class)
             ->onlyMethods(
-                ["setProperty","getProperty","getUsername","isLoggedIn"]
+                ["setProperty", "getProperty", "getUsername", "isLoggedIn"]
             )->getMock();
         $_SESSION      = [
             'State' => $this->Session
@@ -145,15 +145,6 @@ class NDB_Menu_Filter_Test extends TestCase
 
         $stub->_setFilters($submittedValues);
 
-        /*
-        $this->assertEquals(
-            $stub->filter,
-            array(
-                'table.column' => 'I should be put into filter',
-            ),
-            'Menu Filter $this->filter not set correctly'
-        );
-         */
         $this->assertEquals(
             $stub->having,
             [
