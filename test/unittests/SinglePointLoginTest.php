@@ -60,7 +60,7 @@ class SinglePointLoginTest extends TestCase
         ];
 
          $mockconfig->method('getSetting')
-             ->will($this->returnValueMap($this->_configMap));
+             ->willReturnMap($this->_configMap);
 
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
@@ -71,7 +71,7 @@ class SinglePointLoginTest extends TestCase
         $AllMethods   = get_class_methods('SinglePointLogin');
         $exceptMethod = array_diff($AllMethods, $method);
         $login        = $this->getMockBuilder('SinglePointLogin')
-            ->onlyMethods($exceptMethod)->getMock();
+            ->onlyMethods($array_values(exceptMethod))->getMock();
 
         '@phan-var \SinglePointLogin $login';
         $this->_login = $login;
