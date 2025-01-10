@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,161 +16,120 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_Menu_Filter_Test extends TestCase
 {
-    protected $Session;
+    protected $sessionMock;
 
     /**
-     * Set up sets a fake $_SESSION object that we can use for
-     * assertions
-     *
-     * @return void
+     * Set up a fake $_SESSION object for assertions.
      */
-    function setUp(): void
+    protected function setUp(): void
     {
-        global $_SESSION;
-        $this->Session = $this->getMockBuilder(stdClass::class)
-            ->onlyMethods(
-                ["setProperty", "getProperty", "getUsername", "isLoggedIn"]
-            )->getMock();
-        $_SESSION      = [
-            'State' => $this->Session
+        $this->sessionMock = $this->createMock(stdClass::class);
+        $this->sessionMock->method('setProperty');
+        $this->sessionMock->method('getProperty');
+        $this->sessionMock->method('getUsername');
+        $this->sessionMock->method('isLoggedIn');
+
+        $_SESSION = [
+            'State' => $this->sessionMock,
         ];
     }
 
     /**
-     * Helper function to use for creating stubs that stub out everything except
-     * the method being tested
-     *
-     * @param [] $methods The methods to exclude
-     *
-     * @return []
+     * Helper function to return all methods of NDB_Menu_Filter except the given ones.
      */
-    function _getAllMethodsExcept($methods)
+    private function getAllMethodsExcept(array $methods): array
     {
-        $AllMethods = get_class_methods('NDB_Menu_Filter');
-
-        return array_diff($AllMethods, $methods);
+        $allMethods = get_class_methods(NDB_Menu_Filter::class);
+        return array_diff($allMethods, $methods);
     }
 
     /**
-     * Test the _resetFilters function. This should, at the minimum, call
-     * setProperty('filter', null) and setProperty('keyword', null)
+     * Test the _resetFilters function.
      *
      * @covers NDB_Menu_Filter::_resetFilters
-     *
-     * @return void
      */
-    function testResetFilters()
+    public function testResetFilters(): void
     {
-        $method          = ['_resetFilters'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $allOtherMethods = array_values(
-            array_filter(
-                $allOtherMethods,
-                function ($method) {
-                    return is_string($method) && !empty($method);
-                }
-            )
-        );
-
-        $stub = $this->getMockBuilder('NDB_Menu_Filter')
-            ->onlyMethods($allOtherMethods)
+        $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
+            ->onlyMethods($this->getAllMethodsExcept(['_resetFilters']))
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->Session = $this->getMockBuilder('Session')
-            ->onlyMethods(['setProperty'])
-            ->getMock();
-
-        $this->Session->expects($this->exactly(1))
+        $this->sessionMock->expects($this->exactly(2))
             ->method('setProperty')
-            ->with('filter', null);
-
-        $this->Session->expects($this->exactly(1))
-            ->method('setProperty')
-            ->with('keyword', null);
-
-        $stub->Session = $this->Session;
+            ->withConsecutive(
+                ['filter', null],
+                ['keyword', null]
+            );
 
         $stub->_resetFilters();
     }
 
     /**
-     * Test the SetSearchKeyword function. The function should result in
-     * $this->searchKey being set to array('keyword' => param)
+     * Test the _setSearchKeyword function.
      *
      * @covers NDB_Menu_Filter::_setSearchKeyword
-     *
-     * @return void
      */
-    function testSetSearchKeyword()
+    public function testSetSearchKeyword(): void
     {
-        $method          = ['_setSearchKeyword'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->onlyMethods($allOtherMethods)
+        $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
+            ->onlyMethods($this->getAllMethodsExcept(['_setSearchKeyword']))
             ->disableOriginalConstructor()
             ->getMock();
-        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->_setSearchKeyword('abc');
 
-        $this->assertEquals($stub->searchKey['keyword'], 'abc');
+        $this->assertEquals('abc', $stub->searchKey['keyword'] ?? null);
     }
 
     /**
      * Test the _setFilters function.
-     * This should ensure that:
-     *     1. Only form elements that are mapped in $formToFilter are set
-     *     2. Invalid filters are thrown away.
-     *     3. Only validFilters are set in $this->filter
-     *     4. Only validHavingFilters are set in $this->having
-     *     5. Values of all fields are (PHP) trimmed before being put into the
-     *        filter
      *
      * @covers NDB_Menu_Filter::_setFilters
-     *
-     * @return void
      */
-    function testSetFilters()
+    public function testSetFilters(): void
     {
-        $method          = ['_setFilters'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->onlyMethods($allOtherMethods)
+        $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
+            ->onlyMethods($this->getAllMethodsExcept(['_setFilters']))
             ->disableOriginalConstructor()
             ->getMock();
-        '@phan-var \NDB_Menu_Filter $stub';
 
-        $stub->form = new LorisForm();
-        $stub->form->applyFilter('__ALL__', 'trim');
+        $stub->form = $this->createMock(LorisForm::class);
+        $stub->form->expects($this->once())
+            ->method('applyFilter')
+            ->with('__ALL__', 'trim');
+
         $submittedValues = [
             'FakeField'        => '      I should be put into filter     ',
             'FakeInvalidField' => 'I should not be set',
-            'FakeHaving'       => 'I should be put into having'
+            'FakeHaving'       => 'I should be put into having',
         ];
-        $_REQUEST        =& $submittedValues;
+        $_REQUEST = $submittedValues;
 
-        $stub->formToFilter       = [
+        $stub->formToFilter = [
             'FakeField'  => 'table.column',
-            'FakeHaving' => 'abcd.def'
+            'FakeHaving' => 'abcd.def',
         ];
-        $stub->validFilters       = ['table.column', 'abcd.def'];
+        $stub->validFilters = ['table.column', 'abcd.def'];
         $stub->validHavingFilters = ['abcd.def'];
 
         $stub->_setFilters($submittedValues);
 
         $this->assertEquals(
-            $stub->having,
+            [
+                'table.column' => 'I should be put into filter',
+            ],
+            $stub->filter,
+            'Menu Filter $filter not set correctly'
+        );
+
+        $this->assertEquals(
             [
                 'abcd.def' => 'I should be put into having',
             ],
-            'Menu Filter $this->having not set correctly'
+            $stub->having,
+            'Menu Filter $having not set correctly'
         );
     }
-
-    /**
-     * TODO:
-     * setupFilters
-     */
 }
 
