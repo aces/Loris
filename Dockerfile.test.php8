@@ -13,7 +13,7 @@ RUN mkdir -p /app/logs
 # Configure PHP error logging in php.ini
 RUN echo "log_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
 RUN echo "error_log = /app/logs/php_errors.log" >> /usr/local/etc/php/conf.d/php-logging.ini
-RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
-RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/php-logging.ini
+RUN echo "display_errors = off" >> /usr/local/etc/php/conf.d/php-logging.ini
+RUN echo "display_startup_errors = off" >> /usr/local/etc/php/conf.d/php-logging.ini
 
 # Install any additional packages or tools as needed
