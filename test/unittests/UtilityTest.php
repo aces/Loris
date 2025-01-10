@@ -304,16 +304,7 @@ class UtilityTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(
-                [
-                    ['CohortID' => '1',
-                        'title'    => 'cohort1'
-                    ],
-                    ['CohortID' => '2',
-                        'title'    => 'cohort2'
-                    ]
-                ]
-            );
+            ->willReturn($Cohorts);
 
         $expectedCohorts = $this->getMockBuilder('\LORIS\Database\Query')
             ->disableOriginalConstructor()
@@ -343,6 +334,19 @@ class UtilityTest extends TestCase
      */
     public function testGetCohortListWithProjectID()
     {
+        $Cohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $Cohorts->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['CohortID' => '123',
+                            'title'    => 'DemoProject'
+                        ]
+                    ]
+                )
+            );
         /**
          * The 'with' assertion is included to check that the mySQL query changes
          * when a ProjectID is specified
@@ -354,16 +358,25 @@ class UtilityTest extends TestCase
                     "JOIN project_cohort_rel USING (CohortID)"
                 )
             )
+            ->willReturn($Cohorts);
+
+        $ECohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $ECohorts->method("getIterator")
             ->willReturn(
-                [
-                    ['CohortID' => '123',
-                        'title'    => 'DemoProject'
+                new ArrayIterator(
+                    [   
+                        ['123' => 'DemoProject']
                     ]
-                ]
+                )
             );
 
+
+
+
         $this->assertEquals(
-            ['123' => 'DemoProject'],
+            $ECohorts,
             Utility::getCohortList(new ProjectID("123"))
         );
     }
