@@ -835,7 +835,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods(
                 ["getFullName", "getSubtestList", "getDataDictionary"]
-            )->onlyMethods(['_setupForm'])->getMock();
+            )->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
             [

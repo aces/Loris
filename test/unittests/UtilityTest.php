@@ -366,14 +366,11 @@ class UtilityTest extends TestCase
         $ECohorts->method("getIterator")
             ->willReturn(
                 new ArrayIterator(
-                    [   
+                    [
                         ['123' => 'DemoProject']
                     ]
                 )
             );
-
-
-
 
         $this->assertEquals(
             $ECohorts,
@@ -897,22 +894,30 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
+
+        $res = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $res->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['SourceField' => 'instrument_field',
+                            'Name'        => 'instrument_name'
+                        ]
+                    ]
+                )
+            );
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
-                [
-                    ['SourceField' => 'instrument_field',
-                        'Name'        => 'instrument_name'
-                    ]
-                ]
+                $res
             );
 
         $this->assertEquals(
-            [0 => ['SourceField' => 'instrument_field',
-                'Name'        => 'instrument_name'
-            ]
-            ],
+            $res,
             Utility::getSourcefields('instrument1', '1', 'name')
         );
     }

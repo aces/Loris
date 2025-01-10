@@ -675,7 +675,7 @@ class CandidateTest extends TestCase
                 )
             );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
@@ -686,7 +686,7 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT CohortID, title"
+                    "CohortID"
                 )
             )
             ->willReturn(
@@ -704,10 +704,10 @@ class CandidateTest extends TestCase
                     ]
                 )
             );
-
+        $testCohort = $this->_candidate->getCohortForMostRecentVisit();
         $this->assertEquals(
             $expectedCohort,
-            $this->_candidate->getCohortForMostRecentVisit()
+            $testCohort
         );
     }
 

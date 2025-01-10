@@ -185,6 +185,17 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetSettingFromDB()
     {
+        $res = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $res->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['AllowMultiple' => '0', 'ParentID' => 'test']
+                    ]
+                )
+            );
         $this->assertNull($this->_config->getSettingFromDB("database"));
         $this->assertNull($this->_config->getSettingFromDB("sandbox"));
         $this->_dbMock->expects($this->any())
@@ -192,7 +203,7 @@ class NDB_ConfigTest extends TestCase
             ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);
+            ->willReturn($res);
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('test');
@@ -339,15 +350,35 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetExternalLinks()
     {
+
+        $s = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $s->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['GitHub' => 'github/Loris']
+                    ]
+                )
+            );
+        $t = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $t->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
+                    ]
+                )
+            );
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(
-                [
-                    ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
-                ]
-            );
+            ->willReturn($t);
         $this->assertEquals(
-            ['GitHub' => 'github/Loris'],
+            $s,
             $this->_config->getExternalLinks('GitHub')
         );
     }

@@ -913,17 +913,20 @@ class Database_Test extends TestCase
     function testRun()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['run']))
+            ->disableOriginalConstructor() // Avoid calling the original constructor
+            ->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId','exec'])->getMock();
+            ->onlyMethods(['lastInsertId', 'exec'])
+            ->getMock();
 
         $PDO->expects($this->once())
-            ->method("exec")->with($this->equalTo("SHOW TABLES"));
+            ->method("exec")
+            ->with($this->equalTo("SHOW TABLES"));
 
-        '@phan-var \Database $stub';
-        '@phan-var \PDO $PDO';
-        $stub->_PDO = $PDO;
+        $stub->_PDO = $PDO; // Manually inject the mock PDO object
+
         $stub->run("SHOW TABLES");
     }
 
@@ -1819,17 +1822,29 @@ class Database_Test extends TestCase
             ->getMock();
         '@phan-var \Database $stub';
 
+        // Mocking the PDO object
         $PDO = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['query'])->getMock();
+            ->onlyMethods(['query'])
+            ->getMock();
 
+        // Mocking the PDOStatement object
+        $PDOStatement = $this->getMockBuilder('PDOStatement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // Configure the `query` method to return the mock PDOStatement
         $PDO->expects($this->once())
             ->method("query")
-            ->willReturn("1");
+            ->willReturn($PDOStatement);
 
         '@phan-var \FakePDO $PDO';
 
+        // Inject the mocked PDO into the stub
         $stub->_PDO = $PDO;
-        $val        = $stub->isConnected();
+
+        $val = $stub->isConnected();
+
+        // Assert the expected value
         $this->assertEquals($val, true);
     }
 }
