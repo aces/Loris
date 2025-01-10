@@ -33,7 +33,8 @@ return [
         // Until phan/phan#4746 is fixed
         "PhanTypeMismatchArgumentInternal",
         "PhanUndeclaredMethod",
-        "PhanUndeclaredProperty"
+        "PhanUndeclaredProperty",
+        "PhanUndeclaredThis"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
