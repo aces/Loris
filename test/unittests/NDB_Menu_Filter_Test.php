@@ -20,6 +20,8 @@ class NDB_Menu_Filter_Test extends TestCase
 
     /**
      * Set up a fake $_SESSION object for assertions.
+     *
+     * @return void
      */
     protected function setUp(): void
     {
@@ -35,9 +37,13 @@ class NDB_Menu_Filter_Test extends TestCase
     }
 
     /**
-     * Helper function to return all methods of NDB_Menu_Filter except the given ones.
+     * Helper function
+     *
+     * @param array $methods Methods to exclude.
+     *
+     * @return array Remaining methods.
      */
-    private function getAllMethodsExcept(array $methods): array
+    private function _getAllMethodsExcept(array $methods): array
     {
         $allMethods = get_class_methods(NDB_Menu_Filter::class);
         return array_diff($allMethods, $methods);
@@ -47,11 +53,12 @@ class NDB_Menu_Filter_Test extends TestCase
      * Test the _resetFilters function.
      *
      * @covers NDB_Menu_Filter::_resetFilters
+     * @return void
      */
     public function testResetFilters(): void
     {
         $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
-            ->onlyMethods($this->getAllMethodsExcept(['_resetFilters']))
+            ->onlyMethods($this->_getAllMethodsExcept(['_resetFilters']))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -69,11 +76,12 @@ class NDB_Menu_Filter_Test extends TestCase
      * Test the _setSearchKeyword function.
      *
      * @covers NDB_Menu_Filter::_setSearchKeyword
+     * @return void
      */
     public function testSetSearchKeyword(): void
     {
         $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
-            ->onlyMethods($this->getAllMethodsExcept(['_setSearchKeyword']))
+            ->onlyMethods($this->_getAllMethodsExcept(['_setSearchKeyword']))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -86,11 +94,12 @@ class NDB_Menu_Filter_Test extends TestCase
      * Test the _setFilters function.
      *
      * @covers NDB_Menu_Filter::_setFilters
+     * @return void
      */
     public function testSetFilters(): void
     {
         $stub = $this->getMockBuilder(NDB_Menu_Filter::class)
-            ->onlyMethods($this->getAllMethodsExcept(['_setFilters']))
+            ->onlyMethods($this->_getAllMethodsExcept(['_setFilters']))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -104,13 +113,13 @@ class NDB_Menu_Filter_Test extends TestCase
             'FakeInvalidField' => 'I should not be set',
             'FakeHaving'       => 'I should be put into having',
         ];
-        $_REQUEST = $submittedValues;
+        $_REQUEST        = $submittedValues;
 
-        $stub->formToFilter = [
+        $stub->formToFilter       = [
             'FakeField'  => 'table.column',
             'FakeHaving' => 'abcd.def',
         ];
-        $stub->validFilters = ['table.column', 'abcd.def'];
+        $stub->validFilters       = ['table.column', 'abcd.def'];
         $stub->validHavingFilters = ['abcd.def'];
 
         $stub->_setFilters($submittedValues);
@@ -132,4 +141,3 @@ class NDB_Menu_Filter_Test extends TestCase
         );
     }
 }
-
