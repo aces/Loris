@@ -29,7 +29,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $this->sessionMock = $this->getMockBuilder(\stdClass::class)
             ->onlyMethods(['getUsername', 'isLoggedIn'])
             ->getMock();
-        $this->sessionMock = $this->createMock('Session');
+        $this->sessionMock = $this->createMock(\stdClass::class);
         $this->sessionMock->method('getUsername');
         $this->sessionMock->method('isLoggedIn');
 
