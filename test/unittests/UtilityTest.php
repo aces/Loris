@@ -1176,37 +1176,23 @@ class UtilityTest extends TestCase
             ->willReturn(
                 new ArrayIterator(
                     [
-                        0 => [
-                            'ID'   => 123,
-                            'Name' => 'scan 1'
-                        ],
-                        1 => [
-                            'ID'   => 234,
-                            'Name' => 'scan 2'
-                        ]
+                        0 => ['ID' => 123, 'Name' => 'scan 1'],
+                        1 => ['ID' => 234, 'Name' => 'scan 2']
                     ]
                 )
             );
-        $this->_dbMock->expects($this->once())->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
-                )
-            )
+        $this->_dbMock->expects($this->once())
+            ->method('pselect')
+            ->with($this->stringContains("JOIN files f ON (f.MriScanTypeID=mri.ID)"))
             ->willReturn($Cohorts);
 
-        $expected = $this->getMockBuilder('\LORIS\Database\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $expected->method("getIterator")
-            ->willReturn(
-                new ArrayIterator(
-                    [
-                        123 => 'scan 1', 234 => 'scan 2'
-                    ]
-                )
-            );
-        $this->assertEquals($expected, Utility::getScanTypeList());
+        $expected = [
+            123 => 'scan 1',
+            234 => 'scan 2'
+        ];
+
+        $result = Utility::getScanTypeList();
+        $this->assertEquals($expected, $result);
     }
 
     /**
