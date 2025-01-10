@@ -231,7 +231,7 @@ class Database_Test extends TestCase
             ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['prepare','lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -261,7 +261,7 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -816,7 +816,7 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -851,7 +851,7 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -916,7 +916,7 @@ class Database_Test extends TestCase
             ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','exec'])->getMock();
 
         $PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
