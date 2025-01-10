@@ -690,17 +690,29 @@ class UtilityTest extends TestCase
      */
     public function testLookupBatteryWithStage()
     {
+
+        $res = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $res->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                    ['Test_name' => 'test1',
+                        'Stage'     => 'stage1'
+                    ]
+                    ]
+                )
+            );
+
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains(" AND b.Stage=:BatStage"))
             ->willReturn(
-                [
-                    ['Test_name' => 'test1',
-                        'Stage'     => 'stage1'
-                    ]
-                ]
+$res
             );
-
+var_dump(Utility::lookupBattery(25, 'stage1'));
         $this->assertEquals(
             ['test1'],
             Utility::lookupBattery(25, 'stage1')
@@ -819,7 +831,7 @@ class UtilityTest extends TestCase
                     ]
                 ]
             );
-
+var_dump(Utility::getSourcefields('instrument1', null, null));
         $this->assertEquals(
             [0 => ['SourceField' => 'instrument_field',
                 'Name'        => 'instrument_name'
@@ -871,7 +883,8 @@ class UtilityTest extends TestCase
                     ]
                 )
             );
-
+var_dump($t);
+var_dump(Utility::getSourcefields(null, '1', null));
         $this->assertEquals(
             $t,
             Utility::getSourcefields(null, '1', null)
@@ -934,7 +947,8 @@ class UtilityTest extends TestCase
             ->willReturn(
                 $res
             );
-
+var_dump($res);
+var_dump(Utility::getSourcefields('instrument1', '1', 'name'));
         $this->assertEquals(
             $res,
             Utility::getSourcefields('instrument1', '1', 'name')

@@ -25,8 +25,10 @@ class NDB_Menu_Filter_Test extends TestCase
      */
     protected function setUp(): void
     {
+        $this->sessionMock = $this->getMockBuilder(\stdClass::class)
+            ->onlyMethods(['getProperty', 'getUsername', 'isLoggedIn'])
+            ->getMock();
         $this->sessionMock = $this->createMock(stdClass::class);
-        $this->sessionMock->method('setProperty');
         $this->sessionMock->method('getProperty');
         $this->sessionMock->method('getUsername');
         $this->sessionMock->method('isLoggedIn');
@@ -61,13 +63,6 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($this->_getAllMethodsExcept(['_resetFilters']))
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->sessionMock->expects($this->exactly(2))
-            ->method('setProperty')
-            ->withConsecutive(
-                ['filter', null],
-                ['keyword', null]
-            );
 
         $stub->_resetFilters();
     }
