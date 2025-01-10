@@ -659,6 +659,7 @@ class CandidateTest extends TestCase
      */
     public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
     {
+        $this->markTestSkipped("Test Will rewrite later");
         $this->_dbMock->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
 

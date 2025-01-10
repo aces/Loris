@@ -838,21 +838,42 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithCommentIDSpecified()
     {
+
+        $r = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $r->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['SourceField' => 'commentID_field',
+                            'Name'        => 'commentID_name'
+                        ]
+                    ]
+                )
+            );
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                [
-                    ['SourceField' => 'commentID_field',
+                $r
+            );
+
+        $t = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $t->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [0 => ['SourceField' => 'commentID_field',
                         'Name'        => 'commentID_name'
                     ]
-                ]
+                    ]
+                )
             );
 
         $this->assertEquals(
-            [0 => ['SourceField' => 'commentID_field',
-                'Name'        => 'commentID_name'
-            ]
-            ],
+            $t,
             Utility::getSourcefields(null, '1', null)
         );
     }
@@ -901,10 +922,8 @@ class UtilityTest extends TestCase
         $res->method("getIterator")
             ->willReturn(
                 new ArrayIterator(
-                    [
-                        ['SourceField' => 'instrument_field',
-                            'Name'        => 'instrument_name'
-                        ]
+                    ['SourceField' => 'instrument_field',
+                        'Name'        => 'instrument_name'
                     ]
                 )
             );
