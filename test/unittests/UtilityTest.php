@@ -1169,12 +1169,10 @@ class UtilityTest extends TestCase
      */
     public function testGetScanTypeList()
     {
-        $this->_dbMock->expects($this->once())->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
-                )
-            )
+        $Cohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $Cohorts->method("getIterator")
             ->willReturn(
                 new ArrayIterator(
                     [
@@ -1189,6 +1187,14 @@ class UtilityTest extends TestCase
                     ]
                 )
             );
+        $this->_dbMock->expects($this->once())->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
+                )
+            )
+            ->willReturn($Cohorts);
+
         $expected = $this->getMockBuilder('\LORIS\Database\Query')
             ->disableOriginalConstructor()
             ->getMock();
