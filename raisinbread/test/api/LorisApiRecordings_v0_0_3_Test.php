@@ -96,7 +96,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
         $resource = fopen($this->frecordTest, 'w');
-        $stream   = GuzzleHttp\Psr7\stream_for($resource);
+        $stream   = GuzzleHttp\Psr7\Utils::stream_for($resource);
         try {
             $response = $this->client->request(
                 'GET',

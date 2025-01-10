@@ -203,7 +203,7 @@ class NDB_ConfigTest extends TestCase
             ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn($res);
+            ->willReturn(1);
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('test');
@@ -377,6 +377,9 @@ class NDB_ConfigTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn($t);
+        var_dump($s);
+        var_dump($this->_config->getExternalLinks('GitHub'));
+
         $this->assertEquals(
             $s,
             $this->_config->getExternalLinks('GitHub')
