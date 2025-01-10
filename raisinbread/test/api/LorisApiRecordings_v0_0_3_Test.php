@@ -96,7 +96,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
         $resource = fopen($this->frecordTest, 'w');
-        $stream   = GuzzleHttp\Psr7\Utils::stream_for($resource);
+        $stream   = GuzzleHttp\Psr7\Utils::tryFopen($resource);
         try {
             $response = $this->client->request(
                 'GET',
@@ -694,7 +694,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 "File cannot be opened: " . $this->fBIDSArchiveTest
             );
         }
-        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($resource);
         try {
             $response = $this->client->request(
                 'GET',
@@ -733,7 +733,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 "File cannot be opened: " . $this->fBIDSChannelsTest
             );
         }
-        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($resource);
         try {
             $response = $this->client->request(
                 'GET',
@@ -772,7 +772,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 "File cannot be opened: " . $this->fBIDSElectrodesTest
             );
         }
-        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($resource);
         try {
             $response = $this->client->request(
                 'GET',
@@ -811,7 +811,7 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 "File cannot be opened: " . $this->fBIDSEventsTest
             );
         }
-        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($resource);
         try {
             $response = $this->client->request(
                 'GET',

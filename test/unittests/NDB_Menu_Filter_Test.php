@@ -26,10 +26,9 @@ class NDB_Menu_Filter_Test extends TestCase
     protected function setUp(): void
     {
         $this->sessionMock = $this->getMockBuilder(\stdClass::class)
-            ->onlyMethods(['getProperty', 'getUsername', 'isLoggedIn'])
+            ->onlyMethods(['getUsername', 'isLoggedIn'])
             ->getMock();
         $this->sessionMock = $this->createMock(stdClass::class);
-        $this->sessionMock->method('getProperty');
         $this->sessionMock->method('getUsername');
         $this->sessionMock->method('isLoggedIn');
 
