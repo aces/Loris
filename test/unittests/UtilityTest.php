@@ -285,6 +285,23 @@ class UtilityTest extends TestCase
      */
     public function testGetCohortList()
     {
+        $Cohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $Cohorts->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['CohortID' => '1',
+                            'title'    => 'cohort1'
+                        ],
+                        ['CohortID' => '2',
+                            'title'    => 'cohort2'
+                        ]
+                    ]
+                )
+            );
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
@@ -298,10 +315,21 @@ class UtilityTest extends TestCase
                 ]
             );
 
+        $expectedCohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $expectedCohorts->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        '1' => 'cohort1',
+                        '2' => 'cohort2'
+                    ]
+                )
+            );
+
         $this->assertEquals(
-            ['1' => 'cohort1',
-                '2' => 'cohort2'
-            ],
+            expectedCohorts,
             Utility::getCohortList()
         );
     }
@@ -1010,7 +1038,7 @@ class UtilityTest extends TestCase
 
     /**
      * Test that columnsHasNull returns false if the specified column
-     * in the table does not have a null entry
+     * in:/ the table does not have a null entry
      *
      * @covers Utility::columnsHasNull
      * @return void
