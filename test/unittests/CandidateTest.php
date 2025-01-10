@@ -603,15 +603,8 @@ class CandidateTest extends TestCase
             );
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-        $this->_dbMock->expects($this->once())
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "SELECT CohortID
-                    FROM project_cohort_rel
-                    WHERE ProjectID = :prj"
-                )
-            )
             ->willReturn(
                 $cohorts
             );

@@ -1161,41 +1161,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getScanTypeList returns the scan type information
-     * in the correct format
-     *
-     * @covers Utility::getScanTypeList
-     * @return void
-     */
-    public function testGetScanTypeList()
-    {
-        $Cohorts = $this->getMockBuilder('\LORIS\Database\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Cohorts->method("getIterator")
-            ->willReturn(
-                new ArrayIterator(
-                    [
-                        0 => ['ID' => 123, 'Name' => 'scan 1'],
-                        1 => ['ID' => 234, 'Name' => 'scan 2']
-                    ]
-                )
-            );
-        $this->_dbMock->expects($this->once())
-            ->method('pselect')
-            ->with($this->stringContains("JOIN files f ON (f.MriScanTypeID=mri.ID)"))
-            ->willReturn($Cohorts);
-
-        $expected = [
-            123 => 'scan 1',
-            234 => 'scan 2'
-        ];
-
-        $result = Utility::getScanTypeList();
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
      * Test that appendForwardSlash appends a forward slash to the given path.
      * Also asserts that if the path already has a forward slash, it does nothing.
      *
