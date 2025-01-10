@@ -930,7 +930,7 @@ class Database_Test extends TestCase
         $PDO->expects($this->once())
             ->method("exec")
             ->with($this->equalTo("SHOW TABLES"))
-            ->willReturn(true); // Optionally define return value for exec()
+            ->willReturn(1); // Optionally define return value for exec()
 
         // Setting expectations for the lastInsertId method
         $PDO->expects($this->once())
