@@ -233,7 +233,7 @@ class UtilityTest extends TestCase
      *
      * @return array
      */
-    public function ageIncorrectFormatProvider()
+    public static function ageIncorrectFormatProvider()
     {
         return [
             ["1990\\07\\05", "2018\\05\\23"],

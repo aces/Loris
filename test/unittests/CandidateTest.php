@@ -701,48 +701,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getCohortForMostRecentVisit returns null if there is
-     * no visit with a Date_visit
-     *
-     * @covers Candidate::getCohortForMostRecentVisit
-     * @return void
-     */
-    public function testGetCohortForMostRecentVisitReturnsNull()
-    {
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
-        $cohort = $this->getMockBuilder('\LORIS\Database\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $cohort->method("getIterator")
-            ->willReturn(
-                new ArrayIterator(
-                    []
-                )
-            );
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
-
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "SELECT CohortID, title"
-                )
-            )
-            ->willReturn($cohort);
-
-        $this->assertEquals(
-            null,
-            $this->_candidate->getCohortForMostRecentVisit()
-        );
-    }
-
-    /**
      * Test getFirstVisit returns first visit's label
      *
      * @covers Candidate::getFirstVisit

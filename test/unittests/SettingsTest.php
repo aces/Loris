@@ -79,7 +79,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to true
      */
-    public function getTrueValue()
+    public static function getTrueValue()
     {
         return [
             [true],
@@ -104,7 +104,7 @@ class SettingsTest extends TestCase
      * @covers Settings::isSandbox
      * @return void
      */
-    public static function testIsSandboxReturnsTrue($sandboxVal)
+    public function testIsSandboxReturnsTrue($sandboxVal)
     {
         $this->_configMock->method('getSetting')
             ->willReturn($sandboxVal);
@@ -118,7 +118,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to false
      */
-    public function getFalseValue()
+    public static function getFalseValue()
     {
         return [
             [false],

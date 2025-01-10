@@ -90,7 +90,7 @@ class PasswordTest extends TestCase
      *
      * @return []
      */
-    public function invalidValues(): array
+    public static function invalidValues(): array
     {
         return [
             // Should fail for not meeting length requirements
@@ -123,7 +123,7 @@ class PasswordTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @return            void
      */
-    public static function testContructorInvalidValues($invalidValue): void
+    public function testContructorInvalidValues($invalidValue): void
     {
         $this->expectException("InvalidArgumentException");
         $this->_configMock->expects($this->any())
