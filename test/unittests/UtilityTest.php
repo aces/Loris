@@ -329,7 +329,7 @@ class UtilityTest extends TestCase
             );
 
         $this->assertEquals(
-            expectedCohorts,
+            $expectedCohorts,
             Utility::getCohortList()
         );
     }
@@ -1176,18 +1176,30 @@ class UtilityTest extends TestCase
                 )
             )
             ->willReturn(
-                [
-                    0 => [
-                        'ID'   => 123,
-                        'Name' => 'scan 1'
-                    ],
-                    1 => [
-                        'ID'   => 234,
-                        'Name' => 'scan 2'
+                new ArrayIterator(
+                    [
+                        0 => [
+                            'ID'   => 123,
+                            'Name' => 'scan 1'
+                        ],
+                        1 => [
+                            'ID'   => 234,
+                            'Name' => 'scan 2'
+                        ]
                     ]
-                ]
+                )
             );
-        $expected = [123 => 'scan 1', 234 => 'scan 2'];
+        $expected = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $expected->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        123 => 'scan 1', 234 => 'scan 2'
+                    ]
+                )
+            );
         $this->assertEquals($expected, Utility::getScanTypeList());
     }
 
