@@ -222,7 +222,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    public function testCalculateAgeFormat($first, $second)
+    public static function testCalculateAgeFormat($first, $second)
     {
         $this->expectException('\LorisException');
         Utility::calculateAge($first, $second);
@@ -881,7 +881,7 @@ class UtilityTest extends TestCase
      *
      * @return array
      */
-    public function notPositiveIntegerValues(): array
+    public static function notPositiveIntegerValues(): array
     {
         return [
             [-1],

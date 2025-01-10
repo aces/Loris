@@ -70,7 +70,7 @@ class BreadcrumbTrailTest extends TestCase
      *
      * @return []
      */
-    public function toStringProvider()
+    public static function toStringProvider()
     {
         return [
             [

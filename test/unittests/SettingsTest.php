@@ -104,7 +104,7 @@ class SettingsTest extends TestCase
      * @covers Settings::isSandbox
      * @return void
      */
-    public function testIsSandboxReturnsTrue($sandboxVal)
+    public static function testIsSandboxReturnsTrue($sandboxVal)
     {
         $this->_configMock->method('getSetting')
             ->willReturn($sandboxVal);

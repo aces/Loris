@@ -123,7 +123,7 @@ class PasswordTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @return            void
      */
-    public function testContructorInvalidValues($invalidValue): void
+    public static function testContructorInvalidValues($invalidValue): void
     {
         $this->expectException("InvalidArgumentException");
         $this->_configMock->expects($this->any())
