@@ -111,8 +111,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             unset($values['psc']);
         } else {
             // Suggested site is the site of the last registered visit
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
+            $DB = $this->loris->getDatabaseConnection();
 
             $query  = "
                 SELECT CenterID 
