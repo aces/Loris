@@ -711,21 +711,20 @@ class UtilityTest extends TestCase
             ->willReturn(
                 new ArrayIterator(
                     [
-                    ['Test_name' => 'test1',
-                        'Stage'     => 'stage1'
-                    ]
+                        ['Test_name' => 'test1',
+                            'Stage'     => 'stage1'
+                        ]
                     ]
                 )
             );
-
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains(" AND b.Stage=:BatStage"))
             ->willReturn(
-$res
+                $res
             );
-var_dump(Utility::lookupBattery(25, 'stage1'));
+        var_dump(Utility::lookupBattery(25, 'stage1'));
         $this->assertEquals(
             ['test1'],
             Utility::lookupBattery(25, 'stage1')

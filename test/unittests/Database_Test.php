@@ -912,7 +912,7 @@ class Database_Test extends TestCase
      */
     function testRun()
     {
-        // Mocking FakeDatabase and disabling original constructor
+        // Mocking FakeDatabase and disabling the constructor
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['run']))
             ->disableOriginalConstructor()
@@ -923,16 +923,25 @@ class Database_Test extends TestCase
             ->onlyMethods(['lastInsertId', 'exec'])
             ->getMock();
 
+        // Initialize the PDO object manually to simulate the constructor behavior
+        $stub->_PDO = $PDO;  // Manually setting PDO after disabling constructor
+
         // Setting expectations for the exec method
         $PDO->expects($this->once())
             ->method("exec")
-            ->with($this->equalTo("SHOW TABLES"));
+            ->with($this->equalTo("SHOW TABLES"))
+            ->willReturn(true); // Optionally define return value for exec()
 
-        // Manually setting the mock PDO object to the database class
-        $stub->_PDO = $PDO;
+        // Setting expectations for the lastInsertId method
+        $PDO->expects($this->once())
+            ->method('lastInsertId')
+            ->willReturn(1); // Set expected lastInsertId value
 
         // Call the run method
         $stub->run("SHOW TABLES");
+
+        // Add assertions if necessary, for example:
+        $this->assertEquals(1, $stub->lastInsertID);
     }
 
     /**
