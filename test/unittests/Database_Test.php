@@ -935,13 +935,13 @@ class Database_Test extends TestCase
         // Setting expectations for the lastInsertId method
         $PDO->expects($this->once())
             ->method('lastInsertId')
-            ->willReturn(1); // Set expected lastInsertId value
+            ->willReturn("1"); // Set expected lastInsertId value
 
         // Call the run method
         $stub->run("SHOW TABLES");
 
         // Add assertions if necessary, for example:
-        $this->assertEquals(1, $stub->lastInsertID);
+        $this->assertEquals("1", $stub->lastInsertID);
     }
 
     /**

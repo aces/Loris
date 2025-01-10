@@ -26,7 +26,7 @@ class NDB_Menu_Filter_Test extends TestCase
     protected function setUp(): void
     {
         $this->markTestSkipped("Test Will rewrite later");
-        $this->sessionMock = $this->getMockBuilder('Session')
+        $this->sessionMock = $this->getMockBuilder(\stdClass::class)
             ->onlyMethods(['getUsername', 'isLoggedIn'])
             ->getMock();
         $this->sessionMock = $this->createMock('Session');
