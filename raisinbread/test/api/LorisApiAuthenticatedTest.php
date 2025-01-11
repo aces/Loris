@@ -251,6 +251,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         $this->DB->update('Config', $set, $where);
         parent::tearDown();
     }
-
+    public function testExample() {
+        $this->assertTrue(true);
+    }
 }
 

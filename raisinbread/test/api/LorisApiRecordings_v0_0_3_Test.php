@@ -702,7 +702,7 @@ $stream = GuzzleHttp\Psr7\Utils::tryFopen($this->frecordTest, 'w');
                 "File cannot be opened: " . $this->fBIDSArchiveTest
             );
         }
-        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($resource);
+        $stream   = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSArchiveTest, 'w');
         try {
             $response = $this->client->request(
                 'GET',
