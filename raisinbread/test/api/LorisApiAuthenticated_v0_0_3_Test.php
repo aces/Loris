@@ -191,7 +191,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
      */
     public function apiLogin($username, $password)
     {
-        $this->base_uri = "$this->url/api/$this->_version/";
+        $this->base_uri = "http://localhost:8000/api/$this->_version/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',
