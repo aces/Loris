@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
+class LorisApiAuthenticatedTest extends LorisIntegrationTest
 {
 
     protected $client;
@@ -39,7 +39,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->skipSelenium = true;
         parent::setUp();
 
-        $this->_version = 'v0.0.3';
+        $this->_version = 'v0.0.4-dev';
 
         // store the original JWT key for restoring it later
         $jwtConfig = $this->DB->pselectRow(
@@ -87,25 +87,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex'                   => 'Female',
-                'ExternalID'            => null,
-                'DoB'                   => '2003-10-31',
-                'DoD'                   => null,
-                'EDC'                   => '2003-11-30',
-                'Sex'                   => 'Male',
-                'Ethnicity'             => null,
-                'Active'                => 'Y',
-                'Date_active'           => '2016-01-23',
-                'RegisteredBy'          => null,
-                'Date_registered'       => '2016-01-23',
-                'flagged_caveatemptor'  => 'false',
-                'flagged_reason'        => null,
-                'flagged_other'         => null,
-                'flagged_other_status'  => null,
-                'Testdate'              => '2019-06-20 12:10:04',
-                'Entity_type'           => 'Human',
-                'ProbandSex'            => null,
-                'ProbandDoB'            => null
+                'Sex'                   => 'Female'
             ]
         );
         $this->DB->insert(
@@ -123,7 +105,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             'test_names',
             [
                 'ID'        => '999999',
-		'Test_name' => 'testtest',
+                'Test_name' => 'testtest',
                 'Full_name' => 'Test Test',
                 'Sub_group' => 1,
             ]
@@ -133,7 +115,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-		'TestID'    => '999999',
+                'TestID'    => '999999',
                 'CommentID' => '11111111111111111',
             ]
         );
@@ -142,7 +124,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-		'TestID'    => '999999',
+                'TestID'    => '999999',
                 'CommentID' => 'DDE_11111111111111111',
             ]
         );
@@ -253,10 +235,9 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
                 "CenterID" => '4',
             ],
         );
-
+        $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
-        $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
 
         $set = [
