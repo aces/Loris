@@ -189,7 +189,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Could not update.'
             );
         }
-      
+
         $data['Data']['candID'] = $data['Meta']['Candidate'];
 
         try {
