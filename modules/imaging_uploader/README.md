@@ -53,9 +53,15 @@ For a successful upload:
 
 #### Module Permission
 
-The imaging uploader module uses one permission called `imaging_uploader` that 
+The imaging uploader module uses the permission called `imaging_uploader` that 
 is necessary to have access to the module and gives the user the ability to 
 upload and browse all scans uploaded to the database.
+
+The `imaging_uploader_nosessionid` (Imaging Uploader: View uploads with no session ID) 
+allows to partially bypass the `useSiteProjectPermissions` configuration (see Configurations 
+section below) to see all uploads not associated to a site or project (no session 
+ID found on upload)
+
 
 #### Filesystem Permission
 
@@ -92,6 +98,15 @@ MRIUploadIncomingPath - This setting determines where on the filesystem the
         **Note**: Uploaded scans are erased from the 
         `MRIUploadIncomingPath`following a successful archival and insertion 
         through the LORIS-MRI pipeline. 
+
+useSiteProjectPermissions - This setting enables Site and Project access restrictions 
+        for users. If enabled, users accessing the module can only see uploads where a 
+        session ID has been found and are thus linked to the site and project of the 
+        session AND the site and project match the user's. Users can also see any file
+        they have uploaded themselves regardless of if a sesssion ID has been found. 
+        This setting can be PARTIALLY bypassed by the `imaging_uploader_nosessionid` 
+        permission (partially only because the permission will also append any upload 
+        with no site or project)
 
 
 ## Interactions with LORIS
