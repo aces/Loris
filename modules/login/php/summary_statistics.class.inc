@@ -49,7 +49,8 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
         $DB       = $this->loris->getDatabaseConnection();
         $response = $DB->pselect(
             "SELECT * FROM Login_Summary_Statistics
-            WHERE Value > 0",
+            WHERE Value > 0
+            ORDER BY QueryOrder ASC",
             [],
         );
         if (count($response) == 0) {

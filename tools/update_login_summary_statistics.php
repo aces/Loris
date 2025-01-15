@@ -74,11 +74,14 @@ $DB->run("DELETE FROM Login_Summary_Statistics", []);
 foreach ($projects as $project) {
     $data[$project] = [];
 }
+$order = 0;
+$queryToOrder = [];
 foreach ($pinnedqueries as $pin) {
     $queryInProjects = [];
     $queryID         = $pin['QueryID'];
     $queryName       = $pin['Name'];
-
+    $queryToOrder[$queryName] = $order;
+    $order++;
     // TODO: delete. Commented out after changing from
     // hardcoded queryID to pinned queries
     // Get the query Name
@@ -130,6 +133,7 @@ foreach ($pinnedqueries as $pin) {
             . "this query, and re-save with the Project column selected.\n"
         );
     }
+    $order++;
 }
 
 // Try to get SQL queries from ../project/tools/Login_Summary_Statistics
@@ -151,7 +155,9 @@ foreach ($files as $file) {
         print_r("Reading SQL File $file\n");
         $result    = $DB->pselect(file_get_contents($folder . $file), []);
         $queryName = pathinfo($file, PATHINFO_FILENAME);
+        $queryOrder = explode("_", $queryName)[0];
         $queryName = explode("_", $queryName)[1];
+        $queryToOrder[$queryName] = $queryOrder;
         foreach ($result as $row) {
             $data[$row['ProjectName']][$queryName] = $row['count'];
         }
@@ -166,7 +172,8 @@ foreach ($data as $project => $values) {
             [
                 'Project' => $project,
                 'Title'   => $title,
-                'value'   => $value
+                'value'   => $value,
+                'QueryOrder' => $queryToOrder[$title]
             ]
         );
     }
