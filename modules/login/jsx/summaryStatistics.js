@@ -19,7 +19,9 @@ class SummaryStatistics extends Component {
     super(props);
 
     this.state = {
-      selectedProject: 'All Projects',
+      selectedProject: props.data.projects.includes('All Projects')
+        ? props.data.projects.indexOf('All Projects')
+        : '0',
       data: props.data,
     };
   }

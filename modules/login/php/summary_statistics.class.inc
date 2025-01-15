@@ -57,15 +57,9 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
             return new \LORIS\Http\Response\JsonResponse(null);
         }
         $projects = $DB->pselectCol(
-            "SELECT Name FROM Project
-            WHERE showSummaryOnLogin='1'
-            ",
+            "SELECT DISTINCT Project FROM Login_Summary_Statistics",
             []
         );
-
-        if (count($projects) > 1) {
-            $projects = array_merge(['All Projects' => 'All Projects'], $projects);
-        }
 
         // csv version for exporting to clipboard
         $reusable_response = iterator_to_array($response);
@@ -76,9 +70,9 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
 
         return new \LORIS\Http\Response\JsonResponse(
             [
-                'statistics' => $reusable_response,
-                'projects'   => $projects,
-                'csv'        => $csv,
+                'statistics'.     => $reusable_response,
+                'projects'        => $projects,
+                'csv'             => $csv,
             ]
         );
     }
