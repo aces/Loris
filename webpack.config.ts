@@ -264,8 +264,7 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
  * 
  * @param {string} moduleName - The name of the module (e.g., 'login').
  * @param {string[]} files - A list of entry point file names for the module (e.g., ['index', 'dashboard']).
- * @returns {Array<[string, { import: string, filename: string, library: { name: string[], type: string } }]>}
- * A list of two-element tuples mapping each entry name (e.g., 'login/loginIndex') to its webpack entry configuration.
+ *
  */
 function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
