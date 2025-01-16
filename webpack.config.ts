@@ -264,7 +264,7 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
  * 
  * @param {string} moduleName - The name of the module (e.g., 'login').
  * @param {string[]} files - A list of entry point file names for the module (e.g., ['index', 'dashboard']).
- * @returns {[string, { import: string, filename: string, library: { name: string[], type: string } }][]} 
+ * @returns {Array<[string, { import: string, filename: string, library: { name: string[], type: string } }]>}
  * A list of two-element tuples mapping each entry name (e.g., 'login/loginIndex') to its webpack entry configuration.
  */
 function makeModuleEntries(moduleName: string, files: string[]) {
@@ -274,10 +274,10 @@ function makeModuleEntries(moduleName: string, files: string[]) {
     : `./modules/${moduleName}/`;
 
   return files.map((fileName) => ([
-    moduleName + '/' + fileName,
+    `${moduleName}/${fileName}`,
     {
-      import: basePath + 'jsx/' + fileName,
-      filename: basePath + 'js/' + fileName + '.js',
+      import: `${basePath}jsx/${fileName}`,
+      filename: `${basePath}js/${fileName}.js`,
       library: {
         name: ['lorisjs', moduleName, fileName],
         type: 'window',

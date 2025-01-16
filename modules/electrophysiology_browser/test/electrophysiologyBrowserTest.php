@@ -534,6 +534,11 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testSessionsNavigation()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
+sleep(10);
+        $bodyText
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            ->getText();
+var_dump($bodyText);
         $link = self::$nextLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
 
