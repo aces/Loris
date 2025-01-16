@@ -186,15 +186,15 @@ const module: webpack.ModuleOptions = {
       use: [
         {
           loader: 'ts-loader',
-          options:{
+          options: {
             onlyCompileBundledFiles: true,
             compilerOptions: {
-              strict: false,
-            }
-          }
-        },
-      ],
-    },
+              strict: false, // Added missing trailing comma
+          }, // Added missing trailing comma
+        }, // Added missing trailing comma
+      },
+    ], // Added missing trailing comma
+  },
   ],
 };
 
@@ -209,7 +209,10 @@ plugins.push(new CopyPlugin({
       globOptions: {
         ignore: ['react.profiling.min.js'],
       },
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
+      /**
+       * https://webpack.js.org/plugins/copy-webpack-plugin/#filter
+       * @param path
+       */
       filter: async (path) => {
         const file = path.split(/\\|\//).pop() as string;
         const keep = [
@@ -223,7 +226,10 @@ plugins.push(new CopyPlugin({
       from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
       to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
       force: true,
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
+      /**
+       * https://webpack.js.org/plugins/copy-webpack-plugin/#filter
+       * @param path
+       */
       filter: async (path) => {
         const file = path.split(/\\|\//).pop() as string;
         const keep = [
@@ -251,7 +257,8 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 /**
  * Get the webpack entries of a given module, which is described by its name
  * and its entry points.
- *
+ * @param moduleName
+ * @param files
  * @returns A list of two-element tuples mapping each entry name (exemple
  * 'login/loginIndex') to its webpack entry.
  */
