@@ -189,11 +189,11 @@ const module: webpack.ModuleOptions = {
           options: {
             onlyCompileBundledFiles: true,
             compilerOptions: {
-              strict: false, // Added missing trailing comma
-          }, // Added missing trailing comma
-        }, // Added missing trailing comma
+              strict: false,
+          },
+        },
       },
-    ], // Added missing trailing comma
+    ],
   },
   ],
 };
