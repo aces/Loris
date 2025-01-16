@@ -211,7 +211,9 @@ plugins.push(new CopyPlugin({
       },
       /**
        * https://webpack.js.org/plugins/copy-webpack-plugin/#filter
-       * @param path
+       *
+       * @param {string} path - The full path of the file being filtered.
+       * @returns {Promise<boolean>} Whether the file should be kept.
        */
       filter: async (path) => {
         const file = path.split(/\\|\//).pop() as string;
@@ -228,7 +230,9 @@ plugins.push(new CopyPlugin({
       force: true,
       /**
        * https://webpack.js.org/plugins/copy-webpack-plugin/#filter
-       * @param path
+       *
+       * @param {string} path - The full path of the file being filtered.
+       * @returns {Promise<boolean>} Resolves to `true` if the file should be kept, otherwise `false`.
        */
       filter: async (path) => {
         const file = path.split(/\\|\//).pop() as string;
@@ -255,12 +259,13 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 }
 
 /**
- * Get the webpack entries of a given module, which is described by its name
+ * Get the webpack entries of a given module, described by its name
  * and its entry points.
- * @param moduleName
- * @param files
- * @returns A list of two-element tuples mapping each entry name (exemple
- * 'login/loginIndex') to its webpack entry.
+ * 
+ * @param {string} moduleName - The name of the module (e.g., 'login').
+ * @param {string[]} files - A list of entry point file names for the module (e.g., ['index', 'dashboard']).
+ * @returns {[string, { import: string, filename: string, library: { name: string[], type: string } }][]} 
+ * A list of two-element tuples mapping each entry name (e.g., 'login/loginIndex') to its webpack entry configuration.
  */
 function makeModuleEntries(moduleName: string, files: string[]) {
   // Check if a project override exists for the module.
@@ -268,14 +273,17 @@ function makeModuleEntries(moduleName: string, files: string[]) {
     ? `./project/modules/${moduleName}/`
     : `./modules/${moduleName}/`;
 
-  return files.map((fileName) => ([moduleName + '/' + fileName, {
-    import: basePath + 'jsx/' + fileName,
-    filename: basePath + 'js/' + fileName + '.js',
-    library: {
-      name: ['lorisjs', moduleName, fileName],
-      type: 'window',
+  return files.map((fileName) => ([
+    moduleName + '/' + fileName,
+    {
+      import: basePath + 'jsx/' + fileName,
+      filename: basePath + 'js/' + fileName + '.js',
+      library: {
+        name: ['lorisjs', moduleName, fileName],
+        type: 'window',
+      },
     },
-  }]));
+  ]));
 }
 
 // Add entries for project overrides.
