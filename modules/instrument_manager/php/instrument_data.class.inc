@@ -5,6 +5,7 @@ use LORIS\InstrumentDataParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
+use LORIS\server_processes_manager as SP;
 
 /**
  * Upload instrument data
@@ -16,6 +17,8 @@ class Instrument_Data extends \NDB_Page
     const PERMISSIONS = [
         'instrument_manager_read'
     ];
+
+    const MAX_FILE_BYTES = 1024 * 1024 * 512;  // 512 MB -- TODO: Config?
 
     /**
      * Checking permissions
@@ -106,36 +109,52 @@ class Instrument_Data extends \NDB_Page
         // Ensure the user is allowed to upload.
         if (!$request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
-        )
-        ) {
+        )) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        $request_body  = (array)$request->getParsedBody();
+        $requestBody  = (array) $request->getParsedBody();
 
-        if (isset($request_body['instrument'])) {
-            $instrument = $request_body['instrument'];
+        if (isset($requestBody['instrument'])) {
+            $instrument = $requestBody['instrument'];
             if ($this->instrumentExists($instrument)) {
-                $data_file     = $request->getUploadedFiles()['data_file'];
+                $dataFile     = $request->getUploadedFiles()['data_file'];
                 $userID = $request->getAttribute('user')->getUsername();
 
-                $upload_folder = $this->loris
-                    ->getConfiguration()->getSetting('InstrumentDataFilePath');
-                $file_prefix   = $userID . '_' . time() . '_';
-                $fileLocation  = $upload_folder . "/$file_prefix"
-                    . $data_file->getClientFilename();
-                $data_file->moveTo($fileLocation);
+                $uploadFolder = $this->loris
+                    ->getConfiguration()->getSetting('instrumentDataPath');
+                $filePrefix   = $userID . '_' . time() . '_';
+                $fileLocation  = $uploadFolder . "/$filePrefix"
+                    . $dataFile->getClientFilename();
+                $dataFile->moveTo($fileLocation);
 
-                // Insert file in database
+                $fileInfo = new SplFileInfo($fileLocation);
+                $this->insertCSVFileEntry($fileInfo->getFilename());
 
+                if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
+                    // Run as background task
+                    $serverProcessLauncher = new SP\ServerProcessLauncher();
+                    $serverProcessLauncher->parseInstrumentData(
+                        $instrument,
+                        $fileLocation,
+                    );
+
+                    $result = [
+                        'success' => true,
+                        'message' => "Due to the relatively large size of the uploaded file, " .
+                                     "the process has been sent to the background task queue. " .
+                                     "You will receive an email once completed."
+
+                    ];
+                    return new \LORIS\Http\Response\JSON\Created($result);
+                }
 
                 // Parse
-                $dataParser = new InstrumentDataParser(
-                    $instrument,
-                    new SplFileInfo($fileLocation)
-                );
-
                 try {
+                    $dataParser = new InstrumentDataParser(
+                        $instrument,
+                        $fileInfo,
+                    );
                     $data      = $dataParser->parseCSV($this->loris);
                     $validData = $dataParser->validateData(
                         $data,
@@ -194,4 +213,11 @@ class Instrument_Data extends \NDB_Page
         return $count > 0;
     }
 
+    private function insertCSVFileEntry($filename)
+    {
+        // Create db entry for csv file
+        $this->loris->getDatabaseConnection()->insert('instrument_data_files', [
+            'FilePath' => $filename,
+        ]);
+    }
 }
