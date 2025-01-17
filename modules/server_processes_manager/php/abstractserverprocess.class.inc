@@ -252,6 +252,8 @@ abstract class AbstractServerProcess
         $this->_stderrFile   = tempnam($this->getTmpDir(), self::TMP_FILES_PREFIX);
         $this->_exitCodeFile = tempnam($this->getTmpDir(), self::TMP_FILES_PREFIX);
 
+        $this->changeFilePermissions();
+
         $time    = date(self::PROCESS_TIME_FORMAT, time());
         $process = new Process(
             $this->getShellCommand(),
@@ -268,16 +270,6 @@ abstract class AbstractServerProcess
         $this->_startTime = $time;
 
         return $this->getPid();
-    }
-
-    /**
-     * Gets directory where all temporary files created by this task should go
-     *
-     * @return string full path to the temporary directory
-     */
-    protected function getTmpDir()
-    {
-        return sys_get_temp_dir();
     }
 
     /**
@@ -484,6 +476,9 @@ abstract class AbstractServerProcess
         $this->_exitText = $exitText;
         $this->_endTime  = $endTime;
 
+        // Perform additional actions
+        $this->performPostAction();
+
         //------------------------------------------------------------------
         // Delete the temporary (stdout stderr and exitCode) files if it is
         // required to do so
@@ -547,6 +542,7 @@ abstract class AbstractServerProcess
         return $this->_databaseProvider;
     }
 
+
     /**
      * Specifies the Unix shell command used to run the process
      *
@@ -581,6 +577,29 @@ abstract class AbstractServerProcess
      * @abstract
      */
     abstract function getType();
+
+
+    /**
+     * Gets directory where all temporary files created by this task should go
+     *
+     * @return string full path to the temporary directory
+     * @abstract
+     */
+    abstract public function getTmpDir();
+
+    /**
+     * Change file permissions
+     *
+     * @abstract
+     */
+    abstract public function changeFilePermissions();
+
+    /**
+     * Perform action once process is completed
+     *
+     * @abstract
+     */
+    abstract public function performPostAction();
 }
 
 
