@@ -75,6 +75,15 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new Cardinality(Cardinality::MANY),
                 $ScanType,
             );
+            $items[] = new QCDictionaryItem(
+                $ScanType . "_Selected" ,
+                "Selected file for $ScanType for session",
+                $scope,
+                new \LORIS\Data\Types\BooleanType(),
+                new Cardinality(Cardinality::MANY),
+                $ScanType,
+            );
+
         }
         $images = $images->withItems($items);
 
@@ -128,7 +137,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      *
      * @return string
      */
-    protected function getFieldNameFromDict(
+    protected function getFieldNameFromDict( 
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
         if ($item->getName() == 'ScanDone') {
@@ -171,9 +180,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
 
+            $exploded = explode("_", $item->getName());
+            $field = $exploded[count($exploded)-1];
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
-            return "(SELECT QCStatus FROM files_qcstatus
+            return "(SELECT $field FROM files_qcstatus
                         JOIN files as files2
                         JOIN mri_scan_type mst
                             ON (files2.MriScanTypeID=mst.MriScanTypeID)
