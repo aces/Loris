@@ -1,13 +1,13 @@
--- Add InstrumentDataFilePath to ConfigSettings
+-- Add instrumentDataPath to ConfigSettings
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
-SELECT 'InstrumentDataFilePath', 'Path to directory for uploaded instrument data csv files',
+SELECT 'instrumentDataPath', 'Path to directory for uploaded instrument data csv files',
        1, 0, 'text', ID, 'Instrument Data Upload Path', 15
 FROM ConfigSettings WHERE Name="paths";
 
--- Add InstrumentDataFilePath Config
+-- Add instrumentDataPath Config
 INSERT INTO Config (ConfigID, Value)
 SELECT ID, "/data/uploads/instruments/"
-FROM ConfigSettings WHERE Name="InstrumentDataFilePath";
+FROM ConfigSettings WHERE Name="instrumentDataPath";
 
 -- Rel table for instrument_data entry -> CSV file. DataID NULL if not successful
 CREATE TABLE `instrument_data_files` (

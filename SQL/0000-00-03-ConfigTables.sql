@@ -75,6 +75,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_deletions', 'Path to deleted publications', 1, 0, 'web_path', ID, 'Deleted Publications', 11 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'documentRepositoryPath', 'Path to uploaded document repository files', 1, 0, 'web_path', ID, 'Document Repository Upload Path', 13 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dataReleasePath', 'Path to uploaded data release files', 1, 0, 'web_path', ID, 'Data release Upload Path', 14 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'instrumentDataPath', 'Path to directory for uploaded instrument data csv files', 1, 0, 'text', ID, 'Instrument Data Upload Path', 15 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'tempPath', 'Path for temporary files', 1, 0, 'text', ID, 'Temp File Path', 16 FROM ConfigSettings WHERE Name="paths";
 
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
@@ -226,6 +228,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/uploads/" FROM ConfigSett
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/" FROM ConfigSettings WHERE Name="publication_uploads";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/to_be_deleted/" FROM ConfigSettings WHERE Name="publication_deletions";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%MINCToolsPath%" FROM ConfigSettings WHERE Name="MINCToolsPath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/uploads/instruments/" FROM ConfigSettings WHERE Name="instrumentDataPath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/tmp/" FROM ConfigSettings WHERE Name="tempPath";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="useEEGBrowserVisualizationComponents";
 
