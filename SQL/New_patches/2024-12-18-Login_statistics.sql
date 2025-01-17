@@ -2,7 +2,9 @@ DROP TABLE IF EXISTS Login_Summary_Statistics;
 CREATE TABLE Login_Summary_Statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
-    Value INT
+    Value INT,
+    QueryOrder INT,
+     PRIMARY KEY (Title, Project)
 );
 
 ALTER TABLE dataquery_study_queries_rel
