@@ -449,6 +449,7 @@ class RedcapNotificationHandler
                     $name,
                     [
                         "redcap_data_access_group",
+                        "redcap_event_name",
                         "redcap_survey_identifier",
                         "{$redcap_form_name}_timestamp",
                         "{$redcap_form_name}_complete",
