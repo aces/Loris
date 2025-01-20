@@ -120,16 +120,22 @@ class RedcapConfigParser
             );
         }
 
-        $redcap_api_token      = $this->_parseRedcapApiToken($project_node);
-        $redcap_participant_id = $this->_parseRedcapParticipantId($project_node);
-        $candidate_id          = $this->_parseCandidateId($project_node);
-        $visits = $this->_parseVisits($project_node);
+        $redcap_api_token           = $this->_parseRedcapApiToken($project_node);
+        $prefix_instrument_variable = $this->_parsePrefixInstrumentVariable(
+            $project_node
+        );
+        $redcap_participant_id      = $this->_parseRedcapParticipantId(
+            $project_node
+        );
+        $candidate_id = $this->_parseCandidateId($project_node);
+        $visits       = $this->_parseVisits($project_node);
 
         return new RedcapConfig(
             $issue_assignee,
             $this->_redcap_project_id,
             $this->_redcap_instance_url,
             $redcap_api_token,
+            $prefix_instrument_variable,
             $redcap_participant_id,
             $candidate_id,
             $visits,
@@ -267,6 +273,38 @@ class RedcapConfigParser
         }
 
         return $redcap_api_token;
+    }
+
+    /**
+     * Parse whether the REDCap variable names are prefixed from a REDCap
+     * configuration project XML node.
+     *
+     * @param array $project_node The REDCap configuration project XML node.
+     *
+     * @return bool Whether the REDCap variable names are prefixed.
+     */
+    private function _parsePrefixInstrumentVariable(array $project_node): bool
+    {
+        $prefix_instrument_variable = $project_node['prefix-instrument-variable']
+            ?? null;
+
+        // Default value.
+        if ($prefix_instrument_variable === null) {
+            return false;
+        }
+
+        switch ($prefix_instrument_variable) {
+        case 'true':
+            return true;
+        case 'false':
+            return false;
+        default:
+            throw $this->_exception(
+                "invalid REDCap prefix instrument variable value for the selected"
+                . " project, expected 'true' or 'false' but found"
+                . " '$prefix_instrument_variable'."
+            );
+        }
     }
 
     /**

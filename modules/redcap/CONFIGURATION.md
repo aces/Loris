@@ -12,8 +12,9 @@ The configuration is of the following form:
   <instance>
     <redcap-url>https://www.example.net/redcap/</redcap-url>
     <project>
-      <redcap-project-id>1</redcap-project-id>
+      <redcap-project-id>123</redcap-project-id>
       <redcap-api-token>ABCDEFGGHIJKLMNOPQRSTUVWXYZ</redcap-api-token>
+      <prefix-instrument-variable>false</prefix-instrument-variable>
       <redcap-participant-id>record-id</redcap-participant-id>
       <candidate-id>psc-id</candidate-id>
       <visit>
@@ -40,6 +41,7 @@ In an `instance` entry, the configuration parameters are the following:
 In a `project` entry, the configuration parameters are the following:
 - `redcap-project-id` (required): The REDCap project ID of the REDCap project described by this entry.
 - `redcap-api-token` (required): The REDCap API token used by LORIS to retrieve REDCap data for this project.
+- `prefix-instrument-variable` (optional): Whether or not the instrument field variable names are prefixed by their instrument name in REDCap. The two options are `true` or `false`. If not present, `false` is used.
 - `redcap-participant-id` (optional): The type of REDCap participant identifier used to map the REDCap participants with the LORIS candidates. The two options are `record-id` and `survey-participant-id`. If not present, `record-id` is used.
 - `candidate-id` (optional): The type of LORIS candidate identifier used to map the REDCap participants with the LORIS candidates. The two options are `psc-id` and `dcc-id`. If not present, `psc-id` is used.
 - `visit` (optional, multiple allowed): The list of visit entries that describe how REDCap arms and events are mapped to LORIS visits. If not present, the REDCap arms are ignored and the REDCap event names are matched to LORIS visit labels with the same name.

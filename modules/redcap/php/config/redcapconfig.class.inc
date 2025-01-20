@@ -50,6 +50,13 @@ class RedcapConfig
     public readonly string $redcap_api_token;
 
     /**
+     * Whether the REDCap variable names are prefixed with their instrument name.
+     *
+     * @var bool
+     */
+    public readonly bool $prefix_instrument_variable;
+
+    /**
      * The type of REDCap participant identifier to match with the LORIS candidate.
      *
      * @var RedcapConfigRedcapParticipantId
@@ -74,32 +81,36 @@ class RedcapConfig
     /**
      * Constructor.
      *
-     * @param \User  $issue_assignee        The LORIS issue assignee for the REDCap
-     *                                      module.
-     * @param string $redcap_project_id     The REDCap project ID.
-     * @param string $redcap_instance_url   The REDCap instance URL.
-     * @param string $redcap_api_token      The REDCap API token.
-     * @param object $redcap_participant_id The REDCap participant identifier
-     *                                      configuration.
-     * @param object $candidate_id          The REDCap LORIS candidate identifier
-     *                                      configuration.
-     * @param array  $visits                The REDCap visit mappings.
+     * @param \User  $issue_assignee             The LORIS issue assignee for the
+     *                                           REDCap module.
+     * @param string $redcap_project_id          The REDCap project ID.
+     * @param string $redcap_instance_url        The REDCap instance URL.
+     * @param string $redcap_api_token           The REDCap API token.
+     * @param bool   $prefix_instrument_variable Whether the REDCap variable names
+     *                                           are prefixed.
+     * @param object $redcap_participant_id      The REDCap participant identifier
+     *                                           configuration.
+     * @param object $candidate_id               The REDCap LORIS candidate
+     *                                           identifier configuration.
+     * @param array  $visits                     The REDCap visit mappings.
      */
     public function __construct(
         \User $issue_assignee,
         string $redcap_project_id,
         string $redcap_instance_url,
         string $redcap_api_token,
+        bool $prefix_instrument_variable,
         RedcapConfigRedcapParticipantId $redcap_participant_id,
         RedcapConfigLorisCandidateId $candidate_id,
         array $visits,
     ) {
-        $this->issue_assignee        = $issue_assignee;
-        $this->redcap_project_id     = $redcap_project_id;
-        $this->redcap_instance_url   = $redcap_instance_url;
-        $this->redcap_api_token      = $redcap_api_token;
-        $this->redcap_participant_id = $redcap_participant_id;
-        $this->candidate_id          = $candidate_id;
-        $this->visits = $visits;
+        $this->issue_assignee      = $issue_assignee;
+        $this->redcap_project_id   = $redcap_project_id;
+        $this->redcap_instance_url = $redcap_instance_url;
+        $this->redcap_api_token    = $redcap_api_token;
+        $this->prefix_instrument_variable = $prefix_instrument_variable;
+        $this->redcap_participant_id      = $redcap_participant_id;
+        $this->candidate_id = $candidate_id;
+        $this->visits       = $visits;
     }
 }
