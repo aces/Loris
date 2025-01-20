@@ -11,7 +11,10 @@ jobs:
       EEG_VIS_ENABLED: 'true'
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Install protoc-gen-js plugin
+        run: npm install -g protoc-gen-js
 
       - name: Install EEG package dependencies
       # We only need to install protobuf-compiler
@@ -19,8 +22,8 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
-          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-             libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler          
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
           protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
@@ -36,13 +39,13 @@ jobs:
       - name: Create node_modules tarball
         run: tar cfvz node_modules.tar.gz node_modules
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload node_modules artifact
         with:
           name: node_modules
           path: node_modules.tar.gz
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload lorisjs.tar.gz artifact
         with:
           name: lorisjs
@@ -54,7 +57,7 @@ jobs:
       matrix:
         php: ['8.1', '8.2', '8.3']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -70,7 +73,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Composer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -83,7 +86,7 @@ jobs:
       - name: Create vendor tarball
         run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload vendor-php${{matrix.php}}.tar.gz artifact
         with:
           name: vendor-php${{matrix.php}}
@@ -107,21 +110,21 @@ jobs:
         php: ['8.1', '8.2', '8.3']
         apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       name: Download node_modules artifact
       with:
         name: node_modules
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       name: Download compiled LORIS javascript artifact
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       name: Download PHP dependencies artifact
       with:
         name: vendor-php${{matrix.php}}
@@ -230,7 +233,7 @@ jobs:
               php: '8.3'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -246,7 +249,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Composer cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -255,14 +258,18 @@ jobs:
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
+
+    - name: Install protoc-gen-js plugin
+      run: npm install -g protoc-gen-js
+
     - name: Install package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
