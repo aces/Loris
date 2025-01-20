@@ -33,6 +33,13 @@ use \LORIS\redcap\client\models\RedcapNotification;
 class Notifications extends Endpoint
 {
     /**
+     * The REDCap issue assignee if it has been successfully parsed.
+     *
+     * @var ?\User
+     */
+    private ?\User $_issue_assignee;
+
+    /**
      * Construct an endpoint
      *
      * @param \LORIS\LorisInstance $loris a Loris instance
@@ -111,6 +118,7 @@ class Notifications extends Endpoint
             );
 
             $config = $config_parser->parse();
+            $this->_issue_assignee = $config->issue_assignee;
 
             // should the notification be ignored?
             if ($this->_ignoreNotification($notification, $config)) {
@@ -273,28 +281,31 @@ class Notifications extends Endpoint
     private function _createIssue(
         string $title,
         string $error,
-        string $data
+        string $data,
     ): void {
+        // Cannot create an issue if the issue assignee has not succesfully been
+        // parsed.
+        if ($this->_issue_assignee === null) {
+            error_log("[redcap] $title $error $data");
+            return;
+        }
+
+        // get the main assignee from config
+        $username = $this->_issue_assignee->getUsername();
+
         $db = $this->loris->getDatabaseConnection();
 
         // get redcap module ID
-        $redcapModuleID = $db->pselectOne(
+        $redcap_module_id = $db->pselectOne(
             'SELECT m.ID FROM modules m WHERE m.Name = "redcap"',
             []
         );
 
         // add automated centerID for redcap issues
-        $centerID = $db->pselectOne(
+        $center_id = $db->pselectOne(
             'SELECT CenterID FROM psc WHERE Alias="DCC"',
             []
         );
-
-        // get the main assignee from config
-        // $assignee = $this->redcapClientHandler->getAssignee();
-        // $username = $assignee->getUsername();
-        // TODO: Get the assignee from the module configuration.
-        // Change the parser to still return the assignee if no project is found.
-        $username = 'redcap';
 
         // insert new issue
         $dtNow     = new \DateTimeImmutable();
@@ -305,15 +316,15 @@ class Notifications extends Endpoint
             'assignee'      => $username,
             'status'        => 'assigned',
             'priority'      => 'normal',
-            'module'        => $redcapModuleID,
+            'module'        => $redcap_module_id,
             'dateCreated'   => $now,
             'lastUpdate'    => $now,
             'lastUpdatedBy' => $username,
             'sessionID'     => null,
-            'centerID'      => $centerID,
+            'centerID'      => $center_id,
             'candID'        => null,
             'category'      => 'Data Entry',
-            'description'   => $error . " " . $data
+            'description'   => "$error $data",
         ];
         $db->insert('issues', $issueData);
         error_log("[redcap][issue:created] " . json_encode($issueData));
