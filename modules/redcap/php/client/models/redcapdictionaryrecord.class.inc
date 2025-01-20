@@ -368,60 +368,57 @@ class RedcapDictionaryRecord extends RedcapProp
      */
     public function toLINST(): string
     {
-        $fieldType  = $this->getFieldType();
-        $field_name = $this->getFieldName();
-        $fieldLabel = str_replace("\n", "<br /><br />", $this->getFieldLabel());
-        $fieldDesc  = "$field_name{@}$fieldLabel";
+        $field_type  = $this->getFieldType();
+        $field_name  = $this->getFieldName();
+        $field_label = str_replace("\n", "<br /><br />", $this->getFieldLabel());
+        $field_desc  = "$field_name{@}$field_label";
 
         //
-        switch ($fieldType) {
+        switch ($field_type) {
         case 'text':
             // text maps directly to LORIS
-            return "text{@}$fieldDesc";
+            return "text{@}$field_desc";
         case 'descriptive':
             // descriptive maps to label with no field.
-            return "static{@}$fieldDesc";
+            return "static{@}$field_desc";
         case 'radio':
         case 'dropdown':
             // Radio or dropdown maps to a select and the options are in the
             // same format in the dictionary.
-            $selectoptions = $this->_optionsToLINST();
-            if (!empty($selectoptions)) {
-                $selectoptions = "NULL=>''{-}$selectoptions";
+            $select_options = $this->_optionsToLINST();
+            if (!empty($select_options)) {
+                $select_options = "NULL=>''{-}$select_options";
             }
-            return "select{@}$fieldDesc{@}$selectoptions";
+            return "select{@}$field_desc{@}$select_options";
         case 'checkbox':
             // checkboxes are the same format as radios but allow multiple options,
             // so map to a selectmultiple instead of a select
-            return "selectmultiple{@}$fieldDesc{@}"
+            return "selectmultiple{@}$field_desc{@}"
                 . $this->_optionsToLINST();
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$fieldDesc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
-        case 'truefalse':
-            // Map true/false fields to dropdowns with true and false options.
-            return "select{@}$fieldDesc{@}NULL=>''"
-                . "{-}'true'=>'True'{-}'false'=>'False'";
+            return "select{@}$field_desc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.
-            return "static{@}$fieldDesc";
+            return "static{@}$field_desc";
         case 'sql':
             // The "SQL" data type is used for a dynamic display of enum options.
             // Since we don't have access to the redcap database that the sql is
             // selecting from, we treat it the same way as a score/calc field so
             // that data can be imported.
-            return "static{@}$fieldDesc";
-        case'slider':
-            return "numeric{@}$fieldDesc{@}0{@}100";
+            return "static{@}$field_desc";
+        case 'slider':
+            return "numeric{@}$field_desc{@}0{@}100";
         case 'file':
-            // File upload - NOT SUPPORTED BY LINST
-            return "";
+            // LORIS does not handle the file itself but it does save the name of
+            // the uploaded file.
+            return "static{@}$field_desc";
         case 'notes':
             // REDCap calls textareas notes
-            return "textarea{@}$fieldDesc";
+            return "textarea{@}$field_desc";
         default:
-            throw new \LorisException("Unhandled REDCap type '$fieldType'");
+            throw new \LorisException("Unhandled REDCap type '$field_type'");
         }
     }
 
