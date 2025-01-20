@@ -111,7 +111,7 @@ class PublicationIndex extends React.Component {
             DataURL={loris.BaseURL
                     +'/publication/getData?action=getData'}
             action={loris.BaseURL
-                   + '/publication/ajax/FileUpload.php?action=upload'}
+                   + '/publication/FileUpload?action=upload'}
             editMode={false}
           />
         </TabPane>

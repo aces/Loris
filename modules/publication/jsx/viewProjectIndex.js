@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      + '/publication/getData?action=getProjectData&id='
                      + args.id}
             action={loris.BaseURL
-                    + '/publication/ajax/FileUpload.php?action=editProject&id='
+                    + '/publication/FileUpload.php?action=editProject&id='
                     + args.id}
           />
         </div>
