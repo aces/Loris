@@ -1,51 +1,86 @@
 <?php declare(strict_types=1);
 
-/**
- * Publication data retriever
- *
- * This retrieves data for publication uploads & editing
- *
- * PHP Version 7
- *
- * @category Loris
- * @package  Publication
- * @author   David <dblader.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
-if (isset($_REQUEST['action'])) {
-    $factory = \NDB_Factory::singleton();
-    $db      = $factory->database();
-    $user    = $factory->user();
-    $action  = $_REQUEST['action'];
-    $message = ['message' => null];
+// @phan-file-suppress PhanUnusedProtectedMethodParameter
+// Suppressed due to false-positive for doDownloadNotification function
+// Unused parameter $file required to match parent signature
 
-    if ($action === 'getData') {
-        if (userCanGetData($db, $user)) {
-            header('Content-Type: application/json');
-            exit(json_encode(getData($db)));
-        } else {
+namespace LORIS\publication;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
+/**
+ * Handles managing files through the /files/* endpoint of the publication
+ * module.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class GetData extends \NDB_Page
+{
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user accessing the file.
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'publication_view',
+                'publication_propose',
+                'publication_approve',
+            ]
+        );
+    }
+    /**
+     * Handle a post form
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
+        $message = ['message' => null];	    
+        $path    = $request->getUri()->getPath();
+
+        // Get query parameters
+        $queryParams = $request->getQueryParams();
+        $action = $queryParams['action'] ?? null;
+	if ($action === 'getData') {
+                   return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader("Content-Type", "application/json")
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode($this->getData($db))
+                )
+            );
+	} else if ($action === 'getProjectData') {
+		        $id = $queryParams['id'] ?? null;
+		if ($this->userCanGetData($db, $user, $id)) {
+		    return (new \LORIS\Http\Response())
+                     ->withStatus(200)
+                     ->withHeader("Content-Type", "application/json")
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode($this->getProjectData($db, $user, $id))
+                )
+            );
+		   }
+	}	
+	else {
             http_response_code(403);
             $message['message']
-                = 'You do not have access to the publication module.';
+                = '-----Yojfkldsajflkdajlkjlkdasju do not have access to the publication module.';
             exit(json_encode($message));
 
+        }	
         }
-    } elseif ($action === 'getProjectData') {
-        $id = intval($_REQUEST['id']);
-        if (userCanGetData($db, $user, $id)) {
-            header('Content-Type: application/json');
-            exit(json_encode(getProjectData($db, $user, $id)));
-        } else {
-            http_response_code(403);
-            $message['message'] = 'You do not have access to this project.';
-            exit(json_encode($message));
-        }
-    } else {
-        http_response_code(400);
-        exit(0);
-    }
-}
 /**
  * Gets publication and parameter_type data from database
  *
@@ -64,7 +99,7 @@ function getData($db) : array
     // for selecting behavioural variables of interest
     $bvlVOIs = iterator_to_array(
         $db->pselect(
-            "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt 
+            "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt
 	    JOIN test_names tn ON tn.Test_name=pt.SourceFrom
 	    ORDER BY pt.SourceFrom",
             []
@@ -130,7 +165,7 @@ function getData($db) : array
 
     $data['projectOptions'] = $projectOptions;
     $data['users']          = $users;
-    $data['uploadTypes']    = getUploadTypes();
+    $data['uploadTypes']    = $this->getUploadTypes();
     $data['existingTitles'] = $titles;
     $data['allVOIs']        = $allVOIs;
     $data['allKWs']         = $kws;
@@ -168,10 +203,10 @@ function getProjectData($db, $user, $id) : array
     if (!$result) {
         throw new LorisException('Invalid publication ID!');
     } else {
-        $result['VOIs']          = getVOIs($id);
-        $result['files']         = getFiles($id);
-        $result['Keywords']      = getKeywords($id);
-        $result['collaborators'] = getCollaborators($id);
+        $result['VOIs']          = $this->getVOIs($id);
+        $result['files']         = $this->getFiles($id);
+        $result['Keywords']      = $this->getKeywords($id);
+        $result['collaborators'] = $this->getCollaborators($id);
 
         // allow edit access for user if user is original proposer
         $userIDs = $db->pselectCol(
@@ -219,13 +254,13 @@ function getProjectData($db, $user, $id) : array
             'files'                 => $result['files'],
             'usersWithEditPerm'     => $usersWithEditPerm,
             'userCanEdit'           => $userCanEdit,
-            'statusOpts'            => getStatusOptions(),
-            'uploadTypes'           => getUploadTypes(),
+            'statusOpts'            => $this->getStatusOptions(),
+            'uploadTypes'           => $this->getUploadTypes(),
         ];
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
-            return array_merge($pubData, getData($db));
+            return array_merge($pubData, $this->getData($db));
         } else {
             return $pubData;
         }
@@ -324,9 +359,11 @@ function getFiles($id) : array
     $results = [];
     foreach ($files as $key => $f) {
         $val = [];
-        $val['Citation'] = htmlspecialchars_decode($f['Citation']);
-        $val['Version']  = htmlspecialchars_decode($f['Version']);
-
+        // Check if 'Citation' is not null before calling htmlspecialchars_decode
+        $val['Citation'] = ($f['Citation'] !== null) ? htmlspecialchars_decode($f['Citation']) : '';
+        
+        // Check if 'Version' is not null before calling htmlspecialchars_decode
+        $val['Version'] = ($f['Version'] !== null) ? htmlspecialchars_decode($f['Version']) : '';
         $results[$key] = $val;
     }
 
@@ -408,4 +445,5 @@ function userCanGetData($db, $user, $pubID = null) : bool
     }
 
     return $retVal;
+}
 }

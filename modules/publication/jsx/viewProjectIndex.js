@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div className="col-md-9 col-lg-7">
           <ViewProject
             DataURL={loris.BaseURL
-                     + '/publication/ajax/getData.php?action=getProjectData&id='
+                     + '/publication/getData?action=getProjectData&id='
                      + args.id}
             action={loris.BaseURL
                     + '/publication/ajax/FileUpload.php?action=editProject&id='
