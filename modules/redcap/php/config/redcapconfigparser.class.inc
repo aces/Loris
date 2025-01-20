@@ -88,7 +88,7 @@ class RedcapConfigParser
         // Get the REDCap LORIS configuration tree
         $redcap_node = $config->getSetting('redcap');
         if (empty($redcap_node)) {
-            throw new \LorisException("[redcap][init] no REDCap configuration.");
+            throw $this->_exception("no REDCap configuration.");
         }
 
         return $this->_parseRedcapNode($redcap_node);
@@ -108,14 +108,16 @@ class RedcapConfigParser
 
         $instance_node = $this->_getInstanceNode($redcap_node);
         if ($instance_node === null) {
-            error_log("TODO: Error parse instance node.");
-            return null;
+            throw $this->_exception(
+                "no REDCap instance in configuration for the provided parameters'."
+            );
         }
 
         $project_node = $this->_getProjectNode($instance_node);
         if ($project_node === null) {
-            error_log("TODO: Error parse project node.");
-            return null;
+            throw $this->_exception(
+                "no REDCap project in configuration for the provided parameters."
+            );
         }
 
         $redcap_api_token      = $this->_parseRedcapApiToken($project_node);
@@ -144,9 +146,10 @@ class RedcapConfigParser
     private function _parseIssueAssignee(array $redcap_node): \User
     {
         $assignee_user_id = $redcap_node['issue-assignee'] ?? null;
-        if (!isset($assignee_user_id) || empty($assignee_user_id)) {
-            throw new \LorisException(
-                "TODO: Error parse issue assignee."
+        if (empty($assignee_user_id)) {
+            throw $this->_exception(
+                "no REDCap issue assignee in configuration, missing node"
+                . " 'issue-assignee'."
             );
         }
 
@@ -164,9 +167,9 @@ class RedcapConfigParser
         );
 
         if ($assignee === null) {
-            throw new \LorisException(
-                "[redcap][init] assignee '$assignee_user_id' does not exist"
-                . " or does not have enough privilege."
+            throw $this->_exception(
+                "REDCap issue assignee '$assignee_user_id' does not exist or does"
+                . " not have enough privileges."
             );
         }
 
@@ -184,12 +187,12 @@ class RedcapConfigParser
      */
     private function _getInstanceNode(array $redcap_node): ?array
     {
-        $instance_entry = $redcap_node['instance'];
+        $instance_entry = $redcap_node['instance'] ?? null;
 
         // No instance described.
-        if (!isset($instance_entry)) {
-            throw new \LorisException(
-                "TODO: Error parse instance entry."
+        if (empty($instance_entry)) {
+            throw $this->_exception(
+                "no REDCap instance in configuration, missing node 'instance'."
             );
         }
 
@@ -220,11 +223,12 @@ class RedcapConfigParser
      */
     private function _getProjectNode(array $instance_node): ?array
     {
-        $project_entry = $instance_node['project'];
+        $project_entry = $instance_node['project'] ?? null;
 
-        if (!isset($project_entry)) {
-            throw new \LorisException(
-                "TODO: Error parse project entry."
+        if (empty($project_entry)) {
+            throw $this->_exception(
+                "no REDCap project in configuration instance, missing node"
+                . " 'project'."
             );
         }
 
@@ -253,11 +257,12 @@ class RedcapConfigParser
      */
     private function _parseRedcapApiToken(array $project_node): string
     {
-        $redcap_api_token = $project_node['redcap-api-token'];
+        $redcap_api_token = $project_node['redcap-api-token'] ?? null;
 
         if (empty($redcap_api_token)) {
             throw new \LorisException(
-                "TODO: Error parse API token."
+                "no REDCap API token in configuration for the selected project,"
+                . " missing node 'redcap-api-token'."
             );
         }
 
@@ -279,18 +284,20 @@ class RedcapConfigParser
         $redcap_participant_id = $project_node['redcap-participant-id'] ?? null;
 
         // Default value.
-        if (empty($redcap_participant_id)) {
+        if ($redcap_participant_id === null) {
             return RedcapConfigRedcapParticipantId::RecordId;
         }
 
         switch ($redcap_participant_id) {
         case 'record-id':
             return RedcapConfigRedcapParticipantId::RecordId;
-        case 'survery-participant-id':
+        case 'survey-participant-id':
             return RedcapConfigRedcapParticipantId::SurveyParticipantId;
         default:
-            throw new \LorisException(
-                "TODO: Error parse REDCap participant ID type."
+            throw $this->_exception(
+                "invalid REDCap participant identifier type for the selected"
+                . " project, expected 'record-id' or 'survey-participant-id' but"
+                . " found '$redcap_participant_id'."
             );
         }
     }
@@ -320,8 +327,9 @@ class RedcapConfigParser
         case 'psc-id':
             return RedcapConfigLorisCandidateId::PscId;
         default:
-            throw new \LorisException(
-                "TODO: Error parse REDCap candidate ID type."
+            throw $this->_exception(
+                "invalid LORIS candidate identifier type for the selected project,"
+                . " expected 'dcc-id' or 'psc-id' but found '$loris_candidate_id'."
             );
         }
     }
@@ -337,7 +345,7 @@ class RedcapConfigParser
      */
     private function _parseVisits(array $project_node): ?array
     {
-        $visit_entry = $project_node['visit'];
+        $visit_entry = $project_node['visit'] ?? null;
 
         if (!isset($visit_entry)) {
             return null;
@@ -364,16 +372,35 @@ class RedcapConfigParser
      */
     private function _parseVisit(array $visit_node): RedcapConfigVisit
     {
-        $visit_label       = $visit_node['visit-label'];
+        $visit_label = $visit_node['visit-label'] ?? null;
+        if (empty($visit_label)) {
+            throw $this->_exception(
+                "no visit label in configuration visit, missing node 'visit-label'."
+            );
+        }
+
         $redcap_arm_name   = $visit_node['redcap-arm-name'] ?? null;
         $redcap_event_name = $visit_node['redcap-event-name'] ?? null;
-
-        // TODO: Error handling.
 
         return new RedcapConfigVisit(
             $visit_label,
             $redcap_arm_name,
             $redcap_event_name,
+        );
+    }
+
+    /**
+     * Create a new REDCap configuration exception for the parser parameters.
+     *
+     * @param string $message The exception message.
+     *
+     * @return LorisException The REDCap configuration exception.
+     */
+    private function _exception(string $message): \LorisException
+    {
+        return new \LorisException(
+            "[redcap][config] (redcap-instance-url: {$this->_redcap_instance_url})"
+            . " (redcap-project-id: {$this->_redcap_project_id}): $message"
         );
     }
 }
