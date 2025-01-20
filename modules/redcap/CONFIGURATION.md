@@ -48,7 +48,3 @@ In a `visit` entry, the configuration parameters are the following:
 - `visit-label` (required): The LORIS visit label of the visit to which to attach the instrument responses that match this entry.
 - `redcap-arm-name` (optional): The REDCap arm name that the instrument responses must match to be attached to this visit. If not present, the arm name is ignored when filtering instrument responses.
 - `redcap-event-name` (optional): The REDCap event name that the instrument responses must match to be attached to this visit. If not present, the event name is ignored when filtering instrument responses.
-
-## Check configuraion
-
-The tool `redcap_check_config.php` can be used to check that the module configuration is correct.
