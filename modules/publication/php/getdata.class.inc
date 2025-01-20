@@ -50,7 +50,7 @@ class GetData extends \NDB_Page
 
         // Get query parameters
         $queryParams = $request->getQueryParams();
-        $action = $queryParams['action'] ?? null;
+	$action = $queryParams['action'] ?? null;
 	if ($action === 'getData') {
                    return (new \LORIS\Http\Response())
             ->withStatus(200)
@@ -76,7 +76,7 @@ class GetData extends \NDB_Page
 	else {
             http_response_code(403);
             $message['message']
-                = '-----Yojfkldsajflkdajlkjlkdasju do not have access to the publication module.';
+                = 'You do not have access to the publication module.';
             exit(json_encode($message));
 
         }	
