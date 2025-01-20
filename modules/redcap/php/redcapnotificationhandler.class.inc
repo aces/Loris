@@ -595,8 +595,6 @@ class RedcapNotificationHandler
             }
         }
 
-        // TODO: This whole section is a mess. DO NOT MERGE before refactor. It
-        // should also be extracted to its own function.
         // -- Define/Add Date_taken
         // First, try based on 'dtt'
         // Then, if still null/undefined try based on 'timestamp_stop'
