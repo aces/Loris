@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <config>
-    <REDCap>
+    <redcap>
         <instance>
-            <name>aaa</name>
-            <url>https://someURL.com</url>
+            <redcap-url>https://someURL.com</redcap-url>
             <project>
-                <projectID>111</projectID>
-                <token>token_1</token>
+                <redcap-project-id>111</redcap-project-id>
+                <redcap-api-token>token_1</redcap-api-token>
             </project>
         </instance>
-    </REDCap>
+    </redcap>
 </config>

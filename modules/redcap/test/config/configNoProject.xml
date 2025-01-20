@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <config>
-    <REDCap>
-        <issuesAssignee>admin</issuesAssignee>
+    <redcap>
+        <issue-assignee>assignee</issue-assignee>
         <instance>
-            <name>aaa</name>
-            <url>https://someURL.com</url>
+            <redcap-url>https://someURL.com</redcap-url>
         </instance>
-    </REDCap>
+    </redcap>
 </config>

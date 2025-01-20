@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <config>
-    <!-- REDCap Client config -->
-    <REDCap>
-        <!-- Should be aassigneeisting userID -->
-        <issuesAssignee>assignee</issuesAssignee>
+    <!-- REDCap module config -->
+    <redcap>
+        <!-- should be an existing assignee user ID -->
+        <issue-assignee>assignee</issue-assignee>
         <instance>
-            <name>aaa</name>
-            <url>https://someURL.com</url>
+            <redcap-url>https://someURL.com</redcap-url>
             <!-- one instance can have multiple projects -->
             <project>
-                <projectID>111</projectID>
-                <token>token_1</token>
+                <redcap-project-id>111</redcap-project-id>
+                <redcap-api-token>token_1</redcap-api-token>
             </project>
             <project>
-                <projectID>222</projectID>
-                <token>token_2</token>
+                <redcap-project-id>222</redcap-project-id>
+                <redcap-api-token>token_2</redcap-api-token>
             </project>
         </instance>
         <instance>
-            <name>bbb</name>
-            <url>https://someOtherURL.com</url>
-            <!-- one instance can have multiple projects -->
+            <redcap-url>https://someOtherURL.com</redcap-url>
             <project>
-                <projectID>333</projectID>
-                <token>token_3</token>
+                <redcap-project-id>333</redcap-project-id>
+                <redcap-api-token>token_3</redcap-api-token>
             </project>
         </instance>
-    </REDCap>
+    </redcap>
 </config>

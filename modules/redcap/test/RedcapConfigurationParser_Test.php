@@ -15,9 +15,8 @@ namespace LORIS\api\Test;
 
 require_once __DIR__ . "/../../../tools/generic_includes.php";
 
+use LORIS\redcap\config\RedcapConfigParser;
 use \PHPUnit\Framework\TestCase;
-
-use LORIS\redcap\configurations\RedcapConfigurationParser;
 
 /**
  * PHPUnit class for REDCap Configuration tests
@@ -131,39 +130,7 @@ class RedcapConfigurationParser_Test extends TestCase
             "[redcap][config] none of the REDCap configurations declared"
             . " in 'config.xml' file can be accessed."
         );
-        RedcapConfigurationParser::factory(self::$_loris);
-    }
-
-    /**
-     * TestSingleton
-     *
-     * @return void
-     */
-    public function testSingleton(): void
-    {
-        // default file does not have any accessible REDCap
-        $this->expectException(\LorisException::class);
-        $s1 = RedcapConfigurationParser::factory(self::$_loris);
-        $s2 = RedcapConfigurationParser::factory(self::$_loris);
-        $this->assertSame($s1, $s2);
-    }
-
-    /**
-     * TestSingletonVerbose
-     *
-     * @return void
-     */
-    public function testSingletonVerbose(): void
-    {
-        $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage(
-            "[redcap][config] none of the REDCap configurations declared"
-            . " in 'config.xml' file can be accessed."
-        );
-        // verbose is not an attribute of this class.
-        $s1 = RedcapConfigurationParser::factory(self::$_loris, false);
-        $s2 = RedcapConfigurationParser::factory(self::$_loris, true);
-        $this->assertSame($s1, $s2);
+        new RedcapConfigParser(self::$_loris, 'https://someURL.com', '111');
     }
 
     /**
@@ -179,7 +146,7 @@ class RedcapConfigurationParser_Test extends TestCase
         $configFile    = __DIR__ . "/config/configNoREDCap.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
-        RedcapConfigurationParser::factory($lorisInstance);
+        new RedcapConfigParser($lorisInstance, 'https://someURL.com', '111');
     }
 
     /**
@@ -191,12 +158,12 @@ class RedcapConfigurationParser_Test extends TestCase
     {
         $this->expectException(\LorisException::class);
         $this->expectExceptionMessage(
-            "[redcap][init] no REDCap 'issuesAssignee' in configuration."
+            "[redcap][config] no REDCap issue assignee in configuration."
         );
         $configFile    = __DIR__ . "/config/configNoAssignee.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
-        RedcapConfigurationParser::factory($lorisInstance);
+        new RedcapConfigParser($lorisInstance, 'https://someURL.com', '111');
     }
 
     /**
@@ -213,7 +180,7 @@ class RedcapConfigurationParser_Test extends TestCase
         $configFile    = __DIR__ . "/config/configNoInstance.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
-        RedcapConfigurationParser::factory($lorisInstance);
+        new RedcapConfigParser($lorisInstance, 'https://someURL.com', '111');
     }
 
     /**
@@ -231,7 +198,6 @@ class RedcapConfigurationParser_Test extends TestCase
         $configFile    = __DIR__ . "/config/configNoProject.xml";
         $lorisInstance = self::setConfigFile($configFile);
         //
-        RedcapConfigurationParser::factory($lorisInstance);
+        new RedcapConfigParser($lorisInstance, 'https://someURL.com', '111');
     }
 }
-
