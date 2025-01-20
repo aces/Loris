@@ -235,7 +235,10 @@ class RedcapNotificationHandler
         // notification event, but since this is an external API, check this
         // assumption nonetheless.
         if ($redcap_event === null) {
-            throw new \LorisException("TODO: Error REDCap event null");
+            throw new \LorisException(
+                "[redcap] Error: No REDCap event found for notification event name"
+                . " '{$this->_redcap_notif->event_name}'."
+            );
         }
 
         // If there is no visit mappings in the REDCap module configuration, simply
@@ -277,7 +280,10 @@ class RedcapNotificationHandler
         // If there are several visit mappings that match the REDCap notification
         // event, raise an error.
         if (count($visit_mappings) !== 1) {
-            throw new \LorisException("TODO: Error multiple possible visits");
+            throw new \LorisException(
+                "[redcap] Error: Multiple visits selectable for event name"
+                . " '$event_name' and arm name '$arm_name'."
+            );
         }
 
         // Return the LORIS visit label associated with the matching visit mapping.
@@ -363,7 +369,10 @@ class RedcapNotificationHandler
         // If no candidate matches the REDCap participant identifier, raise an
         // error.
         if ($candidate === null) {
-            throw new \LorisException("TODO: Error candidate null.");
+            throw new \LorisException(
+                "[redcap] Error: No LORIS candidate found for REDCap participant"
+                . " identifier '$redcap_participant_id'."
+            );
         }
 
         // Return the candidate.
@@ -392,7 +401,10 @@ class RedcapNotificationHandler
         // but since this is an external API, check this
         // assumption nonetheless.
         if ($redcap_arm === null) {
-            throw new \LorisException("TODO: Error REDCap event null");
+            throw new \LorisException(
+                "[redcap] Error: No REDCap arm found for event arm number"
+                . " '{$redcap_event->arm_number}'."
+            );
         }
 
         // Return the name of the REDCap arm.
