@@ -74,7 +74,7 @@ class RedcapEvent
         $this->arm_number   = $props->getInt('arm_num');
         $this->name         = $props->getString('event_name');
         $this->unique_name  = $props->getString('unique_event_name');
-        $this->custom_label = $props->getStringNullable('custom_event_label');
+        $this->custom_label = $props->getString('custom_event_label');
     }
 
     /**

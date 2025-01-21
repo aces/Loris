@@ -207,7 +207,7 @@ class RedcapNotificationHandler
 
         error_log(
             "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
-            ."[instrument:$instrument_name] instrument updated."
+            . "[instrument:$instrument_name] instrument updated."
         );
     }
 
@@ -215,8 +215,9 @@ class RedcapNotificationHandler
      * Find the visit label associated with the REDCap notification based on the
      * REDCap module configuration.
      *
-     * @return string The LORIS visit label associated with the REDCap notification,
-     *                or `NULL` if no corresponding visit label is found.
+     * @return ?string The LORIS visit label associated with the REDCap
+     *                 notification, or `NULL` if no corresponding visit label is
+     *                 found.
      */
     private function _getVisitLabel(): ?string
     {

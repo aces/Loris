@@ -115,12 +115,13 @@ class Queries
     /**
      * Get the unhandled REDCap notification IDs for the given parameters.
      *
-     * @param object $received_datetime The time at which the notification was
-     *                                  received.
-     * @param string $project_id        The REDCap project ID.
-     * @param string $record_id         The REDCap record ID.
-     * @param string $event_name        The REDCap event name.
-     * @param string $instrument_name   The REDCap instrument name.
+     * @param \DateTimeImmutable $received_datetime The time at which the
+     *                                              notification was
+     *                                              received.
+     * @param string             $project_id        The REDCap project ID.
+     * @param string             $record_id         The REDCap record ID.
+     * @param string             $event_name        The REDCap event name.
+     * @param string             $instrument_name   The REDCap instrument name.
      *
      * @return array The list of unhandled notification IDs.
      */
@@ -159,15 +160,18 @@ class Queries
     /**
      * Mark a REDCap notification as handled.
      *
-     * @param string $project_id        The project ID of the REDCap notification.
-     * @param string $record_id         The record ID of the REDCap notification.
-     * @param string $event_name        The event name of the REDCap notification.
-     * @param string $instrument_name   The instrument name of the REDCap
-     *                                  notification.
-     * @param object $received_datetime The time at which the REDCap notification is
-     *                                  received.
-     * @param object $handled_datetime  The time at which the REDCap notification is
-     *                                  handled.
+     * @param string             $project_id        The REDCap notification project
+     *                                              ID.
+     * @param string             $record_id         The REDCap notification record
+     *                                              ID.
+     * @param string             $event_name        The REDCap notification event
+     *                                              name.
+     * @param string             $instrument_name   The instrument name of the
+     *                                              REDCap notification.
+     * @param \DateTimeImmutable $received_datetime The time at which the REDCap
+     *                                              notification is received.
+     * @param \DateTimeImmutable $handled_datetime  The time at which the REDCap
+     *                                              notification is handled.
      *
      * @return void
      */

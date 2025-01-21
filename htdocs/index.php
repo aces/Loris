@@ -32,6 +32,8 @@ ini_set('session.use_strict_mode', '1');
 
 // TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
 if (version_compare(PHP_VERSION, '8.4', '<')) {
+    // @phan-file-suppress PhanRedefineFunctionInternal
+
     // phpcs:ignore
     function array_any(array $array, callable $callback): bool
     {

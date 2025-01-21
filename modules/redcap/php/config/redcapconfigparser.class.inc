@@ -432,7 +432,7 @@ class RedcapConfigParser
      *
      * @param string $message The exception message.
      *
-     * @return LorisException The REDCap configuration exception.
+     * @return \LorisException The REDCap configuration exception.
      */
     private function _exception(string $message): \LorisException
     {

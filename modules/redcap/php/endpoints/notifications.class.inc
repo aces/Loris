@@ -228,7 +228,7 @@ class Notifications extends Endpoint
      * Optionally prints an error in log on a case by case basis.
      *
      * @param RedcapNotification $notif         The REDCap notification.
-     * @param RedcapConfif       $redcap_config The REDCap module configuration.
+     * @param ?RedcapConfig      $redcap_config The REDCap module configuration.
      *
      * @return bool if the notification should be ignored, else false.
      */

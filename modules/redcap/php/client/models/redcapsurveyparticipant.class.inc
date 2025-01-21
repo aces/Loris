@@ -51,9 +51,9 @@ class RedcapSurveyParticipant
     public readonly bool $invitation_sent_status;
 
     /**
-     * REDCap invitation send time.
+     * REDCap invitation sent time.
      */
-    public readonly ?string $invitation_send_time;
+    public readonly ?string $invitation_sent_time;
 
     /**
      * REDCap response status.
@@ -88,13 +88,11 @@ class RedcapSurveyParticipant
         $this->email_occurrence = $props->getInt('email_occurence');
         $this->identifier       = $props->getStringNullable('identifier');
         $this->record           = $props->getStringNullable('record');
-        $this->invitation_sent_status = $props->getStringNullable(
-            'invitation_sent_status'
-        );
-        $this->invitation_send_time   = $props->getStringNullable(
+        $this->invitation_sent_status = $props->getBool('invitation_sent_status');
+        $this->invitation_sent_time   = $props->getStringNullable(
             'invitation_sent_time'
         );
-        $this->response_status        = $props->getString('survey_access_code');
+        $this->response_status        = $props->getInt('survey_access_code');
         $this->survey_access_code     = $props->getStringNullable('survey_link');
         $this->survey_link            = $props->getStringNullable(
             'survey_queue_link'
@@ -114,7 +112,7 @@ class RedcapSurveyParticipant
             'identifier'             => $this->identifier,
             'record'                 => $this->record,
             'invitation_sent_status' => $this->invitation_sent_status,
-            'invitation_send_time'   => $this->invitation_send_time,
+            'invitation_sent_time'   => $this->invitation_sent_time,
             'response_status'        => $this->response_status,
             'survey_access_code'     => $this->survey_access_code,
             'survey_link'            => $this->survey_link,
