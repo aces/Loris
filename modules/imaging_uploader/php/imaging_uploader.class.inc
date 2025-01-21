@@ -58,6 +58,41 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useSiteProjectPermissions'
+        );
+
+        $where = '';
+        if ($siteprojectperms === 'true') {
+            // If config setting is enabled, check the user's sites and projects
+            // and add the WHERE clause to exclude any records that the user does
+            // not have access to. UNLESS user has 'imaging_uploader_nosessionid'
+            $user          = \NDB_Factory::singleton()->user();
+            $centerString  = implode("','", $user->getCenterIDs());
+            $projectString = implode("','", $user->getProjectIDs());
+            $username      = $user->getUsername();
+
+            if ($user->hasPermission('imaging_uploader_nosessionid')) {
+                // site/project match + null sites and projects + user's own uploads
+                $where = " WHERE 
+                            (s.CenterID IN ('$centerString') 
+                             AND 
+                             s.ProjectID IN ('$projectString')
+                            ) OR mu.UploadedBy='$username'
+                              OR s.CenterID IS NULL
+                              OR s.ProjectID IS NULL";
+
+            } else {
+                // site/project match + user's own uploads
+                $where = " WHERE 
+                            (s.CenterID IN ('$centerString') 
+                             AND 
+                             s.ProjectID IN ('$projectString')
+                            ) OR mu.UploadedBy='$username'";
+            }
+        }
+
         $this->_resetFilters();
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
@@ -84,12 +119,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             's.Visit_label',
             'mu.IsPhantom',
         ];
-        $this->query        = " FROM mri_upload mu LEFT JOIN session".
-                              " s ON (s.ID = mu.SessionID)".
+        $this->query        = " FROM mri_upload mu".
+                              " LEFT JOIN session s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " LEFT JOIN tarchive ta ON".
-                              " (mu.TarchiveID = ta.TarchiveID)".
-                              " WHERE 1=1 ";
+                              " (mu.TarchiveID = ta.TarchiveID)";
+        if ($siteprojectperms === 'true') {
+            $this->query .= $where;
+        }
         $this->formToFilter = [
             'CandID'      => 's.CandID',
             'PSCID'       => 'c.PSCID',
