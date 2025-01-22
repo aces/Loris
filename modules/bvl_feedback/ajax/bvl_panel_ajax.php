@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File to be included in AJAX scripts for the bvl_feedback panel.
  * These files should initialize a user, a candidate and a feedback object.

@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This parses all of the instruments and generates a staging file (ip_output.txt)
  * which can be used by data_dictionary_builder.php and generate_tables_sql.php

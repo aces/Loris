@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
 * File contains the PSR15 ResponseInterface implementation that
 * can be constructed with the "new" keyword.

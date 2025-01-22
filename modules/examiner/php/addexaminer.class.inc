@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\examiner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -63,6 +64,16 @@ class AddExaminer extends \NDB_Page
         //Get centerID
         $fullName = $values['addName'] ?? '';
         $siteID   = $values['addSite'] ?? '';
+
+        // check for site permissions
+        $user = \User::singleton();
+        if (!$user->hasPermission('examiner_multisite')
+            && !in_array($siteID, $user->getCenterIDs())
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Permission denied: You cannot assign examiner to this Site.'
+            );
+        };
 
         if ($this->examinerExists($fullName, $siteID)) {
             return  new \LORIS\Http\Response\JSON\Conflict(

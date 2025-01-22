@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Imaging browser MRI Feedback class file.
  *
@@ -163,13 +164,14 @@ class Feedback_MRI_Popup extends \NDB_Page
         // get identifier of subject/volume
         if ($feedbackObj->fileID) {
             $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label,
-                             s.CohortID, f.File AS File_name, st.Scan_type
+                             s.CohortID, f.File AS File_name,
+                             mst.MriScanTypeName AS ScanType
                       FROM files AS f, session AS s, candidate AS c,
-                           mri_scan_type AS st
+                           mri_scan_type AS mst
                       WHERE f.FileID=:FID
                           AND f.SessionID=s.ID
                           AND s.CandID=c.CandID
-                          AND f.AcquisitionProtocolID=st.ID
+                          AND f.MriScanTypeID=mst.MriScanTypeID
                           AND s.Active='Y'";
 
             $qparams = ['FID' => $feedbackObj->fileID];
@@ -185,7 +187,7 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             $qparams = ['SID' => $this->session_id];
         }
-        $result = $DB->pselect($query, $qparams);
+        $result = iterator_to_array($DB->pselect($query, $qparams));
         if (count($result) > 0) {
             $i = 0;
             foreach ($result[0] as $key => $value) {

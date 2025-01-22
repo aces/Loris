@@ -180,7 +180,7 @@ const SeriesCursor = (
    *
    */
   const EpochMarker = () => {
-    const visibleEpochs = getEpochsInRange(epochs, interval, 'Event');
+    const visibleEpochs = getEpochsInRange(epochs, interval);
     if (visibleEpochs
         .filter((index) => {
  filteredEpochs.includes(index);
@@ -310,6 +310,6 @@ export default connect(
   (state: RootState)=> ({
     cursorPosition: state.cursor.cursorPosition,
     epochs: state.dataset.epochs,
-    filteredEpochs: state.dataset.filteredEpochs,
+    filteredEpochs: state.dataset.filteredEpochs.plotVisibility,
   })
 )(SeriesCursor);

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Brainbrowser automated integration tests
  *
@@ -33,7 +34,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testBrainbrowserDoespageLoad()
     {
-        $this->safeGet($this->url . "/brainbrowser/?minc_id=[]");
+        $this->safeGet($this->url . "/brainbrowser/?minc_id");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();

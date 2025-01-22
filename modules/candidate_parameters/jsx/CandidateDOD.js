@@ -83,6 +83,7 @@ class CandidateDOD extends Component {
       return <Loader/>;
     }
 
+    let dateFormat = this.state.data.dodFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dod_edit')) {
@@ -114,6 +115,7 @@ class CandidateDOD extends Component {
           <DateElement
             label='Date Of Death:'
             name='dod'
+            dateFormat={dateFormat}
             value={this.state.formData.dod}
             onUserInput={this.setFormData}
             disabled={disabled}
@@ -186,23 +188,23 @@ class CandidateDOD extends Component {
     ).then((resp) => resp.text()
     ).then((result) => {
       swal.fire({
-            title: 'Success!',
-            text: 'Date of death updated!',
-            type: 'success',
-            confirmButtonText: 'OK',
+        title: 'Success!',
+        text: 'Date of death updated!',
+        type: 'success',
+        confirmButtonText: 'OK',
       });
       if (result.value) {
         this.fetchData();
       }
     }).catch((error) => {
-        console.error(error);
-        swal.fire({
-          title: 'Error!',
-          text: 'Something went wrong.',
-          type: 'error',
-          confirmButtonText: 'OK',
-        });
+      console.error(error);
+      swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong.',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
+    });
   }
 }
 CandidateDOD.propTypes = {

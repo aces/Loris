@@ -1,5 +1,6 @@
-<?php
- /**
+<?php declare(strict_types=1);
+
+/**
   * Automated integration tests for conflict resolver module
   *
   * PHP Version 7
@@ -72,7 +73,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $this->DB->insert(
                 "conflicts_unresolved",
                 [
-                    'TableName'  => 'radiology_review',
+                    'TestName'   => 'radiology_review',
                     'FieldName'  => 'Scan_done',
                     'CommentId1' => '475906DCC4222142111524502652',
                     'Value1'     => 'yes',
@@ -94,13 +95,16 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverPermission()
     {
-        $this->checkPagePermissions(
-            '/conflict_resolver/',
-            [
-                'conflict_resolver'
-            ],
-            "Conflict Resolver"
-        );
+        $permissionList = ["conflict_resolver","data_dict_edit","data_dict_view"];
+        $this->setupPermissions($permissionList);
+        $this->safeGet($this->url . "/conflict_resolver/");
+        $bodyElement = $this->safeFindElement(WebDriverBy::cssSelector("body"));
+        $bodyText    = $bodyElement->getText();
+        $accessError = "You do not have access to this page.";
+        $this->assertStringNotContainsString($accessError, $bodyText);
+        $loadingError = "An error occured while loading the page.";
+        $this->assertStringNotContainsString($loadingError, $bodyText);
+        $this->resetPermissions();
     }
     /**
      * Tests clear button in the form

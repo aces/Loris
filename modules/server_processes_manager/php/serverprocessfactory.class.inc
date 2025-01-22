@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a way to create ServerProcess objects of the appropriate type
  *

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class to act as a generic way to generate the various
  * LORIS identifiers used in the codebase (CandID, PSCID, ExternalID). It

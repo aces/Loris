@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the help editor menu page.

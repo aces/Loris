@@ -23,22 +23,22 @@ function FieldDisplay(props: {
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
 }) {
-    const description = getDictionaryDescription(
-        props.module,
-        props.category,
-        props.fieldname,
-        props.fulldictionary,
-    );
+  const description = getDictionaryDescription(
+    props.module,
+    props.category,
+    props.fieldname,
+    props.fulldictionary,
+  );
 
-    return (<div>
-                <div title={props.fieldname}>
-                    {description}
-                </div>
-                <div style={{fontSize: '0.8em', color: '#aaa'}}>
-                    {props.mapCategoryName(props.module, props.category)}
+  return (<div>
+    <div title={props.fieldname}>
+      {description}
+    </div>
+    <div style={{fontSize: '0.8em', color: '#aaa'}}>
+      {props.mapCategoryName(props.module, props.category)}
                     &nbsp;({props.mapModuleName(props.module)})
-                </div>
-            </div>
-   );
+    </div>
+  </div>
+  );
 }
 export default FieldDisplay;

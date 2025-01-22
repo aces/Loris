@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
@@ -96,6 +97,7 @@ class Module extends \Module
                      . $DB->quote($user->getUsername()),
                     '',
                     '',
+                    '',
                     $baseURL . "/issue_tracker/?$url",
                     "issue_tracker"
                 )
@@ -115,7 +117,7 @@ class Module extends \Module
                  GROUP BY i.issueID, i.Title",
                 [ 'cid' => $candidate->getCandID() ],
             );
-            if (empty($issues)) {
+            if (count($issues) === 0) {
                 return [];
             }
             return [
@@ -124,7 +126,7 @@ class Module extends \Module
                     $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
                     "lorisjs.issue_tracker.CandidateIssuesWidget.default",
                     [
-                        'Issues' => $issues,
+                        'Issues' => iterator_to_array($issues),
                     ],
                     1,
                     1,

@@ -58,6 +58,15 @@ class Edit extends \NDB_Page implements ETagCalculator
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
 
+        // Check if batch mode is enabled
+        $batch_mode = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_BOOLEAN);
+
+        if ($batch_mode) {
+            // Fetch all issues
+            $allIssues = $this->_getAllIssues($user);
+            return new \LORIS\Http\Response\JsonResponse($allIssues);
+        }
+
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
 
@@ -66,7 +75,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         $inactive_users = [];
         if ($user->hasPermission('access_all_profiles')) {
             $assignee_expanded = $db->pselect(
-                "SELECT Real_name, UserID FROM users",
+                "SELECT Real_name, UserID FROM users 
+                    WHERE Active='Y' AND Pending_approval='N'",
                 []
             );
 
@@ -84,7 +94,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $assignee_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 AND Active='Y' AND Pending_approval='N'",
                 [
                     'CenterID' => $CenterID,
                     'DCC'      => $DCCID,
@@ -120,7 +131,8 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
-            "SELECT Real_name, UserID FROM users",
+            "SELECT Real_name, UserID FROM users 
+                WHERE Active='Y' AND Pending_approval='N'",
             []
         );
         foreach ($potential_watchers_expanded as $w_row) {
@@ -177,6 +189,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $modules[$key] = $m->getLongName();
         }
 
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
+
         // Now get issue values
         $issueData = $this->getIssueData(null, $user);
         if (!empty($values['issueID'])
@@ -185,19 +199,12 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID, $user);
 
-            $desc = $db->pselect(
-                "SELECT issueComment
-                FROM issues_comments WHERE issueID=:i
-                ORDER BY dateAdded LIMIT 1",
-                ['i' => $issueID]
-            );
-
             $provisioner = (new AttachmentProvisioner($issueID));
             $attachments = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $isWatching            = $db->pselectOne(
+            $isWatching = $db->pselectOne(
                 "SELECT userID, issueID FROM issues_watching
                 WHERE issueID=:issueID AND userID=:userID",
                 [
@@ -205,20 +212,54 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'userID'  => $user->getUsername(),
                 ]
             );
-            $issueData['watching'] = $isWatching === null ? 'No' : 'Yes';
+
+            // Extract userID from issue description.
+            // Without doing that, "user fullname (userid)" is used instead.
+            $issueAssigneeUserID = null;
+            if (!is_null($issueData['assignee'])
+                && !empty($issueData['assignee'])
+            ) {
+                $parPos = strpos($issueData['assignee'], '(');
+                if ($parPos !== false) {
+                    $issueAssigneeUserID = substr(
+                        $issueData['assignee'],
+                        $parPos+1,
+                        -1
+                    );
+                }
+            }
+            // Add current assignee in assignees dropdown even if not active
+            if (isset($issueAssigneeUserID)
+                && !isset($assignees[$issueAssigneeUserID])
+            ) {
+                $assignees[$issueAssigneeUserID] = $db->pselectOne(
+                    "SELECT Real_name FROM users
+                    WHERE UserID=:userID",
+                    [
+                        'userID' => $issueAssigneeUserID
+                    ]
+                );
+            }
+
+            $othersWatching = $this->getWatching($issueID);
+            // add current watchers to others watching, even if not active
+            $otherWatchers = array_merge($otherWatchers, $othersWatching);
+            unset($otherWatchers[$user->getUserName()]);
+
+            $issueData['watching']       = $isWatching === null ? 'No' : 'Yes';
             $issueData['commentHistory'] = $this->getComments($issueID);
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
-            $issueData['othersWatching'] = $this->getWatching($issueID);
+            $issueData['description']    = $this->getDescription($issueID);
+            $issueData['othersWatching'] = array_keys($othersWatching);
+            $issueData['assignee']       = $db->pselectOne(
+                "SELECT assignee FROM issues WHERE issueID=:issueID",
+                ['issueID' => $issueID]
+            );
 
             // We need to unescape the string here:
             // React is escaping the string in the template
             // This fixes an issue with multiple escaping (#6643)
-            $issueData['desc'] = '';
-            if (count($desc) > 0) {
-                $comment           = $desc[0]['issueComment'];
-                $issueData['desc'] = html_entity_decode($comment);
-            }
         }
         $issueData['comment'] = null;
 
@@ -232,6 +273,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priorities'        => $priorities,
             'categories'        => $categories,
             'modules'           => $modules,
+            'instruments'       => $instruments,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
             'hasEditPermission' => $user->hasPermission(
@@ -246,6 +288,225 @@ class Edit extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Fetches all issues including related data and top comments.
+     *
+     * @param \User $user The current user.
+     *
+     * @return array Contains issues, assignees, and other watchers information.
+     */
+    private function _getAllIssues(\User $user): array
+    {
+        $db            = $this->loris->getDatabaseConnection();
+        $assignees     = [];
+        $otherWatchers = [];
+        $centerIDsArray = [];
+        $dccID          = null;
+        $centerPlaceholders = '';
+
+        // Initialize variables based on permissions
+        if (!$user->hasPermission('access_all_profiles')) {
+            $centerIDsArray = array_map(
+                fn($centerID) => (int)$centerID->__toString(),
+                $user->getCenterIDs()
+            );
+
+            if (empty($centerIDsArray)) {
+                return [
+                    'issues'        => [],
+                    'assignees'     => [],
+                    'otherWatchers' => [],
+                ];
+            }
+
+            // Fetch DCC ID
+            $dccRow = $db->pselectOne(
+                "SELECT CenterID FROM psc WHERE Name = :name",
+                ['name' => 'DCC']
+            );
+            $dccID  = $dccRow ? (int)$dccRow: null;
+
+            // Prepare placeholders
+            $centerPlaceholders = implode(
+                ',',
+                array_fill(0, count($centerIDsArray), '?')
+            );
+        }
+
+        // Prepare assignee query
+        if ($user->hasPermission('access_all_profiles')) {
+            $assigneeQuery  = "
+                SELECT Real_name, UserID, Active
+                FROM users
+                WHERE Pending_approval = 'N'
+            ";
+            $assigneeParams = [];
+        } else {
+            $assigneeQuery  = "
+                SELECT DISTINCT u.Real_name, u.UserID, u.Active
+                FROM users u
+                INNER JOIN user_psc_rel upr ON upr.UserID = u.ID
+                WHERE (upr.CenterID IN ($centerPlaceholders) OR upr.CenterID = ?)
+                AND u.Pending_approval = 'N'
+            ";
+            $assigneeParams = array_merge($centerIDsArray, [$dccID]);
+        }
+
+        // Fetch assignees
+        $assigneeRows = iterator_to_array(
+            $db->pselect($assigneeQuery, $assigneeParams)
+        );
+
+        foreach ($assigneeRows as $a_row) {
+            if (!empty($a_row['UserID'])) {
+                $assignees[$a_row['UserID']] = $this->formatUserInformation(
+                    $a_row['UserID']
+                );
+            }
+        }
+
+        // Fetch potential watchers
+        $currentUsername = $user->getUsername();
+
+        $potentialWatchers = iterator_to_array(
+            $db->pselect(
+                "SELECT Real_name, UserID
+                FROM users
+                WHERE Active = 'Y' AND Pending_approval = 'N'",
+                []
+            )
+        );
+
+        foreach ($potentialWatchers as $w_row) {
+            if (!empty($w_row['UserID']) && $w_row['UserID'] != $currentUsername) {
+                $otherWatchers[$w_row['UserID']] = $this->formatUserInformation(
+                    $w_row['UserID']
+                );
+            }
+        }
+
+        // Fetch issues
+        $baseQuery = "
+            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+            FROM issues AS i
+            LEFT JOIN candidate c ON i.candID = c.CandID
+            LEFT JOIN session s ON i.sessionID = s.ID
+        ";
+
+        $issueParams = [];
+        if (!$user->hasPermission('access_all_profiles')) {
+            $baseQuery  .= " WHERE i.centerID IN ($centerPlaceholders)";
+            $issueParams = $centerIDsArray;
+        }
+
+        $baseQuery .= " ORDER BY i.issueID DESC";
+
+        $issues = iterator_to_array($db->pselect($baseQuery, $issueParams));
+
+        if (empty($issues)) {
+            return [
+                'issues'        => [],
+                'assignees'     => $assignees,
+                'otherWatchers' => $otherWatchers,
+            ];
+        }
+
+        // Get all issue IDs
+        $issueIDs = array_column($issues, 'issueID');
+
+        // Fetch watchers for these issues
+        $watchingPlaceholders = implode(',', array_fill(0, count($issueIDs), '?'));
+        $watchersRows         = iterator_to_array(
+            $db->pselect(
+                "SELECT issueID, userID
+                FROM issues_watching
+                WHERE issueID IN ($watchingPlaceholders)",
+                $issueIDs
+            )
+        );
+
+        // Organize watchers by issue
+        $othersWatchingByIssue = [];
+        foreach ($watchersRows as $row) {
+            if (!empty($row['userID'])) {
+                $issueID = (int)$row['issueID'];
+                $othersWatchingByIssue[$issueID][] = $row['userID'];
+            }
+        }
+
+        // Format the issues data
+        foreach ($issues as &$issue) {
+            $issueID = (int)$issue['issueID'];
+
+            // Set watching status
+            $isWatching        = in_array(
+                $currentUsername,
+                $othersWatchingByIssue[$issueID] ?? []
+            );
+            $issue['watching'] = $isWatching ? 'Yes' : 'No';
+
+            $assigneeUserID = $issue['assignee'] ?? null;
+
+            // Exclude assignee from othersWatching
+            if (!empty($assigneeUserID) && isset($othersWatchingByIssue[$issueID])) {
+                $filteredWatchers = array_filter(
+                    $othersWatchingByIssue[$issueID],
+                    fn($watcherUserID) => $watcherUserID !== $assigneeUserID
+                );
+                $othersWatchingByIssue[$issueID] = array_values($filteredWatchers);
+            }
+
+            $issue['othersWatching'] = $othersWatchingByIssue[$issueID] ?? [];
+
+            $issue['reporter']      = !empty($issue['reporter'])
+                ? $this->formatUserInformation($issue['reporter'])
+                : null;
+            $issue['lastUpdatedBy'] = !empty($issue['lastUpdatedBy'])
+                ? $this->formatUserInformation($issue['lastUpdatedBy'])
+                : null;
+
+            $issue['topComments'] = $this->getTopComments($issueID);
+        }
+
+        return [
+            'issues'        => $issues,
+            'assignees'     => $assignees,
+            'otherWatchers' => $otherWatchers,
+        ];
+    }
+
+    /**
+     * Fetches the top 3 most recent comments for an issue.
+     *
+     * @param int $issueID The ID of the issue.
+     *
+     * @return array Top 3 comments with comment text, date, and author.
+     */
+    function getTopComments(int $issueID): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $comments = $db->pselect(
+            "SELECT issueComment, dateAdded, addedBy
+             FROM issues_comments
+             WHERE issueID = :issueID
+             ORDER BY dateAdded DESC 
+             LIMIT 3",
+            ['issueID' => $issueID]
+        );
+
+        $topComments = [];
+        foreach ($comments as $comment) {
+            $topComments[] = [
+                'issueComment' => $comment['issueComment'],
+                'dateAdded'    => $comment['dateAdded'],
+                'addedBy'      => $this->formatUserInformation($comment['addedBy']),
+            ];
+        }
+
+        return $topComments;
+    }
+
+    /**
      * If issueID is passed retrieves issue data from database,
      * otherwise return empty issue data object
      *
@@ -254,7 +515,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @return array
      */
-    function getIssueData(int $issueID=null, \User $user): array
+    function getIssueData(?int $issueID=null, \User $user): array
     {
         $db = $this->loris->getDatabaseConnection();
 
@@ -263,11 +524,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 "SELECT
                             i.*,
                             c.PSCID,
-                            s.Visit_label AS visitLabel
+                            s.Visit_label AS visitLabel,
+                            t.Test_name as instrument_name
                         FROM
                             issues AS i
                             LEFT JOIN candidate c ON (i.candID = c.CandID)
                             LEFT JOIN session s ON (i.sessionID = s.ID)
+                            LEFT JOIN test_names t ON (i.instrument = t.ID)
                         WHERE
                             issueID = :issueID",
                 ['issueID' => $issueID]
@@ -296,6 +559,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priority'      => 'normal',
             'issueID'       => 0, // TODO: this is dumb
             'title'         => null,
+            'description'   => null,
             'lastUpdate'    => null,
             'PSCID'         => null,
             'assignee'      => null,
@@ -304,6 +568,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'visitLabel'    => null,
             'category'      => null,
             'lastUpdatedBy' => null,
+            'instrument'    => null,
         ];
     }
 
@@ -318,13 +583,15 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         $db = $this->loris->getDatabaseConnection();
 
-        $unformattedComments = $db->pselect(
-            "SELECT newValue, fieldChanged, dateAdded, addedBy " .
-            "FROM issues_history where issueID=:issueID " .
-            "UNION " .
-            "SELECT issueComment, 'comment', dateAdded, addedBy " .
-            "FROM issues_comments where issueID=:issueID ",
-            ['issueID' => $issueID]
+        $unformattedComments = iterator_to_array(
+            $db->pselect(
+                "SELECT newValue, fieldChanged, dateAdded, addedBy " .
+                "FROM issues_history where issueID=:issueID " .
+                "UNION " .
+                "SELECT issueComment, 'comment', dateAdded, addedBy " .
+                "FROM issues_comments where issueID=:issueID ",
+                ['issueID' => $issueID]
+            )
         );
 
         // looping by reference so can edit in place
@@ -364,6 +631,12 @@ class Edit extends \NDB_Page implements ETagCalculator
             ) {
                 $comment['newValue']
                     = $this->formatUserInformation($comment['newValue']);
+            } else if ($comment['fieldChanged'] === 'instrument') {
+                $instrumentName      = $db->pselectOne(
+                    "SELECT Test_name FROM test_names WHERE ID=:id",
+                    ['id' => $comment['newValue']]
+                );
+                $comment['newValue'] = $instrumentName;
             }
         }
         return $unformattedComments; //now formatted I guess
@@ -374,22 +647,48 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int $issueID the relevant issue
      *
-     * @return array those who are watching
+     * @return array [Real_name => userID] of
+     *               those who are watching
      */
     function getWatching(int $issueID): array
     {
         $db = $this->loris->getDatabaseConnection();
 
         $watching = $db->pselect(
-            "SELECT userID from issues_watching WHERE issueID=:issueID",
+            "SELECT Real_name, UserID from users
+            WHERE UserID IN 
+              (SELECT userID from issues_watching
+              WHERE issueID=:issueID)
+            AND UserID NOT IN
+              (SELECT assignee FROM issues
+              WHERE issueID=:issueID
+              AND assignee IS NOT NULL)",
             ['issueID' => $issueID]
         );
 
         $whoIsWatching = [];
         foreach ($watching as $watcher) {
-            $whoIsWatching[] = $watcher['userID'];
+            $whoIsWatching[$watcher['UserID']] = $watcher['Real_name'];
         }
         return $whoIsWatching;
+    }
+
+    /**
+     * Gets the description of the issue
+     *
+     * @param int $issueID the relevant issue
+     *
+     * @return string
+     */
+    function getDescription(int $issueID): string
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $desc = $db->pselectOne(
+            "SELECT description from issues WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+        return $desc ?? '';
     }
 
     /**
@@ -403,7 +702,7 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         return $centerID == null
             ? 'All Sites'
-            : \Site::singleton(new \CenterID(strval($centerID)))->getCenterName();
+            : \Site::singleton(\CenterID::singleton($centerID))->getCenterName();
     }
 
     /**
@@ -434,8 +733,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priority',
             'centerID',
             'title',
+            'description',
             'category',
             'module',
+            'instrument',
         ];
         $fieldsToValidateFirst = [
             'PSCID',
@@ -452,7 +753,16 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $value = null;
             }
             if (isset($field)) {
-                $issueValues[$field] = $value;
+                if ($field === 'instrument' && $value !== null) {
+                    // Value coming from frontend will be the instrument name
+                    $instrumentID        = $db->pselectOne(
+                        "SELECT ID FROM test_names WHERE Test_name=:name",
+                        ['name' => $value]
+                    );
+                    $issueValues[$field] = $instrumentID;
+                } else {
+                    $issueValues[$field] = $value;
+                }
             }
         }
         foreach ($fieldsToValidateFirst as $vField) {
@@ -464,6 +774,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueID = intval($values['issueID']);
 
         $issueValues['lastUpdatedBy'] = $user->getUserName();
+
+        $assignee = $db->pselectOne(
+            "SELECT assignee FROM issues WHERE issueID=:ID",
+            ['ID' => $issueID]
+        );
 
         $validatedInput = $this->validateInput($validateValues, $user);
         if (!is_array($validatedInput)) { // Error exists.
@@ -490,11 +805,15 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         if (!empty($issueID)) {
-            $db->update('issues', $issueValues, ['issueID' => $issueID]);
+            try {
+                $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
+            } catch (\Exception $ex) {
+                return new \LORIS\Http\Response\JSON\InternalServerError();
+            }
         } else {
             $issueValues['reporter']    = $user->getUsername();
             $issueValues['dateCreated'] = date('Y-m-d H:i:s');
-            $db->insert('issues', $issueValues);
+            $db->unsafeInsert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
 
@@ -529,18 +848,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // Adding new assignee to watching
-        if (isset($issueValues['assignee'])) {
-            $nowWatching = [
-                'userID'  => $issueValues['assignee'],
-                'issueID' => $issueID,
-            ];
-            $db->replace('issues_watching', $nowWatching);
-
-            // sending email
-            $this->emailUser($issueID, $issueValues['assignee'], '', $user);
-        }
-
         // Adding others from multiselect to watching table.
         if (isset($values['othersWatching'])) {
 
@@ -552,9 +859,16 @@ class Edit extends \NDB_Page implements ETagCalculator
 
             // Add new watchers (if any)
             $usersWatching = explode(',', $values['othersWatching']);
+            // If the assignee is watching, add them
+            if ($values['watching'] == 'Yes'
+                && $issueValues['assignee'] == $user->getUsername()
+            ) {
+                $usersWatching[] = $issueValues['assignee'];
+            }
+
             foreach ($usersWatching as $usersWatching) {
                 if ($usersWatching) {
-                    $db->insert(
+                    $db->replace(
                         'issues_watching',
                         [
                             'userID'  => $usersWatching,
@@ -567,25 +881,80 @@ class Edit extends \NDB_Page implements ETagCalculator
                     ) {
                         continue;
                     }
-                    $this->emailUser($issueID, '', $usersWatching, $user);
+                    $this->emailUser(
+                        $issueID,
+                        '',
+                        $usersWatching,
+                        $user,
+                        'false',
+                        $values
+                    );
                 }
             }
         }
 
         // Add editor to the watching table unless they don't want to be added.
-        if (isset($values['watching']) && $values['watching'] == 'Yes') {
+        if (isset($values['watching'])
+            && $values['watching'] == 'Yes'
+            && (!isset($issueValues['assignee'])
+            || $issueValues['assignee'] !== $user->getUsername())
+        ) {
             $nowWatching = [
                 'userID'  => $user->getUsername(),
                 'issueID' => $issueID,
             ];
             $db->replace('issues_watching', $nowWatching);
-        } else if (isset($values['watching']) && $values['watching'] == 'No') {
+        } else if (isset($values['watching'])
+            && $values['watching'] == 'No'
+            && (!isset($issueValues['assignee'])
+            || $issueValues['assignee'] !== $user->getUsername())
+        ) {
             $db->delete(
                 'issues_watching',
                 [
                     'issueID' => $issueID,
                     'userID'  => $user->getUsername(),
                 ]
+            );
+        }
+        // Adding new assignee to watching
+        if (isset($issueValues['assignee'])
+            && $issueValues['assignee'] !== $assignee
+        ) {
+            $nowWatching = [
+                'userID'  => $issueValues['assignee'],
+                'issueID' => $issueID
+            ];
+            $db->replace('issues_watching', $nowWatching);
+            // sending email
+            $this->emailUser(
+                $issueID,
+                $issueValues['assignee'],
+                isset($usersWatching) ? $usersWatching : '',
+                $user,
+                'false',
+                $values
+            );
+        } else if (isset($issueValues['assignee'])
+            && $issueValues['assignee'] === $assignee
+        ) {
+            // sending email
+            $this->emailUser(
+                $issueID,
+                $issueValues['assignee'],
+                isset($usersWatching) ? $usersWatching : '',
+                $user,
+                'true',
+                $values
+            );
+        } else {
+            $this->emailUser(
+                $issueID,
+                '',
+                isset($usersWatching) ? $usersWatching : '',
+                $user,
+                'false',
+                $values
             );
         }
         return new \LORIS\Http\Response\JsonResponse(
@@ -600,11 +969,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param string $changed_assignee changed assignee
      * @param string $changed_watcher  changed watcher
      * @param \User  $user             the user requesting the change
+     * @param string $new_assignee_tag boolean of whether it is a new assignee
+     * @param array  $values           the values the user entered in the form
      *
      * @return void
      */
     function emailUser(int $issueID, string $changed_assignee,
-        string $changed_watcher, \User $user
+        string $changed_watcher, \User $user, string $new_assignee_tag, array $values
     ) {
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
@@ -621,21 +992,44 @@ class Edit extends \NDB_Page implements ETagCalculator
         $msg_data['issueID'] = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
         $msg_data['title']       = $title;
+        $msg_data['comment']     = $values['comment'];
 
-        if (isset($changed_assignee)) {
-            $issueChangeEmailsAssignee = $db->pselect(
-                "SELECT
-                            u.Email AS Email,
-                            u.First_name AS firstname
-                        FROM
-                            users u
-                        WHERE
-                            u.UserID = :assignee
-                            AND u.UserID != :currentUser",
-                [
-                    'assignee'    => $changed_assignee,
-                    'currentUser' => $user->getUserName(),
-                ]
+        if (isset($changed_assignee) && $new_assignee_tag == 'false') {
+            $issueChangeEmailsAssignee = iterator_to_array(
+                $db->pselect(
+                    "SELECT
+                    u.Email AS Email,
+                    u.First_name AS firstname
+                FROM
+                    users u
+                WHERE
+                    u.UserID = :assignee
+                    AND u.UserID != :currentUser",
+                    [
+                        'assignee'    => $changed_assignee,
+                        'currentUser' => $user->getUserName(),
+                    ]
+                )
+            );
+            if (isset($issueChangeEmailsAssignee[0])) {
+                $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
+                \Email::send(
+                    $issueChangeEmailsAssignee[0]['Email'],
+                    'issue_assigned.tpl',
+                    $msg_data
+                );
+            }
+        } else if (isset($changed_assignee) && $new_assignee_tag === 'true') {
+            $issueChangeEmailsAssignee = iterator_to_array(
+                $db->pselect(
+                    "SELECT u.Email as Email, u.First_name as firstname " .
+                    "FROM users u WHERE u.UserID=:assignee
+                AND u.UserID<>:currentUser",
+                    [
+                        'assignee'    => $changed_assignee,
+                        'currentUser' => $user->getUserName(),
+                    ]
+                )
             );
 
             if (isset($issueChangeEmailsAssignee[0])) {
@@ -643,7 +1037,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
                 \Email::send(
                     $issueChangeEmailsAssignee[0]['Email'],
-                    'issue_assigned.tpl',
+                    'issue_assigned_modified.tpl',
                     $msg_data
                 );
             }
@@ -659,11 +1053,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                     WHERE
                         w.issueID = :issueID
                         AND u.UserID = :watcher
+                        AND u.UserID != :assignee
                         AND u.UserID != :currentUser",
             [
                 'issueID'     => $issueID,
                 'watcher'     => $changed_watcher,
                 'currentUser' => $user->getUserName(),
+                'assignee'    => $changed_assignee,
             ]
         );
 
@@ -753,14 +1149,16 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
         // If both are set, return SessionID and CandID
         if (isset($result['PSCID']) && isset($result['visit'])) {
-            $session = $db->pSelect(
-                "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
+            $session = iterator_to_array(
+                $db->pSelect(
+                    "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
                 INNER JOIN session s on (c.CandID = s.CandID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
-                [
-                    'PSCID'      => $result['PSCID'],
-                    'visitLabel' => $result['visit'],
-                ]
+                    [
+                        'PSCID'      => $result['PSCID'],
+                        'visitLabel' => $result['visit'],
+                    ]
+                )
             );
 
             if (isset($session[0]['sessionID'])) {
@@ -873,6 +1271,10 @@ class Edit extends \NDB_Page implements ETagCalculator
     function updateHistory(array $values, int $issueID, \User $user)
     {
         $db = $this->loris->getDatabaseConnection();
+        $originalAssignee = $db->pselectOne(
+            'SELECT assignee FROM issues where issueID = :issueID',
+            ['issueID' => $issueID]
+        );
         foreach ($values as $key => $value) {
             // centerID is allowed to be NULL
             if (!empty($value) || $key === 'centerID') {
@@ -882,7 +1284,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'issueID'      => $issueID,
                     'addedBy'      => $user->getUsername(),
                 ];
-                $db->insert('issues_history', $changedValues);
+                if ($key === 'assignee' && $originalAssignee === $value) {
+                    continue;
+                }
+                $db->unsafeInsert('issues_history', $changedValues);
             }
         }
     }
@@ -890,13 +1295,13 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Puts updated fields into the issues_comments table.
      *
-     * @param string $comment new issue comment
-     * @param int    $issueID the issue ID
-     * @param \User  $user    the user
+     * @param ?string $comment new issue comment
+     * @param int     $issueID the issue ID
+     * @param \User   $user    the user
      *
      * @return void
      */
-    function updateComments(string $comment, int $issueID, \User $user)
+    function updateComments(?string $comment, int $issueID, \User $user)
     {
         $db = $this->loris->getDatabaseConnection();
         if (isset($comment) && $comment != "null") {
@@ -905,7 +1310,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'addedBy'      => $user->getUsername(),
                 'issueID'      => $issueID,
             ];
-            $db->insert('issues_comments', $commentValues);
+            $db->unsafeInsert('issues_comments', $commentValues);
         }
     }
 

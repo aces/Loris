@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 use LORIS\StudyEntities\Candidate\CandID;
 /**
  * A CandidateData object is a DTO (data transfer object) to

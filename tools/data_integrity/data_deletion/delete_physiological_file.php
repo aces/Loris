@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script deletes all the data associated with an EEG file
@@ -241,7 +241,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         FROM physiological_parameter_file as ppf
         LEFT JOIN parameter_type as pt USING (ParameterTypeID)
         WHERE PhysiologicalFileID=:pfid
-        AND pt.Name = "electrophyiology_chunked_dataset_path"',
+        AND pt.Name = "electrophysiology_chunked_dataset_path"',
         ['pfid' => $physioFileID]
     );
     print_r($chunks);

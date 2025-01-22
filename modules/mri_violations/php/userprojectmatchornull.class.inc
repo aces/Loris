@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file provides an implementation of the UserProjectMatch filter.
  *
@@ -51,9 +52,7 @@ class UserProjectMatchOrNull implements \LORIS\Data\Filter
         if (method_exists($res, 'getProjectID')) {
             $resourceProject = $res->getProjectID();
             if (!is_null($resourceProject)) {
-                return $user->hasProject(
-                    new \ProjectID(strval($resourceProject))
-                );
+                return $user->hasProject($resourceProject);
             }
             return true;
         }

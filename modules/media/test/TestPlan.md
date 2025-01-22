@@ -4,7 +4,7 @@
 
 Media module allows users to upload, browse and edit media files associated with a specific timepoint in Loris.
 
-### 🔒 Permissions 
+### 🔒 Permissions [Automation Testing]
 
 In order to use the media module the user might need one or both of the following permissions:
 
@@ -49,17 +49,18 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
     - An error dialog should appear to notify that you must select a **PSCID** as it is a required field ❌
   2. Select PSCID and click on the 👉  **Upload file** button
     - An error dialog should appear to notify that you must select a **Visit Label** as it is a required field ❌
-  3. Select Visit Label and click on the 👉  **Upload file**
+  3. Try adding a **PSCID** and **Visit Label** combination where there is only one relevant instrument. Make sure that the instrument is not selected by default.
+  4. Select Visit Label and click on the 👉  **Upload file**
     - An error dialog should appear to notify that you must select a **File** as it is a required field ❌
-  4. Click on the 👉 **Browse** button and a select a file from your file system
+  5. Click on the 👉 **Browse** button and a select a file from your file system
     - Note: it is suggested to try different file types and sizes (e.g pdf, mp4, mov, jpg, doc, etc)
-  5. After you selected the file click on **Upload File**
+  6. After you selected the file click on **Upload File**
     - An error dialog should appear to notify that you must name the file according to the requested format (unless already done so)
     - Once file is named properly clicking on **Upload File** button should trigger file upload and display a progress bar.
-  6. Once the file finished uploading, a modal containing a success message should appear with an 'OK' button.
-  7. Click on the 👉 **OK** button and the page should refresh to the browse tab. Make sure the file you just uploaded is shown in the data table.
+  7. Once the file finished uploading, a modal containing a success message should appear with an 'OK' button.
+  8. Click on the 👉 **OK** button and the page should refresh to the browse tab. Make sure the file you just uploaded is shown in the data table.
 
-**Test file browsing** 
+**Test file browsing** [Automation Testing]
   1. After a couple of files are uploaded, make sure they are properly displayed in the data table
   2. Make sure that information in the data table corresponds to the information in the database (media table)
   3. Click on 👉  **column headers** to make sure sorting functionality is working as expected (Ascending/Descending)

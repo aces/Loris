@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the entry point for a LORIS PSR15-based router.
  * The entrypoint constructs a ServerRequestInterface PSR7 object
@@ -40,6 +41,24 @@ $middlewarechain = (new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
+
+// Remove the lorispath from the URI query parameters.
+// Both the request query parameters and the URI query string must be updated.
+$params = $serverrequest->getQueryParams();
+unset($params['lorispath']);
+$serverrequest = $serverrequest->withQueryParams($params);
+
+$query = implode(
+    "&",
+    array_map(
+        fn ($key, $value) => $key . "=" . $value,
+        array_keys($params),
+        $params
+    )
+);
+
+$uri           = $serverrequest->getUri();
+$serverrequest = $serverrequest->withUri($uri->withQuery($query));
 
 // Now that we've created the ServerRequest, handle it.
 $factory = \NDB_Factory::singleton();

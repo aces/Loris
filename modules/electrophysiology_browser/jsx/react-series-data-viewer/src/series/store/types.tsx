@@ -28,29 +28,38 @@ export type Channel = {
 export type Epoch = {
   onset: number,
   duration: number,
-  type: 'Event' | 'Annotation',
+  type: 'Event',
   label: string,
-  comment?: string,
-  hed?: string,
+  value: string,
+  trialType: string,
+  properties?: any[],
+  hed?: HEDTag[],
   channels: number[] | 'all',
-  annotationInstanceID?: number,
+  physiologicalTaskEventID?: number,
 };
+
+export type EpochFilter = {
+  plotVisibility: number[],
+  columnVisibility: number[],
+}
 
 export type EventMetadata = {
   instances: any[],
-}
-
-export type AnnotationMetadata = {
-  instances: any[],
-  labels: any[],
-  metadata: any[]
+  extraColumns: any[],
+  hedTags: any[],
 }
 
 export type RightPanel =
   'annotationForm'
   | 'eventList'
-  | 'annotationList'
   | null;
+
+
+export type CoordinateSystem = {
+  name: string | 'Other',
+  units: string | 'm',
+  description: string | 'n/a'
+};
 
 export type Electrode = {
   name: string,
@@ -61,4 +70,28 @@ export type Electrode = {
 export type Cursor = {
   cursorPosition: [number, number] | null,
   viewerRef: MutableRefObject<any> | null,
+};
+
+export type HEDSchemaElement = {
+  id: number,
+  parentID: number,
+  schemaID: number,
+  name: string,
+  longName: string,
+  description: string,
+  schemaName: string,
+}
+
+// Currently uppercase. DB columns unprocessed
+export type HEDTag = {
+  schemaElement: HEDSchemaElement | null,
+  HEDTagID: number | null, // redundant (id above)
+  ID: any,
+  PropertyName: string | null,
+  PropertyValue: string | null,
+  TagValue: string | null,
+  Description: string, // Level Description
+  HasPairing: string,
+  PairRelID: any,
+  AdditionalMembers: number,
 };

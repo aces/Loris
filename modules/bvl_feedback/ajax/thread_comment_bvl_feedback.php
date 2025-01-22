@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Used to create a new entry on a specific thread via the bvl feedback
  * panel.
@@ -29,11 +30,11 @@ if (isset($_POST['comment']) && isset($_POST['feedbackID'])) {
     );
 } else {
     print json_encode('error');
-    exit();
+    exit(0);
 }
 
 print json_encode($newEntryValues);
 
-exit();
+exit(0);
 
 

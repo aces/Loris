@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script contains useful generic stuff to include
@@ -24,6 +24,7 @@ $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 $config        = NDB_Config::singleton();
+$DB            = NDB_Factory::singleton()->database();
 $lorisInstance = new \LORIS\LorisInstance(
     $DB,
     $config,
@@ -32,4 +33,3 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
-$DB            = $lorisInstance->getDatabaseConnection();

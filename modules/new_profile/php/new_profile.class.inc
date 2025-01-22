@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\new_profile;
 
 /**
@@ -21,7 +22,7 @@ class New_Profile extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
+        if ($user->hasStudySite() || $user->hasCenter(\CenterID::singleton(1))) {
             return $user->hasPermission('data_entry');
         }
 
@@ -46,14 +47,11 @@ class New_Profile extends \NDB_Form
         $ageMin    = $config->getSetting('ageMin');
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
-        $sex       = [
-            'Male'   => 'Male',
-            'Female' => 'Female',
-            'Other'  => 'Other',
-        ];
-        $pscidSet  = "false";
-        $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
-        $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
+        $sex       = \Utility::getSexList();
+
+        $pscidSet = "false";
+        $minYear  = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
+        $maxYear  = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getCenterIDs();
@@ -61,11 +59,9 @@ class New_Profile extends \NDB_Form
 
         // Get projects for the select dropdown
         $projList = [];
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $projectID => $projectName) {
-            $projList[$projectID] = $projectName;
+        foreach ($user->getProjects() as $project) {
+            $projList[$project->getName()] = $project->getName();
         }
-        $project = $projList ?? null;
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -81,7 +77,7 @@ class New_Profile extends \NDB_Form
             'sex'       => $sex,
             'pscidSet'  => $pscidSet,
             'site'      => $site,
-            'project'   => $project,
+            'project'   => $projList,
         ];
     }
 

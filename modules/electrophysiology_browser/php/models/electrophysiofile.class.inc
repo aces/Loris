@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *
@@ -28,18 +29,22 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     private $_parameters   = [];
     private $_chunksURLs   = [];
     private $_splitFileIDs = [];
+    private \LORIS\LorisInstance $loris;
+
 
     /**
      * Construct a BIDSFile
      *
-     * @param integer $physiologicalFileID The PhysiologicalFileID to be loaded
+     * @param \LORIS\LorisInstance $loris               The LORIS instance that the
+     *                                                  module is serving.
+     * @param integer              $physiologicalFileID Electrophysiological File ID
      */
-    function __construct(int $physiologicalFileID)
+    function __construct(\LORIS\LorisInstance $loris, int $physiologicalFileID)
     {
+        $this->loris = $loris;
+        $db          = $this->loris->getDatabaseConnection();
 
-        $db = \NDB_Factory::singleton()->database();
-
-        $query    = "SELECT 
+        $query    = "SELECT
                        PhysiologicalFileID,
                        PhysiologicalModality as Modality,
                        PhysiologicalOutputTypeID,
@@ -59,14 +64,14 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
             $this->_fileData[$key] = $value;
         }
 
-        $query        = "SELECT 
-                           pt.Name, 
+        $query        = "SELECT
+                           pt.Name,
                            ppf.Value
                          FROM physiological_parameter_file as ppf
                            LEFT JOIN parameter_type as pt USING (ParameterTypeID)
-                         WHERE 
-                          PhysiologicalFileID=:PFID 
-                          AND pt.Name <> 'electrophyiology_chunked_dataset_path'";
+                         WHERE
+                          PhysiologicalFileID=:PFID
+                          AND pt.Name <> 'electrophysiology_chunked_dataset_path'";
         $parameterRaw = $db->pselect($query, ['PFID' => $physiologicalFileID]);
 
         foreach ($parameterRaw AS $row) {
@@ -114,7 +119,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                     WHERE PhysiologicalFileID IN ("
                     . join(',', $this->_splitFileIDs)
                     . ")
-                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+                      AND pt.Name = 'electrophysiology_chunked_dataset_path'";
             $this->_chunksURLs = $db->pselectCol($query, []);
         } else {
             $this->_fileData['SplitCount'] = 'n/a';
@@ -123,7 +128,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                     FROM physiological_parameter_file as ppf
                       LEFT JOIN parameter_type as pt USING (ParameterTypeID)
                     WHERE PhysiologicalFileID=:PFID
-                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+                      AND pt.Name = 'electrophysiology_chunked_dataset_path'";
             $this->_chunksURLs = $db->pselectCol(
                 $query,
                 ['PFID' => $physiologicalFileID]
@@ -140,8 +145,9 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      */
     function getParameter(string $parameterName) : string
     {
-        return $this->_fileData[$parameterName] ??
+        $val = $this->_fileData[$parameterName] ??
             ($this->_parameters[$parameterName] ?? '');
+        return strval($val);
     }
 
     /**
@@ -172,6 +178,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
             'splitIndex'      => $index,
             'splitCount'      => intval($this->_fileData['SplitCount']),
             'splitPhysioFile' => new ElectrophysioFile(
+                $this->loris,
                 intval($this->_splitFileIDs[$index])
             ),
         ];

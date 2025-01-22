@@ -51,7 +51,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useConsent', 'Enable if the study uses the loris architecture for consent', 1, 0, 'boolean', ID, 'Use consent', 16 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'additional_user_info', 'Display additional user profile fields on the User accounts page (e.g. Institution, Position, Country, Address)', 1, 0, 'boolean', ID, 'Additional user information', 17 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and download via the Data Query Tool", 1, 1, 'instrument', ID, 'Excluded instruments', 18 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 19 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 20 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'SupplementalSessionStatus', 'Display supplemental session status information on Timepoint List page', 1, 0, 'boolean', ID, 'Use Supplemental Session Status', 21 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScanDone', 'Used for identifying timepoints that have (or should have) imaging data', 1, 0, 'boolean', ID, 'Use Scan Done', 22 FROM ConfigSettings WHERE Name="study";
@@ -63,23 +62,19 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dateDisplayFormat', 'The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent.', 1, 0, 'text', ID, 'Date display format', 28 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'adminContactEmail', 'An email address that users can write to in order to report issues or ask question', 1, 0, 'text', ID, 'Administrator Email', 29 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'UserMaximumDaysInactive', 'The maximum number of days since last login before making a user inactive', 1, 0, 'text', ID, 'Maximum Days Before Making User Inactive', 30 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useDoB', 'Use DoB (Date of Birth)', 1, 0, 'boolean', ID, 'Use DoB', 31 FROM ConfigSettings WHERE Name="study";
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'imagePath', 'Path to images for display in Imaging Browser (e.g. /data/$project/data/) ', 1, 0, 'text', ID, 'Images', 9 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'base', 'The base filesystem path where LORIS is installed', 1, 0, 'text', ID, 'Base', 1 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DownloadPath', 'Where files are downloaded', 1, 0, 'text', ID, 'Downloads', 4 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID, 'Logs', 2 FROM ConfigSettings WHERE Name="paths";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to directory where Loris-MRI (git) code is installed', 1, 0, 'text', ID, 'LORIS-MRI code', 6 FROM ConfigSettings WHERE Name="paths";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', 'Path to the upload directory for incoming MRI studies', 1, 0, 'text', ID, 'MRI Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mediaPath', 'Path to uploaded media files', 1, 0, 'text', ID, 'Media', 9 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_uploads', 'Path to uploaded publications', 1, 0, 'web_path', ID, 'Publications', 10 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_deletions', 'Path to deleted publications', 1, 0, 'web_path', ID, 'Deleted Publications', 11 FROM ConfigSettings WHERE Name="paths";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MINCToolsPath', 'Path to the MINC tools', 1, 0, 'web_path', ID, 'Path to the MINC tools', 12 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'documentRepositoryPath', 'Path to uploaded document repository files', 1, 0, 'web_path', ID, 'Document Repository Upload Path', 13 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dataReleasePath', 'Path to uploaded data release files', 1, 0, 'web_path', ID, 'Data release Upload Path', 14 FROM ConfigSettings WHERE Name="paths";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
-
 
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
@@ -130,7 +125,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', ID, 'Issue Tracker Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 
 -- Loris-MRI/Imaging Pipeline options from the $profile (commonly "prod") file
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('imaging_pipeline', 'Imaging Pipeline settings', 1, 0, 'Imaging Pipeline', 12);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('imaging_pipeline', 'Imaging Pipeline settings', 1, 0, 'Imaging Pipeline', 14);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dataDirBasepath', 'Base Path to the data directory of Loris-MRI', 1, 0, 'text', ID, 'Loris-MRI Data Directory', 1 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'prefix', 'Study prefix or study name', 1, 0, 'text', ID, 'Study Name', 2 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mail_user', 'User to be notified during imaging pipeline execution', 1, 0, 'text', ID, 'User to notify when executing the pipeline', 3 FROM ConfigSettings WHERE Name="imaging_pipeline";
@@ -159,6 +154,9 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reference_scan_type_for_defacing', 'Scan type to use as a reference for registration when defacing anatomical images (typically a T1W image)', 1, 0, 'scan_type', ID, 'Scan type to use as a reference for defacing (typically a T1W image)', 26 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'modalities_to_deface', 'Modalities for which defacing should be run and defaced image inserted in the database', 1, 1, 'scan_type', ID, 'Modalities on which to run the defacing pipeline', 27 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MriPythonConfigFile', 'Name of the Python MRI config file (stored in dicom-archive/.loris_mri/)', 1, 0, 'text', ID, 'Name of the Python MRI config file', 28 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to directory where Loris-MRI (git) code is installed', 1, 0, 'text', ID, 'LORIS-MRI code', 6 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', 'Path to the upload directory for incoming MRI studies', 1, 0, 'text', ID, 'MRI Incoming Directory', 7 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MINCToolsPath', 'Path to the MINC tools', 1, 0, 'web_path', ID, 'Path to the MINC tools', 12 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
 -- MINC to BIDS converter settings
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('minc2bids', 'Settings related to converting MINC to BIDS LORIS-MRI tool script', 1, 0,  'MINC to BIDS Converter Tool Options', 13);
@@ -177,6 +175,10 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'AWS_S3_Region', 'AWS Region to use for accessing files stored in S3. Endpoint or region are required for S3 support.', 1, 0, 'text', ID, 'AWS S3 Region', 3 FROM ConfigSettings WHERE Name='aws';
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'AWS_S3_Default_Bucket', 'Default bucket for LORIS to use for accessing files in S3.', 1, 0, 'text', ID, 'AWS S3 Default Bucket', 3 FROM ConfigSettings WHERE Name='aws';
 
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('eeg_pipeline', 'EEG Pipeline settings', 1, 0, 'EEG Pipeline', 15);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGS3DataPath', 'EEG S3 data path for assembly data', 1, 0, 'text', ID, 'EEG S3 data path', 15 FROM ConfigSettings WHERE Name = 'eeg_pipeline';
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="eeg_pipeline";
+
 --
 -- Filling Config table with default values
 --
@@ -186,6 +188,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSetti
 INSERT INTO Config (ConfigID, Value) SELECT ID, "<h3>Example Study Description</h3>\r\n <p>This is a sample description for this study, because it is a new LORIS install that has not yet customized this text.</p>\r\n <p>A LORIS administrator can customize this text in the configuration module, under the configuration option labeled \"Study Description\"</p>\r\n <h3>Useful Links</h3>\r\n <ul>\r\n <li><a href=\"https://github.com/aces/Loris\" >LORIS GitHub Repository</a></li>\r\n <li><a href=\"https://github.com/aces/Loris/wiki/Setup\" >LORIS Setup Guide</a></li>\r\n <li><a href=\"https://www.youtube.com/watch?v=2Syd_BUbl5A\" >A video of a loris on YouTube</a></li>\r\n </ul>" FROM ConfigSettings WHERE Name="StudyDescription";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neurorgb_web.jpg" FROM ConfigSettings WHERE Name="studylogo";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useEDC";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useDoB";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 8 FROM ConfigSettings WHERE Name="ageMin";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 11 FROM ConfigSettings WHERE Name="ageMax";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useFamilyID";
@@ -199,7 +202,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="useScanDone";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="allowPrenatalTimepoints";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="ImagingUploaderAutoLaunch";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "Modify this to your project's citation policy" FROM ConfigSettings WHERE Name="citation_policy";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Customize this text with your citation policy (via Configuration module)" FROM ConfigSettings WHERE Name="citation_policy";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "" FROM ConfigSettings WHERE Name="CSPAdditionalHeaders";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd" FROM ConfigSettings WHERE Name="dobFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd"  FROM ConfigSettings WHERE Name="dodFormat";
@@ -229,8 +232,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "." FROM ConfigSettings WHERE Na
 INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "(?i)phantom" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
-INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=44;
-INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=45;
+INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.MriScanTypeName) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.MriScanTypeID=44;
+INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.MriScanTypeName) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.MriScanTypeID=45;
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, "mri_parameter_form" FROM ConfigSettings cs WHERE cs.Name="ImagingBrowserLinkedInstruments";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, "radiology_review" FROM ConfigSettings cs WHERE cs.Name="ImagingBrowserLinkedInstruments";
 

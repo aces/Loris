@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
@@ -1335,10 +1336,12 @@ class LorisForms_Test extends TestCase
     {
         $this->form->addCheckbox("abc", "Hello", []);
         $this->assertEquals(
-            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
-            "type=\"checkbox\"   /> </span>Hello",
+            "<span style='white-space: nowrap;vertical-align: middle;'>" .
+            "<input name='abc' type='checkbox'     " .
+            "style='vertical-align: baseline; margin-top: 0'/> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
+
     }
 
     /**
@@ -1356,9 +1359,10 @@ class LorisForms_Test extends TestCase
         $this->form->addCheckbox("abc", "Hello", $testAttributes);
         $this->form->setDefaults(['abc' => 'abc_default']);
         $this->assertEquals(
-            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
-            "type=\"checkbox\" checked=\"checked\"" .
-            " value=\"value1\" disabled/> </span>Hello",
+            "<span style='white-space: nowrap;vertical-align: middle;'>".
+            "<input name='abc' type='checkbox' checked=\"checked\" value=\"value1\"".
+            " disabled  style='vertical-align: baseline; margin-top: 0'/>".
+            " </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }

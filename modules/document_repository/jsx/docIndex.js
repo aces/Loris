@@ -6,6 +6,8 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import EditDocCategoryForm from './editCategoryForm';
+import DeleteDocCategoryForm from './deleteCategoryForm';
 import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
@@ -171,62 +173,62 @@ class DocIndex extends React.Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'File Name':
-        let downloadURL = loris.BaseURL
+    case 'File Name':
+      let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
                           + encodeURIComponent(row['Uploaded By'])
                           + '/'
                           + encodeURIComponent(row['File Name']);
-        result = <td>
-          <a
-            href={downloadURL}
-            target="_blank"
-            download={row['File Name']}
-          >
-            {cell}
-          </a>
-        </td>;
-        break;
-      case 'Edit':
-        let editURL = loris.BaseURL
+      result = <td>
+        <a
+          href={downloadURL}
+          target="_blank"
+          download={encodeURIComponent(row['File Name'])}
+        >
+          {cell}
+        </a>
+      </td>;
+      break;
+    case 'Edit':
+      let editURL = loris.BaseURL
                       + '/document_repository/edit/' + row['Edit'];
-        result = <td><a href={editURL}>Edit</a></td>;
-        break;
-      case 'Delete File':
-        let id = row['Edit'];
+      result = <td><a href={editURL}>Edit</a></td>;
+      break;
+    case 'Delete File':
+      let id = row['Edit'];
 
-        /**
-         * Click
-         */
-        function click() {
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-           }).then((result) => {
-           if (result.value) {
+      /**
+       * Click
+       */
+      function click() {
+        swal.fire({
+          title: 'Are you sure?',
+          text: 'You won\'t be able to revert this!',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        }).then((result) => {
+          if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
-              fetch(deleteurl, {
+            fetch(deleteurl, {
               method: 'DELETE',
               cache: 'no-cache',
               credentials: 'same-origin',
-              }).then((resp) => resp.json())
-                .then(()=>{
-                  location.reload();
-                  swal.fire('delete Successful!', '', 'success');
-                });
-           }
-          });
-        }
+            }).then((resp) => resp.json())
+              .then(()=>{
+                location.reload();
+                swal.fire('delete Successful!', '', 'success');
+              });
+          }
+        });
+      }
 
-        result = <td>
-          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
-        </td>;
-        break;
+      result = <td>
+        <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+      </td>;
+      break;
     }
     return result;
   }
@@ -247,6 +249,8 @@ class DocIndex extends React.Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+    const uploadEditPerm =
+      this.props.hasPermission('document_repository_upload_edit');
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
@@ -266,7 +270,7 @@ class DocIndex extends React.Component {
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
-        }},
+      }},
       {label: 'For Site', show: true, filter: {
         name: 'site',
         type: 'select',
@@ -280,7 +284,7 @@ class DocIndex extends React.Component {
       {
         label: 'Edit',
         show: this.props.hasPermission('superUser')
-        || this.props.hasPermission('document_repository_edit'),
+        || uploadEditPerm,
       },
       {
         label: 'Delete File',
@@ -297,18 +301,13 @@ class DocIndex extends React.Component {
     ];
     let uploadDoc;
     let uploadCategory;
-    if (loris.userHasPermission('document_repository_edit')) {
+    let editCategory;
+    let deleteCategory;
+    if (loris.userHasPermission('document_repository_upload_edit')) {
       tabList.push(
         {
           id: 'upload',
           label: 'Upload',
-        },
-      );
-
-      tabList.push(
-        {
-          id: 'category',
-          label: 'Category',
         },
       );
 
@@ -323,9 +322,27 @@ class DocIndex extends React.Component {
           />
         </TabPane>
       );
+    }
+    if (loris.userHasPermission('document_repository_categories')) {
+      tabList.push(
+        {
+          id: 'addCategory',
+          label: 'Add Category',
+        },
+        {
+          id: 'editCategory',
+          label: 'Edit Category',
+        },
+        {
+          id: 'deleteCategory',
+          label: 'Delete Category',
+        },
+      );
+
+      let numTabs = tabList.length-1;
 
       uploadCategory = (
-        <TabPane TabId={tabList[2].id}>
+        <TabPane TabId={tabList[numTabs-2].id}>
           <DocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/UploadCategory`}
@@ -334,21 +351,23 @@ class DocIndex extends React.Component {
           />
         </TabPane>
       );
-    } else if (loris.userHasPermission('document_repository_view')) {
-      tabList.push(
-        {
-          id: 'category',
-          label: 'Category',
-        },
+
+      editCategory = (
+        <TabPane TabId={tabList[numTabs-1].id}>
+          <EditDocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/EditCategory`}
+            refreshPage={this.fetchData}
+          />
+        </TabPane>
       );
 
-      uploadCategory = (
-        <TabPane TabId={tabList[1].id}>
-          <DocCategoryForm
+      deleteCategory = (
+        <TabPane TabId={tabList[numTabs].id}>
+          <DeleteDocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            action={`${loris.BaseURL}/document_repository/DeleteCategory`}
             refreshPage={this.fetchData}
-            newCategoryState={this.newCategoryState}
           />
         </TabPane>
       );
@@ -365,7 +384,34 @@ class DocIndex extends React.Component {
       Object.keys(this.state.tableData.length).length === 0
       && Object.keys(this.state.childrenNode).length === 0
     ) ? (
-      <NullFilterableDataTable>
+        <NullFilterableDataTable>
+          <div>
+            <CheckboxElement
+              name="globalSelection"
+              label="Filter globally"
+              id="globalSelection"
+              value={this.state.global}
+              offset=''
+              elementClass='checkbox-inline'
+              onUserInput={this.handleGlobal}
+            />
+            <FilterableDataTable
+              name = "document"
+              data={this.state.tableData}
+              fields={fields}
+              getFormattedCell={this.formatColumn}
+              folder={
+                <ChildTree
+                  action={this.getContent}
+                  childrenNode={this.state.childrenNode}
+                />
+              }
+            >
+              {parentTree}
+            </FilterableDataTable>
+          </div>
+        </NullFilterableDataTable>
+      ) : (
         <div>
           <CheckboxElement
             name="globalSelection"
@@ -381,44 +427,17 @@ class DocIndex extends React.Component {
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
+            nullTableShow={true}
             folder={
               <ChildTree
                 action={this.getContent}
                 childrenNode={this.state.childrenNode}
-              />
-            }
+              />}
           >
-          {parentTree}
+            {parentTree}
           </FilterableDataTable>
         </div>
-      </NullFilterableDataTable>
-    ) : (
-      <div>
-        <CheckboxElement
-          name="globalSelection"
-          label="Filter globally"
-          id="globalSelection"
-          value={this.state.global}
-          offset=''
-          elementClass='checkbox-inline'
-          onUserInput={this.handleGlobal}
-        />
-        <FilterableDataTable
-          name = "document"
-          data={this.state.tableData}
-          fields={fields}
-          getFormattedCell={this.formatColumn}
-          nullTableShow={true}
-          folder={
-          <ChildTree
-            action={this.getContent}
-            childrenNode={this.state.childrenNode}
-          />}
-        >
-        {parentTree}
-        </FilterableDataTable>
-      </div>
-    );
+      );
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
@@ -427,6 +446,8 @@ class DocIndex extends React.Component {
         </TabPane>
         {uploadDoc}
         {uploadCategory}
+        {editCategory}
+        {deleteCategory}
       </Tabs>
     );
   }

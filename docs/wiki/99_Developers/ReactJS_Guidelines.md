@@ -108,11 +108,12 @@ sudo chown -R $USER:$(id -gn $USER) ./node_modules
 
 We need to use `webpack` in order to transpile `JSX` and `ES6` syntax used in our React code into `ES5` syntax understood by all browsers.
 
-**Step 1: Update `webpack.config.js`**
+**Step 1: Update `webpack.config.ts`**
 
-When you create a new `ES6/JSX file`, ensure you add it to the ```webpack.config.js``` file under the ```config.entry``` object with the following format:
-```
-'./desc/file.js' : './src/file.js'
+When you create a new `ES6/JSX file`, ensure you add it to the `webpack.config.ts` file under the `lorisModules` object with the following format:
+
+```js
+'module_name' : ['FooFileName', 'BarFileName'],
 ```
 
 **Step 2: Transpiling all files**

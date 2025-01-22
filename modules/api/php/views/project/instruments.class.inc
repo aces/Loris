@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -44,9 +45,13 @@ class Instruments
      *
      * @param \Project                $project     The requested project
      * @param ProjectInstrumentsRow[] $instruments An array of ProjectInstrumentsRow
+     * @param string                  $apiversion  The version of the API being used
      */
-    public function __construct(\Project $project, array $instruments)
-    {
+    public function __construct(
+        \Project $project,
+        array $instruments,
+        private string $apiversion = 'v0.0.3'
+    ) {
         $this->_project     = $project;
         $this->_instruments = $instruments;
     }
@@ -69,6 +74,10 @@ class Instruments
                 'Subgroup'               => $instrument->getSubgroupname(),
                 'DoubleDataEntryEnabled' => $instrument->isDDE(),
             ];
+            if ($this->apiversion != 'v0.0.3') {
+                // >= v0.0.4
+                $item['DoubleDataEntryVisits'] = $instrument->getddeVisits();
+            }
 
             if (!is_null($shortname)) {
                 $instruments[$shortname] = $item;

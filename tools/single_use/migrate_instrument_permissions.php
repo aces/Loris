@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 require_once __DIR__ . "/../generic_includes.php";
 
 $config = \NDB_Factory::singleton()->config();

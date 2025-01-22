@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\user_accounts;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -86,9 +87,11 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
+                        LEFT JOIN user_project_rel upr2 ON (upr2.UserID=users.ID)
                     WHERE users.Pending_approval='Y'",
                     'user_accounts_multisite',
                     'upr.CenterID',
+                    'upr2.ProjectID',
                     $baseURL . "/user_accounts/?pendingApproval=Y",
                     "pending-accounts"
                 )

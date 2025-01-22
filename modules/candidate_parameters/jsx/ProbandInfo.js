@@ -1,6 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  ButtonElement,
+  DateElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Proband Info Component.
@@ -16,11 +24,7 @@ class ProbandInfo extends Component {
     super(props);
 
     this.state = {
-      sexOptions: {
-        Male: 'Male',
-        Female: 'Female',
-        Other: 'Other',
-      },
+      sexOptions: {},
       Data: [],
       formData: {},
       updateResult: null,
@@ -66,6 +70,7 @@ class ProbandInfo extends Component {
           formData: formData,
           Data: data,
           isLoaded: true,
+          sexOptions: data.sexOptions,
         });
       },
       error: (error) => {
@@ -213,56 +218,56 @@ class ProbandInfo extends Component {
         let value = this.state.formData[paramTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
-          case 'enu': {
-            let types = extraParameters[key2].Type.substring(5);
-            types = types.slice(0, -1);
-            types = types.replace(/'/g, '');
-            types = types.split(',');
-            let selectOptions = {};
-            for (let key3 in types) {
-              if (types.hasOwnProperty(key3)) {
-                selectOptions[types[key3]] = types[key3];
-              }
+        case 'enu': {
+          let types = extraParameters[key2].Type.substring(5);
+          types = types.slice(0, -1);
+          types = types.replace(/'/g, '');
+          types = types.split(',');
+          let selectOptions = {};
+          for (let key3 in types) {
+            if (types.hasOwnProperty(key3)) {
+              selectOptions[types[key3]] = types[key3];
             }
-
-            extraParameterFields.push(
-              <SelectElement
-                  label={extraParameters[key2].Description}
-                  name={name}
-                  options={selectOptions}
-                  value={value}
-                  onUserInput={this.setFormData}
-                  ref={name}
-                  disabled={disabled}
-                  key={key2}
-              />
-            );
-            break;
           }
-          case 'dat':
-            extraParameterFields.push(
-              <DateElement
-                  label={extraParameters[key2].Description}
-                  name={name}
-                  value={value}
-                  onUserInput={this.setFormData}
-                  ref={name}
-                  disabled={disabled}
-                  key={key2}
-              />
+
+          extraParameterFields.push(
+            <SelectElement
+              label={extraParameters[key2].Description}
+              name={name}
+              options={selectOptions}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
           );
-            break;
-          default:
-            extraParameterFields.push(
-              <TextareaElement
-                  label={extraParameters[key2].Description}
-                  name={name}
-                  value={value}
-                  onUserInput={this.setFormData}
-                  ref={name}
-                  disabled={disabled}
-                  key={key2}
-              />
+          break;
+        }
+        case 'dat':
+          extraParameterFields.push(
+            <DateElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
+          );
+          break;
+        default:
+          extraParameterFields.push(
+            <TextareaElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              key={key2}
+            />
           );
         }
       }

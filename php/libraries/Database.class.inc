@@ -732,17 +732,11 @@ class Database implements LoggerAwareInterface
      * @param array<string,mixed> $params Values to use for binding to the
      *                                    prepared statement
      *
-     * @return array<int,array<string,string>> An array of arrays containing
-     *                                          the data.
-     *               The outside (non-associative array contains 1 element per
-     *               row returned by the query, and each element is an associative
-     *               array representing the row in the format ColumnName => Value
+     * @return \LORIS\Database\Query
      */
-    function pselect(string $query, array $params): array
+    function pselect(string $query, array $params): \LORIS\Database\Query
     {
-        $this->_printQuery($query, $params);
-        $stmt = $this->prepare($query);
-        return $this->execute($stmt, $params);
+        return new \LORIS\Database\Query($this->_PDO, $query, $params);
     }
 
     /**
@@ -838,13 +832,17 @@ class Database implements LoggerAwareInterface
      */
     function pselectRow(string $query, array $params): ?array
     {
-        $rows = $this->pselect($query . " LIMIT 2", $params);
-        if (count($rows) > 1) {
+        $query = $this->pselect($query . " LIMIT 2", $params);
+        switch (count($query)) {
+        case 0:
+            return null;
+        case 1:
+            return $query->getFirstRow();
+        default:
             throw new \DomainException(
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
         }
-        return $rows[0] ?? null;
     }
 
     /**
@@ -1595,5 +1593,24 @@ class Database implements LoggerAwareInterface
         $this->_PDO        = null;
         $this->_HistoryPDO = null;
 
+    }
+
+    /**
+     * Enable or disables query buffering on the underlying PDO
+     * connection.
+     *
+     * @param bool $buffered - true if query buffering should be enabled
+     *
+     * @return void
+     */
+    public function setBuffering(bool $buffered): void
+    {
+        if ($this->_PDO->setAttribute(
+            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            $buffered
+        ) == false
+        ) {
+            throw new \DatabaseException("Could not use unbuffered queries");
+        };
     }
 }

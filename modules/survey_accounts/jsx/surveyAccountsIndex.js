@@ -91,10 +91,10 @@ class SurveyAccountsIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in survey_accounts.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in survey_accounts.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'PSCID', show: true, filter: {
@@ -112,24 +112,28 @@ class SurveyAccountsIndex extends Component {
         options: options.instruments,
       }},
       {label: 'URL', show: true},
-      {label: 'Status', show: true},
+      {label: 'Status', show: true, filter: {
+        name: 'Status',
+        type: 'select',
+        options: options.statusOptions,
+      }},
     ];
-  const addSurvey = () => {
-    location.href='/survey_accounts/addSurvey/';
-  };
-  const actions = [
-    {label: 'Add Survey', action: addSurvey},
-  ];
+    const addSurvey = () => {
+      location.href='/survey_accounts/addSurvey/';
+    };
+    const actions = [
+      {label: 'Add Survey', action: addSurvey},
+    ];
 
     return (
-       <FilterableDataTable
-         name="surveyAccounts"
-         title="Survey Accounts"
-         data={this.state.data.Data}
-         fields={fields}
-         getFormattedCell={this.formatColumn}
-         actions={actions}
-       />
+      <FilterableDataTable
+        name="surveyAccounts"
+        title="Survey Accounts"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+        actions={actions}
+      />
     );
   }
 }

@@ -82,54 +82,73 @@ class BehaviouralFeedback extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'PSCID':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+    case 'PSCID':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
             '/' +
             rowData['DCCID']
-            }>
-              {rowData['PSCID']}
-            </a>
-          </td>
-        );
-        break;
-      case 'DCCID':
-        reactElement = (
-          <td>
-            <a href={this.props.baseURL +
+          }>
+            {rowData['PSCID']}
+          </a>
+        </td>
+      );
+      break;
+    case 'DCCID':
+      reactElement = (
+        <td>
+          <a href={this.props.baseURL +
             '/' +
             rowData['DCCID']
-            }>
-              {rowData['DCCID']}
-            </a>
-          </td>
-        );
-        break;
-      case 'Feedback Level':
-        rowData['Instrument'] ? reactElement = (
-          <td>
-            <a href={this.props.baseURL +
-              '/instruments/' +
-              rowData['Test Name'] +
-              '/?candID=' +
-              rowData['DCCID'] +
-              '&sessionID=' +
-              rowData['sessionID'] +
-              '&commentID=' +
-              rowData['commentID']
-              }>
-                {'Instrument : ' + rowData['Instrument']}
-            </a>
-          </td>
-        ) : reactElement = (
-          <td>{''}</td>
-        );
-        break;
-      default:
-        reactElement = (
-          <td>{cell}</td>
-        );
+          }>
+            {rowData['DCCID']}
+          </a>
+        </td>
+      );
+      break;
+    case 'Feedback Level':
+      let bvlLink = '';
+      let bvlLevel = '';
+      if (rowData['Instrument']) {
+        bvlLink = this.props.baseURL +
+                     '/instruments/' +
+                     rowData['Test Name'] +
+                     '/?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'] +
+                     '&commentID=' +
+                     rowData['commentID'];
+        // Open feedback panel
+        bvlLink += '&showFeedback=true';
+        bvlLevel ='Instrument : ' + rowData['Instrument'];
+      } else if (rowData['Visit']) {
+        bvlLink = this.props.baseURL +
+                     '/instrument_list/' +
+                     '?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'];
+        // Open feedback panel
+        bvlLink += '&showFeedback=true';
+        bvlLevel ='Visit : ' + rowData['Visit'];
+      } else {
+        bvlLink = this.props.baseURL +
+                     '/' + rowData['DCCID'];
+        // Open feedback panel
+        bvlLink += '/?showFeedback=true';
+        bvlLevel ='Profile : ' + rowData['PSCID'];
+      }
+      reactElement = (
+        <td>
+          <a href={bvlLink}>{bvlLevel}</a>
+        </td>
+      );
+      break;
+    default:
+      reactElement = (
+        <td>{cell}</td>
+      );
     }
     return reactElement;
   }
@@ -154,8 +173,8 @@ class BehaviouralFeedback extends Component {
           name: 'Instrument',
           type: 'select',
           options: Object.assign({}, ...Object.entries(
-              {...Object.values(options.instruments)})
-              .map(([, b]) => ({[b]: b}))
+            {...Object.values(options.instruments)})
+            .map(([, b]) => ({[b]: b}))
           ),
         },
       },

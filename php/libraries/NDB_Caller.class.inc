@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Contains NDB_Caller class to dispatch to the appropriate library
  * for the URL being loaded.

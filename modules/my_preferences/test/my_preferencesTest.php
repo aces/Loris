@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__

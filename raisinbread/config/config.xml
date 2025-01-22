@@ -77,30 +77,4 @@
 
     </study>
     <!-- end of study definition -->
-
-    <!-- used by _hasAccess in NDB_BVL_Instrument to determine
-         what permissions should be required for each instrument
-         on a configurable basis. -->
-    <instrumentPermissions>
-        <!-- By default anyone has permission -->
-        <useInstrumentPermissions>false</useInstrumentPermissions>
-        <!-- Add one instrument tag for each instrument that is
-             having it's permissions configured. If an instrument
-             is missing, the default is for users to have access
-             -->
-        <instrument>
-            <!-- Instrument name -->
-            <Test_name>sampleInstrument</Test_name>
-            <!-- Permission required for accessing instrument.
-                 If multiple permissions are added, *any* of
-                 them individually will allow access to the
-                 instrument -->
-            <permission>sampleInstrumentPermissionName</permission>
-        </instrument>
-        <instrument>
-            <Test_name>sampleInstrument2</Test_name>
-            <permission>sampleInstrument2PermissionName</permission>
-        </instrument>
-    </instrumentPermissions>
-
 </config>

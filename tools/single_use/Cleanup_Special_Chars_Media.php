@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written to clean up the files with special characters from the
  * media data table as well as clean up the

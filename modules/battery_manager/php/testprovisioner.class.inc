@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible tests
  * for the battery_manager menu page.
@@ -50,6 +51,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                b.Visit_label as visitLabel,
                p.CenterID as centerId,
                b.firstVisit,
+               b.DoubleDataEntryEnabled,
                b.instr_order as instrumentOrder,
                b.Active as active
         FROM test_battery b
@@ -73,7 +75,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         return new Test(
             $this->loris,
             isset($row['centerId'])
-                ? new \CenterID($row['centerId'])
+                ? \CenterID::singleton(intval($row['centerId']))
                 : null,
             $row
         );

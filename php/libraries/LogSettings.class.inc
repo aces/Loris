@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * A LogSetting object provides a higher level interface for
  * accessing current LORIS log settings.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dictionary;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -99,6 +100,10 @@ class ModuleDict extends \NDB_Page
             ];
             if ($datatype instanceof \LORIS\Data\Types\Enumeration) {
                 $organized[$cat][$fieldname]['options'] = $datatype->getOptions();
+                $labels = $datatype->getLabels();
+                if (!empty($labels)) {
+                    $organized[$cat][$fieldname]['labels'] = $datatype->getLabels();
+                }
             }
             if ($scope->__toString() == "session") {
                 $organized[$cat][$fieldname]['visits'] = $row->getVisits();

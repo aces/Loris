@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The candidate list menu
  *
@@ -120,6 +121,7 @@ class Candidate_List extends \DataFrameworkMenu
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
             'usedob'            => $config->getSetting("useDoB")
+            'Sex'               => \Utility::getSexList(),
         ];
     }
 

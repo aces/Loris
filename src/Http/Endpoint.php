@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\Http;
 
 use \Psr\Http\Message\ServerRequestInterface;

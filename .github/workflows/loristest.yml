@@ -11,7 +11,10 @@ jobs:
       EEG_VIS_ENABLED: 'true'
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Install protoc-gen-js plugin
+        run: npm install -g protoc-gen-js
 
       - name: Install EEG package dependencies
       # We only need to install protobuf-compiler
@@ -19,8 +22,8 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
-          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-             libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
           protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
@@ -36,13 +39,13 @@ jobs:
       - name: Create node_modules tarball
         run: tar cfvz node_modules.tar.gz node_modules
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload node_modules artifact
         with:
           name: node_modules
           path: node_modules.tar.gz
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload lorisjs.tar.gz artifact
         with:
           name: lorisjs
@@ -52,9 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['8.1', '8.2']
+        php: ['8.3', '8.4']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -70,7 +73,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Composer cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -83,7 +86,7 @@ jobs:
       - name: Create vendor tarball
         run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload vendor-php${{matrix.php}}.tar.gz artifact
         with:
           name: vendor-php${{matrix.php}}
@@ -104,32 +107,33 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2']
+        php: ['8.3', '8.4']
         apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v3
-      name: Download node_modules artifact
+    # Cache node_modules to avoid downloading dependencies if already cached
+    - name: Cache node_modules
+      uses: actions/cache@v3
       with:
-        name: node_modules
-        path: .
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-    - uses: actions/download-artifact@v3
-      name: Download compiled LORIS javascript artifact
+    # Download and extract compiled LORIS JavaScript artifact (from build job)
+    - name: Download compiled LORIS javascript artifact
+      uses: actions/download-artifact@v4
       with:
         name: lorisjs
         path: .
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       name: Download PHP dependencies artifact
       with:
         name: vendor-php${{matrix.php}}
         path: .
 
-
-    - name: Extract node_modules
-      run: tar xfvz node_modules.tar.gz
 
     - name: Extract compiled JS
       run: tar xfvz lorisjs.tar.gz
@@ -167,9 +171,8 @@ jobs:
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-04-Help.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
-        find raisinbread/instruments/instrument_sql -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        find raisinbread/instruments/instrument_sql -name *.sql -not -name 9999-99-99-drop_instrument_tables.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-
     - name: Source instrument schemas
       run: |
         find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
@@ -210,7 +213,7 @@ jobs:
         fail-fast: false
         matrix:
             testsuite: ['integration']
-            php: ['8.1','8.2']
+            php: ['8.3', '8.4']
             ci_node_index: [0,1,2,3]
 
             include:
@@ -218,16 +221,16 @@ jobs:
             - ci_node_total: 4
 
             - testsuite: 'static'
-              php: '8.1'
+              php: '8.3'
+            - testsuite: 'unit'
+              php: '8.3'
             - testsuite: 'static'
-              php: '8.2'
+              php: '8.4'
             - testsuite: 'unit'
-              php: '8.1'
-            - testsuite: 'unit'
-              php: '8.2'
+              php: '8.4'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -243,7 +246,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Composer cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -252,14 +255,17 @@ jobs:
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
+    - name: Install protoc-gen-js plugin
+      run: npm install -g protoc-gen-js
+
     - name: Install package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+           libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 

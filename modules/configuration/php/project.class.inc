@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The configuration module is used to manage the configuration of Loris.
  *
@@ -57,7 +58,7 @@ class Project extends \NDB_Form
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
             $projects[$ProjectID]['projectCohorts']
                 = \Utility::getCohortsForProject(
-                    new \ProjectID(strval($ProjectID))
+                    \ProjectID::singleton($ProjectID)
                 );
         }
         $this->tpl_data['projects'] = $projects;

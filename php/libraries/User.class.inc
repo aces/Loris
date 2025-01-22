@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains the Loris user class
  *
@@ -100,7 +101,7 @@ class User extends UserPermissions implements
         $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = new \CenterID($val['CenterID']);
+            $user_cid[$key] = \CenterID::singleton($val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
         $row['Sites'] = implode(';', $sitenames);
@@ -110,7 +111,7 @@ class User extends UserPermissions implements
             ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
-            $user_pid[$k] = new ProjectID($pid);
+            $user_pid[$k] = ProjectID::singleton(intval($pid));
         }
 
         // Get examiner information
@@ -122,12 +123,12 @@ class User extends UserPermissions implements
                     epr.pending_approval
                   FROM examiners e
                   JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.full_name=:fn
+                  WHERE e.userID=:uid
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             [
-                "fn" => $row['Real_name'],
+                "uid" => $row['ID'],
             ]
         );
 
@@ -352,6 +353,37 @@ class User extends UserPermissions implements
     }
 
     /**
+     * Returns all user's sites
+     *
+     * @return array
+     */
+    function getSites(): array
+    {
+        return array_map(
+            function ($centerID) {
+                return \Site::singleton($centerID);
+            },
+            $this->getCenterIDs()
+        );
+    }
+
+    /**
+     * Returns all user's sites in associative
+     * array (CenterID => CenterName)
+     *
+     * @return array
+     */
+    function getSiteNamesList(): array
+    {
+        $sites = [];
+        foreach ($this->getSites() as $site) {
+            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
+        }
+        return $sites;
+    }
+
+
+    /**
      * Returns all user's sites that are StudySites
      *
      * @return array
@@ -420,7 +452,7 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
+        return (in_array(\CenterID::singleton(1), $this->getCenterIDs()));
     }
 
     /**

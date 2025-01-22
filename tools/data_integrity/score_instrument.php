@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tool scores any registered instrument that was built using the
  * NDB_BVL_Instrument class and that has a working score() method.
@@ -113,15 +114,17 @@ if (strtolower($test_name) != 'all') {
 }
 
 // check that the $test_name is a valid instrument
+$qparams = [];
 if ($test_name== 'all') {
     $query = "SELECT Test_name FROM test_names";
 } else {
-    $query = "SELECT Test_name FROM test_names WHERE Test_name = :tnm";
+    $query          = "SELECT Test_name FROM test_names WHERE Test_name = :tnm";
+    $qparams['tnm'] = $test_name;
 }
-$testNames = $DB->pselect($query, ['tnm' => $test_name]);
+$testNames = $DB->pselect($query, $qparams);
 
 // if nothing is returned than the instrument DNE
-if (!is_array($testNames) || count($testNames)==0) {
+if (count($testNames) === 0) {
     printError("Invalid Instrument ($test_name)!");
     return false;
 }
@@ -141,9 +144,10 @@ foreach ($testNames as $test) {
         FROM candidate c 
             JOIN session s ON c.CandID=s.CandID
             JOIN flag f ON s.ID=f.SessionID
+            JOIN test_names tn ON tn.ID = f.TestID
         WHERE s.Active = 'Y' 
             AND c.Active='Y' 
-            AND f.Test_name = :tnm 
+            AND tn.Test_name = :tnm 
             AND f.Administration <> 'None' 
             AND f.Administration IS NOT NULL
             ";
@@ -170,7 +174,7 @@ foreach ($testNames as $test) {
     $instrumentMetaData = $DB->pselect($query, $params);
 
     // return error if no candidates/timepoint matched the args
-    if (!is_array($instrumentMetaData) || empty($instrumentMetaData)) {
+    if (count($instrumentMetaData) === 0) {
         // given that the tool might be run with all
         // $candID and $sessionID might not be defined
         if (!empty($candID) && !empty($sessionID)) {
@@ -213,15 +217,9 @@ foreach ($testNames as $test) {
         );
 
         // call the score function
-        $oldRecord = $DB->pselectRow(
-            "SELECT * FROM $instrumentTable WHERE CommentID=:cid",
-            ['cid' => $record['CommentID']]
-        );
+        $oldRecord = $instrument->getInstanceData();
         $success   = $instrument->score();
-        $newRecord = $DB->pselectRow(
-            "SELECT * FROM $instrumentTable WHERE CommentID=:cid",
-            ['cid' => $record['CommentID']]
-        );
+        $newRecord = $instrument->getInstanceData();
         unset($oldRecord['Testdate']);
         unset($newRecord['Testdate']);
         $diff = array_diff_assoc($oldRecord, $newRecord);

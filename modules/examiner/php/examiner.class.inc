@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Examiner module menu filter form
  *
@@ -75,10 +76,16 @@ class Examiner extends \DataFrameworkMenu
 
           $useCertification = ($this->useCertification == 1) ? true : false;
 
+        $user = \User::singleton();
+        if ($user->hasPermission('examiner_multisite')) {
+            $sites = \Utility::getSiteList(false);
+        } else {
+            $sites = $user->getStudySites();
+        }
         return [
-            'sites'            => \Utility::getSiteList(false),
+            'sites'            => $sites,
             'radiologists'     => $yesNoOptions,
-            'useCertification' =>  $useCertification,
+            'useCertification' => $useCertification,
         ];
 
     }

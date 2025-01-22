@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class implements a data Instance which represents a single
  * test in the battery manager menu table.
@@ -89,17 +90,19 @@ class Test implements
     public function toSQL() : array
     {
         return [
-            'ID'          => $this->row['id']              ?? null,
-            'Test_name'   => $this->row['testName']        ?? null,
-            'AgeMinDays'  => $this->row['ageMinDays']      ?? null,
-            'AgeMaxDays'  => $this->row['ageMaxDays']      ?? null,
-            'Stage'       => $this->row['stage']           ?? null,
-            'CohortID'    => $this->row['cohort']      ?? null,
-            'Visit_label' => $this->row['visitLabel']      ?? null,
-            'CenterID'    => $this->row['centerId']        ?? null,
-            'firstVisit'  => $this->row['firstVisit']      ?? null,
-            'instr_order' => $this->row['instrumentOrder'] ?? null,
-            'Active'      => $this->row['active']          ?? null,
+            'ID'                     => $this->row['id']              ?? null,
+            'Test_name'              => $this->row['testName']        ?? null,
+            'AgeMinDays'             => $this->row['ageMinDays']      ?? null,
+            'AgeMaxDays'             => $this->row['ageMaxDays']      ?? null,
+            'Stage'                  => $this->row['stage']           ?? null,
+            'CohortID'               => $this->row['cohort']      ?? null,
+            'Visit_label'            => $this->row['visitLabel']      ?? null,
+            'CenterID'               => $this->row['centerId']        ?? null,
+            'firstVisit'             => $this->row['firstVisit']      ?? null,
+            'DoubleDataEntryEnabled' => $this->row['DoubleDataEntryEnabled']
+                                            ?? null,
+            'instr_order'            => $this->row['instrumentOrder'] ?? null,
+            'Active'                 => $this->row['active']          ?? null,
         ];
     }
 }

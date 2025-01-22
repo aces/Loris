@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script deletes the specified candidate timepoint.
@@ -180,7 +180,10 @@ function deleteTimepoint(
     echo "\n###############################################################\n";
 
     $instruments = $DB->pselect(
-        'SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid',
+        'SELECT Test_name, CommentID
+         FROM flag
+         JOIN test_names ON (test_names.ID = flag.TestID)
+         WHERE SessionID=:sid',
         ['sid' => $sessionID]
     );
 

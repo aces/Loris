@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Instrument_builder
  * Stub class.. all this does is check permissions, since everything else is

@@ -69,31 +69,31 @@ class ElectrophysiologyBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-      case 'Links':
-        let cellTypes = cell.split(',');
-        let cellLinks = [];
-        cellTypes.reverse();
-        for (let i = 0; i < cellTypes.length; i += 1) {
-          cellLinks.push(<a key={i} href={loris.BaseURL +
+    case 'Links':
+      let cellTypes = cell.split(',');
+      let cellLinks = [];
+      cellTypes.reverse();
+      for (let i = 0; i < cellTypes.length; i += 1) {
+        cellLinks.push(<a key={i} href={loris.BaseURL +
             '/electrophysiology_browser/sessions/' +
             row.SessionID + '?outputType=' +
             cellTypes[i]}>
-              {cellTypes[i]}
-            </a>);
+          {cellTypes[i]}
+        </a>);
 
-            if (cellTypes.length > 1) {
-              cellLinks.push(' | ');
-            }
-        }
         if (cellTypes.length > 1) {
-          cellLinks.push(<a key="all" href={loris.BaseURL +
+          cellLinks.push(' | ');
+        }
+      }
+      if (cellTypes.length > 1) {
+        cellLinks.push(<a key="all" href={loris.BaseURL +
           '/electrophysiology_browser/sessions/' +
           row.SessionID}>
             all types
-          </a>);
-        }
-        result = (<td>{cellLinks}</td>);
-        break;
+        </a>);
+      }
+      result = (<td>{cellLinks}</td>);
+      break;
     }
 
     return result;

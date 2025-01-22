@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Update or insert into the data dictionary
  *
@@ -14,7 +15,7 @@
 $user =& User::singleton();
 if (!$user->hasPermission('data_dict_edit')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");

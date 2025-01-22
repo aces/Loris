@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;

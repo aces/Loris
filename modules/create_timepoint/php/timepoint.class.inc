@@ -82,7 +82,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $cohortGroups = [];
         foreach ($projectOptions as $pid=>$pname) {
             $cohortGroups[$pid] = \Utility::getCohortList(
-                new \ProjectID(strval($pid))
+                \ProjectID::singleton($pid)
             );
         }
         $values['cohortGroups'] = $cohortGroups;
@@ -92,7 +92,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         foreach ($cohortGroups as $pid=>$cohortList) {
             foreach ($cohortList as $sid=>$title) {
                 $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectCohort(
-                    new \ProjectID(strval($pid)),
+                    \ProjectID::singleton($pid),
                     $sid
                 );
             }
@@ -151,7 +151,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if ($num_sites == 1) {
             $site = \Site::singleton($user_list_of_sites[0]);
         } else if ($num_sites > 1) {
-            $site = \Site::singleton(new \CenterID(($values['psc'])));
+            $site = \Site::singleton(\CenterID::singleton((intval($values['psc']))));
         }
 
         // Project
@@ -161,7 +161,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             // if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
         } else if (count($user_list_of_projects) > 1) {
-            $project_id = new \ProjectID($values['project']);
+            $project_id = \ProjectID::singleton(intval($values['project']));
             $project    = \Project::getProjectFromID($project_id);
         }
 
@@ -234,7 +234,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             null : $values['psc'];
 
         // validate site entered
-        $site = !empty($values['psc']) ? new \CenterID($values['psc']) : null;
+        $site = !empty($values['psc'])
+            ?  \CenterID::singleton(intval($values['psc']))
+            : null;
 
         $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
@@ -261,7 +263,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         $candid    = $values['candID'];
         $cohortID  = intval($values['cohort']);
-        $projectID = new \ProjectID($values['project']);
+        $projectID = \ProjectID::singleton(intval($values['project']));
 
         //Visit - Get all visits to map ID back to label for session table
         $visits     = \Utility::getVisitsForProjectCohort(

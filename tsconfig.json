@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "es6",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
       "*": ["*", "jsx/*"]
     },
     "sourceMap": true,
-    "moduleResolution": "node",
     "jsx": "preserve",
     "jsxFactory": "h",
     "allowSyntheticDefaultImports": true,

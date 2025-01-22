@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Script generating an externalID for each candidate
  * where external ID is NULL.

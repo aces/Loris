@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Implementation of ValidatableIdentifier needs to provide a validation
  * function to ensure that no Identifier of that type exists if the value is

@@ -12,85 +12,85 @@ declare const loris: any;
  * @param {function} setActiveTab - set the state on click
  */
 function useBreadcrumbs(
-    activeTab: string,
-    setActiveTab: (newtab: string) => void
+  activeTab: string,
+  setActiveTab: (newtab: string) => void
 ) {
-    // update breadcrumbs breadcrumbs
-    useEffect(() => {
-        const breadcrumbs = [
-            {
-                text: 'Data Query Tool (Alpha)',
-                /**
-                 * OnClick handler for the main breadcrumb
-                 *
-                 * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e: React.MouseEvent) => {
-                    e.preventDefault();
-                    setActiveTab('Info');
-                },
-            },
-        ];
-        if (activeTab == 'DefineFields'
+  // update breadcrumbs breadcrumbs
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        text: 'Data Query Tool (Beta)',
+        /**
+         * OnClick handler for the main breadcrumb
+         *
+         * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e: React.MouseEvent) => {
+          e.preventDefault();
+          setActiveTab('Info');
+        },
+      },
+    ];
+    if (activeTab == 'DefineFields'
                 || activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'Define Fields',
-                /**
-                 * OnClick handler for the define fields breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('DefineFields');
-                },
-            });
-        }
-        if (activeTab == 'DefineFilters'
+      breadcrumbs.push({
+        text: 'Define Fields',
+        /**
+         * OnClick handler for the define fields breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('DefineFields');
+        },
+      });
+    }
+    if (activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'Define Filters',
-                /**
-                 * OnClick handler for the define filters breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('DefineFilters');
-                },
-            });
-        }
+      breadcrumbs.push({
+        text: 'Define Filters',
+        /**
+         * OnClick handler for the define filters breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('DefineFilters');
+        },
+      });
+    }
 
-        if (activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'View Data',
-                /**
-                 * OnClick handler for the View Data breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('View Data');
-                },
-            });
-        }
+    if (activeTab == 'ViewData') {
+      breadcrumbs.push({
+        text: 'View Data',
+        /**
+         * OnClick handler for the View Data breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('ViewData');
+        },
+      });
+    }
 
-        if (breadcrumbsRoot) {
-            breadcrumbsRoot.render(
-                <Breadcrumbs
-                    breadcrumbs={breadcrumbs}
-                    baseURL={loris.BaseURL}
-                />,
-            );
-        }
-    }, [activeTab]);
+    if (breadcrumbsRoot) {
+      breadcrumbsRoot.render(
+        <Breadcrumbs
+          breadcrumbs={breadcrumbs}
+          baseURL={loris.BaseURL}
+        />,
+      );
+    }
+  }, [activeTab]);
 }
 
 export default useBreadcrumbs;

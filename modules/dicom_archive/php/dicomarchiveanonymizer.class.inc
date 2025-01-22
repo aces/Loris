@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class implements a data mapper which anonymizes Patient Name
  * or patient ID in the DICOM Archive based on the LORIS configuration.

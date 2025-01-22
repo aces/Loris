@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
 use PHPUnit\Framework\TestCase;

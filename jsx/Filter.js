@@ -1,13 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
-    DateElement,
-    TextboxElement,
-    FormElement,
-    FieldsetElement,
-    CheckboxElement,
+  CheckboxElement,
+  DateElement,
+  FieldsetElement,
+  TimeElement,
+  FormElement,
+  NumericElement,
+  SelectElement,
+  TextboxElement,
 } from 'jsx/Form';
+import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 
 /**
  * Filter component
@@ -45,8 +48,8 @@ function Filter(props) {
     const {fields} = JSON.parse(JSON.stringify(props));
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
-    const exactMatch = (!(type === 'text' || type === 'date'));
-
+    const exactMatch = (!(type === 'text' || type === 'date'
+      || type === 'datetime' || type === 'multiselect'));
     if (value === null || value === '' ||
       (value.constructor === Array && value.length === 0) ||
       (type === 'checkbox' && value === false)) {
@@ -67,41 +70,47 @@ function Filter(props) {
       if (filter && filter.hide !== true) {
         let element;
         switch (filter.type) {
-          case 'text':
-            element = <TextboxElement/>;
-            break;
-          case 'select':
-            element = (
-              <SelectElement
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                autoSelect={false}
-              />
-            );
-            break;
-          case 'multiselect':
-            element = (
-              <SelectElement
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                multiple={true}
-                emptyOption={false}
-              />
-            );
-            break;
-          case 'numeric':
-            element = <NumericElement
+        case 'text':
+          element = <TextboxElement/>;
+          break;
+        case 'select':
+          element = (
+            <SelectElement
               options={filter.options}
-            />;
-            break;
-          case 'date':
-            element = <DateElement/>;
-            break;
-          case 'checkbox':
-            element = <CheckboxElement/>;
-            break;
-          default:
-            element = <TextboxElement/>;
+              sortByValue={filter.sortByValue}
+              autoSelect={false}
+            />
+          );
+          break;
+        case 'multiselect':
+          element = (
+            <SelectElement
+              options={filter.options}
+              sortByValue={filter.sortByValue}
+              multiple={true}
+              emptyOption={false}
+            />
+          );
+          break;
+        case 'numeric':
+          element = <NumericElement
+            options={filter.options}
+          />;
+          break;
+        case 'date':
+          element = <DateElement/>;
+          break;
+        case 'datetime':
+          element = <DateTimePartialElement />;
+          break;
+        case 'checkbox':
+          element = <CheckboxElement/>;
+          break;
+        case 'time':
+          element = <TimeElement/>;
+          break;
+        default:
+          element = <TextboxElement/>;
         }
 
         // The value prop has to default to false if the first two options

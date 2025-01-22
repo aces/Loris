@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a HTTP error, a simple wrapper which provide
  * a html response using smarthy templates. It rely on the Diactoros implementation
@@ -54,6 +55,11 @@ class Error extends HtmlResponse
 
         $lorisInstance = $request->getAttribute('loris');
         $user          = $request->getAttribute('user') ?? new \LORIS\AnonymousUser();
+
+        // Variables used to suggest the user to login and later redirect them if they
+        // are not authenticated in a 403.
+        $tpl_data['anonymous'] = $user instanceof \LORIS\AnonymousUser;
+        $tpl_data['url']       = urlencode($uri->__toString());
 
         // Add a link to the issue tracker as long as a LORIS Instance object
         // is present in the request.

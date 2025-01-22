@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides an interface to LORIS configuration settings
  * Wrapper/Proxy to LORIS Config (NDB_Config)

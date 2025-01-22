@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file loads the Edit file page
  *
@@ -32,7 +33,7 @@ class Edit extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_edit');
+        return $user->hasPermission('document_repository_upload_edit');
     }
 
     /**

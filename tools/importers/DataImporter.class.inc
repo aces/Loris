@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class encapsulates the concept of a Data Importer for LORIS. It contains
  * functions to assist with comparing CSV files defining candidates for whom

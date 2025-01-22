@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -299,8 +300,8 @@ abstract class NDB_Notifier_Abstract
             ]
         );
 
-        $reqPerm  = array_column($necessary, 'perm_id');
-        $userPerm = array_column($current, 'permID');
+        $reqPerm  = array_column(iterator_to_array($necessary), 'perm_id');
+        $userPerm = array_column(iterator_to_array($current), 'permID');
 
         $diff = array_diff($reqPerm, $userPerm);
 

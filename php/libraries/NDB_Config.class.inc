@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Provides an interface to the NeuroDB configuration
  *
@@ -321,7 +322,7 @@ class NDB_Config
         // with what would have come from the config.xml.
         if (count($configSetting) === 1) {
             // Trying to get a single value from the database.
-            $configSetting = $configSetting[0];
+            $configSetting = $configSetting->getFirstRow();
             if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
@@ -387,6 +388,18 @@ class NDB_Config
         throw new ConfigurationException("No setting $name in config.xml");
     }
 
+    protected $settingCache = [];
+
+    /**
+     * Clears the settings cache.
+     *
+     * @return void
+     */
+    public function clearCache()
+    {
+        $this->settingCache = [];
+    }
+
     /**
      * Gets a setting by name
      *
@@ -396,10 +409,14 @@ class NDB_Config
      */
     function getSetting(string $name)
     {
+        if (isset($this->settingCache[$name])) {
+            return $this->settingCache[$name];
+        }
         try {
             $XMLValue = $this->getSettingFromXML($name);
 
             if ($XMLValue !== null) {
+                $this->settingCache[$name] = $XMLValue;
                 return $XMLValue;
             }
         } catch (ConfigurationException $e) {
@@ -411,7 +428,10 @@ class NDB_Config
         // nothing in the config file, so get the value from the DB
         // This will throw a ConfigurationException if it does not
         // exist.
-        return $this->getSettingFromDB($name);
+        $DBVal = $this->getSettingFromDB($name);
+        $this->settingCache[$name] = $DBVal;
+        return $DBVal;
+
     }
 
     /**

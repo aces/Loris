@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File that describe the Image class
  *
@@ -54,7 +55,7 @@ class Image
                      SELECT
                        f.File as filelocation,
                        f.OutputType as outputtype,
-                       mst.Scan_type as acquisitionprotocol,
+                       mst.MriScanTypeName as acquisitionprotocol,
                        FileType as filetype,
                        s.CenterID as centerid,
                        c.Entity_type as entitytype
@@ -65,7 +66,7 @@ class Image
                      LEFT JOIN candidate c
                        ON (s.CandID = c.CandID)
                      LEFT JOIN mri_scan_type mst
-                       ON (mst.ID = f.AcquisitionProtocolID)
+                       ON (mst.MriScanTypeID = f.MriScanTypeID)
                      WHERE f.FileID = :v_fileid
                     ',
                     ['v_fileid' => $fileid]
@@ -79,7 +80,9 @@ class Image
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = new \CenterID($dbrow['centerid']);
+            $this->_centerid            = $dbrow['centerid'] === null
+            ? null
+            : \CenterID::singleton($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
         }
     }
@@ -143,7 +146,7 @@ class Image
                 ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
-            $dbrows,
+            iterator_to_array($dbrows),
             function ($carry, $row) {
                 $carry[$row['name']] = $row['value'];
                 return $carry;
@@ -239,7 +242,7 @@ class Image
                 $values = array_values($row);
                 return new \LORIS\ImageCaveats(...$values);
             },
-            $rows
+            iterator_to_array($rows)
         );
     }
 

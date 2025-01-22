@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is used to move mri violations to the resolved tab in bulk.
  * This is the first step for a project that wants to insert scans that were
@@ -71,7 +72,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 s.ProjectID as Project,
                 s.CohortID as Cohort,
                 MincFile,
-                mri_scan_type.Scan_type,
+                mri_scan_type.MriScanTypeName as ScanType,
                 'Protocol Violation',
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
@@ -79,8 +80,8 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log
-            LEFT JOIN mri_scan_type
-            ON (mri_scan_type.ID=mri_violations_log.Scan_type)
+            LEFT JOIN mri_scan_type mst
+            ON (mst.MriScanTypeID=mri_violations_log.MriScanTypeID)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID
             AND violations_resolved.TypeTable='mri_violations_log')

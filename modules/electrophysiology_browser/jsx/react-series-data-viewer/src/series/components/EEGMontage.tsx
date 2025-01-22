@@ -19,6 +19,11 @@ type CProps = {
   mouseY: number,
   setHidden: (_: number[]) => void,
   physioFileID: number,
+  chunksURL: string,
+  colorMap?: {
+    color: string,
+    ids: Number[]
+  },
 };
 
 /**
@@ -31,6 +36,8 @@ const EEGMontage = (
   {
     electrodes,
     physioFileID,
+    chunksURL,
+    colorMap,
   }: CProps) => {
   if (electrodes.length === 0) return null;
 
@@ -46,8 +53,7 @@ const EEGMontage = (
   const scatter3D = [];
   const scatter2D = [];
   const startAngle = 0;
-  const color = '#000000';
-
+      
   const point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
@@ -135,6 +141,11 @@ const EEGMontage = (
     );
   };
 
+  // Remove points with no data
+  electrodes = electrodes.filter(e => e.position[0] && e.position[1]);
+
+  // Determine if the points are in an ALS or RAS coordinate system
+  // and the head ratio
   let ALSOrientation = false;
   let headRatio = 1;
   let montageRadius = 100;
@@ -166,7 +177,7 @@ const EEGMontage = (
   const scale3D = montageRadius / headRadius;
   const scale2D = montageRadius / stereographicProjection(headRadius, 0, 0, headRadius)[0];
 
-  electrodes.map((electrode) => {
+  electrodes.map((electrode, i) => {
     let electrodeCoords = electrode.position.slice();
 
     // SVG Y axis points toward bottom
@@ -204,6 +215,7 @@ const EEGMontage = (
   const Montage3D = () => (
     <Group>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
+        const color = colorMap?.ids?.includes(i) ? colorMap?.color : '#000';
         return (
           <circle
             key={i}
@@ -253,32 +265,38 @@ const EEGMontage = (
         stroke="black"
         fill='white'
       />
-      {scatter2D.map((point, i) =>
-        <Group
-          className='electrode'
-          key={i}
-        >
-          <circle
-            cx={point.x}
-            cy={point.y}
-            r='7'
-            fill='white'
-            stroke={color}
-          >
-            <title>{electrodes[i].name}</title>
-          </circle>
-          <text
-            x={point.x}
-            y={point.y}
-            dominantBaseline="central"
-            textAnchor="middle"
-            fontSize="7px"
-          >
-            {i + 1}
-            <title>{electrodes[i].name}</title>
-          </text>
-        </Group>
-        )}
+      <Group>
+        {scatter2D.map((point, i) => {
+          const color = colorMap?.ids?.includes(i) ? colorMap?.color : '#000';
+          return (
+            <Group
+              className='electrode'
+              key={i}
+            >
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r='8'
+                fill='white'
+                stroke={color}
+              >
+                <title>{electrodes[i].name}</title>
+              </circle>
+              <text
+                x={point.x}
+                y={point.y}
+                dominantBaseline="central"
+                textAnchor="middle"
+                fontSize="8px"
+                fill={color}
+              >
+                {i + 1}
+                <title>{electrodes[i].name}</title>
+              </text>
+            </Group>
+          );
+        })}
+      </Group>
     </Group>
   );
 
@@ -298,16 +316,18 @@ const EEGMontage = (
           <div style={{height: '100%', position: 'relative'}}>
             {view3D ?
               <ResponsiveViewer
-                // @ts-ignore
                 mouseMove={dragged}
                 mouseDown={dragStart}
                 mouseUp={dragEnd}
                 mouseLeave={dragEnd}
+                chunksURL={chunksURL}
               >
                 <Montage3D />
               </ResponsiveViewer>
             :
-              <ResponsiveViewer>
+              <ResponsiveViewer
+                chunksURL={chunksURL}
+              >
                 <Montage2D />
               </ResponsiveViewer>
             }
@@ -340,6 +360,7 @@ const EEGMontage = (
 EEGMontage.defaultProps = {
   montage: [],
   hidden: [],
+  chunksURL: '',
 };
 
 export default connect(
@@ -347,6 +368,7 @@ export default connect(
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
     physioFileID: state.dataset.physioFileID,
+    chunksURL: state.dataset.chunksURL,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

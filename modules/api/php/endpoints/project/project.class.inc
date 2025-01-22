@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Project page class under Projects
  *
@@ -99,6 +100,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         }
 
+        $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
+
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
         switch ($subendpoint) {
@@ -109,7 +112,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Images($this->_project);
             break;
         case 'instruments':
-            $handler = new Instruments($this->_project);
+            $handler = new Instruments($this->_project, $apiversion);
             break;
         case 'visits':
             $handler = new Visits($this->_project);

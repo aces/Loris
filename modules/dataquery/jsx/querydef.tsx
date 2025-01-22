@@ -20,19 +20,19 @@ export class QueryTerm {
      * @param {array} visits - the visits for the criteria
      */
     constructor(
-        module: string,
-        category: string,
-        fieldname: string,
-        op: string,
-        value: string|string[],
-        visits?: string[]
+      module: string,
+      category: string,
+      fieldname: string,
+      op: string,
+      value: string|string[],
+      visits?: string[]
     ) {
-        this.module = module;
-        this.category = category;
-        this.fieldname = fieldname;
-        this.op = op;
-        this.value = value;
-        this.visits = visits;
+      this.module = module;
+      this.category = category;
+      this.fieldname = fieldname;
+      this.op = op;
+      this.value = value;
+      this.visits = visits;
     }
 }
 
@@ -49,8 +49,8 @@ export class QueryGroup {
      * @param {string} op -- 'and' or 'or' -- the operator used for this group
      */
     constructor(op: 'and' | 'or') {
-        this.operator = op;
-        this.group = [];
+      this.operator = op;
+      this.group = [];
     }
 
     /**
@@ -59,7 +59,7 @@ export class QueryGroup {
      * @param {object} condition - the term's conditions
      */
     addTerm(condition: QueryTerm) {
-        this.group.push(condition);
+      this.group.push(condition);
     }
 
     /**
@@ -69,10 +69,10 @@ export class QueryGroup {
      * @returns {QueryGroup} - the new querygroup
      */
     removeTerm(idx: number): QueryGroup {
-        this.group = this.group.filter((el, fidx) => {
-            return idx != fidx;
-        });
-        return this;
+      this.group = this.group.filter((el, fidx) => {
+        return idx != fidx;
+      });
+      return this;
     }
 
     /**
@@ -80,10 +80,10 @@ export class QueryGroup {
      * as a subgroup.
      */
     addGroup(): void {
-        // The default operation for a subgroup
-        // is the opposite of this one, otherwise
-        // there would be no reason for a new group
-        const newOp = this.operator == 'and' ? 'or' : 'and';
-        this.group.push(new QueryGroup(newOp));
+      // The default operation for a subgroup
+      // is the opposite of this one, otherwise
+      // there would be no reason for a new group
+      const newOp = this.operator == 'and' ? 'or' : 'and';
+      this.group.push(new QueryGroup(newOp));
     }
 }

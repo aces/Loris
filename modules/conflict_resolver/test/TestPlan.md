@@ -5,6 +5,7 @@
     2. Menu item loads the module page
     3. Check for existence of 'Resolving conflicts' permission checkbox on 'User Accounts > Edit User'
        Verify that the permission works as expected (hides menu item and blocks page access)
+    4. Check that access will be blocked for users who dont have either the 'Dictionary: Edit Parameter Type Descriptions' or 'Dictionary: View Parameter Type Descriptions'
 2. Verify the following conditions are required for creation of new unresolved conflict
    to be instantiated in the module table:[Manual Testing]
     1. Double data entry active on instrument

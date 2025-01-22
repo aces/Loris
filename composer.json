@@ -12,7 +12,7 @@
         "psr/http-server-handler" : "*",
         "psr/http-server-middleware" : "*",
         "psr/log": "*",
-        "laminas/laminas-diactoros" : "^2.5",
+        "laminas/laminas-diactoros" : "^3.5",
         "ext-json": "*",
         "bjeavons/zxcvbn-php": "^1.0",
         "aws/aws-sdk-php": "^3.209"
