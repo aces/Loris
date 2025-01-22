@@ -265,13 +265,6 @@ class CandidateListIndex extends Component {
         },
       },
       {
-         'label': 'Derived Age',
-         'show': true,
-         'filter': {
-           
-         },
-      },
-      {
         'label': 'Date of registration',
         'show': true,
         'filter': {
@@ -342,7 +335,7 @@ class CandidateListIndex extends Component {
     if (options.usedob === 'true') {
       fields.push(
         {
-          'label': 'DoB',
+          'label': 'Derived Age',
           'show': true,
           'filter': {
             name: 'dob',
