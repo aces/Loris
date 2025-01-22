@@ -88,7 +88,7 @@ class Run extends \LORIS\Http\Endpoint
                     $insertstmt = "INSERT INTO dataquery_run_results
     					    (RunID, CandID, RowData) VALUES "
                     . " (" . join('),(', $values) . ')';
-                    $q = $db->prepare($insertstmt);
+                    $q          = $db->prepare($insertstmt);
                     $q->execute([]);
                     $values = [];
                 }

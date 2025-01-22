@@ -5,6 +5,8 @@ namespace LORIS\dataquery\endpoints\queries\query\run;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * Handles requests to queries under the /queries/{queryID}/run
  * endpoint of the dataquery module.
@@ -56,21 +58,39 @@ class Run extends \LORIS\Http\Endpoint
      */
     public function queryResults(\User $user) : ResponseInterface
     {
-            $db = $this->loris->getDatabaseConnection();
-        // FIXME: Check permissions. Check if count(*) > 0.
-        $results = $db->pselect(
-            "SELECT RowData FROM dataquery_run_results WHERE RunID=:rid",
+        $db      = $this->loris->getDatabaseConnection();
+        $candIDs = $db->pselectCol(
+            "SELECT CandID FROM dataquery_run_results WHERE RunID=:rid",
             [
                 'rid' => $this->runID
             ]
         );
-        if (count($results) == 0) {
+        $candIDs = \iterator_to_array(
+            \Candidate::filterInaccessibleCandIDs(
+                $this->loris,
+                array_map(
+                    function ($candID) {
+                        return new CandID(strval($candID));
+                    },
+                    $candIDs
+                ),
+                $user
+            )
+        );
+
+        if (count($candIDs) == 0) {
             return new \LORIS\Http\Response\JSON\NotFound(
                 "No results found. Query may have expired."
             );
         }
-        $stream = new \LORIS\Http\DataIteratorBinaryStream(
-            $this->_jsondecoded($results)
+        $results = $db->pselect(
+            "SELECT CandID, RowData FROM dataquery_run_results WHERE RunID=:rid",
+            [
+                'rid' => $this->runID
+            ]
+        );
+        $stream  = new \LORIS\Http\DataIteratorBinaryStream(
+            $this->_jsondecoded($results, $candIDs)
         );
 
             return (new \LORIS\Http\Response())
@@ -82,13 +102,16 @@ class Run extends \LORIS\Http\Endpoint
      * Convert json encoded database result back to an array
      *
      * @param iterable $results The results to decode
+     * @param array    $CandIDs The CandIDs to limit the results to
      *
      * @return \Traversable
      */
-    private function _jsondecoded(iterable $results)
+    private function _jsondecoded(iterable $results, array $CandIDs)
     {
-        foreach ($results as $row) {
-            yield json_decode($row['RowData']);
+        foreach ($results as $row ) {
+            if (in_array(new CandID(strval($row['CandID'])), $CandIDs)) {
+                yield json_decode($row['RowData']);
+            }
         }
     }
 }

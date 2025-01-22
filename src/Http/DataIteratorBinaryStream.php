@@ -190,8 +190,8 @@ class DataIteratorBinaryStream implements StreamInterface
             $this->eof = true;
             return chr(0x04);
         }
-	$rowkey = $this->rowgen->key();
-        $row = $this->rowgen->current();
+        $rowkey = $this->rowgen->key();
+        $row    = $this->rowgen->current();
         $this->rowgen->next();
 
         $rowArray = array_values(json_decode(json_encode($row), true));
