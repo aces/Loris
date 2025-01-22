@@ -297,8 +297,6 @@ class CandidateListIndex extends Component {
       {
         'label': this.props.t('Derived Age', {ns: 'loris'}),
         'show': true,
-        'filter': {
-        },
       },
       {
         'label': this.props.t('Date of registration', {ns: 'loris'}),
@@ -371,7 +369,7 @@ class CandidateListIndex extends Component {
     if (options.usedob === 'true') {
       fields.push(
         {
-          'label': 'DoB',
+          'label': 'Derived Age',
           'show': true,
           'filter': {
             name: 'dob',
