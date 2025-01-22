@@ -60,28 +60,6 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Insert the candidates that match the query for $user into the LORIS
-     * database results table.
-     *
-     * @param \User $user The user running the query
-     *
-     * @return void
-     */
-    public function insertCandidates(\User $user) : void
-    {
-        $DB      = $this->loris->getDatabaseConnection();
-        $candIDs = \iterator_to_array($this->query->matchCandidates($user));
-        if (count($candIDs) == 0) {
-            return;
-        }
-        $insertstmt = "INSERT INTO dataquery_run_results (RunID, CandID) VALUES 
-            ($this->runID, " . join("),($this->runID, ", $candIDs) . ')';
-        $q          = $DB->prepare($insertstmt);
-        $q->execute([]);
-        return;
-    }
-
-    /**
      * Get a data provisioner for the results of this query run.
      *
      * @return \LORIS\Data\Provisioner
@@ -100,7 +78,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getCandidates($user) : array
     {
-        return $this->query->matchCandidates($user);
+        return \iterator_to_array($this->query->matchCandidates($user));
     }
 
     /**

@@ -190,6 +190,7 @@ class DataIteratorBinaryStream implements StreamInterface
             $this->eof = true;
             return chr(0x04);
         }
+	$rowkey = $this->rowgen->key();
         $row = $this->rowgen->current();
         $this->rowgen->next();
 
@@ -197,7 +198,7 @@ class DataIteratorBinaryStream implements StreamInterface
         $rowVal   = join(chr(0x1e), $rowArray) . chr(0x1f);
 
         if ($this->rowCallback) {
-            call_user_func($this->rowCallback, $this->rowgen->key(), $rowArray, $rowVal, !($this->rowgen->valid()));
+            call_user_func($this->rowCallback, $rowkey, $rowArray, $rowVal, !($this->rowgen->valid()));
         }
         $this->position += strlen($rowVal);
 

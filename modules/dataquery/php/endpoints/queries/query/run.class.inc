@@ -60,54 +60,51 @@ class Run extends \LORIS\Http\Endpoint
      */
     public function runQuery(\User $user, int $queryID) : ResponseInterface
     {
-        try {
-            $query = new \LORIS\dataquery\Query($this->loris, $queryID);
+        $query = new \LORIS\dataquery\Query($this->loris, $queryID);
 
-            $db = $this->loris->getDatabaseConnection();
-            // Put the query run in a transaction to make it atomic
-            $db->beginTransaction();
-            $queryRun = $query->newRun($user);
-            $data     = $queryRun->getQueryDataProvisioner()->execute($user);
+        $db = $this->loris->getDatabaseConnection();
+        // Put the query run in a transaction to make it atomic
+        $queryRun = $query->newRun($user);
+        $db->beginTransaction();
+        $data = $queryRun->getQueryDataProvisioner()->execute($user);
 
-            $values = [];
+        $values = [];
 
-            set_time_limit(300);
-            $runid  = $queryRun->getRunId();
-            $stream = new \LORIS\Http\DataIteratorBinaryStream(
-                $data,
-                function (
-                    $candid,
-                    $rowsArray,
-                    /* @phan-suppress-next-line PhanUnusedClosureParameter */
-                    $rowsBinary,
-                    bool $end
-                ) use (&$values, &$db, &$runid) {
-                    $values[] = join(
-                        ',',
-                        [$runid, $candid, $db->quote(json_encode($rowsArray))]
-                    );
-                    if ((count($values) >= 2000 || $end) && count($values) > 0) {
-                        $insertstmt = "INSERT INTO dataquery_run_results
-            				    (RunID, CandID, RowData) VALUES "
-                        . " (" . join('),(', $values) . ')';
-                        $q          = $db->prepare($insertstmt);
-                        $q->execute([]);
-                        $values = [];
-                    }
-
-                    if ($end) {
-                             $db->commit();
-                    }
+        set_time_limit(300);
+        $runid  = $queryRun->getRunId();
+        $stream = new \LORIS\Http\DataIteratorBinaryStream(
+            $data,
+            function (
+                $candid,
+                $rowsArray,
+                /* @phan-suppress-next-line PhanUnusedClosureParameter */
+                $rowsBinary,
+                bool $end
+            ) use (&$values, &$db, &$runid) {
+                $values[] = join(
+                    ',',
+                    [$runid, $candid, $db->quote(json_encode($rowsArray))]
+                );
+                if ((count($values) >= 10 || $end) && count($values) > 0) {
+                    $insertstmt = "INSERT INTO dataquery_run_results
+    					    (RunID, CandID, RowData) VALUES "
+                    . " (" . join('),(', $values) . ')';
+                    error_log($insertstmt);
+                    $q = $db->prepare($insertstmt);
+                    $q->execute([]);
+                    error_log("Inserted");
+                    $values = [];
                 }
-            );
 
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                //->withHeader("Content-Type", "application/octet-stream")
-                ->withBody($stream);
-        } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\NotImplemented($e->getMessage());
+                if ($end) {
+                    $db->commit();
+                }
+            }
+        );
 
-        }
+        return (new \LORIS\Http\Response())
+            ->withHeader("Content-Type", "text/plain")
+        //->withHeader("Content-Type", "application/octet-stream")
+            ->withBody($stream);
     }
 }
