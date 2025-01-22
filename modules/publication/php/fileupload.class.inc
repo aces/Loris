@@ -31,7 +31,7 @@ class FileUpload extends \NDB_Page
                 'publication_propose',
                 'publication_approve',
             ]
-        );
+        );      
     }
     /**
      * Handle a post form
@@ -40,58 +40,59 @@ class FileUpload extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-    // Get query parameters
-    $queryParams = $request->getQueryParams();
-    $action = $queryParams['action'] ?? null;
+public function handle(ServerRequestInterface $request): ResponseInterface
+{
+        // Get query parameters
+$queryParams = $request->getQueryParams();
+$action = $queryParams['action'] ?? null;
 
-    // Switch based on action
-    switch ($action) {
-        case 'upload':
-            $this->uploadPublication();
-            break;
-        case 'editProject':
-            $this->editProject();
-            break;
-        default:
-            // Return a 400 error if no valid action is provided
-            http_response_code(400);
-            $message['message'] = 'You do not have access to the publication module.';
-            return (new LORIS\Http\Response())
-                ->withStatus(400)
-                ->withHeader('Content-Type', 'application/json')
-                ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
-    }
+switch ($action) {
+     case 'upload':
+    $this->uploadPublication();
 
-    // Assuming these methods handle their own responses, otherwise, you can return them here.
-    return (new LORIS\Http\Response())
-        ->withStatus(200)
-        ->withHeader('Content-Type', 'application/json')
-        ->withBody(new \LORIS\Http\StringStream(json_encode(['message' => 'Success'])));
-    }
+        return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader("Content-Type", "application/json")
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode("OK")
+                )
+            );
+        break;
 
+    // Add other cases here if necessary, for example:
+    case 'editProject':
+        $this->editProject();
+                return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader("Content-Type", "application/json")
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode("OK")
+                )
+            );
+        break;
+
+    default:
+        // Handle the default case if no valid action is provided
+        $message = ['message' => 'Invalid action'];
+        return (new \LORIS\Http\Response())
+            ->withStatus(400)
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+}}  
 /**
  * Function for new publications
  *
- * @return void
  */
-function uploadPublication() : void
+function uploadPublication()
+
 {
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
-    if (!$user->hasPermission('publication_propose')
-        || !$user->hasPermission('publication_view')
-    ) {
-        $this->showPublicationError("You do not have permission to propose a project", 403);
-        return;
-    }
 
     $title = $_POST['title'] ?? null;
-    if (!$title) {
-        $this->showPublicationError('Title is empty', 400);
-    }
 
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
@@ -102,7 +103,8 @@ function uploadPublication() : void
     );
 
     if ($exists) {
-        $this->showPublicationError('Submitted title already exists', 400);
+    $this->showPublicationError("Title Exists", 500);
+        exit;
     }
     $desc    = $_POST['description'] ?? null;
     $project = $_POST['project'] ?? null;
@@ -113,7 +115,6 @@ function uploadPublication() : void
     $link       = $_POST['link'] ?? null;
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
-
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
     $leadInvID = $db->pselectOne(
@@ -126,18 +127,20 @@ function uploadPublication() : void
         ]
     );
     if (empty($leadInvID)) {
+    try {
         $db->insert(
-            'publication_collaborator',
-            [
-                'Name'  => $leadInvest,
-                'Email' => $leadInvestEmail,
-            ]
+        'publication_collaborator',
+        [
+            'Name'  => $leadInvest,
+            'Email' => $leadInvestEmail,
+        ]
         );
-
-        $leadInvID = $db->getLastInsertId();
-    }
-    if (!isset($desc, $leadInvest, $leadInvestEmail)) {
-        $this->showPublicationError('A mandatory field is missing!', 400);
+            $leadInvID = $db->getLastInsertId();
+      } catch (\Exception $e) {
+    // Catch any exception and show the error
+          return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
+         }
+    
     }
     // INSERT INTO publication ...
     $uid   = $user->getId();
@@ -168,7 +171,6 @@ function uploadPublication() : void
             'UserID'        => $uid,
         ]
     );
-
     try {
         // process files
         $this->processFiles($pubID);
@@ -186,6 +188,10 @@ function uploadPublication() : void
     }
 
     $this->notify($pubID, 'submission', $_POST['baseURL']);
+        return (new \LORIS\Http\Response())
+        ->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->withBody(new \LORIS\Http\StringStream(json_encode(['message' => 'Upload successful'])));
 }
 
 /**
@@ -311,6 +317,7 @@ function insertCollaborators(int $pubID) : void
  */
 function insertEditors(int $pubID) : void
 {
+    
     if (empty($_POST['usersWithEditPerm'])) {
         return;
     }
@@ -385,7 +392,6 @@ function insertKeywords(int $pubID) : void
  */
 function insertVOIs(int $pubID) : void
 {
-
     if (empty($_POST['voiFields'])) {
         return;
     }
@@ -490,7 +496,6 @@ function notify($pubID, $type, $baseURL) : void
     if (!in_array($type, $acceptedTypes)) {
         $this->showPublicationError("Unexpected notification type: $type", 400);
     }
-
     $factory   = \NDB_Factory::singleton();
     $db        = $factory->database();
     $config    = \NDB_Config::singleton();
@@ -529,6 +534,7 @@ function notify($pubID, $type, $baseURL) : void
         'ProjectName' => $emailData['ProjectName'],
         'Date'        => $emailData['Date']
     ];
+            error_log("notify333333");
     $Notifier->notify($msg_data);
     $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
         ? [$data['LeadInvestigatorEmail']] : [];
@@ -549,45 +555,18 @@ function notify($pubID, $type, $baseURL) : void
             $emailData
         );
     }
+            error_log("notify44444");
+
 }
 
 /**
  * Edits fields for an existing publication project
  *
- * @return void
  */
-function editProject() : void
+function editProject()
 {
     $db = \NDB_Factory::singleton()->database();
     $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
-
-    if (isset($id)) {
-        // double check that current user has edit access
-        $factory     = \NDB_Factory::singleton();
-        $user        = $factory->user();
-        $creatorUser = $db->pselectOne(
-            'SELECT UserID FROM publication WHERE PublicationID=:id',
-            ['id' => $id]
-        );
-
-        $editors = $db->pselectCol(
-            'SELECT UserID FROM publication_users_edit_perm_rel '.
-            'WHERE PublicationID=:id',
-            ['id' => $id]
-        );
-        $uid     = $user->getId();
-        if ($uid !== $creatorUser
-            && !in_array($uid, $editors)
-            && !$user->hasPermission('publication_approve')
-        ) {
-            $this->showPublicationError(
-                "You do not have edit or approval access for this project!",
-                403
-            );
-        }
-    } else {
-        $this->showPublicationError('No Publication ID provided', 400);
-    }
 
     $title            = $_POST['title'] ?? null;
     $statusID         = $_POST['status'] ?? null;
@@ -656,7 +635,16 @@ function editProject() : void
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
         $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
     }
-
+    $exists = $db->pselectOne(
+        "SELECT PublicationID " .
+        "FROM publication " .
+        "WHERE Title=:t",
+        ['t' => $title]
+    );
+    if (intval($exists) !== intval($id)) {    
+        $this->showPublicationError("Title Exists", 500);
+        exit;
+    }
     $this->editEditors($id);
     $this->editCollaborators($id);
     $this->editKeywords($id);
@@ -677,12 +665,16 @@ function editProject() : void
             ['PublicationID' => $id]
         );
     }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
-        );
+    try {    
+        if (!empty($leadInvToUpdate)) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+            );
+        }
+    } catch (\Exception $e) {
+          return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
     }
 }
 
@@ -957,13 +949,15 @@ function editUploads($id) : void
         $citationIndex = 'existingUpload_publicationCitation_' . $puid;
         $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
-        $cit = $_POST[$citationIndex] ?? null;
-        $ver = $_POST[$versionIndex] ?? null;
+        // Check if values exist in $_POST before applying htmlspecialchars
+        $cit = isset($_POST[$citationIndex]) ? $_POST[$citationIndex] : null;
+        $ver = isset($_POST[$versionIndex]) ? $_POST[$versionIndex] : null;
 
-        if (htmlspecialchars($cit) !== $data['Citation']) {
+        // If they exist and differ, add them to the update array
+        if ($cit !== null && htmlspecialchars($cit) !== $data['Citation']) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
-        if (htmlspecialchars($ver) !== $data['Version']) {
+        if ($ver !== null && htmlspecialchars($ver) !== $data['Version']) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }
@@ -978,6 +972,7 @@ function editUploads($id) : void
         }
     }
 }
+
 /**
  * Utility function to return errors from the server
  *
@@ -997,5 +992,4 @@ function showPublicationError($message, $code = 500) : void
 
     print(json_encode(['message' => $message]));
     exit(0);
-}
-}
+}}
