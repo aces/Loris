@@ -93,8 +93,6 @@ class Configuration extends \NDB_Form
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
         ];
-
-        $this->tpl_data['shared_queries'] = $user_starred_queries;
     }
 
     /**

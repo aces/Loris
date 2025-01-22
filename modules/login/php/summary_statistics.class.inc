@@ -70,9 +70,9 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
 
         return new \LORIS\Http\Response\JsonResponse(
             [
-                'statistics'.     => $reusable_response,
-                'projects'        => $projects,
-                'csv'             => $csv,
+                'statistics' => $reusable_response,
+                'projects'   => $projects,
+                'csv'        => $csv,
             ]
         );
     }
