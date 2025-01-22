@@ -56,6 +56,14 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
+                DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
+                c.Sex,
+                COUNT(DISTINCT s.Visit_label) AS VisitCount,
+                IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
+                p.Name AS RegistrationProject,
+                c.RegistrationCenterID,
+                c.RegistrationProjectID
+                $maybeEDC,
                 CONCAT(
                        (CASE
 			    WHEN YEAR(CURDATE()) < YEAR(c.DoB) THEN 0#or some such validation
@@ -64,16 +72,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                         (CASE
 			    WHEN MONTH(CURDATE()) < MONTH(c.DoB) THEN MONTH(c.DoB) - MONTH(CURDATE())
 			    ELSE MONTH(CURDATE()) - MONTH(c.DoB)
-			    END),' m') as DoB,
-                DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
-                c.Sex,
-                COUNT(DISTINCT s.Visit_label) AS VisitCount,
-                IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                p.Name AS RegistrationProject,
-                c.RegistrationCenterID,
-                c.RegistrationProjectID
-                $maybeEDC
-                $maybeDoB
+			    END),' m') as DoB
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
                     LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
