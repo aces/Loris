@@ -84,15 +84,17 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         $cardinality,
                         'Data_entry',
                     ),
-                    new DictionaryItem(
-                        $inst->testName.'_Validity',
-                        'Test validity for ' . $inst->getFullName(),
-                        $scope,
-                        $validityoptions,
-                        $cardinality,
-                        'Validity',
-                    ),
                 ];
+                if ($inst->ValidityEnabled) {
+                            $fields[] =    new DictionaryItem(
+                                $inst->testName.'_Validity',
+                                'Test validity for ' . $inst->getFullName(),
+                                $scope,
+                                $validityoptions,
+                                $cardinality,
+                                'Validity',
+                            );
+                }
                 $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
