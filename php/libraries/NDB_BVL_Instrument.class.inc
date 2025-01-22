@@ -1013,6 +1013,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
+        $curr_examinerID = $this->getFieldValue("Examiner");
+
         list(
             $CertificationEnabled,
             $CertificationProjects,
@@ -1036,11 +1038,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
+                    AND (epr.active = 'Y' OR epr.examinerID =:curr_examinerID)
                  ORDER BY full_name",
                 [
-                    'tid'     => $test_id,
-                    'cert_id' => 'certified',
-                    'cid'     => $centerID,
+                    'tid'             => $test_id,
+                    'cert_id'         => 'certified',
+                    'cid'             => $centerID,
+                    'curr_examinerID' => $curr_examinerID
                 ],
                 'examinerID'
             );
@@ -1052,8 +1056,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                              ON (epr.examinerID=e.examinerID)
                      LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
+                     AND (epr.active = 'Y' OR e.examinerID =:curr_examinerID)
                      ORDER BY full_name",
-                ['centID' => $centerID],
+                [
+                    'centID'          => $centerID,
+                    'curr_examinerID' => $curr_examinerID
+                ],
                 'examinerID'
             );
         }
