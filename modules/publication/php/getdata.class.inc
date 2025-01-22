@@ -355,19 +355,13 @@ function getFiles($id) : array
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
         ['pid' => $id]
     );
-
-    $results = [];
     foreach ($files as $key => $f) {
-        $val = [];
-        // Check if 'Citation' is not null before calling htmlspecialchars_decode
-        $val['Citation'] = ($f['Citation'] !== null) ? htmlspecialchars_decode($f['Citation']) : '';
-        
-        // Check if 'Version' is not null before calling htmlspecialchars_decode
-        $val['Version'] = ($f['Version'] !== null) ? htmlspecialchars_decode($f['Version']) : '';
-        $results[$key] = $val;
+       $files[$key]['Citation'] = isset($f['Citation']) && is_string($f['Citation']) ? htmlspecialchars_decode($f['Citation']) : '';
+       $files[$key]['Version']  = isset($f['Version']) && is_string($f['Version']) ? htmlspecialchars_decode($f['Version']) : '';
+
     }
 
-    return $results;
+    return $files;
 }
 
 /**
