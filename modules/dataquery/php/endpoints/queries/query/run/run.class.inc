@@ -74,8 +74,7 @@ class Run extends \LORIS\Http\Endpoint
         );
 
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                //->withHeader("Content-Type", "application/octet-stream")
+                ->withHeader("Content-Type", "application/octet-stream")
                 ->withBody($stream);
     }
 

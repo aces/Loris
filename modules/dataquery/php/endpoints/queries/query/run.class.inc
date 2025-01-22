@@ -70,7 +70,6 @@ class Run extends \LORIS\Http\Endpoint
 
         $values = [];
 
-        set_time_limit(300);
         $runid  = $queryRun->getRunId();
         $stream = new \LORIS\Http\DataIteratorBinaryStream(
             $data,
@@ -101,8 +100,7 @@ class Run extends \LORIS\Http\Endpoint
         );
 
         return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
-        //->withHeader("Content-Type", "application/octet-stream")
+            ->withHeader("Content-Type", "application/octet-stream")
             ->withBody($stream);
     }
 }
