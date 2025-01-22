@@ -2272,7 +2272,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     strlen($this->testName)+1
                 );
                 if ($fname == 'Administration'
-                    || $name == 'Validity'
+                    || $fname == 'Validity'
                     || $fname == 'Data_entry'
                 ) {
                     $conditions[] = "flag.$fname"
@@ -2356,7 +2356,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     strlen($this->testName)+1
                 );
                 if ($fname == 'Administration'
-                    || $name == 'Validity'
+                    || $fname == 'Validity'
                     || $fname == 'Data_entry'
                 ) {
                     $tname = 'f.';
