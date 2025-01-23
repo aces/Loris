@@ -21,6 +21,7 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * Usage: php update_login_summary_statistics.php
+ * Can be added to a project's cron to update the table regularly.
  *
  * PHP Version 8
  *
@@ -52,11 +53,6 @@ $projects = $DB->pselectCol(
     []
 );
 
-// TODO: delete. This would return a query object instead of
-// queryIDs and it was really difficult to try to get it to run
-// $provisioner = (
-//     new \LORIS\dataquery\Provisioners\StudyQueries($lorisInstance, 'loginpage')
-// );
 $pinnedqueries = $DB->pselectWithIndexKey(
     "SELECT dq.QueryID, Query, dsq.Name
     FROM dataquery_queries dq
@@ -82,12 +78,6 @@ foreach ($pinnedqueries as $pin) {
     $queryName       = $pin['Name'];
     $queryToOrder[$queryName] = $order;
     $order++;
-    // TODO: delete. Commented out after changing from
-    // hardcoded queryID to pinned queries
-    // Get the query Name
-    // $query = new \LORIS\dataquery\Query($lorisInstance, $queryID);
-    // $query->loadQueryMetadata($user);
-    // $queryName = $query->getQueryName();
 
     // Initialize the counts
     $data['All Projects'][$queryName] = -1;
@@ -106,11 +96,8 @@ foreach ($pinnedqueries as $pin) {
     while ($response->eof() == false) {
         $next = $response->read(1024);
         if (!empty($next)) {
-            // TODO: add as a OBJECT not string somehow
             $result[]   = $next;
             $inAProject = false;
-            // TODO: this processes as string by looking for the project name.
-            // Change to something better when it is an object.
             foreach ($projects as $project) {
                 if (strpos($next, $project) !== false) {
                     $data[$project][$queryName] += 1;

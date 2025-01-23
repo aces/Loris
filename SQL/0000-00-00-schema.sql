@@ -117,6 +117,8 @@ CREATE TABLE `users` (
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
