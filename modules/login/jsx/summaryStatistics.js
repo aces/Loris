@@ -73,9 +73,7 @@ class SummaryStatistics extends Component {
             }
           })}
           {/* Copy to clipboard */}
-          <div
-            className='stats-copy'
-          >
+          <div className='stats-copy'>
             <span className="glyphicon glyphicon-copy"
               style={{
                 cursor: 'pointer',
