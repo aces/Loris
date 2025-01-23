@@ -25,13 +25,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * The form object for this instrument.
-     *
-     * @var LorisForm
-     */
-    public $form;
-
-    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -39,13 +32,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @var string
      */
     public $formType;
-
-    /**
-     * Array holding the date format
-     *
-     * @var array
-     */
-    public $dateOptions;
 
     /**
      * Type of instrument. Can be 'normal' or 'DirectEntry'
@@ -843,20 +829,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
-        $oldData = $db->pselectOne(
-            "SELECT id.Data FROM flag f
-                    JOIN instrument_data id ON (id.ID=f.DataID)
-                WHERE CommentID=:cid",
-            ['cid' => $this->getCommentID()]
-        );
-
-        // (The PDO driver seems to return null as "null" for JSON column types)
-        if (!empty($oldData) && $oldData !== "null") {
-            $oldData = json_decode($oldData, true);
-        } else {
-            $oldData = [];
-        }
-        $newData = array_merge($oldData ?? [], $values);
+        $newData = array_merge($this->getInstanceData() ?? [], $values);
 
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
@@ -1040,6 +1013,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
+        $curr_examinerID = $this->getFieldValue("Examiner");
+
         list(
             $CertificationEnabled,
             $CertificationProjects,
@@ -1053,7 +1028,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['tst_name' => $this->testName]
             );
             $results = $db->pselectWithIndexKey(
-                "SELECT c.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
@@ -1063,24 +1038,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
+                    AND (epr.active = 'Y' OR epr.examinerID =:curr_examinerID)
                  ORDER BY full_name",
                 [
-                    'tid'     => $test_id,
-                    'cert_id' => 'certified',
-                    'cid'     => $centerID,
+                    'tid'             => $test_id,
+                    'cert_id'         => 'certified',
+                    'cid'             => $centerID,
+                    'curr_examinerID' => $curr_examinerID
                 ],
                 'examinerID'
             );
         } else {
             $results = $db->pselectWithIndexKey(
-                "SELECT e.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
                      LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
+                     AND (epr.active = 'Y' OR e.examinerID =:curr_examinerID)
                      ORDER BY full_name",
-                ['centID' => $centerID],
+                [
+                    'centID'          => $centerID,
+                    'curr_examinerID' => $curr_examinerID
+                ],
                 'examinerID'
             );
         }
@@ -1202,7 +1183,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue==="" || $flag==false) {
+            if ($elvalue=="" || $flag==false) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -3356,7 +3337,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     static function getDDEInstrumentNamesList(
         \LORIS\LorisInstance $loris,
-        String $Visit_label=null
+        ?string $Visit_label=null
     ) : array {
         $DB = $loris->getDatabaseConnection();
 

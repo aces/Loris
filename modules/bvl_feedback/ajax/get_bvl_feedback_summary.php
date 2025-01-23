@@ -21,4 +21,4 @@ require "bvl_panel_ajax.php";
 $feedbackThreadSummary = $feedbackThread->getSummaryOfThreads();
 echo json_encode($feedbackThreadSummary);
 
-exit();
+exit(0);

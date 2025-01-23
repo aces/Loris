@@ -43,7 +43,7 @@ if (isset($_REQUEST['action'])) {
         }
     } else {
         http_response_code(400);
-        exit;
+        exit(0);
     }
 }
 /**

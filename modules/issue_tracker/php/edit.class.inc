@@ -288,50 +288,190 @@ class Edit extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * Fetches all issues and includes top 3 comments per issue.
+     * Fetches all issues including related data and top comments.
      *
      * @param \User $user The current user.
      *
-     * @return array List of issues with top comments.
+     * @return array Contains issues, assignees, and other watchers information.
      */
     private function _getAllIssues(\User $user): array
     {
-        $db = $this->loris->getDatabaseConnection();
+        $db            = $this->loris->getDatabaseConnection();
+        $assignees     = [];
+        $otherWatchers = [];
+        $centerIDsArray = [];
+        $dccID          = null;
+        $centerPlaceholders = '';
 
-        $query = "SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
-                  FROM issues AS i
-                  LEFT JOIN candidate c ON (i.candID = c.CandID)
-                  LEFT JOIN session s ON (i.sessionID = s.ID)";
-
-        // Add permission check if needed
+        // Initialize variables based on permissions
         if (!$user->hasPermission('access_all_profiles')) {
-            $query .= " WHERE i.centerID IN (" .
-            implode(',', $user->getCenterIDs()) . ")";
+            $centerIDsArray = array_map(
+                fn($centerID) => (int)$centerID->__toString(),
+                $user->getCenterIDs()
+            );
+
+            if (empty($centerIDsArray)) {
+                return [
+                    'issues'        => [],
+                    'assignees'     => [],
+                    'otherWatchers' => [],
+                ];
+            }
+
+            // Fetch DCC ID
+            $dccRow = $db->pselectOne(
+                "SELECT CenterID FROM psc WHERE Name = :name",
+                ['name' => 'DCC']
+            );
+            $dccID  = $dccRow ? (int)$dccRow: null;
+
+            // Prepare placeholders
+            $centerPlaceholders = implode(
+                ',',
+                array_fill(0, count($centerIDsArray), '?')
+            );
         }
 
-        $query .= " ORDER BY i.issueID DESC";
+        // Prepare assignee query
+        if ($user->hasPermission('access_all_profiles')) {
+            $assigneeQuery  = "
+                SELECT Real_name, UserID, Active
+                FROM users
+                WHERE Pending_approval = 'N'
+            ";
+            $assigneeParams = [];
+        } else {
+            $assigneeQuery  = "
+                SELECT DISTINCT u.Real_name, u.UserID, u.Active
+                FROM users u
+                INNER JOIN user_psc_rel upr ON upr.UserID = u.ID
+                WHERE (upr.CenterID IN ($centerPlaceholders) OR upr.CenterID = ?)
+                AND u.Pending_approval = 'N'
+            ";
+            $assigneeParams = array_merge($centerIDsArray, [$dccID]);
+        }
 
-        $issues = $db->pselect($query, []);
+        // Fetch assignees
+        $assigneeRows = iterator_to_array(
+            $db->pselect($assigneeQuery, $assigneeParams)
+        );
 
-        // Ensure $issues is an array
-        if (!is_array($issues)) {
-            $issues = iterator_to_array($issues);
+        foreach ($assigneeRows as $a_row) {
+            if (!empty($a_row['UserID'])) {
+                $assignees[$a_row['UserID']] = $this->formatUserInformation(
+                    $a_row['UserID']
+                );
+            }
+        }
+
+        // Fetch potential watchers
+        $currentUsername = $user->getUsername();
+
+        $potentialWatchers = iterator_to_array(
+            $db->pselect(
+                "SELECT Real_name, UserID
+                FROM users
+                WHERE Active = 'Y' AND Pending_approval = 'N'",
+                []
+            )
+        );
+
+        foreach ($potentialWatchers as $w_row) {
+            if (!empty($w_row['UserID']) && $w_row['UserID'] != $currentUsername) {
+                $otherWatchers[$w_row['UserID']] = $this->formatUserInformation(
+                    $w_row['UserID']
+                );
+            }
+        }
+
+        // Fetch issues
+        $baseQuery = "
+            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+            FROM issues AS i
+            LEFT JOIN candidate c ON i.candID = c.CandID
+            LEFT JOIN session s ON i.sessionID = s.ID
+        ";
+
+        $issueParams = [];
+        if (!$user->hasPermission('access_all_profiles')) {
+            $baseQuery  .= " WHERE i.centerID IN ($centerPlaceholders)";
+            $issueParams = $centerIDsArray;
+        }
+
+        $baseQuery .= " ORDER BY i.issueID DESC";
+
+        $issues = iterator_to_array($db->pselect($baseQuery, $issueParams));
+
+        if (empty($issues)) {
+            return [
+                'issues'        => [],
+                'assignees'     => $assignees,
+                'otherWatchers' => $otherWatchers,
+            ];
+        }
+
+        // Get all issue IDs
+        $issueIDs = array_column($issues, 'issueID');
+
+        // Fetch watchers for these issues
+        $watchingPlaceholders = implode(',', array_fill(0, count($issueIDs), '?'));
+        $watchersRows         = iterator_to_array(
+            $db->pselect(
+                "SELECT issueID, userID
+                FROM issues_watching
+                WHERE issueID IN ($watchingPlaceholders)",
+                $issueIDs
+            )
+        );
+
+        // Organize watchers by issue
+        $othersWatchingByIssue = [];
+        foreach ($watchersRows as $row) {
+            if (!empty($row['userID'])) {
+                $issueID = (int)$row['issueID'];
+                $othersWatchingByIssue[$issueID][] = $row['userID'];
+            }
         }
 
         // Format the issues data
         foreach ($issues as &$issue) {
-            $issue['reporter']      = $this->formatUserInformation(
-                $issue['reporter']
+            $issueID = (int)$issue['issueID'];
+
+            // Set watching status
+            $isWatching        = in_array(
+                $currentUsername,
+                $othersWatchingByIssue[$issueID] ?? []
             );
-            $issue['lastUpdatedBy'] = $this->formatUserInformation(
-                $issue['lastUpdatedBy']
-            );
-            $issue['topComments']   = $this->getTopComments(
-                (int)$issue['issueID']
-            );
+            $issue['watching'] = $isWatching ? 'Yes' : 'No';
+
+            $assigneeUserID = $issue['assignee'] ?? null;
+
+            // Exclude assignee from othersWatching
+            if (!empty($assigneeUserID) && isset($othersWatchingByIssue[$issueID])) {
+                $filteredWatchers = array_filter(
+                    $othersWatchingByIssue[$issueID],
+                    fn($watcherUserID) => $watcherUserID !== $assigneeUserID
+                );
+                $othersWatchingByIssue[$issueID] = array_values($filteredWatchers);
+            }
+
+            $issue['othersWatching'] = $othersWatchingByIssue[$issueID] ?? [];
+
+            $issue['reporter']      = !empty($issue['reporter'])
+                ? $this->formatUserInformation($issue['reporter'])
+                : null;
+            $issue['lastUpdatedBy'] = !empty($issue['lastUpdatedBy'])
+                ? $this->formatUserInformation($issue['lastUpdatedBy'])
+                : null;
+
+            $issue['topComments'] = $this->getTopComments($issueID);
         }
 
-        return $issues;
+        return [
+            'issues'        => $issues,
+            'assignees'     => $assignees,
+            'otherWatchers' => $otherWatchers,
+        ];
     }
 
     /**
@@ -375,7 +515,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @return array
      */
-    function getIssueData(int $issueID=null, \User $user): array
+    function getIssueData(?int $issueID=null, \User $user): array
     {
         $db = $this->loris->getDatabaseConnection();
 

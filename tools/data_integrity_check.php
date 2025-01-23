@@ -37,6 +37,10 @@ foreach ($instruments as $instrument) {
             {$instrument}
         ON
             {$instrument}.CommentID = flag.CommentID
+        LEFT JOIN
+            test_names
+        ON
+            (test_names.ID = flag.TestID)
         WHERE
             Test_name = :instrument AND
             {$instrument}.CommentID IS NULL
@@ -80,6 +84,10 @@ $duplicate_flag_arr = $DB->pselect(
         SessionID,Test_name,CommentID
     FROM
         flag
+    JOIN
+        test_names
+    ON
+        (test_names.ID = flag.TestID)
     WHERE
         (
             flag.CommentID NOT LIKE 'DDE_%' AND
@@ -88,10 +96,14 @@ $duplicate_flag_arr = $DB->pselect(
                     COUNT(*)
                 FROM
                     flag test
+                JOIN
+                    test_names
+                ON
+                    (test_names.ID = flag.TestID)
                 WHERE
                     test.CommentID NOT LIKE 'DDE_%' AND
                     flag.SessionID = test.SessionID AND
-                    flag.Test_name = test.Test_name
+                    test_names.Test_name = test.Test_name
             ) > 1
         ) OR
         (
@@ -101,10 +113,14 @@ $duplicate_flag_arr = $DB->pselect(
                     COUNT(*)
                 FROM
                     flag test
+                JOIN
+                    test_names
+                ON
+                    (test_names.ID = flag.TestID)
                 WHERE
                     test.CommentID LIKE 'DDE_%' AND
                     flag.SessionID = test.SessionID AND
-                    flag.Test_name = test.Test_name
+                    test_names.Test_name = test.Test_name
             ) > 1
         )
 ",

@@ -19,18 +19,18 @@ class ProtocolCheckViolationProvisioner
     function __construct(string $seriesUID)
     {
         parent::__construct(
-            "SELECT 
+            "SELECT
                 l.PatientName,
                 l.CandID,
                 l.Visit_label,
-                m.Scan_type,
+                mst.MriScanTypeName AS ScanType,
                 mpcg.Name,
                 l.Severity,
                 l.Header,
                 l.Value,
                 COALESCE(l.ValidRange, l.ValidRegex)
             FROM mri_violations_log l
-                LEFT JOIN mri_scan_type m ON (m.ID=l.Scan_type)
+                LEFT JOIN mri_scan_type mst ON (mst.MriScanTypeID=l.MriScanTypeID)
                 LEFT JOIN mri_protocol_checks_group mpcg
                     ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
                 LEFT JOIN candidate c ON (l.CandID=c.CandID)

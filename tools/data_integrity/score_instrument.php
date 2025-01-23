@@ -124,7 +124,7 @@ if ($test_name== 'all') {
 $testNames = $DB->pselect($query, $qparams);
 
 // if nothing is returned than the instrument DNE
-if (!is_array($testNames) || count($testNames)==0) {
+if (count($testNames) === 0) {
     printError("Invalid Instrument ($test_name)!");
     return false;
 }
@@ -174,7 +174,7 @@ foreach ($testNames as $test) {
     $instrumentMetaData = $DB->pselect($query, $params);
 
     // return error if no candidates/timepoint matched the args
-    if (!is_array($instrumentMetaData) || empty($instrumentMetaData)) {
+    if (count($instrumentMetaData) === 0) {
         // given that the tool might be run with all
         // $candID and $sessionID might not be defined
         if (!empty($candID) && !empty($sessionID)) {

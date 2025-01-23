@@ -21,7 +21,7 @@ if (isset($_REQUEST['action'])) {
         editProject();
     } else {
         http_response_code(400);
-        exit;
+        exit(0);
     }
 }
 
@@ -948,5 +948,7 @@ function showPublicationError($message, $code = 500) : void
 
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    exit(json_encode(['message' => $message]));
+
+    print(json_encode(['message' => $message]));
+    exit(0);
 }

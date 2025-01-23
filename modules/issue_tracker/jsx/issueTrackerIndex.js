@@ -271,15 +271,22 @@ class IssueTrackerIndex extends Component {
       {label: 'Closed Issues', filter: {
         status: {value: ['closed'], exactMatch: true},
       }},
-      {label: 'My Issues', filter: {
-        assignee: {
-          value: this.state.data.fieldOptions.userID, exactMatch: true,
-        },
-        status: {
-          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
-        },
-      }},
     ];
+
+    // Add "My Issues" filter only if user has any issues
+    if (this.state.data.userIssueCount > 0) {
+      filterPresets.push({
+        label: 'My Issues',
+        filter: {
+          assignee: {
+            value: this.state.data.fieldOptions.userID, exactMatch: true,
+          },
+          status: {
+            value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+          },
+        },
+      });
+    }
 
     const addIssue = () => {
       window.location.replace(

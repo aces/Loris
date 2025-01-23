@@ -102,7 +102,10 @@ class Statistics_Mri_Site extends Statistics_Site
         $DB = $this->loris->getDatabaseConnection();
 
         $scan_types = iterator_to_array(
-            $DB->pselect("SELECT Scan_type from mri_scan_type", [])
+            $DB->pselect(
+                "SELECT MriScanTypeName AS ScanType from mri_scan_type",
+                []
+            )
         );
         $where      = "WHERE (";
         $counter    = 1;
@@ -119,7 +122,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $query = '';
         switch ($issue) {
         case 'Tarchive_Missing':
-            $query = "SELECT DISTINCT f.CommentID as CommentID, 
+            $query = "SELECT DISTINCT f.CommentID as CommentID,
                             c.PSCID, s.ID as SessionID, s.CandID as CandID,
                             s.Visit_label
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
@@ -177,7 +180,7 @@ class Statistics_Mri_Site extends Statistics_Site
                         LEFT JOIN mri_parameter_form mpf
                        ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                        WHERE s.Active='Y' 
+                        WHERE s.Active='Y'
                            AND c.Entity_type != 'Scanner'
                            AND (f.ID IS NULL OR
                            f.Data_entry <> 'Complete' OR

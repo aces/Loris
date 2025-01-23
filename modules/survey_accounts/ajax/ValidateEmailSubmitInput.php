@@ -16,7 +16,7 @@
 $user = \User::singleton();
 if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
@@ -47,7 +47,7 @@ if ($numCandidates != 1) {
     echo json_encode(
         ['error_msg' => $error_msg]
     );
-    exit;
+    exit(0);
 }
 
 $numSessions = $db->pselectOne(
@@ -68,14 +68,14 @@ if ($numSessions != 1) {
                              " does not exist for given candidate",
         ]
     );
-    exit;
+    exit(0);
 }
 
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         ['error_msg' => 'Please choose an instrument']
     );
-    exit;
+    exit(0);
 }
 
 $instrument_list = $db->pselect(
@@ -98,7 +98,7 @@ foreach ($instrument_list as $instrument) {
                 " already exists for given candidate for visit ". $_REQUEST['VL'],
             ]
         );
-        exit;
+        exit(0);
     }
 }
 
@@ -107,7 +107,7 @@ if (!empty($_REQUEST['Email']) ) {
         echo json_encode(
             ['error_msg' => 'The email address is not valid.']
         );
-        exit;
+        exit(0);
     }
 }
 
