@@ -369,16 +369,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Get the name of the query.
-     *
-     * @return void
-     */
-    public function getQueryName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Get the Criteria for this query or null if there is no
      * criteria.
      *
