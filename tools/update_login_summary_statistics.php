@@ -74,7 +74,7 @@ $DB->run("DELETE FROM Login_Summary_Statistics", []);
 foreach ($projects as $project) {
     $data[$project] = [];
 }
-$order = 0;
+$order        = 0;
 $queryToOrder = [];
 foreach ($pinnedqueries as $pin) {
     $queryInProjects = [];
@@ -153,10 +153,10 @@ $files = scandir($folder);
 foreach ($files as $file) {
     if (is_file($folder . $file)) {
         print_r("Reading SQL File $file\n");
-        $result    = $DB->pselect(file_get_contents($folder . $file), []);
-        $queryName = pathinfo($file, PATHINFO_FILENAME);
+        $result     = $DB->pselect(file_get_contents($folder . $file), []);
+        $queryName  = pathinfo($file, PATHINFO_FILENAME);
         $queryOrder = explode("_", $queryName)[0];
-        $queryName = explode("_", $queryName)[1];
+        $queryName  = explode("_", $queryName)[1];
         $queryToOrder[$queryName] = $queryOrder;
         foreach ($result as $row) {
             $data[$row['ProjectName']][$queryName] = $row['count'];
@@ -170,9 +170,9 @@ foreach ($data as $project => $values) {
         $DB->insertOnDuplicateUpdate(
             'Login_Summary_Statistics',
             [
-                'Project' => $project,
-                'Title'   => $title,
-                'value'   => $value,
+                'Project'    => $project,
+                'Title'      => $title,
+                'value'      => $value,
                 'QueryOrder' => $queryToOrder[$title]
             ]
         );
