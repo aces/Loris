@@ -43,14 +43,14 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
                 "SELECT DISTINCT Project FROM Login_Summary_Statistics",
                 []
             );
-    
+
             // csv version for exporting to clipboard
             $reusable_response = iterator_to_array($response);
             $csv = "Project,Statistic,Value\n";
             foreach ($reusable_response as $row) {
-                $csv .= $row['Project'] .",". $row['Title'] .",". $row['Value'] . "\n";
+                $csv .= $row['Project'].",".$row['Title'].",".$row['Value'] . "\n";
             }
-    
+
             return new \LORIS\Http\Response\JsonResponse(
                 [
                     'statistics' => $reusable_response,

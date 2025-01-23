@@ -50,14 +50,7 @@ class SummaryStatistics extends Component {
             emptyOption={false}
           />
           <div>
-            <span
-              onClick={() => {
-                navigator.clipboard.writeText(this.state.data.csv);
-              }}
-            >
-              Data
-            </span>
-            {' '}in LORIS:
+              Data in LORIS:
           </div>
           {/* Statistics */}
           {(this.state.data.statistics).map((statistic) => {
@@ -79,6 +72,20 @@ class SummaryStatistics extends Component {
               </div>;
             }
           })}
+          {/* Copy to clipboard */}
+          <div
+            className='stats-copy'
+          >
+            <span className="glyphicon glyphicon-copy"
+              style={{
+                cursor: 'pointer',
+                opacity: '0.1',
+              }}
+              onClick={() => {
+                navigator.clipboard.writeText(this.state.data.csv);
+              }}
+            />
+          </div>
         </div>
       </div>
     );

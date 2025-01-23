@@ -21,7 +21,19 @@
     left: 8%;
     top: 10%;
     width: 55%;
-    height: 60%;
+    height: 90%;
+}
+
+.stats-copy {
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.stats-copy:hover {
+    opacity: 1;
 }
 
 @media screen and (max-width: 768px) {
