@@ -29,52 +29,40 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGET($request);
+            $DB       = $this->loris->getDatabaseConnection();
+            $response = $DB->pselect(
+                "SELECT * FROM Login_Summary_Statistics
+                WHERE Value > 0
+                ORDER BY QueryOrder ASC",
+                [],
+            );
+            if (count($response) == 0) {
+                return new \LORIS\Http\Response\JsonResponse(null);
+            }
+            $projects = $DB->pselectCol(
+                "SELECT DISTINCT Project FROM Login_Summary_Statistics",
+                []
+            );
+    
+            // csv version for exporting to clipboard
+            $reusable_response = iterator_to_array($response);
+            $csv = "Project,Statistic,Value\n";
+            foreach ($reusable_response as $row) {
+                $csv .= $row['Project'] .",". $row['Title'] .",". $row['Value'] . "\n";
+            }
+    
+            return new \LORIS\Http\Response\JsonResponse(
+                [
+                    'statistics' => $reusable_response,
+                    'projects'   => $projects,
+                    'csv'        => $csv,
+                ]
+            );
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
-    }
-
-    /**
-     * Initialize setup of the login module.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
-     * @return ResponseInterface The outgoing PSR7 response
-     */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
-    {
-        $DB       = $this->loris->getDatabaseConnection();
-        $response = $DB->pselect(
-            "SELECT * FROM Login_Summary_Statistics
-            WHERE Value > 0
-            ORDER BY QueryOrder ASC",
-            [],
-        );
-        if (count($response) == 0) {
-            return new \LORIS\Http\Response\JsonResponse(null);
-        }
-        $projects = $DB->pselectCol(
-            "SELECT DISTINCT Project FROM Login_Summary_Statistics",
-            []
-        );
-
-        // csv version for exporting to clipboard
-        $reusable_response = iterator_to_array($response);
-        $csv = "Project,Statistic,Value\n";
-        foreach ($reusable_response as $row) {
-            $csv .= $row['Project'] .",". $row['Title'] .",". $row['Value'] . "\n";
-        }
-
-        return new \LORIS\Http\Response\JsonResponse(
-            [
-                'statistics' => $reusable_response,
-                'projects'   => $projects,
-                'csv'        => $csv,
-            ]
-        );
     }
 
     /**
@@ -87,7 +75,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+        return md5(json_encode((string) $this->handle($request)->getBody()));
     }
 
     /**

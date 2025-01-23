@@ -69,7 +69,7 @@ class Login extends Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    this.fetchData()
+    this.fetchData();
   }
 
   /**

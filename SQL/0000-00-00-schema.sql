@@ -117,8 +117,6 @@ CREATE TABLE `users` (
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
@@ -2498,6 +2496,14 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+CREATE TABLE Login_Summary_Statistics (
+    Title VARCHAR(255),
+    Project VARCHAR(255),
+    Value INT,
+    QueryOrder INT,
+     PRIMARY KEY (Title, Project)
+);
+
 CREATE TABLE dataquery_queries (
     QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
     Query JSON NOT NULL,
@@ -2557,7 +2563,7 @@ CREATE TABLE dataquery_study_queries_rel (
     -- to a saved query but is chosen by admins, a dashboard query
     -- shows the number of matching results on the LORIS dashboard.
     Name varchar(255) NOT NULL,
-    PinType enum('topquery', 'dashboard'),
+    PinType enum('topquery', 'dashboard', 'loginpage'),
     FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
     FOREIGN KEY (PinnedBy) REFERENCES users(ID),
     CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
