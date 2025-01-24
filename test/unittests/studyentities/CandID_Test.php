@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * This file contains unit test for the CandID value object.
@@ -36,7 +38,7 @@ class CandID_Test extends TestCase
      *
      * @return []
      */
-    public function invalidValues(): array
+    public static function invalidValues(): array
     {
         return [
             ['A'],

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * PHP Version 7
@@ -21,7 +23,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class APIDocsTestIntegrationTest extends \LorisIntegrationTest
+class API_DocsTest extends \LorisIntegrationTest
 {
     /**
      * Tests that, when loading the api_docs module, the is available specs

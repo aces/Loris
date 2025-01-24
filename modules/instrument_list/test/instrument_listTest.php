@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Instrument_list automated integration tests
@@ -28,7 +30,7 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 
-class InstrumentListTestIntegrationTest extends LorisIntegrationTest
+class Instrument_ListTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations

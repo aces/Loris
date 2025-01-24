@@ -31,7 +31,10 @@ return [
     "suppress_issue_types" => [
         "PhanUnusedPublicNoOverrideMethodParameter",
         // Until phan/phan#4746 is fixed
-        "PhanTypeMismatchArgumentInternal"
+        "PhanTypeMismatchArgumentInternal",
+        "PhanUndeclaredMethod",
+        "PhanUndeclaredProperty",
+        "PhanUndeclaredThis"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [

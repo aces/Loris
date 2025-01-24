@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * New_profile automated integration tests
@@ -26,7 +28,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NewProfileTestIntegrationTest extends LorisIntegrationTest
+class New_ProfileTest extends LorisIntegrationTest
 {
     public $dateTaken  = "input[name='dobDate']";
     public $dtc        = "input[name='dobDateConfirm']";

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +47,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
 
-        $this->config = $this->factory->Config("../project/config.xml");
+        $this->config = $this->factory->Config("../test/config.xml");
 
         $database = $this->config->getSetting('database');
 

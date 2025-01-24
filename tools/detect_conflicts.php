@@ -1,5 +1,7 @@
 #!/usr/bin/php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * - Option to detect conflicts for the given instrument

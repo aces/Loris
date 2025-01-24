@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Unit test for NDB_BVL_Instrument class
@@ -835,7 +837,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods(
                 ["getFullName", "getSubtestList", "getDataDictionary"]
-            )->addMethods(['_setupForm'])->getMock();
+            )->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
             [

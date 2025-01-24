@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit
         bootstrap="bootstrap.php"
-        verbose="true"
         testdox="true"
         colors="true">
     <testsuites>
@@ -49,7 +48,6 @@
             <directory>../modules/media/test/</directory>
             <directory>../modules/module_manager/test/</directory>
             <directory>../modules/api_docs/test/</directory>
-            <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/my_preferences/test/</directory>
             <directory>../modules/new_profile/test/</directory>
@@ -59,29 +57,14 @@
             <directory>../modules/server_processes_manager/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>
-            <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
-            <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
             <directory>../test/test_instrument/</directory>	
         </testsuite>
     </testsuites>
-    <!-- This is currently breaking the coverage.xml generation, so
-         for now it's disabled, but eventually we'll want to make
-         sure everything is tested.. -->
-
-    <coverage>
-        <include>
-            <directory suffix=".inc">../php/libraries</directory>
-            <!-- CodeCov crashes because installer/ has classes with the same
-                 name as libraries/, so for now we only cover libraries and
-                 exceptions under php/ -->
-            <directory suffix=".inc">../php/exceptions</directory>
-            <!--directory suffix=".php">../htdocs</directory-->
-            <directory suffix=".inc">../modules/*/php</directory>
-            <!--directory>../modules/dashboard/ajax/</directory-->
-        </include>
-    </coverage>
-
+    <php>
+        <ini name="error_reporting" value="E_ALL | E_DEPRECATED"/>
+        <ini name="display_errors" value="1"/>
+    </php>
 </phpunit>
 

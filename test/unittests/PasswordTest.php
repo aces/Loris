@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Unit test for Password class
@@ -90,7 +92,7 @@ class PasswordTest extends TestCase
      *
      * @return []
      */
-    public function invalidValues(): array
+    public static function invalidValues(): array
     {
         return [
             // Should fail for not meeting length requirements
