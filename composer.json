@@ -23,7 +23,8 @@
         "phan/phan": "^5.0",
         "phpstan/phpstan": "^1.4",
         "slevomat/coding-standard": "^6.4",
-        "php-webdriver/webdriver" : "dev-main"
+        "php-webdriver/webdriver" : "dev-main",
+        "guzzlehttp/streams": "^3.0"
 
     },
     "scripts": {
