@@ -1,5 +1,7 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * The modules.php script a database and automatically adds any new modules from

@@ -1,5 +1,7 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * This tool verifies that the data contained in the LORIS database is well-formed

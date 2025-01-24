@@ -1,5 +1,7 @@
 #!/usr/bin/php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * The script update_issues_with_description.php copies the first comment

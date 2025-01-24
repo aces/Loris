@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script.

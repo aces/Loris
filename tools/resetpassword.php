@@ -1,5 +1,7 @@
 #!/usr/bin/php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * This script resets a user's password. It assumes it's being

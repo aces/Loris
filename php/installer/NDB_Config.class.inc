@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * This NDB_Config class is a stub that gets autoloaded by the LORIS installer.

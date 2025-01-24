@@ -1,5 +1,7 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Generates a CSV report of various statistics about this study.
