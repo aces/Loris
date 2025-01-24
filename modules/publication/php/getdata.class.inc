@@ -351,10 +351,10 @@ function getFiles($id) : array
 {
     $db = \NDB_Factory::singleton()->database();
 
-    $files = $db->pselect(
+    $files = iterator_to_array($db->pselect(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
         ['pid' => $id]
-    );
+    ));
     foreach ($files as $key => $f) {
        $files[$key]['Citation'] = isset($f['Citation']) && is_string($f['Citation']) ? htmlspecialchars_decode($f['Citation']) : '';
        $files[$key]['Version']  = isset($f['Version']) && is_string($f['Version']) ? htmlspecialchars_decode($f['Version']) : '';
