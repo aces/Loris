@@ -95,16 +95,8 @@ class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
-$resource = fopen($this->frecordTest, 'w'); 
-
-if ($resource === false) {
-    // Handle the error if the file could not be opened
-    $this->markTestIncomplete("File cannot be opened: " . $this->frecordTest);
-}
-
-// Now, use tryFopen correctly by passing a file path (not the resource)
-$stream = GuzzleHttp\Psr7\Utils::tryFopen($this->frecordTest, 'w');
-
+        $resource = fopen($this->frecordTest, 'w');
+        $stream   = GuzzleHttp\Stream\Stream::factory($resource);
         try {
             $response = $this->client->request(
                 'GET',

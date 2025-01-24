@@ -218,8 +218,8 @@ class LorisApiDicoms_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        $stream  = GuzzleHttp\Psr7\Utils::tryFopen($this->tarfileTest, 'w');
-
+        $resource        = fopen($this->tarfileTest, 'w');
+        $stream          = GuzzleHttp\Stream\Stream::factory($resource);
         try {
             $response_stream = $this->client->request(
                 'GET',
