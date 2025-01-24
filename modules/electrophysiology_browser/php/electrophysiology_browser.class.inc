@@ -93,7 +93,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new ElectrophysiologyBrowserRowProvisioner();
+        return new ElectrophysiologyBrowserRowProvisioner($this->loris);
     }
 
 

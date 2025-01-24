@@ -41,7 +41,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(array $row)
     {
-        $this->_candid      = $row['CandID'] ?? null;
+        $this->_candid      = strval($row['CandID']) ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
             $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));

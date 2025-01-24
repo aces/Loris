@@ -84,7 +84,7 @@ class Module extends \Module
             if (!class_exists('Provisioner')) {
                 self::registerAutoloader();
             }
-            $provisioner = new Provisioner();
+            $provisioner = new Provisioner($this->loris);
 
             if ($user->hasPermission('violated_scans_view_allsites')) {
                 $siteLabel = 'Site: All';

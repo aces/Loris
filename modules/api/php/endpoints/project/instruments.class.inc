@@ -42,10 +42,13 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project    The requested project
-     * @param string   $apiversion The version of the API being used
+     * @param \LORIS\LorisInstance $loris      The LORIS instance to retrieve data
+     *                                         from.
+     * @param \Project             $project    The requested project
+     * @param string               $apiversion The version of the API being used
      */
     public function __construct(
+        protected \LORIS\LorisInstance $loris,
         \Project $project,
         private string $apiversion = 'v0.0.3'
     ) {
@@ -140,7 +143,9 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
-        $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
+        $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner(
+            $this->loris
+        );
         $user = $request->getAttribute('user');
 
         $instruments = (new \LORIS\Data\Table())

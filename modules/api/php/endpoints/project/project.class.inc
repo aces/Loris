@@ -42,10 +42,14 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \LORIS\LorisInstance $loris   The LORIS instance to retrieve data
+     *                                      from.
+     * @param \Project             $project The requested project.
      */
-    public function __construct(\Project $project)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Project $project
+    ) {
         $this->_project = $project;
     }
 
@@ -109,16 +113,16 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Candidates($this->_project);
             break;
         case 'images':
-            $handler = new Images($this->_project);
+            $handler = new Images($this->loris, $this->_project);
             break;
         case 'instruments':
-            $handler = new Instruments($this->_project, $apiversion);
+            $handler = new Instruments($this->loris, $this->_project, $apiversion);
             break;
         case 'visits':
             $handler = new Visits($this->_project);
             break;
         case 'recordings':
-            $handler = new Recordings($this->_project);
+            $handler = new Recordings($this->loris, $this->_project);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();

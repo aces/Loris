@@ -32,12 +32,16 @@ namespace LORIS\document_repository;
 class DocRepoProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a ModuleManagerProvisioner, which gets modules for the
-     * module manager menu table.
+     * Create a DocPepoProvisioner, which gets documents for the
+     * document repository menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "
 SELECT
     v.File_name,

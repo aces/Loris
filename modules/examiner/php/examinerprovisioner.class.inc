@@ -34,10 +34,14 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a ModuleManagerProvisioner, which gets modules for the
      * module manager menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT 
                 e.full_name as Examiner,
                 u.Email,

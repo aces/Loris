@@ -182,7 +182,7 @@ class Document_Repository extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new DocRepoProvisioner();
+        return new DocRepoProvisioner($this->loris);
     }
     /**
      * Tells the base class that this page's provisioner can support the

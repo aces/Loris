@@ -987,13 +987,16 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets the Images of that session.
      *
-     * @param \User $user The requesting user
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     * @param \User                $user  The requesting user.
      *
      * @return \LORIS\Data\Models\ImageDTO[] A traversable of ImageDTO
      */
-    public function getImages(\User $user): array
+    public function getImages(\LORIS\LorisInstance $loris, \User $user): array
     {
         $provisioner = new \LORIS\Data\Provisioners\TimepointImagesRowProvisioner(
+            $loris,
             $this
         );
 
@@ -1011,16 +1014,21 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets the first Image of that session matching a given filename.
      *
-     * @param \User  $user     The requesting user
-     * @param string $filename The requested filename
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to retrieve data
+     *                                       from.
+     * @param \User                $user     The requesting user.
+     * @param string               $filename The requested filename.
      *
      * @throws \NotFound
      * @return \LORIS\Image
      */
-    public function getImageByFilename(\User $user, string $filename): \LORIS\Image
-    {
+    public function getImageByFilename(
+        \LORIS\LorisInstance $loris,
+        \User $user,
+        string $filename
+    ): \LORIS\Image {
         $filtered = array_filter(
-            $this->getImages($user),
+            $this->getImages($loris, $user),
             function ($dto) use ($filename) {
                 return $dto->getFilename() == $filename;
             }
@@ -1039,14 +1047,19 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets the Electrophysiology recordings of that session.
      *
-     * @param \User $user The requesting user
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     * @param \User                $user  The requesting user.
      *
-     * @return \LORIS\Data\Models\RecordingDTO[] A traversable of RecordingDTO.php
+     * @return \Traversable
      */
-    public function getRecordings(\User $user): array
-    {
+    public function getRecordings(
+        \LORIS\LorisInstance $loris,
+        \User $user
+    ): \Traversable {
         $provisioner
             = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
+                $loris,
                 $this
             );
 
@@ -1055,28 +1068,27 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         );
 
         $provisioner = $provisioner->filter($filter);
-
-        $traversable = (new \LORIS\Data\Table())
-            ->withDataFrom($provisioner)
-            ->getRows($user);
-
-        return iterator_to_array($traversable);
+        return $provisioner->execute($user);
     }
 
     /**
      * Gets the first Recording of that session matching a given filename.
      *
-     * @param \User  $user     The requesting user
-     * @param string $filename The requested filename
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to retrieve data
+     *                                       from.
+     * @param \User                $user     The requesting user
+     * @param string               $filename The requested filename
      *
      * @throws \NotFound
      * @return \LORIS\Recording
      */
-    public function getRecordingByFilename(\User $user, string $filename):
-    \LORIS\Recording
-    {
+    public function getRecordingByFilename(
+        \LORIS\LorisInstance $loris,
+        \User $user,
+        string $filename
+    ): \LORIS\Recording {
         $filtered = array_filter(
-            $this->getRecordings($user),
+            iterator_to_array($this->getRecordings($loris, $user)),
             function ($dto) use ($filename) {
                 return $dto->getFilename() == $filename;
             }
@@ -1096,18 +1108,19 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets the DicomTars of that session.
      *
-     * @param \User $user The requesting user
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     * @param \User                $user  The requesting user.
      *
      * @return \LORIS\data\Models\DicomTarDTO[] A traversable of DicomTarDTO
      */
-    public function getDicomTars(\User $user): array
+    public function getDicomTars(\LORIS\LorisInstance $loris, \User $user): iterable
     {
-        $provisioner = new \LORIS\api\provisioners\VisitDicomsRowProvisioner($this);
-        $traversable = (new \LORIS\Data\Table())
-            ->withDataFrom($provisioner)
-            ->getRows($user);
-
-        return iterator_to_array($traversable);
+        $provisioner = new \LORIS\api\provisioners\VisitDicomsRowProvisioner(
+            $loris,
+            $this
+        );
+        return iterator_to_array($provisioner->execute($user));
     }
 
     /**

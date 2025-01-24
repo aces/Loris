@@ -160,7 +160,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        $endpoint = new Candidate\Candidate($candidate);
+        $endpoint = new Candidate\Candidate($this->loris, $candidate);
 
         $pathparts = array_slice($pathparts, 2);
         $request   = $request->withAttribute('pathparts', $pathparts);
@@ -186,7 +186,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ['access_all_profiles']
         );
 
-        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
+        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner(
+            $this->loris
+        )
+        )
             ->filter($filter)
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
 

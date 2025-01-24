@@ -62,11 +62,16 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
     /**
      * Contructor
      *
-     * @param \Candidate  $candidate The requested candidate
-     * @param ?\Timepoint $visit     The requested visit; can be null in PUT requests
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param \Candidate           $candidate The requested candidate
+     * @param ?\Timepoint          $visit     The requested visit; can be null
+     *                                        in PUT requests
      */
-    public function __construct(\Candidate $candidate, ?\Timepoint $visit)
-    {
+    public function __construct(protected \LORIS\LorisInstance $loris,
+        \Candidate $candidate,
+        ?\Timepoint $visit
+    ) {
         $this->_candidate = $candidate;
         $this->_visit     = $visit;
     }
@@ -145,16 +150,16 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             $handler = new Instruments($this->_visit);
             break;
         case 'images':
-            $handler = new Images($this->_visit);
+            $handler = new Images($this->loris, $this->_visit);
             break;
         case 'qc':
             $handler = new Qc($this->_visit);
             break;
         case 'dicoms':
-            $handler = new Dicoms($this->_visit);
+            $handler = new Dicoms($this->loris, $this->_visit);
             break;
         case 'recordings':
-            $handler = new Recordings($this->_visit);
+            $handler = new Recordings($this->loris, $this->_visit);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();

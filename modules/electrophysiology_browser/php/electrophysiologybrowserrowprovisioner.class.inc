@@ -35,11 +35,15 @@ class ElectrophysiologyBrowserRowProvisioner
     /**
      * Create an ElectrophysiologyBrowserRowProvisioner, which gets rows for the
      * electrophysiology browser menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
 
         parent::__construct(
+            $loris,
             "SELECT
               psc.Name                                  AS Site,
               c.PSCID                                   AS PSCID,
