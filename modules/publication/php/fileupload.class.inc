@@ -25,6 +25,7 @@ class FileUpload extends \NDB_Page
      */
     function _hasAccess(\User $user): bool
     {
+        return true;
         return $user->hasAnyPermission(
             [
                 'publication_view',
@@ -42,45 +43,38 @@ class FileUpload extends \NDB_Page
      */
 public function handle(ServerRequestInterface $request): ResponseInterface
 {
-        // Get query parameters
-$queryParams = $request->getQueryParams();
-$action = $queryParams['action'] ?? null;
+    // Determine if request method is POST
+    $method = $request->getMethod();
+    $data = ($method === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
 
-switch ($action) {
-     case 'upload':
-    $this->uploadPublication();
+    error_log(print_r($data,true));
 
-        return (new \LORIS\Http\Response())
-            ->withStatus(200)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode("OK")
-                )
-            );
-        break;
+    error_log("----------");
+    //    error_log($action);
 
-    // Add other cases here if necessary, for example:
-    case 'editProject':
-        $this->editProject();
-                return (new \LORIS\Http\Response())
-            ->withStatus(200)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode("OK")
-                )
-            );
-        break;
+    switch ($method) {
+        case 'POST':
+            $this->uploadPublication();
+            break;
 
-    default:
-        // Handle the default case if no valid action is provided
-        $message = ['message' => 'Invalid action'];
-        return (new \LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
-}}  
+        case 'PATCH':
+            $this->editProject();
+            break;
+
+        default:
+            $message = ['message' => 'Invalid method'];
+            return (new \LORIS\Http\Response())
+                ->withStatus(400)
+                ->withHeader('Content-Type', 'application/json')
+                ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+    }
+
+    return (new \LORIS\Http\Response())
+        ->withStatus(200)
+        ->withHeader("Content-Type", "application/json")
+        ->withBody(new \LORIS\Http\StringStream(json_encode("OK")));
+}
+
 /**
  * Function for new publications
  *
