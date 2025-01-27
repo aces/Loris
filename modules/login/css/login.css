@@ -4,3 +4,37 @@
     cursor: pointer;
     color: grey;
 }
+
+.study-description {
+    display: flex;
+    flex-direction: row;
+}
+
+.stats-phone {
+    position: relative;
+    width: 300px;
+    margin: auto;
+}
+
+.stats-screen {
+    position: absolute;
+    left: 8%;
+    top: 10%;
+    width: 55%;
+    height: 90%;
+}
+
+.stats-copy {
+    position: absolute;
+    bottom: 20px;
+}
+
+.stats-copy:hover {
+    opacity: 1;
+}
+
+@media screen and (max-width: 768px) {
+    .study-description {
+        flex-direction: column-reverse;
+    }
+}

@@ -109,6 +109,12 @@ paths:
           description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
           schema:
             type: string
+        - name: loginpagename
+          in: query
+          style: pipeDelimited
+          description: The admin name to pin the query to the login page as. If the empty string, will be unpinned.
+          schema:
+            type: string
         - name: name
           in: query
           style: pipeDelimited
