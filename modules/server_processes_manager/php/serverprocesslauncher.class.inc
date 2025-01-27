@@ -172,9 +172,8 @@ class ServerProcessLauncher
     /**
      * Launch instrument data parse process
      *
-     * @param string $instrument    Instrument name
-     * @param string $fileLocation  File location
-     *
+     * @param string $instrument   Instrument name
+     * @param string $fileLocation File location
      *
      * @return ?int ID (in the database) of the launched process or null
      *             if the process could not be run
@@ -182,8 +181,7 @@ class ServerProcessLauncher
     public function parseInstrumentData(
         string $instrument,
         string $fileLocation
-    ): ?int
-    {
+    ): ?int {
         $parseInstrumentDataProcess = new ParseInstrumentDataServerProcess(
             $instrument,
             $fileLocation
