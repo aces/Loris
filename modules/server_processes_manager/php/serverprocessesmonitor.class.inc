@@ -141,7 +141,8 @@ class ServerProcessesMonitor
         $serverProcessFactory = new ServerProcessFactory();
         $savedProcesses       = [];
         foreach ($rows as $row) {
-            $savedProcesses[$row['id']] = $serverProcessFactory->getServerProcess($row);
+            $savedProcesses[$row['id']]
+                = $serverProcessFactory->getServerProcess($row);
 
         }
 
@@ -160,7 +161,6 @@ class ServerProcessesMonitor
         foreach ($idsToMonitor as $id) {
             // Find process in the database with this id (null if none)
             $matchingProcess = $savedProcesses[$id] ?? null;
-
 
             if (is_null($matchingProcess)) {
                 // No process with this id. Unknown id = unknown state
