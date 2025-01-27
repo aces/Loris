@@ -94,14 +94,14 @@ class Module extends \Module
 
             $scansummary = $DB->pselect(
                 "SELECT s.Visit_label,
-                    mst.Scan_type,
+                    mst.MriScanTypeName as ScanType,
                     COALESCE(fqc.QCStatus, '') as QC,
                     COUNT(*) as nfiles
                  FROM files f JOIN session s ON (s.ID=f.sessionID)
-                    JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
+                    JOIN mri_scan_type mst ON (f.MriScanTypeID=mst.MriScanTypeID)
                     LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
                 WHERE CandID=:cid AND f.OutputType='native'
-                GROUP BY s.Visit_label, mst.Scan_type, QC",
+                GROUP BY s.Visit_label, mst.MriScanTypeName, QC",
                 ['cid' => $candidate->getCandID()],
             );
 

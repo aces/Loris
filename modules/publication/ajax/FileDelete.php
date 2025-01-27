@@ -29,25 +29,36 @@ $message = ['message' => null];
 if (empty($uploadData)) {
     http_response_code(400);
     $message['message'] = 'Invalid Upload ID';
-    exit(json_encode($message));
+    print json_encode($message);
+    exit(0);
 }
 
 if (userCanDelete($uploadData, $db, $user)) {
+    $uploaddir = $config->getSetting('publication_uploads');
+    $deletedir = $config->getSetting('publication_deletions');
+
+    if (empty($uploaddir) || empty($deletedir)) {
+        throw new \Exception("Invalid config setting");
+    }
+    if (empty($uploadData['Filename'])) {
+        throw new \Exception("Invalid filename");
+    }
 
     $db->delete(
         'publication_upload',
         ['PublicationUploadID' => $uploadID]
     );
 
-    $src  = $config->getSetting('publication_uploads') . $uploadData['Filename'];
-    $dest = $config->getSetting('publication_deletions') . $uploadData['Filename'];
+    $src  = \Utility::pathJoin($uploaddir, $uploadData['Filename']);
+    $dest = \Utility::pathJoin($deletedir, $uploadData['Filename']);
 
     rename($src, $dest);
 
 } else {
     http_response_code(403);
     $message['message'] = 'You do not have permission to delete this file.';
-    exit(json_encode($message));
+    print json_encode($message);
+    exit(0);
 }
 
 /**

@@ -183,7 +183,7 @@ class DocIndex extends React.Component {
         <a
           href={downloadURL}
           target="_blank"
-          download={row['File Name']}
+          download={encodeURIComponent(row['File Name'])}
         >
           {cell}
         </a>

@@ -38,7 +38,7 @@ function editFile()
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Read JSON from STDIN
@@ -91,7 +91,7 @@ function uploadFile()
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Validate media path and destination folder
@@ -183,11 +183,16 @@ function uploadFile()
         'language_id'   => $language,
     ];
 
+    $projectID = $db->pselectOne(
+        "SELECT ProjectID FROM session WHERE ID=:sid",
+        ['sid' => $sessionID]
+    );
+
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
-            $uploadNotifier->notify(["file" => $fileName]);
+            $uploadNotifier->notify(["file" => $fileName, "project" => $projectID]);
             $qparam = ['ID' => $sessionID];
             $result = iterator_to_array(
                 $db->pselect(

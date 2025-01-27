@@ -33,7 +33,7 @@ try {
     if (ob_get_level() > 0) {
         ob_end_flush();
     }
-    exit;
+    exit(0);
 } catch (Exception $e) {
 
     // Wasn't a module, so fall back on the old style of DB lookup.

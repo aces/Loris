@@ -428,7 +428,9 @@ function addInstrument($sessionID, $testName, $loris)
 
     // get CommentID of the newly assigned instrument
     $query = "SELECT CommentID FROM flag
-        WHERE SessionID='$sessionID' AND Test_name='$testName'";
+              JOIN test_names ON (test_names.ID = flag.TestID)
+              WHERE SessionID='$sessionID'
+              AND Test_name='$testName'";
 
     /*
      * add Feedback

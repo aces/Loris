@@ -546,7 +546,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'type'    => 'date',
                         'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][0]),
-                        'options' => ['value' => 'Option']
+                        'options' => [
+                            'value'   => 'Option',
+                            'maxYear' => '9999'
+                        ]
                     ],
                     [
                         'label'   => null,

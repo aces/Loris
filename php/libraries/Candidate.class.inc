@@ -259,7 +259,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        ProjectID $registrationProjectID = null
+        ?ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();

@@ -95,7 +95,7 @@ foreach ($_POST as $key => $value) {
                     "Duplicate value submitted: "
                     . htmlspecialchars($value, ENT_QUOTES)
                 );
-                exit;
+                exit(0);
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
             $pathIDs = getPathIDs('ConfigSettings');

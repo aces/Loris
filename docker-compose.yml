@@ -24,6 +24,7 @@ services:
       - ./:/app
       - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
       - ./raisinbread/instruments:/app/project/instruments
+      - ./logs:/app/logs  # Mount logs to the host machine
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -36,6 +37,7 @@ services:
       dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
+      - ./logs:/app/logs
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml

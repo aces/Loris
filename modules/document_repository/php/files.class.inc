@@ -313,7 +313,7 @@ class Files extends \NDB_Page
 
         if (! $user->hasPermission('document_repository_upload_edit')) {
             header("HTTP/1.1 403 Forbidden");
-            exit;
+            exit(0);
         }
 
         // Do some validation and fail early on bad inputs.
@@ -325,7 +325,7 @@ class Files extends \NDB_Page
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
-            exit;
+            exit(0);
         }
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger(strval($category))) {
