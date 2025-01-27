@@ -1,6 +1,10 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\instruments;
+use \LORIS\Data\Scope;
+use \LORIS\Data\Cardinality;
+
+use \LORIS\Data\Types\Enumeration;
 
 /**
  * InstrumentQueryEngine implements a LORIS QueryEngine for querying
@@ -41,19 +45,57 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $rows = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 
         $dict = [];
+
+        // Use the same option enums for all instruments
+        $adminoptions     = new Enumeration('None', 'Partial', 'All');
+        $dataentryoptions = new Enumeration('In Progress', 'Complete');
+        $validityoptions  = new Enumeration('Questionable', 'Invalid', 'Valid');
+
+        $cardinality = new Cardinality(Cardinality::SINGLE);
+        $scope       = new Scope(Scope::SESSION);
+
         foreach ($rows as $testname) {
             try {
-                $inst   = \NDB_BVL_Instrument::factory(
+                $inst = \NDB_BVL_Instrument::factory(
                     $this->loris,
                     $testname,
                     "",
                     "",
                 );
-                $cat    = new \LORIS\Data\Dictionary\Category(
+                $cat  = new \LORIS\Data\Dictionary\Category(
                     $testname,
                     $inst->getFullName()
                 );
-                $fields = $inst->getDataDictionary();
+
+                $fields = [
+                    new DictionaryItem(
+                        $inst->testName.'_Administration',
+                        'Administration flag for ' . $inst->getFullName(),
+                        $scope,
+                        $adminoptions,
+                        $cardinality,
+                        'Administration',
+                    ),
+                    new DictionaryItem(
+                        $inst->testName.'_Data_entry',
+                        'Data entry status for ' . $inst->getFullName(),
+                        $scope,
+                        $dataentryoptions,
+                        $cardinality,
+                        'Data_entry',
+                    ),
+                ];
+                if ($inst->ValidityEnabled) {
+                            $fields[] =    new DictionaryItem(
+                                $inst->testName.'_Validity',
+                                'Test validity for ' . $inst->getFullName(),
+                                $scope,
+                                $validityoptions,
+                                $cardinality,
+                                'Validity',
+                            );
+                }
+                $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
                 error_log($e);
@@ -329,11 +371,25 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         $candData[$dict->getName()] = [];
                     }
                     $sid = $loadedInstrument->getSessionID();
-                    $candData[$dict->getName()][$sid->__toString()] = [
-                        'VisitLabel' => $loadedInstrument->getVisitLabel(),
-                        'SessionID'  => $sid->__toString(),
-                        'value'      => $loadedInstrument->getDictionaryValue($dict),
-                    ];
+                    switch ($dict->fieldname) {
+                    case 'Administration':
+                    case 'Data_entry':
+                    case 'Validity':
+                        $flags = $loadedInstrument->getFlags()->toArray();
+                        $candData[$dict->getName()][$sid->__toString()] = [
+                            'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                            'SessionID'  => $sid->__toString(),
+                            'value'      => $flags[$dict->fieldname],
+                        ];
+                        break;
+                    default:
+                        $candData[$dict->getName()][$sid->__toString()] = [
+                            'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                            'SessionID'  => $sid->__toString(),
+                            'value'      => $loadedInstrument
+                        ->getDictionaryValue($dict),
+                        ];
+                    }
                 }
             }
             yield "$iCandID" => $candData;
