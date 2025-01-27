@@ -48,8 +48,9 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
     /**
      * Builds a new ParseInstrumentDataServerProcess
      *
-     * @param string  $instrument  Instrument name
+     * @param string  $instrument   Instrument name
      * @param string  $fileLocation Location of the uploaded file
+     * @param ?int    $id           ID of the process in the database.
      * @param ?int    $pid          PID for this process
      * @param ?string $stdoutFile   full path of file used to store the process's
      *                              stdout
@@ -93,9 +94,11 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
-        $parseScript  = "php " . dirname(__DIR__, 3) . "/tools/parse_instrument_data.php ";
+        $parseScript  = "php " .
+            dirname(__DIR__, 3) .
+            "/tools/parse_instrument_data.php ";
         $parseScript .= "$this->_instrument $this->_fileLocation ";
-        $parseScript .= "{$this->getUserId()} {$this->getUserId()}";    // TODO: Examiner?
+        $parseScript .= "{$this->getUserId()} {$this->getUserId()}";
         return escapeshellarg($parseScript);
     }
 
@@ -127,7 +130,8 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
         if (is_numeric($exitCode) && $exitCode == 0) {
             return "Instrument data parse completed without errors.\n\n$exitText";
         } else {
-            return "Instrument data parse failed with error code: $exitCode.\n\n$exitText";
+            return "Instrument data parse failed with error code: $exitCode." .
+                "\n\n$exitText";
         }
     }
 
@@ -173,8 +177,10 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
     /**
      * Send email to user who triggered the process launch
      *
+     * @return void
      */
-    public function sendNotificationEmail() {
+    public function sendNotificationEmail()
+    {
         error_log("Sending email to {$this->getUserId()}");
 
         $user = \NDB_Factory::singleton()->database()->pselectRow(
@@ -183,32 +189,43 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
         );
 
         $msg_data = [
-            'name' => $user['First_name'],
+            'name'    => $user['First_name'],
             'message' => $this->getExitText(),
         ];
-        \Email::send($user['Email'], 'notifier_instrument_data_upload.tpl', $msg_data);
+        \Email::send(
+            $user['Email'],
+            'notifier_instrument_data_upload.tpl',
+            $msg_data
+        );
     }
 
     /**
      * Change file permissions
      *
+     * @return void
      */
-    public function changeFilePermissions() {
-        array_map(function($file){
-            chmod($file, 0775);
-        }, [
-            $this->getStdoutFile(),
-            $this->getStderrFile(),
-            $this->getExitCodeFile(),
-        ]);
+    public function changeFilePermissions()
+    {
+        array_map(
+            function ($file) {
+                chmod($file, 0775);
+            },
+            [
+                $this->getStdoutFile(),
+                $this->getStderrFile(),
+                $this->getExitCodeFile(),
+            ]
+        );
     }
 
 
     /**
      * Perform action once process is completed
      *
+     * @return void
      */
-    public function performPostAction() {
+    public function performPostAction()
+    {
         $this->sendNotificationEmail();
     }
 }

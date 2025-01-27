@@ -10,7 +10,13 @@ use LORIS\server_processes_manager as SP;
 /**
  * Upload instrument data
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * PHP Version 8
+ *
+ * @category Main
+ * @package  LORIS
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Instrument_Data extends \NDB_Page
 {
@@ -109,27 +115,28 @@ class Instrument_Data extends \NDB_Page
         // Ensure the user is allowed to upload.
         if (!$request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
-        )) {
+        )
+        ) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        $requestBody  = (array) $request->getParsedBody();
+        $requestBody = (array) $request->getParsedBody();
 
         if (isset($requestBody['instrument'])) {
             $instrument = $requestBody['instrument'];
             if ($this->instrumentExists($instrument)) {
-                $dataFile     = $request->getUploadedFiles()['data_file'];
-                $userID = $request->getAttribute('user')->getUsername();
+                $dataFile = $request->getUploadedFiles()['data_file'];
+                $userID   = $request->getAttribute('user')->getUsername();
 
                 $uploadFolder = $this->loris
                     ->getConfiguration()->getSetting('instrumentDataPath');
                 $filePrefix   = $userID . '_' . time() . '_';
-                $fileLocation  = $uploadFolder . "/$filePrefix"
+                $fileLocation = $uploadFolder . "/$filePrefix"
                     . $dataFile->getClientFilename();
                 $dataFile->moveTo($fileLocation);
 
                 $fileInfo = new SplFileInfo($fileLocation);
-                $this->insertCSVFileEntry($fileInfo->getFilename());
+                $this->_insertCSVFileEntry($fileInfo->getFilename());
 
                 if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
                     // Run as background task
@@ -141,9 +148,10 @@ class Instrument_Data extends \NDB_Page
 
                     $result = [
                         'success' => true,
-                        'message' => "Due to the relatively large size of the uploaded file, " .
-                                     "the process has been sent to the background task queue. " .
-                                     "You will receive an email once completed."
+                        'message' => "Due to the relatively large size of the " .
+                            "uploaded file, the process has been sent to the " .
+                            "background task queue. You will receive an email " .
+                            "once completed."
 
                     ];
                     return new \LORIS\Http\Response\JSON\Created($result);
@@ -155,8 +163,8 @@ class Instrument_Data extends \NDB_Page
                         $instrument,
                         $fileInfo,
                     );
-                    $data      = $dataParser->parseCSV($this->loris);
-                    $validData = $dataParser->validateData(
+                    $data       = $dataParser->parseCSV($this->loris);
+                    $validData  = $dataParser->validateData(
                         $data,
                         [
                             'UserID'   => $userID,
@@ -213,11 +221,20 @@ class Instrument_Data extends \NDB_Page
         return $count > 0;
     }
 
-    private function insertCSVFileEntry($filename)
+    /**
+     * Insert entry for CSV file
+     *
+     * @param string $filename The file name
+     *
+     * @return void
+     */
+    private function _insertCSVFileEntry($filename)
     {
-        // Create db entry for csv file
-        $this->loris->getDatabaseConnection()->insert('instrument_data_files', [
-            'FilePath' => $filename,
-        ]);
+        $this->loris->getDatabaseConnection()->insert(
+            'instrument_data_files',
+            [
+                'FilePath' => $filename,
+            ]
+        );
     }
 }
