@@ -223,14 +223,20 @@ class MriUploadServerProcess extends AbstractServerProcess
     /**
      * Change file permissions
      *
+     * @return void
      */
-    public function changeFilePermissions() {}
+    public function changeFilePermissions()
+    {
+    }
 
     /**
      * Perform action once process is completed
      *
+     * @return void
      */
-    public function performPostAction() {}
+    public function performPostAction()
+    {
+    }
 }
 
 

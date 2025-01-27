@@ -29,8 +29,10 @@ class ServerProcessFactory
     /**
      * Creates a server process based on the parameters passed as arguments.
      *
-     * @param array $dbRow  Process database row.
+     * @param array $dbRow Process database row.
+     *
      * @return AbstractServerProcess the server process created
+     *
      * @throws \InvalidArgumentException if the server process type is unknown
      */
     public function getServerProcess(array $dbRow): AbstractServerProcess
@@ -50,7 +52,7 @@ class ServerProcessFactory
                     $dbRow['start_time'],
                     $dbRow['end_time'],
                     $dbRow['exit_text']
-            ),
+                ),
             ParseInstrumentDataServerProcess::PROCESS_TYPE =>
                 new ParseInstrumentDataServerProcess(
                     '',
@@ -65,8 +67,10 @@ class ServerProcessFactory
                     $dbRow['start_time'],
                     $dbRow['end_time'],
                     $dbRow['exit_text']
-            ),
-            default => throw new \InvalidArgumentException("Unknown server process type: ${dbRow['type']}")
+                ),
+            default => throw new \InvalidArgumentException(
+                "Unknown server process type: ${dbRow['type']}"
+            )
         };
     }
 }

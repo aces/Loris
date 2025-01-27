@@ -582,7 +582,7 @@ abstract class AbstractServerProcess
     /**
      * Gets directory where all temporary files created by this task should go
      *
-     * @return string full path to the temporary directory
+     * @return   string full path to the temporary directory
      * @abstract
      */
     abstract public function getTmpDir();
@@ -590,6 +590,7 @@ abstract class AbstractServerProcess
     /**
      * Change file permissions
      *
+     * @return   void
      * @abstract
      */
     abstract public function changeFilePermissions();
@@ -597,6 +598,7 @@ abstract class AbstractServerProcess
     /**
      * Perform action once process is completed
      *
+     * @return   void
      * @abstract
      */
     abstract public function performPostAction();

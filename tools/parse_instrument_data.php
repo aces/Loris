@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script runs the instrument data parser
  *
  * "Usage: php parse_instrument_data.php instrument fileLocation userID examinerID"
- * "Example: php parse_instrument_data.php bmi /data/uploads/bmi_data.csv admin admin";
+ * "Ex: php parse_instrument_data.php bmi /data/uploads/bmi_data.csv admin admin";
  *
  * PHP Version 8
  *
@@ -23,21 +24,21 @@ if (count($argv) != 5) {
     exit(1);
 }
 
-$instrument     = $argv[1];
-$fileLocation   = $argv[2];
-$userID         = $argv[3];
-$examinerID     = $argv[4];
+$instrument   = $argv[1];
+$fileLocation = $argv[2];
+$userID       = $argv[3];
+$examinerID   = $argv[4];
 
-$result         = [];
+$result = [];
 
 try {
-    $fileInfo = new SplFileInfo($fileLocation);
+    $fileInfo   = new SplFileInfo($fileLocation);
     $dataParser = new InstrumentDataParser(
         $instrument,
         $fileInfo,
     );
-    $data      = $dataParser->parseCSV($lorisInstance);
-    $validData = $dataParser->validateData(
+    $data       = $dataParser->parseCSV($lorisInstance);
+    $validData  = $dataParser->validateData(
         $data,
         [
             'UserID'   => $userID,
