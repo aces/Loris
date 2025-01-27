@@ -342,21 +342,21 @@ class InstrumentDataParser extends CSVParser
 
                         // TODO: Tech debt -- can be reset between getGV and save
 
-                        $previousFiles = $_FILES;
+                        $previousFiles   = $_FILES;
                         $previousRequest = $_REQUEST;
-                        $previousPost = $_POST;
-                        $_FILES   = [];
-                        $_REQUEST = $rowData;
-                        $_POST    = $rowData;
+                        $previousPost    = $_POST;
+                        $_FILES          = [];
+                        $_REQUEST        = $rowData;
+                        $_POST           = $rowData;
 
                         $instrument->form->getGroupValues(
                             array_keys($rowData),
                             $out
                         );
-                        $_FILES = $previousFiles;
+                        $_FILES   = $previousFiles;
                         $_REQUEST = $previousRequest;
-                        $_POST = $previousPost;
-                        $success = $instrument->save();
+                        $_POST    = $previousPost;
+                        $success  = $instrument->save();
 
                         if (!$success) {
                             throw new RuntimeException(
@@ -367,9 +367,12 @@ class InstrumentDataParser extends CSVParser
                             $query  = "SELECT DataID
                                     FROM flag
                                     WHERE CommentID = :commentID";
-                            $dataID = $db->pselectOneInt($query, [
-                                'commentID' => $instrument->getCommentID()
-                            ]);
+                            $dataID = $db->pselectOneInt(
+                                $query,
+                                [
+                                    'commentID' => $instrument->getCommentID()
+                                ]
+                            );
 
                             $db->update(
                                 'instrument_data_files',
@@ -397,27 +400,27 @@ class InstrumentDataParser extends CSVParser
                     $db->commit();
                     error_log("Saved " . count($instrumentData) . " row(s)");
                     return [
-                        'success'   => true,
-                        'message'   => "Saved " . count($instrumentData) . " row(s)",
+                        'success' => true,
+                        'message' => "Saved " . count($instrumentData) . " row(s)",
                     ];
                 }
-                } catch (\Exception $e) {
-                    error_log(
-                        "Rolling back due to unexpected error: {$e->getMessage()}"
-                    );
-                    $db->rollBack();
-                    return [
-                        'success' => false,
-                        'message' => "Data error: {$e->getMessage()}"
-                    ];
-                }
-            } catch (DatabaseException $e) {
-                error_log("DB exception: {$e->getMessage()}");
+            } catch (\Exception $e) {
+                error_log(
+                    "Rolling back due to unexpected error: {$e->getMessage()}"
+                );
+                $db->rollBack();
                 return [
                     'success' => false,
-                    'message' => "DB Error: {$e->getMessage()}"
+                    'message' => "Data error: {$e->getMessage()}"
                 ];
             }
+        } catch (DatabaseException $e) {
+            error_log("DB exception: {$e->getMessage()}");
+            return [
+                'success' => false,
+                'message' => "DB Error: {$e->getMessage()}"
+            ];
+        }
     }
 }
 
