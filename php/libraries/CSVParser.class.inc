@@ -3,13 +3,7 @@
 /**
  * This file contains a class used to parse csv files
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
  */
 
 namespace LORIS;
@@ -20,13 +14,7 @@ use SplFileObject;
 /**
  * This class is used as a helper for parsing csv files
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
  */
 class CSVParser
 {
