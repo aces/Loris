@@ -25,7 +25,6 @@ class FileUpload extends \NDB_Page
      */
     function _hasAccess(\User $user): bool
     {
-        return true;
         return $user->hasAnyPermission(
             [
                 'publication_view',
@@ -43,22 +42,20 @@ class FileUpload extends \NDB_Page
      */
 public function handle(ServerRequestInterface $request): ResponseInterface
 {
-    // Determine if request method is POST
-    $method = $request->getMethod();
-    $data = ($method === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
-
-    error_log(print_r($data,true));
-
-    error_log("----------");
-    //    error_log($action);
+       $method = $request->getMethod();
 
     switch ($method) {
-        case 'POST':
-            $this->uploadPublication();
-            break;
-
-        case 'PATCH':
-            $this->editProject();
+        case 'POST': 
+           $referer = $request->getHeaderLine('Referer');
+	if (str_contains($referer, 'view_project')) {
+		// Perform edit logic
+		    $queryParams = $request->getQueryParams();
+                    $id = $queryParams['id'] ?? null;
+		    $this->editProject($id);
+	} else {
+		    // Perform upload logic
+             $this->uploadPublication();
+	} 
             break;
 
         default:
@@ -85,7 +82,6 @@ function uploadPublication()
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
-
     $title = $_POST['title'] ?? null;
 
     // back end validation for title uniqueness constraint
@@ -549,7 +545,6 @@ function notify($pubID, $type, $baseURL) : void
             $emailData
         );
     }
-            error_log("notify44444");
 
 }
 
@@ -557,23 +552,24 @@ function notify($pubID, $type, $baseURL) : void
  * Edits fields for an existing publication project
  *
  */
-function editProject()
+function editProject($id = null)
 {
+	error_log("editproject........");
     $db = \NDB_Factory::singleton()->database();
-    $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
-    $title            = $_POST['title'] ?? null;
-    $statusID         = $_POST['status'] ?? null;
-    $rejectedReason   = $_POST['rejectedReason'] ?? null;
-    $description      = $_POST['description'] ?? null;
-    $project          = $_POST['project'] ?? null;
-    $publishingStatus = $_POST['publishingStatus'] ?? null;
-    $datePublication  = $_POST['datePublication'] ?? null;
-    $journal          = $_POST['journal'] ?? null;
-    $doi  = $_POST['doi'] ?? null;
-    $link = $_POST['link'] ?? null;
-    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
-    $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
+$title                  = $_REQUEST['title'] ?? null;
+$statusID               = $_REQUEST['status'] ?? null;
+$rejectedReason         = $_REQUEST['rejectedReason'] ?? null;
+$description            = $_REQUEST['description'] ?? null;
+$project                = $_REQUEST['project'] ?? null;
+$publishingStatus       = $_REQUEST['publishingStatus'] ?? null;
+$datePublication        = $_REQUEST['datePublication'] ?? null;
+$journal                = $_REQUEST['journal'] ?? null;
+$doi                    = $_REQUEST['doi'] ?? null;
+$link                   = $_REQUEST['link'] ?? null;
+$leadInvestigator       = $_REQUEST['leadInvestigator'] ?? null;
+$leadInvestigatorEmail  = $_REQUEST['leadInvestigatorEmail'] ?? null;
+
 
     $pubData = $db->pselectRow(
         'SELECT p.*, pc.Name as LeadInvestigator, ' .
@@ -632,10 +628,10 @@ function editProject()
     $exists = $db->pselectOne(
         "SELECT PublicationID " .
         "FROM publication " .
-        "WHERE Title=:t",
-        ['t' => $title]
+        "WHERE Title=:t AND PublicationID != :id",
+        ['t' => $title, 'id' =>$id]
     );
-    if (intval($exists) !== intval($id)) {    
+    if (intval($exists)) {    
         $this->showPublicationError("Title Exists", 500);
         exit;
     }
@@ -647,10 +643,10 @@ function editProject()
     $this->processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        $this->notify($id, 'review', $_POST['baseURL']);
+        $this->notify($id, 'review', $_REQUEST['baseURL']);
     } else {
         // otherwise send edit email
-        $this->notify($id, 'edit', $_POST['baseURL']);
+        $this->notify($id, 'edit', $_REQUEST['baseURL']);
     }
     if (!empty($toUpdate)) {
         $db->update(
@@ -682,8 +678,8 @@ function editProject()
 function editEditors($id) : void
 {
     $db = \NDB_Factory::singleton()->database();
-    $usersWithEditPerm = isset($_POST['usersWithEditPerm'])
-        ? json_decode($_POST['usersWithEditPerm']) : null;
+    $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
+        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
 
     $currentUWEP = $db->pselectCol(
         'SELECT UserID '.
@@ -692,15 +688,20 @@ function editEditors($id) : void
         ['pid' => $id]
     );
 
-    if ($usersWithEditPerm != $currentUWEP) {
-        // new UWEP will be in array_diff result of submitted vs stored
-        $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
-        // old UWEP who should be removed will appear in inverse operation
-        $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
-    }
+// Ensure $currentUWEP is an array
+$currentUWEP = is_array($currentUWEP) ? $currentUWEP : [];
 
+if ($usersWithEditPerm != $currentUWEP) {
+    // Ensure $usersWithEditPerm is an array
+    $usersWithEditPerm = is_array($usersWithEditPerm) ? $usersWithEditPerm : [];
+
+    // new UWEP will be in array_diff result of submitted vs stored
+    $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
+    // old UWEP who should be removed will appear in inverse operation
+    $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
+}
     if (!empty($newUWEP)) {
-        $this->insertEditors($id);
+        $this->insertEditors(intval($id));
     }
     if (!empty($oldUWEP)) {
         foreach ($oldUWEP as $uid) {
@@ -725,8 +726,8 @@ function editEditors($id) : void
 function editCollaborators($id) : void
 {
     $db = \NDB_Factory::singleton()->database();
-    $submittedCollaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : null;
+    $submittedCollaborators = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators'], true) : null;
 
     $currentCollabs       = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -735,13 +736,23 @@ function editCollaborators($id) : void
         'WHERE pcr.PublicationID=:pid',
         ['pid' => $id]
     );
-    $currCollabNames      = array_values($currentCollabs);
-    $submittedCollabNames = array_column($submittedCollaborators, 'name');
-    if ($submittedCollabNames != $currCollabNames) {
-        $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
-        $oldCollabs = array_diff($currentCollabs, $submittedCollabNames);
-    }
 
+// Ensure $currentCollabs is an array
+$currentCollabs = is_array($currentCollabs) ? $currentCollabs : [];
+
+// Ensure $submittedCollaborators is an array
+$submittedCollaborators = is_array($submittedCollaborators) ? $submittedCollaborators : [];
+
+// Extract 'name' column from $submittedCollaborators
+$submittedCollabNames = array_column($submittedCollaborators, 'name');
+
+
+if ($submittedCollabNames != $currCollabNames) {
+    // new collaborators will be in array_diff result of submitted vs stored
+    $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
+    // old collaborators who should be removed will appear in inverse operation
+    $oldCollabs = array_diff($currCollabNames, $submittedCollabNames);
+}
     if (!empty($newCollabs)) {
         $this->insertCollaborators($id);
     }
@@ -812,8 +823,8 @@ function editCollaborators($id) : void
 function editKeywords($id) : void
 {
     $db       = \NDB_Factory::singleton()->database();
-    $keywords = isset($_POST['keywords'])
-        ? json_decode($_POST['keywords']) : null;
+    $keywords = isset($_REQUEST['keywords'])
+        ? json_decode($_REQUEST['keywords']) : null;
 
     $currentKW = $db->pselectCol(
         'SELECT Label FROM publication_keyword pk '.
@@ -861,8 +872,8 @@ function editKeywords($id) : void
 function editVOIs($id) : void
 {
     $db  = \NDB_Factory::singleton()->database();
-    $voi = isset($_POST['voiFields'])
-        ? json_decode($_POST['voiFields']) : null;
+    $voi = isset($_REQUEST['voiFields'])
+        ? json_decode($_REQUEST['voiFields']) : null;
 
     $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
@@ -944,8 +955,8 @@ function editUploads($id) : void
         $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
         // Check if values exist in $_POST before applying htmlspecialchars
-        $cit = isset($_POST[$citationIndex]) ? $_POST[$citationIndex] : null;
-        $ver = isset($_POST[$versionIndex]) ? $_POST[$versionIndex] : null;
+        $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
+        $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;
 
         // If they exist and differ, add them to the update array
         if ($cit !== null && htmlspecialchars($cit) !== $data['Citation']) {
