@@ -3,13 +3,7 @@
 /**
  * Unit test for CSV Parser class
  *
- * PHP Version 8
- *
- * @category Tests
- * @package  Main
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -17,11 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit test for CSV Parser class
  *
- * @category Tests
- * @package  Main
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
  */
 class CSVParserTest extends TestCase
 {

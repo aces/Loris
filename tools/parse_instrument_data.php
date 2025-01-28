@@ -6,14 +6,9 @@
  * "Usage: php parse_instrument_data.php instrument fileLocation userID examinerID"
  * "Ex: php parse_instrument_data.php bmi /data/uploads/bmi_data.csv admin admin";
  *
- * PHP Version 8
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris/
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
+
 require_once __DIR__ . "/generic_includes.php";
 use LORIS\InstrumentDataParser;
 

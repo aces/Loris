@@ -5,13 +5,7 @@
  * Checks and update status of running processes
  * Intended to be periodically run from cron
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\server_processes_manager;
