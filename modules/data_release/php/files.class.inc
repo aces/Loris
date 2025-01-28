@@ -412,7 +412,7 @@ class Files extends \NDB_Page
     }
 
     /**
-     * Modifies the hidden_by_id attribute of a file in the database.
+     * Modifies the hidden_by_userid attribute of a file in the database.
      *
      * @param ServerRequestInterface $request The incoming request.
      * @param bool                   $hide    Whether it is hiding or unhiding
@@ -442,7 +442,7 @@ class Files extends \NDB_Page
         $DB->update(
             'data_release',
             [
-                'hidden_by_id' => ($hide ? $user->getId() : null),
+                'hidden_by_userid' => ($hide ? $user->getId() : null),
             ],
             [
                 'id' => $data_release_id,

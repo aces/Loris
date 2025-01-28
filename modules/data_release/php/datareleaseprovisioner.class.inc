@@ -46,7 +46,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 upload_date AS uploadDate,
                 p.Name as ProjectName,
                 dr.id as dataReleaseID,
-                hidden_by_id AS hiddenById
+                hidden_by_userid AS hiddenById
             FROM data_release dr
             LEFT JOIN Project p on p.ProjectID = dr.ProjectID";
 
@@ -63,7 +63,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         WHERE UserID = ".$user->getID().")
                     )
                 AND drp.UserID=" . $user->getID()
-                . " AND (dr.hidden_by_id IS NULL OR dr.hidden_by_id="
+                . " AND (dr.hidden_by_userid IS NULL OR dr.hidden_by_userid="
                 . $user->getID() . ")";
         }
 

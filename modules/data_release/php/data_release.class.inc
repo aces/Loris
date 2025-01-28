@@ -79,7 +79,7 @@ class Data_Release extends \DataFrameworkMenu
     function getFilesList(\Database $DB)
     {
         $result = $DB->pselectWithIndexKey(
-            "SELECT id, file_name, version, hidden_by_id, ProjectID FROM data_release
+            "SELECT id, file_name, version, hidden_by_userid, ProjectID FROM data_release
             WHERE ProjectID IS NULL OR ProjectID IN
                 (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
             [':userID' => \User::singleton()->getID()],
@@ -227,11 +227,11 @@ class Data_Release extends \DataFrameworkMenu
     {
         $result = $db->pselect(
             "
-            SELECT LOWER(userid) as userid, dr.id as data_release_id
+            SELECT LOWER(upr.userid) as userid, dr.id as data_release_id
             FROM data_release_permissions dpr
             JOIN data_release dr ON dr.id = dpr.data_release_id
-            WHERE dr.ProjectID IN
-                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            JOIN user_project_rel upr ON upr.ProjectID = dr.ProjectID
+            WHERE upr.UserID = :userID",
             [':userID' => \User::singleton()->getID()],
             'file_name'
         );
