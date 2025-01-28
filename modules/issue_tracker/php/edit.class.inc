@@ -805,7 +805,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
             if (isset($email)
                 && array_key_exists('firstname', $email)
-                && array_key_exists('firstname', $email)
             ) {
                 $msg_data['firstname'] = $email['firstname'];
                 \Email::send($email['Email'], 'issue_change.tpl', $msg_data);
