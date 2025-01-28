@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import Modal from 'jsx/Modal';
+import InfoPanel from 'jsx/InfoPanel';
+import Select from 'react-select';
 
 /**
  * Data Dictionary Page.
@@ -27,6 +30,7 @@ class DataDictIndex extends Component {
       error: false,
       isLoaded: false,
       moduleFilter: '',
+      modifyPermissions: false,
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -202,6 +206,50 @@ class DataDictIndex extends Component {
         cell = rowData['Field Options'].join(';');
       }
       return <td>{cell}</td>;
+    case 'Permission Required':
+      const clickHandler = (row) => {
+        return () => {
+          this.setState({
+            'modifyPermissions': {
+              'fieldName': row['Field Name'],
+              'permissions': row['Permission Required'],
+            },
+          });
+        };
+      };
+      let showAddPermissions = cell == null || cell.length == 0 || !cell[0];
+      return (
+        <td>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {
+              showAddPermissions
+                ? 'No Permissions enforced.'
+                : cell.join(',')
+            }
+            {
+              loris.userHasPermission('user_accounts') && (
+                <button
+                  className='btn btn-primary'
+                  style={{marginTop: '5px'}}
+                  onClick={clickHandler(rowData)}
+                >
+                  {
+                    showAddPermissions
+                      ? 'Add Permissions'
+                      : 'Modify Permissions'
+                  }
+                </button>
+              )
+            }
+          </div>
+        </td>
+      );
     default:
       return <td>{cell}</td>;
     }
@@ -317,21 +365,135 @@ class DataDictIndex extends Component {
         show: false,
         filter: null,
       },
+      {
+        label: 'visits',
+        show: false,
+        filter: null,
+      },
+      {label: 'Permission Required', show: true, filter: {
+        name: 'permissionsRequired',
+        type: 'text',
+      }},
     ];
+
+    let permsModal = null;
+    if (this.state.modifyPermissions !== false) {
+      const submitPromise = () => {
+        return new Promise(
+          (resolve, reject) => {
+            fetch(
+              this.props.BaseURL + '/dictionary/permissions',
+              {
+                method: 'POST',
+                body: JSON.stringify(this.state.modifyPermissions),
+              }).then((response) => {
+              if (!response.ok) {
+                console.error(response.status);
+                throw new Error('Could not modify permissions');
+              }
+              return response.json();
+            }).then( (data) => {
+              resolve();
+              this.fetchData();
+            }).catch((message) => {
+              swal.fire({
+                title: 'Oops..',
+                text: 'Something went wrong!',
+                type: 'error',
+              });
+              reject();
+            });
+          });
+      };
+
+      permsModal = (<Modal
+        title={'Edit Permissions for '
+                + this.state.modifyPermissions.fieldName}
+        show={true}
+        onSubmit={submitPromise}
+        onClose={
+          () => {
+            this.setState({'modifyPermissions': false});
+          }
+        }>
+        <p>Select the permissions required for accessing&nbsp;
+          {this.state.modifyPermissions.fieldName} in the dropdown below.
+        </p>
+        <p>Any user accessing the fieldName (either for viewing the data
+               or data entry) must have one of the access permissions selected.
+        </p>
+        <InfoPanel>
+                A user with <em>any</em> of the selected permissions will
+                be able to access&nbsp;
+          {this.state.modifyPermissions.fieldName}.
+                If no permissions are selected, the default LORIS permissions
+                will be enforced for this fieldName.
+        </InfoPanel>
+
+        <PermissionSelect
+          codes={this.state.data.fieldOptions.allPermissionCodes}
+          selected={this.state.modifyPermissions.permissions}
+          // fieldName={this.state.modifyPermissions.fieldName}
+          modifySelected={(newselected) => {
+            let modifyPermissions = {...this.state.modifyPermissions};
+            modifyPermissions.permissions = newselected;
+            this.setState({modifyPermissions});
+          }}
+        />
+      </Modal>);
+    }
+
     return (
-      <FilterableDataTable
-        name="dictionary"
-        data={this.state.data.Data}
-        fields={fields}
-        getFormattedCell={this.formatColumn}
-        updateFilterCallback={this.updateFilter}
-      />
+      <>
+        {permsModal}
+        <FilterableDataTable
+          name="dictionary"
+          data={this.state.data.Data}
+          fields={fields}
+          getFormattedCell={this.formatColumn}
+          updateFilterCallback={this.updateFilter}
+        />
+      </>
     );
   }
 }
 DataDictIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   BaseURL: PropTypes.string,
+};
+
+/**
+ * Create a componenet to select permissions from a list of available
+ * permissions.
+ *
+ * @param {object} props - react props
+ * @return {JSX}
+ */
+function PermissionSelect(props) {
+  const options = props.codes.map((val) => {
+    return {value: val, label: val};
+  });
+  const values = options.filter((row) => {
+    if (props.selected == null) {
+      // nothing selected, filter everything
+      return false;
+    }
+    return props.selected.includes(row.value);
+  });
+  return <Select
+    isMulti={true}
+    options={options}
+    value={values}
+    onChange={(newValue) => {
+      props.modifySelected(newValue.map((row) => row.value));
+    }}
+  />;
+}
+
+PermissionSelect.propTypes = {
+  codes: PropTypes.array,
+  selected: PropTypes.array,
+  modifySelected: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
