@@ -10,13 +10,7 @@ use LORIS\server_processes_manager as SP;
 /**
  * Upload instrument data
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Instrument_Data extends \NDB_Page
 {
