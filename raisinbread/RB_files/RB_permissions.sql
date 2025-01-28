@@ -44,12 +44,12 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (50,'instrument_manager_write','Upload and Install Instruments',25,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (51,'data_release_upload','Release Files',12,'Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (52,'data_release_edit_file_access','Grant Other Users Access to Releases',12,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (53,'publication_view','Publication Projects',33,'View',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (54,'publication_propose','Propose Publication Projects',33,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (55,'publication_approve','Accept/Reject Publication Projects',33,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (56,'data_release_view','Release Files',12,'View',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (57,'data_release_hide','Hide Release Files',12,'View',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (58,'data_release_delete','DeleteRelease Files',12,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (53,'data_release_hide','Hide data release files',12,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (54,'data_release_delete','Delete data release files',12,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (55,'publication_view','Publication Projects',33,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (56,'publication_propose','Propose Publication Projects',33,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (57,'publication_approve','Accept/Reject Publication Projects',33,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (58,'data_release_view','Release Files',12,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (59,'candidate_dob_edit','Dates of Birth',7,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (60,'battery_manager_view','Battery Entries',39,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (61,'battery_manager_edit','Battery Entries',39,'Create/Edit',2);
@@ -69,6 +69,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (75,'schedule_module','Schedule Module: edit and delete appointment',48,'View/Create/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (76,'document_repository_categories','Categories',16,'Edit/Upload/Delete',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (77,'document_repository_hidden','Restricted files',16,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (78,'media_upload_digest','Media files: Access to recently uploaded media notifications digest.',29,'Edit',2);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

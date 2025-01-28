@@ -237,6 +237,7 @@ class Files extends \NDB_Page
         );
 
         // Get information on users with permission to the version
+
         $releasePage = $this->Module->loadPage(
             $this->loris,
             'data_release',
@@ -281,6 +282,7 @@ class Files extends \NDB_Page
                 'data_release_id' => $fileID,
             ]
         );
+
         // add permission for file to users with permission to the version
         foreach ($userVersionFiles as $userid => $userVersionFile) {
             if (array_key_exists('versions', $userVersionFile)

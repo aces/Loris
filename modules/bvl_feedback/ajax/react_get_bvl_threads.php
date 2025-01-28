@@ -50,5 +50,5 @@ if (isset($data['candID']) && !empty($data['candID'])) {
 $feedbackThreadList = $feedbackThread->getThreadList();
 echo json_encode($feedbackThreadList);
 
-exit();
+exit(0);
 

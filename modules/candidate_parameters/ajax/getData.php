@@ -28,43 +28,43 @@ if (!$user->hasPermission('access_all_profiles')
     ) && $user->hasCenter($candidate->getCenterID()))
 ) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 $data = $_GET['data'] ?? '';
 if ($data == '') {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    exit(0);
 }
 
 switch ($data) {
 case 'candidateInfo':
     echo json_encode(getCandInfoFields());
-    exit;
+    exit(0);
 case 'probandInfo':
     echo json_encode(getProbandInfoFields());
-    exit;
+    exit(0);
 case 'familyInfo':
     echo json_encode(getFamilyInfoFields());
-    exit;
+    exit(0);
 case 'participantStatus':
     echo json_encode(getParticipantStatusFields());
-    exit;
+    exit(0);
 case 'consentStatus':
     echo json_encode(getConsentStatusFields());
-    exit;
+    exit(0);
 case 'candidateDOB':
     echo json_encode(getDOBFields());
-    exit;
+    exit(0);
 case 'candidateDOD':
     echo json_encode(getDODFields());
-    exit;
+    exit(0);
 case 'diagnosisEvolution':
     echo json_encode(getDiagnosisEvolutionFields());
-    exit;
+    exit(0);
 default:
     header("HTTP/1.1 404 Not Found");
-    exit;
+    exit(0);
 }
 /**
  * Handles the fetching of Candidate Info fields
