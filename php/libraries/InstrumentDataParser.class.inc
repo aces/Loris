@@ -3,13 +3,7 @@
 /**
  * This file contains a class used to parse Instrument Data csv files
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
  */
 
 namespace LORIS;
@@ -27,13 +21,7 @@ use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 /**
  * This class is used to parse instrument data
  *
- * PHP Version 8
- *
- * @category Main
- * @package  LORIS
- * @author   Jefferson Casimir <jefferson.casimir@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
  */
 class InstrumentDataParser extends CSVParser
 {
