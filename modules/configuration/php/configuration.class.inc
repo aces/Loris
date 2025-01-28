@@ -87,6 +87,16 @@ class Configuration extends \NDB_Form
             'emergency' => 'Emergency',
         ];
 
+        $this->tpl_data['password_algos'] = array_combine(
+            password_algos(),
+            array_map(
+                function ($algo) {
+                    return $algo === '2y' ? 'bcrypt' : $algo;
+                },
+                password_algos()
+            )
+        );
+
         $this->tpl_data['date_format']   = $date_format;
         $this->tpl_data['lookup_center'] = [
             ''            => '',

@@ -22,7 +22,13 @@
     </div>
 {/function}
 
-
+{function name=createPasswordAlgo}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$password_algos key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
 
 {function name=createScanType}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
@@ -108,6 +114,8 @@
             {call createInstrument k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'password_algo'}
+            {call createPasswordAlgo k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'date_format'}
             {call createDateFormat k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
