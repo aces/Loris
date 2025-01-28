@@ -3,24 +3,14 @@
 /**
  * This file contains code to perform a complete MRI upload on the server.
  *
- * PHP Version 5
- *
- * @category ServerProcessLauncher
- * @package  Loris
- * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
  */
 namespace LORIS\server_processes_manager;
 
 /**
  * A class for holding a set of functions to parse large instrument data uploads
  *
- * @category ServerProcessLauncher
- * @package  Loris
- * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
  */
 
 class ParseInstrumentDataServerProcess extends AbstractServerProcess
