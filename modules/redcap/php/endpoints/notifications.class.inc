@@ -12,6 +12,10 @@
 
 namespace LORIS\redcap\Endpoints;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
@@ -180,7 +184,6 @@ class Notifications extends Endpoint
 
         try {
             $notification_handler->handle();
-            error_log("notif handled");
         } catch (\DatabaseException $e) {
             $rec = "[redcap] Error: "
                 . "PSCID: " . $notification->record_id
@@ -327,6 +330,7 @@ class Notifications extends Endpoint
             'description'   => "$error $data",
         ];
         $db->insert('issues', $issueData);
-        error_log("[redcap][issue:created] " . json_encode($issueData));
+        error_log("[redcap][issue:created][id:" . $db->getLastInsertId() . "] "
+            . json_encode($issueData));
     }
 }

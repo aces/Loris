@@ -12,7 +12,7 @@
 namespace LORIS\redcap\config;
 
 /**
- * Class reprenting a REDCap configuration for a given project.
+ * Class representing a REDCap configuration for a given project.
  *
  * @category REDCap
  * @package  Main

@@ -110,8 +110,6 @@ class RedcapNotificationHandler
      */
     public function handle(): void
     {
-        error_log("NOTIF");
-
         try {
             // Acquire LOCK on table to make sure notifications are hanled only once.
             $this->_acquireNotificationLock();
@@ -474,30 +472,15 @@ class RedcapNotificationHandler
         // Remove instrument name from REDCap variable names if the variables are
         // prefixed by the instrument name.
         if ($this->_redcap_config->prefix_instrument_variable) {
-            $record_names = array_map(
+            $record_names = array_values(array_map(
                 function ($name) use ($redcap_form_name) {
                     $retval = str_replace("{$redcap_form_name}", '', $name);
                     $retval = ltrim($retval, '_');
                     return $retval;
                 },
                 $record_names
-            );
+            ));
         }
-
-        $record_names = array_unique(
-            array_reduce(
-                $record_names,
-                function ($names, $name) {
-                    preg_match('/(.*)[_][_][_](.*)/', $name, $matches);
-                    if (!empty($matches[1])) {
-                        $name = $matches[1];
-                    }
-                    $names[] = $name;
-                    return $names;
-                },
-                []
-            )
-        );
 
         // -- DIFF LORIS-REDCap FIELD NAMES
         // Make sure all REDCap fields exists in LORIS.
