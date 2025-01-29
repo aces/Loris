@@ -47,7 +47,7 @@ class RedcapProps
     }
 
     /**
-     * Get a property has a boolean.
+     * Get an integer-based boolean (0 or 1) property.
      *
      * @param string $prop_name The property name.
      *
@@ -56,11 +56,11 @@ class RedcapProps
     public function getBool(string $prop_name): bool
     {
         $prop = $this->_requireProp($prop_name);
-        return !empty($prop) && $prop == 1;
+        return !empty($prop) && $prop === 1;
     }
 
     /**
-     * Get a property has a nullable datetime.
+     * Get a nullable datetime property.
      *
      * @param string $prop_name The property name.
      *
@@ -73,7 +73,7 @@ class RedcapProps
     }
 
     /**
-     * Get a property has an integer.
+     * Get an integer property.
      *
      * @param string $prop_name The property name.
      *
@@ -85,7 +85,7 @@ class RedcapProps
     }
 
     /**
-     * Get a property has a string.
+     * Get a string property.
      *
      * @param string $prop_name The property name.
      *
@@ -97,7 +97,7 @@ class RedcapProps
     }
 
     /**
-     * Get a property has a nullable string.
+     * Get a nullable string property.
      *
      * @param string $prop_name The property name.
      *
@@ -107,6 +107,19 @@ class RedcapProps
     {
         $prop = $this->_props[$prop_name] ?? null;
         return !empty($prop) ? strval($prop) : null;
+    }
+
+    /**
+     * Get a string-based boolean ('y' or 'n') property.
+     *
+     * @param string $prop_name The property name.
+     *
+     * @return bool The property as a boolean.
+     */
+    public function getBoolYN(string $prop_name): bool
+    {
+        $prop = $this->_props[$prop_name] ?? null;
+        return !empty($prop) ? $prop === 'y' : false;
     }
 
     /**

@@ -12,7 +12,7 @@
 
 namespace LORIS\redcap\client\models;
 
-use LORIS\redcap\client\models\RedcapProp;
+use LORIS\redcap\client\RedcapProps;
 
 /**
  * This represents a redcap dictionary entry.
@@ -23,278 +23,149 @@ use LORIS\redcap\client\models\RedcapProp;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapDictionaryRecord extends RedcapProp
+class RedcapDictionaryRecord
 {
-    private string $_field_name;
-    private string $_form_name;
-    private string $_section_header;
-    private string $_field_type;
-    private string $_field_label;
-    private string $_select_choices;
-    private string $_field_note;
-    private string $_text_validation_type;
-    private string $_text_validation_min;
-    private string $_text_validation_max;
-    private string $_identifier;
-    private string $_branching_logic;
-    private bool $_required_field;
-    private string $_custom_alignment;
-    private string $_question_number;
-    private string $_matrix_group_name;
-    private string $_matrix_ranking;
-    private string $_field_annotation;
+    /**
+     * The dictionary record field name.
+     */
+    public readonly string $field_name;
+
+    /**
+     * The dictionary record form name.
+     */
+    public readonly string $form_name;
+
+    /**
+     * The dictionary record section header.
+     */
+    public readonly ?string $section_header;
+
+    /**
+     * The dictionary record field type.
+     */
+    public readonly string $field_type;
+
+    /**
+     * The dictionary record field label.
+     */
+    public readonly string $field_label;
+
+    /**
+     * The dictionary record select choices or calculations.
+     */
+    public readonly ?string $select_choices;
+
+    /**
+     * The dictionary record field note.
+     */
+    public readonly ?string $field_note;
+
+    /**
+     * The dictionary record text validation type.
+     */
+    public readonly ?string $text_validation_type;
+
+    /**
+     * The dictionary record text validation minimum.
+     */
+    public readonly ?string $text_validation_min;
+
+    /**
+     * The dictionary record text validation maximum.
+     */
+    public readonly ?string $text_validation_max;
+
+    /**
+     * The dictionary record identifier.
+     */
+    public readonly ?string $identifier;
+
+    /**
+     * The dictionary record branching logic.
+     */
+    public readonly ?string $branching_logic;
+
+    /**
+     * The dictionary record required field.
+     */
+    public readonly bool $required_field;
+
+    /**
+     * The dictionary record custom alignment.
+     */
+    public readonly string $custom_alignment;
+
+    /**
+     * The dictionary record question number.
+     */
+    public readonly string $question_number;
+
+    /**
+     * The dictionary record matrix group name.
+     */
+    public readonly string $matrix_group_name;
+
+    /**
+     * The dictionary record matrix ranking.
+     */
+    public readonly string $matrix_ranking;
+
+    /**
+     * The dictionary record field annotation.
+     */
+    public readonly string $field_annotation;
 
     /**
      * Constructor
      *
-     * @param array $props        The dictionary entry properties from redcap.
-     * @param bool  $trimFormName Should the instrument name be trimmed?
+     * @param array $props          The dictionary entry properties from REDCap.
+     * @param bool  $trim_form_name Should the instrument name be trimmed?
      */
-    public function __construct(array $props, bool $trimFormName = false)
+    public function __construct(array $props, bool $trim_form_name = false)
     {
-        $propType      = 'dictionary';
-        $expectedProps = [
-            'field_name',
-            'form_name',
-            'section_header',
-            'field_type',
-            'field_label',
-            'select_choices_or_calculations',
-            'field_note',
-            'text_validation_type_or_show_slider_number',
-            'text_validation_min',
-            'text_validation_max',
-            'identifier',
-            'branching_logic',
-            'required_field',
-            'custom_alignment',
-            'question_number',
-            'matrix_group_name',
-            'matrix_ranking',
-            'field_annotation',
-        ];
-        self::checkExpectedProps($expectedProps, $props, $propType);
-        self::checkPropIsNotNull($props, $propType, 'field_name');
-        self::checkPropIsNotNull($props, $propType, 'form_name');
-        self::checkPropIsNotNull($props, $propType, 'field_type');
-        self::checkPropIsNotNull($props, $propType, 'field_label');
+        $props = new RedcapProps('dictionary', $props);
 
-        $field_name = $props['field_name'];
-        $form_name  = $props['form_name'];
-        if ($trimFormName) {
+        $field_name = $props->getString('field_name');
+        $form_name  = $props->getString('form_name');
+
+        if ($trim_form_name) {
             if (strpos($field_name, $form_name) !== 0) {
-                $msg = "[redcap:redcapdictionaryrecord] Field '$field_name'"
-                . " does not have form name '$form_name' as a prefix";
-                throw new \LorisException($msg);
+                throw new \LorisException(
+                    "[redcap:redcapdictionaryrecord] Field '$field_name' does not"
+                    . " have form name '$form_name' as a prefix"
+                );
             } else {
-                $pattern    = "/^" . preg_quote($form_name) . "(_*)/";
+                $pattern    = "/^{preg_quote($form_name)}(_*)/";
                 $field_name = preg_replace($pattern, "", $field_name);
             }
         }
 
-        $this->_field_name           = $field_name;
-        $this->_form_name            = $form_name;
-        $this->_section_header       = $props['section_header'] ?? '';
-        $this->_field_type           = $props['field_type'];
-        $this->_field_label          = $props['field_label'];
-        $this->_select_choices       = $props['select_choices_or_calculations']
-            ?? '';
-        $this->_field_note           = $props['field_note'] ?? '';
-        $this->_text_validation_type
-            = $props['text_validation_type_or_show_slider_number']
-            ?? '';
-        $this->_text_validation_min  = $props['text_validation_min'] ?? '';
-        $this->_text_validation_max  = $props['text_validation_max'] ?? '';
-        $this->_identifier           = $props['identifier'] ?? '';
-        $this->_branching_logic      = $props['branching_logic'] ?? '';
-        $this->_required_field       = !is_null($props['required_field'])
-            ? (strtolower($props['required_field']) === 'y')
-            : false;
-        $this->_custom_alignment     = $props['custom_alignment'] ?? '';
-        $this->_question_number      = $props['question_number'] ?? '';
-        $this->_matrix_group_name    = $props['matrix_group_name'] ?? '';
-        $this->_matrix_ranking       = $props['matrix_ranking'] ?? '';
-        $this->_field_annotation     = $props['field_annotation'] ?? '';
-    }
-
-    /**
-     * Get field name.
-     *
-     * @return string
-     */
-    public function getFieldName(): string
-    {
-        return $this->_field_name;
-    }
-
-    /**
-     * Get form name.
-     *
-     * @return string
-     */
-    public function getFormName(): string
-    {
-        return $this->_form_name;
-    }
-
-    /**
-     * Get seciton header.
-     *
-     * @return string
-     */
-    public function getSectionHeader(): string
-    {
-        return $this->_section_header;
-    }
-
-    /**
-     * Get field type.
-     *
-     * @return string
-     */
-    public function getFieldType(): string
-    {
-        return $this->_field_type;
-    }
-
-    /**
-     * Get field label.
-     *
-     * @return string
-     */
-    public function getFieldLabel(): string
-    {
-        return $this->_field_label;
-    }
-
-    /**
-     * Get the select choices or calculation.
-     *
-     * @return string
-     */
-    public function getSelectChoices(): string
-    {
-        return $this->_select_choices;
-    }
-
-    /**
-     * Get field note.
-     *
-     * @return string
-     */
-    public function getFieldNote(): string
-    {
-        return $this->_field_note;
-    }
-
-    /**
-     * Get text validation Type.
-     *
-     * @return string
-     */
-    public function getTextValidationType(): string
-    {
-        return $this->_text_validation_type;
-    }
-
-    /**
-     * Get text validation Min.
-     *
-     * @return string
-     */
-    public function getTextValidationMin(): string
-    {
-        return $this->_text_validation_min;
-    }
-
-    /**
-     * Get text validation Max.
-     *
-     * @return string
-     */
-    public function getTextValidationMax(): string
-    {
-        return $this->_text_validation_max;
-    }
-
-    /**
-     * Get identifier.
-     *
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return $this->_identifier;
-    }
-
-    /**
-     * Get branching logic.
-     *
-     * @return string
-     */
-    public function getBranchingLogic(): string
-    {
-        return $this->_branching_logic;
-    }
-
-    /**
-     * Get field required.
-     *
-     * @return bool
-     */
-    public function isRequiredField(): bool
-    {
-        return $this->_required_field;
-    }
-
-    /**
-     * Get custom alignment
-     *
-     * @return string
-     */
-    public function getCustomAlignment(): string
-    {
-        return $this->_custom_alignment;
-    }
-
-    /**
-     * Get question number.
-     *
-     * @return string
-     */
-    public function getQuestionNumber(): string
-    {
-        return $this->_question_number;
-    }
-
-    /**
-     * Get matrix group name.
-     *
-     * @return string
-     */
-    public function getMatrixGroupName(): string
-    {
-        return $this->_matrix_group_name;
-    }
-
-    /**
-     * Get matrix ranking.
-     *
-     * @return string
-     */
-    public function getMatrixRanking(): string
-    {
-        return $this->_matrix_ranking;
-    }
-
-    /**
-     * Get field annotation.
-     *
-     * @return string
-     */
-    public function getFieldAnnotation(): string
-    {
-        return $this->_field_annotation;
+        $this->field_name           = $field_name;
+        $this->form_name            = $form_name;
+        $this->section_header       = $props->getStringNullable('section_header');
+        $this->field_type           = $props->getString('field_type');
+        $this->field_label          = $props->getString('field_label');
+        $this->select_choices       = $props->getStringNullable(
+            'select_choices_or_calculations'
+        );
+        $this->field_note           = $props->getStringNullable('field_note');
+        $this->text_validation_type = $props->getStringNullable(
+            'text_validation_type_or_show_slider_number'
+        );
+        $this->text_validation_min  = $props->getStringNullable(
+            'text_validation_min'
+        );
+        $this->text_validation_max  = $props->getStringNullable(
+            'text_validation_max'
+        );
+        $this->identifier           = $props->getStringNullable('identifier');
+        $this->branching_logic      = $props->getStringNullable('branching_logic');
+        $this->required_field       = $props->getBoolYN('required_field');
+        $this->custom_alignment     = $props->getStringNullable('custom_alignment');
+        $this->question_number      = $props->getStringNullable('question_number');
+        $this->matrix_group_name    = $props->getStringNullable('matrix_group_name');
+        $this->matrix_ranking       = $props->getStringNullable('matrix_ranking');
+        $this->field_annotation     = $props->getStringNullable('field_annotation');
     }
 
     /**
@@ -334,28 +205,28 @@ class RedcapDictionaryRecord extends RedcapProp
     public function toArray(): array
     {
         return [
-            'field_name'                                 => $this->_field_name,
-            'form_name'                                  => $this->_form_name,
-            'section_header'                             => $this->_section_header,
-            'field_type'                                 => $this->_field_type,
-            'field_label'                                => $this->_field_label,
-            'select_choices_or_calculations'             => $this->_select_choices,
-            'field_note'                                 => $this->_field_note,
+            'field_name'                                 => $this->field_name,
+            'form_name'                                  => $this->form_name,
+            'section_header'                             => $this->section_header,
+            'field_type'                                 => $this->field_type,
+            'field_label'                                => $this->field_label,
+            'select_choices_or_calculations'             => $this->select_choices,
+            'field_note'                                 => $this->field_note,
             'text_validation_type_or_show_slider_number' =>
-                $this->_text_validation_type,
+                $this->text_validation_type,
             'text_validation_min'                        =>
-                $this->_text_validation_min,
+                $this->text_validation_min,
             'text_validation_max'                        =>
-                $this->_text_validation_max,
-            'identifier'                                 => $this->_identifier,
-            'branching_logic'                            => $this->_branching_logic,
-            'required_field'                             => $this->_required_field,
-            'custom_alignment'                           => $this->_custom_alignment,
-            'question_number'                            => $this->_question_number,
+                $this->text_validation_max,
+            'identifier'                                 => $this->identifier,
+            'branching_logic'                            => $this->branching_logic,
+            'required_field'                             => $this->required_field,
+            'custom_alignment'                           => $this->custom_alignment,
+            'question_number'                            => $this->question_number,
             'matrix_group_name'                          =>
-                $this->_matrix_group_name,
-            'matrix_ranking'                             => $this->_matrix_ranking,
-            'field_annotation'                           => $this->_field_annotation,
+                $this->matrix_group_name,
+            'matrix_ranking'                             => $this->matrix_ranking,
+            'field_annotation'                           => $this->field_annotation,
         ];
     }
 
@@ -368,9 +239,9 @@ class RedcapDictionaryRecord extends RedcapProp
      */
     public function toLINST(): string
     {
-        $field_type  = $this->getFieldType();
-        $field_name  = $this->getFieldName();
-        $field_label = str_replace("\n", "<br /><br />", $this->getFieldLabel());
+        $field_type  = $this->field_type;
+        $field_name  = $this->field_name;
+        $field_label = str_replace("\n", "<br /><br />", $this->field_label);
         $field_desc  = "$field_name{@}$field_label";
 
         //
@@ -430,7 +301,7 @@ class RedcapDictionaryRecord extends RedcapProp
      */
     private function _optionsToLINST() : string
     {
-        $dictionary = $this->getSelectChoices();
+        $dictionary = $this->select_choices;
         $dictionary = str_replace(' | | ', ' | ', $dictionary);
         if (str_starts_with($dictionary, '| ')) {
             $dictionary = substr($dictionary, 2);

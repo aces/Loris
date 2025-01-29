@@ -105,8 +105,8 @@ class RedcapHttpClient
         }
         if (isset($info) && !empty($info)) {
             if ($this->_verbose) {
-                $pid = $info->getProjectId();
-                $pti = $info->getProjectTitle();
+                $pid = $info->project_id;
+                $pti = $info->project_title;
                 error_log("[redcap][pid:$pid] Connected to project: $pti");
             }
         } else {
@@ -713,7 +713,7 @@ class RedcapHttpClient
 
         // is a repeating instrument?
         $final = [];
-        if ($this->getProjectInfo()->hasRepeatingInstrumentsOrEvents()
+        if ($this->getProjectInfo()->has_repeating_instruments
             && $this->hasRepeatingInstrumentEvent($instrument, $event)
         ) {
             foreach ($completed as $index => $record) {

@@ -73,7 +73,7 @@ $instruments = [];
 foreach ($dict as $dict_record) {
     $linst = $dict_record->toLINST();
     if (!empty($linst)) {
-        $instruments[$dict_record->getFormName()][] = $linst;
+        $instruments[$dict_record->form_name][] = $linst;
     }
 }
 
