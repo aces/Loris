@@ -13,8 +13,8 @@
 namespace LORIS\redcap\config;
 
 use LORIS\redcap\config\RedcapConfig;
-use LORIS\redcap\config\RedcapConfigLorisCandidateId;
-use LORIS\redcap\config\RedcapConfigRedcapParticipantId;
+use LORIS\redcap\config\RedcapConfigLorisId;
+use LORIS\redcap\config\RedcapConfigRedcapId;
 use LORIS\redcap\config\RedcapConfigVisit;
 
 /**
@@ -313,24 +313,23 @@ class RedcapConfigParser
      *
      * @param array $project_node The REDCap configuration project XML node.
      *
-     * @return RedcapConfigRedcapParticipantId The REDCap participant identifier
-     *                                         configuration.
+     * @return RedcapConfigRedcapId The REDCap participant configuration.
      */
     private function _parseRedcapParticipantId(
         array $project_node,
-    ): RedcapConfigRedcapParticipantId {
+    ): RedcapConfigRedcapId {
         $redcap_participant_id = $project_node['redcap-participant-id'] ?? null;
 
         // Default value.
         if ($redcap_participant_id === null) {
-            return RedcapConfigRedcapParticipantId::RecordId;
+            return RedcapConfigRedcapId::RecordId;
         }
 
         switch ($redcap_participant_id) {
         case 'record-id':
-            return RedcapConfigRedcapParticipantId::RecordId;
+            return RedcapConfigRedcapId::RecordId;
         case 'survey-participant-id':
-            return RedcapConfigRedcapParticipantId::SurveyParticipantId;
+            return RedcapConfigRedcapId::SurveyParticipantId;
         default:
             throw $this->_exception(
                 "invalid REDCap participant identifier type for the selected"
@@ -346,24 +345,23 @@ class RedcapConfigParser
      *
      * @param array $project_node The REDCap configuration project XML node.
      *
-     * @return RedcapConfigLorisCandidateId The LORIS candidate identifier
-     *                                      configuration.
+     * @return RedcapConfigLorisId The LORIS candidate identifier configuration.
      */
     private function _parseCandidateId(
         array $project_node,
-    ): RedcapConfigLorisCandidateId {
+    ): RedcapConfigLorisId {
         $loris_candidate_id = $project_node['candidate-id'] ?? null;
 
         // Default value.
         if (empty($loris_candidate_id)) {
-            return RedcapConfigLorisCandidateId::PscId;
+            return RedcapConfigLorisId::PscId;
         }
 
         switch ($loris_candidate_id) {
         case 'dcc-id':
-            return RedcapConfigLorisCandidateId::CandId;
+            return RedcapConfigLorisId::CandId;
         case 'psc-id':
-            return RedcapConfigLorisCandidateId::PscId;
+            return RedcapConfigLorisId::PscId;
         default:
             throw $this->_exception(
                 "invalid LORIS candidate identifier type for the selected project,"

@@ -59,16 +59,16 @@ class RedcapConfig
     /**
      * The type of REDCap participant identifier to match with the LORIS candidate.
      *
-     * @var RedcapConfigRedcapParticipantId
+     * @var RedcapConfigRedcapId
      */
-    public readonly RedcapConfigRedcapParticipantId $redcap_participant_id;
+    public readonly RedcapConfigRedcapId $redcap_participant_id;
 
     /**
      * The type of LORIS candidate identifier to match with the REDCap participant.
      *
-     * @var RedcapConfigLorisCandidateId
+     * @var RedcapConfigLorisId
      */
-    public readonly RedcapConfigLorisCandidateId $candidate_id;
+    public readonly RedcapConfigLorisId $candidate_id;
 
     /**
      * The configuration parameters to map the REDCap arms and events to the LORIS
@@ -81,18 +81,26 @@ class RedcapConfig
     /**
      * Constructor.
      *
-     * @param \User  $issue_assignee             The LORIS issue assignee for the
-     *                                           REDCap module.
-     * @param string $redcap_project_id          The REDCap project ID.
-     * @param string $redcap_instance_url        The REDCap instance URL.
-     * @param string $redcap_api_token           The REDCap API token.
-     * @param bool   $prefix_instrument_variable Whether the REDCap variable names
-     *                                           are prefixed.
-     * @param object $redcap_participant_id      The REDCap participant identifier
-     *                                           configuration.
-     * @param object $candidate_id               The REDCap LORIS candidate
-     *                                           identifier configuration.
-     * @param array  $visits                     The REDCap visit mappings.
+     * @param \User                $issue_assignee             The LORIS issue
+     *                                                         assignee for the
+     *                                                         REDCap module.
+     * @param string               $redcap_project_id          The REDCap project
+     *                                                         ID.
+     * @param string               $redcap_instance_url        The REDCap instance
+     *                                                         URL.
+     * @param string               $redcap_api_token           The REDCap API token.
+     * @param bool                 $prefix_instrument_variable Whether the REDCap
+     *                                                         variable names are
+     *                                                         prefixed.
+     * @param RedcapConfigRedcapId $redcap_participant_id      The REDCap
+     *                                                         participant
+     *                                                         identifier
+     *                                                         configuration.
+     * @param RedcapConfigLorisId  $candidate_id               The REDCap LORIS
+     *                                                         candidate identifier
+     *                                                         configuration.
+     * @param array                $visits                     The REDCap visit
+     *                                                         mappings.
      */
     public function __construct(
         \User $issue_assignee,
@@ -100,8 +108,8 @@ class RedcapConfig
         string $redcap_instance_url,
         string $redcap_api_token,
         bool $prefix_instrument_variable,
-        RedcapConfigRedcapParticipantId $redcap_participant_id,
-        RedcapConfigLorisCandidateId $candidate_id,
+        RedcapConfigRedcapId $redcap_participant_id,
+        RedcapConfigLorisId $candidate_id,
         array $visits,
     ) {
         $this->issue_assignee      = $issue_assignee;

@@ -16,8 +16,8 @@ use \LORIS\LorisInstance;
 use \LORIS\redcap\Queries;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\config\RedcapConfig;
-use \LORIS\redcap\config\RedcapConfigLorisCandidateId;
-use \LORIS\redcap\config\RedcapConfigRedcapParticipantId;
+use \LORIS\redcap\config\RedcapConfigLorisId;
+use \LORIS\redcap\config\RedcapConfigRedcapId;
 use \LORIS\redcap\client\models\records\IRedcapRecord;
 use \LORIS\redcap\client\models\RedcapEvent;
 use \LORIS\redcap\client\models\RedcapNotification;
@@ -110,6 +110,10 @@ class RedcapNotificationHandler
      */
     public function handle(): void
     {
+        // The type checker does not recognize that this variable is always assigned
+        // in the code below.
+        $records = [];
+
         try {
             // Acquire LOCK on table to make sure notifications are hanled only once.
             $this->_acquireNotificationLock();
@@ -142,7 +146,6 @@ class RedcapNotificationHandler
         $visit_label = $this->_getVisitLabel();
 
         // Track which instruments are updated and not updated.
-        $instruments_updated     = [];
         $instruments_not_updated = [];
 
         //
@@ -190,22 +193,23 @@ class RedcapNotificationHandler
 
         // all not update = raise error
         if (count($instruments_not_updated) === count($records)) {
-            $msg = "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
-                ."[instrument:$instrument_name] instrument(s) not updatable.";
-            throw new \LorisException($msg);
+            throw new \LorisException(
+                "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
+                . " instrument(s) not updatable."
+            );
         }
 
         // repeating instruments case: some were update, some not
         if (count($instruments_not_updated) > 0) {
-            $recMsg = implode(',', $instruments_not_updated);
-            $msg    = "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
-                . " repeating instruments not updated: $recMsg.";
-            throw new \LorisException($msg);
+            $instruments_error_string = implode(',', $instruments_not_updated);
+            throw new \LorisException(
+                "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
+                . " repeating instruments not updated: $instruments_error_string."
+            );
         }
 
         error_log(
-            "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
-            . "[instrument:$instrument_name] instrument updated."
+            "[redcap] [pscid:{$psc_id}][visit:$visit_label] instrument updated."
         );
     }
 
@@ -302,7 +306,7 @@ class RedcapNotificationHandler
         // If the REDCap module configuration is to use the REDCap record ID, simply
         // return the REDCap notification record ID.
         $condition = $this->_redcap_config->redcap_participant_id
-            === RedcapConfigRedcapParticipantId::RecordId;
+            === RedcapConfigRedcapId::RecordId;
 
         if ($condition) {
             return $record_id;
@@ -359,9 +363,9 @@ class RedcapNotificationHandler
         // Get the candidate using the REDCap participant identifier as a CandID or
         // PSCID depending on the REDCap module configuration.
         $candidate = match ($this->_redcap_config->candidate_id) {
-            RedcapConfigLorisCandidateId::CandId =>
+            RedcapConfigLorisId::CandId =>
                 $this->_queries->tryGetCandidateWithCandId($redcap_participant_id),
-            RedcapConfigLorisCandidateId::PscId =>
+            RedcapConfigLorisId::PscId =>
                 $this->_queries->tryGetCandidateWithPscId($redcap_participant_id),
         };
 

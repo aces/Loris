@@ -93,27 +93,27 @@ class RedcapDictionaryRecord
     /**
      * The dictionary record custom alignment.
      */
-    public readonly string $custom_alignment;
+    public readonly ?string $custom_alignment;
 
     /**
      * The dictionary record question number.
      */
-    public readonly string $question_number;
+    public readonly ?string $question_number;
 
     /**
      * The dictionary record matrix group name.
      */
-    public readonly string $matrix_group_name;
+    public readonly ?string $matrix_group_name;
 
     /**
      * The dictionary record matrix ranking.
      */
-    public readonly string $matrix_ranking;
+    public readonly ?string $matrix_ranking;
 
     /**
      * The dictionary record field annotation.
      */
-    public readonly string $field_annotation;
+    public readonly ?string $field_annotation;
 
     /**
      * Constructor

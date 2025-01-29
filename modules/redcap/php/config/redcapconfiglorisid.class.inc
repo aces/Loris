@@ -12,15 +12,15 @@
 namespace LORIS\redcap\config;
 
 /**
- * Enumeration that describes which LORIS candidate identifier should be used to
- * map with the participant identifier obtained from REDCap.
+ * Enumeration that describes what kind of LORIS candidate identifier is used to map
+ * REDCap participants with LORIS candidates.
  *
  * @category REDCap
  * @package  Main
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-enum RedcapConfigLorisCandidateId
+enum RedcapConfigLorisId
 {
     /**
      * The REDCap partcipant identifier should be mapped to a LORIS candidate PSCID.
