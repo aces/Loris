@@ -330,7 +330,10 @@ class Notifications extends Endpoint
             'description'   => "$error $data",
         ];
         $db->insert('issues', $issueData);
-        error_log("[redcap][issue:created][id:" . $db->getLastInsertId() . "] "
-            . json_encode($issueData));
+
+        error_log(
+            "[redcap][issue:created][id:{$db->getLastInsertId()}] "
+            . json_encode($issueData)
+        );
     }
 }

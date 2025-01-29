@@ -472,14 +472,16 @@ class RedcapNotificationHandler
         // Remove instrument name from REDCap variable names if the variables are
         // prefixed by the instrument name.
         if ($this->_redcap_config->prefix_instrument_variable) {
-            $record_names = array_values(array_map(
-                function ($name) use ($redcap_form_name) {
-                    $retval = str_replace("{$redcap_form_name}", '', $name);
-                    $retval = ltrim($retval, '_');
-                    return $retval;
-                },
-                $record_names
-            ));
+            $record_names = array_values(
+                array_map(
+                    function ($name) use ($redcap_form_name) {
+                        $retval = str_replace("{$redcap_form_name}", '', $name);
+                        $retval = ltrim($retval, '_');
+                        return $retval;
+                    },
+                    $record_names
+                )
+            );
         }
 
         // -- DIFF LORIS-REDCap FIELD NAMES
