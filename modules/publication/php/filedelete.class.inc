@@ -16,6 +16,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class FileDelete extends \NDB_Page
 {
+         public $skipTemplate = true;
+
     /**
      * {@inheritDoc}
      *
@@ -43,7 +45,7 @@ class FileDelete extends \NDB_Page
 public function handle(ServerRequestInterface $request) : ResponseInterface
 {
     // Check if the request method is GET
-    if ($request->getMethod() !== 'Delete') {
+    if ($request->getMethod() !== 'DELETE') {
         // Return a 405 Method Not Allowed response for non-GET requests
         return (new LORIS\Http\Response())
             ->withStatus(405)
@@ -52,11 +54,9 @@ public function handle(ServerRequestInterface $request) : ResponseInterface
                 'message' => 'Method Not Allowed'
             ])));
     }
-
     // Handle the GET request, process data, and return a response
     $queryParams = $request->getQueryParams();
     $uploadID = $queryParams['uploadID'] ?? null;
-
     $factory  = \NDB_Factory::singleton();
     $db       = $factory->database();
     $user     = $factory->user();
@@ -66,7 +66,6 @@ public function handle(ServerRequestInterface $request) : ResponseInterface
         "FROM publication_upload ".
         "WHERE PublicationUploadID=:upid";
     $uploadData = $db->pselectRow($query, ['upid' => $uploadID]);
-
     $message = ['message' => null];
 
     if (empty($uploadData)) {
@@ -81,36 +80,36 @@ public function handle(ServerRequestInterface $request) : ResponseInterface
     if ($this->userCanDelete($uploadData, $db, $user)) {
         $uploaddir = $config->getSetting('publication_uploads');
         $deletedir = $config->getSetting('publication_deletions');
-
-        if (empty($uploaddir) || empty($deletedir)) {
+	if (empty($uploaddir) || empty($deletedir)) {
             throw new \Exception("Invalid config setting");
         }
-        if (empty($uploadData['Filename'])) {
+	if (empty($uploadData['Filename'])) {
             throw new \Exception("Invalid filename");
         }
-
         $db->delete(
             'publication_upload',
             ['PublicationUploadID' => $uploadID]
         );
-
         $src  = \Utility::pathJoin($uploaddir, $uploadData['Filename']);
         $dest = \Utility::pathJoin($deletedir, $uploadData['Filename']);
         rename($src, $dest);
 
         // Success response
         $message['message'] = 'File deleted successfully';
-        return (new LORIS\Http\Response())
-            ->withStatus(200)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+    // Success response
+$message = ['message' => 'File deleted successfully'];
+
+header("Content-Type: application/json");
+http_response_code(200);
+echo json_encode($message);
+exit;
     } else {
-        http_response_code(403);
         $message['message'] = 'You do not have permission to delete this file.';
-        return (new LORIS\Http\Response())
-            ->withStatus(403)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+
+header("Content-Type: application/json");
+http_response_code(403);
+echo json_encode($message);
+exit;
     }
 }
 
@@ -124,6 +123,7 @@ public function handle(ServerRequestInterface $request) : ResponseInterface
 
 function userCanDelete($uploadData, $db, $user) : bool
 {
+	return true;
     $retVal   = false;
     $origUser = $db->pselectOne(
         'SELECT UserID FROM publication WHERE PublicationID=:pid',

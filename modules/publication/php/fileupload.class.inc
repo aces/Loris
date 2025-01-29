@@ -42,7 +42,10 @@ class FileUpload extends \NDB_Page
      */
 public function handle(ServerRequestInterface $request): ResponseInterface
 {
-       $method = $request->getMethod();
+	$method = $request->getMethod();
+	    error_log(print_r($_REQUEST,true));
+
+    error_log(print_r($_FILES,true));
 
     switch ($method) {
         case 'POST': 
@@ -193,9 +196,12 @@ function uploadPublication()
  */
 function processFiles($pubID) : void
 {
+	error_log("processFiles");
     if (empty($_FILES)) {
         return;
     }
+	        error_log("processFiles==========");
+    error_log(print_r($_FILES,true));
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $config  = \NDB_Config::singleton();
@@ -746,15 +752,15 @@ $submittedCollaborators = is_array($submittedCollaborators) ? $submittedCollabor
 // Extract 'name' column from $submittedCollaborators
 $submittedCollabNames = array_column($submittedCollaborators, 'name');
 
+$currCollabNames = (array) $currCollabNames;  // Ensure it's an array
+$submittedCollabNames = (array) $submittedCollabNames; // Ensure it's an array
 
 if ($submittedCollabNames != $currCollabNames) {
-    // new collaborators will be in array_diff result of submitted vs stored
     $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
-    // old collaborators who should be removed will appear in inverse operation
     $oldCollabs = array_diff($currCollabNames, $submittedCollabNames);
 }
     if (!empty($newCollabs)) {
-        $this->insertCollaborators($id);
+        $this->insertCollaborators(intval($id));
     }
     if (!empty($oldCollabs)) {
         foreach ($oldCollabs as $name) {
@@ -840,7 +846,7 @@ function editKeywords($id) : void
     }
 
     if (!empty($newKWs)) {
-        $this->insertKeywords($id);
+        $this->insertKeywords(intval($id));
     }
     if (!empty($oldKWs)) {
         foreach ($oldKWs as $kw) {
@@ -899,7 +905,7 @@ function editVOIs($id) : void
         $oldVOI = array_diff($currentVOI, $voi);
     }
     if (!empty($newVOI)) {
-        $this->insertVOIs($id);
+        $this->insertVOIs(intval($id));
     }
     if (!empty($oldVOI)) {
         foreach ($oldVOI as $ov) {

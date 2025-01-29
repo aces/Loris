@@ -58,21 +58,19 @@ class ViewProject extends React.Component {
       ...this.state.formData,
       baseURL: loris.BaseURL,
     };
-let formObj = new FormData();
-for (let key in formData) {
-  if (formData.hasOwnProperty(key) && formData[key] !== '') {
-    let formVal;
-
-    if (Array.isArray(formData[key]) || typeof formData[key] === 'object') {
-      formVal = JSON.stringify(formData[key]); // Serialize arrays/objects
-    } else {
-      formVal = formData[key];
+	  console.log(formData);
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData.hasOwnProperty(key) && formData[key] !== '') {
+        let formVal;
+        if (Array.isArray(formData[key])) {
+          formVal = JSON.stringify(formData[key]);
+        } else {
+          formVal = formData[key];
+        }
+        formObj.append(key, formVal);
+      }
     }
-
-    formObj.append(key, formVal);
-  }
-}
-
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
