@@ -139,8 +139,10 @@ INSERT INTO `permissions` VALUES
     (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2'),
     (68,'issue_tracker_site_issue','See/Edit/Comment on Own Site Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2),
     (69,'issue_tracker_close_site_issue','Close Own Site Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2),
-    (70,'issue_tracker_close_all_issue','Close all Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2);
-
+    (70,'issue_tracker_close_all_issue','Close all Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2),
+    (71,'dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2'),
+    (72,'dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2')
+    ;
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
