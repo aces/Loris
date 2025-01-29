@@ -1,51 +1,91 @@
 <?php declare(strict_types=1);
 
+// @phan-file-suppress PhanUnusedProtectedMethodParameter
+// Suppressed due to false-positive for doDownloadNotification function
+// Unused parameter $file required to match parent signature
+
+namespace LORIS\publication;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
- * Publication file upload & editing handler
+ * Handles managing files through the /files/* endpoint of the publication
+ * module.
  *
- * This processes and inserts data for publication uploads & editing
- *
- * PHP Version 7
- *
- * @category Loris
- * @package  Publication
- * @author   David <dblader.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-if (isset($_REQUEST['action'])) {
-    $action = $_REQUEST['action'];
-    if ($action === 'upload') {
-        uploadPublication();
-    } elseif ($action === 'editProject') {
-        editProject();
-    } else {
-        http_response_code(400);
-        exit(0);
+class FileUpload extends \NDB_Page
+{
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user accessing the file.
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'publication_view',
+                'publication_propose',
+                'publication_approve',
+            ]
+        );      
     }
+    /**
+     * Handle a post form
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+public function handle(ServerRequestInterface $request): ResponseInterface
+{
+	$method = $request->getMethod();
+	    error_log(print_r($_REQUEST,true));
+
+    error_log(print_r($_FILES,true));
+
+    switch ($method) {
+        case 'POST': 
+           $referer = $request->getHeaderLine('Referer');
+	if (str_contains($referer, 'view_project')) {
+		// Perform edit logic
+		    $queryParams = $request->getQueryParams();
+                    $id = $queryParams['id'] ?? null;
+		    $this->editProject($id);
+	} else {
+		    // Perform upload logic
+             $this->uploadPublication();
+	} 
+            break;
+
+        default:
+            $message = ['message' => 'Invalid method'];
+            return (new \LORIS\Http\Response())
+                ->withStatus(400)
+                ->withHeader('Content-Type', 'application/json')
+                ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+    }
+
+    return (new \LORIS\Http\Response())
+        ->withStatus(200)
+        ->withHeader("Content-Type", "application/json")
+        ->withBody(new \LORIS\Http\StringStream(json_encode("OK")));
 }
 
 /**
  * Function for new publications
  *
- * @return void
  */
-function uploadPublication() : void
+function uploadPublication()
+
 {
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
-    if (!$user->hasPermission('publication_propose')
-        || !$user->hasPermission('publication_view')
-    ) {
-        showPublicationError("You do not have permission to propose a project", 403);
-        return;
-    }
-
     $title = $_POST['title'] ?? null;
-    if (!$title) {
-        showPublicationError('Title is empty', 400);
-    }
 
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
@@ -56,7 +96,8 @@ function uploadPublication() : void
     );
 
     if ($exists) {
-        showPublicationError('Submitted title already exists', 400);
+    $this->showPublicationError("Title Exists", 500);
+        exit;
     }
     $desc    = $_POST['description'] ?? null;
     $project = $_POST['project'] ?? null;
@@ -67,7 +108,6 @@ function uploadPublication() : void
     $link       = $_POST['link'] ?? null;
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
-
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
     $leadInvID = $db->pselectOne(
@@ -80,18 +120,20 @@ function uploadPublication() : void
         ]
     );
     if (empty($leadInvID)) {
+    try {
         $db->insert(
-            'publication_collaborator',
-            [
-                'Name'  => $leadInvest,
-                'Email' => $leadInvestEmail,
-            ]
+        'publication_collaborator',
+        [
+            'Name'  => $leadInvest,
+            'Email' => $leadInvestEmail,
+        ]
         );
-
-        $leadInvID = $db->getLastInsertId();
-    }
-    if (!isset($desc, $leadInvest, $leadInvestEmail)) {
-        showPublicationError('A mandatory field is missing!', 400);
+            $leadInvID = $db->getLastInsertId();
+      } catch (\Exception $e) {
+    // Catch any exception and show the error
+          return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
+         }
+    
     }
     // INSERT INTO publication ...
     $uid   = $user->getId();
@@ -122,24 +164,27 @@ function uploadPublication() : void
             'UserID'        => $uid,
         ]
     );
-
     try {
         // process files
-        processFiles($pubID);
+        $this->processFiles($pubID);
         // INSERT INTO publication_collaborator
-        insertCollaborators($pubID);
+        $this->insertCollaborators($pubID);
         // INSERT INTO publication_users_edit_perm_rel
-        insertEditors($pubID);
+        $this->insertEditors($pubID);
         // INSERT INTO publication_keyword
-        insertKeywords($pubID);
+        $this->insertKeywords($pubID);
         // INSERT INTO publication_parameter_type_rel
-        insertVOIs($pubID);
+        $this->insertVOIs($pubID);
     } catch (Exception $e) {
-        cleanup($pubID);
-        showPublicationError($e->getMessage(), 500);
+        $this->cleanup($pubID);
+        $this->showPublicationError($e->getMessage(), 500);
     }
 
-    notify($pubID, 'submission', $_POST['baseURL']);
+    $this->notify($pubID, 'submission', $_POST['baseURL']);
+        return (new \LORIS\Http\Response())
+        ->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->withBody(new \LORIS\Http\StringStream(json_encode(['message' => 'Upload successful'])));
 }
 
 /**
@@ -151,9 +196,12 @@ function uploadPublication() : void
  */
 function processFiles($pubID) : void
 {
+	error_log("processFiles");
     if (empty($_FILES)) {
         return;
     }
+	        error_log("processFiles==========");
+    error_log(print_r($_FILES,true));
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $config  = \NDB_Config::singleton();
@@ -265,6 +313,7 @@ function insertCollaborators(int $pubID) : void
  */
 function insertEditors(int $pubID) : void
 {
+    
     if (empty($_POST['usersWithEditPerm'])) {
         return;
     }
@@ -339,7 +388,6 @@ function insertKeywords(int $pubID) : void
  */
 function insertVOIs(int $pubID) : void
 {
-
     if (empty($_POST['voiFields'])) {
         return;
     }
@@ -442,9 +490,8 @@ function notify($pubID, $type, $baseURL) : void
     ];
 
     if (!in_array($type, $acceptedTypes)) {
-        showPublicationError("Unexpected notification type: $type", 400);
+        $this->showPublicationError("Unexpected notification type: $type", 400);
     }
-
     $factory   = \NDB_Factory::singleton();
     $db        = $factory->database();
     $config    = \NDB_Config::singleton();
@@ -483,6 +530,7 @@ function notify($pubID, $type, $baseURL) : void
         'ProjectName' => $emailData['ProjectName'],
         'Date'        => $emailData['Date']
     ];
+            error_log("notify333333");
     $Notifier->notify($msg_data);
     $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
         ? [$data['LeadInvestigatorEmail']] : [];
@@ -503,58 +551,31 @@ function notify($pubID, $type, $baseURL) : void
             $emailData
         );
     }
+
 }
 
 /**
  * Edits fields for an existing publication project
  *
- * @return void
  */
-function editProject() : void
+function editProject($id = null)
 {
+	error_log("editproject........");
     $db = \NDB_Factory::singleton()->database();
-    $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
-    if (isset($id)) {
-        // double check that current user has edit access
-        $factory     = \NDB_Factory::singleton();
-        $user        = $factory->user();
-        $creatorUser = $db->pselectOne(
-            'SELECT UserID FROM publication WHERE PublicationID=:id',
-            ['id' => $id]
-        );
+$title                  = $_REQUEST['title'] ?? null;
+$statusID               = $_REQUEST['status'] ?? null;
+$rejectedReason         = $_REQUEST['rejectedReason'] ?? null;
+$description            = $_REQUEST['description'] ?? null;
+$project                = $_REQUEST['project'] ?? null;
+$publishingStatus       = $_REQUEST['publishingStatus'] ?? null;
+$datePublication        = $_REQUEST['datePublication'] ?? null;
+$journal                = $_REQUEST['journal'] ?? null;
+$doi                    = $_REQUEST['doi'] ?? null;
+$link                   = $_REQUEST['link'] ?? null;
+$leadInvestigator       = $_REQUEST['leadInvestigator'] ?? null;
+$leadInvestigatorEmail  = $_REQUEST['leadInvestigatorEmail'] ?? null;
 
-        $editors = $db->pselectCol(
-            'SELECT UserID FROM publication_users_edit_perm_rel '.
-            'WHERE PublicationID=:id',
-            ['id' => $id]
-        );
-        $uid     = $user->getId();
-        if ($uid !== $creatorUser
-            && !in_array($uid, $editors)
-            && !$user->hasPermission('publication_approve')
-        ) {
-            showPublicationError(
-                "You do not have edit or approval access for this project!",
-                403
-            );
-        }
-    } else {
-        showPublicationError('No Publication ID provided', 400);
-    }
-
-    $title            = $_POST['title'] ?? null;
-    $statusID         = $_POST['status'] ?? null;
-    $rejectedReason   = $_POST['rejectedReason'] ?? null;
-    $description      = $_POST['description'] ?? null;
-    $project          = $_POST['project'] ?? null;
-    $publishingStatus = $_POST['publishingStatus'] ?? null;
-    $datePublication  = $_POST['datePublication'] ?? null;
-    $journal          = $_POST['journal'] ?? null;
-    $doi  = $_POST['doi'] ?? null;
-    $link = $_POST['link'] ?? null;
-    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
-    $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
         'SELECT p.*, pc.Name as LeadInvestigator, ' .
@@ -610,19 +631,28 @@ function editProject() : void
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
         $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
     }
-
-    editEditors($id);
-    editCollaborators($id);
-    editKeywords($id);
-    editVOIs($id);
-    editUploads($id);
-    processFiles($id);
+    $exists = $db->pselectOne(
+        "SELECT PublicationID " .
+        "FROM publication " .
+        "WHERE Title=:t AND PublicationID != :id",
+        ['t' => $title, 'id' =>$id]
+    );
+    if (intval($exists)) {    
+        $this->showPublicationError("Title Exists", 500);
+        exit;
+    }
+    $this->editEditors($id);
+    $this->editCollaborators($id);
+    $this->editKeywords($id);
+    $this->editVOIs($id);
+    $this->editUploads($id);
+    $this->processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        notify($id, 'review', $_POST['baseURL']);
+        $this->notify($id, 'review', $_REQUEST['baseURL']);
     } else {
         // otherwise send edit email
-        notify($id, 'edit', $_POST['baseURL']);
+        $this->notify($id, 'edit', $_REQUEST['baseURL']);
     }
     if (!empty($toUpdate)) {
         $db->update(
@@ -631,12 +661,16 @@ function editProject() : void
             ['PublicationID' => $id]
         );
     }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
-        );
+    try {    
+        if (!empty($leadInvToUpdate)) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+            );
+        }
+    } catch (\Exception $e) {
+          return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
     }
 }
 
@@ -650,8 +684,8 @@ function editProject() : void
 function editEditors($id) : void
 {
     $db = \NDB_Factory::singleton()->database();
-    $usersWithEditPerm = isset($_POST['usersWithEditPerm'])
-        ? json_decode($_POST['usersWithEditPerm']) : null;
+    $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
+        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
 
     $currentUWEP = $db->pselectCol(
         'SELECT UserID '.
@@ -660,15 +694,20 @@ function editEditors($id) : void
         ['pid' => $id]
     );
 
-    if ($usersWithEditPerm != $currentUWEP) {
-        // new UWEP will be in array_diff result of submitted vs stored
-        $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
-        // old UWEP who should be removed will appear in inverse operation
-        $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
-    }
+// Ensure $currentUWEP is an array
+$currentUWEP = is_array($currentUWEP) ? $currentUWEP : [];
 
+if ($usersWithEditPerm != $currentUWEP) {
+    // Ensure $usersWithEditPerm is an array
+    $usersWithEditPerm = is_array($usersWithEditPerm) ? $usersWithEditPerm : [];
+
+    // new UWEP will be in array_diff result of submitted vs stored
+    $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
+    // old UWEP who should be removed will appear in inverse operation
+    $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
+}
     if (!empty($newUWEP)) {
-        insertEditors($id);
+        $this->insertEditors(intval($id));
     }
     if (!empty($oldUWEP)) {
         foreach ($oldUWEP as $uid) {
@@ -693,8 +732,8 @@ function editEditors($id) : void
 function editCollaborators($id) : void
 {
     $db = \NDB_Factory::singleton()->database();
-    $submittedCollaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : null;
+    $submittedCollaborators = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators'], true) : null;
 
     $currentCollabs       = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -703,15 +742,25 @@ function editCollaborators($id) : void
         'WHERE pcr.PublicationID=:pid',
         ['pid' => $id]
     );
-    $currCollabNames      = array_values($currentCollabs);
-    $submittedCollabNames = array_column($submittedCollaborators, 'name');
-    if ($submittedCollabNames != $currCollabNames) {
-        $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
-        $oldCollabs = array_diff($currentCollabs, $submittedCollabNames);
-    }
 
+// Ensure $currentCollabs is an array
+$currentCollabs = is_array($currentCollabs) ? $currentCollabs : [];
+
+// Ensure $submittedCollaborators is an array
+$submittedCollaborators = is_array($submittedCollaborators) ? $submittedCollaborators : [];
+
+// Extract 'name' column from $submittedCollaborators
+$submittedCollabNames = array_column($submittedCollaborators, 'name');
+
+$currCollabNames = (array) $currCollabNames;  // Ensure it's an array
+$submittedCollabNames = (array) $submittedCollabNames; // Ensure it's an array
+
+if ($submittedCollabNames != $currCollabNames) {
+    $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
+    $oldCollabs = array_diff($currCollabNames, $submittedCollabNames);
+}
     if (!empty($newCollabs)) {
-        insertCollaborators($id);
+        $this->insertCollaborators(intval($id));
     }
     if (!empty($oldCollabs)) {
         foreach ($oldCollabs as $name) {
@@ -780,8 +829,8 @@ function editCollaborators($id) : void
 function editKeywords($id) : void
 {
     $db       = \NDB_Factory::singleton()->database();
-    $keywords = isset($_POST['keywords'])
-        ? json_decode($_POST['keywords']) : null;
+    $keywords = isset($_REQUEST['keywords'])
+        ? json_decode($_REQUEST['keywords']) : null;
 
     $currentKW = $db->pselectCol(
         'SELECT Label FROM publication_keyword pk '.
@@ -797,7 +846,7 @@ function editKeywords($id) : void
     }
 
     if (!empty($newKWs)) {
-        insertKeywords($id);
+        $this->insertKeywords(intval($id));
     }
     if (!empty($oldKWs)) {
         foreach ($oldKWs as $kw) {
@@ -829,8 +878,8 @@ function editKeywords($id) : void
 function editVOIs($id) : void
 {
     $db  = \NDB_Factory::singleton()->database();
-    $voi = isset($_POST['voiFields'])
-        ? json_decode($_POST['voiFields']) : null;
+    $voi = isset($_REQUEST['voiFields'])
+        ? json_decode($_REQUEST['voiFields']) : null;
 
     $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
@@ -856,7 +905,7 @@ function editVOIs($id) : void
         $oldVOI = array_diff($currentVOI, $voi);
     }
     if (!empty($newVOI)) {
-        insertVOIs($id);
+        $this->insertVOIs(intval($id));
     }
     if (!empty($oldVOI)) {
         foreach ($oldVOI as $ov) {
@@ -911,13 +960,15 @@ function editUploads($id) : void
         $citationIndex = 'existingUpload_publicationCitation_' . $puid;
         $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
-        $cit = $_POST[$citationIndex] ?? null;
-        $ver = $_POST[$versionIndex] ?? null;
+        // Check if values exist in $_POST before applying htmlspecialchars
+        $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
+        $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;
 
-        if (htmlspecialchars($cit) !== $data['Citation']) {
+        // If they exist and differ, add them to the update array
+        if ($cit !== null && htmlspecialchars($cit) !== $data['Citation']) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
-        if (htmlspecialchars($ver) !== $data['Version']) {
+        if ($ver !== null && htmlspecialchars($ver) !== $data['Version']) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }
@@ -932,6 +983,7 @@ function editUploads($id) : void
         }
     }
 }
+
 /**
  * Utility function to return errors from the server
  *
@@ -951,4 +1003,4 @@ function showPublicationError($message, $code = 500) : void
 
     print(json_encode(['message' => $message]));
     exit(0);
-}
+}}
