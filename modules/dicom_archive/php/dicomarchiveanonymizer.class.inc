@@ -99,10 +99,20 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
-            return new DICOMArchiveRowWithoutSession($newrow);
+            '@phan-var object $resource';
+            return new DICOMArchiveRowWithoutSession(
+                $newrow,
+                $resource->CreatedBy()
+            );
         } else {
-            $cid = $resource->getCenterID();
-            return new DICOMArchiveRowWithSession($newrow, $cid);
+            '@phan-var object $resource';
+            return new DICOMArchiveRowWithSession(
+                $newrow,
+                $resource->getCenterID(),
+                $resource->getProjectID(),
+                $resource->getSessionID(),
+                $resource->CreatedBy()
+            );
         }
     }
 }
