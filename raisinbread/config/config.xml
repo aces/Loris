@@ -33,33 +33,31 @@
         <adminpass>%COUCH_PASSWORD%</adminpass>
     </CouchDB>
 
-    <!-- REDCap Client config -->
-    <REDCap>
-        <!-- Should be an existing userID -->
-        <issuesAssignee>admin</issuesAssignee>
+    <!-- REDCap module configuration -->
+    <redcap>
+        <!-- Should be an existing user ID -->
+        <issue-assignee>admin</issue-assignee>
         <instance>
-            <name>aaa</name>
-            <url>https://someURL.com</url>
+            <redcap-url>https://www.example.net/redcap/</redcap-url>
             <!-- one instance can have multiple projects -->
             <project>
-                <projectID>111</projectID>
-                <token>token_1</token>
+                <redcap-project-id>111</redcap-project-id>
+                <redcap-api-token>token_1</redcap-api-token>
             </project>
             <project>
-                <projectID>222</projectID>
-                <token>token_2</token>
+                <redcap-project-id>222</redcap-project-id>
+                <redcap-api-token>token_2</redcap-api-token>
             </project>
         </instance>
         <instance>
-            <name>bbb</name>
-            <url>https://someOtherURL.com</url>
+            <redcap-url>https://www.example-bis.net/redcap/</redcap-url>
             <!-- one instance can have multiple projects -->
             <project>
-                <projectID>333</projectID>
-                <token>token_3</token>
+                <redcap-project-id>333</redcap-project-id>
+                <redcap-api-token>token_3</redcap-api-token>
             </project>
         </instance>
-    </REDCap>
+    </redcap>
 
     <!-- study variables -->
     <study>
