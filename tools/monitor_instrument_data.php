@@ -5,7 +5,7 @@
  * Checks and update status of running processes
  * Intended to be periodically run from cron
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 namespace LORIS\server_processes_manager;
