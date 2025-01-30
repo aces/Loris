@@ -653,6 +653,7 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
                 WHERE TestName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
+            echo "\n";
 
             if ($confirm) {
                 $query = "DELETE FROM conflicts_unresolved 
@@ -661,5 +662,4 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
             }
         }
     }
-    echo "\n";
 }
