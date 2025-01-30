@@ -6,7 +6,7 @@
  * "Usage: php parse_instrument_data.php instrument fileLocation userID examinerID"
  * "Ex: php parse_instrument_data.php bmi /data/uploads/bmi_data.csv admin admin";
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 require_once __DIR__ . "/generic_includes.php";

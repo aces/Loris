@@ -3,14 +3,14 @@
 /**
  * This file contains code to perform a complete MRI upload on the server.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 namespace LORIS\server_processes_manager;
 
 /**
  * A class for holding a set of functions to parse large instrument data uploads
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 class ParseInstrumentDataServerProcess extends AbstractServerProcess

@@ -3,7 +3,7 @@
 /**
  * Unit test for CSV Parser class
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit test for CSV Parser class
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class CSVParserTest extends TestCase
 {

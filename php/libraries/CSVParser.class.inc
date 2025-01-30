@@ -3,7 +3,7 @@
 /**
  * This file contains a class used to parse csv files
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 namespace LORIS;
@@ -14,7 +14,7 @@ use SplFileObject;
 /**
  * This class is used as a helper for parsing csv files
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class CSVParser
 {
