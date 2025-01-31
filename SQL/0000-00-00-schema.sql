@@ -965,6 +965,7 @@ CREATE TABLE `MRICandidateErrors` (
   `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL,
   `EchoNumber`             VARCHAR(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `unique_MCE_entry` (`SeriesUID`, `EchoTime`, `PhaseEncodingDirection`, `EchoNumber`, `PatientName`, `Reason`),
   CONSTRAINT `FK_tarchive_MRICandidateError_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -996,6 +997,9 @@ CREATE TABLE `mri_violations_log` (
   CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE mri_violations_log
+    ADD COLUMN `all_columns_hash` binary(32) GENERATED ALWAYS AS (UNHEX(SHA2(CONCAT(SeriesUID, '-', EchoTime, '-', PhaseEncodingDirection, '-', EchoNumber, '-', Scan_type, '-', Severity, '-', Header, '-', Value, '-', ValidRange, '-', ValidRegex), 256))),
+    ADD UNIQUE INDEX `unique_mvl_entry` (`all_columns_hash`);
 
 CREATE TABLE `violations_resolved` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1035,6 +1039,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `unique_mpvs_entry` (`SeriesUID`, `TE_range`, `PhaseEncodingDirection`, `EchoNumber`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
