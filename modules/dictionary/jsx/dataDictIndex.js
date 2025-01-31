@@ -309,13 +309,13 @@ class DataDictIndex extends Component {
         },
       },
       {
-        // We may or may not have an 8th column depending
-        // on type, which we need for formatting other columns.
-        // We don't show or display a filter because it's only
-        // valid for some data types.
-        label: 'Field Options',
-        show: false,
-        filter: null,
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohorts,
+        },
       },
     ];
     return (
