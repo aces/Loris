@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "REDCap Config",
+  "description": "Configurations for a REDCap to LORIS import",
+  "type": "object",
+  "properties": {
+    "reportId": {
+      "description": "The report ID of the REDCap report to import records from if not querying from all records",
+      "type": "integer"
+    },
+    "toIgnore": {
+      "description": "A list of REDCap variables / field names that are to be ignored i.e. excluded from being imported",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "datesToScrub": {
+      "description": "A list of REDCap date variables / field names requiring scrubbing and/or formatting to a format other than 'Y-m-d' (the LORIS DB default). By default, any fields with the string 'date' in its name will be formatted to 'Y-m-d', even if not defined here.",
+      "type": "array",
+      "items": {
+        "description": "Object with REDCap variable / field name, the DateTime format, and the DateTime component(s) to scrub with value to replace with",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The REDCap date variable / field name",
+            "type": "string"
+          },
+          "format": {
+            "description": "The DateTime format of the outputted date string, see https://www.php.net/manual/en/datetime.format.php. This property is required if the data needs to be re-formatted to anything other than 'Y-m-d' (the LORIS DB default), even if the 'component' property below need not be defined.",
+            "type": "string"
+          },
+          "component": {
+            "description": "Array of object with DateTime component to scrub (year, month, day) with value to scrub the date component string with",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "The DateTime component, one of day, month, or year",
+                  "type": "string",
+                  "enum": ["year", "month", "day"] 
+                },
+                "value": {
+                  "description": "The value to replace the date component string with, without leading zeros",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        } 
+      }
+    },
+    "siteSpecific": {
+      "description": "A list of REDCap variables / field names to be imported only for given sites",
+      "type": "array",
+      "items": {
+        "description": "Object containing REDCap field name as id, and a list or string of sites whose candidates for whom that field's data can be imported",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The REDCap variable / field name",
+            "type": "string"
+          },
+          "site": {
+            "description": "The LORIS site name",
+            "type": ["string", "array"]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "metadataMapping": {
+      "description": "An object mapping the candidate-level and visit-level LORIS metadata field names to their REDCap variable / field name. If there are multiple REDCap fields for a given LORIS field, the list is ordered to define default ranking",
+      "type": "object",
+      "properties": { 
+        "pscid": {
+          "type": "string"
+        },
+        "visit": {
+          "type": "string"
+        },
+        "site": {
+          "type": ["string", "array"]
+        },
+        "dob": {
+          "type": ["string", "array"]
+        },
+        "sex": {
+          "type": ["string", "array"]
+        },
+        "cohort": {
+          "type": ["string", "array"]
+        },
+        "dateOfVisit": {
+          "type": ["string", "array"]
+        }
+      },
+      "required": [ "pscid","visit","site","dob","sex","cohort","dateOfVisit" ]
+    },
+    "visitMapping": {
+      "description": "An array of objects mapping the REDCap visit values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap visit string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS cohort visit value equivalent",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "cohortMapping": {
+      "description": "An array of objects mapping the REDCap cohort values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap cohort string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS cohort string value equivalent",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "siteMapping": {
+      "description": "An arrau of objects mapping the REDCap site values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap site string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS site string value equivalent",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "sexMapping": {
+      "description": "An array of objects mapping the REDCap sex values to their LORIS equivalent",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapValue": {
+            "description": "A REDCap sex string value",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "A LORIS sex string value equivalent",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "consentMapping": {
+      "description": "An array of consent objects with accompanying field names for consent date and consenter for a given consent field name, as well as the consent status value options mapping",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "consentId": {
+            "description": "The consent name in both REDCap and LORIS (they must match)",
+            "type": "string"
+          },
+          "statusMapping": {
+            "description": "An object mapping the LORIS core status options ('yes', 'no') to their equivalent consent status values in REDCap",
+            "type": "object",
+            "properties": {
+              "yes": {
+                "description": "A REDCap consent status string value for 'yes' the given consent id",
+                "type": "string"
+              },
+              "no": {
+                "description": "A REDCap consent status string value for 'no' for the given consent id",
+                "type": "string"
+              }
+            }
+          },
+          "consentDateField": {
+            "description": "The name of the REDCap variable storing the given consent's date of consent",
+            "type": "string"
+          },
+          "consenterField": {
+            "description": "The name of the REDCap variable storing the given consent's consenter",
+            "type": "string"
+          }
+        },
+        "required": [ "consentId","statusMapping","consentDateField" ]
+      }
+    },
+    "instrumentMapping": {
+      "description": "An array of objects with an instrument's REDCap and LORIS test names if they are not identical",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "redcapValue": {
+            "description": "The REDCap instrument name",
+            "type": "string"
+          },
+          "lorisValue": {
+            "description": "The LORIS test name",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "dateTakenMapping": {
+      "description": "An array of objects with the REDCap field name equivalent of the LORIS 'Date_taken' field for a given instrument",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "instrument": {
+            "description": "The LORIS instrument test name",
+            "type": "string"
+          },
+          "dateTaken": {
+            "description": "A REDCap 'Date_taken' equivalent variable / field name",
+            "type": "string"
+          }
+        },
+        "required": [ "instrument","dateTaken" ]
+      }
+    },
+    "examinerMapping": {
+      "description": "An array of objects with the REDCap field name equivalent of the LORIS 'Examiner' field for a given instrument",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "instrument": {
+            "description": "The LORIS instrument test name",
+            "type": "string"
+          },
+          "examiner": {
+            "description": "A REDCap 'Examiner' equivalent variable / field name for the given instrument",
+            "type": "string"
+          }
+        },
+        "required": [ "instrument","examiner" ]
+      }
+    },
+    "statusFieldsMapping": {
+      "description": "An array of REDCap variables with the string '_status' in its field name. '_status' is a reserved string in LORIS for its behavioural data workflow. The array of objects provide the LORIS field equivalent without '_status' in its name",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { 
+          "redcapField": {
+            "description": "The REDCap variable / field name",
+            "type": "string"
+          },
+          "lorisField": {
+            "description": "The LORIS equivalent of the given REDCap variable, without '_status' in the field name",
+            "type": "string"
+          }
+        },
+        "required": [ "redcapValue","lorisValue" ]
+      }
+    },
+    "instrumentFlagsMapping": {
+      "description": "",
+      "type": "array",
+      "items": {
+        "description": "For a given instrument, an object with the LORIS test name, along with mappings for Administration, Validity, and Data_Entry instrument flags",
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "description": "The LORIS instrument test name",
+            "type": "string"
+          },
+          "administration": {
+            "description": "Object with REDCap equivalent of 'Administration' field with status values mapping",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "The REDCap equivalent variable / field name for LORIS's instrument flag 'Administration'",
+                "type": "string"
+              },
+              "statusMapping": {
+                "description": "Mapping of LORIS 'None', 'Partial', and 'All' values for Administration flag to their LORIS equivalent",
+                "type": "object",
+                "properties": {
+                  "None": {
+                    "type": "string"
+                  },
+                  "Partial": {
+                    "type": "string"
+                  },
+                  "All": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "required": [ "id","statusMapping" ]
+          },
+          "validity": {
+            "description": "Object with REDCap equivalent of 'Validity' field with status values mapping",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "The REDCap equivalent variable / field name for LORIS's instrument flag 'Validity'",
+                "type": "string"
+              },
+              "statusMapping": {
+                "description": "Mapping of LORIS 'Questionable', 'Invalid', and 'Valid' values for Validity flag to their LORIS equivalent",
+                "type": "object",
+                "properties": {
+                  "Questionable": {
+                    "type": "string"
+                  },
+                  "Invalid": {
+                    "type": "string"
+                  },
+                  "Valid": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "required": [ "id","statusMapping" ]
+          },
+          "dataEntry": {
+            "description": "Object with REDCap equivalent of 'Data_entry' field with status values mapping",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "The REDCap equivalent variable / field name for LORIS's instrument flag 'Data_entry'",
+                "type": "string"
+              },
+              "statusMapping": {
+                "description": "Mapping of LORIS 'In Progress', and 'Complete' values for Data_entry flag to their LORIS equivalent",
+                "type": "object",
+                "properties": {
+                  "In Progress": {
+                    "type": "string"
+                  },
+                  "Complete": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "required": [ "id","statusMapping" ]
+          }
+        },
+        "required": [ "instrument" ]
+      }
+    }
+  }
+}

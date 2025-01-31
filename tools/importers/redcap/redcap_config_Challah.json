@@ -1,0 +1,414 @@
+{
+  "reportId": 20,
+  "toIgnore": [
+    "hoehn_yahr",
+    "h_y_date",
+    "hoehn_yahr_method",
+    "brain_bank_consent"
+  ],
+  "datesToScrub": [
+    {
+      "id": "dob",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "consent_covid_date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "loris_consent_date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "date0",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "study_visit_date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "date",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "date21",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "study_blood_draw",
+      "format": "Y-m-d",
+      "component": [
+        {
+          "id": "day",
+          "value": 1
+        }  
+      ]
+    }
+  ],
+  "siteSpecific": [
+    {
+      "id": "diagnosis_date",
+      "site": ["Montreal","Ottawa","Rome"]
+    },
+    {
+      "id": "dementia_date",
+      "site": ["Montreal","Ottawa","Rome"]
+    },
+    {
+      "id": "dbs_surgery_date",
+      "site": ["Montreal","Ottawa","Rome"]
+    },
+    {
+      "id": "symptom_date",
+      "site": ["Montreal","Ottawa","Rome"]
+    }
+  ],
+  "metadataMapping": {
+    "pscid": "record_id",
+    "visit": "redcap_event_name",
+    "site": ["site", "site_2"],
+    "dob": "dob",
+    "sex": "sex",
+    "cohort": "enrolment_group_v2",
+    "dateOfVisit": ["study_visit_date","date","date21"]
+  },
+  "visitMapping": [
+    {
+      "redcapValue": "Baseline (Arm 1: Challah)",
+      "lorisValue":  "V1"
+    },
+    {
+      "redcapValue": "12 Months Follow-Up (Arm 1: Challah)",
+      "lorisValue": "V2"
+    },
+    {
+      "redcapValue": "18 Months Follow-Up (Arm 1: Challah)",
+      "lorisValue": "V3"
+    },
+    {
+      "redcapValue": "24 Months Follow-Up (Arm 1: Challah)",
+      "lorisValue": "V4"
+    }
+  ],
+  "cohortMapping": [
+    {
+      "redcapValue": "Healthy control",
+      "lorisValue": "Control"
+    },
+    {
+     "redcapValue": "PD (Parkinson's Disease)",
+     "lorisValue": "Disease"
+    },
+    {
+      "redcapValue": "PPS (Parkinson Plus Syndrome)",
+      "lorisValue": "Disease"
+    }
+  ],
+  "siteMapping": [
+    {
+      "redcapValue": "MNI",
+      "lorisValue": "Montreal"
+    },
+    {
+      "redcapValue": "The Ottawa Hospital",
+      "lorisValue": "Ottawa"
+    },
+    {
+      "redcapValue": "Rome",
+      "lorisValue": "Rome"
+    }
+  ],
+  "sexMapping": [
+    {
+      "redcapValue": "Male/Masculin",
+      "lorisValue": "Male"
+    },
+    {
+      "redcapValue": "Female/Féminin",
+      "lorisValue": "Female"
+    },
+    {
+      "redcapValue": "Transgender/Transsexuel",
+      "lorisValue": "Other"
+    },
+    {
+      "redcapValue": "Other/Autre",
+      "lorisValue": "Other"
+    }
+  ],
+  "consentMapping": [
+    {
+      "consentId": "future_research_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "blood_research_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "blood_future_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "date0"
+    },
+    {
+      "consentId": "loris_consent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "loris_consent_date"
+    },
+    {
+      "consentId": "covid_cosent",
+      "statusMapping": {
+        "yes": "Yes/Oui",
+        "no": "No/Non"
+      },
+      "consentDateField": "consent_covid_date",
+      "consenterField": "covid_consent_name"
+    }
+  ],
+  "instrumentMapping": [
+    {
+      "redcapValue": "covid19_questionnaire",
+      "lorisValue": "covid19_questionnaire_redcap"
+    }
+  ],
+  "dateTakenMapping": [
+    {
+        "instrument": "bai",
+        "dateTaken": "date25"
+    },
+    {
+        "instrument": "clinical_questionnaire",
+        "dateTaken": "date4"
+    },
+    {
+        "instrument": "demographic_questionnaire",
+        "dateTaken": "date3"
+    },
+    {
+        "instrument": "enrollment",
+        "dateTaken": "date01"
+    },
+    {
+        "instrument": "epidemiological_questionnaire",
+        "dateTaken": "date6"
+    },
+    {
+        "instrument": "mdsupdrs",
+        "dateTaken": "date8"
+    },
+    {
+        "instrument": "moca",
+        "dateTaken": "moca_date"
+    },
+    {
+        "instrument": "bmi",
+        "dateTaken": "date16"
+    },
+    {
+        "instrument": "covid19_questionnaire_redcap",
+        "dateTaken": "date7"
+    }
+  ],
+  "examinerMapping": [
+    {
+        "instrument": "clinical_questionnaire",
+        "examiner": "staff_name"
+    },
+    {
+        "instrument": "enrollment",
+        "examiner": "research_staff_v2"
+    },
+    {
+        "instrument": "mdsupdrs",
+        "examiner": "mds_updrs_staff"
+    },
+    {
+        "instrument": "moca",
+        "examiner": "administer_moca"
+    }
+  ],
+  "statusFieldsMapping": [
+    {
+      "redcapValue": "employment_status_t2",
+      "lorisValue": "employment__t2"
+    },
+    {
+      "redcapValue": "study_status_v2",
+      "lorisValue": "study_v2"
+    },
+    {
+      "redcapValue": "registry_status_v2",
+      "lorisValue": "registry_v2"
+    },
+    {
+      "redcapValue": "marital_status",
+      "lorisValue": "marital"
+    },
+    {
+      "redcapValue": "employment_status",
+      "lorisValue": "employment"
+    },
+    {
+      "redcapValue": "cognitive_status",
+      "lorisValue": "cognitive"
+    }
+  ],
+  "instrumentFlagsMapping": [
+    {
+      "instrument": "bai",
+      "administration": {
+        "id": "bai_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "clinical_questionnaire",
+      "administration": {
+        "id": "clinical_questionnaire_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "demographic_questionnaire",
+      "administration": {
+        "id": "demographic_questionnaire_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "enrollment",
+      "administration": {
+        "id": "enrollment_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "epidemiological_questionnaire",
+      "administration": {
+        "id": "epidemiological_questionnaire_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "moca",
+      "administration": {
+        "id": "moca_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "bmi",
+      "administration": {
+        "id": "bmi_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "updrs",
+      "administration": {
+        "id": "updrs_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    },
+    {
+      "instrument": "covid19_questionnaire_redcap",
+      "administration": {
+        "id": "covid19_questionnaire_complete",
+        "statusMapping": {
+          "None": "0",
+          "Partial": "1",
+          "All": "2"
+        }
+      }
+    }
+  ]
+}
