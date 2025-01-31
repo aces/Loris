@@ -242,7 +242,6 @@ class InstrumentDataParser extends CSVParser
 
     /**
      * Get the session ID from PSCID and Visit_label
-     *  TODO: Timepoint/getTimepointFormPSCIDandVisitLabel(,)
      *
      * @param string $pscID      candidate PSCID
      * @param string $visitLabel session Visit_label
@@ -301,21 +300,7 @@ class InstrumentDataParser extends CSVParser
             try {
                 foreach ($instrumentData as $data) {
                     try {
-                        $battery = new \NDB_BVL_Battery();
-                        $battery->selectBattery(
-                            new \SessionID(strval($data['SessionID']))
-                        );
-                        $commentID = $battery->addInstrument(
-                            $loris,
-                            $this->instrumentName
-                        );
-
-                        $instrument = \NDB_BVL_Instrument::factory(
-                            $loris,
-                            $this->instrumentName,
-                            $commentID
-                        );
-
+                        // Prepare row data
                         $rowData = array_reduce(
                             $instrumentHeaders,
                             function ($columns, $columnName) use ($data) {
@@ -328,16 +313,36 @@ class InstrumentDataParser extends CSVParser
                             []
                         );
 
+                        // Create generic instrument
+                        $instrument = \NDB_BVL_Instrument::factory(
+                            $loris,
+                            $this->instrumentName,
+                            ''
+                        );
+
+                        // Populate instrument with data
+                        // Change below is expected to allow population
+                        $_FILES   = [];
+                        $_REQUEST = $rowData;
+                        $_POST    = $rowData;
+
                         $instrument->form->getGroupValues(
                             array_keys($rowData),
                             $out
                         );
 
-                        // Change below is expected state for validation
-                        $_FILES   = [];
-                        $_REQUEST = $rowData;
-                        $_POST    = $rowData;
+                        // Generate CommentID for instrument
+                        $battery = new \NDB_BVL_Battery();
+                        $battery->selectBattery(
+                            new \SessionID(strval($data['SessionID']))
+                        );
+                        $commentID = $battery->addInstrument(
+                            $loris,
+                            $this->instrumentName
+                        );
+                        $instrument->commentID = $commentID;
 
+                        // Validate and save
                         $success = $instrument->save();
 
                         if (!$success) {
@@ -345,7 +350,7 @@ class InstrumentDataParser extends CSVParser
                                 "This row failed data validation."
                             );
                         } else {
-                            // Link file entry to DataID
+                            // Success - Link file entry to DataID
                             $query  = "SELECT DataID
                                     FROM flag
                                     WHERE CommentID = :commentID";
