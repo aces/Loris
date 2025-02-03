@@ -75,10 +75,7 @@ class InstrumentDataParser extends CSVParser
     ): array {
         return array_merge(
             ['PSCID', 'Visit_label'],   // SessionID
-            // Convert to static list of flag fields
-            // List: Data_entry, Required_elements_completed, Administration,
-            //       Validity, Exclusion, Testdate
-            self::getFlagHeaders(   // Whitelist would prevent invalid columns
+            self::getFlagHeaders(
                 [
                     'ID', 'SessionID', 'Test_name', 'TestID',
                     'CommentID', 'UserID', 'Data', 'DataID',
