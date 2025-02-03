@@ -37,17 +37,18 @@ class CSVParser
     /**
      * Check that headers match (equivalent arrays)
      *
-     * @param array $headers         Headers parsed from csv file
-     * @param array $expectedHeaders Expected headers (ex: from instrument)
-     * @param bool  $strict          If true, $headers cannot be a superset
-     *                               of $expectedHeaders
+     * @param array|false $headers         Headers parsed from csv file
+     * @param array       $expectedHeaders Expected headers (ex: from instrument)
+     * @param bool        $strict          If true, $headers cannot be a superset
+     *                                     of $expectedHeaders
      *
-     * @return bool                  Returns true if headers are valid
+     * @return bool                        Returns true if headers are valid
      */
     private function _validateHeaders(
-        array $headers, array $expectedHeaders, bool $strict = false
+        array|false $headers, array $expectedHeaders, bool $strict = false
     ): bool {
-        if ($strict && count($headers) !== count($expectedHeaders)) {
+        if (!$headers || ($strict && count($headers) !== count($expectedHeaders))
+        ) {
             return false;
         }
 
