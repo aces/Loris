@@ -52,6 +52,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         //note that this needs to be in the same order as the headers array
         parent::__construct(
+            $loris,
             "SELECT i.issueID,
                     i.title,
                     m.name as module,

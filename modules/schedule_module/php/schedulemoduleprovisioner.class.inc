@@ -32,10 +32,14 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     /**
      * Create a ScheduleModuleProvisioner, which gets modules for the
      * Schedule Module menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             $this->getQuery(),
             []
         );
