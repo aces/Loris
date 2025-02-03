@@ -25,6 +25,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
+     * Variable storing the labels used for an instrument
+     * supporting multiple languages
+     *
+     * @var string
+     */
+    public $labels;
+
+    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -273,6 +281,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Get language labels
+        $obj->getLanguageMapping($instrument);
+
         // Set page name to testName
         $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
@@ -398,6 +409,93 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $edc_age      = $edc_year . " y / " . $edc_month . " m";
             $this->tpl_data['edc_age'] = $edc_age;
         }
+    }
+
+    /**
+     * Gets the current object instance language
+     *
+     * @return string
+     */
+    function getLanguage()
+    {
+        $DB = $this->loris->getDatabaseConnection();
+
+        $lang = $DB->pselectOne(
+            'SELECT language_code
+             FROM language l
+             JOIN session s ON (l.language_id=s.languageID)
+             WHERE ID=:sid',
+            ['sid' => (string) $this->getSessionID()]
+        );
+
+        return $lang ?? 'en-CA';
+    }
+
+    /**
+     * Gets the instrument labels in the current object instance's language from a
+     * json file. The return array is in the format [key => label]
+     *
+     * @param string $tn The name of the JSON file to be used.
+     *
+     * @return array
+     */
+    function getLanguageMapping($tn = null)
+    {
+        $config = NDB_Config::singleton();
+        $base   = $config->getSetting('base');
+
+        // Get labels for Instrument class
+        // Check if a project-specific library file exists
+        $projectLibraryFile = $base .
+            "project/instruments/language_jsons/instrument_library_labels.json";
+
+        // If no project-specific library file exists, take default
+        $libraryLabelFile = file_exists($projectLibraryFile) ? $projectLibraryFile :
+            $base .
+            "modules/instruments/language_labels/instrument_library_labels.json";
+        if (!file_exists($libraryLabelFile)) {
+            $msg = "Instrument library labels JSON file does not exist";
+            throw new NotFound($msg);
+        }
+
+        $libraryLabelMap = json_decode(file_get_contents($libraryLabelFile), true);
+
+        $lang = $this->getLanguage();
+
+        $this->labels = $libraryLabelMap[$lang];
+
+        // Get labels for the instrument if they exist
+        $instLabelFile = $base."project/instruments/language_jsons/{$tn}.json";
+        if (file_exists($instLabelFile)) {
+            $instLabelMap = json_decode(
+                file_get_contents($instLabelFile),
+                true
+            );
+            $this->labels = array_merge(
+                $instLabelMap[$lang],
+                $libraryLabelMap[$lang]
+            );
+        }
+    }
+
+    /**
+     * Returns the label that should be displayed if and only if it exists
+     *
+     * @param $name string name of the variable (key in the  array)
+     *
+     * @throws LorisException if the label name is not a key in the label array
+     *
+     * @return string
+     */
+    function getLangLabel(string $name)
+    {
+        if (!isset($this->labels[$name])) {
+            throw new LorisException(
+                "The label for formelement $name does not exist."
+            );
+        }
+
+        return $this->labels[$name];
     }
 
     /**
@@ -542,7 +640,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             && $defaults['Window_Difference'] != 0
         ) {
             $defaults['Candidate_Age']
-                = $defaults['Candidate_Age'] . " (Age out of range)";
+                = $defaults['Candidate_Age'] .
+                $this->getLangLabel('age_out_of_range');
         }
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
@@ -575,7 +674,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $submittedData = $this->form->getSubmitValues();
 
             if (count($submittedData)) {
-
+                $data_entry_error_detected
+                    = $this->getLangLabel('data_entry_error_detected');
                 // the form WAS submitted but validate() failed...
                 // main error message
                 $this->form->addElement('static', 'mainError');
@@ -583,8 +683,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     'mainError',
                     "<p>
                     <font color='red'>
-                        A data entry error has been detected so this data
-                        <b>WAS NOT SAVED</b>
+                        $data_entry_error_detected
                     </font>
                     </p>\n"
                 );
@@ -630,7 +729,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $DB  = $this->loris->getDatabaseConnection();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
-                throw new LorisException("Candidate age could not be found.");
+                throw new LorisException($this->getLanglabel('age_not_found'));
             }
 
             $agedays   = $this->calculateAgeDays($age);
@@ -878,35 +977,43 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            $this->getLangLabel('date_of_administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    $this->getLangLabel('candidate_age')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    $this->getLangLabel('candidate_age_death')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                $this->getLangLabel('window_difference')
             );
         }
         $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+        $this->addSelect('Examiner', $this->getLangLabel('examiner'), $examiners);
 
         $this->addRule(
             'Date_taken',
-            'Date of Administration is required',
+            $this->getLangLabel('date_of_administration_required'),
             'required'
         );
 
-        $this->addRule('Examiner', 'Examiner is required', 'required');
+        $this->addRule(
+            'Examiner',
+            $this->getLangLabel('examiner_required'),
+            'required'
+        );
     }
 
     /**
@@ -1200,7 +1307,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
-                    $errors[$elname] = "Required.";
+                    $errors[$elname] = $this->getLangLabel('required');
                     if ($this->XINDebug) {
                         echo "Required by default";
                     }
@@ -1616,19 +1723,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message='This field is required.'
+        string $rule_message=null
     ): void {
         $this->addSelect(
             $field,
             $label,
             [
                 ''             => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+                'yes'          => $this->getLangLabel('yes'),
+                'no'           => $this->getLangLabel('no'),
+                'not_answered' => $this->getLangLabel('not_answered'),
             ]
         );
-
+        $rule_message = $rule_message ?? $this->getLangLabel('field_required');
         if (!empty($rules)) {
             $this->XINRegisterRule($field, $rules, $rule_message);
         }
@@ -1656,14 +1763,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message='This field is required.',
-        array $refusals = [
-            ''             => '',
-            'not_answered' => 'Not Answered',
-        ]
+        string $rule_message = null,
+        array $refusals = null
     ): void {
-        $group   = [];
-        $group[] = $this->createText($field, $label);
+        $rule_message = $rule_message ?? $this->getLangLabel('field_required');
+        $refusals     = $refusals ??  [
+            ''             => '',
+            'not_answered' => $this->getLangLabel('not_answered'),
+        ];
+        $group        = [];
+        $group[]      = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field."_status",
@@ -1694,10 +1803,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function addTextAreaElementRD(string $field,
         string $label,
         array $rules=[],
-        string $rule_message='You must specify or select from the drop-down'
+        string $rule_message=null
     ): void {
-        $group   = [];
-        $group[] = $this->form->createElement(
+        $rule_message = $rule_message ?? $this->getLanglaebl('specify_or_select');
+        $group        = [];
+        $group[]      = $this->form->createElement(
             "textarea",
             $field,
             '',
@@ -1707,14 +1817,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'rows' => 4,
             ]
         );
-        $group[] = $this->createSelect(
+        $group[]      = $this->createSelect(
             $field."_status",
             "",
             [
                 ''               => '',
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => 'Not Answered',
+                "88_refused"     => $this->getLangLabel('88_refused'),
+                "99_do_not_know" => $this->getLangLabel('99_do_not_know'),
+                'not_answered'   => $this->getLangLabel('not_answered'),
             ]
         );
 
@@ -1739,10 +1849,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message='This field is required.'
+        string $rule_message=null
     ): void {
-        $group   = [];
-        $group[] = $this->form->createElement(
+        $rule_message = $rule_message ?? $this->getLangLabel('field_required');
+        $group        = [];
+        $group[]      = $this->form->createElement(
             "textarea",
             $field,
             $label,
@@ -1759,7 +1870,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''             => '',
-                'not_answered' => 'Not Answered',
+                'not_answered' => $this->getLangLabel('not_answered'),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -1793,10 +1904,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules = [],
         ?string $rule_message = null
     ): void {
-        if ($rule_message === null) {
-            $rule_message = "You are required to select a status "
-                . "if you want to leave this time blank.";
-        }
+        $rule_message = $rule_message
+            ?? $this->getLangLabel('select_status_leave_blank');
 
         $group   = [];
         $group[] = $this->form->createElement(
@@ -1810,9 +1919,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''             => null,
-                "dnk"          => "DNK",
-                "refusal"      => "Refusal",
-                'not_answered' => 'Not Answered',
+                "dnk"          => $this->getLangLabel('dnk'),
+                "refusal"      => $this->getLangLabel('refusal'),
+                'not_answered' => $this->getLangLabel('not_answered'),
             ]
         );
         $this->addGroup($group, $field . "_group", $label, '');
@@ -1863,7 +1972,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''             => '',
-                'not_answered' => "Not Answered",
+                'not_answered' => $this->getLangLabel('not_answered'),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -1879,7 +1988,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $name . "_date",
             [$name . "_date_status{@}=={@}"],
-            "A Date, or Not Answered is required.",
+            $this->getLangLabel('date_or_NA_required'),
             $name . "_date_group"
         );
     }
@@ -1930,9 +2039,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''               => '',
-                '88_refused'     => "88 Refused",
-                '99_do_not_know' => "99 Do not know",
-                'not_answered'   => "Not Answered",
+                '88_refused'     => $this->getLangLabel('88_refused'),
+                '99_do_not_know' => $this->getLangLabel('99_do_not_know'),
+                'not_answered'   => $this->getLangLabel('not_answered'),
             ]
         );
         $this->addGroup(
@@ -1945,13 +2054,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule(
             $name . "_date",
             [$name . "_date_status{@}=={@}"],
-            "You must specify or select from the drop-down",
+            $this->getLangLabel('specify_or_select'),
             $name . "_date_group"
         );
         $this->XINRegisterRule(
             $name . "_date_status",
             [$name . "_date{@}=={@}"],
-            "You must specify or select from the drop-down",
+            $this->getLangLabel('specify_or_select'),
             $name . "_date_group"
         );
 
@@ -1981,7 +2090,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''             => '',
-                'not_answered' => "Not Answered",
+                'not_answered' => $this->getLangLabel('not_answered'),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -1989,12 +2098,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         unset($group);
         $this->addGroupRule(
             $field . "_group",
-            [[["Value must be numeric.", 'numeric']]]
+            [[[$this->getLangLabel('must_be_numeric'), 'numeric']]]
         );
         $this->XINRegisterRule(
             $field,
             [$field . '_status{@}=={@}'],
-            'This field is required',
+            $this->getLangLabel('field_required'),
             $field . '_group'
         );
     }
@@ -2017,9 +2126,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             '',
             [
                 ''               => '',
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => "Not Answered",
+                "88_refused"     => $this->getLangLabel('88_refused'),
+                "99_do_not_know" => $this->getLangLabel('99_do_not_know'),
+                'not_answered'   => $this->getLangLabel('not_answered'),
             ],
             ['class' => 'form-control input-sm not-answered']
         );
@@ -2027,12 +2136,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         unset($group);
         $this->addGroupRule(
             $field . "_group",
-            [[["Numbers only, please", 'numeric']]]
+            [[[$this->getLangLabel('must_be_numeric'), 'numeric']]]
         );
         $this->XINRegisterRule(
             $field,
             [$field . '_status{@}=={@}'],
-            'This field is required',
+            $this->getLangLabel('field_required'),
             $field . '_group'
         );
     }
