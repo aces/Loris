@@ -28,6 +28,7 @@ class QueryRuns extends \LORIS\Data\Provisioners\DBRowProvisioner
         int $qid
     ) {
         parent::__construct(
+            $loris,
             "SELECT drq.RunID, dq.QueryID, RunTime, Query
             FROM dataquery_queries dq
                 JOIN dataquery_run_queries drq ON (dq.QueryID=drq.QueryID)
