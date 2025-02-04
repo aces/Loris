@@ -31,6 +31,21 @@ namespace LORIS\Data\Filters;
  */
 class UserSiteMatch implements \LORIS\Data\Filter
 {
+    protected ?bool $defaultReturn;
+
+    /**
+     * Constructor
+     *
+     * @param ?bool     $defaultReturn The default return value to return instead of
+     *                                throwing an exception when an exception is
+     *                                indesirable.
+     *
+     */
+    public function __construct(?bool $defaultReturn = null)
+    {
+        $this->defaultReturn = $defaultReturn;
+    }
+
     /**
      * Implements the \LORIS\Data\Filter interface
      *
@@ -54,8 +69,12 @@ class UserSiteMatch implements \LORIS\Data\Filter
         } elseif ($resource instanceof \LORIS\StudyEntities\SiteHaver) {
             return $user->hasCenter($resource->getCenterID());
         }
-        throw new \LorisException(
-            "Can not implement UserSiteMatch on a resource type that has no sites."
-        );
+
+        if ($this->defaultReturn === null) {
+            throw new \LorisException(
+                "Can not implement UserSiteMatch on a resource type that has no sites."
+            );
+        }
+        return $this->defaultReturn;
     }
 }
