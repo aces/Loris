@@ -13,11 +13,16 @@ use \LORIS\Data\Cardinality;
  */
 class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 {
-    const FDI_DATA_TYPE_IDX   = 0;
-    const FDI_SELECT_IDX      = 1;
+    // Index of the data type in the arrays contained in $FILE_DICTIONARY_ITEMS
+    const FDI_DATA_TYPE_IDX = 0;
+    // Index of the info to select in the arrays contained in $FILE_DICTIONARY_ITEMS
+    const FDI_SELECT_IDX = 1;
+    // Index of the description in the arrays contained in $FILE_DICTIONARY_ITEMS
     const FDI_DESCRIPTION_IDX = 2;
 
-    // All the fields that get their info directly from table files
+    // Properties of all fields that are stored in the data dictionary as
+    // LocationDictionaryItem. The information in this array is used to create the
+    // item and to build the SQL query used to fetch the field value in the DB.
     const FILE_DICTIONARY_ITEMS = [
         'file'            => [
             'StringType', 'File', 'acquisition file path'
@@ -31,6 +36,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         'ScannerID'       => [
             'IntegerType', 'ScannerID', 'acquisition scanner ID'
         ],
+        'FileInsertDate'  => [
+            'DateType',
+            'FROM_UNIXTIME(InsertTime,"%Y-%m-%d")',
+            'acquisition file insert date'
+        ],
         'Caveat'          => [
             'StringType', 'Caveat', 'acquisition caveat'
         ],
@@ -39,20 +49,25 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         ],
         'CoordinateSpace' => [
             'StringType', 'CoordinateSpace', 'acquisition coordinate space'
-        ],
-        'FileInsertDate'  => [
-            'DateType',
-            'FROM_UNIXTIME(InsertTime,"%Y-%m-%d")',
-            'acquisition file insert date'
         ]
     ];
 
-    const PDI_DATA_TYPE_IDX      = 0;
+    // Index of the data type in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_DATA_TYPE_IDX = 0;
+    // Index of the parameter name in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
     const PDI_PARAMETER_NAME_IDX = 1;
-    const PDI_SELECT_IDX         = 2;
-    const PDI_DESCRIPTION_IDX    = 3;
+    // Index of the info to select in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_SELECT_IDX = 2;
+    // Index of the description in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_DESCRIPTION_IDX = 3;
 
-    // All the fields that get their info directly from table parameter_files
+    // Properties of all fields that are stored in the data dictionary as
+    // ParameterDictionaryItem. The information in this array is used to create the
+    // item and to build the SQL query used to fetch the field value in the DB.
     const PARAMETER_DICTIONARY_ITEMS = [
         'AcquisitionDate'       => [
             'StringType',
