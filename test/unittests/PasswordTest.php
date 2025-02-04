@@ -49,7 +49,10 @@ class PasswordTest extends TestCase
      */
     private $_factory;
 
-    private $_configInfo = [0 => ['65' => 'false']];
+    private $_configInfo = [
+        ['65' => 'false'],
+        ['133','2y',],
+    ];
 
     /**
      * Setup
@@ -141,7 +144,14 @@ class PasswordTest extends TestCase
      */
     public function testWellFormedPassword(): void
     {
-        $this->assertInstanceOf('Password', new \Password(self::VALID_PASSWORD));
+        $this->_configMock->method('getSetting')
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
+
+        $this->assertInstanceOf(
+            'Password',
+            new \Password(self::VALID_PASSWORD, $this->_configMock)
+        );
     }
 
     /**
@@ -152,9 +162,18 @@ class PasswordTest extends TestCase
      */
     public function testToString(): void
     {
-        $password = new \Password(self::VALID_PASSWORD);
+        // Configure the mock to return a valid password algorithm
+        $this->_configMock->method('getSetting')
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
+
+        // Instantiate the Password object with the valid password and config
+        $password = new \Password(self::VALID_PASSWORD, $this->_configMock);
+
+        // Assert that the password can be verified with the hashed value
         $this->assertTrue(
-            password_verify(self::VALID_PASSWORD, (string) $password)
+            password_verify(self::VALID_PASSWORD, (string) $password),
+            "Password string should correctly verify against the original value."
         );
     }
 }

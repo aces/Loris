@@ -195,17 +195,27 @@ class Password
      * Creates a new Password object when the $value param is well-formed.
      * well-formed.
      *
-     * @param string $value The proposed password value.
+     * @param string      $value  The proposed password value.
+     * @param ?NDB_Config $config The config
      *
      * @throws InvalidArgumentException When passsword is too short or too simple.
      */
-    public final function __construct(string $value)
+    public final function __construct(string $value, ?NDB_Config $config = null)
     {
         // Ensure proposed value is well-formed.
         $this->_validate($value);
-        // Don't store the value in the object; instead use the hashed version
-        // This mitigates the risk of accidentally revealing the plaintext.
-        $this->_hash = password_hash($value, PASSWORD_DEFAULT);
+        $config        = $config ?? \NDB_Config::singleton();
+        $password_algo = $config->getSetting("passwordAlgorithm");
+
+        if (empty($password_algo)) {
+            throw new ConfigurationException(
+                "Password algorithm is not configured in the settings.
+        "
+            );
+        }
+
+        // Hash the password using the configured algorithm
+        $this->_hash = password_hash($value, $password_algo);
     }
 
     /**
