@@ -263,7 +263,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
         $issueData['comment'] = null;
 
-        $isOwnIssue = $issueData['reporter'] == $user->getUsername();
+        $isOwnIssue = $issueData['reporter']
+            == $this->formatUserInformation($user->getUsername());
 
         $result = [
             'assignees'         => $assignees,
