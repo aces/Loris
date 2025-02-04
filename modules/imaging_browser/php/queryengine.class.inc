@@ -13,79 +13,169 @@ use \LORIS\Data\Cardinality;
  */
 class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 {
-    const FDI_DATA_TYPE_IDX      = 0;
-    const FDI_SELECT_IDX         = 1;
-    const FDI_DESCRIPTION_IDX    = 2;
+    // Index of the data type in the arrays contained in $FILE_DICTIONARY_ITEMS
+    const FDI_DATA_TYPE_IDX = 0;
+    // Index of the info to select in the arrays contained in $FILE_DICTIONARY_ITEMS
+    const FDI_SELECT_IDX = 1;
+    // Index of the description in the arrays contained in $FILE_DICTIONARY_ITEMS
+    const FDI_DESCRIPTION_IDX = 2;
 
-    // All the fields that get their info directly from table files
+    // Properties of all fields that are stored in the data dictionary as
+    // LocationDictionaryItem. The information in this array is used to create the
+    // item and to build the SQL query used to fetch the field value in the DB.
     const FILE_DICTIONARY_ITEMS = [
-        'file'            => ['StringType'     , 'File'                                , 'acquisition file path'       ],
-        'OutputType'      => ['StringType'     , 'OutputType'                          , 'acquisition output type'     ],
-        'Pipeline'        => ['StringType'     , 'SourcePipeline'                      , 'acquisition source pipeline' ],
-        'ScannerID'       => ['IntegerType'    , 'ScannerID'                           , 'acquisition scanner ID'      ],
-        'FileInsertDate'  => ['DateType'       , 'FROM_UNIXTIME(InsertTime,"%Y-%m-%d")', 'acquisition file insert date'],
-        'Caveat'          => ['StringType'     , 'Caveat'                              , 'acquisition caveat'          ],
-        'url'             => ['URI'            , 'File'                                , 'acquisition file URL'        ],
-        'CoordinateSpace' => ['StringType'     , 'CoordinateSpace'                     , 'acquisition coordinate space']
+        'file'            => [
+            'StringType', 'File', 'acquisition file path'
+        ],
+        'OutputType'      => [
+            'StringType', 'OutputType', 'acquisition output type'
+        ],
+        'Pipeline'        => [
+            'StringType',  'SourcePipeline', 'acquisition source pipeline'
+        ],
+        'ScannerID'       => [
+            'IntegerType', 'ScannerID', 'acquisition scanner ID'
+        ],
+        'FileInsertDate'  => [
+            'DateType',
+            'FROM_UNIXTIME(InsertTime,"%Y-%m-%d")',
+            'acquisition file insert date'
+        ],
+        'Caveat'          => [
+            'StringType', 'Caveat', 'acquisition caveat'
+        ],
+        'url'             => [
+            'URI', 'File', 'acquisition file URL'
+        ],
+        'CoordinateSpace' => [
+            'StringType', 'CoordinateSpace', 'acquisition coordinate space'
+        ]
     ];
 
-    const PDI_DATA_TYPE_IDX      = 0;
+    // Index of the data type in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_DATA_TYPE_IDX = 0;
+    // Index of the parameter name in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
     const PDI_PARAMETER_NAME_IDX = 1;
-    const PDI_SELECT_IDX         = 2;
-    const PDI_DESCRIPTION_IDX    = 3;
+    // Index of the info to select in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_SELECT_IDX = 2;
+    // Index of the description in the arrays contained in
+    // $PARAMETER_DICTIONARY_ITEMS
+    const PDI_DESCRIPTION_IDX = 3;
 
-    // All the fields that get their info directly from table parameter_files
+    // Properties of all fields that are stored in the data dictionary as
+    // ParameterDictionaryItem. The information in this array is used to create the
+    // item and to build the SQL query used to fetch the field value in the DB.
     const PARAMETER_DICTIONARY_ITEMS = [
-        'AcquisitionDate' => [
-            'StringType', 'acquisition_date', 'DATE_FORMAT(pf.value, "%Y-%m-%d")', 'acquisition date'
+        'AcquisitionDate'       => [
+            'StringType',
+            'acquisition_date',
+            'DATE_FORMAT(pf.value, "%Y-%m-%d")',
+            'acquisition date'
         ],
-        // CouchDB_MRI_Importer gets this from table files but I think it's better to get it from table parameter_file
-        'AcquisitionProtocol' => [
+        // CouchDB_MRI_Importer gets this from table files but I think it's better
+        // to get it from table parameter_file
+        'AcquisitionProtocol'   => [
             'StringType', 'acquisition:protocol', 'pf.value', 'acquisition protocol'
         ],
-        'Algorithm' => [
+        'Algorithm'             => [
             'StringType', 'Algorithm', 'pf.value', 'algorithm'
         ],
-        'SeriesDescription' => [
+        'SeriesDescription'     => [
             'StringType', 'series_description', 'pf.value', 'series description'
         ],
-        'SeriesNumber' => [
+        'SeriesNumber'          => [
             'IntegerType', 'series_number', 'pf.value', 'series number'
         ],
-        'EchoTime' => [
+        'EchoTime'              => [
             'DecimalType', 'echo_time', 'ROUND(1000 * pf.value, 2)', 'echo time'
         ],
-        'RepetitionTime' => [
-            'DecimalType', 'repetition_time', 'ROUND(1000 * pf.value, 2)', 'repetition time (TR)'
+        'RepetitionTime'        => [
+            'DecimalType',
+            'repetition_time',
+            'ROUND(1000 * pf.value, 2)',
+            'repetition time (TR)'
         ],
-        'SliceThickness' => [
-            'DecimalType', 'slice_thickness', 'ROUND(1000 * pf.value, 2)', 'slice thickness'
+        'SliceThickness'        => [
+            'DecimalType',
+            'slice_thickness',
+            'ROUND(1000 * pf.value, 2)',
+            'slice thickness'
         ],
-        'Time' => [
-            'DecimalType', 'time', 'ROUND(1000 * pf.value, 2)', 'time (No of volumes)'
+        'Time'                  => [
+            'DecimalType',
+            'time',
+            'ROUND(1000 * pf.value, 2)',
+            'time (No of volumes)'
         ],
-        // I put 'acquisition:comment' as the parameter name butCouchDB_MRI_Importer has 'Comment' which does not seem to
-        // exist anywhere...
-        'Comment' => [
+        // I put 'acquisition:comment' as the parameter name but CouchDB_MRI_Importer
+        // has 'Comment' which does not seem to exist anywhere...
+        'Comment'               => [
             'StringType', 'acquisition:comment', 'pf.value', 'acquisition comment'
         ],
-        // List of directions obtained for SlicewiseRejected is not sorted as in CouchDB_MRI_Importer
-        'SlicewiseRejected' => [
-            'StringType', 'processing:slicewise_rejected', 'regexp_replace(pf.value, "\\(.*", "")', 'slicewise rejected'
+        // List of directions obtained for SlicewiseRejected is not sorted
+        // as in CouchDB_MRI_Importer
+        'SlicewiseRejected'     => [
+            'StringType',
+            'processing:slicewise_rejected',
+            // If pf.value has a '(', the field value is pf.value with the '('
+            // and everything after it removed. Otherwise the field value is
+            // pf.value unchanged
+            'IF(
+              POSITION("(" IN pf.value),
+              SUBSTR(pf.value, 1, POSITION("(" IN pf.value)-1),
+              pf.value
+            )',
+            'slicewise rejected'
         ],
-        // List of directions obtained for InterlaceRejected is not sorted as in CouchDB_MRI_Importer
-        'InterlaceRejected' => [
-            'StringType', 'processing:interlace_rejected', 'regexp_replace(pf.value, "\\(.*", "")', 'interlace rejected'
+        // List of directions obtained for InterlaceRejected is not sorted
+        // as in CouchDB_MRI_Importer
+        'InterlaceRejected'     => [
+            'StringType',
+            'processing:interlace_rejected',
+            // If pf.value has a '(', the field value is pf.value with the '('
+            // and everything after it removed. Otherwise the field value is
+            // pf.value unchanged
+            'IF(
+              POSITION("(" IN pf.value),
+              SUBSTR(pf.value, 1, POSITION("(" IN pf.value)-1),
+              pf.value
+            )',
+            'interlace rejected'
         ],
-        // List of directions obtained for IntergradientRejected is not sorted as in CouchDB_MRI_Importer
+        // List of directions obtained for IntergradientRejected is not sorted
+        // as in CouchDB_MRI_Importer
         'IntergradientRejected' => [
-            'StringType', 'processing:intergradient_rejected', 'regexp_replace(pf.value, "\\(.*", "")', 'intergradient rejected'
+            'StringType',
+            'processing:intergradient_rejected',
+            // If pf.value has a '(', the field value is pf.value with the '('
+            // and everything after it removed. Otherwise the field value is
+            // pf.value unchanged
+            'IF(
+              POSITION("(" IN pf.value),
+              SUBSTR(pf.value, 1, POSITION("(" IN pf.value)-1),
+              pf.value
+            )',
+            'intergradient rejected'
         ],
-        // List of directions obtained for TotalRejected is not sorted as in CouchDB_MRI_Importer
-        'TotalRejected' => [
-            'StringType', 'processing:total_rejected', 'regexp_replace(pf.value, "\\(.*", "")', 'total rejected'
+        // List of directions obtained for TotalRejected is not sorted
+        // as in CouchDB_MRI_Importer
+        'TotalRejected'         => [
+            'StringType',
+            'processing:total_rejected',
+            // If pf.value has a '(', the field value is pf.value with the '('
+            // and everything after it removed. Otherwise the field value is
+            // pf.value unchanged
+            'IF(
+              POSITION("(" IN pf.value),
+              SUBSTR(pf.value, 1, POSITION("(" IN pf.value)-1),
+              pf.value
+            )',
+            'total rejected'
         ],
-        'ProcessingPipeline' => [
+        'ProcessingPipeline'    => [
             'StringType', 'processing:pipeline', 'pf.value', 'processing pipeline'
         ]
     ];
@@ -126,11 +216,16 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $scantypes = \Utility::getScanTypeList();
         foreach ($scantypes as $ScanType) {
-            foreach(self::FILE_DICTIONARY_ITEMS as $field => $properties) {
-                $fullyQualifiedType = '\LORIS\Data\Types\\' . $properties[self::FDI_DATA_TYPE_IDX];
-                $items[] = new LocationDictionaryItem(
+            foreach (self::FILE_DICTIONARY_ITEMS as $field => $properties) {
+                $fullyQualifiedType
+                    = '\LORIS\Data\Types\\' . $properties[self::FDI_DATA_TYPE_IDX];
+                $items[]            = new LocationDictionaryItem(
                     sprintf("%s_%s", $ScanType, $field),
-                    sprintf("%s %s", $ScanType, $properties[self::FDI_DESCRIPTION_IDX]),
+                    sprintf(
+                        "%s %s",
+                        $ScanType,
+                        $properties[self::FDI_DESCRIPTION_IDX]
+                    ),
                     $scope,
                     new $fullyQualifiedType(),
                     new Cardinality(Cardinality::MANY),
@@ -139,10 +234,15 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             }
 
             foreach (self::PARAMETER_DICTIONARY_ITEMS as $fieldName => $properties) {
-                $fullyQualifiedType = '\LORIS\Data\Types\\' . $properties[self::PDI_DATA_TYPE_IDX];
-                $items[] = new ParameterDictionaryItem(
+                $fullyQualifiedType
+                    = '\LORIS\Data\Types\\' . $properties[self::PDI_DATA_TYPE_IDX];
+                $items[]            = new ParameterDictionaryItem(
                     sprintf('%s_%s', $ScanType, $fieldName),
-                    sprintf('%s %s', $ScanType, $properties[self::PDI_DESCRIPTION_IDX]),
+                    sprintf(
+                        '%s %s',
+                        $ScanType,
+                        $properties[self::PDI_DESCRIPTION_IDX]
+                    ),
                     $scope,
                     new $fullyQualifiedType(),
                     new Cardinality(Cardinality::MANY),
@@ -160,7 +260,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 $ScanType,
             );
             $items[] = new QCDictionaryItem(
-                $ScanType . "_Selected" ,
+                $ScanType . "_Selected",
                 "Selected file for $ScanType for session",
                 $scope,
                 new \LORIS\Data\Types\BooleanType(),
@@ -229,13 +329,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                              WHEN s.Scan_Done='N' THEN false
                              ELSE NULL END";
         }
-      
+
         $modality = $item->getModality();
         $exploded = explode("_", $item->getName());
         $field    = $exploded[count($exploded)-1];
         $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
         $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
-    
+
         if ($item instanceof LocationDictionaryItem) {
             if ($field == 'url') {
                 return "(SELECT CONCAT(
