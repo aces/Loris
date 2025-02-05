@@ -7,12 +7,16 @@ metadata for a LORIS instance as well as provide a centralized place
 to install instruments created from the instrument builder without
 backend access.
 
+Instrument data can be uploaded from a csv file. A template with the
+expected headers can be downloaded.
+
 It provides overview of the "health" of the various MySQL instrument
-tables and whether or not they are in sync with the instrument as it
+tables and whether they are in sync with the instrument as it
 exists on the filesystem or not. However, the checks are only possible
 for LINST (instrument builder) instruments, as the appropriate state
 of database tables can not easily be statically determined for PHP
 instruments.
+
 
 ## Intended Users
 
