@@ -22,4 +22,9 @@ eg "Table Valid" column is valid when instrument fields match up and "Pages Vali
    [Manual Testing]
 9. With a user who has the `instrument_manager_write` permission, click the button in the `Permission Required` column. A modal should popup where you can edit the permissions.
    - Check that modifying the permissions saves the new permissions.
-   - Check that a user can access that instruments if and only if they has that permission.
+   - Check that a user can access that instruments if and only if they have that permission.
+10. Test uploading csv data as a user who has the `instrument_manager_write` permission:
+    - Pick an instrument and press "Download expected template"
+    - Attempt to successfully upload a csv file, ideally with one or more data rows
+    - Attempt to make uploading fail (ex: uploading to the wrong instrument or omitting headers)
+    - Upload a csv file larger than `MAX_FILE_BYTES` (in `instrument_data.class.inc`) and ensure that the data is uploaded as a background task. Manually run the `tools/monitor_instrument_data.php` script and view the status change in `server_process_manager` module.
