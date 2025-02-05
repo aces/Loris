@@ -30,7 +30,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = [
         [
-            "label"    => "Site",
+            "label"    => "Affiliations",
             "selector" => "body",
         ]
     ];
