@@ -98,7 +98,7 @@ INSERT INTO `permissions` VALUES
     (26,'document_repository_view','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'View','2'),
     (27,'document_repository_delete','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Delete','2'),
     (28,'server_processes_manager','Processes',(SELECT ID FROM modules WHERE Name='server_processes_manager'),'View','2'),
-    (29,'imaging_uploader','Imaging Scans',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload','2'),
+    (29,'imaging_uploader_allsites','Imaging Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload','2'),
     (30,'acknowledgements_view','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'View','2'),
     (31,'acknowledgements_edit','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'Edit','2'),
     (32,'dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),'View/Download','2'),
@@ -136,7 +136,9 @@ INSERT INTO `permissions` VALUES
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
     (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
     (66,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
-    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
+    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2'),
+    (68,'imaging_uploader_ownsites', 'Imaging Scans - Own Sites', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
+    (69,'imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
