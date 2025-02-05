@@ -105,7 +105,7 @@ INSERT INTO `permissions` VALUES
     (33,'genomic_data_manager','Genomic Files',(SELECT ID FROM modules WHERE Name='genomic_browser'),'Upload','2'),
     (34,'media_write','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'Edit/Upload/Hide','2'),
     (35,'media_read','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'View/Download','2'),
-    (36,'issue_tracker_reporter', 'Create/Edit Own Issues and Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
+    (36,'issue_tracker_reporter', 'Create/Edit/Close Own Issues and Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
     (37,'issue_tracker_developer', 'Close/Edit/Re-assign/Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
     (38,'imaging_browser_phantom_allsites', 'Phantom Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),'View', 2),
     (39,'imaging_browser_phantom_ownsite', 'Phantom Scans - Own Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),'View', 2),

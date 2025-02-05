@@ -162,7 +162,7 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new ImagingBrowserRowProvisioner();
+        return new ImagingBrowserRowProvisioner($this->loris);
     }
 
     /**

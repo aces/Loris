@@ -272,7 +272,7 @@ class Data_Release extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new DataReleaseProvisioner();
+        return new DataReleaseProvisioner($this->loris);
     }
 
     /**

@@ -36,7 +36,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (42,'genomic_data_manager','Genomic Files',18,'Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (43,'media_write','Candidate Media Files',29,'Edit/Upload/Delete',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (44,'media_read','Candidate Media Files',29,'View/Download',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (45,'issue_tracker_reporter','Create/Edit Own Issues and Comment on All Issues',27,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (45,'issue_tracker_reporter','Create/Edit/Close Own Issues and Comment on All Issues',27,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (46,'issue_tracker_developer','Close/Edit/Re-assign/Comment on All Issues',27,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (47,'imaging_browser_phantom_allsites','Phantom Scans - All Sites',20,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (48,'imaging_browser_phantom_ownsite','Phantom Scans - Own Sites',20,'View',2);

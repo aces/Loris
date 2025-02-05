@@ -105,7 +105,7 @@ class Examiner extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ExaminerProvisioner();
+        return new ExaminerProvisioner($this->loris);
     }
     /**
      * Include the index examiner javascript dependency

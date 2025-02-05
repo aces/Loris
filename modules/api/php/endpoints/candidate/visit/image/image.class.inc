@@ -45,11 +45,16 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit    The requested visit
-     * @param string     $filename The requested image filename
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to retrieve data
+     *                                       from.
+     * @param \Timepoint           $visit    The requested visit
+     * @param string               $filename The requested image filename
      */
-    public function __construct(\Timepoint $visit, string $filename)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $visit,
+        string $filename
+    ) {
         $this->_visit    = $visit;
         $this->_filename = $filename;
     }
@@ -108,7 +113,11 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // At this point, the image must exist
         $user = $request->getAttribute('user');
         try {
-            $image = $this->_visit->getImageByFilename($user, $this->_filename);
+            $image = $this->_visit->getImageByFilename(
+                $this->loris,
+                $user,
+                $this->_filename
+            );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
@@ -149,7 +158,11 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
 
         try {
-            $image = $this->_visit->getImageByFilename($user, $this->_filename);
+            $image = $this->_visit->getImageByFilename(
+                $this->loris,
+                $user,
+                $this->_filename
+            );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
@@ -200,7 +213,11 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
 
         try {
-            $image = $this->_visit->getImageByFilename($user, $this->_filename);
+            $image = $this->_visit->getImageByFilename(
+                $this->loris,
+                $user,
+                $this->_filename
+            );
         } catch (\Throwable $e) {
             return '';
         }

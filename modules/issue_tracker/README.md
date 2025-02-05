@@ -12,6 +12,7 @@ The Issues Module allows users to track issues they have with data, or with thei
 - Reporters can add issues, edit their own issues, and comment on all issues.
 - Developers can additionally edit all issues, and mark them as resolved.
 - Most users of Loris should be designated as reporters.
+- Users can also enable issue tracker notifications in `My Preferences` to 	be notified for all issues created or edited.
 
 Most of the permissions are controlled in `IssueForm.js`, dependent on values returned in `editIssue.php`.
 

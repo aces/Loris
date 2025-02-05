@@ -48,7 +48,7 @@ class Help_Editor extends \NDB_Menu_Filter
      */
     function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new HelpRowProvisioner();
+        return new HelpRowProvisioner($this->loris);
     }
 
     /**

@@ -40,6 +40,7 @@ class ModuleManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT name, active FROM modules",
             []
         );

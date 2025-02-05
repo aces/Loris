@@ -60,10 +60,14 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \LORIS\LorisInstance $loris   The LORIS instance to retrieve data
+     *                                      from.
+     * @param \Project             $project The requested project
      */
-    public function __construct(\Project $project)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Project $project
+    ) {
         $this->_project = $project;
     }
 
@@ -154,6 +158,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $provisioner = new \LORIS\api\Provisioners\ProjectRecordingsRowProvisioner(
+            $this->loris,
             $this->_project,
             $since
         );

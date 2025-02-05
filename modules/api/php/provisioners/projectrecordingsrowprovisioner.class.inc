@@ -32,17 +32,25 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
     /**
      * Create a RowProvisioner.
      *
-     * @param \Project  $project The project from which recordings are requested
-     * @param \DateTime $since   The project from which recordings are requested
+     * @param \LORIS\LorisInstance $loris   The LORIS instance to retrieve data
+     *                                      from.
+     * @param \Project             $project The project from which recordings are
+     *                                      requested.
+     * @param \DateTime            $since   The project from which recordings are
+     *                                      requested.
      */
-    function __construct(\Project $project, \DateTime $since)
-    {
+    function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Project $project,
+        \DateTime $since
+    ) {
         // NOTE: we use string concatenation instead of a bind parameter for
         // the $since parameter. PDOStatement->bindValues converts the parameter to
         // a string. Timestamp > '0' is either a warning or exception depending
         // on SQL configuration, (Timestamp > 0 is correct). The string concatenation
         // ensures that it remains an int.
         parent::__construct(
+            $this->loris,
             '
              SELECT
                s.CandID as Candidate,

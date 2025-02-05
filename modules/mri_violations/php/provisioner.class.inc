@@ -13,10 +13,14 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a Provisioner for the module.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT v.PatientName,
                     v.Project,
                     v.Cohort,

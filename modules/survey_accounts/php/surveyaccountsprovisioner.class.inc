@@ -35,11 +35,15 @@ class SurveyAccountsProvisioner
     /**
      * Create a SurveyAccountsProvisioner, which gets rows for the
      * survey accounts menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
 
         parent::__construct(
+            $loris,
             "SELECT
                 c.PSCID AS PSCID,
                 s.Visit_label AS Visit,

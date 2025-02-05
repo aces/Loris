@@ -47,6 +47,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT m.file_name as fileName,
                     m.instrument as testName,
                     c.PSCID as pscid,

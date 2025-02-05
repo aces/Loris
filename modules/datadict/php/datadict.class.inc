@@ -61,6 +61,7 @@ class Datadict extends \DataFrameworkMenu
     {
         $instruments     = \Utility::getAllInstruments();
         $dictInstruments = [];
+        $user            = \User::singleton();
 
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
@@ -110,7 +111,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new DataDictRowProvisioner();
+        return new DataDictRowProvisioner($this->loris);
     }
 
     /**

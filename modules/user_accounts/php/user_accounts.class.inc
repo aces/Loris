@@ -94,7 +94,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new UserAccountRowProvisioner();
+        return new UserAccountRowProvisioner($this->loris);
     }
 
     /**

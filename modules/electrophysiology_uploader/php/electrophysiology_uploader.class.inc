@@ -89,7 +89,7 @@ class Electrophysiology_Uploader extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ElectrophysiologyUploaderProvisioner();
+        return new ElectrophysiologyUploaderProvisioner($this->loris);
     }
 
     /**

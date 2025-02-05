@@ -323,8 +323,8 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$minimumAge,
             self::$display,
             self::$clearFilter,
-            '0',
-            '2 rows'
+            '4300',
+            '1 row'
         );
         $this->_filterTest(
             self::$maximumAge,
