@@ -287,3 +287,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+
+    - name: Print Error Logs
+      if: always()
+      run: cat error_log            
