@@ -99,7 +99,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         $config =& \NDB_Config::singleton();
         if (is_null($config)) {
             throw new \RuntimeException(
-                "Cannot construct MriUploadTask: unable to instantiate 
+                "Cannot construct MriUploadTask: unable to instantiate
                  configuration object"
             );
         }
@@ -187,6 +187,16 @@ class MriUploadServerProcess extends AbstractServerProcess
     }
 
     /**
+     * Gets directory where all temporary files created by this task should go
+     *
+     * @return string full path to the temporary directory
+     */
+    public function getTmpDir()
+    {
+        return sys_get_temp_dir();
+    }
+
+    /**
      * Accessor for the process type.
      *
      * @return string process type.
@@ -208,6 +218,24 @@ class MriUploadServerProcess extends AbstractServerProcess
         $exitCode = parent::getExitCode();
 
         return !is_null($exitCode) && is_numeric($exitCode) && $exitCode == 0;
+    }
+
+    /**
+     * Change file permissions
+     *
+     * @return void
+     */
+    public function changeFilePermissions()
+    {
+    }
+
+    /**
+     * Perform action once process is completed
+     *
+     * @return void
+     */
+    public function performPostAction()
+    {
     }
 }
 
