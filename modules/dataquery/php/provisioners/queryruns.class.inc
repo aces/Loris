@@ -5,24 +5,28 @@ use \LORIS\dataquery\Query;
 use \LORIS\dataquery\QueryRun;
 
 /**
- * A RecentQueries provisioner gets a list of queries that were recently
- * run by a user
+ * A QueryRuns provisioner gets a list of runs for a particular query
+ * and user combination.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class RecentQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
+class QueryRuns extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a RecentQueriees provisioner, which gets rows for
-     * the recent query runs by a given user.
+     * Create a QueryRuns provisioner, which gets rows for
+     * the query runs by a given user.
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance the User ran
      *                                    queries on.
      * @param \User                $user  The user to get a recent list of
      *                                    queries for.
+     * @param int                  $qid   The QueryID to get Query Runs for
      */
-    function __construct(protected \LORIS\LorisInstance $loris, \User $user)
-    {
+    function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \User $user,
+        int $qid
+    ) {
         parent::__construct(
             $loris,
             "SELECT drq.RunID, dq.QueryID, RunTime, Query
@@ -34,9 +38,9 @@ class RecentQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                     (dq.QueryID=dsq.QueryID AND dsq.SharedBy=:userid)
                 LEFT JOIN dataquery_query_names name ON 
                     (dq.QueryID=name.QueryID AND name.UserID=:userid)
-            WHERE drq.UserID=:userid AND drq.RunID IS NOT NULL
+            WHERE drq.UserID=:userid AND drq.QueryID=:qid
             ORDER BY drq.RunTime DESC",
-            ['userid' => $user->getId()]
+            ['userid' => $user->getId(), 'qid' => $qid]
         );
     }
 

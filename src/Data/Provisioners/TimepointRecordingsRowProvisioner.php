@@ -32,9 +32,10 @@ class TimepointRecordingsRowProvisioner extends DBRowProvisioner
      *
      * @param \Timepoint $timepoint The requested timepoint
      */
-    public function __construct(\Timepoint $timepoint)
+    public function __construct(protected \LORIS\LorisInstance $loris, \Timepoint $timepoint)
     {
         parent::__construct(
+            $this->loris,
             '
              SELECT
                PhysiologicalFileID as fileid

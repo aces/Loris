@@ -23,6 +23,7 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris, \User $user)
     {
         parent::__construct(
+            $loris,
             "SELECT DISTINCT dq.QueryID, dq.Query,
                 name.Name,
                 GROUP_CONCAT(dsq.Name) as AdminName,
