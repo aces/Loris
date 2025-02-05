@@ -42,7 +42,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             'acquisition file insert date'
         ],
         'Caveat'          => [
-            'StringType', 'Caveat', 'acquisition caveat'
+            'IntegerType', 'Caveat', 'acquisition caveat'
         ],
         'url'             => [
             'URI', 'File', 'acquisition file URL'
@@ -296,6 +296,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     protected function getFieldNameFromDict(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
+        if (!($item instanceof ImagingDictionaryItem)) {
+            throw new \DomainException(
+                "Item is not an instance of ImagingDictionaryItem"
+            );
+        }
+
         if ($item->getName() == 'ScanDone') {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
                 return "CASE WHEN s.Scan_Done='Y' THEN true
@@ -373,6 +379,26 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 )",
                 $pdi[self::PDI_SELECT_IDX],
                 $pdi[self::PDI_PARAMETER_NAME_IDX],
+                $modality,
+            );
+        }
+
+        if ($item instanceof CommentDictionaryItem) {
+            $pcdi = self::PREDEFINED_COMMENT_DICTIONARY_ITEMS[$field];
+            return sprintf(
+                "(SELECT %s FROM files as files2
+                  JOIN mri_scan_type mst
+                      ON (files2.MriScanTypeID=mst.MriScanTypeID)
+                  JOIN feedback_mri_comments fmc
+                      ON (fmc.FileID=files2.FileID)
+                  LEFT JOIN feedback_mri_predefined_comments fmpc
+                      ON (fmpc.PredefinedCommentID=fmc.PredefinedCommentID)
+                  WHERE files2.FileID=files.FileID
+                      AND mst.MriScanTypeName='%s'
+                      AND fmpc.Comment='%s'
+                )",
+                $pcdi[self::PDI_SELECT_IDX],
+                $pcdi[self::PDI_COMMENT_TEXT_IDX],
                 $modality,
             );
         }
