@@ -323,17 +323,17 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     protected function getFieldNameFromDict(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
-        if (!($item instanceof ImagingDictionaryItem)) {
-            throw new \DomainException(
-                "Item is not an instance of ImagingDictionaryItem"
-            );
-        }
-
         if ($item->getName() == 'ScanDone') {
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
                 return "CASE WHEN s.Scan_Done='Y' THEN true
                              WHEN s.Scan_Done='N' THEN false
                              ELSE NULL END";
+        }
+
+        if (!($item instanceof ImagingDictionaryItem)) {
+            throw new \DomainException(
+                "Item is not an instance of ImagingDictionaryItem"
+            );
         }
 
         $modality = $item->getModality();
