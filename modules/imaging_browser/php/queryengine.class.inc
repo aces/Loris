@@ -330,6 +330,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                              ELSE NULL END";
         }
 
+        /* @phan-suppress-next-line PhanUndeclaredMethod */
         $modality = $item->getModality();
         $exploded = explode("_", $item->getName());
         $field    = $exploded[count($exploded)-1];
