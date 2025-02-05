@@ -120,8 +120,7 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (130,'DownloadPath','Where files are downloaded',1,0,'text',26,'Downloads',4);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (131,'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', 26, 'EEG Incoming Directory', 15);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (132,'useDoB','Use DoB (Date of Birth)',1,0,'boolean',1,'Use DoB',12);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (133,INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useSiteProjectPermissions', 'Only allow users access to data with a sessionID (for site and project access restrictions). Bypassed by each module `nosessionid` permission for admins', 1, 0, 'boolean', 50, 'Use Site Project Permissions', 6);
-
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (133,'useImagingSiteProjectPermissions','Restricts access to dat based on both sites and project. Allows access to data with no session affiliated using a special permission only',1,0,'boolean',50,'Use Advanced Site Project Permissions',5);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -4,12 +4,12 @@
    [Automation Testing]
 2. Ensure that upon loading, the Imaging Uploader page has the 'Browse' and 'Upload' tabs.  
    [Manual Testing]
-3. Set the `useSiteProjectPermissions` (Use Site Project Permissions) Configuration to NO and make sure your
+3. Set the `useImagingSiteProjectPermissions` (Use Site Project Permissions) Configuration to NO and make sure your
    user does NOT have the `imaging_uploader_nosessionid` permission (do not use superuser)
    [Manual Testing]
 4. Check that when accessing the Imaging Uploader page, the 'Browse' tab displays all the uploads done for all users.
    [Automation Testing]
-5. Change the `useSiteProjectPermissions` (Use Site Project Permissions) Configuration to YES and make sure your
+5. Change the `useImagingSiteProjectPermissions` (Use Site Project Permissions) Configuration to YES and make sure your
    user does NOT have the `imaging_uploader_nosessionid` permission (do not use superuser)
    [Manual Testing]
 6. Check that when accessing the Imaging Uploader page, the 'Browse' tab displays all the uploads done where 
@@ -17,7 +17,7 @@
    [Manual Testing]
 7. Check that when accessing the Imaging Uploader page, the 'Browse' tab displays all the uploads done by the logged in user.
    [Manual Testing]
-8. keep the `useSiteProjectPermissions` (Use Site Project Permissions) Configuration to YES and make sure your
+8. keep the `useImagingSiteProjectPermissions` (Use Site Project Permissions) Configuration to YES and make sure your
    user HAS the `imaging_uploader_nosessionid` permission (do not use superuser)
    [Manual Testing]
 9. Check that the user still has access to uploads decribed in #6 and #7
