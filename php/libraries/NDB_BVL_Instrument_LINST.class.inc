@@ -399,7 +399,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
-                if (strpos($fieldname, "_status") !== false) {
+                if (preg_match('/_status$/', $fieldname)) {
                     continue;
                 }
                 if ($fieldname == 'Date_taken'
