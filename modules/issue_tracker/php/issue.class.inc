@@ -46,8 +46,9 @@ class Issue extends \NDB_Form
             || !isset($issueID))
             && !$user->hasAnyPermission(
                 [
-                    'issue_tracker_reporter',
-                    'issue_tracker_developer',
+                    'issue_tracker_all_issue',
+                    'issue_tracker_own_issue',
+                    'issue_tracker_site_issue',
                 ]
             )
         ) {
@@ -107,9 +108,12 @@ class Issue extends \NDB_Form
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
+        $centerIDs   = $user->getCenterIDs();
+        $centerList  = implode(",", $centerIDs);
+        $centerList  = explode(',', $centerList);
         return (is_null($issueData)
-            || in_array($issueData['centerID'], $user->getCenterIDs())
-            || ($user->hasPermission('access_all_profiles'))
+            || in_array($issueData['centerID'], $centerList)
+            || ($user->hasPermission('issue_tracker_all_issue'))
             || (empty($issueData['centerID']))
         );
     }

@@ -73,7 +73,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         //not yet ideal permissions
         $assignees      = [];
         $inactive_users = [];
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('issue_tracker_all_issue')) {
             $assignee_expanded = $db->pselect(
                 "SELECT Real_name, UserID FROM users 
                     WHERE Active='Y' AND Pending_approval='N'",
@@ -142,8 +142,18 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // can't set to closed if not developer.
-        if ($user->hasPermission('issue_tracker_developer')) {
+        // can't set to closed if no any of the persmissions.
+        $reporter = $db->pselectOne(
+            "SELECT reporter FROM issues WHERE IssueID=:issueID", 
+            ['issueID' => $values['issueID']]
+        );
+        $hasPartialAccess = $user->hasAnyPermission(
+            [
+                'issue_tracker_close_site_issue',
+                'issue_tracker_close_all_issue',
+            ]
+        ) || $reporter == $user->getUsername();
+        if ($hasPartialAccess) {
             $statuses = [
                 'new'          => 'New',
                 'acknowledged' => 'Acknowledged',
@@ -277,8 +287,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             'instruments'       => $instruments,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
-            'hasEditPermission' => $user->hasPermission(
-                'issue_tracker_developer'
+            'hasEditPermission' => $user->hasAnyPermission(
+                [
+                    'issue_tracker_all_issue',
+                    'issue_tracker_site_issue',
+                ]
             ),
             'isOwnIssue'        => $isOwnIssue,
         ];
@@ -305,7 +318,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $centerPlaceholders = '';
 
         // Initialize variables based on permissions
-        if (!$user->hasPermission('access_all_profiles')) {
+        if (!$user->hasPermission('issue_tracker_all_issue')) {
             $centerIDsArray = array_map(
                 fn($centerID) => (int)$centerID->__toString(),
                 $user->getCenterIDs()
@@ -334,7 +347,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Prepare assignee query
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('issue_tracker_all_issue')) {
             $assigneeQuery  = "
                 SELECT Real_name, UserID, Active
                 FROM users
@@ -394,7 +407,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         ";
 
         $issueParams = [];
-        if (!$user->hasPermission('access_all_profiles')) {
+        if (!$user->hasPermission('issue_tracker_all_issue')) {
             $baseQuery  .= " WHERE i.centerID IN ($centerPlaceholders)";
             $issueParams = $centerIDsArray;
         }
@@ -1170,7 +1183,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
             $params = ['PSCID' => $result['PSCID']];
 
-            if (!$user->hasPermission('access_all_profiles')) {
+            if (!$user->hasPermission('issue_tracker_all_issue')) {
                 $params['CenterID'] = implode(',', $user->getCenterIDs());
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
             }
@@ -1313,8 +1326,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('issue_tracker_reporter')
-            || $user->hasPermission('issue_tracker_developer');
+        return $user->hasAnyPermission(
+            [
+                'issue_tracker_all_issue',
+                'issue_tracker_own_issue',
+                'issue_tracker_site_issue',
+            ]
+        );
     }
 
     /**

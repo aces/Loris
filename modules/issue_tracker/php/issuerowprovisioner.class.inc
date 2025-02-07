@@ -50,10 +50,17 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         );
         $userID = $user->getUsername();
 
-        //note that this needs to be in the same order as the headers array
-        parent::__construct(
-            $loris,
-            "SELECT i.issueID,
+        $hasPartialAcess = !$user->hasAnyPermission(
+            [
+              'issue_tracker_all_issue',
+              'issue_tracker_site_issue',
+            ]
+        ) && $user->hasPermission('issue_tracker_own_issue');
+        if (!$hasPartialAcess) {
+            //note that this needs to be in the same order as the headers array
+            parent::__construct(
+                $loris,
+                "SELECT i.issueID,
                     i.title,
                     m.name as module,
                     i.category,
@@ -86,8 +93,49 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.assignee = uAssignee.UserID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
-            ['username' => $userID]
-        );
+                ['username' => $userID]
+            );
+        }
+        if ($hasPartialAcess) {
+            parent::__construct(
+                $loris,
+                "SELECT i.issueID,
+                i.title,
+                m.name as module,
+                i.category,
+                CONCAT(uReporter.First_name, ' ', uReporter.Last_name),
+                CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name),
+                i.status,
+                i.priority,
+                i.centerID as centerId,
+                c.PSCID as pscid,
+                s.Visit_label as visitLabel,
+                i.dateCreated,
+                i.lastUpdate,
+                s.ID as sessionId,
+                c.CandID as candidateId,
+                w.userID as userId
+        FROM issues as i
+        LEFT JOIN modules m
+          ON (m.ID=i.module)
+        LEFT JOIN candidate c
+          ON (i.candID=c.CandID)
+        LEFT JOIN session s
+          ON (i.sessionID = s.ID)
+        LEFT JOIN issues_watching w
+          ON (i.issueID = w.issueID AND w.userID=:username)
+        LEFT JOIN issues_comments ic
+          ON (i.issueID = ic.issueID)
+        JOIN users uReporter
+          ON (i.reporter = uReporter.UserID AND i.reporter=:username)
+        LEFT JOIN users uAssignee
+          ON (i.assignee = uAssignee.UserID)
+        GROUP BY i.issueID, w.userID
+        ORDER BY i.issueID DESC",
+                ['username' => $userID]
+            );
+        }
+
     }
 
     /**
