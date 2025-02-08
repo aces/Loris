@@ -110,7 +110,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                 'issue_tracker_all_issue',
                 'issue_tracker_site_issue',
             ]
-        ) && $user->hasPermission('issue_tracker_own_issue');  
+        ) && $user->hasPermission('issue_tracker_own_issue'); 
 
         //sites
         if ($user->hasPermission('issue_tracker_all_issue')) {

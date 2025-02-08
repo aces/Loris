@@ -52,8 +52,8 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         $hasPartialAcess = !$user->hasAnyPermission(
             [
-              'issue_tracker_all_issue',
-              'issue_tracker_site_issue',
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue',
             ]
         ) && $user->hasPermission('issue_tracker_own_issue');
         if (!$hasPartialAcess) {

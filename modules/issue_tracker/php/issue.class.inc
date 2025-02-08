@@ -104,13 +104,13 @@ class Issue extends \NDB_Form
         if (!$issueID) {
             return true;
         }
-        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
+        $issueData  = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
-        $centerIDs   = $user->getCenterIDs();
-        $centerList  = implode(",", $centerIDs);
-        $centerList  = explode(',', $centerList);
+        $centerIDs  = $user->getCenterIDs();
+        $centerList = implode(",", $centerIDs);
+        $centerList = explode(',', $centerList);
         return (is_null($issueData)
             || in_array($issueData['centerID'], $centerList)
             || ($user->hasPermission('issue_tracker_all_issue'))

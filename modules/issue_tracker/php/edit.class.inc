@@ -143,8 +143,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // can't set to closed if no any of the persmissions.
-        $reporter = $db->pselectOne(
-            "SELECT reporter FROM issues WHERE IssueID=:issueID", 
+        $reporter         = $db->pselectOne(
+            "SELECT reporter FROM issues WHERE IssueID=:issueID",
             ['issueID' => $values['issueID']]
         );
         $hasPartialAccess = $user->hasAnyPermission(
