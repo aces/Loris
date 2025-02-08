@@ -52,9 +52,12 @@ class Dictionary extends \DataFrameworkMenu
         foreach ($this->modules as $module) {
             $amodules[$module->getName()] = $module->getLongName();
         }
+        $db    = $this->loris->getDatabaseConnection();
+        $perms = $db->pselectCol("SELECT code FROM permissions", []);
         return [
-            'modules'    => $amodules,
-            'categories' => $this->categories,
+            'modules'            => $amodules,
+            'categories'         => $this->categories,
+            'allPermissionCodes' => $perms,
         ];
     }
 
