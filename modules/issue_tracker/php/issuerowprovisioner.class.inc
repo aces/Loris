@@ -84,7 +84,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         $userID = $user->getUsername();
 
         $query = self::BASE_QUERY;
-        if (!$this->hasPartialAccess($user)) {
+        if (!$this->_hasPartialAccess($user)) {
             $query .= self::GROUP_ORDER_CLAUSE;
         } else {
             $query .= self::PERMISSION_QUERY . self::GROUP_ORDER_CLAUSE;
