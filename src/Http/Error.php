@@ -78,8 +78,6 @@ class Error extends HtmlResponse
                  'issue_tracker_all_issue',
                  'issue_tracker_own_issue',
                  'issue_tracker_site_issue',
-                 'issue_tracker_close_site_issue',
-                 'issue_tracker_close_all_issue',
                 ]
             );
             if ($canReport) {

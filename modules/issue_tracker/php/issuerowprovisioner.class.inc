@@ -80,7 +80,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $loris->getAllSites()
         );
 
-        $user = \NDB_Factory::singleton()->user();
+        $user   = \NDB_Factory::singleton()->user();
         $userID = $user->getUsername();
 
         $query = self::BASE_QUERY;
@@ -97,16 +97,16 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Check user has permission to see only issues created by the user
      *
-     * @param \User $user The user whose access is being checked 
-     * 
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * */
-    private function hasPartialAccess($user): bool
+     */
+    function _hasPartialAccess($user): bool
     {
         return !$user->hasAnyPermission(
             [
-            'issue_tracker_all_issue',
-            'issue_tracker_site_issue',
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue',
             ]
         ) && $user->hasPermission('issue_tracker_own_issue');
     }
