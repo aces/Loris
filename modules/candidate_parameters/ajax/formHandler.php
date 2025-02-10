@@ -193,7 +193,6 @@ function editProbandInfoFields(\Database $db)
         if (!empty($sanitize[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
-                $
 
                 $updateValues = [
                     'ParameterTypeID' => $ptid,

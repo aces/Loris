@@ -1945,7 +1945,7 @@ CREATE TABLE `CNV` (
   `OfficialName` text,
   PRIMARY KEY (`CNVID`),
   KEY `PlatformID` (`PlatformID`),
-  KEY `CandID` (`CandID`),
+  KEY `CandidateID` (`CandidateID`),
   KEY `index4` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `CNV_ibfk_1` FOREIGN KEY (`PlatformID`) REFERENCES `genotyping_platform` (`PlatformID`),
   CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`)
@@ -2017,7 +2017,7 @@ CREATE TABLE `genomic_sample_candidate_rel` (
   `CandidateID` int(10) unsigned,
   PRIMARY KEY (`sample_label`,`CandidateID`),
   UNIQUE KEY `sample_label` (`sample_label`),
-  KEY `CandID` (`CandidateID`),
+  KEY `CandidateID` (`CandidateID`),
   CONSTRAINT `genomic_sample_candidate_rel_ibfk_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
