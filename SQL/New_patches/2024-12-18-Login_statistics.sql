@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS Login_Summary_Statistics;
 CREATE TABLE Login_Summary_Statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),

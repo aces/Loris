@@ -1,65 +1,43 @@
-import React, {Component} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {SelectElement} from 'jsx/Form';
+import { SelectElement } from 'jsx/Form';
 import SummaryStatisticsPhone from '../assets/summaryStatisticsPhone.js';
 
 /**
  * Login Summary Statistics
  *
- *
  * @author Saagar Arya
  * @version 1.0.0
  */
-class SummaryStatistics extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
+const SummaryStatistics = ({ data }) => {
+  const [selectedProject, setSelectedProject] = useState(
+    data.projects.includes('All Projects')
+      ? data.projects.indexOf('All Projects')
+      : '0'
+  );
 
-    this.state = {
-      selectedProject: props.data.projects.includes('All Projects')
-        ? props.data.projects.indexOf('All Projects')
-        : '0',
-      data: props.data,
-    };
-  }
-
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
-  render() {
-    return (
-      <div className='stats-phone'>
-        <SummaryStatisticsPhone />
-        {/* Phone screen */}
-        <div className='stats-screen'>
-          {/* Project Selector */}
-          <SelectElement
-            name='project'
-            options={this.props.data.projects}
-            value={this.state.selectedProject}
-            onUserInput={(name, value) => {
-              this.setState({
-                selectedProject: value,
-              });
-            }}
-            emptyOption={false}
-          />
-          <div>
-              Data in LORIS:
-          </div>
-          {/* Statistics */}
-          {(this.state.data.statistics).map((statistic) => {
-            if (
-              statistic.Project
-                == this.state.data.projects[this.state.selectedProject]
-              && statistic.Value > 0
-            ) {
-              return <div>
+  return (
+    <div className='stats-phone'>
+      <SummaryStatisticsPhone />
+      {/* Phone screen */}
+      <div className='stats-screen'>
+        {/* Project Selector */}
+        <SelectElement
+          name='project'
+          options={data.projects}
+          value={selectedProject}
+          onUserInput={(name, value) => setSelectedProject(value)}
+          emptyOption={false}
+        />
+        <div>Data in LORIS:</div>
+        {/* Statistics */}
+        {data.statistics.map((statistic, index) => {
+          if (
+            statistic.Project === data.projects[selectedProject] &&
+            statistic.Value > 0
+          ) {
+            return (
+              <div key={index}>
                 <span
                   style={{
                     fontWeight: 'bold',
@@ -68,31 +46,28 @@ class SummaryStatistics extends Component {
                 >
                   {statistic.Value.toLocaleString('fr-CA')}{' '}
                 </span>
-                {statistic.Title}{statistic.Value != 1 ? 's' : ''}
-              </div>;
-            }
-          })}
-          {/* Copy to clipboard */}
-          <div className='stats-copy'>
-            <span className="glyphicon glyphicon-copy"
-              style={{
-                cursor: 'pointer',
-                opacity: '0.1',
-              }}
-              onClick={() => {
-                navigator.clipboard.writeText(this.state.data.csv);
-              }}
-            />
-          </div>
+                {statistic.Title}
+                {statistic.Value !== 1 ? 's' : ''}
+              </div>
+            );
+          }
+          return null;
+        })}
+        {/* Copy to clipboard */}
+        <div className='stats-copy'>
+          <span
+            className='glyphicon glyphicon-copy'
+            style={{ cursor: 'pointer', opacity: '0.1' }}
+            onClick={() => navigator.clipboard.writeText(data.csv)}
+          />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 SummaryStatistics.propTypes = {
-  DataURL: PropTypes.string.isRequired,
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
 };
 
 export default SummaryStatistics;
