@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Module create_timepoint automated integration tests
@@ -26,7 +28,7 @@ require_once __DIR__ . "/../../../test/integrationtests"
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
+class Create_TimepointTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * It does the setUp before running the tests

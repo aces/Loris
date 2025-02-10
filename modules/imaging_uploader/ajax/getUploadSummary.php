@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Ajax script used to get the progress of an MRI pipeline run for a specific MRI

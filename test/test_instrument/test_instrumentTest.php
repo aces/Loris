@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 use Facebook\WebDriver\WebDriverBy;
@@ -15,7 +17,7 @@ use Facebook\WebDriver\WebDriverSelect;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
+class Test_InstrumentTest extends LorisIntegrationTest
 {
     /**
      * Inserting testing data.

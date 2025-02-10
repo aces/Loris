@@ -426,6 +426,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
     {
         $resource        = fopen($this->imagefileTest, 'w');
         $stream          = GuzzleHttp\Stream\Stream::factory($resource);
+
         $response_stream = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .

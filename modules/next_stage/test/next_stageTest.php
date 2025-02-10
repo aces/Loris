@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Next_stage automated integration tests
@@ -25,7 +27,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
+class Next_StageTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the Next_stage module, some

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * This tests the LorisForm replacement for HTML_QuickForm used by
@@ -180,16 +182,15 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);  // Updated to use willReturn
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);  // Updated to use willReturn
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->update("test", ['field' => '<b>Hello</b>'], []);
-
     }
 
     /**
@@ -209,16 +210,15 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);  // Updated to use willReturn
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);  // Updated to use willReturn
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
-
     }
 
     /**
@@ -233,15 +233,15 @@ class Database_Test extends TestCase
             ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['prepare','lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -263,15 +263,15 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())->method("prepare")
-            ->will($this->returnValue($stmt));
+            ->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -818,15 +818,15 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -853,15 +853,15 @@ class Database_Test extends TestCase
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId','prepare'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        )->will($this->returnValue(true));
+        )->willReturn(true);
 
         $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+            ->method("prepare")->willReturn($stmt);
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
@@ -914,19 +914,36 @@ class Database_Test extends TestCase
      */
     function testRun()
     {
+        // Mocking FakeDatabase and disabling the constructor
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['run']))
+            ->disableOriginalConstructor()
+            ->getMock();
 
+        // Mocking the PDO object
         $PDO = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
+            ->onlyMethods(['lastInsertId', 'exec'])
+            ->getMock();
 
+        // Initialize the PDO object manually to simulate the constructor behavior
+        $stub->_PDO = $PDO;  // Manually setting PDO after disabling constructor
+
+        // Setting expectations for the exec method
         $PDO->expects($this->once())
-            ->method("exec")->with($this->equalTo("SHOW TABLES"));
+            ->method("exec")
+            ->with($this->equalTo("SHOW TABLES"))
+            ->willReturn(1); // Optionally define return value for exec()
 
-        '@phan-var \Database $stub';
-        '@phan-var \PDO $PDO';
-        $stub->_PDO = $PDO;
+        // Setting expectations for the lastInsertId method
+        $PDO->expects($this->once())
+            ->method('lastInsertId')
+            ->willReturn("1"); // Set expected lastInsertId value
+
+        // Call the run method
         $stub->run("SHOW TABLES");
+
+        // Add assertions if necessary, for example:
+        $this->assertEquals("1", $stub->lastInsertID);
     }
 
     /**
@@ -1821,17 +1838,29 @@ class Database_Test extends TestCase
             ->getMock();
         '@phan-var \Database $stub';
 
+        // Mocking the PDO object
         $PDO = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['query'])->getMock();
+            ->onlyMethods(['query'])
+            ->getMock();
 
+        // Mocking the PDOStatement object
+        $PDOStatement = $this->getMockBuilder('PDOStatement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // Configure the `query` method to return the mock PDOStatement
         $PDO->expects($this->once())
             ->method("query")
-            ->willReturn("1");
+            ->willReturn($PDOStatement);
 
         '@phan-var \FakePDO $PDO';
 
+        // Inject the mocked PDO into the stub
         $stub->_PDO = $PDO;
-        $val        = $stub->isConnected();
+
+        $val = $stub->isConnected();
+
+        // Assert the expected value
         $this->assertEquals($val, true);
     }
 }

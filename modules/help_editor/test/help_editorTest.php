@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Help editor automated integration tests
@@ -25,7 +27,7 @@ use Facebook\WebDriver\WebDriverBy;
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-class HelpEditorTestIntegrationTest extends LorisIntegrationTest
+class Help_EditorTest extends LorisIntegrationTest
 {
     /**
      * Insert testing data into the database

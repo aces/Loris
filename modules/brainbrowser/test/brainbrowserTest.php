@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Brainbrowser automated integration tests
@@ -24,7 +26,7 @@ require_once __DIR__ . "/../../../test/integrationtests/"
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
+class BrainBrowserTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Brainbrowser module, some

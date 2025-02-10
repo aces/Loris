@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -13,7 +15,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class ImagingQCIntegrationTest extends LorisIntegrationTest
+class Imaging_QCTest extends LorisIntegrationTest
 {
     /**
      * Ensures that the module loads if and only if the user has one of the

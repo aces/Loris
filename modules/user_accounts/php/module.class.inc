@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LORIS\user_accounts;
 use \Psr\Http\Message\ServerRequestInterface;

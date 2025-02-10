@@ -90,6 +90,7 @@ class LorisApiImages_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testGetCandidatesCandidVisitImagesFilename(): void
     {
+
         $resource = fopen($this->imagefileTest, 'w');
         $stream   = GuzzleHttp\Stream\Stream::factory($resource);
         $response = $this->client->request(
@@ -423,6 +424,7 @@ class LorisApiImages_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     public function testGetCandidatesCandidVisitImagesFilenameFormatThumbnail():
     void
     {
+
         $resource        = fopen($this->imagefileTest, 'w');
         $stream          = GuzzleHttp\Stream\Stream::factory($resource);
         $response_stream = $this->client->request(
