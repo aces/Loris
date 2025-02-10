@@ -15,8 +15,8 @@ class StudyQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
      * the pinned study queries.
      *
      * @param protected \LORIS\LorisInstance $loris   - The LORIS object
-     * @param string                         $pintype - The pin type. Either
-     *                                                "dashboard" or "study"
+     * @param string                         $pintype - The pin type. "dashboard"
+     *                                                or "study" or "loginpage"
      */
     function __construct(protected \LORIS\LorisInstance $loris, $pintype)
     {
