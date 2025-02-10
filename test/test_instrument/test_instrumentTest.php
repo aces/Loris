@@ -59,7 +59,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandID'        => $this->DB->lastInsertID,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -104,7 +104,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("session", ['ID' => '999999']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);

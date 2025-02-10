@@ -73,7 +73,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             LEFT JOIN modules m
               ON (m.ID=i.module)
             LEFT JOIN candidate c
-              ON (i.candID=c.CandID)
+              ON (i.CandidateID=c.ID)
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
             LEFT JOIN issues_watching w

@@ -25,7 +25,7 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 6, '0') AS _DCCID,
+                LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 subproj.title AS _Cohort,
@@ -37,9 +37,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         genomicfileid
                     FROM
-                        genomic_candidate_files_rel
-                    WHERE
-                        candid = candidate.candid) THEN
+                        genomic_candidate_files_rel gcfr
+                    JOIN
+                        candidate c ON c.ID=gcfr.CandidateID THEN
                     'Y'
                 ELSE
                     'N'
@@ -47,9 +47,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         snpid
                     FROM
-                        SNP_candidate_rel
-                    WHERE
-                        candid = candidate.candid) THEN
+                        SNP_candidate_rel scr
+                    JOIN
+                        candidate c ON c.ID=scr.CandidateID THEN
                     'Y'
                 ELSE
                     'N'
@@ -57,9 +57,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         cnvid
                     FROM
-                        CNV
-                    WHERE
-                        candid = candidate.candid) THEN
+                        CNV cnv
+                    JOIN
+                        candidate c ON c.ID=cnv.CandidateID THEN
                     'Y'
                 ELSE
                     'N'
@@ -79,12 +79,12 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 candidate
                 LEFT JOIN (
                     SELECT
-                        s.CandID,
+                        c.CandID,
                         min(s.cohortID) AS CohortID
-                    FROM
-                        session s
+                    FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                        c.CandID) AS cohort ON (cohort.CandidateID = candidate.ID)
                 LEFT JOIN cohort AS subproj
                     ON (cohort.CohortID = subproj.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)

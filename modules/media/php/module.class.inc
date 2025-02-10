@@ -69,7 +69,8 @@ class Module extends \Module
                 "SELECT file_name as Filename, last_modified as LastModified
                  FROM media m
                     JOIN session s ON (m.session_id=s.ID)
-                 WHERE s.CandID=:cid
+                    JOIN candidate c ON (s.CandidateID=c.ID)
+                 WHERE c.CandID=:cid
                     AND hide_file=false",
                 ['cid' => $candidate->getCandID()],
             );

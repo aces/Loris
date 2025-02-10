@@ -111,10 +111,11 @@ class Module extends \Module
                 "SELECT i.issueID as ID,
                         i.title as Title,
                         COUNT(DISTINCT ic.issueCommentID) as comments
-                 FROM issues i
+                FROM issues i
                     LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
-                 WHERE status != 'closed' AND CandID=:cid
-                 GROUP BY i.issueID, i.Title",
+                    JOIN candidate c ON c.ID=i.CandidateID
+                WHERE status != 'closed' AND c.CandID=:cid
+                GROUP BY i.issueID, i.Title",
                 [ 'cid' => $candidate->getCandID() ],
             );
             if (count($issues) === 0) {
