@@ -58,7 +58,7 @@ class ViewProject extends React.Component {
       ...this.state.formData,
       baseURL: loris.BaseURL,
     };
-
+	  console.log(formData);
     let formObj = new FormData();
     for (let key in formData) {
       if (formData.hasOwnProperty(key) && formData[key] !== '') {
@@ -71,10 +71,11 @@ class ViewProject extends React.Component {
         formObj.append(key, formVal);
       }
     }
-
     fetch(this.props.action, {
       method: 'POST',
-      body: formObj,
+      cache: 'no-cache',
+      credentials: 'same-origin',	    
+      body: formObj, 	    
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);

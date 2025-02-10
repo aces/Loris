@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/CCNA/
  */
 namespace LORIS\publication;
-
 /**
  * Let's you view a project proposal's details
  *
@@ -22,7 +21,7 @@ namespace LORIS\publication;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class View_Project extends \NDB_Form
+class View_Project extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -133,5 +132,4 @@ class View_Project extends \NDB_Form
             [$baseURL . "/publication/js/viewProjectIndex.js"]
         );
     }
-
 }
