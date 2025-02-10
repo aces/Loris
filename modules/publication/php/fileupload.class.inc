@@ -97,7 +97,7 @@ class FileUpload extends \NDB_Page
 
         if ($exists) {
             $this->showPublicationError("Title Exists", 500);
-            exit;
+            exit(1);
         }
         $desc    = $_POST['description'] ?? null;
         $project = $_POST['project'] ?? null;
@@ -130,13 +130,19 @@ class FileUpload extends \NDB_Page
                 );
                     $leadInvID = $db->getLastInsertId();
             } catch (\Exception $e) {
-                // Catch any exception and show the error
-                return $this->showPublicationError(
-                    'Lead Investigator Email address already exists.',
-                    400
-                );
+                return (new \LORIS\Http\Response())
+                    ->withStatus(400)
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode(
+                                ['error' =>
+                                'Lead Investigator Email address already exists.'
+                                ]
+                            )
+                        )
+                    );
             }
-
         }
         // INSERT INTO publication ...
         $uid   = $user->getId();
@@ -178,7 +184,7 @@ class FileUpload extends \NDB_Page
             $this->insertKeywords($pubID);
             // INSERT INTO publication_parameter_type_rel
             $this->insertVOIs($pubID);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->cleanup($pubID);
             $this->showPublicationError($e->getMessage(), 500);
         }
@@ -445,7 +451,7 @@ class FileUpload extends \NDB_Page
                     $pubParamTypeRelInsert
                 );
             } else {
-                throw new LorisException("Unknown variable of interest: $vf");
+                throw new \LorisException("Unknown variable of interest: $vf");
             }
         }
     }
@@ -564,7 +570,7 @@ class FileUpload extends \NDB_Page
         }
         if (!empty($sendTo)) {
             $sendTo = implode(', ', $sendTo);
-            Email::send(
+            \Email::send(
                 $sendTo,
                 "notifier_publication_$type.tpl",
                 $emailData
@@ -659,7 +665,7 @@ class FileUpload extends \NDB_Page
         );
         if (intval($exists)) {
             $this->showPublicationError("Title Exists", 500);
-            exit;
+            exit(1);
         }
         $this->editEditors($id);
         $this->editCollaborators($id);
@@ -761,6 +767,8 @@ class FileUpload extends \NDB_Page
         $submittedCollaborators = isset($_REQUEST['collaborators'])
         ? json_decode($_REQUEST['collaborators'], true) : null;
 
+        $currCollabNames = [];
+
         $currentCollabs = $db->pselectCol(
             'SELECT Name FROM publication_collaborator pc '.
             'LEFT JOIN publication_collaborator_rel pcr '.
@@ -778,7 +786,6 @@ class FileUpload extends \NDB_Page
 
         // Extract 'name' column from $submittedCollaborators
         $submittedCollabNames = array_column($submittedCollaborators, 'name');
-
         $currCollabNames      = (array) $currCollabNames;
         $submittedCollabNames = (array) $submittedCollabNames;
 
@@ -806,16 +813,6 @@ class FileUpload extends \NDB_Page
                 );
             }
         }
-        // update emails if any have changed
-        $currentCollabs = iterator_to_array(
-            $db->pselect(
-                'SELECT Name, Email FROM publication_collaborator pc '.
-                'LEFT JOIN publication_collaborator_rel pcr '.
-                'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-                'WHERE pcr.PublicationID=:pid',
-                ['pid' => $id]
-            )
-        );
 
         $currCollabEmails      = array_column($currentCollabs, 'email');
         $submittedCollabEmails = array_column($submittedCollaborators, 'email');

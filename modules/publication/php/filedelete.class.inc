@@ -47,7 +47,7 @@ class FileDelete extends \NDB_Page
         // Check if the request method is GET
         if ($request->getMethod() !== 'DELETE') {
             // Return a 405 Method Not Allowed response for non-GET requests
-            return (new LORIS\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(405)
                 ->withHeader("Content-Type", "application/json")
                 ->withBody(
@@ -72,12 +72,12 @@ class FileDelete extends \NDB_Page
         "FROM publication_upload ".
         "WHERE PublicationUploadID=:upid";
         $uploadData = $db->pselectRow($query, ['upid' => $uploadID]);
-        $message    = ['message' => null];
+        $message['message'] = null;
 
         if (empty($uploadData)) {
             http_response_code(400);
             $message['message'] = 'Invalid Upload ID';
-            return (new LORIS\Http\Response())
+            return (new \LORIS\Http\Response())
                 ->withStatus(400)
                 ->withHeader("Content-Type", "application/json")
                 ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
@@ -102,20 +102,18 @@ class FileDelete extends \NDB_Page
 
             // Success response
             $message['message'] = 'File deleted successfully';
-            // Success response
-            $message = ['message' => 'File deleted successfully'];
 
             header("Content-Type: application/json");
             http_response_code(200);
             echo json_encode($message);
-            exit;
+            exit(1);
         } else {
             $message['message'] = 'You do not have permission to delete this file.';
 
             header("Content-Type: application/json");
             http_response_code(403);
             echo json_encode($message);
-            exit;
+            exit(1);
         }
     }
 
@@ -130,7 +128,6 @@ class FileDelete extends \NDB_Page
      */
     function userCanDelete($uploadData, $db, $user) : bool
     {
-        return true;
         $retVal   = false;
         $origUser = $db->pselectOne(
             'SELECT UserID FROM publication WHERE PublicationID=:pid',
