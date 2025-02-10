@@ -42,108 +42,115 @@ class FileDelete extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-public function handle(ServerRequestInterface $request) : ResponseInterface
-{
-    // Check if the request method is GET
-    if ($request->getMethod() !== 'DELETE') {
-        // Return a 405 Method Not Allowed response for non-GET requests
-        return (new LORIS\Http\Response())
-            ->withStatus(405)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(new \LORIS\Http\StringStream(json_encode([
-                'message' => 'Method Not Allowed'
-            ])));
-    }
-    // Handle the GET request, process data, and return a response
-    $queryParams = $request->getQueryParams();
-    $uploadID = $queryParams['uploadID'] ?? null;
-    $factory  = \NDB_Factory::singleton();
-    $db       = $factory->database();
-    $user     = $factory->user();
-    $config   = \NDB_Config::singleton();
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Check if the request method is GET
+        if ($request->getMethod() !== 'DELETE') {
+            // Return a 405 Method Not Allowed response for non-GET requests
+            return (new LORIS\Http\Response())
+                ->withStatus(405)
+                ->withHeader("Content-Type", "application/json")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            [
+                                'message' => 'Method Not Allowed'
+                            ]
+                        )
+                    )
+                );
+        }
+        // Handle the GET request, process data, and return a response
+        $queryParams = $request->getQueryParams();
+        $uploadID    = $queryParams['uploadID'] ?? null;
+        $factory     = \NDB_Factory::singleton();
+        $db          = $factory->database();
+        $user        = $factory->user();
+        $config      = \NDB_Config::singleton();
 
-    $query      = "SELECT PublicationID, Filename ".
+        $query      = "SELECT PublicationID, Filename ".
         "FROM publication_upload ".
         "WHERE PublicationUploadID=:upid";
-    $uploadData = $db->pselectRow($query, ['upid' => $uploadID]);
-    $message = ['message' => null];
+        $uploadData = $db->pselectRow($query, ['upid' => $uploadID]);
+        $message    = ['message' => null];
 
-    if (empty($uploadData)) {
-        http_response_code(400);
-        $message['message'] = 'Invalid Upload ID';
-        return (new LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader("Content-Type", "application/json")
-            ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+        if (empty($uploadData)) {
+            http_response_code(400);
+            $message['message'] = 'Invalid Upload ID';
+            return (new LORIS\Http\Response())
+                ->withStatus(400)
+                ->withHeader("Content-Type", "application/json")
+                ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
+        }
+
+        if ($this->userCanDelete($uploadData, $db, $user)) {
+            $uploaddir = $config->getSetting('publication_uploads');
+            $deletedir = $config->getSetting('publication_deletions');
+            if (empty($uploaddir) || empty($deletedir)) {
+                   throw new \Exception("Invalid config setting");
+            }
+            if (empty($uploadData['Filename'])) {
+                   throw new \Exception("Invalid filename");
+            }
+            $db->delete(
+                'publication_upload',
+                ['PublicationUploadID' => $uploadID]
+            );
+            $src  = \Utility::pathJoin($uploaddir, $uploadData['Filename']);
+            $dest = \Utility::pathJoin($deletedir, $uploadData['Filename']);
+            rename($src, $dest);
+
+            // Success response
+            $message['message'] = 'File deleted successfully';
+            // Success response
+            $message = ['message' => 'File deleted successfully'];
+
+            header("Content-Type: application/json");
+            http_response_code(200);
+            echo json_encode($message);
+            exit;
+        } else {
+            $message['message'] = 'You do not have permission to delete this file.';
+
+            header("Content-Type: application/json");
+            http_response_code(403);
+            echo json_encode($message);
+            exit;
+        }
     }
 
-    if ($this->userCanDelete($uploadData, $db, $user)) {
-        $uploaddir = $config->getSetting('publication_uploads');
-        $deletedir = $config->getSetting('publication_deletions');
-	if (empty($uploaddir) || empty($deletedir)) {
-            throw new \Exception("Invalid config setting");
-        }
-	if (empty($uploadData['Filename'])) {
-            throw new \Exception("Invalid filename");
-        }
-        $db->delete(
-            'publication_upload',
-            ['PublicationUploadID' => $uploadID]
+    /**
+     * Gets publication and parameter_type data from database
+     *
+     * @param array  $uploadData Data related to the uploaded file.
+     * @param object $db         Database connection instance.
+     * @param object $user       User object containing permissions.
+     *
+     * @return bool True if the user can delete, false otherwise.
+     */
+    function userCanDelete($uploadData, $db, $user) : bool
+    {
+        return true;
+        $retVal   = false;
+        $origUser = $db->pselectOne(
+            'SELECT UserID FROM publication WHERE PublicationID=:pid',
+            ['pid' => $uploadData['PublicationID']]
         );
-        $src  = \Utility::pathJoin($uploaddir, $uploadData['Filename']);
-        $dest = \Utility::pathJoin($deletedir, $uploadData['Filename']);
-        rename($src, $dest);
 
-        // Success response
-        $message['message'] = 'File deleted successfully';
-    // Success response
-$message = ['message' => 'File deleted successfully'];
-
-header("Content-Type: application/json");
-http_response_code(200);
-echo json_encode($message);
-exit;
-    } else {
-        $message['message'] = 'You do not have permission to delete this file.';
-
-header("Content-Type: application/json");
-http_response_code(403);
-echo json_encode($message);
-exit;
-    }
-}
-
-/**
- * Gets publication and parameter_type data from database
- *
- * @param Database $db Database instance
- *
- * @return array Array of general publication data
- */
-
-function userCanDelete($uploadData, $db, $user) : bool
-{
-	return true;
-    $retVal   = false;
-    $origUser = $db->pselectOne(
-        'SELECT UserID FROM publication WHERE PublicationID=:pid',
-        ['pid' => $uploadData['PublicationID']]
-    );
-
-    $editors = $db->pselectCol(
-        'SELECT UserID 
+        $editors = $db->pselectCol(
+            'SELECT UserID 
         FROM publication_users_edit_perm_rel 
         WHERE PublicationID=:pid',
-        ['pid' => $uploadData['PublicationID']]
-    );
+            ['pid' => $uploadData['PublicationID']]
+        );
 
-    // Allow user to delete if they are original uploader
-    // or is user with edit permission
-    if ($user->getId() === $origUser || in_array($user->getId(), $editors)) {
-        $retVal = true;
+        // Allow user to delete if they are original uploader
+        // or is user with edit permission
+        if ($user->getId() === $origUser || in_array($user->getId(), $editors)) {
+            $retVal = true;
+        }
+
+        return $retVal;
     }
-
-    return $retVal;
-}
 
 }
