@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import { SelectElement } from 'jsx/Form';
+import {SelectElement} from 'jsx/Form';
 import SummaryStatisticsPhone from '../assets/summaryStatisticsPhone.js';
 
 /**
@@ -9,7 +9,7 @@ import SummaryStatisticsPhone from '../assets/summaryStatisticsPhone.js';
  * @author Saagar Arya
  * @version 1.0.0
  */
-const SummaryStatistics = ({ data }) => {
+const SummaryStatistics = ({data}) => {
   const [selectedProject, setSelectedProject] = useState(
     data.projects.includes('All Projects')
       ? data.projects.indexOf('All Projects')
@@ -57,7 +57,7 @@ const SummaryStatistics = ({ data }) => {
         <div className='stats-copy'>
           <span
             className='glyphicon glyphicon-copy'
-            style={{ cursor: 'pointer', opacity: '0.1' }}
+            style={{cursor: 'pointer', opacity: '0.1'}}
             onClick={() => navigator.clipboard.writeText(data.csv)}
           />
         </div>
