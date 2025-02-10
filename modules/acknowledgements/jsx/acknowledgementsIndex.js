@@ -38,6 +38,7 @@ class AcknowledgementsIndex extends Component {
     this.state = {
       data: {},
       formData: {},
+      submitting: false, // track if form is being submitted
       error: false,
       isLoaded: false,
       affiliationsOptions: {
@@ -63,9 +64,9 @@ class AcknowledgementsIndex extends Component {
         databaseProgramming: 'Database Programming',
         imagingProcessingAndEvaluation: 'Imaging Processing and Evaluation',
         geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis '
-                                             + 'and Biochemical Assays',
+          + 'and Biochemical Assays',
         randomizationAndPharmacyAllocation: 'Randomization '
-                                            + 'and Pharmacy Allocation',
+          + 'and Pharmacy Allocation',
         consultants: 'Consultants',
         lpCsfCollection: 'LP/CSF Collection',
       },
@@ -146,7 +147,13 @@ class AcknowledgementsIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
-    const formData = Object.assign({}, this.state.formData);
+    e.preventDefault(); // prevent default form submission
+    const {formData, submitting} = this.state;
+
+    if (submitting) return; // prevent multiple submits
+
+    this.setState({submitting: true}); // set submitting to true
+
     let formObject = new FormData();
     for (let key in formData) {
       if (formData[key] !== '') {
@@ -163,16 +170,14 @@ class AcknowledgementsIndex extends Component {
     })
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal.fire(
-            'Success!',
-            'Acknowledgement added.',
-            'success'
-          ).then((result) => {
-            if (result.value) {
-              this.closeModalForm();
-              this.fetchData();
-            }
-          });
+          swal
+            .fire('Success!', 'Acknowledgement added.', 'success')
+            .then((result) => {
+              if (result.value) {
+                this.closeModalForm();
+                this.fetchData();
+              }
+            });
         } else {
           resp.text().then((message) => {
             swal.fire('Error!', message, 'error');
@@ -181,6 +186,9 @@ class AcknowledgementsIndex extends Component {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        this.setState({submitting: false}); // reset submitting state
       });
   }
 
@@ -195,8 +203,8 @@ class AcknowledgementsIndex extends Component {
     let parsed = '';
     if (data && data.includes(',')) {
       data = data.split(',');
-      for (let i=0; i<data.length; i++) {
-        if (i===0) {
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
           parsed = this.state[key][data[i]];
         } else {
           parsed = parsed + ', ' + this.state[key][data[i]];
@@ -263,7 +271,7 @@ class AcknowledgementsIndex extends Component {
         title='Citation Policy'
       >
         <div className='col-sm-12 col-md-12'>
-          <span>{this.state.data.citation_policy}</span>
+          <span>{this.state.data.meta.citation_policy}</span>
         </div>
       </Panel>
     );
@@ -286,7 +294,7 @@ class AcknowledgementsIndex extends Component {
           Module='acknowledgements'
           name='addAcknowledgement'
           id='addAcknowledgementForm'
-          onSubmit={this.handleSubmit}
+          onSubmit={(e) => this.handleSubmit(e)}
           method='POST'
         >
           <TextboxElement
@@ -341,8 +349,9 @@ class AcknowledgementsIndex extends Component {
             name='addStartDate'
             label='Start date'
             value={this.state.formData.addStartDate}
-            maxYear={this.state.formData.addEndDate || this.state.data.maxYear}
-            minYear={this.state.data.minYear}
+            maxYear={this.state.formData.addEndDate
+              || this.state.data.meta.maxYear}
+            minYear={this.state.data.meta.minYear}
             required={true}
             onUserInput={this.setFormData}
           />
@@ -350,10 +359,19 @@ class AcknowledgementsIndex extends Component {
             name='addEndDate'
             label='End date'
             value={this.state.formData.addEndDate}
-            maxYear={this.state.data.maxYear}
+            maxYear={this.state.data.meta.maxYear}
             minYear={this.state.formData.addStartDate
-                    || this.state.data.minYear}
+              || this.state.data.meta.minYear}
             required={false}
+            onUserInput={this.setFormData}
+          />
+          <SelectElement
+            name='addPresent'
+            options={this.state.data.fieldOptions.presents}
+            label='Present'
+            value={this.state.formData.addPresent}
+            emptyOption={true}
+            required={true}
             onUserInput={this.setFormData}
           />
           <div>
@@ -362,6 +380,7 @@ class AcknowledgementsIndex extends Component {
               label='Save'
               type='submit'
               buttonClass='btn btn-sm btn-primary'
+              disabled={this.state.submitting}
             />
           </div>
         </FormElement>
@@ -383,7 +402,7 @@ class AcknowledgementsIndex extends Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**
@@ -393,30 +412,40 @@ class AcknowledgementsIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Ordering', show: true},
-      {label: 'Full Name', show: true, filter: {
-        name: 'fullName',
-        type: 'text',
-      }},
-      {label: 'Citation Name', show: true, filter: {
-        name: 'citationName',
-        type: 'text',
-      }},
+      {
+        label: 'Full Name', show: true, filter: {
+          name: 'fullName',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Citation Name', show: true, filter: {
+          name: 'citationName',
+          type: 'text',
+        },
+      },
       {label: 'Affiliations', show: true},
       {label: 'Degrees', show: true},
       {label: 'Roles', show: true},
-      {label: 'Start Date', show: true, filter: {
-        name: 'startDate',
-        type: 'date',
-      }},
-      {label: 'End Date', show: true, filter: {
-        name: 'endDate',
-        type: 'date',
-      }},
-      {label: 'Present', show: true, filter: {
-        name: 'present',
-        type: 'select',
-        options: options.presents,
-      }},
+      {
+        label: 'Start Date', show: true, filter: {
+          name: 'startDate',
+          type: 'date',
+        },
+      },
+      {
+        label: 'End Date', show: true, filter: {
+          name: 'endDate',
+          type: 'date',
+        },
+      },
+      {
+        label: 'Present', show: true, filter: {
+          name: 'present',
+          type: 'select',
+          options: options.presents,
+        },
+      },
     ];
     const actions = [
       {
@@ -456,7 +485,7 @@ window.addEventListener('load', () => {
   ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
-      submitURL={`${loris.BaseURL}/acknowledgements/`}
+      submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />
   );
