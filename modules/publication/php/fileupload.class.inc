@@ -187,7 +187,11 @@ class FileUpload extends \NDB_Page
         return (new \LORIS\Http\Response())
             ->withStatus(200)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody(new \LORIS\Http\StringStream(json_encode(['message' => 'Upload successful'])));
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode(['message' => 'Upload successful'])
+                )
+            );
     }
 
     /**
@@ -195,13 +199,13 @@ class FileUpload extends \NDB_Page
      *
      * @param int $pubID ID of Publication in publication table
      *
-     * @return void
+     * @return mixed
      */
-    function processFiles($pubID) : void
+    function processFiles($pubID) : mixed
     {
         error_log("processFiles");
         if (empty($_FILES)) {
-            return;
+            return null;
         }
             error_log("processFiles==========");
         error_log(print_r($_FILES, true));
@@ -212,23 +216,27 @@ class FileUpload extends \NDB_Page
         $publicationPath = $config->getSetting('publication_uploads');
 
         if (!is_dir($publicationPath)) {
-            throw new ConfigurationException(
-                "Error! The upload folder '$publicationPath' does not exist!"
+            $this->showPublicationError(
+                "Error! The upload folder '$publicationPath' does not exist!",
+                500
             );
         }
 
-        // append trailing slash if trailing slash isn't present in configured directory
         $publicationPath .= substr($publicationPath, -1) === '/' ? '' : '/';
         foreach ($_FILES as $name => $values) {
             $fileName = preg_replace('/\s/', '_', $values["name"]);
             if (file_exists($publicationPath . $fileName)) {
-                throw new LorisException("File $fileName already exists!");
+                    $this->showPublicationError(
+                        "File $fileName already exists!",
+                        500
+                    );
             }
 
             if (!isset(pathinfo($fileName)['extension'])) {
-                throw new LorisException(
+                $this->showPublicationError(
                     "Please make sure your file has a valid extension: " .
-                    $values['name']
+                    $values['name'],
+                    500
                 );
             }
 
@@ -245,14 +253,20 @@ class FileUpload extends \NDB_Page
                 'Version'                 => $pubVersion,
             ];
 
-            if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
+            if (move_uploaded_file(
+                $values["tmp_name"],
+                $publicationPath . $fileName
+            )
+            ) {
                 $db->insert('publication_upload', $pubUploadInsert);
             } else {
-                throw new LorisException(
-                    "Could not upload the file. Please try again!"
+                $this->showPublicationError(
+                    "Could not upload the file. Please try again!",
+                    500
                 );
             }
         }
+        return null;
     }
 
     /**
@@ -460,7 +474,8 @@ class FileUpload extends \NDB_Page
         }
 
         $files = $db->pselectCol(
-            'SELECT Filename FROM publication_upload WHERE PublicationID=:PublicationID',
+            'SELECT Filename FROM publication_upload'.
+            ' WHERE PublicationID=:PublicationID',
             $where
         );
         if (!empty($files)) {
@@ -520,7 +535,8 @@ class FileUpload extends \NDB_Page
         $emailData['Title']       = $data['Title'];
         $emailData['Date']        = $data['DateProposed'];
         $emailData['User']        = $user->getFullname();
-        $emailData['URL']         = $baseURL . '/publication/view_project/?id='.$pubID;
+        $emailData['URL']         = $baseURL . '/publication/view_project/?id='
+                            .$pubID;
         $emailData['ProjectName'] = $config->getSetting('prefix');
         $Notifier = new \NDB_Notifier(
             "publication",
@@ -670,11 +686,16 @@ class FileUpload extends \NDB_Page
                 $db->update(
                     'publication_collaborator',
                     $leadInvToUpdate,
-                    ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+                    ['PublicationCollaboratorID' =>
+                    $pubData['LeadInvestigatorID']
+                    ]
                 );
             }
         } catch (\Exception $e) {
-              return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
+            return $this->showPublicationError(
+                'Lead Investigator Email address already exists.',
+                400
+            );
         }
     }
 
@@ -703,7 +724,8 @@ class FileUpload extends \NDB_Page
 
         if ($usersWithEditPerm != $currentUWEP) {
             // Ensure $usersWithEditPerm is an array
-            $usersWithEditPerm = is_array($usersWithEditPerm) ? $usersWithEditPerm : [];
+            $usersWithEditPerm = is_array($usersWithEditPerm) ?
+            $usersWithEditPerm : [];
 
             // new UWEP will be in array_diff result of submitted vs stored
             $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
@@ -751,13 +773,14 @@ class FileUpload extends \NDB_Page
         $currentCollabs = is_array($currentCollabs) ? $currentCollabs : [];
 
         // Ensure $submittedCollaborators is an array
-        $submittedCollaborators = is_array($submittedCollaborators) ? $submittedCollaborators : [];
+        $submittedCollaborators = is_array($submittedCollaborators) ?
+        $submittedCollaborators : [];
 
         // Extract 'name' column from $submittedCollaborators
         $submittedCollabNames = array_column($submittedCollaborators, 'name');
 
-        $currCollabNames      = (array) $currCollabNames;  // Ensure it's an array
-        $submittedCollabNames = (array) $submittedCollabNames; // Ensure it's an array
+        $currCollabNames      = (array) $currCollabNames;
+        $submittedCollabNames = (array) $submittedCollabNames;
 
         if ($submittedCollabNames != $currCollabNames) {
             $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
@@ -826,7 +849,7 @@ class FileUpload extends \NDB_Page
     /**
      * Edit keywords
      *
-     * @param int $id if the legends are to be believed, this is the Publication ID...
+     * @param int $id this is the Publication ID...
      *
      * @return void
      */
@@ -965,8 +988,10 @@ class FileUpload extends \NDB_Page
             $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
             // Check if values exist in $_POST before applying htmlspecialchars
-            $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
-            $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;
+            $cit = isset($_REQUEST[$citationIndex]) ?
+            $_REQUEST[$citationIndex] : null;
+            $ver = isset($_REQUEST[$versionIndex]) ?
+            $_REQUEST[$versionIndex] : null;
 
             // If they exist and differ, add them to the update array
             if ($cit !== null && htmlspecialchars($cit) !== $data['Citation']) {
