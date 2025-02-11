@@ -104,7 +104,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
-            WHERE c.CandID=:CandidateID AND c.Active = 'Y'";
+            WHERE c.CandID=:Candidate AND c.Active = 'Y'";
 
         $row = $db->pselectRow($query, $CandArray);
 

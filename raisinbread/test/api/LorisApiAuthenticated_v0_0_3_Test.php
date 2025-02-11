@@ -256,7 +256,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         );
 
         $this->DB->delete("session", ['ID' => '999999']);
-        $this->DB->delete("candidate", ['ID' => '999999']);
+        $this->DB->delete("candidate", ['ID' => 1]);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
 

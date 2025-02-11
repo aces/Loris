@@ -1285,7 +1285,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandidateID' => 1,
+                    'CandidateID' => 2,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'CohortID'    => '2',

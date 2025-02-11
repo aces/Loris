@@ -197,7 +197,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'c.PSCID';
         case 'Site':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandidateIDID=c.ID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             $this->addTable('LEFT JOIN psc site ON (s.CenterID=site.CenterID)');
             return 'site.Name';
