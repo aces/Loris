@@ -2545,12 +2545,12 @@ CREATE TABLE dataquery_starred_queries_rel (
 
 CREATE TABLE dataquery_run_results (
     RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
-    Candidate int(10) unsigned,
+    CandidateID int(10) unsigned,
     -- JSON or same format that's streamed in?
     RowData LONGTEXT DEFAULT NULL,
 
-    PRIMARY KEY (RunID, CandID),
-    FOREIGN KEY (Candidate) REFERENCES candidate(ID),
+    PRIMARY KEY (RunID, CandidateID),
+    FOREIGN KEY (CandidateID) REFERENCES candidate(ID),
     FOREIGN KEY (RunID) REFERENCES dataquery_run_queries(RunID)
 );
 
