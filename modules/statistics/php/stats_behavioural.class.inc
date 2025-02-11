@@ -133,7 +133,7 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
-                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+                = htmlspecialchars($_REQUEST['BehaviouralProject'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
         } elseif (!empty($userProjectsIDs)) {
             $currentProject = null;
             $paramProjects  = [];

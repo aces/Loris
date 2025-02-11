@@ -92,8 +92,8 @@ class Module extends \Module
         } catch (\LorisException $e) {
             $user    = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             $message = 'Could not find candidate information for candidate '
-                . htmlspecialchars($gets['candID']) . ' and session '
-                . htmlspecialchars($gets['sessionID']) . '.';
+                . htmlspecialchars($gets['candID'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) . ' and session '
+                . htmlspecialchars($gets['sessionID'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) . '.';
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(

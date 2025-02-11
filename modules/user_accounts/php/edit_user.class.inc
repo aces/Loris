@@ -117,7 +117,7 @@ class Edit_User extends \NDB_Form
             foreach ($fieldsThatAreStrings as $fieldName) {
                 // this check prevents PHP Notices
                 if (!empty($defaults[$fieldName])) {
-                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
                 }
             }
 
@@ -543,7 +543,7 @@ class Edit_User extends \NDB_Form
 
             $user->updatePassword(
                 new \Password(
-                    htmlspecialchars_decode($values['Password_hash'])
+                    htmlspecialchars_decode($values['Password_hash'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false)
                 ),
                 $passwordExpired
             );
@@ -977,7 +977,7 @@ class Edit_User extends \NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                htmlspecialchars($row['label']) . "<br>",
+                htmlspecialchars($row['label'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) . "<br>",
                 $attribs
             );
         }

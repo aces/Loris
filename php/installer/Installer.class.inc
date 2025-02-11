@@ -580,8 +580,8 @@ class Installer
         // Value cleanup
         $escapedValues = array_map(
             function ($val) {
-                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
-            },
+                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1', null, false);
+            }, 
             $values
         );
 

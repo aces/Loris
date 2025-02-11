@@ -140,7 +140,7 @@ foreach ($instruments AS $instrument) {
                     // htmlspecialchars() is necessary since data is escaped when
                     // inserted in the database but not escaped
                     // in the $title variable
-                    "name" => htmlspecialchars($title),
+                    "name" => htmlspecialchars($title,ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false),
                     "type" => "Instrument",
                 ]
             );

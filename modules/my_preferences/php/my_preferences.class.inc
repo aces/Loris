@@ -48,7 +48,7 @@ class My_Preferences extends \NDB_Form
         foreach ($fieldsThatAreStrings as $fieldName) {
             // this check prevents PHP Notices
             if (!empty($defaults[$fieldName])) {
-                $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
             }
         }
 
@@ -184,7 +184,7 @@ class My_Preferences extends \NDB_Form
         if (isset($values['Password_hash'])) {
             $user->updatePassword(
                 new \Password(
-                    htmlspecialchars_decode($values['Password_hash'])
+                    htmlspecialchars_decode($values['Password_hash'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false)
                 )
             );
         }
@@ -413,7 +413,7 @@ class My_Preferences extends \NDB_Form
                 // The Password class is self-validating and will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
-                $decoded = htmlspecialchars_decode($plaintext);
+                $decoded = htmlspecialchars_decode($plaintext, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
                 new \Password($decoded);
                 // New password must be different than current one
                 if (! \User::factory($this->identifier)->isPasswordDifferent(
