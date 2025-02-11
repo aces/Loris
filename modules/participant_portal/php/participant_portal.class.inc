@@ -42,7 +42,7 @@ class Participant_Portal extends \NDB_Form
     {
         $this->tpl_data['page_title'] = 'Participant Portal';
         $this->addBasicText(
-            "ParticipantID",
+            "participantID",
             "ParticipantID",
             ["placeholder" => ""]
         );
@@ -125,7 +125,7 @@ class Participant_Portal extends \NDB_Form
     {
         $factory           = \NDB_Factory::singleton();
         $baseURL           = $factory->settings()->getBaseURL();
-        $_SESSION['pid']   = $_REQUEST['ParticipantID'];
+        $_SESSION['pid']   = $_REQUEST['participantID'];
         $_SESSION['email'] = $_REQUEST['email'];
         header("Location: $baseURL/Participant_portal/View_Surveys");
         exit(0);
