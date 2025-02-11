@@ -2,6 +2,14 @@
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  SelectElement,
+  ButtonElement,
+} from 'jsx/Form';
+
 /**
  * Document Edit Form
  *
@@ -48,7 +56,7 @@ class DocEditForm extends React.Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-       const formData = data.docData;
+        const formData = data.docData;
         this.setState({
           data: data,
           docData: data.docData,
@@ -57,7 +65,7 @@ class DocEditForm extends React.Component {
       })
       .catch((error) => {
         this.setState({error: true});
-    });
+      });
   }
 
   /**
@@ -68,8 +76,8 @@ class DocEditForm extends React.Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
@@ -77,65 +85,78 @@ class DocEditForm extends React.Component {
       );
     }
 
+    let categoryDisabled =
+      !loris.userHasPermission('document_repository_categories');
+
     return (
-        <div>
+      <div>
         <FormElement
           name="docEdit"
           onSubmit={this.handleSubmit}
         >
           <h3>Edit Document Repository File</h3>
           <br />
-            <SelectElement
-              name="category"
-              label="Category"
-              options={this.state.data.categories}
-              onUserInput={this.setFormData}
-              hasError={false}
-              required={true}
-              disabled={true}
-              value={this.state.docData.category}
-            />
-            <SelectElement
-              name="forSite"
-              label="Site"
-              options={this.state.data.sites}
-              onUserInput={this.setFormData}
-              required={true}
-              disabled={true}
-              value={this.state.docData.forSite}
-            />
-            <SelectElement
-              name="instrument"
-              label="Instrument"
-              options={this.state.data.instruments}
-              onUserInput={this.setFormData}
-              value={this.state.docData.instrument}
-            />
-            <TextboxElement
-              name="pscid"
-              label="PSCID"
-              onUserInput={this.setFormData}
-              disable = {true}
-              value={this.state.docData.pscid}
-            />
-            <TextboxElement
-              name="visitLabel"
-              label="Visit Label"
-              onUserInput={this.setFormData}
-              value={this.state.docData.visitLabel}
-            />
-            <TextareaElement
-              name="comments"
-              label="Comments"
-              onUserInput={this.setFormData}
-              value={this.state.docData.comments}
-            />
-            <TextboxElement
-              name="version"
-              label="Version"
-              onUserInput={this.setFormData}
-              value={this.state.docData.version}
-            />
+          <SelectElement
+            name="category"
+            label="Category"
+            options={this.state.data.categories}
+            onUserInput={this.setFormData}
+            required={true}
+            disabled={categoryDisabled}
+            value={this.state.docData.category}
+          />
+          <SelectElement
+            name="forSite"
+            label="Site"
+            options={this.state.data.sites}
+            onUserInput={this.setFormData}
+            required={true}
+            disabled={true}
+            value={this.state.docData.forSite}
+          />
+          <SelectElement
+            name="instrument"
+            label="Instrument"
+            options={this.state.data.instruments}
+            onUserInput={this.setFormData}
+            value={this.state.docData.instrument}
+          />
+          <TextboxElement
+            name="pscid"
+            label="PSCID"
+            onUserInput={this.setFormData}
+            disable = {true}
+            value={this.state.docData.pscid}
+          />
+          <TextboxElement
+            name="visitLabel"
+            label="Visit Label"
+            onUserInput={this.setFormData}
+            value={this.state.docData.visitLabel}
+          />
+          <TextareaElement
+            name="comments"
+            label="Comments"
+            onUserInput={this.setFormData}
+            value={this.state.docData.comments}
+          />
+          {
+            loris.userHasPermission('document_repository_hidden') &&
+                (<SelectElement
+                  name="hiddenFile"
+                  label="Restrict access to the file?"
+                  options={this.state.data.hiddenFile}
+                  sortByValue={false}
+                  onUserInput={this.setFormData}
+                  value={this.state.docData.hiddenFile}
+                />)
+          }
+          <TextboxElement
+            name="version"
+            label="Version"
+            onUserInput={this.setFormData}
+            value={this.state.docData.version}
+          />
           <ButtonElement label="Update File"/>
         </FormElement>
       </div>
@@ -153,15 +174,15 @@ class DocEditForm extends React.Component {
     fetch(this.props.action, {
       method: 'PUT',
       headers: {
-            'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       },
       body: JSON.stringify(formData),
     })
-    .then((resp) => resp.json())
-    .then(()=>{
-      swal.fire('Updated Successful!', '', 'success');
-      this.fetchData();
-    });
+      .then((resp) => resp.json())
+      .then(()=>{
+        swal.fire('Updated Successful!', '', 'success');
+        this.fetchData();
+      });
   }
 
   /**
@@ -172,7 +193,7 @@ class DocEditForm extends React.Component {
    */
   setFormData(formElement, value) {
     let docData = this.state.docData;
-      docData[formElement] = value;
+    docData[formElement] = value;
     this.setState({
       docData: docData,
     });

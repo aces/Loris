@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File to close a BVL feedback thread via the BVL feedback panel.
  *
@@ -23,14 +24,14 @@ try {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
     print json_encode(['error' => 'invalid candID']);
-    exit;
+    exit(0);
 }
 
 if (!isset($_POST['feedbackID'])) {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
     print json_encode(['error' => 'Missing FeedbackID']);
-    exit;
+    exit(0);
 }
 
 $feedbackid = $_POST['feedbackID'];
@@ -48,7 +49,7 @@ try {
     print json_encode(
         ['error' => 'The requested feedback thread can`t be found']
     );
-    exit;
+    exit(0);
 }
 
 if ($closethreadcount === 0) {
@@ -57,11 +58,11 @@ if ($closethreadcount === 0) {
     print json_encode(
         ['error' => 'No feedback thread updated']
     );
-    exit;
+    exit(0);
 }
 
 header("content-type:application/json");
 echo json_encode(['success' => true]);
-exit;
+exit(0);
 
 

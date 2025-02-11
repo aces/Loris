@@ -80,5 +80,5 @@ the problem "Could not identify scan type"
 
 ## Dashboard Widget
 
-The total `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
-with a link pointing to the mri_violations module.
+The total number of unresolved `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
+with a link pointing to the mri_violations module with the Resolution Status filter set to "Unresolved".

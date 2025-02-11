@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Script which  compares the currently assigned battery with the expected
@@ -91,7 +91,7 @@ function populateVisitLabel($result, $visit_label)
     $battery->selectBattery($sessionID);
     $timePoint = TimePoint::singleton($sessionID);
 
-    $candidate         = Candidate::singleton(new CandID($result['CandID']));
+    $candidate         = Candidate::singleton(new CandID(strval($result['CandID'])));
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
     if ($result_firstVisit == $visit_label) {

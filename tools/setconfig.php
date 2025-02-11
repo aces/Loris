@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php declare(strict_types=1);
+
 /**
  * This script sets a config setting in the database.
  *

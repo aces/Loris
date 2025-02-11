@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -67,14 +68,17 @@ class Mri_Violations extends \DataFrameworkMenu
         // Build a list of existing problem types based on data in db
         $db           = $this->loris->getDatabaseConnection();
         $problemTypes = array_column(
-            $db->pselect(
-                "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            iterator_to_array(
+                $db->pselect(
+                    "SELECT DISTINCT MRICandidateErrors.Reason
+			FROM MRICandidateErrors
                     UNION
                  SELECT DISTINCT 'Could not identify scan type'
                       FROM mri_protocol_violated_scans
                     UNION
                  SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-                []
+                    []
+                )
             ),
             'Reason'
         );
@@ -82,20 +86,20 @@ class Mri_Violations extends \DataFrameworkMenu
         $protocols = $db->pselect(
             "SELECT p.ID, mpg.Name as 'Protocol Group',
                     site.Name as Center_name, ScannerID,
-                    s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-                    TI_max, slice_thickness_min, slice_thickness_max,
-                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-                    zstep_min, zstep_max, time_min, time_max,
+                    mst.MriScanTypeName as scan_type_name, TR_min, TR_max, TE_min,
+                    TE_max, TI_min, TI_max, slice_thickness_min,
+                    slice_thickness_max, xspace_min, xspace_max, yspace_min,
+                    yspace_max, zspace_min, zspace_max, xstep_min, xstep_max,
+                    ystep_min, ystep_max, zstep_min, zstep_max, time_min, time_max,
                     series_description_regex,
                     image_type, PhaseEncodingDirection, EchoNumber
              FROM mri_protocol as p
              LEFT JOIN mri_protocol_group mpg
                  ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
-             LEFT JOIN mri_scan_type as s
-                 ON p.Scan_type=s.ID
+             LEFT JOIN mri_scan_type as mst
+                 ON p.MriScanTypeID=mst.MriScanTypeID
              LEFT JOIN psc site ON (p.CenterID=site.CenterID)
-             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+             ORDER BY mpg.MriProtocolGroupID ASC, p.MriScanTypeID ASC",
             []
         );
         return [
@@ -103,7 +107,7 @@ class Mri_Violations extends \DataFrameworkMenu
             'cohorts'      => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
-            'protocols'    => $protocols,
+            'protocols'    => iterator_to_array($protocols),
         ];
     }
 
@@ -134,17 +138,29 @@ class Mri_Violations extends \DataFrameworkMenu
     {
         switch ($this->violationType) {
         case 'protocolviolation':
-            return (new ProtocolViolationProvisioner($this->seriesUID));
+            return (new ProtocolViolationProvisioner(
+                $this->loris,
+                $this->seriesUID
+            )
+        );
         case 'protocolcheck':
-            return (new ProtocolCheckViolationProvisioner($this->seriesUID))
+            return (new ProtocolCheckViolationProvisioner(
+                $this->loris,
+                $this->seriesUID
+            )
+        )
             ->filter(
                 new UserCenterMatchOrNullOrAnyPermission(
                     $this->allSitePermissionNames(),
                 )
             );
         default:
-            return (new Provisioner())
-                ->filter(new UserCenterMatchOrNull())
+            return (new Provisioner($this->loris))
+                ->filter(
+                    new UserCenterMatchOrNullOrAnyPermission(
+                        $this->allSitePermissionNames(),
+                    )
+                )
                 ->filter(new UserProjectMatchOrNull());
         }
     }

@@ -12,7 +12,9 @@ import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import StaticDataTable from '../../../jsx/StaticDataTable';
 import swal from 'sweetalert2';
-
+import {
+  RadioElement,
+} from 'jsx/Form';
 const {jStat} = require('jstat');
 import JSZip from 'jszip';
 
@@ -168,12 +170,12 @@ let FilterSelectTabPane = (props) => {
   return (
     <TabPane TabId={props.TabId} Loading={props.Loading}>
       <FilterBuilder items={props.categories}
-                     updateFilter={props.updateFilter}
-                     filter={props.filter}
-                     Visits={props.Visits}
-                     Active={props.Active}
-                     loadImportedCSV={props.loadImportedCSV}
-                     getAllSessions={props.getAllSessions}
+        updateFilter={props.updateFilter}
+        filter={props.filter}
+        Visits={props.Visits}
+        Active={props.Active}
+        loadImportedCSV={props.loadImportedCSV}
+        getAllSessions={props.getAllSessions}
       />
     </TabPane>
   );
@@ -246,14 +248,14 @@ class ViewDataTabPane extends Component {
     state.dataDisplay = value;
     this.setState(state);
     switch (value) {
-      case 'Cross-sectional':
-        this.changeDataDisplay(0);
-        break;
-      case 'Longitudinal':
-        this.changeDataDisplay(1);
-        break;
-      default:
-        break;
+    case 'Cross-sectional':
+      this.changeDataDisplay(0);
+      break;
+    case 'Longitudinal':
+      this.changeDataDisplay(1);
+      break;
+    default:
+      break;
     }
   }
 
@@ -377,8 +379,8 @@ class ViewDataTabPane extends Component {
     let multiLinkHandler = (buffer) => {
       return ((ce) => {
         let downloadLink = document.getElementById('DownloadLink');
-          let dv = new DataView(buffer);
-          let blb;
+        let dv = new DataView(buffer);
+        let blb;
 
         ce.preventDefault();
         blb = new Blob([dv], {type: 'application/zip'});
@@ -491,7 +493,7 @@ class ViewDataTabPane extends Component {
       <>
         <div className='flex-row-item'>
           <button className='action-btn visualized-data'
-                  onClick={this.props.displayVisualizedData}>
+            onClick={this.props.displayVisualizedData}>
             <span className='glyphicon glyphicon-picture'/>
             &nbsp;Visualized Data
           </button>
@@ -506,23 +508,23 @@ class ViewDataTabPane extends Component {
             alignItems: 'flex-start',
           }}>
             <button className='btn btn-primary'
-                    onClick={this.downloadDataCSV}
-                    style={{minWidth: '200px',
-                      minHeight: '30px',
-                      alignSelf: 'center',
-                      margin: '5px 0 5px 0',
-                    }}>
+              onClick={this.downloadDataCSV}
+              style={{minWidth: '200px',
+                minHeight: '30px',
+                alignSelf: 'center',
+                margin: '5px 0 5px 0',
+              }}>
               Download Table as CSV
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
             <button className='btn btn-primary'
-                    style={{
-                      minWidth: '200px',
-                      minHeight: '30px',
-                      alignSelf: 'center',
-                      margin: '5px 0 5px 0',
-                    }}
-                    onClick={this.downloadData}>
+              style={{
+                minWidth: '200px',
+                minHeight: '30px',
+                alignSelf: 'center',
+                margin: '5px 0 5px 0',
+              }}
+              onClick={this.downloadData}>
               Download Files
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
@@ -545,12 +547,12 @@ class ViewDataTabPane extends Component {
     }
     let animationloading = disabledMessage
     === 'Data Query Tool is retrieving sessions before query can run' ? (
-      <div className='spinner' style={{margin: '10px auto 0'}}>
-        <div className='bounce1'/>
-        <div className='bounce2'/>
-        <div className='bounce3'/>
-      </div>
-    ) : null;
+        <div className='spinner' style={{margin: '10px auto 0'}}>
+          <div className='bounce1'/>
+          <div className='bounce2'/>
+          <div className='bounce3'/>
+        </div>
+      ) : null;
 
     let buttons = (
       <>
@@ -559,20 +561,20 @@ class ViewDataTabPane extends Component {
             {sessionsEmpty ||
             this.props.Fields === undefined ||
             this.props.Fields.length === 0 ? (
-              <div style={{
-                color: '#0b4681',
-                textAlign: 'center',
-                fontWeight: 'bolder',
-              }}>
-                {animationloading}{disabledMessage}
-              </div>
-            ) : null}
+                <div style={{
+                  color: '#0b4681',
+                  textAlign: 'center',
+                  fontWeight: 'bolder',
+                }}>
+                  {animationloading}{disabledMessage}
+                </div>
+              ) : null}
             <button className='action-btn run-query'
-                    onClick={this.runQuery}
-                    disabled={(sessionsEmpty ||
+              onClick={this.runQuery}
+              disabled={(sessionsEmpty ||
                       this.props.Fields === undefined ||
                       this.props.Fields.length === 0
-                    )}
+              )}
             >
               <span className='glyphicon glyphicon-play'/>
               &nbsp;Run Query
@@ -704,14 +706,14 @@ class ScatterplotGraph extends Component {
    */
   lsFit(data) {
     let i = 0;
-      let means = jStat(data).mean();
-      let xmean = means[0];
-      let ymean = means[1];
-      let numerator = 0;
-      let denominator = 0;
-      let slope;
-      let xi;
-      let yi;
+    let means = jStat(data).mean();
+    let xmean = means[0];
+    let ymean = means[1];
+    let numerator = 0;
+    let denominator = 0;
+    let slope;
+    let xi;
+    let yi;
 
     for (i = 0; i < data.length; i += 1) {
       xi = data[i][0];
@@ -754,26 +756,26 @@ class ScatterplotGraph extends Component {
    */
   updateScatterplot() {
     let xaxis = document.getElementById('scatter-xaxis').value;
-      let yaxis = document.getElementById('scatter-yaxis').value;
-      let grouping = document.getElementById('scatter-group').value;
-      let data = this.props.Data;
-      let points = [];
-      let min;
-      let max;
-      let field1 = [];
-      let field2 = [];
-      let groupedPoints = {};
-      let i = 0;
-      let groupLabel;
-      let minmax;
-      let LS;
-      let slope;
-      let start;
-      let plots = [];
-      let plotY = (x) => {
-        return [x, start + (slope * x)];
-      };
-      let dataset;
+    let yaxis = document.getElementById('scatter-yaxis').value;
+    let grouping = document.getElementById('scatter-group').value;
+    let data = this.props.Data;
+    let points = [];
+    let min;
+    let max;
+    let field1 = [];
+    let field2 = [];
+    let groupedPoints = {};
+    let i = 0;
+    let groupLabel;
+    let minmax;
+    let LS;
+    let slope;
+    let start;
+    let plots = [];
+    let plotY = (x) => {
+      return [x, start + (slope * x)];
+    };
+    let dataset;
 
     for (i = 0; i < data.length; i += 1) {
       points.push([data[i][xaxis], data[i][yaxis]]);
@@ -802,11 +804,11 @@ class ScatterplotGraph extends Component {
         data: points,
         points: {show: true},
       }, // Least Squares Fit
-        {
-          label: 'Least Squares Fit',
-          data: jStat.seq(min, max, 3, plotY),
-          lines: {show: true},
-        }], {});
+      {
+        label: 'Least Squares Fit',
+        data: jStat.seq(min, max, 3, plotY),
+        lines: {show: true},
+      }], {});
     } else {
       minmax = this.minmaxx(points);
       min = minmax[0];
@@ -855,17 +857,17 @@ class ScatterplotGraph extends Component {
    */
   render() {
     let options = this.props.Fields.map((element, key) => {
-        return (
-          <option key={key}
-                  value={key}>
-            {element}
-          </option>
-        );
-      });
-      let scatterStyle = {
-        width: '500px',
-        height: '500px',
-      };
+      return (
+        <option key={key}
+          value={key}>
+          {element}
+        </option>
+      );
+    });
+    let scatterStyle = {
+      width: '500px',
+      height: '500px',
+    };
     return (
       <div>
         <h2>Scatterplot</h2>
@@ -904,10 +906,10 @@ class ScatterplotGraph extends Component {
         <h3>Statistics</h3>
         <table id='correlationtbl'>
           <thead>
-          <tr>
-            <th>Covariance</th>
-            <th>Correlation Coefficient</th>
-          </tr>
+            <tr>
+              <th>Covariance</th>
+              <th>Correlation Coefficient</th>
+            </tr>
           </thead>
           <tbody>
           </tbody>
@@ -953,14 +955,14 @@ class StatsVisualizationTabPane extends Component {
       );
     } else {
       let stats = jStat(this.props.Data);
-        let min = stats.min();
-        let max = stats.max();
-        let stddev = stats.stdev();
-        let mean = stats.mean();
-        let meandev = stats.meandev();
-        let meansqerr = stats.meansqerr();
-        let quartiles = stats.quartiles();
-        let rows = [];
+      let min = stats.min();
+      let max = stats.max();
+      let stddev = stats.stdev();
+      let mean = stats.mean();
+      let meandev = stats.meandev();
+      let meansqerr = stats.meansqerr();
+      let quartiles = stats.quartiles();
+      let rows = [];
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
         rows.push(<tr key={'fields_' + i}>
@@ -987,21 +989,21 @@ class StatsVisualizationTabPane extends Component {
         <table className='table table-hover table-primary
          table-bordered colm-freeze'>
           <thead>
-          <tr className='info'>
-            <th>Measure</th>
-            <th>Min</th>
-            <th>Max</th>
-            <th>Standard Deviation</th>
-            <th>Mean</th>
-            <th>Mean Deviation</th>
-            <th>Mean Squared Error</th>
-            <th>First Quartile</th>
-            <th>Second Quartile</th>
-            <th>Third Quartile</th>
-          </tr>
+            <tr className='info'>
+              <th>Measure</th>
+              <th>Min</th>
+              <th>Max</th>
+              <th>Standard Deviation</th>
+              <th>Mean</th>
+              <th>Mean Deviation</th>
+              <th>Mean Squared Error</th>
+              <th>First Quartile</th>
+              <th>Second Quartile</th>
+              <th>Third Quartile</th>
+            </tr>
           </thead>
           <tbody>
-          {rows}
+            {rows}
           </tbody>
         </table>
       );
@@ -1020,8 +1022,8 @@ class StatsVisualizationTabPane extends Component {
     }
     return (
       <TabPane TabId={this.props.TabId}
-               Loading={this.props.Loading}
-               Active={this.props.Active}>
+        Loading={this.props.Loading}
+        Active={this.props.Active}>
         {content}
       </TabPane>
     );
@@ -1080,15 +1082,15 @@ let SaveQueryDialog = (props) => {
         <div className='modal-content'>
           <div className='modal-header'>
             <button type='button'
-                    className='close'
-                    aria-label='Close'
-                    onClick={onDismissClicked}
+              className='close'
+              aria-label='Close'
+              onClick={onDismissClicked}
             >
               <span aria-hidden='true'>&times;</span>
             </button>
             <h4 className='modal-title'
-                id='myModalLabel'
-                style={{color: '#fff'}}>
+              id='myModalLabel'
+              style={{color: '#fff'}}>
               Save Current Query
             </h4>
           </div>
@@ -1097,27 +1099,27 @@ let SaveQueryDialog = (props) => {
             <div className='input-group'>
               Query Name:&nbsp;
               <input type='text'
-                     className='form-control'
-                     placeholder='My Query'
-                     value={queryName}
-                     onChange={editName}/>
+                className='form-control'
+                placeholder='My Query'
+                value={queryName}
+                onChange={editName}/>
             </div>
             <p>Make query a publicly shared query?&nbsp;
               <input type='checkbox'
-                     checked={shared ? 'checked' : ''}
-                     onChange={editPublic}
-                     aria-label='Shared Query'/>
+                checked={shared ? 'checked' : ''}
+                onChange={editPublic}
+                aria-label='Shared Query'/>
             </p>
           </div>
           <div className='modal-footer'>
             <button type='button'
-                    className='btn btn-default'
-                    onClick={onDismissClicked}>
+              className='btn btn-default'
+              onClick={onDismissClicked}>
               Close
             </button>
             <button type='button'
-                    className='btn btn-primary'
-                    onClick={onSaveClicked}>
+              className='btn btn-primary'
+              onClick={onSaveClicked}>
               Save changes
             </button>
           </div>
@@ -1177,21 +1179,21 @@ class ManageSavedQueryFilter extends Component {
       if (filter.instrument) {
         let operator;
         switch (filter.operator) {
-          case 'equal':
-            operator = '=';
-            break;
-          case 'notEqual':
-            operator = '!=';
-            break;
-          case 'lessThanEqual':
-            operator = '<=';
-            break;
-          case 'greaterThanEqual':
-            operator = '>=';
-            break;
-          default:
-            operator = filter.operator;
-            break;
+        case 'equal':
+          operator = '=';
+          break;
+        case 'notEqual':
+          operator = '!=';
+          break;
+        case 'lessThanEqual':
+          operator = '<=';
+          break;
+        case 'greaterThanEqual':
+          operator = '>=';
+          break;
+        default:
+          operator = filter.operator;
+          break;
         }
         filterItem = (
           <span>{filter.instrument},
@@ -1227,36 +1229,36 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
-         deleteclick() {
-          let id = this.props.Query['_id'];
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-           }).then((result) => {
-           if (result.value) {
-            let deleteurl = loris.BaseURL +
+  deleteclick() {
+    let id = this.props.Query['_id'];
+    swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.value) {
+        let deleteurl = loris.BaseURL +
               '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
               + encodeURIComponent(id);
-              fetch(deleteurl, {
-              cache: 'no-cache',
-              credentials: 'same-origin',
-              }).then((resp) => {
-                  if (resp.status == 200) {
-                   swal.fire('delete Successful!', '', 'success');
-                  } else {
-                   swal.fire('delete Not Successful!', '', 'error');
-                  }
-              }).then(()=>{
-                  location.reload();
-              });
-           }
-          });
-         }
+        fetch(deleteurl, {
+          cache: 'no-cache',
+          credentials: 'same-origin',
+        }).then((resp) => {
+          if (resp.status == 200) {
+            swal.fire('delete Successful!', '', 'success');
+          } else {
+            swal.fire('delete Not Successful!', '', 'error');
+          }
+        }).then(()=>{
+          location.reload();
+        });
+      }
+    });
+  }
 
   /**
    * Renders the React component.
@@ -1298,7 +1300,7 @@ class ManageSavedQueryRow extends Component {
 
     if (this.props.Query.Conditions) {
       let operator;
-        let filter;
+      let filter;
       if (this.props.Query.Conditions.activeOperator) {
         if (this.props.Query.Conditions.children) {
           if (this.props.Query.Conditions.activeOperator === '0') {
@@ -1367,13 +1369,13 @@ class ManageSavedQueryRow extends Component {
         </td>
         <td>
           <div className={'tableNamesCell'}>
-           <button className='btn btn-danger'
-             onClick={()=> {
-              this.deleteclick();
-             }}
-           >
+            <button className='btn btn-danger'
+              onClick={()=> {
+                this.deleteclick();
+              }}
+            >
             delete
-          </button>
+            </button>
           </div>
         </td>
       </tr>
@@ -1444,15 +1446,15 @@ let ManageSavedQueriesTabPane = (props) => {
       <table className='table table-hover table-primary
        table-bordered colm-freeze'>
         <thead>
-        <tr key='info' className='info'>
-          <th>Query Name</th>
-          <th>Fields</th>
-          <th>Filters</th>
-          <th>Delete</th>
-        </tr>
+          <tr key='info' className='info'>
+            <th>Query Name</th>
+            <th>Fields</th>
+            <th>Filters</th>
+            <th>Delete</th>
+          </tr>
         </thead>
         <tbody>
-        {queryRows}
+          {queryRows}
         </tbody>
       </table>
     </>

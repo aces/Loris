@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get starred queries for a user.
  *
@@ -28,6 +29,7 @@ class StarredQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris, \User $user)
     {
         parent::__construct(
+            $loris,
             "SELECT
                  dpq.QueryID,
                  COALESCE(dqn.Name, CONCAT('Query ', dpq.QueryID)) as Name

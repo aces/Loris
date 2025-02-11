@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The configuration module is used to manage the configuration of Loris.
  *
@@ -51,13 +52,12 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
-            "SELECT Scan_type
-             FROM mri_scan_type",
+            "SELECT MriScanTypeName FROM mri_scan_type",
             []
         );
         $scan_types = ['' => ''];
         foreach ($scans as $type) {
-            $val = $type['Scan_type'];
+            $val = $type['MriScanTypeName'];
             $scan_types[$val] = $val;
         }
 
@@ -106,13 +106,13 @@ class Configuration extends \NDB_Form
         $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );
 
-        return $parentConfigItems;
+        return iterator_to_array($parentConfigItems);
     }
 
     /**
@@ -129,9 +129,11 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         // Get the names and meta-information for the config settings in the database
-        $configs = $DB->pselect(
-            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
-            []
+        $configs = iterator_to_array(
+            $DB->pselect(
+                "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
+                []
+            )
         );
 
         // Check whether any setting is overwritten in the config.xml
@@ -172,9 +174,8 @@ class Configuration extends \NDB_Form
         // build a tree from configs array
         $tree = [];
         foreach ($configs as &$node) {
-            $node['Children']  = [];
-            $tree[$node['ID']] = &$node;
-
+            $node['Children']          = [];
+            $tree[intval($node['ID'])] = &$node;
         }
         foreach ($configs as &$node) {
             $tree[$node['Parent']]['Children'][] = &$node;

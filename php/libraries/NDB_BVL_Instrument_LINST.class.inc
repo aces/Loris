@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the base class for instruments in Loris
  *
@@ -166,7 +167,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         //If this is an OR rule using two different controllers
                         //explode it at the pipe.
                         //ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                        if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
+                        $s_r = strpos($rule, "|");
+                        if ($s_r !== false && stristr(substr($rule, $s_r), "{@}")) {
                             $rules_array = explode("|", $rule);
                         } else {
                             //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
@@ -390,7 +392,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 'Delimiter' => $this->_GUIDelimiter,
             ];
 
-            while (($line = fgets($fp, 4096)) !== false) {
+            // Buffer = 128KB
+            while (($line = fgets($fp, 131072)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
                 $this->LinstLines[] = $pieces;
 
@@ -731,9 +734,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->selectMultipleElements[] = $pieces[1];
                     // fall through and also execute select code below
                 case 'select':
-                    $options  = preg_split("/{-}/", trim($pieces[3]));
-                    $opt      = [];
-                    $dictopts = [];
+                    $options    = preg_split("/{-}/", trim($pieces[3]));
+                    $opt        = [];
+                    $dictopts   = [];
+                    $dictlabels = [];
 
                     foreach ($options as $o) {
                         $arr = explode("=>", $o);
@@ -749,7 +753,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
 
                         if ($key !== '') {
-                            $dictopts[] = $key;
+                            $dictopts[]   = $key;
+                            $dictlabels[] = $val;
                         }
                         $opt[$key] = $val;
                     }
@@ -806,6 +811,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
 
                     $t  = new Enumeration(...$dictopts);
+                    $t  = $t->withLabels(...$dictlabels);
                     $it = new DictionaryItem(
                         $this->testName."_".$pieces[1],
                         $pieces[2],
@@ -1021,7 +1027,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $element['Name'] = $value[1];
                 $specialCase     = false;
                 if ($value[0] !== 'table' && $value[0] !== 'title') {
-                    $element['Description'] = rtrim($value[2]);
+                    $element['Description'] = rtrim(strval($value[2]));
                 }
                 switch ($value[0]) {
                 case 'selectmultiple':
@@ -1073,7 +1079,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'numeric':
                     $minval = isset($value[3]) ? (int) $value[3] : null;
-                    $maxval = (int) rtrim($value[4] ?? null);
+                    $maxval = (int) rtrim($value[4] ?? '');
                     $element['Options'] = [
                         'NumberType' => 'integer',
                         'MinValue'   => $minval,

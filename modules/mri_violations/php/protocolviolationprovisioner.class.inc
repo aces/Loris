@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
 
 /**
@@ -13,11 +14,16 @@ class ProtocolViolationProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      * Create a ProtocolViolationProvisioner, which gets all mri_protocol violations
      * for a specific SeriesUID.
      *
-     * @param string $seriesUID The SeriesUID
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param string               $seriesUID The SeriesUID.
      */
-    function __construct(string $seriesUID)
-    {
+    function __construct(
+        protected \LORIS\LorisInstance $loris,
+        string $seriesUID
+    ) {
         parent::__construct(
+            $loris,
             "SELECT 
                 mpv.CandID,
                 mpv.PSCID,

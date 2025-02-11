@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class handles a post request to upload a new category.
  * PHP Version 7
@@ -36,7 +37,14 @@ class UploadCategory extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_view');
+        return ($user->hasPermission('document_repository_categories')
+            && $user->hasAnyPermission(
+                [
+                    'document_repository_upload_edit',
+                    'document_repository_delete',
+                ]
+            )
+        );
     }
 
 
@@ -85,7 +93,7 @@ class UploadCategory extends \NDB_Page
             throw new \LorisException("Invalid JSON");
         }
         $category_name = $req['categoryName']; // required
-        $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
+        $parent_id     = isset($req['parentId']) ? $req['parentId'] : 0;
         $comments      = isset($req['comments']) ? $req['comments'] : null;
         //check duplicate name category
         if ($this->existCategoryName($category_name, $parent_id)) {

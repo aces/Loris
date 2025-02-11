@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the dicom archive menu page.
@@ -33,10 +34,14 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     /**
      * Create a DicomArchiveRowProvisioner, which gets rows for the dicom_archive
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT t.PatientID AS patientID,
             t.PatientName AS patientName,
             t.PatientSex AS sex,
@@ -73,7 +78,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
         if ($row['CenterID'] !== null) {
-            $cid = new \CenterID($row['CenterID']);
+            $cid = \CenterID::singleton(intval($row['CenterID']));
             unset($row['CenterID']);
             return new DICOMArchiveRowWithSession($row, $cid);
         }

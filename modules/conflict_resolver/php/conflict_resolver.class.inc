@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to be processed as part of the conflict resolver
@@ -38,7 +39,10 @@ class Conflict_Resolver extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('conflict_resolver');
+        $hasConflictPerm = $user->hasPermission('conflict_resolver');
+        $dictPerms       = ['data_dict_edit', 'data_dict_view'];
+        $hasDictPerms    = $user->hasAnyPermission($dictPerms);
+        return $hasConflictPerm && $hasDictPerms;
     }
 
     /**

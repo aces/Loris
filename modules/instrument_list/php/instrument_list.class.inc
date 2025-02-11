@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Instrument_List
@@ -184,6 +183,7 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
+        $this->tpl_data['candidate'] = $this->candidate;
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
         $this->tpl_data['stage']     = \Utility::getStageUsingCandID(
@@ -223,9 +223,6 @@ class Instrument_List extends \NDB_Menu_Filter
                 $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['CommentID']);
 
-                $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
-                $ddeStatus->select($instrument['DDECommentID']);
-
                 $Ins = "instruments";
 
                 $ins = $instrument['Full_name'];
@@ -245,15 +242,22 @@ class Instrument_List extends \NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['commentID'] = $ins;
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
+                    $this->timePoint->getVisitLabel(),
                     $instrument['Test_name']
                 );
+
                 $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
 
-                $ins = $instrument['DDECommentID'];
-                $this->tpl_data[$Ins][$x][$i]['ddeCommentID'] = $ins;
+                if ($ins) {
+                    $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
+                    $ddeStatus->select($instrument['DDECommentID']);
 
-                $ins = $ddeStatus->getDataEntryStatus();
-                $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] =  $ins;
+                    $ins = $instrument['DDECommentID'];
+                    $this->tpl_data[$Ins][$x][$i]['ddeCommentID'] = $ins;
+
+                    $ins = $ddeStatus->getDataEntryStatus();
+                    $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] =  $ins;
+                }
 
                 $ins = $instrument['isDirectEntry'];
                 $this->tpl_data[$Ins][$x][$i]['isDirectEntry'] = $ins;
@@ -296,6 +300,26 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->tpl_data['display']
             = array_merge($this->candidate->getData(), $this->timePoint->getData());
+        // DoB to Derived Age
+        $dob = $this->candidate->getCandidateDoB();
+        if (is_string($dob) && strtotime($dob) !== false) {
+            $dob_date     = new \DateTime($dob);
+            $current_date = new \DateTime();
+            $dob_year     = abs($current_date->diff($dob_date)->y);
+            $dob_month    = abs($current_date->diff($dob_date)->m);
+            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $this->tpl_data['dob_age'] = $dob_age;
+        }
+        // EDC to EDC Age
+        $edc = $this->candidate->getCandidateEDC();
+        if (is_string($edc) && strtotime($edc) !== false) {
+            $edc_date     = new \DateTime($edc);
+            $current_date = new \DateTime();
+            $edc_year     = abs($current_date->diff($edc_date)->y);
+            $edc_month    = abs($current_date->diff($edc_date)->m);
+            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $this->tpl_data['edc_age'] = $edc_age;
+        }
     }
 
     /**

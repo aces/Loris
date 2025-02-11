@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP version 7
  *
@@ -33,17 +34,28 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '
              SELECT
               conflicts_unresolved.ConflictID as conflictid,
-              conflicts_unresolved.TableName as instrument,
+              conflicts_unresolved.TestName as instrument,
               session.CandID as candid,
               candidate.PSCID as pscid,
               session.Visit_label as visitlabel,
               Project.Name as project,
               conflicts_unresolved.FieldName as question,
-              conflicts_unresolved.Value1 as value1,
-              conflicts_unresolved.Value2 as value2,
+	    CASE
+                WHEN conflicts_unresolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_unresolved.Value1, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value1))
+                ELSE conflicts_unresolved.Value1
+            END AS value1,
+            CASE
+                WHEN conflicts_unresolved.FieldName = "Examiner"
+		    THEN CONCAT(conflicts_unresolved.Value2, " - ",
+			(SELECT full_name FROM examiners WHERE examinerID = conflicts_unresolved.Value2))
+                ELSE conflicts_unresolved.Value2
+            END AS value2,
               psc.name as site,
               session.CenterID as centerid,
-              Project.ProjectID as projectid
+              Project.ProjectID as projectid,
+              cohort.title as cohort
              FROM
               conflicts_unresolved
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
@@ -51,6 +63,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)
              LEFT JOIN Project ON (session.ProjectID=Project.ProjectID)
              LEFT JOIN psc ON (session.CenterID = psc.CenterID)
+             LEFT JOIN cohort ON (cohort.CohortID=session.CohortID)
              WHERE session.Active="Y" AND candidate.Active ="Y"
             ',
             [],

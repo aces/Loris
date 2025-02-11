@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The candidate list menu
  *
@@ -119,6 +120,7 @@ class Candidate_List extends \DataFrameworkMenu
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
+            'Sex'               => \Utility::getSexList(),
         ];
     }
 
@@ -160,7 +162,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new CandidateListRowProvisioner();
+        return new CandidateListRowProvisioner($this->loris);
     }
 }
 

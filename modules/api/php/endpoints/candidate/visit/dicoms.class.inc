@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the visit's dicoms endpoint class.
  *
@@ -43,10 +44,14 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit The requested visit
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     * @param \Timepoint           $visit The requested visit.
      */
-    public function __construct(\Timepoint $visit)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $visit
+    ) {
         $this->_visit = $visit;
     }
 
@@ -130,6 +135,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $dicomtars = $this->_visit->getDicomTars(
+            $this->loris,
             $request->getAttribute('user')
         );
 

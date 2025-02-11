@@ -81,13 +81,13 @@ class CNV extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'PSCID':
-        const url = `${this.props.baseURL}/${rowData.DCCID}/`;
-        reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      default:
-        reactElement = <td>{cell}</td>;
-        break;
+    case 'PSCID':
+      const url = `${this.props.baseURL}/${rowData.DCCID}/`;
+      reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
+      break;
+    default:
+      reactElement = <td>{cell}</td>;
+      break;
     }
     return reactElement;
   }
@@ -137,10 +137,7 @@ class CNV extends Component {
         filter: {
           name: 'Sex',
           type: 'select',
-          options: {
-            Male: 'Male',
-            Female: 'Female',
-          },
+          options: options.Sex,
         },
       },
       {

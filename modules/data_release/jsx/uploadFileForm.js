@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
-
+import {
+  FormElement,
+  StaticElement,
+  FileElement,
+  TextboxElement,
+  ButtonElement,
+  SelectElement,
+} from 'jsx/Form';
 
 /**
  * Upload File Form
@@ -22,7 +29,6 @@ class UploadFileForm extends Component {
       formData: {},
       uploadResult: null,
       errorMessage: {},
-      hasError: {},
       isLoaded: false,
       uploadProgress: -1,
     };
@@ -73,6 +79,14 @@ class UploadFileForm extends Component {
           required={false}
           value={this.state.formData.version}
         />
+        <SelectElement
+          name='project'
+          label='Project'
+          onUserInput={this.updateFormElement}
+          required={true}
+          value={this.state.formData.project}
+          options={this.props.projects}
+        />
         <ButtonElement label='Upload File'/>
         <div className='row'>
           <div className='col-sm-9 col-sm-offset-3'>
@@ -112,15 +126,15 @@ class UploadFileForm extends Component {
       Filesize: undefined,
     };
 
-    let hasError = {
-      Filename: undefined,
-      Filesize: undefined,
-    };
-
     if (!formData.file) {
       errorMessage.Filename = 'You must select a file to upload';
-      hasError.Filename = true;
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
+      return;
+    }
+
+    if (!formData.project) {
+      errorMessage.Project = 'You must select a project';
+      this.setState({errorMessage});
       return;
     }
 
@@ -132,14 +146,13 @@ class UploadFileForm extends Component {
                 + maxSizeAllowed
                 + ')';
       errorMessage['Filesize'] = msg;
-      hasError['Filesize'] = true;
       swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
         showCancelButton: true,
       });
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 
@@ -169,30 +182,30 @@ class UploadFileForm extends Component {
       cache: 'no-cache',
     }).then(async (response) => {
       if (response.status === 409) {
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'A file with this name already exists!\n '
+        swal.fire({
+          title: 'Are you sure?',
+          text: 'A file with this name already exists!\n '
                   + 'Would you like to overwrite existing file?\n '
                   + 'Note that the version associated with '
                   + 'the file will also be overwritten.',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, I am sure!',
-            cancelButtonText: 'No, cancel it!',
-          }).then((isConfirm) => {
-            if (isConfirm && isConfirm.value) {
-              this.uploadFile(true);
-            }
-          });
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, I am sure!',
+          cancelButtonText: 'No, cancel it!',
+        }).then((isConfirm) => {
+          if (isConfirm && isConfirm.value) {
+            this.uploadFile(true);
+          }
+        });
       } else if (!response.ok) {
         const body = await response.json();
         let msg;
         if (body && body.error) {
-            msg = body.error;
+          msg = body.error;
         } else if (response.statusText) {
-            msg = response.statusText;
+          msg = response.statusText;
         } else {
-            msg = 'Upload error!';
+          msg = 'Upload error!';
         }
         this.setState({
           errorMessage: msg,
@@ -201,13 +214,13 @@ class UploadFileForm extends Component {
         swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-          swal.fire({
-            text: 'Upload Successful!',
-            title: '',
-            type: 'success',
-          }).then(function() {
-            window.location.assign('/data_release');
-          });
+        swal.fire({
+          text: 'Upload Successful!',
+          title: '',
+          type: 'success',
+        }).then(function() {
+          window.location.assign('/data_release');
+        });
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';
@@ -224,6 +237,7 @@ class UploadFileForm extends Component {
 UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  projects: PropTypes.array.isRequired,
 };
 
 export default UploadFileForm;

@@ -8,11 +8,11 @@ import Loader from 'Loader';
 import Panel from 'Panel';
 import DOMPurify from 'dompurify';
 import {
-    FormElement,
-    StaticElement,
-    TextboxElement,
-    PasswordElement,
-    ButtonElement,
+  FormElement,
+  StaticElement,
+  TextboxElement,
+  PasswordElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -136,9 +136,11 @@ class Login extends Component {
       })
       .then((response) => {
         if (response.ok) {
-          response.json().then((data) => {
-            // success - refresh page and user is logged in.
-            window.location.href = window.location.origin;
+          response.json().then(() => {
+            // Redirect if there is a "redirect" param, refresh the page otherwise
+            window.location.href = this.props.redirect !== null
+              ? this.props.redirect
+              : window.location.origin;
           });
         } else {
           response.json().then((data) => {
@@ -202,7 +204,7 @@ class Login extends Component {
         <div>
           <section className={'study-logo'}>
             <img src={this.state.study.logo}
-                 alt={this.state.study.title}/>
+              alt={this.state.study.title}/>
           </section>
           <FormElement
             name={'loginIndex'}
@@ -240,10 +242,10 @@ class Login extends Component {
           </FormElement>
           <div className={'help-links'}>
             <a onClick={() => this.setMode('reset')}
-               style={{cursor: 'pointer'}}>Forgot your password?</a>
+              style={{cursor: 'pointer'}}>Forgot your password?</a>
             <br/>
             <a onClick={() => this.setMode('request')}
-               style={{cursor: 'pointer'}}>Request Account</a>
+              style={{cursor: 'pointer'}}>Request Account</a>
           </div>
           {oidc}
           <div className={'help-text'}>
@@ -316,18 +318,18 @@ class Login extends Component {
    * @return {JSX}
    */
   getOIDCLinks() {
-      if (!this.state.oidc) {
-          return null;
-      }
-      return (<div className={'oidc-links'}>
-        {this.state.oidc.map((val) => {
-            return <div>
-                <a href={'/oidc/login?loginWith=' + val}>
+    if (!this.state.oidc) {
+      return null;
+    }
+    return (<div className={'oidc-links'}>
+      {this.state.oidc.map((val) => {
+        return <div>
+          <a href={'/oidc/login?loginWith=' + val}>
                     Login with {val}
-                </a>
-            </div>;
-        })}
-      </div>);
+          </a>
+        </div>;
+      })}
+    </div>);
   }
 }
 
@@ -337,6 +339,7 @@ Login.propTypes = {
   defaultRequestFirstName: PropTypes.string,
   defaultRequestLastName: PropTypes.string,
   defaultRequestEmail: PropTypes.string,
+  redirect: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
@@ -353,6 +356,7 @@ window.addEventListener('load', () => {
       defaultRequestFirstName={getParam('firstname', '')}
       defaultRequestLastName={getParam('lastname', '')}
       defaultRequestEmail={getParam('email', '')}
+      redirect={getParam('redirect', null)}
       module={'login'}
     />
   );

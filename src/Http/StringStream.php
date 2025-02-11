@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a StringStream, a simple wrapper which converts
  * a PHP string into a PSR7 StreamInterface compatible with other PSR7
@@ -257,7 +258,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * The keys returned are identical to the keys returned from PHP's
      * stream_get_meta_data() function.
      *
-     * @param string $key Specific metadata to retrieve.
+     * @param ?string $key Specific metadata to retrieve.
      *
      * @see http://php.net/manual/en/function.stream-get-meta-data.php
      *
@@ -265,7 +266,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
      */
-    public function getMetadata($key = null)
+    public function getMetadata(?string $key = null)
     {
         $metadata = stream_get_meta_data($this->stream);
         if ($key === null) {

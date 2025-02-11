@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dataquery\Provisioners;
 use \LORIS\dataquery\Query;
 
@@ -20,6 +21,7 @@ class StudyQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris, $pintype)
     {
         parent::__construct(
+            $loris,
             "SELECT dq.QueryID, Query, dsq.Name
             FROM dataquery_queries dq
                 LEFT JOIN dataquery_study_queries_rel dsq ON

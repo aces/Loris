@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible files
  * for the media menu page.
@@ -46,6 +47,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT m.file_name as fileName,
                     m.instrument as testName,
                     c.PSCID as pscid,

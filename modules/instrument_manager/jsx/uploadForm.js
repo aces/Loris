@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {FileElement} from 'jsx/Form';
 
 /**
  * Instrument Upload Form component
@@ -46,38 +47,38 @@ class InstrumentUploadForm extends Component {
       credentials: 'same-origin',
       body: data,
     })
-    .then((resp) => {
-      if (resp.status == 201) {
-        swal.fire({
-          title: 'Installation Successful!',
-          type: 'success',
-        }).then(function() {
-          window.location.assign(loris.BaseURL + '/instrument_manager/');
-        });
-      }
-      return resp.json();
-    })
-    .then((data) => {
-      if (data.message) {
-         swal.fire({
-          title: 'Upload Successful!',
-          type: 'success',
-          text: data.message,
-        }).then(function() {
-          window.location.assign(loris.BaseURL + '/instrument_manager/');
-        });
-      }
-      if (data.error) {
-         swal.fire({
-          title: 'An error occurred',
-          type: 'error',
-          text: data.error,
-        });
-      }
-    })
-    .catch((error) => {
-      this.setState({error: true});
-    });
+      .then((resp) => {
+        if (resp.status == 201) {
+          swal.fire({
+            title: 'Installation Successful!',
+            type: 'success',
+          }).then(function() {
+            window.location.assign(loris.BaseURL + '/instrument_manager/');
+          });
+        }
+        return resp.json();
+      })
+      .then((data) => {
+        if (data.message) {
+          swal.fire({
+            title: 'Upload Successful!',
+            type: 'success',
+            text: data.message,
+          }).then(function() {
+            window.location.assign(loris.BaseURL + '/instrument_manager/');
+          });
+        }
+        if (data.error) {
+          swal.fire({
+            title: 'An error occurred',
+            type: 'error',
+            text: data.error,
+          });
+        }
+      })
+      .catch((error) => {
+        this.setState({error: true});
+      });
   }
 
   /**

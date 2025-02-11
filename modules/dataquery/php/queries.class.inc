@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -76,10 +77,13 @@ class Queries extends \NDB_Page
         ) === 1
         ) {
             $queryID = intval($pieces[1]);
-            return (new \LORIS\dataquery\endpoints\queries\query\Run(
-                $this->loris,
-                $queryID
-            ))->handle($request);
+            return (new \LORIS\Middleware\Compression())->process(
+                $request,
+                new \LORIS\dataquery\endpoints\queries\query\Run(
+                    $this->loris,
+                    $queryID
+                )
+            );
         }
         if (preg_match(
             "/queries\/([0-9]+)\/count$/",
@@ -99,7 +103,13 @@ class Queries extends \NDB_Page
             $pieces
         ) === 1
         ) {
-            return new \LORIS\Http\Response\JSON\NotImplemented();
+            $queryID = intval($pieces[1]);
+            $runID   = intval($pieces[2]);
+            return (new \LORIS\dataquery\endpoints\queries\query\run\Run(
+                $this->loris,
+                $queryID,
+                $runID,
+            ))->handle($request);
         }
         return new \LORIS\Http\Response\JSON\NotFound();
     }

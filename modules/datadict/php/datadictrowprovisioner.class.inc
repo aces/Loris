@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the datadict menu page.
@@ -33,10 +34,14 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT DISTINCT
                 pt.sourceFrom as source_from,
                 pt.name as name,

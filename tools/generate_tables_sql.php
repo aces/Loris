@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The script generate_tables_sql.php takes the ip_output.txt file generated from
  * lorisform_parser.php and outputs an sql build file for the table of each
@@ -47,6 +48,12 @@ foreach ($instruments as $instrument) {
             continue;
         }
         switch ($bits[0]) {
+        // No SQL generated for these cases.
+        case "testname":
+        case "title":
+        case "header":
+            continue 2;
+
         // generate the CREATE TABLE syntax
         case "table":
             $tablename = $bits[1];
@@ -64,11 +71,6 @@ foreach ($instruments as $instrument) {
                 . "ON UPDATE CURRENT_TIMESTAMP,\n";
 
             break;
-
-        // no SQL need be generated.
-        case "title":
-        case "header":
-            continue 2;
 
         // generate specific column definitions for specific types of HTML elements
         default:
@@ -93,6 +95,12 @@ foreach ($instruments as $instrument) {
                 break;
             case "radio":
                 $bits[0] = enumizeOptions($bits[3], $table = [], $bits[1]);
+                break;
+            case "numeric":
+                // without this option, default MySQL is simply numeric
+                // which is traduced to "decimal(10,0)"
+                // which truncates the floating point part.
+                $bits[0] = "decimal(14,4)";
                 break;
             case "select":
                 $bits[0]   = enumizeOptions(

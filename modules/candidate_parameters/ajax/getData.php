@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Candidate parameters data fetch
  *
@@ -27,43 +28,43 @@ if (!$user->hasPermission('access_all_profiles')
     ) && $user->hasCenter($candidate->getCenterID()))
 ) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 $data = $_GET['data'] ?? '';
 if ($data == '') {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    exit(0);
 }
 
 switch ($data) {
 case 'candidateInfo':
     echo json_encode(getCandInfoFields());
-    exit;
+    exit(0);
 case 'probandInfo':
     echo json_encode(getProbandInfoFields());
-    exit;
+    exit(0);
 case 'familyInfo':
     echo json_encode(getFamilyInfoFields());
-    exit;
+    exit(0);
 case 'participantStatus':
     echo json_encode(getParticipantStatusFields());
-    exit;
+    exit(0);
 case 'consentStatus':
     echo json_encode(getConsentStatusFields());
-    exit;
+    exit(0);
 case 'candidateDOB':
     echo json_encode(getDOBFields());
-    exit;
+    exit(0);
 case 'candidateDOD':
     echo json_encode(getDODFields());
-    exit;
+    exit(0);
 case 'diagnosisEvolution':
     echo json_encode(getDiagnosisEvolutionFields());
-    exit;
+    exit(0);
 default:
     header("HTTP/1.1 404 Not Found");
-    exit;
+    exit(0);
 }
 /**
  * Handles the fetching of Candidate Info fields
@@ -220,6 +221,7 @@ function getProbandInfoFields()
         'ageDifference'    => $ageDifference,
         'extra_parameters' => $extra_parameters,
         'parameter_values' => $parameter_values,
+        'sexOptions'       => \Utility::getSexList(),
     ];
 
     return $result;
@@ -244,16 +246,20 @@ function getFamilyInfoFields()
         ['candid' => $candID]
     );
 
-    $candidatesList = $db->pselect(
-        "SELECT CandID FROM candidate ORDER BY CandID",
-        []
+    $candidatesList = iterator_to_array(
+        $db->pselect(
+            "SELECT CandID FROM candidate ORDER BY CandID",
+            []
+        )
     );
 
-    $siblingsList = $db->pselect(
-        "SELECT f1.CandID 
+    $siblingsList = iterator_to_array(
+        $db->pselect(
+            "SELECT f1.CandID 
         FROM family f1 JOIN family f2
         ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
-        ['candid' => $candID]
+            ['candid' => $candID]
+        )
     );
 
     $siblings = [];
@@ -403,7 +409,7 @@ function getParticipantStatusHistory(CandID $candID)
         ['cid' => $candID]
     );
 
-    return $unformattedComments;
+    return iterator_to_array($unformattedComments);
 }
 
 
@@ -640,11 +646,11 @@ function getDiagnosisEvolutionFields(): array
     foreach ($candProjIDs as $projectID) {
         $candProjects[$projectID]   = $projectList[$projectID];
         $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             false
         );
         $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
-            new \ProjectID($projectID),
+            \ProjectID::singleton(intval($projectID)),
             true
         );
     }

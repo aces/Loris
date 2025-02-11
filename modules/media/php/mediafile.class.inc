@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class implements a data Instance which represents a single
  * file in the media menu table.
@@ -59,7 +60,7 @@ class MediaFile implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->DBRow['centerId']);
+        return \CenterID::singleton($this->DBRow['centerId']);
     }
 
     /**
@@ -82,6 +83,9 @@ class MediaFile implements \LORIS\Data\DataInstance,
      */
     public function getHideFile(): int
     {
-        return $this->DBRow['hideFile'];
+        if ($this->DBRow['hideFile'] == 'hidden') {
+            return 1;
+        }
+        return 0;
     }
 }
