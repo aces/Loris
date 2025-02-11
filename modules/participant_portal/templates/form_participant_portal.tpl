@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="panel panel-default panel-center">
         <div class="panel-heading">
