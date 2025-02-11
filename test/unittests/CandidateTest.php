@@ -1194,8 +1194,8 @@ class CandidateTest extends TestCase
             "participant_status",
             [
                 0 => [
-                    'ID'                 => 123,
-                    'participant_status' => '2'
+                    'CandidateID'        => 123,
+                    'participant_status' => '2',
                 ]
             ]
         );

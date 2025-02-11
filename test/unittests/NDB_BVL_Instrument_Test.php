@@ -1208,7 +1208,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD=null WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD=null WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1228,7 +1228,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(

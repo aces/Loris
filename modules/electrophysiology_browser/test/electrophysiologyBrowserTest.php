@@ -67,6 +67,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '000001',
                 'PSCID'                 => 'DCC0001',
                 'RegistrationCenterID'  => 253,
@@ -79,7 +80,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             'session',
             [
                 'ID'            => '999997',
-                'CandID'        => '000001',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 253,
                 'ProjectID'     => 2,
@@ -162,8 +163,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->delete(
             'session',
             [
-                'ID'     => 999997,
-                'CandID' => 000001
+                'ID'          => 999997,
+                'CandidateID' => 1
             ]
         );
         $this->DB->delete(
