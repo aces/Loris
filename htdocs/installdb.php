@@ -177,12 +177,21 @@ case 'createmysqlaccount':
         $tpl_data['configlocation'] = $installer->getBaseDir()
                  . "project/config.xml";
         $tpl_data['configcontent']  = htmlspecialchars(
-            $installer->getConfigContent($_POST),ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
+                                        $installer->getConfigContent($_POST),
+                                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                                        null, 
+                                        false
+                                    );
     }
     $tpl_data['Page'] = "Done";
     break;
 }
-$tpl_data['console'] = htmlspecialchars(ob_get_contents(),ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
+$tpl_data['console'] = htmlspecialchars(
+                        ob_get_contents(),
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                        null, 
+                        false
+                    );
 
 // Set up some special smarty variables that are required on different
 // pages

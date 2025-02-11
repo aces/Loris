@@ -101,7 +101,13 @@ class Stats_Demographic extends \NDB_Form
         $projectID = empty($projectID) ? null : \ProjectID::singleton($projectID);
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
-            htmlspecialchars($_REQUEST['test_name'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) : '';
+            htmlspecialchars(
+                $_REQUEST['test_name'], 
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                null, 
+                false
+                ) 
+                : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_NeuroDB('statistics');
@@ -272,7 +278,12 @@ class Stats_Demographic extends \NDB_Form
 
         if (!empty($demographicSite)) {
             $paramSite           = 'AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
-            $demographicSite     = htmlspecialchars($demographicSite, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
+            $demographicSite     = htmlspecialchars(
+                                        $demographicSite, 
+                                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                                        null, 
+                                        false
+                                    );
             $this->params['sid'] = $demographicSite;
         }
 
@@ -522,7 +533,12 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
-            $demographicInstrument = htmlspecialchars($demographicInstrument, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
+            $demographicInstrument = htmlspecialchars(
+                                        $demographicInstrument, 
+                                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                                        null, 
+                                        false
+                                    );
             $subcategories         = [
                 'Complete',
                 'Incomplete',

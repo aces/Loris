@@ -335,7 +335,13 @@ class Database implements LoggerAwareInterface
             // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
             // earlier versions, since the default flags changed in PHP 8.1.
             $retVal[$key] = is_string($val)
-                ? htmlspecialchars($val, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5, null, false) : $val;
+                ? htmlspecialchars(
+                    $val, 
+                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5, 
+                    null, 
+                    false
+                    ) 
+                    : $val;
         }
         return $retVal;
     }

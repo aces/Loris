@@ -914,10 +914,22 @@ function editUploads($id) : void
         $cit = $_POST[$citationIndex] ?? null;
         $ver = $_POST[$versionIndex] ?? null;
 
-        if (htmlspecialchars($cit, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) !== $data['Citation']) {
+        if (htmlspecialchars(
+                $cit, 
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                null, 
+                false
+                ) 
+            !== $data['Citation']) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
-        if (htmlspecialchars($ver, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false) !== $data['Version']) {
+        if (htmlspecialchars(
+                $ver, 
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                null, 
+                false
+                ) 
+            !== $data['Version']) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }

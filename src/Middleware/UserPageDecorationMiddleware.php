@@ -274,7 +274,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
 
         // Assign the console template variable as the very, very last thing.
-        $tpl_data['console'] = htmlspecialchars(ob_get_contents(), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, null, false);
+        $tpl_data['console'] = htmlspecialchars(
+                                ob_get_contents(), 
+                                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
+                                null, 
+                                false
+                            );
         ob_end_clean();
 
         // Finally, the actual content and render it..
