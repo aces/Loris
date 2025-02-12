@@ -96,7 +96,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
-                'ID'                    => 222,
+                'ID'                    => 112,
                 'CandID'                => '999999',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -108,7 +108,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '111112',
-                'CandidateID' => 222,
+                'CandidateID' => 112,
                 'CenterID'    => '1',
                 'ProjectID'   => '1',
                 'UserID'      => '1',
@@ -141,7 +141,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "session",
-            ['CandidateID' => 111]
+            ['ID' => '111111']
         );
         $this->DB->delete(
             "candidate",
@@ -149,7 +149,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "session",
-            ['CandidateID' => 222]
+            ['ID' => '111112']
         );
         $this->DB->delete(
             "candidate",
