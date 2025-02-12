@@ -703,6 +703,14 @@ class FileUpload extends \NDB_Page
                     400
                 );
         }
+        return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode(['message' => 'ok'])
+                )
+            );
     }
 
     /**
