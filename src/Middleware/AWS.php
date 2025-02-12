@@ -4,7 +4,6 @@ namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
@@ -16,7 +15,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class AWS implements MiddlewareInterface
+class AWS implements MiddlewareChainer
 {
     use MiddlewareChainerMixin;
 
