@@ -193,7 +193,7 @@ class NDB_BVL_Feedback
 
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query          .= " WHERE c.ID = :CaID";
+            $query          .= " WHERE c.CandID = :CaID";
             $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
             throw new InvalidArgumentException(
@@ -418,7 +418,7 @@ class NDB_BVL_Feedback
         $query   = "SELECT COUNT(*)
             FROM feedback_bvl_thread fbt
             JOIN candidate c ON c.ID=fbt.CandidateID
-            WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
+            WHERE fbt.Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
         $qparams = [];
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query           .= " AND CommentID = :ComID";

@@ -204,7 +204,7 @@ function getProbandInfoFields()
     // Calculate age difference
     $ageDifference = "Could not calculate age";
     $candidateDOB  = $db->pselectOne(
-        "SELECT DoB FROM candidate WHERE ID=:CandidateID",
+        "SELECT DoB FROM candidate WHERE CandID=:CandidateID",
         ['CandidateID' => $candID]
     );
     if (!empty($candidateDOB) && !empty($dob)) {
@@ -370,8 +370,8 @@ function getParticipantStatusFields()
     }
 
     $query = "SELECT participant_status, participant_suboptions, reason_specify
-        FROM parameter_candidate pc
-        JOIN candidate c ON c.ID=pc.CandidateID
+        FROM participant_status ps
+        JOIN candidate c ON c.ID=ps.CandidateID
         WHERE c.CandID=:cid";
     $row   = $db->pselectRow($query, ['cid' => $candID]);
 
@@ -540,7 +540,7 @@ function getDOBFields(): array
     $db     = \NDB_Factory::singleton()->database();
     // Get PSCID
     $candidateData = $db->pselectRow(
-        'SELECT PSCID,DoB FROM candidate where ID =:candid',
+        'SELECT PSCID,DoB FROM candidate where CandID =:candid',
         ['candid' => $candID->__toString()]
     );
     $pscid         = $candidateData['PSCID'] ?? null;
@@ -576,7 +576,7 @@ function getDODFields(): array
     $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
-        'SELECT PSCID,DoD, DoB FROM candidate where ID =:candid',
+        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
         ['candid' => $candID]
     );
     if ($candidateData === null) {
@@ -625,7 +625,7 @@ function getDiagnosisEvolutionFields(): array
 
     $pscid = $db->pselectOne(
         "SELECT PSCID FROM candidate
-        WHERE ID=:candID",
+        WHERE CandID=:candID",
         ['candID' => $candID]
     );
 
