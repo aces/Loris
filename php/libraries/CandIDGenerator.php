@@ -30,8 +30,8 @@ class CandIDGenerator extends IdentifierGenerator
      * CandIDs should be between 6 and 10 digits.
      */
     private const LENGTH     = 10;
-    private const MIN_CANDID = 100000;
-    private const MAX_CANDID = (4 * 1024 * 1024 * 1024) - 1;
+    private const MIN_CANDID = '100000';
+    private const MAX_CANDID = '4294967295'; // (4 * 1024 * 1024 * 1024) - 1;
 
     /**
      * Creates a new CandIDGenerator by initializing properties based on class
