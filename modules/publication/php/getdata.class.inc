@@ -194,7 +194,7 @@ class GetData extends \NDB_Page
         );
 
         if (!$result) {
-            throw new LorisException('Invalid publication ID!');
+            throw new \LorisException('Invalid publication ID!');
         } else {
             $result['VOIs']          = $this->getVOIs($id);
             $result['files']         = $this->getFiles($id);
