@@ -27,7 +27,7 @@ ALTER TABLE issues ADD CONSTRAINT fk_issues_3 FOREIGN KEY (CandidateID) REFERENC
 ALTER TABLE session DROP CONSTRAINT `fk_session_1`;
 UPDATE session SET CandID=(SELECT ID from candidate c WHERE c.CandID=session.CandID);
 ALTER TABLE session CHANGE CandID CandidateID int(10) unsigned;
-ALTER TABLE session ADD CONSTRAINT fk_session_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);l
+ALTER TABLE session ADD CONSTRAINT fk_session_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 ALTER TABLE genomic_candidate_files_rel DROP CONSTRAINT `genomic_candidate_files_rel_ibfk_1`;
 UPDATE genomic_candidate_files_rel SET CandID=(SELECT ID from candidate c WHERE c.CandID=genomic_candidate_files_rel.CandID);
