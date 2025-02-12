@@ -39,10 +39,8 @@ class GetData extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
         $user    = $factory->user();
         $message = ['message' => null];
-        $path    = $request->getUri()->getPath();
 
         // Get query parameters
         $queryParams = $request->getQueryParams();
@@ -54,18 +52,18 @@ class GetData extends \NDB_Page
                 ->withHeader("Content-Type", "application/json")
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($this->getData($db))
+                        json_encode($this->getData())
                     )
                 );
         } elseif ($action === 'getProjectData') {
             $id = $queryParams['id'] ?? null;
-            if ($this->userCanGetData($db, $user, $id)) {
+            if ($this->userCanGetData($user, $id)) {
                 return (new \LORIS\Http\Response())
                     ->withStatus(200)
                     ->withHeader("Content-Type", "application/json")
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode($this->getProjectData($db, $user, $id))
+                            json_encode($this->getProjectData($user, $id))
                         )
                     );
             }
@@ -79,13 +77,12 @@ class GetData extends \NDB_Page
     /**
      * Gets publication and parameter_type data from database
      *
-     * @param Database $db Database instance
-     *
      * @return array Array of general publication data
      */
-    function getData($db) : array
+    function getData() : array
     {
         $data   = [];
+        $db     = $this->loris->getDatabaseConnection();
         $titles = $db->pselectCol(
             'SELECT Title FROM publication',
             []
@@ -171,14 +168,15 @@ class GetData extends \NDB_Page
     /**
      * Gets Data for a specific PublicationID
      *
-     * @param Database $db   Database instance
-     * @param User     $user User instance
-     * @param int      $id   Publication ID
+     * @param \User $user User instance
+     * @param int   $id   Publication ID
      *
      * @return array Array of data for a specific project
      */
-    function getProjectData($db, $user, $id) : array
+    function getProjectData($user, $id) : array
     {
+        $db = $this->loris->getDatabaseConnection();
+
         $query  = 'SELECT Title, Description, ' .
         'p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
@@ -259,7 +257,7 @@ class GetData extends \NDB_Page
 
             // if user can edit, retrieve getData() options to allow modifications
             if ($userCanEdit) {
-                return array_merge($pubData, $this->getData($db));
+                return array_merge($pubData, $this->getData());
             } else {
                 return $pubData;
             }
@@ -274,7 +272,8 @@ class GetData extends \NDB_Page
      */
     function getVOIs($id) : array
     {
-        $db        = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
+
         $fields    = $db->pselectCol(
             'SELECT pt.Name AS field ' .
             'FROM parameter_type pt '.
@@ -303,7 +302,8 @@ class GetData extends \NDB_Page
      */
     function getKeywords($id) : array
     {
-        $db  = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
+
         $kws = $db->pselectCol(
             'SELECT pk.Label FROM publication_keyword pk '.
             'LEFT JOIN publication_keyword_rel pkr '.
@@ -324,7 +324,7 @@ class GetData extends \NDB_Page
      */
     function getCollaborators($id) : array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $collaborators = iterator_to_array(
             $db->pselect(
@@ -349,7 +349,7 @@ class GetData extends \NDB_Page
      */
     function getFiles($id) : array
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         $files = iterator_to_array(
             $db->pselect(
@@ -377,7 +377,8 @@ class GetData extends \NDB_Page
      */
     function getStatusOptions() : array
     {
-        $db        = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
+
         $rawStatus = $db->pselect(
             'SELECT * FROM publication_status',
             []
@@ -410,14 +411,15 @@ class GetData extends \NDB_Page
     /**
      * Permission check
      *
-     * @param Database $db    database
-     * @param User     $user  user
-     * @param int      $pubID publication ID
+     * @param \User $user  user
+     * @param int  $pubID publication ID
      *
      * @return bool
      */
-    function userCanGetData($db, $user, $pubID = null) : bool
+    function userCanGetData($user, $pubID = null) : bool
     {
+        $db = $this->loris->getDatabaseConnection();
+
         $retVal = true;
         if (is_null($pubID) && !$user->hasPermission('publication_view')) {
             $retVal = false;

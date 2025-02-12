@@ -698,10 +698,10 @@ class FileUpload extends \NDB_Page
                 );
             }
         } catch (\Exception $e) {
-            return $this->showPublicationError(
-                'Lead Investigator Email address already exists.',
-                400
-            );
+                $this->showPublicationError(
+                    'Lead Investigator Email address already exists.',
+                    400
+                );
         }
     }
 
