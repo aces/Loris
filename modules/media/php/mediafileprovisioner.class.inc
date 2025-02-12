@@ -62,7 +62,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                		substring(m.comments, 1, 50) as comments,
                     m.last_modified as lastModified,
                		m.file_type as fileType,
-               		s.CandID as candidateId,
+               		c.CandID as candidateId,
                		s.ID as sessionId,
                     CASE
                         WHEN m.hide_file = 0 THEN 'visible'
@@ -71,7 +71,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                		m.id
              FROM media m
              INNER JOIN session s ON m.session_id = s.ID
-             INNER JOIN candidate c ON c.CandID=s.CandID
+             INNER JOIN candidate c ON c.ID=s.CandidateID
              LEFT JOIN language l USING (language_id)
              WHERE s.Active='Y' and c.Active='Y'",
             []

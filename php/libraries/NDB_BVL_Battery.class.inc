@@ -304,7 +304,7 @@ class NDB_BVL_Battery
 		JOIN test_names tn ON (f.TestID=tn.ID)
 		JOIN session s
             ON (s.ID=f.SessionID)
-            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
                AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = ['SID' => $this->sessionID];
@@ -628,7 +628,7 @@ class NDB_BVL_Battery
 
         $OtherInfo = $DB->pselectRow(
             "SELECT CandID, c.PSCID, s.CohortID FROM session s
-                    JOIN candidate c USING (CandID)
+                    JOIN candidate c ON c.ID = s.CandidateID
                 WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
             ['SID' => $SessionID]
         );
