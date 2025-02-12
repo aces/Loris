@@ -31,7 +31,7 @@ class CandIDGenerator extends IdentifierGenerator
      */
     private const LENGTH     = 10;
     private const MIN_CANDID = '100000';
-    private const MAX_CANDID = '9999999999';
+    private const MAX_CANDID = '4294967295';
 
     /**
      * Creates a new CandIDGenerator by initializing properties based on class

@@ -1203,7 +1203,7 @@ class CandidateTest extends TestCase
         $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
         $this->_DB->run("DROP TEMPORARY TABLE participant_status");
         $this->assertEquals(
-            $this->_candidate->getPSCID() . '--' . $this->_candidate->getCandID(),
+            $this->_candidate->getPSCID() . '--' . $this->_candidate->getData('ID'),
             'description2'
         );
     }
