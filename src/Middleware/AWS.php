@@ -32,7 +32,7 @@ class AWS implements MiddlewareChainer
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $response = $handler->handle($request);
+        $response = $this->next->process($request, $handler);
         if (getenv("AWS_ACCESS_KEY_ID") !== false) {
             $loris = $request->getAttribute("loris");
             (new \LORIS\AWS\Client($loris))->registerStreamWrapper();
