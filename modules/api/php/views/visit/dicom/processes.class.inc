@@ -24,15 +24,18 @@ namespace LORIS\api\Views\Visit\Dicom;
 
 class Processes
 {
+    private \LORIS\LorisInstance $loris;
     private $_mriuploads;
 
     /**
      * Constructor
      *
+     * @param \LORIS\LorisInstance              $loris      The LORIS Instance
      * @param \LORIS\Data\Models\MRIUploadDTO[] $mriuploads a list or MRIUploadDTO
      */
-    public function __construct(array $mriuploads)
+    public function __construct(\LORIS\LorisInstance $loris, array $mriuploads)
     {
+        $this->loris       = $loris;
         $this->_mriuploads = $mriuploads;
     }
 
@@ -45,7 +48,7 @@ class Processes
     {
         return [
             'MriUploads' => array_map(
-                self::_formatMRIUploads(...),
+                $this->_formatMRIUploads(...),
                 $this->_mriuploads
             ),
         ];
@@ -59,10 +62,10 @@ class Processes
      *
      * @return array
      */
-    private static function _formatMRIUploads(
+    private function _formatMRIUploads(
         \LORIS\Data\Models\MRIUploadDTO $mriuploaddto
     ): array {
-        $mriupload = new \MRIUpload($mriuploaddto->getUploadID());
+        $mriupload = new \MRIUpload($this->loris, $mriuploaddto->getUploadID());
 
         return [
             'MriUploadID' => $mriuploaddto->getUploadID(),

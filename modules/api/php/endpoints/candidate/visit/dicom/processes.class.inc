@@ -138,6 +138,8 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
+        $loris = $request->getAttribute('loris');
+
         // *************************
         // *** Permission checks ***
         // *************************
@@ -155,7 +157,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $array = (new \LORIS\api\Views\Visit\Dicom\Processes($mri_uploads))
+        $array = (new \LORIS\api\Views\Visit\Dicom\Processes($loris, $mri_uploads))
             ->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);

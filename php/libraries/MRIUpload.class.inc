@@ -23,15 +23,18 @@ use \LORIS\server_processes_manager\ServerProcessesMonitor;
  */
 class MRIUpload
 {
+    private \LORIS\LorisInstance $loris;
     private $_mriuploadid;
 
     /**
      * Constructor
      *
-     * @param int $mriuploadid The UploadID
+     * @param \LORIS\LorisInstance $loris       The LORIS instance
+     * @param int                  $mriuploadid The UploadID
      */
-    public function __construct(int $mriuploadid)
+    public function __construct(\LORIS\LorisInstance $loris, int $mriuploadid)
     {
+        $this->loris        = $loris;
         $this->_mriuploadid = $mriuploadid;
     }
 
@@ -52,7 +55,7 @@ class MRIUpload
      */
     public function getProcesses(): array
     {
-        $rows = \NDB_Factory::singleton()->database()->pselectCol(
+        $rows = $this->loris->getDatabaseConnection()->pselectCol(
             'SELECT
                id
              FROM
