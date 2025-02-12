@@ -86,7 +86,7 @@ class Participant_Portal extends \NDB_Form
                  WHERE pe.ParticipantSurveyEmail=:su_email AND c.ParticipantID=:pid",
                 [
                     'su_email' => $values['email'],
-                    'pid'        => $values['ParticipantID'],
+                    'pid'      => $values['ParticipantID'],
                 ]
             );
             if ($numSurveys == 0) {
