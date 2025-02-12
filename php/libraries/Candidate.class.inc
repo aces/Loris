@@ -1078,11 +1078,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             "SELECT pso.Description
              FROM participant_status ps
                 JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
-                JOIN candidate c ON c.ID=ps.CandidateID
-             WHERE c.CandID=:candid",
-            ['candid' => $this->getCandID()],
+             WHERE ps.CandidateID=:candidate_id",
+            ['candidate_id' => $this->getData('ID')],
         );
-        return $res['Description'] ?? "Not found for CandID: {$this->getCandID()}";
+        return $res['Description'] ?? '';
     }
 
     /**
