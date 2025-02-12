@@ -57,8 +57,8 @@ class View_Surveys extends \NDB_Form
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN flag f ON (f.CommentID = p.CommentID)
             JOIN test_names tn ON (tn.ID = f.TestID)
-            LEFT JOIN participant_portal_emails ppe ON (ppe.ParticipantAccountID=p.ID)
-            WHERE ppe.ParticipantSurveyEmail=:surv_email
+            LEFT JOIN participant_portal_emails pe ON (pe.ParticipantAccountID=p.ID)
+            WHERE pe.ParticipantSurveyEmail=:surv_email
             AND c.ParticipantID=:pid
             ORDER BY p.Status",
             [
