@@ -9,8 +9,8 @@
                         Please enter your ParticipantID
                     </p>
                     <div class="form-group">
-                        {$form.participantID.html}
-                        {if $form.participantID.error}
+                        {$form.ParticipantID.html}
+                        {if $form.ParticipantID.error}
                             <span id="helpBlock" class="help-block">
                    <b class="text-danger">{$form.participantID.error}</b>
                  </span>
