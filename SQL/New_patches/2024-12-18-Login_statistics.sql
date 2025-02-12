@@ -11,5 +11,3 @@ MODIFY COLUMN PinType enum('topquery','dashboard', 'loginpage') DEFAULT NULL;
 
 ALTER TABLE Project
 ADD COLUMN showSummaryOnLogin BOOLEAN DEFAULT TRUE;
-
-UPDATE Project SET showSummaryOnLogin = FALSE WHERE Name = 'DCP';
