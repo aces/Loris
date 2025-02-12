@@ -83,9 +83,9 @@ class Participant_Portal extends \NDB_Form
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
                  JOIN participant_portal_emails pe ON (pe.ParticipantAccountID=p.ID)
-                 WHERE pe.ParticipantSurveyEmail=:surv_email AND c.ParticipantID=:pid",
+                 WHERE pe.ParticipantSurveyEmail=:su_email AND c.ParticipantID=:pid",
                 [
-                    'surv_email' => $values['email'],
+                    'su_email' => $values['email'],
                     'pid'        => $values['ParticipantID'],
                 ]
             );
