@@ -45,7 +45,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $factory  = \NDB_Factory::singleton();
         $config   = $factory->config();
         $maybeEDC = '';
-        $maybeDoB = '';
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
@@ -62,7 +61,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
-                -- DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
                 CONCAT(
                        (CASE
 			    WHEN YEAR(CURDATE()) < YEAR(c.DoB) THEN 0 #or some such validation
