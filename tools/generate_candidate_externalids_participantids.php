@@ -78,6 +78,8 @@ foreach ($argv as $arg) {
 
 /**
  * Display help screen and exit.
+ *
+ * @return void
  */
 function displayHelp(): void
 {
@@ -85,10 +87,14 @@ function displayHelp(): void
     fwrite(STDERR, "Display a help screen:\n");
     fwrite(STDERR, "generate_candidate_externalids_participantids.php help\n\n");
 
-    fwrite(STDERR, "To fix missing ExternalID and/or ParticipantID on candidates:\n");
     fwrite(
         STDERR,
-        "generate_candidate_externalids_participantids.php ExternalID ParticipantID\n\n"
+        "To fix missing ExternalID and/or ParticipantID on candidates:\n"
+    );
+    fwrite(
+        STDERR,
+        "generate_candidate_externalids_participantids.php ExternalID 
+        ParticipantID\n"
     );
 
     fwrite(STDERR, "To reset and regenerate ExternalID:\n");
@@ -100,22 +106,32 @@ function displayHelp(): void
     fwrite(STDERR, "To reset and regenerate ParticipantID:\n");
     fwrite(
         STDERR,
-        "generate_candidate_externalids_participantids.php reset ParticipantID\n\n"
+        "generate_candidate_externalids_participantids.php reset ParticipantID\n"
     );
 
-    fwrite(STDERR, "To reset and regenerate both ExternalID and ParticipantID:\n");
     fwrite(
         STDERR,
-        "generate_candidate_externalids_participantids.php reset ExternalID ParticipantID\n\n"
+        "To reset and regenerate both ExternalID and ParticipantID:\n"
+    );
+    fwrite(
+        STDERR,
+        "generate_candidate_externalids_participantids.php 
+         reset ExternalID ParticipantID\n\n"
     );
 
-    fwrite(STDERR, "To generate only ExternalID for candidates where it is NULL:\n");
+    fwrite(
+        STDERR,
+        "To generate only ExternalID for candidates where it is NULL:\n"
+    );
     fwrite(
         STDERR,
         "generate_candidate_externalids_participantids.php ExternalID\n\n"
     );
 
-    fwrite(STDERR, "To generate only ParticipantID for candidates where it is NULL:\n");
+    fwrite(
+        STDERR,
+        "To generate only ParticipantID for candidates where it is NULL:\n"
+    );
     fwrite(
         STDERR,
         "generate_candidate_externalids_participantids.php ParticipantID\n\n"
@@ -123,7 +139,8 @@ function displayHelp(): void
 }
 
 echo "\n---------------------------------------------------------------\n\n" .
-    "  This script will generate ExternalID and/or ParticipantID for each candidate\n" .
+    "  This script will generate ExternalID and/or ParticipantID 
+       for each candidate\n" .
     "  with missing ExternalID or ParticipantID.\n" .
     "\n---------------------------------------------------------------\n\n";
 
