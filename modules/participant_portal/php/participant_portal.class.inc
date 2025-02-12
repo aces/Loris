@@ -82,15 +82,14 @@ class Participant_Portal extends \NDB_Form
                 "SELECT COUNT(*) FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE p.Email=:surv_email AND c.ParticipantID=:pid",
+                 JOIN participant_portal_emails ppe ON (ppe.ParticipantAccountID=p.ID)
+                 WHERE ppe.ParticipantSurveyEmail=:surv_email AND c.ParticipantID=:pid",
                 [
                     'surv_email' => $values['email'],
                     'pid'        => $values['ParticipantID'],
                 ]
             );
             if ($numSurveys == 0) {
-                // As suggested by Pierre to deter malicious automated attempts
-                // to hack the portal.
                 sleep(3);
                 $errors['email'] = "Sorry, No Surveys Found With".
                                   " The Above Information.";

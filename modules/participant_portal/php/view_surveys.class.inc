@@ -58,7 +58,8 @@ class View_Surveys extends \NDB_Form
             JOIN flag f ON (f.CommentID =p.CommentID)
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
             LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
-            WHERE p.Email=:surv_email
+            LEFT JOIN participant_portal_emails ppe ON (ppe.ParticipantAccountID=p.ID)
+            WHERE ppe.ParticipantSurveyEmail=:surv_email
             AND c.ParticipantID=:pid
             ORDER BY p.Status",
             [
@@ -88,5 +89,3 @@ class View_Surveys extends \NDB_Form
 
 
 }
-
-
