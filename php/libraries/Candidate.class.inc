@@ -753,9 +753,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         //
         $db = $factory->database();
 
-        $query  = "SELECT s.ID, Visit_label FROM session c
+        $query  = "SELECT s.ID, Visit_label FROM session s
             JOIN candidate c ON c.ID=s.CandidateID
-            WHERE c.CandID=:Candidate AND Active='Y' ORDER BY ID";
+            WHERE c.CandID=:Candidate AND c.Active='Y' ORDER BY c.CandID";
         $result = $db->pselect($query, ['Candidate' => $candID]);
 
         // map the array [VisitNo]=>Visit_label

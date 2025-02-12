@@ -28,6 +28,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -59,7 +60,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => $this->DB->lastInsertID,
+                'CandidateID'   => 1,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
