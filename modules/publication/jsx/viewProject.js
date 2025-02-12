@@ -73,7 +73,7 @@ class ViewProject extends React.Component {
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
-      credentials: 'same-origin",
+      credentials: 'same-origin',
       body: formObj,
     }).then((response) => {
       if (!response.ok) {
