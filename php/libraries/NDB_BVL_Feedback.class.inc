@@ -396,7 +396,7 @@ class NDB_BVL_Feedback
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         }
         if (empty($select_inactive_threads)) {
-            $query .= " AND Active = 'Y'";
+            $query .= " AND fbt.Active = 'Y'";
         }
 
         $query .= " ORDER BY Status ASC";

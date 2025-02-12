@@ -1082,7 +1082,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
              WHERE c.CandID=:candid",
             ['candid' => $this->getCandID()],
         );
-        return $res['Description'] ?? '';
+        return $res['Description'] ?? "Not found for CandID: {$this->getCandID()}";
     }
 
     /**
