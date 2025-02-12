@@ -78,12 +78,6 @@ class NDB_Client
             $s3client->registerStreamWrapper();
         }
 
-        // This must be done after the extra includes, as those may
-        // include Smarty
-        include_once "Smarty_hook.class.inc";
-
-        $GLOBALS['DB'] =& $DB;
-
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
             // Set user as unix username.
