@@ -222,7 +222,6 @@ class NDB_BVL_Battery
 
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
-                error_log(print_r($obj, true));
 
         $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
             $sessionData['Visit_label'],
@@ -230,7 +229,6 @@ class NDB_BVL_Battery
         );
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
-            error_log(print_r($obj->table, true));
             $DB->insert($testName, ['CommentID' => $commentID]);
 
             // insert the dde into the test table

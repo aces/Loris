@@ -123,7 +123,7 @@ class Participant_Portal extends \NDB_Form
     function _process($values): void
     {
         $factory           = \NDB_Factory::singleton();
-	$baseURL           = $factory->settings()->getBaseURL();
+        $baseURL           = $factory->settings()->getBaseURL();
         $_SESSION['pid']   = $_REQUEST['ParticipantID'];
         $_SESSION['email'] = $_REQUEST['email'];
         header("Location: /participant_portal/view_surveys/");

@@ -36,13 +36,13 @@ class View_Surveys extends \NDB_Form
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $email =$_SESSION['email'];
-	$pid   =$_SESSION['pid'];
+        $email   =$_SESSION['email'];
+        $pid     =$_SESSION['pid'];
 
         if ((!isset($email)) && (!isset($pid)) ) {
             header("Location: $baseURL/participant_portal");
             exit(0);
-	}
+        }
 
         $p = 'page_title';
         $this->tpl_data[$p] = $pid;
@@ -51,13 +51,12 @@ class View_Surveys extends \NDB_Form
         $DB    =\NDB_Factory::singleton()->database();
         $query =$DB->pselect(
             "select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,
-            p.OneTimePassword,ict.completion_time
+            p.OneTimePassword
             FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN flag f ON (f.CommentID =p.CommentID)
-            JOIN test_names tn ON (tn.ID=f.TestID)
-            LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
+            JOIN flag f ON (f.CommentID = p.CommentID)
+            JOIN test_names tn ON (tn.ID = f.TestID)
             LEFT JOIN participant_portal_emails ppe ON (ppe.ParticipantAccountID=p.ID)
             WHERE ppe.ParticipantSurveyEmail=:surv_email
             AND c.ParticipantID=:pid
@@ -67,12 +66,10 @@ class View_Surveys extends \NDB_Form
                 'pid'        => $pid
 
             ]
-	);
-	    $data = iterator_to_array($query);
+        );
+        $data = iterator_to_array($query);
 
-
-	$this->tpl_data['survey_data'] = $data;
-
+        $this->tpl_data['survey_data'] = $data;
 
     }
     /**
