@@ -32,9 +32,10 @@ class TimepointMRIUploadsProvisioner extends DBRowProvisioner
      * @param \Timepoint $timepoint The requested timepoint
      * @param string     $filename  The mri_upload basename
      */
-    public function __construct(\Timepoint $timepoint, string $filename)
+    public function __construct(protected \LORIS\LorisInstance $loris, \Timepoint $timepoint, string $filename)
     {
         parent::__construct(
+            $loris,
             '
              SELECT
                m.UploadID as mri_upload_id,
