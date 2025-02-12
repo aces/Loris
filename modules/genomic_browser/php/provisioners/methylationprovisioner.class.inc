@@ -68,7 +68,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                     FROM session s
                     JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        c.CandID) AS cohort ON (cohort.CandidateID = candidate.ID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
                 LEFT JOIN genomic_sample_candidate_rel gscr
                     ON (gscr.CandidateID = candidate.ID)

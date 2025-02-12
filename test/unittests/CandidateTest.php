@@ -1199,6 +1199,7 @@ class CandidateTest extends TestCase
                 ]
             ]
         );
+        echo "PSCID CandID: " . $this->_candidate->getPSCID() . ' ' . $this->_candidate->getCandID();
         $result = $this->_candidate->getParticipantStatusDescription($this->_DB);
         $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
         $this->_DB->run("DROP TEMPORARY TABLE participant_status");

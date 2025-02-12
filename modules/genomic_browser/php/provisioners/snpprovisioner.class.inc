@@ -65,7 +65,7 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     FROM session s
                     JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        c.CandID) AS cohort ON (cohort.CandidateID = candidate.ID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN cohort AS subproj
                     ON (cohort.CohortID = subproj.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)

@@ -1292,7 +1292,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 s.CenterID as SCenterID, s.ID as sessionID
             FROM candidate c LEFT JOIN session s ON (s.CandidateID=c.ID)
             WHERE c.Active='Y' AND COALESCE(s.Active, 'Y')='Y'
-                AND c.CandID IN (SELECT ID FROM accesscandidates)
+                AND c.CandID IN (SELECT CandID FROM accesscandidates)
             ORDER BY c.CandID",
             []
         );

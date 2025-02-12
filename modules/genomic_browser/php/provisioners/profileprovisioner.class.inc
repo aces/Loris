@@ -38,8 +38,8 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                         genomicfileid
                     FROM
                         genomic_candidate_files_rel gcfr
-                    JOIN
-                        candidate c ON c.ID=gcfr.CandidateID THEN
+                    WHERE
+                        candidate.ID = gcfr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -48,8 +48,8 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                         snpid
                     FROM
                         SNP_candidate_rel scr
-                    JOIN
-                        candidate c ON c.ID=scr.CandidateID THEN
+                    WHERE
+                        candidate.ID = scr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -58,8 +58,8 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                         cnvid
                     FROM
                         CNV cnv
-                    JOIN
-                        candidate c ON c.ID=cnv.CandidateID THEN
+                    WHERE
+                        candidate.ID = cnv.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -67,10 +67,10 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         cpg_name
                     FROM
-                        genomic_sample_candidate_rel
+                        genomic_sample_candidate_rel gscr
                     LEFT JOIN genomic_cpg USING (sample_label)
                 WHERE
-                    candid = candidate.candid) THEN
+                    candidate.ID = gscr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -84,7 +84,7 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     FROM session s
                     JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        c.CandID) AS cohort ON (cohort.CandidateID = candidate.ID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN cohort AS subproj
                     ON (cohort.CohortID = subproj.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
