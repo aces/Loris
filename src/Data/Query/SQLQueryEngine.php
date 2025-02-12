@@ -531,7 +531,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS $tablename");
         $DB->run(
             "CREATE TEMPORARY TABLE $tablename (
-            CandID int(6)
+            CandID int(10)
         );"
         );
 
@@ -579,7 +579,7 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {

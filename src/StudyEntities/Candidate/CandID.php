@@ -27,7 +27,7 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
 {
     /*
      * The minimum allowed value for valid CandIDs. Origin unclear but
-     * assists in avoiding issues with leading 0s in string repreentations of
+     * assists in avoiding issues with leading 0s in string representations of
      * integers.
      *
      * @var int
@@ -39,7 +39,7 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
      *
      * @var int
      */
-    protected const LENGTH = 6;
+    protected const LENGTH_RANGE = '6,10';
 
     /**
      * Returns this identifier type
@@ -65,7 +65,7 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
      */
     protected function validate(string $value): bool
     {
-        $pattern = sprintf("/^[0-9]{%s}$/", self::LENGTH);
+        $pattern = sprintf("/^[0-9]{%s}$/", self::LENGTH_RANGE);
 
         return preg_match($pattern, $value) === 1 &&
             intval($value) >= self::MIN_VALUE;
@@ -80,7 +80,7 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
     {
         return $this->value;
     }
-    
+
     /**
      * Specify data which should be serialized to JSON.
      * Returns data which can be serialized by json_encode(), which is a value of

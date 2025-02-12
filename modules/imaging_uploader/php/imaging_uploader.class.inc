@@ -66,7 +66,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->columns      = [
             'UploadID AS Upload_ID',
             $progressSelectPart,
-            's.CandID',
+            'c.CandID',
             'c.PSCID',
             's.Visit_label',
             'UploadLocation AS Upload_Location',
@@ -79,19 +79,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             's.ID AS SessionID',
         ];
         $this->validFilters = [
-            's.CandID',
+            'c.CandID',
             'c.PSCID',
             's.Visit_label',
             'mu.IsPhantom',
         ];
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
-                              " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
+                              " LEFT JOIN candidate c ON (c.ID = s.CandidateID)".
                               " LEFT JOIN tarchive ta ON".
                               " (mu.TarchiveID = ta.TarchiveID)".
                               " WHERE 1=1 ";
         $this->formToFilter = [
-            'CandID'      => 's.CandID',
+            'CandID'      => 'c.CandID',
             'PSCID'       => 'c.PSCID',
             'Visit_label' => 's.Visit_label',
             'IsPhantom'   => 'mu.IsPhantom',
@@ -510,8 +510,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $pscid       = $args['values']['pSCID'];
                 $pname       = $pscid. "_" . $candid . "_" . $visit_label;
                 $sessionid   = $db->pselectOne(
-                    "SELECT ID FROM  session WHERE CandID = :cid
-                     AND Visit_label =:vlabel",
+                    "SELECT ID FROM session s
+                        JOIN candidate c ON c.ID=s.CandidateID
+                        WHERE c.CandID = :cid
+                        AND Visit_label =:vlabel",
                     [
                         'cid'    => $candid,
                         'vlabel' => $visit_label,

@@ -186,7 +186,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 FROM flag f
                    JOIN test_names tn ON (tn.ID=f.TestID)
                    JOIN session s ON (f.SessionID=s.ID)
-                   JOIN candidate c ON (c.CandID=s.CandID)
+                   JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
@@ -241,7 +241,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS querycandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE querycandidates (
-                 CandID int(6),
+                 CandID int(10),
                  PRIMARY KEY (CandID)
             );"
         );
@@ -255,10 +255,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $q->execute([]);
 
         $rows = $DB->pselect(
-            "SELECT c.CandID, CommentID FROM flag f 
+            "SELECT c.CandID, CommentID FROM flag f
 		JOIN test_names tn ON (f.TestID=tn.ID)
                 JOIN session s ON (f.SessionID=s.ID)
-                JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN candidate c ON (s.CandidateID=c.ID)
              WHERE f.CommentID NOT LIKE 'DDE%'
                 AND c.CandID IN (SELECT CandID FROM querycandidates)
                 AND tn.Test_name IN ('" . join("', '", $instruments). "')

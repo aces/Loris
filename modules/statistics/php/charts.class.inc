@@ -595,7 +595,7 @@ class Charts extends \NDB_Page
         if (!is_null($params['selectedCohorts'])) {
             $cohortString = "'" . implode("','", $params['selectedCohorts']) . "'";
             $cohortQuery  = " AND s.CohortID IN ({$cohortString}) ";
-            $cohortJoin   = "JOIN session s ON s.CandID=c.CandID";
+            $cohortJoin   = "JOIN session s ON s.CandidateID=c.ID";
         }
         if (!is_null($params['selectedSites'])) {
             // Set site query if selected
@@ -619,10 +619,10 @@ class Charts extends \NDB_Page
             $visitQuery  = " AND s.Visit_label IN ({$visitString}) ";
             // since they are the same, if visits are selected,
             // then the cohort string is overwritten
-            $cohortJoin = "JOIN session s ON s.CandID=c.CandID";
+            $cohortJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
         if (!is_null($params['selectedParticipantStatus'])) {
-            $PSJoin = 'LEFT JOIN participant_status ps ON c.CandID=ps.CandID';
+            $PSJoin = 'LEFT JOIN participant_status ps ON c.ID=ps.CandidateID';
             $participantStatusString = "'" . implode(
                 "','",
                 $params['selectedParticipantStatus']
@@ -631,7 +631,7 @@ class Charts extends \NDB_Page
             // sometimes users do not update the participant_status tab
             if (in_array('1', $params['selectedParticipantStatus'])) {
                 $participantStatusQuery = " AND (
-                    ps.participant_status IN ({$participantStatusString}) 
+                    ps.participant_status IN ({$participantStatusString})
                     OR ps.participant_status IS NULL
                 )";
             } else {

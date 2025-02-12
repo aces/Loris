@@ -1006,7 +1006,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
-            "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
+            "SELECT ProjectID FROM session s
+                 JOIN candidate c ON c.ID=s.CandidateID
+                 WHERE c.CandID=:cnd_id AND s.ID=:sid",
             [
                 'cnd_id' => $candID,
                 'sid'    => $sessionID,
@@ -2271,7 +2273,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
-                $conditions[] = "CommentID IN 
+                $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
@@ -2323,7 +2325,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 			flag.Validity,
                         Data
                     FROM flag
-                        JOIN session ON (session.ID=flag.SessionID)
+                        JOIN session s ON (session.ID=flag.SessionID)
+                        JOIN candidate c ON c.ID=s.CandidateID
                         JOIN instrument_data ON (flag.DataID=instrument_data.ID)
 			JOIN test_names tn ON (tn.ID=flag.TestID)
 			$where";
@@ -2388,18 +2391,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
-            $query = "SELECT 
-		    session.CandID as CandID,
-		    t.CommentID as CommentID,
-                    session.Visit_Label as VisitLabel,
-			f.Administration,
-			f.Data_entry,
-			f.Validity,
-                    session.ID as SessionID, t.*
+            $query = "SELECT
+                c.CandID as CandID,
+                t.CommentID as CommentID,
+                s.Visit_Label as VisitLabel,
+                f.Administration,
+                f.Data_entry,
+                f.Validity,
+                s.ID as SessionID, t.*
                  FROM $this->table t
                     JOIN flag f ON (t.CommentID=f.CommentID)
 		    JOIN test_names tn ON (tn.ID=f.TestID)
-                    JOIN session ON (f.SessionID=session.ID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (s.CandidateID=c.ID)
+
 		 $where";
             $data  = $db->pselect($query, $params);
             foreach ($data as $row) {
@@ -2474,8 +2479,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // for this instrument with current session's visit & project
         $dxEvolutionID = $DB->pselectOne(
             "SELECT DxEvolutionID FROM diagnosis_evolution
-            WHERE instrumentName=:tn 
-            AND ProjectID=:pid 
+            WHERE instrumentName=:tn
+            AND ProjectID=:pid
             AND visitLabel=:vl",
             [
                 'tn'  => $this->testName,
@@ -2503,7 +2508,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Get the fields that correspond to a configured diagnosis
         $sourceFields = $DB->pselectOne(
-            "SELECT sourceField 
+            "SELECT sourceField
             FROM diagnosis_evolution
             WHERE DxEvolutionID=:dxEvID",
             ['dxEvID' => $dxEvolutionID]
@@ -2589,7 +2594,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dob = $db->pselectOne(
             "SELECT c.DoB FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2608,7 +2613,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dod       = $db->pselectOne(
             "SELECT c.DoD FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2628,7 +2633,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $pscid = $db->pselectOne(
             "SELECT c.PSCID FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2653,7 +2658,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $candIDVal = $db->pselectOne(
             "SELECT c.CandID FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );

@@ -93,6 +93,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -106,7 +107,7 @@ class DashboardTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '222222',
-                'CandID'      => '999888',
+                'CandidateID' => 1,
                 'CenterID'    => '55',
                 'ProjectID'   => '7777',
                 'UserID'      => '1',
