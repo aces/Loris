@@ -126,7 +126,7 @@ class Participant_Portal extends \NDB_Form
         $baseURL           = $factory->settings()->getBaseURL();
         $_SESSION['pid']   = $_REQUEST['ParticipantID'];
         $_SESSION['email'] = $_REQUEST['email'];
-        header("Location: $baseURL/Participant_portal/View_Surveys");
+        header("Location: /participant_portal/view_surveys/");
         exit(0);
     }
 }

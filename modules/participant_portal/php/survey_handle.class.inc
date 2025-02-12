@@ -42,21 +42,10 @@ class Survey_Handle extends \NDB_Page
             $values = $request->getParsedBody();
             $result = $this->_validate($values);
             if ($result) {
-                return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "text/plain")
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode($result)
-                        )
-                    );
+                return new \LORIS\Http\Response\JSON\OK($result);
             }
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("no survey found.")
-                    )
-                );
+            return(new \LORIS\Http\Response())
+                ->withBody(new \LORIS\Http\StringStream("No Survey Found"));
         }
     }
     /**
@@ -76,8 +65,8 @@ class Survey_Handle extends \NDB_Page
                  FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 JOIN participant_emails pe ON (p.Test_name=pe.Test_name)
-                 WHERE pe.Email=:surv_email AND c.ParticipantID=:pid",
+                 JOIN participant_portal_emails ppe ON (ppe.ParticipantAccountID=p.ID)
+                 WHERE ppe.ParticipantSurveyEmail=:surv_email AND c.ParticipantID=:pid",
                 [
                     'surv_email' => $values['email'],
                     'pid'        => $values['participantID'],
