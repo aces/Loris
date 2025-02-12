@@ -150,6 +150,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $mri_uploads = $this->_visit->getMRIUploadsByFilename(
+                $loris,
                 $user,
                 $this->_tar_name
             );

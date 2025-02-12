@@ -1222,16 +1222,21 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * This retrieves all MRIUpload with the given filename for that session.
      *
-     * @param \User  $user     The requesting user.
-     * @param string $filename The mri_upload file's basename.
+     * @param \LORIS\LorisInstance $loris    The LORIS instance.
+     * @param \User                $user     The requesting user.
+     * @param string               $filename The mri_upload file's basename.
      *
      * @return \LORIS\Data\Models\MRIUploadDTO[]
      */
-    public function getMRIUploadsByFilename(\User $user, string $filename): array
-    {
+    public function getMRIUploadsByFilename(
+        \LORIS\LorisInstance $loris,
+        \User $user,
+        string $filename,
+    ): array {
         $provisioner = new \LORIS\Data\Provisioners\TimepointMRIUploadsProvisioner(
+            $loris,
             $this,
-            $filename
+            $filename,
         );
         $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
