@@ -44,7 +44,7 @@ class TimepointRecordingsRowProvisioner extends DBRowProvisioner
              JOIN session s
                ON (s.ID=f.SessionID)
              JOIN candidate c
-               ON (s.CandID=c.CandID)
+               ON (s.CandidateID=c.ID)
              WHERE
                s.ID=:v_sessionid AND
                c.Active=\'Y\' AND
