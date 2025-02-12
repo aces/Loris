@@ -412,7 +412,7 @@ class GetData extends \NDB_Page
      * Permission check
      *
      * @param \User $user  user
-     * @param int  $pubID publication ID
+     * @param int   $pubID publication ID
      *
      * @return bool
      */
