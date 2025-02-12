@@ -62,7 +62,16 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
-                DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                -- DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                CONCAT(
+                       (CASE
+			    WHEN YEAR(CURDATE()) < YEAR(c.DoB) THEN 0 #or some such validation
+			    ELSE  YEAR(CURDATE()) - YEAR(c.DoB) 
+			    END),' y / ',
+                        (CASE
+			    WHEN MONTH(CURDATE()) < MONTH(c.DoB) THEN MONTH(c.DoB) - MONTH(CURDATE())
+			    ELSE MONTH(CURDATE()) - MONTH(c.DoB)
+			    END),' m') as DoB2,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
