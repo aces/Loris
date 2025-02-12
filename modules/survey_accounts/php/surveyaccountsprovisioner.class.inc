@@ -50,6 +50,7 @@ class SurveyAccountsProvisioner
                 p.Test_name as SurveyName,
                 p.OneTimePassword as URL,
                 p.Status,
+                c.ParticipantID as ParticipantID,
                 s.CenterID,
                 s.ProjectID
              FROM participant_accounts p
