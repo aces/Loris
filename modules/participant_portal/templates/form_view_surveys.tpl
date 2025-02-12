@@ -1,6 +1,6 @@
 <div class="container">
     <div align="center">
-        <h2>{$page_title} </h2>
+        <h2>Welcome To Participant Portal! {$page_title}</h2>
     </div>
     <br>
         <table class="table table-striped table-bordered">
@@ -11,7 +11,7 @@
             <td><div><b>Status</b></div></td>
             <td><div><b>Survey Link</b></div></td>
         </tr>
-        {assign var=number value=1}
+        {assign var="number" value=1}
         {section name=data loop=$survey_data}
         <tr class="reviewPage">
             <td><div><p>{$number++}</p></div></td>
