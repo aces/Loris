@@ -5,7 +5,7 @@ import {
   DateElement,
   TimeElement,
   CheckboxElement,
-  FileElement
+  FileElement,
 } from 'jsx/Form';
 
 /**
