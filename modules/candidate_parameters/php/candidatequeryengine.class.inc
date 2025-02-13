@@ -185,7 +185,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 ),
                 new DictionaryItem(
                     "ParticipantStatusComments",
-                    "Comments related to the status of the participant within the study",
+                    "Comments about the status of the participant within the study",
                     $candscope,
                     new \LORIS\Data\Types\StringType(),
                     new Cardinality(Cardinality::SINGLE),
