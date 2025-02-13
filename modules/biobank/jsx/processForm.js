@@ -178,7 +178,7 @@ const SpecimenProcessForm = (props) => {
     const protocolAttributes = options.specimen.protocolAttributes[
       process.protocolId
     ] || [];
-    
+
     const protocolStaticFields = protocolAttributes.map((attribute) => {
       let value = process.data[attribute.id]; // Fetch the corresponding value from process.data
 
