@@ -12,7 +12,6 @@ namespace LORIS\Data\Filters;
  */
 class AccessibleResourceFilter implements \LORIS\Data\Filter
 {
-    protected ?bool $defaultReturn;
 
     /**
      * Constructor
@@ -22,9 +21,8 @@ class AccessibleResourceFilter implements \LORIS\Data\Filter
      *                                indesirable.
      *
      */
-    public function __construct(?bool $defaultReturn = null)
+    public function __construct(protected ?bool $defaultReturn = null)
     {
-        $this->defaultReturn = $defaultReturn;
     }
 
     /**

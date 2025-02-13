@@ -1,32 +1,14 @@
 <?php declare(strict_types=1);
 
-/**
- * This file provides an implementation of the ResourceHasNoSession filter.
- *
- * PHP Version 7
- *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Rida Abou-Haidar <rida.abou-haidar@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
 namespace LORIS\Data\Filters;
 
 /**
  * ResourceHasNoSession filters out data for any resource which does has a session.
  *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Rida Abou-Haidar <rida.abou-haidar@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
  */
 class ResourceHasNoSession implements \LORIS\Data\Filter
 {
-    protected ?bool $defaultReturn;
 
     /**
      * Constructor
@@ -36,9 +18,8 @@ class ResourceHasNoSession implements \LORIS\Data\Filter
      *                                indesirable.
      *
      */
-    public function __construct(?bool $defaultReturn = null)
+    public function __construct(protected ?bool $defaultReturn = null)
     {
-        $this->defaultReturn = $defaultReturn;
     }
 
     /**

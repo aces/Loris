@@ -1,17 +1,5 @@
 <?php declare(strict_types=1);
 
-/**
- * This file provides an implementation of the UserProjectMatch filter.
- *
- * PHP Version 7
- *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
 namespace LORIS\Data\Filters;
 
 /**
@@ -22,16 +10,10 @@ namespace LORIS\Data\Filters;
  * filtered out unless the User is a member of at least one project that the resource
  * DataInstance is a member of.
  *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
  */
 class UserProjectMatch implements \LORIS\Data\Filter
 {
-    protected ?bool $defaultReturn;
 
     /**
      * Constructor
@@ -41,9 +23,8 @@ class UserProjectMatch implements \LORIS\Data\Filter
      *                                indesirable.
      *
      */
-    public function __construct(?bool $defaultReturn = null)
+    public function __construct(protected ?bool $defaultReturn = null)
     {
-        $this->defaultReturn = $defaultReturn;
     }
 
     /**
