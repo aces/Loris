@@ -592,7 +592,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the ID of this candidate
      *
-     * @return ID
+     * @return string ID
      */
     function getID()
     {
