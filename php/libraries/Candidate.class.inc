@@ -141,10 +141,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 break;
             case 'CandID':
                 $this->candidateInfo[$key] = new CandID(strval($value));
-		break;
+                break;
             case 'ID':
                 $this->candidateInfo[$key] = strval($value);
-                break;		
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
