@@ -96,7 +96,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
+        $query = "SELECT c.ID, c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy,
@@ -141,7 +141,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 break;
             case 'CandID':
                 $this->candidateInfo[$key] = new CandID(strval($value));
-                break;
+		break;
+            case 'ID':
+                $this->candidateInfo[$key] = strval($value);
+                break;		
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -586,7 +589,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["CandID"];
     }
-
+    /**
+     * Returns the ID of this candidate
+     *
+     * @return ID
+     */
+    function getID()
+    {
+        return $this->candidateInfo["ID"];
+    }
 
     /**
      * Returns the PSCID of this candidate
