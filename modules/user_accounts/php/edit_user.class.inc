@@ -807,6 +807,7 @@ class Edit_User extends \NDB_Form
             'Sites',
             $siteOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
@@ -826,6 +827,7 @@ class Edit_User extends \NDB_Form
             'Projects',
             $projectOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
