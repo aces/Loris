@@ -20,17 +20,19 @@ class DataDictRow implements \LORIS\Data\DataInstance,
     protected string $desc;
     protected string $status;
     protected ?array $visits;
+    protected ?array $permissions;
 
     /**
      * Construct a DataDictRow
      *
-     * @param \Module        $itemmodule The module that the item is from
-     * @param Category       $cat        The way the module is categorized in the
-     *                                   item
-     * @param DictionaryItem $item       The DictionaryItem for this row
-     * @param string         $desc       The (possibly overridden) description
-     * @param string         $descstatus The status of the description override
-     * @param ?string[]      $visits     List of visits for the item.
+     * @param \Module        $itemmodule  The module that the item is from
+     * @param Category       $cat         The way the module is categorized in the
+     *                                    item
+     * @param DictionaryItem $item        The DictionaryItem for this row
+     * @param string         $desc        The (possibly overridden) description
+     * @param string         $descstatus  The status of the description override
+     * @param ?string[]      $visits      List of visits for the item.
+     * @param ?string[]      $permissions List of permissionsRequired for the item.
      */
     public function __construct(
         \Module $itemmodule,
@@ -39,6 +41,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         string $desc,
         string $descstatus,
         ?array $visits,
+        ?array $permissions,
     ) {
         $this->itemmodule   = $itemmodule;
         $this->itemcategory = $cat;
@@ -46,6 +49,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         $this->desc         = $desc;
         $this->status       = $descstatus;
         $this->visits       = $visits;
+        $this->permissions  = $permissions;
     }
 
     /**
@@ -73,6 +77,9 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         }
         if ($scope->__toString() == "session") {
             $val['visits'] = $this->visits;
+        }
+        if ($this->permissions) {
+            $val['permissions'] = $this->permissions;
         }
 
         return $val;

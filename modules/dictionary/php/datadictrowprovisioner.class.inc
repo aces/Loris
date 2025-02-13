@@ -69,14 +69,25 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                     $status = 'Empty';
                 }
 
-                $visits = $qe->getVisitList($cat, $item);
-                $dict[] = $this->getInstance(
+                $visits      = $qe->getVisitList($cat, $item);
+                $permissions = $DB->pselectCol(
+                    "SELECT GROUP_CONCAT(p.code) as Permissions_Required
+                    FROM parameter_type pt
+                    LEFT JOIN parameter_type_permissions_rel rel
+                    ON (rel.ParameterTypeID=pt.ParameterTypeID)
+	                LEFT JOIN permissions p ON (rel.permID=p.permID)
+                    WHERE pt.Name=:name
+                    ",
+                    ['name' => $name]
+                );
+                $dict[]      = $this->getInstance(
                     $module,
                     $cat,
                     $item,
                     $desc,
                     $status,
                     $visits,
+                    $permissions,
                 );
             }
         }
@@ -87,15 +98,16 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * Returns an instance of a DataDict object for a given
      * table row, adding the category and description override
      *
-     * @param \Module        $module     The module that this DictionaryItem came
-     *                                   from.
-     * @param Category       $cat        The category within the module of the
-     *                                   DictionaryItem.
-     * @param DictionaryItem $item       The DictionaryItem for this row of the
-     *                                   table
-     * @param string         $desc       The overridden description of the item
-     * @param string         $descstatus The status of the description override
-     * @param ?[]string      $visits     The visits for session scoped variables
+     * @param \Module        $module      The module that this DictionaryItem came
+     *                                    from.
+     * @param Category       $cat         The category within the module of the
+     *                                    DictionaryItem.
+     * @param DictionaryItem $item        The DictionaryItem for this row of the
+     *                                    table
+     * @param string         $desc        The overridden description of the item
+     * @param string         $descstatus  The status of the description override
+     * @param ?[]string      $visits      The visits for session scoped variables
+     * @param ?[]string      $permissions The permissions required for this item
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
@@ -106,7 +118,16 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         string $desc,
         string $descstatus,
         array $visits,
+        array $permissions,
     ) : \LORIS\Data\DataInstance {
-        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits);
+        return new DataDictRow(
+            $module,
+            $cat,
+            $item,
+            $desc,
+            $descstatus,
+            $visits,
+            $permissions
+        );
     }
 }
