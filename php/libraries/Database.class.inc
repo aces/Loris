@@ -229,7 +229,6 @@ class Database implements LoggerAwareInterface
      */
     public function insert(string $table, array $set): void
     {
-        error_log(print_r($set, true));
         $this->_realinsert($table, $set, true);
     }
 
