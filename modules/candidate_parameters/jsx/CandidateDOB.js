@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Candidate date of birth component
@@ -33,7 +39,7 @@ class CandidateDOB extends Component {
    */
   componentDidMount() {
     this.fetchData()
-    .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -72,18 +78,19 @@ class CandidateDOB extends Component {
    */
   render() {
     if (this.state.error) {
-        return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occured while loading the page.</h3>;
     }
 
     if (!this.state.isLoaded) {
-        return <Loader/>;
+      return <Loader/>;
     }
 
+    let dateFormat = this.state.data.dobFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dob_edit')) {
-        disabled = false;
-        updateButton = <ButtonElement label='Update' />;
+      disabled = false;
+      updateButton = <ButtonElement label='Update' />;
     }
     return (
       <div className='row'>
@@ -110,6 +117,7 @@ class CandidateDOB extends Component {
           <DateElement
             label='Date Of Birth:'
             name='dob'
+            dateFormat={dateFormat}
             value={this.state.formData.dob}
             onUserInput={this.setFormData}
             disabled={disabled}
@@ -160,12 +168,12 @@ class CandidateDOB extends Component {
     formObject.append('tab', this.props.tabName);
 
     fetch(this.props.action, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject,
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
     })
-    .then((resp) => {
+      .then((resp) => {
         if (resp.ok && resp.status === 200) {
           swal.fire({
             title: 'Success!',
@@ -174,7 +182,7 @@ class CandidateDOB extends Component {
             confrimButtonText: 'OK',
           });
           if (resp.value) {
-              this.fetchData();
+            this.fetchData();
           }
         } else {
           swal.fire({
@@ -184,10 +192,10 @@ class CandidateDOB extends Component {
             confrimButtonText: 'OK',
           });
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.error(error);
-    });
+      });
   }
 }
 CandidateDOB.propTypes = {

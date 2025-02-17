@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Dashboard automated integration tests
  *
@@ -83,8 +84,16 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
+            "user_project_rel",
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
+            ]
+        );
+        $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -98,7 +107,7 @@ class DashboardTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '222222',
-                'CandID'      => '999888',
+                'CandidateID' => 1,
                 'CenterID'    => '55',
                 'ProjectID'   => '7777',
                 'UserID'      => '1',
@@ -129,7 +138,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'         => '111111',
                 'SessionID'  => '222222',
-                'Test_name'  => 'TestName11111111111',
+                'TestID'     => '111',
                 'CommentID'  => 'commentID111',
                 'Data_entry' => 'In Progress',
             ]
@@ -138,7 +147,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -173,7 +182,7 @@ class DashboardTest extends LorisIntegrationTest
                 'ResolutionTimestamp' => '2015-11-03 16:21:49',
                 'User1'               => 'Null',
                 'User2'               => 'Null',
-                'TableName'           => 'Test',
+                'TestName'            => 'Test',
                 'ExtraKey1'           => 'NULL',
                 'ExtraKey2'           => 'NULL',
                 'FieldName'           => 'TestTestTest',
@@ -187,7 +196,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_unresolved",
             [
-                'TableName'      => 'TestTestTest',
+                'TestName'       => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
                 'ExtraKey2'      => 'Null',
@@ -251,7 +260,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->delete(
             "files_qcstatus",
@@ -309,12 +318,23 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            ['TableName' => 'TestTestTest']
+            ['TestName' => 'TestTestTest']
         );
         $this->DB->update(
             "Config",
             ["Value" => null],
             ["ConfigID" => 48]
+        );
+        $user_id = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:test_user_id",
+            ["test_user_id" => 'testUser1']
+        );
+        $this->DB->delete(
+            "user_project_rel",
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
+            ]
         );
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
@@ -358,22 +378,36 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1) .views button"
+                "#statistics_widgets .panel:nth-child(2) .views button"
             )
         );
         $views->click();
 
         $assertText1 = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1)".
+                "#statistics_widgets .panel:nth-child(2)".
                 " .dropdown-menu li:nth-child(1)"
             )
         )->getText();
 
         $assertText2 = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_widgets .panel:nth-child(1)".
+                "#statistics_widgets .panel:nth-child(2)".
                 " .dropdown-menu li:nth-child(2)"
+            )
+        )->getText();
+
+        $assertText3 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(2)".
+                " .dropdown-menu li:nth-child(3)"
+            )
+        )->getText();
+
+        $assertText4 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(2)".
+                " .dropdown-menu li:nth-child(4)"
             )
         )->getText();
 
@@ -381,6 +415,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertStringContainsString(
             "Recruitment - site breakdown",
             $assertText2
+        );
+        $this->assertStringContainsString(
+            "Recruitment - project breakdown",
+            $assertText3
+        );
+        $this->assertStringContainsString(
+            "Recruitment - cohort breakdown",
+            $assertText4
         );
     }
 
@@ -406,7 +448,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "10",
+            "4",
             "- Imaging Browser"
         );
         $this->resetPermissions();
@@ -429,18 +471,20 @@ class DashboardTest extends LorisIntegrationTest
             [
                 "conflict_resolver",
                 "access_all_profiles",
+                "data_dict_edit",
+                "data_dict_view"
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "574",
+            "570",
             "- Conflict Resolver"
         );
         $this->resetPermissions();
     }
     /**
-     *  Check user has 'issue_tracker_developer' permission,
+     *  Check user has 'issue_tracker_all_issue' permission,
      *  user can see the issue panel.
      *  Click the issue link can access issue module.
      *
@@ -449,7 +493,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testIssues()
     {
         $this->setupPermissions(
-            ["issue_tracker_developer"]
+            ["issue_tracker_all_issue"]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -511,7 +555,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
-            "2",
+            "1",
             "- User Accounts"
         );
         $this->resetPermissions();

@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import {
+  StaticElement,
+  FormElement,
+  PasswordElement,
+  ButtonElement,
+} from 'jsx/Form';
+
 
 /**
  * Password expired form.
@@ -157,7 +164,7 @@ class PasswordExpired extends Component {
           />
         </FormElement>
         <a onClick={() => window.location.href = window.location.origin}
-           style={{cursor: 'pointer'}}>Back to login page</a>
+          style={{cursor: 'pointer'}}>Back to login page</a>
       </div>
     ) : (
       <div className={'success-message'}>
@@ -166,7 +173,7 @@ class PasswordExpired extends Component {
         <p>Please contact your project administrator to activate
           this account.</p>
         <a onClick={() => window.location.href = window.location.origin}
-           style={{cursor: 'pointer'}}>Return to Login Page</a>
+          style={{cursor: 'pointer'}}>Return to Login Page</a>
       </div>
     );
     return (

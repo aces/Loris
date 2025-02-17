@@ -68,6 +68,98 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     }
 
     /**
+     * Tests the HTTP POST request for the
+     * endpoint /candidates/{candid}/{visit}/instruments
+     *
+     * @return void
+     */
+    public function testPostCandidatesCandidVisitInstruments(): void
+    {
+        // Remove all instruments from this CandID.
+        $SessionID = $this->DB->pselectOne(
+            "SELECT s.ID
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE Visit_label=:VL AND CandID=:Candidate",
+            [
+                'VL' => $this->visitTest,
+                'Candidate' => $this->candidTest
+            ]
+        );
+        $this->DB->delete("flag", ['SessionID' => $SessionID]);
+
+        // Insert one
+        $json_data = [
+            'Meta' => [
+                'CandID' => $this->candidTest,
+                'Visit' => $this->visitTest,
+            ],
+            "Instruments" => [ 'bmi' ],
+        ];
+        $response = $this->client->request(
+            'POST',
+            "candidates/$this->candidTest/$this->visitTest/instruments",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'    => $json_data,
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $instrArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(gettype($instrArray), 'array');
+
+        $this->assertArrayHasKey(
+            'CandID',
+            $instrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $instrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $instrArray['Instruments']
+        );
+        $this->assertEquals($instrArray['Instruments'], ['bmi']);
+
+        // Insert another and make sure they are both there now.
+        $json_data = [
+            'Meta' => [
+                'CandID' => $this->candidTest,
+                'Visit' => $this->visitTest,
+            ],
+            "Instruments" => [ 'testtest' ],
+        ];
+        $response = $this->client->request(
+            'POST',
+            "candidates/$this->candidTest/$this->visitTest/instruments",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'    => $json_data,
+            ]
+        );
+        $instrArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($instrArray['Instruments'], ['bmi', 'testtest']);
+    }
+    /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/instruments{instruments}
      *
@@ -223,7 +315,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Invalid' 
+                'Validity'       => 'Invalid'
             ]
         ];
         $response   = $this->client->request(
@@ -298,7 +390,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'Partial',
-                'Validity'       => 'Questionable' 
+                'Validity'       => 'Questionable'
             ]
         ];
         $response   = $this->client->request(
@@ -480,7 +572,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(
@@ -535,7 +627,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Used for uploading file with Genomic Browser.
  *
@@ -239,9 +240,9 @@ class Genomicfile
                 $stmt = $DB->prepare(
                     "
                     INSERT IGNORE INTO
-                        genomic_candidate_files_rel (CandID, GenomicFileID)
+                        genomic_candidate_files_rel (CandidateID, GenomicFileID)
                     VALUES (
-                        (select CandID from candidate where PSCID = :pscid),
+                        (select ID from candidate where PSCID = :pscid),
                         :genomic_file_id
                     )
                     "
@@ -411,10 +412,10 @@ class Genomicfile
         $stmt = $DB->prepare(
             "
             INSERT IGNORE INTO
-                genomic_sample_candidate_rel (sample_label, CandID)
+                genomic_sample_candidate_rel (sample_label, CandidateID)
             VALUES (
                 :sample_label,
-                (SELECT CandID FROM candidate WHERE PSCID = :pscid)
+                (SELECT ID FROM candidate WHERE PSCID = :pscid)
             )
             "
         );
@@ -468,8 +469,10 @@ class Genomicfile
     function setFullPath(&$fileToUpload) : void
     {
         $config           = \NDB_Config::singleton();
-        $genomic_data_dir = rtrim($config->getSetting('GenomicDataPath'), '/')
-            . '/genomic_uploader/';
+        $genomic_data_dir = rtrim(
+            $config->getSetting('GenomicDataPath'),
+            '/'
+        ) . '/';
 
         $fileToUpload->full_path = $genomic_data_dir
             . $fileToUpload->file_name;

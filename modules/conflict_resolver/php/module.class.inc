@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
@@ -117,11 +118,12 @@ class Module extends \Module
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                          LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
                          LEFT JOIN session s ON (flag.SessionID=s.ID)
-                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                         LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                      WHERE s.Active='Y' AND c.Active='Y' AND
                          s.CenterID <> 1",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . '/' . $this->getName(),
                     'conflict_resolver'
                 )
@@ -138,19 +140,22 @@ class Module extends \Module
 
             $candID  = $candidate->getCandID();
             $results = $DB->pselect(
-                "SELECT f1.Test_name, s1.Visit_label, COUNT(*) as Conflicts
+                "SELECT tn.Test_name, s1.Visit_label, COUNT(*) as Conflicts
                  FROM conflicts_unresolved cu
                      LEFT JOIN flag f1 ON (f1.CommentID=cu.CommentId1)
+                     JOIN test_names tn ON (f1.TestID=tn.ID)
                      LEFT JOIN flag f2 ON (f2.CommentID=cu.CommentID2)
                      LEFT JOIN session s1 ON (f1.SessionID=s1.ID)
                      LEFT JOIN session s2 ON (f2.SessionID=s2.ID)
-                 WHERE (s1.CandID=:cand1 OR s2.CandID=:cand2)
-                 GROUP BY f1.Test_name, s1.Visit_label
-                 ORDER BY s1.Visit_label, f1.Test_name",
+                     JOIN candidate c1 ON (s1.CandidateID=c1.ID)
+                     JOIN candidate c2 ON (s2.CandidateID=c2.ID)
+                 WHERE (c1.CandID=:cand1 OR c2.CandID=:cand2)
+                 GROUP BY tn.Test_name, s1.Visit_label
+                 ORDER BY s1.Visit_label, tn.Test_name",
                 ['cand1' => $candID, 'cand2' => $candID],
             );
             // Do not show the conflicts card if there are no conflicts
-            if (empty($results)) {
+            if (count($results) === 0) {
                 return [];
             }
 
@@ -164,7 +169,7 @@ class Module extends \Module
                     $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",
                     [
-                        'Conflicts' => $results,
+                        'Conflicts' => iterator_to_array($results),
                     ],
                     $width,
                     1,

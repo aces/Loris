@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The user account page
  *
@@ -281,7 +282,7 @@ class Edit_User extends \NDB_Form
         $us_curr_sites = $values['CenterIDs'];
         $userNewCenterIDs = array_map(
             function ($val) {
-                return new \CenterID($val);
+                return \CenterID::singleton(intval($val));
             },
             $values['CenterIDs']
         );
@@ -361,6 +362,7 @@ class Edit_User extends \NDB_Form
             }
         }
         unset($values['examiner_radiologist']);
+        $ex_pending = $values['examiner_pending'];
         unset($values['examiner_pending']);
         // END SETUP EXAMINER VALUES
 
@@ -406,8 +408,6 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $ex_pending = 'Y';
-
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
@@ -421,7 +421,7 @@ class Edit_User extends \NDB_Form
             if (!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites)
-                && empty($examinerID)
+                && count($examinerID) === 0
             ) {
                 // If examiner not in table and radiologist, pending and current
                 // sites fields set add the examiner to the examiner table
@@ -440,7 +440,7 @@ class Edit_User extends \NDB_Form
                             WHERE userID=:uid",
                     ['uid' => $uid]
                 );
-            } elseif (!empty($examinerID)
+            } elseif (count($examinerID) > 0
                 && ((!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites))
@@ -460,6 +460,8 @@ class Edit_User extends \NDB_Form
                         'userID' => $uid
                     ]
                 );
+
+                $examinerID = iterator_to_array($examinerID);
                 $examinerID = $examinerID[0]['examinerID'];
 
                 //get existing sites for examiner

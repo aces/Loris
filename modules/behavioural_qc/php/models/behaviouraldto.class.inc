@@ -51,9 +51,9 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
     /**
      * The project
      *
-     * @var string
+     * @var int
      */
-    private $_project = '';
+    private $_project;
 
     /**
      * The feedback_status
@@ -65,9 +65,9 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
     /**
      * The site
      *
-     * @var string
+     * @var int
      */
-    private $_site = '';
+    private $_site;
 
     /**
      * The feedbackID
@@ -126,7 +126,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_site));
+        return \CenterID::singleton($this->_site);
     }
 
     /**
@@ -137,7 +137,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_project));
+        return \ProjectID::singleton($this->_project);
     }
 
     /**

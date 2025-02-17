@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -39,7 +40,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->_candid     = $row['Candidate'] ?? null;
+        $this->_candid     = strval($row['Candidate']) ?? null;
         $this->_pscid      = $row['PSCID'] ?? null;
         $this->_entitytype = $row['Entity_type'] ?? null;
         $this->_visitlabel = $row['Visit'] ?? null;

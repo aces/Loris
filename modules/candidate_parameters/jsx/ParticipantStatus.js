@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  TextareaElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Participant status component
@@ -133,103 +140,103 @@ class ParticipantStatus extends Component {
       updateButton = <ButtonElement label="Update"/>;
     }
 
-        let required = this.state.Data.required;
-        let subOptions = {};
-        let suboptionsRequired = false;
-        let participantStatus = (
-            this.state.formData.participantStatus ?
-            this.state.formData.participantStatus :
-            this.state.Data.participantStatus
-        );
+    let required = this.state.Data.required;
+    let subOptions = {};
+    let suboptionsRequired = false;
+    let participantStatus = (
+      this.state.formData.participantStatus ?
+        this.state.formData.participantStatus :
+        this.state.Data.participantStatus
+    );
 
-        if (participantStatus && required.indexOf(participantStatus) > -1) {
-            subOptions = this.state.Data.parentIDs[participantStatus];
-            suboptionsRequired = true;
-        }
+    if (participantStatus && required.indexOf(participantStatus) > -1) {
+      subOptions = this.state.Data.parentIDs[participantStatus];
+      suboptionsRequired = true;
+    }
 
-        let commentsRequired = false;
-        let statusOpts = this.state.Data.statusOptions;
-        if (
-          statusOpts &&
+    let commentsRequired = false;
+    let statusOpts = this.state.Data.statusOptions;
+    if (
+      statusOpts &&
           statusOpts[participantStatus] !== 'Active' &&
           statusOpts[participantStatus] !== 'Complete'
-        ) {
-          commentsRequired = true;
-        }
+    ) {
+      commentsRequired = true;
+    }
 
-        let formattedHistory = [];
-        for (let statusKey in this.state.Data.history) {
-            if (this.state.Data.history.hasOwnProperty(statusKey)) {
-                let line = '';
-                for (let field in this.state.Data.history[statusKey]) {
-                    if (this.state.Data.history[statusKey]
-                      .hasOwnProperty(field)
-                    ) {
-                        let current = this.state.Data.history[statusKey][field];
-                        if (current !== null) {
-                            switch (field) {
-                                case 'data_entry_date':
-                                    line += '[';
-                                    line += current;
-                                    line += '] ';
-                                    break;
-                                case 'entry_staff':
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'status':
-                                    line += ' Status: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'suboption':
-                                    line += 'Details: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'reason_specify':
-                                    line += 'Comments: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                default:
-                            }
-                        }
-                    }
-                }
-                formattedHistory.push(<p key={statusKey}>{line}</p>);
+    let formattedHistory = [];
+    for (let statusKey in this.state.Data.history) {
+      if (this.state.Data.history.hasOwnProperty(statusKey)) {
+        let line = '';
+        for (let field in this.state.Data.history[statusKey]) {
+          if (this.state.Data.history[statusKey]
+            .hasOwnProperty(field)
+          ) {
+            let current = this.state.Data.history[statusKey][field];
+            if (current !== null) {
+              switch (field) {
+              case 'data_entry_date':
+                line += '[';
+                line += current;
+                line += '] ';
+                break;
+              case 'entry_staff':
+                line += current;
+                line += ' ';
+                break;
+              case 'status':
+                line += ' Status: ';
+                line += current;
+                line += ' ';
+                break;
+              case 'suboption':
+                line += 'Details: ';
+                line += current;
+                line += ' ';
+                break;
+              case 'reason_specify':
+                line += 'Comments: ';
+                line += current;
+                line += ' ';
+                break;
+              default:
+              }
             }
+          }
         }
+        formattedHistory.push(<p key={statusKey}>{line}</p>);
+      }
+    }
 
-        let alertMessage = '';
-        let alertClass = 'alert text-center hide';
-        if (this.state.updateResult) {
-            if (this.state.updateResult === 'success') {
-                alertClass = 'alert alert-success text-center';
-                alertMessage = 'Update Successful!';
-            } else if (this.state.updateResult === 'error') {
-                let errorMessage = this.state.errorMessage;
-                alertClass = 'alert alert-danger text-center';
-                alertMessage = errorMessage ?
-                  errorMessage :
-                  'Failed to update!';
-            }
-        }
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
+    if (this.state.updateResult) {
+      if (this.state.updateResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = 'Update Successful!';
+      } else if (this.state.updateResult === 'error') {
+        let errorMessage = this.state.errorMessage;
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = errorMessage ?
+          errorMessage :
+          'Failed to update!';
+      }
+    }
 
-        return (
-            <div className="row">
-            <div className={alertClass} role="alert" ref="alert-message">
-            {alertMessage}
-            </div>
-            <FormElement
-            name="participantStatus"
-            onSubmit={this.handleSubmit}
-            ref="form"
-            class="col-md-6"
-            >
-            <StaticElement label="PSCID" text={this.state.Data.pscid}/>
-            <StaticElement label="DCCID" text={this.state.Data.candID}/>
-            <SelectElement
+    return (
+      <div className="row">
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
+        </div>
+        <FormElement
+          name="participantStatus"
+          onSubmit={this.handleSubmit}
+          ref="form"
+          class="col-md-6"
+        >
+          <StaticElement label="PSCID" text={this.state.Data.pscid}/>
+          <StaticElement label="DCCID" text={this.state.Data.candID}/>
+          <SelectElement
             label="Participant Status"
             name="participantStatus"
             options={this.state.Data.statusOptions}
@@ -238,8 +245,8 @@ class ParticipantStatus extends Component {
             ref="participantStatus"
             disabled={disabled}
             required={true}
-            />
-            <SelectElement
+          />
+          <SelectElement
             label="Specify Reason"
             name="participantSuboptions"
             options={subOptions}
@@ -248,8 +255,8 @@ class ParticipantStatus extends Component {
             ref="participantSuboptions"
             disabled={!suboptionsRequired}
             required={suboptionsRequired}
-            />
-            <TextareaElement
+          />
+          <TextareaElement
             label="Comments"
             name="reasonSpecify"
             value={this.state.formData.reasonSpecify}
@@ -257,13 +264,13 @@ class ParticipantStatus extends Component {
             ref="reasonSpecify"
             disabled={disabled}
             required={commentsRequired}
-            />
-            {updateButton}
-            {formattedHistory}
-            </FormElement>
-            </div>
-        );
-    }
+          />
+          {updateButton}
+          {formattedHistory}
+        </FormElement>
+      </div>
+    );
+  }
 
   /**
    * Handles form submission

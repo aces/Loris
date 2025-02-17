@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -37,7 +38,7 @@ class Files extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
-                'document_repository_edit'
+                'document_repository_upload_edit'
             ]
         );
     }
@@ -114,18 +115,21 @@ class Files extends \NDB_Page
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
-        if (! $user->hasPermission('document_repository_edit')) {
+        if (! $user->hasPermission('document_repository_upload_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 self::FORBIDDEN
             );
         }
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
-            'instrument' => $req['instrument'] ?? null,
-            'comments'   => $req['comments'] ?? null,
-            'version'    => $req['version'] ?? null,
-            'visitLabel' => $req['visitLabel'] ?? null,
-            'pscid'      => $req['pscid'] ?? null,
+            'File_category' => $req['category'] ?? null,
+            'hidden_file'   => !empty($req['hiddenFile']) ?
+                $req['hiddenFile'] : null,
+            'instrument'    => $req['instrument'] ?? null,
+            'comments'      => $req['comments'] ?? null,
+            'version'       => $req['version'] ?? null,
+            'visitLabel'    => $req['visitLabel'] ?? null,
+            'pscid'         => $req['pscid'] ?? null,
         ];
         $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
@@ -238,8 +242,8 @@ class Files extends \NDB_Page
                 "File_category as category," .
                 "visitLabel, " .
                 "Instrument as instrument, " .
-                "For_site as forSite, " .
                 "comments, " .
+                "hidden_file as hiddenFile," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -252,6 +256,7 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
+            'hiddenFile'  => ['yes' => "Yes", 'no' => "No"],
         ];
 
         return $result;
@@ -306,9 +311,9 @@ class Files extends \NDB_Page
         $user     = $request->getAttribute('user');
         $name     = $user->getUsername();
 
-        if (! $user->hasPermission('document_repository_edit')) {
+        if (! $user->hasPermission('document_repository_upload_edit')) {
             header("HTTP/1.1 403 Forbidden");
-            exit;
+            exit(0);
         }
 
         // Do some validation and fail early on bad inputs.
@@ -316,19 +321,17 @@ class Files extends \NDB_Page
         if (!is_array($body)) {
             throw new \LorisException("Expected parsed body to be an array");
         }
-
-        $category = $body['category']; // required
-        if (!\Utility::valueIsPositiveInteger($category)) {
-            // $category is a string representation of an ID, and so should be
-            // at least equal to zero.
-            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
-        }
-
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
-            exit;
+            exit(0);
+        }
+        $category = $body['category']; // required
+        if (!\Utility::valueIsPositiveInteger(strval($category))) {
+            // $category is a string representation of an ID, and so should be
+            // at least equal to zero.
+            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
         }
 
         $uploadedFiles = is_array($uploadedFiles)
@@ -361,15 +364,7 @@ class Files extends \NDB_Page
             $targetdir = new \SplFileInfo($path);
 
             try {
-                $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-                    ->withPermittedMIMETypes(
-                        'application/pdf',
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/svg+xml',
-                        'text/plain'
-                    );
+                $uploader = (new \LORIS\FilesUploadHandler($targetdir));
             } catch (\ConfigurationException $e) {
                 $responseMessages[] = "$filename: {$e->getMessage()}";
                 $errorCounter      += 1;
@@ -402,6 +397,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
+            $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -414,6 +410,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
+                    'hidden_file'   => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",

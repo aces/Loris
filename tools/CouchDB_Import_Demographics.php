@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 require_once 'generic_includes.php';
 /**
  * Imports demographics to CouchDB
@@ -48,7 +49,7 @@ class CouchDBDemographicsImporter
         ],
         'Sex'              => [
             'Description' => 'Candidate\'s biological sex',
-            'Type'        => "enum('Male', 'Female', 'Other')"
+            'Type'        => "varchar(255)"
         ],
         'Site'             => [
             'Description' => 'Site that this visit took place at',
@@ -204,18 +205,18 @@ class CouchDBDemographicsImporter
                             LEFT JOIN caveat_options c_o
                                 ON (c_o.ID=c.flagged_reason)
                             LEFT JOIN parameter_candidate AS pc_comment
-                                ON (pc_comment.CandID=c.CandID)
+                                ON (pc_comment.CandidateID=c.ID)
                                 AND pc_comment.ParameterTypeID=(
                                     SELECT ParameterTypeID
                                     FROM parameter_type
                                     WHERE Name='candidate_comment'
                                 )
                             LEFT JOIN participant_status ps
-                                ON (ps.CandID=c.CandID)
+                                ON (ps.CandidateID=c.ID)
                             LEFT JOIN participant_status_options pso
                                 ON (pso.ID=ps.participant_status)
                             LEFT JOIN feedback_bvl_thread fbt
-                                ON (fbt.CandID=c.CandID)
+                                ON (fbt.CandidateID=c.ID)
                             LEFT JOIN feedback_bvl_entry fbe
                                 ON (fbe.FeedbackID=fbt.FeedbackID)";
 
@@ -277,6 +278,40 @@ class CouchDBDemographicsImporter
                             $cField.DateWithdrawn";
             }
         }
+
+        // Latest Diagnosis by project
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectAlias = \Project::getProjectFromID(
+                new \ProjectID(strval($projectID))
+            )->getAlias();
+            $latestProjDx = "latestDiagnosis_$projectAlias";
+
+            $fieldsInQuery .= ",
+                $latestProjDx.Diagnosis AS $latestProjDx";
+            $tablesToJoin  .= "
+                LEFT JOIN (
+                    SELECT c.CandID, Diagnosis
+                    FROM candidate_diagnosis_evolution_rel cde
+                    JOIN diagnosis_evolution de USING (DxEvolutionID)
+                    JOIN candidate c ON c.ID=cde.CandidateID
+                    JOIN (
+                        SELECT c.CandID, MAX(OrderNumber) AS OrderNumber
+                        FROM diagnosis_evolution de2
+                        JOIN candidate_diagnosis_evolution_rel cde2
+                        USING (DxEvolutionID)
+                        JOIN candidate c ON c.ID=cde2.CandidateID
+                        WHERE de2.ProjectID=$projectID
+                        GROUP BY CandID
+                        ) AS maxOrderNumber ON (
+                            maxOrderNumber.CandidateID=cde.CandidateID
+                            AND maxOrderNumber.OrderNumber=de.OrderNumber
+                        )
+                    WHERE ProjectID=$projectID
+                ) AS $latestProjDx ON ($latestProjDx.CandidateID=c.ID)";
+            $groupBy       .= ", $latestProjDx.Diagnosis";
+        }
+
         $whereClause = " WHERE s.Active='Y' AND c.Active='Y' "
                        ."AND c.Entity_type != 'Scanner'";
 
@@ -296,7 +331,7 @@ class CouchDBDemographicsImporter
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"]    = [
                 'Description' => 'Proband\'s biological sex',
-                'Type'        => "enum('Male','Female', 'Other')"
+                'Type'        => "varchar(255)"
             ];
             $this->Dictionary["Age_difference"] = [
                 'Description' => 'Age difference between the candidate and ' .
@@ -342,6 +377,18 @@ class CouchDBDemographicsImporter
                     'Type'        => "date",
                 ];
             }
+        }
+
+        // Update data dictionary for latest diagnosis by project
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectAlias = \Project::getProjectFromID($projectID)->getAlias();
+            $fieldName    = "latestDiagnosis_" . $projectAlias;
+
+            $this->Dictionary[$fieldName] = [
+                'Description' => "Latest Diagnosis for $project",
+                'Type'        => "text"
+            ];
         }
     }
 

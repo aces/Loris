@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Candidate parameters data fetch
  *
@@ -27,40 +28,43 @@ if (!$user->hasPermission('access_all_profiles')
     ) && $user->hasCenter($candidate->getCenterID()))
 ) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 $data = $_GET['data'] ?? '';
 if ($data == '') {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    exit(0);
 }
 
 switch ($data) {
 case 'candidateInfo':
     echo json_encode(getCandInfoFields());
-    exit;
+    exit(0);
 case 'probandInfo':
     echo json_encode(getProbandInfoFields());
-    exit;
+    exit(0);
 case 'familyInfo':
     echo json_encode(getFamilyInfoFields());
-    exit;
+    exit(0);
 case 'participantStatus':
     echo json_encode(getParticipantStatusFields());
-    exit;
+    exit(0);
 case 'consentStatus':
     echo json_encode(getConsentStatusFields());
-    exit;
+    exit(0);
 case 'candidateDOB':
     echo json_encode(getDOBFields());
-    exit;
+    exit(0);
 case 'candidateDOD':
     echo json_encode(getDODFields());
-    exit;
+    exit(0);
+case 'diagnosisEvolution':
+    echo json_encode(getDiagnosisEvolutionFields());
+    exit(0);
 default:
     header("HTTP/1.1 404 Not Found");
-    exit;
+    exit(0);
 }
 /**
  * Handles the fetching of Candidate Info fields
@@ -107,10 +111,10 @@ function getCandInfoFields()
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
-        pt.Type, pt.Description 
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+        pt.Type, pt.Description
         FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters'
         ORDER BY pt.ParameterTypeID, pt.name ASC",
@@ -118,8 +122,10 @@ function getCandInfoFields()
     );
 
     $fields = $db->pselect(
-        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
-        FROM parameter_candidate WHERE CandID=:cid",
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
+        FROM parameter_candidate pc
+        JOIN candidate c ON c.ID=pc.CandidateID
+        WHERE c.CandID=:cid",
         ['cid' => $candID]
     );
 
@@ -157,25 +163,25 @@ function getProbandInfoFields()
 
     // get pscid
     $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate where CandID = :candid',
+        'SELECT PSCID FROM candidate WHERE CandID = :candid',
         ['candid' => $candID]
     );
 
     $sex = $db->pselectOne(
-        'SELECT ProbandSex FROM candidate where CandID = :candid',
+        'SELECT ProbandSex FROM candidate WHERE CandID = :candid',
         ['candid' => $candID]
     );
 
     $dob = $db->pselectOne(
-        'SELECT ProbandDoB FROM candidate where CandID = :candid',
+        'SELECT ProbandDoB FROM candidate WHERE CandID = :candid',
         ['candid' => $candID]
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
-        pt.Type, pt.Description 
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+        pt.Type, pt.Description
         FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters Proband'
         ORDER BY pt.ParameterTypeID, pt.name ASC",
@@ -183,8 +189,10 @@ function getProbandInfoFields()
     );
 
     $fields = $db->pselect(
-        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
-         FROM parameter_candidate WHERE CandID=:cid",
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
+        FROM parameter_candidate pc
+        JOIN candidate c ON c.ID=pc.CandidateID
+        WHERE c.CandID=:cid",
         ['cid' => $candID]
     );
 
@@ -217,6 +225,7 @@ function getProbandInfoFields()
         'ageDifference'    => $ageDifference,
         'extra_parameters' => $extra_parameters,
         'parameter_values' => $parameter_values,
+        'sexOptions'       => \Utility::getSexList(),
     ];
 
     return $result;
@@ -237,20 +246,28 @@ function getFamilyInfoFields()
 
     // get pscid
     $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate where CandID = :candid',
+        'SELECT PSCID FROM candidate WHERE CandID = :candid',
         ['candid' => $candID]
     );
 
-    $candidatesList = $db->pselect(
-        "SELECT CandID FROM candidate ORDER BY CandID",
-        []
+    $candidatesList = iterator_to_array(
+        $db->pselect(
+            "SELECT ID FROM candidate ORDER BY ID",
+            []
+        )
     );
 
-    $siblingsList = $db->pselect(
-        "SELECT f1.CandID 
-        FROM family f1 JOIN family f2
-        ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
-        ['candid' => $candID]
+    $siblingsList = iterator_to_array(
+        $db->pselect(
+            "SELECT c1.CandID
+                FROM family f1
+                JOIN family f2 ON f1.FamilyID=f2.FamilyID
+                JOIN candidate c1 ON f1.CandidateID=c1.ID
+                JOIN candidate c2 ON f2.CandidateID=c2.ID
+                WHERE c2.CandID=:candid
+                GROUP BY c1.CandID",
+            ['candid' => $candID]
+        )
     );
 
     $siblings = [];
@@ -273,10 +290,13 @@ function getFamilyInfoFields()
     }
 
     $familyMembers = $db->pselect(
-        "SELECT f1.CandID as FamilyCandID, f1.Relationship_type 
-        FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
-        WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
-          ORDER BY f1.CandID",
+        "SELECT c1.CandID as FamilyCandidate, f1.Relationship_type
+        FROM family f1
+        JOIN family f2 ON f1.FamilyID=f2.FamilyID
+        JOIN candidate c1 ON f1.CandidateID=c1.ID
+        JOIN candidate c2 ON f2.CandidateID=c2.ID
+        WHERE c2.CandID=:candid AND c1.CandID <> :candid2
+        ORDER BY c1.CandID",
         [
             'candid'  => $candID,
             'candid2' => $candID,
@@ -311,7 +331,7 @@ function getParticipantStatusFields()
 
     // get pscid
     $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate where CandID = :candid',
+        'SELECT PSCID FROM candidate WHERE CandID = :candid',
         ['candid' => $candID]
     );
 
@@ -336,8 +356,8 @@ function getParticipantStatusFields()
         foreach ($ID as $parentID) {
             if ($parentID != null) {
                 $options = $db->pselect(
-                    "SELECT ID, Description 
-                    FROM participant_status_options 
+                    "SELECT ID, Description
+                    FROM participant_status_options
                     WHERE parentID=:pid",
                     ['pid' => $parentID]
                 );
@@ -349,9 +369,11 @@ function getParticipantStatusFields()
         }
     }
 
-    $query = "SELECT participant_status, participant_suboptions, 
-    reason_specify FROM participant_status WHERE CandID=:candid";
-    $row   = $db->pselectRow($query, ['candid' => $candID]);
+    $query = "SELECT participant_status, participant_suboptions, reason_specify
+        FROM participant_status ps
+        JOIN candidate c ON c.ID=ps.CandidateID
+        WHERE c.CandID=:cid";
+    $row   = $db->pselectRow($query, ['cid' => $candID]);
 
     $status    = !empty($row['participant_status']) ? $row['participant_status']
         : null;
@@ -390,17 +412,19 @@ function getParticipantStatusHistory(CandID $candID)
     $db = \NDB_Factory::singleton()->database();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
-            (SELECT Description 
-              FROM participant_status_options pso 
-              WHERE ID=psh.participant_status) AS status, 
-            (SELECT Description from participant_status_options pso 
-              WHERE ID=psh.participant_subOptions) 
-              AS suboption,  reason_specify 
-            FROM participant_status_history psh WHERE CandID=:cid",
+            (SELECT Description
+              FROM participant_status_options pso
+              WHERE ID=psh.participant_status) AS status,
+            (SELECT Description from participant_status_options pso
+              WHERE ID=psh.participant_subOptions)
+              AS suboption,  reason_specify
+            FROM participant_status_history psh
+            JOIN candidate c ON c.ID=psh.CandidateID
+            WHERE c.CandID=:cid",
         ['cid' => $candID]
     );
 
-    return $unformattedComments;
+    return iterator_to_array($unformattedComments);
 }
 
 
@@ -482,10 +506,10 @@ function getConsentStatusHistory($pscid)
     $db = (\NDB_Factory::singleton())->database();
 
     $historyData = $db->pselect(
-        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
-         ConsentName, ConsentLabel, Status, EntryStaff 
-         FROM candidate_consent_history 
-         WHERE PSCID=:pscid 
+        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID,
+         ConsentName, ConsentLabel, Status, EntryStaff
+         FROM candidate_consent_history
+         WHERE PSCID=:pscid
          ORDER BY EntryDate ASC",
         ['pscid' => $pscid]
     );
@@ -521,10 +545,22 @@ function getDOBFields(): array
     );
     $pscid         = $candidateData['PSCID'] ?? null;
     $dob           = $candidateData['DoB'] ?? null;
-    $result        = [
-        'pscid'  => $pscid,
-        'candID' => $candID->__toString(),
-        'dob'    => $dob,
+
+    // Get DoB format
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
+    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
+    $result = [
+        'pscid'     => $pscid,
+        'candID'    => $candID->__toString(),
+        'dob'       => $formattedDate,
+        'dobFormat' => $dobFormat,
     ];
     return $result;
 }
@@ -546,11 +582,112 @@ function getDODFields(): array
     if ($candidateData === null) {
         throw new \LorisException("Invalid candidate");
     }
+
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    // Get formatted dod
+    $dodFormat = $config->getSetting('dodFormat');
+
+    $dodProcessedFormat = implode("-", str_split($dodFormat, 1));
+    $dodDate            = DateTime::createFromFormat(
+        'Y-m-d',
+        $candidateData['DoD'] ?? ''
+    );
+    $dod = $dodDate ? $dodDate->format($dodProcessedFormat) : null;
+
+    // Get formatted dob
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
+    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
     $result = [
-        'pscid'  => $candidateData['PSCID'],
-        'candID' => $candID->__toString(),
-        'dod'    => $candidateData['DoD'],
-        'dob'    => $candidateData['DoB'],
+        'pscid'     => $candidateData['PSCID'],
+        'candID'    => $candID->__toString(),
+        'dod'       => $dod,
+        'dob'       => $dob,
+        'dodFormat' => $config->getSetting('dodFormat'),
+    ];
+    return $result;
+}
+
+/**
+ * Handles the fetching of candidate's diagnosis evolution.
+ *
+ * @return array
+ */
+function getDiagnosisEvolutionFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \NDB_Factory::singleton()->database();
+
+    $pscid = $db->pselectOne(
+        "SELECT PSCID FROM candidate
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candidateDiagnosisEvolution = $db->pselect(
+        "SELECT
+            de.Name AS TrajectoryName,
+            p.Name AS Project,
+            visitLabel,
+            instrumentName,
+            sourceField,
+            Diagnosis,
+            Confirmed,
+            LastUpdate,
+            OrderNumber
+        FROM candidate_diagnosis_evolution_rel cder
+        JOIN diagnosis_evolution de USING (DxEvolutionID)
+        JOIN Project p USING (ProjectID)
+        JOIN candidate c ON c.ID=cder.CandidateID
+        WHERE c.CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $projectList = \Utility::getProjectList();
+
+    // Get all candidate's project affiliations
+    $candProjIDs = $db->pselectCol(
+        "SELECT DISTINCT ProjectID
+        FROM session s
+        JOIN candidate c on c.ID=s.CandidateID
+        WHERE c.CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candProjects    = [];
+    $candidate       = \Candidate::singleton($candID);
+    $latestDiagnosis = [];
+    $latestConfirmedDiagnosis = [];
+    foreach ($candProjIDs as $projectID) {
+        $candProjects[$projectID]   = $projectList[$projectID];
+        $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
+            \ProjectID::singleton(intval($projectID)),
+            false
+        );
+        $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
+            \ProjectID::singleton(intval($projectID)),
+            true
+        );
+    }
+
+    // remove null results and re-index
+    $latestDiagnosis          = array_values(array_filter($latestDiagnosis));
+    $latestConfirmedDiagnosis = array_values(
+        array_filter($latestConfirmedDiagnosis)
+    );
+
+    $result = [
+        'pscid'                           => $pscid,
+        'candID'                          => $candID,
+        'diagnosisEvolution'              => $candidateDiagnosisEvolution,
+        'latestProjectDiagnosis'          => $latestDiagnosis,
+        'latestConfirmedProjectDiagnosis' => $latestConfirmedDiagnosis,
+        'projects'                        => $candProjects
     ];
     return $result;
 }

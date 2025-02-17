@@ -6,6 +6,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
 
+import fetchDataStream from 'jslib/fetchDataStream';
 import OpenProfileForm from './openProfileForm';
 
 /**
@@ -25,10 +26,11 @@ class CandidateListIndex extends Component {
     super(props);
 
     this.state = {
-      data: {},
+      data: [],
       error: false,
       isLoaded: false,
       hideFilter: true,
+      fieldOptions: {},
       show: {profileForm: false},
     };
 
@@ -63,8 +65,18 @@ class CandidateListIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    fetch('options',
+      {credentials: 'same-origin'}).then(
+      (resp) => resp.json()
+    ).then(
+      (json) => {
+        this.setState({
+          fieldOptions: json,
+        });
+      }
+    );
+
+    this.fetchData();
 
     const searchParams = new URLSearchParams(location.search);
     if (searchParams.has('hide')) {
@@ -80,23 +92,15 @@ class CandidateListIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => {
-        // Convert concatenated string of cohort and visit labels to array
-        data.Data = data.Data.map((row) => {
-          // Visit label
-          row[2] = (row[2]) ? row[2].split(',') : null;
-          // Cohort
-          row[4] = (row[4]) ? row[4].split(',') : null;
-          return row;
-        });
-        this.setState({data});
-      })
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+    fetchDataStream(this.props.dataURL,
+      (row) => this.state.data.push(row),
+      (end) => {
+        this.setState({data: this.state.data});
+      },
+      () => {
+        this.setState({isLoaded: true});
+      },
+    );
   }
 
   /**
@@ -124,20 +128,20 @@ class CandidateListIndex extends Component {
     if (column === 'PSCID') {
       let url;
       if (this.props.betaProfileLink) {
-          url = this.props.baseURL + '/candidate_profile/' + row['DCCID'] + '/';
+        url = this.props.baseURL + '/candidate_profile/' + row['DCCID'] + '/';
       } else {
-          url = this.props.baseURL + '/' + row['DCCID'] + '/';
+        url = this.props.baseURL + '/' + row['DCCID'] + '/';
       }
 
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
-        default: return <td>None</td>;
+      case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+      case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+      case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+      case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
+      default: return <td>None</td>;
       }
     }
     if (column === 'Scan Done' && cell === 'Y') {
@@ -149,8 +153,7 @@ class CandidateListIndex extends Component {
     }
 
     if (column === 'Cohort') {
-      // If user has multiple cohorts, join array into string
-      let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
+      let result = (cell) ? <td>{cell}</td> : <td></td>;
       return result;
     }
 
@@ -178,7 +181,8 @@ class CandidateListIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in candidate_list.class.inc
      */
-    const options = this.state.data.fieldOptions;
+    // const options = this.state.data.fieldOptions;
+    const options = this.state.fieldOptions;
     const fields = [
       {
         label: 'PSCID',
@@ -282,11 +286,7 @@ class CandidateListIndex extends Component {
           name: 'sex',
           type: 'select',
           hide: this.state.hideFilter,
-          options: {
-            'Male': 'Male',
-            'Female': 'Female',
-            'Other': 'Other',
-          },
+          options: options.Sex,
         },
       },
       {
@@ -375,7 +375,7 @@ class CandidateListIndex extends Component {
         {profileForm}
         <FilterableDataTable
           name="candidateList"
-          data={this.state.data.Data}
+          data={this.state.data}
           fields={fields}
           actions={actions}
           getFormattedCell={this.formatColumn}
@@ -398,7 +398,7 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <CandidateListIndex
-      dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
+      dataURL={`${loris.BaseURL}/candidate_list/?format=binary`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
       betaProfileLink={args['betaprofile']}

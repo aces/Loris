@@ -10,6 +10,6 @@ RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&scri
 RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
 # Redirect homepage URLs to also use index.php
 RewriteCond "%{REQUEST_FILENAME}" "(\/main\.php)$"
-RewriteRule ^(.*)$ index.php?lorispath=$1 [QSA,L]
+RewriteRule ^(.*)$ index.php?lorispath=$1 "[QSA,L,B= ?,BNP]"
 </IfModule>
 

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -43,12 +44,12 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(array $row)
     {
-        $this->_candid     = $row['Candidate'] ?? null;
+        $this->_candid     = strval($row['Candidate']) ?? null;
         $this->_pscid      = $row['PSCID'] ?? null;
         $this->_entitytype = $row['Entity_type'] ?? null;
         $this->_visitlabel = $row['Visit'] ?? null;
         $this->_visitdate  = $row['Visit_date'] ?? null;
-        $this->_centerid   = new \CenterID($row['CenterID']);
+        $this->_centerid   = \CenterID::singleton(intval($row['CenterID']));
         $this->_centername = $row['Site'] ?? null;
         $this->_filename   = $row['File'] ?? null;
         $this->_inserttime = $row['InsertTime'] ?? null;

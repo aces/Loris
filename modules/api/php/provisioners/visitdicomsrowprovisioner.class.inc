@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all Dicoms
  * of a visit.
@@ -33,11 +34,16 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
     /**
      * Create a RowProvisioner, which gets rows for a Visit Dicoms
      *
-     * @param \Timepoint $timepoint The requested timepoint
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param \Timepoint           $timepoint The requested timepoint
      */
-    function __construct(\Timepoint $timepoint)
-    {
+    function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $timepoint
+    ) {
         parent::__construct(
+            $this->loris,
             '
              SELECT
                t.TarchiveID as tarchiveid
@@ -45,8 +51,8 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
              JOIN session s
                ON (s.ID=t.SessionID)
              JOIN candidate c
-               ON (s.CandID=c.CandID)
-             WHERE 
+               ON (s.CandidateID=c.ID)
+             WHERE
                c.Active=\'Y\' AND
                s.Active=\'Y\' AND
                s.ID = :v_sessionid
@@ -67,7 +73,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return (new \LORIS\DicomTar(intval($row['tarchiveid'])))
+        return (new \LORIS\DicomTar($row['tarchiveid']))
             ->asDTO();
     }
 }

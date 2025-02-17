@@ -38,7 +38,7 @@ export const roundTime = (value, decimals = 3) => {
 export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
-): Observable<Action> => {
+): Observable<any> => {
   const startDrag$ = action$.pipe(
     ofType(START_DRAG_SELECTION),
     Rx.map(R.prop('payload')),
@@ -86,7 +86,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
         state.timeSelection
         && (
           Math.abs(state.timeSelection[1] - state.timeSelection[0]
-        ) < MIN_INTERVAL)
+          ) < MIN_INTERVAL)
       ) {
         return setTimeSelection(null);
       } else {

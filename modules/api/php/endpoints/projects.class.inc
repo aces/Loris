@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Projects endpoint class
  *
@@ -108,7 +109,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $endpoint = new Project\Project($project);
+        $endpoint = new Project\Project($this->loris, $project);
 
         // Removing `/projects/<project_name>` from pathparts.
         $pathparts = array_slice($pathparts, 2);

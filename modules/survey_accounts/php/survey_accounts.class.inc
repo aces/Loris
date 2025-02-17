@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This implements a menu filter to be used for viewing the Loris survey
  * keys that have been created
@@ -74,14 +75,22 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
+        $statusOptions = [
+            'Created'     => 'Created',
+            'Sent'        => 'Sent',
+            'In Progress' => 'In Progress',
+            'Complete'    => 'Complete',
+        ];
+
         $instruments
             = \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList(
                 $this->loris
             );
 
         return [
-            'visits'      => \Utility::getVisitList(),
-            'instruments' => $instruments,
+            'visits'        => \Utility::getVisitList(),
+            'instruments'   => $instruments,
+            'statusOptions' => $statusOptions,
         ];
     }
 
@@ -92,7 +101,7 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new SurveyAccountsProvisioner();
+        return new SurveyAccountsProvisioner($this->loris);
     }
 
     /**

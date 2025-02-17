@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script deletes the specified candidate information.
@@ -204,7 +204,9 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "\nParticipant Status\n";
     echo "--------------------\n";
     $result = $DB->pselect(
-        'SELECT * FROM participant_status WHERE CandID=:cid',
+        'SELECT * FROM participant_status ps
+         JOIN candidate c ON c.ID = ps.CandidateID
+         WHERE CandID=:cid',
         ['cid' => $CandID]
     );
     print_r($result);

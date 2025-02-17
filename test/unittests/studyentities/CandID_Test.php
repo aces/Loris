@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains unit test for the CandID value object.
  *
@@ -39,13 +40,11 @@ class CandID_Test extends TestCase
     {
         return [
             ['A'],
-            [1],
-            [000000],
             ['11111a'],
             [' 11111'],
             ['111111a'],
             ['a111111'],
-            ['1111111']
+            ['11111111111']
         ];
     }
 

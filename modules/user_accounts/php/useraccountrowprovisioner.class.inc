@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
- namespace LORIS\user_accounts;
+
+namespace LORIS\user_accounts;
 
  /**
   * This class implements a data provisioner to get all modules
@@ -14,10 +15,14 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     /**
      * Create a UserAccountsProvisioner, which gets modules for the
      * module manager menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
                     GROUP_CONCAT(DISTINCT uprr.ProjectID) as projectIds,
                     u.UserID as username,
@@ -49,7 +54,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         if (isset($row['centerIds'])) {
             $cids = array_map(
                 function (string $cid) : \CenterID {
-                    return new \CenterID($cid);
+                    return \CenterID::singleton(intval($cid));
                 },
                 explode(',', $row['centerIds'])
             );
@@ -57,7 +62,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         if (isset($row['projectIds'])) {
             $pids = array_map(
                 function (string $pid) : \ProjectID {
-                    return new \ProjectID($pid);
+                    return \ProjectID::singleton((int )$pid);
                 },
                 explode(',', $row['projectIds'])
             );

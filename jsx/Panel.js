@@ -46,8 +46,8 @@ const Panel = (props) => {
     for (const [index, view] of props.views.entries()) {
       views.push(
         <li key={index}
-            onClick={() => viewClicked(index)}
-            className={index === activeView ? 'active' : null}>
+          onClick={() => viewClicked(index)}
+          className={index === activeView ? 'active' : null}>
           <a data-target={`${index}_panel_content`}>
             {view['title']}
           </a>
@@ -55,9 +55,9 @@ const Panel = (props) => {
       );
       content.push(
         <div key={index}
-             id={`${index}_panel_content_${props.id}`}
-             className={index === activeView ?
-               `${index}_panel_content` : `${index}_panel_content hidden`}>
+          id={`${index}_panel_content_${props.id}`}
+          className={index === activeView ?
+            `${index}_panel_content` : `${index}_panel_content hidden`}>
           {view['content']}
         </div>
       );
@@ -65,12 +65,12 @@ const Panel = (props) => {
     panelViews = (
       <div className='btn-group views'>
         <button type='button'
-                className='btn btn-default btn-xs dropdown-toggle'
-                data-toggle='dropdown'>
+          className='btn btn-default btn-xs dropdown-toggle'
+          data-toggle='dropdown'>
           Views<span className='caret'/>
         </button>
         <ul className='dropdown-menu pull-right'
-            role='menu'>
+          role='menu'>
           {views}
         </ul>
       </div>
@@ -81,9 +81,9 @@ const Panel = (props) => {
   // Add panel header, if title is set
   const panelHeading = props.title || props.views ? (
     <div className='panel-heading'
-         data-parent={props.parentId
-           ? `#${props.parentId}`
-           : null}>
+      data-parent={props.parentId
+        ? `#${props.parentId}`
+        : null}>
       <h3 className='panel-title'>
         {props.views && props.views[activeView]['title']
           ? props.views[activeView]['title']
@@ -94,10 +94,10 @@ const Panel = (props) => {
         ? <span className={collapsed ?
           'glyphicon glyphicon-chevron-down' :
           'glyphicon glyphicon-chevron-up'}
-                onClick={toggleCollapsed}
-                data-toggle='collapse'
-                data-target={`#${props.id}`}
-                style={{cursor: 'pointer'}}/>
+        onClick={toggleCollapsed}
+        data-toggle='collapse'
+        data-target={`#${props.id}`}
+        style={{cursor: 'pointer'}}/>
         : null}
     </div>
   ) : '';
@@ -109,16 +109,16 @@ const Panel = (props) => {
    */
   return (
     <div className={`panel ${props.class}`}
-         style={{height: props.panelSize}}>
+      style={{height: props.panelSize}}>
       {panelHeading}
       <div id={props.id}
-           className={props.collapsed ?
-             'panel-collapse collapse' :
-             'panel-collapse collapse in'}
-           role='tabpanel'
-           style={{height: 'calc(100% - 3em)'}}>
+        className={props.collapsed ?
+          'panel-collapse collapse' :
+          'panel-collapse collapse in'}
+        role='tabpanel'
+        style={{height: 'calc(100% - 3em)'}}>
         <div className='panel-body'
-             style={{...props.style, height: props.height}}>
+          style={{...props.style, height: props.height}}>
           {content.length > 0 ? content : props.children}
         </div>
       </div>

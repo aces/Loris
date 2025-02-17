@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Candidates endpoint class
  *
@@ -145,7 +146,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             // came from the CandID column of a database call. If
             // something goes wrong at this point we should definitely
             // propagate an exception..
-            $candID = new CandID($pscids[0]["CandID"]);
+            assert($pscids instanceof \LORIS\Database\Query);
+            $candID = new CandID(strval($pscids->getFirstRow()["CandID"]));
         }
 
         try {
@@ -154,7 +156,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
         }
 
-        $endpoint = new Candidate\Candidate($candidate);
+        if (!$candidate->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
+        $endpoint = new Candidate\Candidate($this->loris, $candidate);
 
         $pathparts = array_slice($pathparts, 2);
         $request   = $request->withAttribute('pathparts', $pathparts);
@@ -180,7 +186,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ['access_all_profiles']
         );
 
-        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
+        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner(
+            $this->loris
+        )
+        )
             ->filter($filter)
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
 
@@ -220,11 +229,24 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $projectname = $data['Candidate']['Project'] ?? '';
+        $projectname  = $data['Candidate']['Project'] ?? '';
+        $userprojects = array_map(
+            function ($project) {
+                return $project->getName();
+            },
+            $user->getProjects()
+        );
+
         try {
             $project = \NDB_Factory::singleton()->project($projectname);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
+        }
+
+        if (!in_array($projectname, $userprojects, true)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "You are not affiliated with the candidate's project"
+            );
         }
 
         $centerid = array_search(
@@ -238,7 +260,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $candid = \Candidate::createNew(
-                new \CenterID("$centerid"),
+                \CenterID::singleton($centerid),
                 $data['Candidate']['DoB'] ?? null,
                 $data['Candidate']['EDC'] ?? null,
                 $sex,

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class used to generate CandIDs for use in LORIS.
  *
@@ -26,11 +27,11 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class CandIDGenerator extends IdentifierGenerator
 {
     /**
-     * CandIDs should always be exactly 6 digits.
+     * CandIDs should be between 6 and 10 digits.
      */
-    private const LENGTH     = 6;
+    private const LENGTH     = 10;
     private const MIN_CANDID = '100000';
-    private const MAX_CANDID = '999999';
+    private const MAX_CANDID = '4294967295'; // (4 * 1024 * 1024 * 1024) - 1;
 
     /**
      * Creates a new CandIDGenerator by initializing properties based on class
@@ -82,7 +83,7 @@ class CandIDGenerator extends IdentifierGenerator
         // CandIDs have no prefix so the result of the query can be returned
         // immediately.
         return \NDB_Factory::singleton()->database()->pselectCol(
-            'SELECT CandID from candidate',
+            'SELECT CandID FROM candidate',
             []
         );
     }

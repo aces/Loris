@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dataquery\Provisioners;
 use \LORIS\dataquery\Query;
 
@@ -22,6 +23,7 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris, \User $user)
     {
         parent::__construct(
+            $loris,
             "SELECT DISTINCT dq.QueryID, dq.Query,
                 name.Name,
                 GROUP_CONCAT(dsq.Name) as AdminName,
@@ -36,7 +38,7 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                     (dq.QueryID=dsq.QueryID AND PinType='topquery')
                 -- Public queries
                 LEFT JOIN dataquery_shared_queries_rel dshq ON
-                    (dq.QueryID=dshq.QueryID AND dshq.SharedBy != :userid)
+                    (dq.QueryID=dshq.QueryID)
                 LEFT JOIN users u ON (dshq.SharedBy=u.ID)
                 LEFT JOIN dataquery_starred_queries_rel starred ON
                     (starred.QueryID=dq.QueryID AND starred.StarredBy = :userid)

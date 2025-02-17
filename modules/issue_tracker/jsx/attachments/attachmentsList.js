@@ -11,6 +11,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * React component used to display
@@ -35,7 +36,7 @@ class AttachmentsList extends Component {
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
     this.closeModalAttachmentDelete = this.closeModalAttachmentDelete
-                                      .bind(this);
+      .bind(this);
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
@@ -66,7 +67,7 @@ class AttachmentsList extends Component {
       }).catch((error) => {
         console.error(error);
       }
-    );
+      );
   }
 
   /**
@@ -109,8 +110,8 @@ class AttachmentsList extends Component {
             <div className='col-md-2'><b>Attachment options: </b></div>
             <div className='col-md-10'>
               <a onClick={this.openModalAttachmentDelete}
-                 href={'#'}
-                 value={deleteData}
+                href={'#'}
+                value={deleteData}
               >
                 Delete
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -118,7 +119,7 @@ class AttachmentsList extends Component {
               '/issue_tracker/Attachment' +
               '?ID=' + item.ID
               }
-                 download={true}
+              download={true}
               >
                 Download
               </a>
@@ -140,8 +141,8 @@ class AttachmentsList extends Component {
             '&filename=' + item.file_name +
             '&mime_type=' + item.mime_type
             }
-               download={true}
-               // style={{cursor: 'pointer'}}
+            download={true}
+              // style={{cursor: 'pointer'}}
             >
               Download
             </a>

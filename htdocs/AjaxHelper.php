@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Invokes a module's helper scripts, which should be contained in said
  * module's php directory.
@@ -94,7 +95,7 @@ try {
     $loris = new \LORIS\LorisInstance(
         new \Database(),
         new \NDB_Config(),
-        [__DIR__ . "/../modules", __DIR__ . "/../project/modules"]
+        [__DIR__ . "/../project/modules", __DIR__ . "/../modules"]
     );
     $m     = $loris->getModule($Module);
 

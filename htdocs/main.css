@@ -647,7 +647,6 @@ td.MenuWidth2 input[type=text] {
     height: 3em;
     width: 100%;
     font-size: 14px;
-    font-color #000000:
     color: #000;
     text-align: center;
     vertical-align: bottom;
@@ -677,6 +676,10 @@ tr.directentry {
     border: none;
 }
 
+.help-container {
+    position: static;
+}
+
 .help-content {
     background: #E4EBF2;
     border-style: solid;
@@ -684,11 +687,12 @@ tr.directentry {
     border-top: none;
     border-width: 1px;
     position: absolute;
-    left: 0px;
+    left: 0;
     overflow-y: auto;
     z-index: 999;
     transition: all 0.6s ease 0s;
     width: 320px;
+    max-height: calc(100vh - 100px);
 }
 
 .help-content h1 {

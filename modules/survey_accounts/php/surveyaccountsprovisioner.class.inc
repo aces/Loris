@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the survey accounts menu page.
@@ -34,11 +35,15 @@ class SurveyAccountsProvisioner
     /**
      * Create a SurveyAccountsProvisioner, which gets rows for the
      * survey accounts menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
 
         parent::__construct(
+            $loris,
             "SELECT
                 c.PSCID AS PSCID,
                 s.Visit_label AS Visit,
@@ -49,7 +54,7 @@ class SurveyAccountsProvisioner
                 s.ProjectID
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
-                JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
              WHERE c.Active = 'Y'
                 AND s.Active = 'Y'
              ORDER BY PSCID",
@@ -67,8 +72,8 @@ class SurveyAccountsProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = new \CenterID($row['CenterID']);
-        $pid = new \ProjectID($row['ProjectID']);
+        $cid = \CenterID::singleton(intval($row['CenterID']));
+        $pid = \ProjectID::singleton((intval($row['ProjectID'])));
         return new SurveyAccountsRow($row, $cid, $pid);
     }
 }

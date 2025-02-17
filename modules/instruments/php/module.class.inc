@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
@@ -130,11 +131,12 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(*) FROM flag
                         LEFT JOIN session s ON (s.ID=flag.SessionID)
-                        LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                        LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                     WHERE flag.Data_entry='In Progress'
                         AND s.Active='Y' AND c.Active='Y'",
                     'access_all_profiles',
                     's.CenterID',
+                    's.ProjectID',
                     $baseURL . "/statistics/statistics_site/",
                     ""
                 ),

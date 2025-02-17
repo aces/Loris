@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the visit's electrophysiology endpoint class.
  *
@@ -42,11 +43,16 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint $visit    The requested visit
-     * @param string     $filename The requested recording.class filename
+     * @param \LORIS\LorisInstance $loris    The LORIS instance that the module
+     *                                       is serving.
+     * @param \Timepoint           $visit    The requested visit
+     * @param string               $filename The requested recording.class filename
      */
-    public function __construct(\Timepoint $visit, string $filename)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Timepoint $visit,
+        string $filename
+    ) {
         $this->_visit    = $visit;
         $this->_filename = $filename;
     }
@@ -105,6 +111,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );
@@ -155,6 +162,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );
@@ -201,6 +209,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $recording = $this->_visit->getRecordingByFilename(
+                $this->loris,
                 $user,
                 $this->_filename
             );

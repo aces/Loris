@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains code for editing context help section
  *
@@ -47,7 +48,7 @@ class Help_Editor extends \NDB_Menu_Filter
      */
     function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new HelpRowProvisioner();
+        return new HelpRowProvisioner($this->loris);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Candidate endpoint class under Candidates.
  *
@@ -37,10 +38,14 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Candidate $candidate The requested candidate
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param \Candidate           $candidate The requested candidate.
      */
-    public function __construct(\Candidate $candidate)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Candidate $candidate
+    ) {
         $this->_candidate = $candidate;
     }
 
@@ -120,6 +125,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $handler = new $subendpoint(
+            $this->loris,
             $this->_candidate,
             $visit
         );

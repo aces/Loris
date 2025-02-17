@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\Http;
 
 use \Psr\Http\Message\StreamInterface;
@@ -13,15 +14,17 @@ class DataIteratorBinaryStream implements StreamInterface
     protected $position;
     protected $eof;
     protected $rowgen;
+    protected $rowCallback;
 
     protected \Traversable $rows;
 
-    public function __construct(\Traversable $data)
+    public function __construct(\Traversable $data, ?callable $rowcallback = null)
     {
-        $this->position = 0;
-        $this->rows     = $data;
-        $this->rowgen   = $this->rowGenerator();
-        $this->eof      = false;
+        $this->position    = 0;
+        $this->rows        = $data;
+        $this->rowgen      = $this->rowGenerator();
+        $this->eof         = false;
+        $this->rowCallback = $rowcallback;
     }
     /**
      * Reads all data from the stream into a string, from the beginning to end.
@@ -187,11 +190,16 @@ class DataIteratorBinaryStream implements StreamInterface
             $this->eof = true;
             return chr(0x04);
         }
-        $row = $this->rowgen->current();
+        $rowkey = $this->rowgen->key();
+        $row    = $this->rowgen->current();
         $this->rowgen->next();
 
-        $rowArray        = array_values(json_decode(json_encode($row), true));
-        $rowVal          = join(chr(0x1e), $rowArray) . chr(0x1f);
+        $rowArray = array_values(json_decode(json_encode($row), true));
+        $rowVal   = join(chr(0x1e), $rowArray) . chr(0x1f);
+
+        if ($this->rowCallback) {
+            call_user_func($this->rowCallback, $rowkey, $rowArray, $rowVal, !($this->rowgen->valid()));
+        }
         $this->position += strlen($rowVal);
 
         return $rowVal;
@@ -216,20 +224,20 @@ class DataIteratorBinaryStream implements StreamInterface
      * stream_get_meta_data() function.
      *
      * @see http://php.net/manual/en/function.stream-get-meta-data.php
-     * @param string $key Specific metadata to retrieve.
+     * @param ?string $key Specific metadata to retrieve.
      * @return array|mixed|null Returns an associative array if no key is
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
      */
-    public function getMetadata($key = null)
+    public function getMetadata(?string $key = null)
     {
         return null;
     }
 
     private function rowGenerator()
     {
-        foreach ($this->rows as $row) {
-            yield $row;
+        foreach ($this->rows as $key => $row) {
+            yield $key => $row;
         }
     }
 }

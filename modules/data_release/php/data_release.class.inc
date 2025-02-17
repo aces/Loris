@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file handles the Data Release for LORIS
  *
@@ -24,7 +25,7 @@ namespace LORIS\data_release;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Data_Release extends \NDB_Menu_Filter
+class Data_Release extends \DataFrameworkMenu
 {
     public $AjaxModule   = true;
     public $skipTemplate = true;
@@ -49,55 +50,6 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup all the class variables needed for the data release menu page
-     *
-     * @return void
-     */
-    function _setupVariables()
-    {
-        $user =& \User::singleton();
-        $DB   = $this->loris->getDatabaseConnection();
-
-        // set the class variables
-        $this->columns = [
-            'file_name AS fileName',
-            'IF(version is null or version ="","Unversioned", version) AS version',
-            'upload_date AS uploadDate',
-            'dr.id as dataReleaseID',
-        ];
-        $this->query   = " FROM data_release dr";
-
-        if (!$user->hasPermission("superuser")) {
-            $this->query .= " JOIN data_release_permissions drp 
-            ON (dr.id=drp.data_release_id) 
-            JOIN users u ON (u.ID=drp.userid) 
-            WHERE u.UserID=".$DB->quote($user->getUsername());
-        }
-
-        $this->group_by = '';
-        $this->order_by = 'uploadDate';
-    }
-
-    /**
-     * Create the form for the data release menu page
-     *
-     * @return void
-     **/
-    function setup()
-    {
-        parent::setup();
-
-        $db = $this->loris->getDatabaseConnection();
-
-        $this->fieldOptions = [
-            'users'     => $this->getUsersList($db),
-            'versions'  => $this->getVersionsList($db),
-            'filenames' => $this->getFilesList($db),
-        ];
-    }
-
-
-    /**
      * Greps the list of users available in the users database table.
      *
      * @param \Database $DB database handle
@@ -107,8 +59,12 @@ class Data_Release extends \NDB_Menu_Filter
     function getUsersList(\Database $DB)
     {
         return $DB->pselectColWithIndexKey(
-            "SELECT ID, UserID FROM users",
-            [],
+            "SELECT DISTINCT ID, LOWER(users.UserID) as UserID FROM users
+            JOIN user_project_rel upr ON upr.UserID = users.ID 
+            WHERE upr.ProjectID IN
+            (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)
+            ORDER BY LOWER(users.UserID)",
+            [':userID' => \User::singleton()->getID()],
             "ID"
         );
     }
@@ -123,8 +79,10 @@ class Data_Release extends \NDB_Menu_Filter
     function getFilesList(\Database $DB)
     {
         $result = $DB->pselectWithIndexKey(
-            "SELECT id, file_name, version FROM data_release",
-            [],
+            "SELECT id, file_name, version, ProjectID FROM data_release
+            WHERE ProjectID IS NULL OR ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            [':userID' => \User::singleton()->getID()],
             "id"
         );
 
@@ -143,13 +101,16 @@ class Data_Release extends \NDB_Menu_Filter
      * @param \Database $DB database handle
      *
      * @return array $versionList Array of version names indexed by version
-     *                            name.
+     * name.
      */
     function getVersionsList(\Database $DB)
     {
+        $user     =& \User::singleton();
         $versions = $DB->pselectCol(
-            "SELECT DISTINCT version FROM data_release",
-            [],
+            "SELECT DISTINCT version FROM data_release
+            WHERE ProjectID IS NULL OR ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            ['userID' => $user->getID()],
             "version"
         );
 
@@ -173,8 +134,10 @@ class Data_Release extends \NDB_Menu_Filter
     function getVersionFiles(\Database $db)
     {
         $result = $db->pselect(
-            "SELECT version, id FROM data_release",
-            []
+            "SELECT version, id FROM data_release
+            WHERE ProjectID IS NULL OR ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            [':userID' => \User::singleton()->getID()]
         );
 
         $versionFiles = [];
@@ -199,16 +162,23 @@ class Data_Release extends \NDB_Menu_Filter
         $result = $db->pselect(
             "SELECT u.ID as userId,
                     u.UserID as userName,
-                    drp.data_release_id fileId
+                    drp.data_release_id fileId,
+                    dr.ProjectID as ProjectID
              FROM users u
              LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid)
-             LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
-            []
+             LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)
+             JOIN user_project_rel upr ON upr.UserID = u.ID
+             WHERE upr.ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            [':userID' => \User::singleton()->getID()]
         );
+
+        error_log(print_r($result, true));
 
         $userFiles = [];
         foreach ($result as $row) {
             $userFiles[$row['userId']]['name'] = $row['userName'];
+            $userFiles[$row['userId']]['id']   = $row['userId'];
             if (empty($userFiles[$row['userId']]['files'])) {
                 $userFiles[$row['userId']]['files'] = [];
             }
@@ -245,6 +215,64 @@ class Data_Release extends \NDB_Menu_Filter
         }
 
         return $userFiles;
+    }
+
+    /**
+     * Function getFieldOptions
+     *
+     * @return array
+     */
+    protected function getFieldOptions() : array
+    {
+        $db       = $this->loris->getDatabaseConnection();
+        $projects = \Utility::getProjectList();
+        return [
+            'users'     => $this->getUsersList($db),
+            'versions'  => $this->getVersionsList($db),
+            'filenames' => $this->getFilesList($db),
+            'projects'  => array_combine($projects, $projects)
+        ];
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserSiteMatch filter.
+     *
+     * @return bool always false
+     */
+    public function useSiteFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new DataReleaseProvisioner($this->loris);
     }
 
     /**

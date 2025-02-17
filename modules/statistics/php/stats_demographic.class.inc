@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -63,20 +64,20 @@ class Stats_Demographic extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string  $sectionHeader    the value of sectionHeader
-     * @param string  $tableHeader      the value of tableHeader
-     * @param array   $subcats          the value of subcats
-     * @param ?array  $visits           the value of visits
-     * @param string  $dropdownName     the value of dropdownName
-     * @param array   $dropdownOpt      the value of dropdownOpt
-     * @param string  $dropdownSelected the value of dropdownSelected
-     * @param array   $centers          the value of centers
-     * @param array   $data             the value of data
-     * @param string  $subsection       the value of subsection=''
-     * @param string  $disclamer        the value of disclamer=''
-     * @param ?string $projectID        the value of projectID is null
-     * @param bool    $renderTable      whether to render the table or display a
-     *                                  default error message
+     * @param string $sectionHeader    the value of sectionHeader
+     * @param string $tableHeader      the value of tableHeader
+     * @param array  $subcats          the value of subcats
+     * @param ?array $visits           the value of visits
+     * @param string $dropdownName     the value of dropdownName
+     * @param array  $dropdownOpt      the value of dropdownOpt
+     * @param string $dropdownSelected the value of dropdownSelected
+     * @param array  $centers          the value of centers
+     * @param array  $data             the value of data
+     * @param string $subsection       the value of subsection=''
+     * @param string $disclamer        the value of disclamer=''
+     * @param ?int   $projectID        the value of projectID is null
+     * @param bool   $renderTable      whether to render the table or display a
+     *                                 default error message
      *
      * @return string
      */
@@ -97,7 +98,7 @@ class Stats_Demographic extends \NDB_Form
     ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
-        $projectID = empty($projectID) ? null : new \ProjectID($projectID);
+        $projectID = empty($projectID) ? null : \ProjectID::singleton($projectID);
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
@@ -257,7 +258,7 @@ class Stats_Demographic extends \NDB_Form
         // Only search for cohorts if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $cohorts     = \Utility::getCohortsForProject(
-                new \ProjectID($demographicProject)
+                \ProjectID::singleton(intval($demographicProject))
             );
             $subprojList = implode(',', array_keys($cohorts));
             if (!empty($subprojList)) {
@@ -327,7 +328,7 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -355,10 +356,10 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                           LEFT JOIN participant_status_options pso
                                     ON (pso.ID=ps.participant_status)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -388,10 +389,10 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                           LEFT JOIN participant_status_options pso
                                       ON (pso.ID=ps.participant_status)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -416,8 +417,8 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -449,8 +450,8 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -478,14 +479,15 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //AGE AVERAGE
-        $result = $db->pselect(
-            "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
+        $result = iterator_to_array(
+            $db->pselect(
+                "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
               FROM
               (SELECT DISTINCT c.CandID, s.cohortid as rowid,
                           c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -499,7 +501,8 @@ class Stats_Demographic extends \NDB_Form
                           $paramSite)
                                 as res
               GROUP BY rowid",
-            $this->params ?? []
+                $this->params ?? []
+            )
         );
 
         foreach ($result as $row) {
@@ -524,14 +527,15 @@ class Stats_Demographic extends \NDB_Form
                 'Complete',
                 'Incomplete',
             ];
-            $result = $db->pselect(
-                "SELECT count(*) as val,
+            $result = iterator_to_array(
+                $db->pselect(
+                    "SELECT count(*) as val,
                         f.Data_entry as Subcat,
                         c.RegistrationCenterID as CenterID,
                         s.CohortID as CohortID,
                         s.visit_label as VLabel
                 FROM session s
-                JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN candidate c ON (s.CandidateID=c.ID)
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
@@ -552,7 +556,7 @@ class Stats_Demographic extends \NDB_Form
                        s.CohortID as CohortID,
                        s.visit_label as VLabel
                 FROM session s
-                JOIN candidate c USING(CandID)
+                JOIN candidate c ON c.ID=s.CandidateID
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
@@ -566,7 +570,8 @@ class Stats_Demographic extends \NDB_Form
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.RegistrationCenterID, CohortID, VLabel, Subcat
                 ",
-                $this->params ?? []
+                    $this->params ?? []
+                )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -588,14 +593,15 @@ class Stats_Demographic extends \NDB_Form
                 'Male',
                 'Female',
             ];
-            $result        = $db->pselect(
-                "SELECT s.CenterID as CenterID,
+            $result        = iterator_to_array(
+                $db->pselect(
+                    "SELECT s.CenterID as CenterID,
                         s.CohortID as CohortID,
                         s.visit_label as VLabel,
                         c.sex as Subcat,
-                        count(s.CandID) as val
+                        count(s.CandidateID) as val
                 FROM session s
-                JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN candidate c ON (s.CandidateID=c.ID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
                 AND c.RegistrationProjectID IN (" . $projectsString . ")
@@ -605,7 +611,8 @@ class Stats_Demographic extends \NDB_Form
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY s.CenterID, CohortID, VLabel, Subcat",
-                []
+                    []
+                )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',

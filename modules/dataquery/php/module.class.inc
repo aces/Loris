@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 
 /**
@@ -17,7 +18,9 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
+        $dictionary = $this->loris->getModule("dictionary");
+        return parent::hasAccess($user) && $user->hasPermission('dataquery_view')
+            && $dictionary->hasAccess($user);
     }
 
     /**
@@ -37,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool (Alpha)";
+        return "Data Query Tool (Beta)";
     }
 
     /**
@@ -48,5 +51,81 @@ class Module extends \Module
     public function hasAPISpecification() : bool
     {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options)
+    {
+        switch ($type) {
+        case 'dashboard':
+            $baseURL        = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $provisioner    = (
+                new Provisioners\StarredQueries($this->loris, $user)
+            )->filter(
+                new \LORIS\Data\Filters\AccessibleResourceFilter()
+            );
+            $results        = $provisioner->execute($user);
+            $starredqueries = [];
+            foreach ($results as $query) {
+                $starredqueries[] = $query;
+            }
+            $widgets = [];
+            if (count($starredqueries) > 0) {
+                $widgets[] = new \LORIS\dashboard\Widget(
+                    new \LORIS\dashboard\WidgetContent(
+                        "Starred Queries",
+                        $this->renderTemplate(
+                            "starredwidget.tpl",
+                            [
+                                'baseURL'        => $baseURL,
+                                'starredqueries' => $starredqueries,
+                            ]
+                        ),
+                        ""
+                    ),
+                    new \LORIS\dashboard\WidgetDisplayProps("small"),
+                );
+            }
+
+            $provisioner = (
+                new Provisioners\StudyQueries($this->loris, 'dashboard')
+            )->filter(
+                new \LORIS\Data\Filters\AccessibleResourceFilter()
+            );
+
+            $results      = $provisioner->execute($user);
+            $studyqueries = [];
+            foreach ($results as $query) {
+                $studyqueries[] = $query;
+
+            }
+            if (count($studyqueries) > 0) {
+                $widgets[] = new \LORIS\dashboard\Widget(
+                    new \LORIS\dashboard\WidgetContent(
+                        "Study Queries",
+                        $this->renderTemplate(
+                            "studyquerieswidget.tpl",
+                            [
+                                'baseURL' => $baseURL,
+                                'queries' => $studyqueries,
+                            ]
+                        ),
+                        ""
+                    ),
+                    new \LORIS\dashboard\WidgetDisplayProps("small"),
+                );
+            }
+            return $widgets;
+        }
+        return [];
     }
 }

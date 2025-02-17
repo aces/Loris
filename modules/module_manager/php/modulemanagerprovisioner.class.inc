@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all modules
  * for the Module Manager menu page.
@@ -39,6 +40,7 @@ class ModuleManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT name, active FROM modules",
             []
         );

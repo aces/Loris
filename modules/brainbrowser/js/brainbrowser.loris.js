@@ -5,17 +5,17 @@
  * @param variable
  */
 function getQueryVariable(variable) {
-    'use strict';
-    let query = window.location.search.substring(1);
-        let vars = query.split('&');
-        let i;
-        let pair;
-    for (i = 0; i < vars.length; i += 1) {
-        pair = vars[i].split('=');
-        if (pair[0] === variable) {
-            return unescape(pair[1]);
-        }
+  'use strict';
+  let query = window.location.search.substring(1);
+  let vars = query.split('&');
+  let i;
+  let pair;
+  for (i = 0; i < vars.length; i += 1) {
+    pair = vars[i].split('=');
+    if (pair[0] === variable) {
+      return unescape(pair[1]);
     }
+  }
 }
 
 
@@ -34,6 +34,7 @@ $(function() {
   BrainBrowser.VolumeViewer.start('brainbrowser', function(viewer) {
     let loadingDiv = $('#loading');
     let mincIDs;
+    let fileUrls;
     let mincVolumes = [];
     let mincFilenames = [];
     let bboptions = {};
@@ -348,7 +349,7 @@ $(function() {
             value = volume.getVoxelMin();
           }
           value = Math.max(volume.getVoxelMin(),
-                           Math.min(value, volume.getVoxelMax()));
+            Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
@@ -367,7 +368,7 @@ $(function() {
             value = volume.getVoxelMax();
           }
           value = Math.max(volume.getVoxelMin(),
-                           Math.min(value, volume.getVoxelMax()));
+            Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
@@ -568,44 +569,44 @@ $(function() {
       fileNameID.tooltip();
 
       $('#filename-'+volID).on('click', function() {
-               $('#filename-additional-info-'+volID).slideToggle('fast');
-               let arrow = $(this).siblings('.arrow');
-               if (arrow.hasClass('glyphicon-chevron-down')) {
-                  arrow
-                  .removeClass('glyphicon-chevron-down')
-                  .addClass('glyphicon-chevron-up');
-               } else {
-                  arrow
-                  .removeClass('glyphicon-chevron-up')
-                  .addClass('glyphicon-chevron-down');
-               }
-       });
-       $('.filename-overlay').on('click', function() {
-               $('.filename-overlay-additional-info').slideToggle('fast');
-               let arrow = $(this).siblings('.arrow');
-               if (arrow.hasClass('glyphicon-chevron-down')) {
-                  arrow
-                  .removeClass('glyphicon-chevron-down')
-                  .addClass('glyphicon-chevron-up');
-               } else {
-                  arrow
-                  .removeClass('glyphicon-chevron-up')
-                  .addClass('glyphicon-chevron-down');
-               }
-       });
+        $('#filename-additional-info-'+volID).slideToggle('fast');
+        let arrow = $(this).siblings('.arrow');
+        if (arrow.hasClass('glyphicon-chevron-down')) {
+          arrow
+            .removeClass('glyphicon-chevron-down')
+            .addClass('glyphicon-chevron-up');
+        } else {
+          arrow
+            .removeClass('glyphicon-chevron-up')
+            .addClass('glyphicon-chevron-down');
+        }
+      });
+      $('.filename-overlay').on('click', function() {
+        $('.filename-overlay-additional-info').slideToggle('fast');
+        let arrow = $(this).siblings('.arrow');
+        if (arrow.hasClass('glyphicon-chevron-down')) {
+          arrow
+            .removeClass('glyphicon-chevron-down')
+            .addClass('glyphicon-chevron-up');
+        } else {
+          arrow
+            .removeClass('glyphicon-chevron-up')
+            .addClass('glyphicon-chevron-down');
+        }
+      });
 
-        $('.arrow').on('click', function() {
-              $('#filename-additional-info-'+volID).slideToggle('fast');
-              if ($('.arrow').hasClass('glyphicon-chevron-down')) {
-                $('.arrow')
-                .removeClass('glyphicon-chevron-down')
-                .addClass('glyphicon-chevron-up');
-              } else {
-                $('.arrow')
-                .removeClass('glyphicon-chevron-up')
-                .addClass('glyphicon-chevron-down');
-              }
-            });
+      $('.arrow').on('click', function() {
+        $('#filename-additional-info-'+volID).slideToggle('fast');
+        if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+          $('.arrow')
+            .removeClass('glyphicon-chevron-down')
+            .addClass('glyphicon-chevron-up');
+        } else {
+          $('.arrow')
+            .removeClass('glyphicon-chevron-up')
+            .addClass('glyphicon-chevron-down');
+        }
+      });
 
       // Contrast controls
       container.find('.contrast-div').each(function() {
@@ -759,9 +760,9 @@ $(function() {
       let fgColor = getContrastYIQ(bgColor);
 
       $('#intensity-value-' + volID)
-      .css('background-color', '#' + bgColor)
-      .css('color', fgColor)
-      .html(Math.floor(value));
+        .css('background-color', '#' + bgColor)
+        .css('color', fgColor)
+        .html(Math.floor(value));
 
       if (volume.header && volume.header.time) {
         $('#time-slider-' + volID).slider(
@@ -773,12 +774,8 @@ $(function() {
       }
     }); // Should cursors in all panels be synchronized?
 
-    mincIDs = getQueryVariable('minc_id');
-    if (mincIDs[0] === '[') {
-      // An array was passed. Get rid of the brackets
-      mincIDs = mincIDs.substring(1, mincIDs.length - 1);
-    }
-
+    mincIDs = getQueryVariable('minc_id') || [];
+    fileUrls = getQueryVariable('file_url') || [];
     if (getQueryVariable('overlay') === 'true') {
       bboptions.overlay = {
         template: {
@@ -812,46 +809,46 @@ $(function() {
     viewer.setDefaultPanelSize(panelSize, panelSize);
 
     fetch(
-      'imageinfo?files=' + mincIDs,
+      'imageinfo?fileids=' + mincIDs + '&fileurls=' + fileUrls,
       {credentials: 'same-origin', method: 'GET'}
     )
-    .then((resp) => resp.json())
-    .then((data) => {
-      for (const file of data) {
+      .then((resp) => resp.json())
+      .then((data) => {
+        for (const file of data) {
           let volume = {
-              type: file.type,
-              template: {
-                  element_id: 'volume-ui-template4d',
-                  viewer_insert_class: 'volume-viewer-display',
-              },
+            type: file.type,
+            template: {
+              element_id: 'volume-ui-template4d',
+              viewer_insert_class: 'volume-viewer-display',
+            },
           };
           if (file.type == 'nifti1') {
-              volume.nii_url = file.URL;
+            volume.nii_url = file.URL;
           } else {
-              volume.raw_data_url = file.URL;
+            volume.raw_data_url = file.URL;
           }
 
           mincVolumes.push(volume);
           mincFilenames.push(file.Filename);
-      }
-      bboptions.volumes = mincVolumes;
+        }
+        bboptions.volumes = mincVolumes;
 
-      // ////////////////////////////
-      // Load the default color map and then call
-      // render only after it's been loaded
-      // ////////////////////////////
-      viewer.loadDefaultColorMapFromURL(
-        colorMapConfig.url,
-        colorMapConfig.cursor_color,
-        function() {
+        // ////////////////////////////
+        // Load the default color map and then call
+        // render only after it's been loaded
+        // ////////////////////////////
+        viewer.loadDefaultColorMapFromURL(
+          colorMapConfig.url,
+          colorMapConfig.cursor_color,
+          function() {
             // ///////////////////
             // Load the volumes.
             // ///////////////////
             viewer.render(); // start the rendering
             viewer.loadVolumes(bboptions); // load the volumes
-        }
-      );
-    });
+          }
+        );
+      });
 
     return viewer;
   });

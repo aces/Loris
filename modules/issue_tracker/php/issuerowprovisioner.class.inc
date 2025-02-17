@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the issue tracker menu page.
@@ -32,6 +33,39 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     private array $allCenterIDs;
 
+    private const BASE_QUERY = "
+        SELECT i.issueID,
+               i.title,
+               m.name AS module,
+               i.category,
+               CONCAT(uReporter.First_name, ' ', uReporter.Last_name) AS reporter,
+               CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name) AS assignee,
+               i.status,
+               i.priority,
+               i.centerID AS centerId,
+               c.PSCID AS pscid,
+               s.Visit_label AS visitLabel,
+               i.dateCreated,
+               i.lastUpdate,
+               s.ID AS sessionId,
+               c.CandID AS candidateId,
+               w.userID AS userId
+        FROM issues AS i
+        LEFT JOIN modules m ON m.ID = i.module
+        LEFT JOIN candidate c ON (i.CandidateID=c.ID)
+        LEFT JOIN session s ON i.sessionID = s.ID
+        LEFT JOIN issues_watching w ON i.issueID = w.issueID AND w.userID = :username
+        LEFT JOIN issues_comments ic ON i.issueID = ic.issueID
+        JOIN users uReporter ON i.reporter = uReporter.UserID
+        LEFT JOIN users uAssignee ON i.assignee = uAssignee.UserID";
+
+    private const PERMISSION_QUERY = "
+        WHERE i.reporter = :username";
+
+    private const GROUP_ORDER_CLAUSE = "
+        GROUP BY i.issueID, w.userID
+        ORDER BY i.issueID DESC";
+
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
      *
@@ -39,53 +73,42 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
         $this->allCenterIDs = array_map(
             function ($center) {
                 return $center->getCenterID();
             },
             $loris->getAllSites()
         );
+
+        $user   = \NDB_Factory::singleton()->user();
         $userID = $user->getUsername();
 
-        //note that this needs to be in the same order as the headers array
-        parent::__construct(
-            "SELECT i.issueID,
-                    i.title,
-                    m.name as module,
-                    i.category,
-                    CONCAT(uReporter.First_name, ' ', uReporter.Last_name),
-                    CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name),
-                    i.status,
-                    i.priority,
-                    i.centerID as centerId,
-                    c.PSCID as pscid,
-                    s.Visit_label as visitLabel,
-                    i.dateCreated,
-                    i.lastUpdate,
-                    s.ID as sessionId,
-                    c.CandID as candidateId,
-                    w.userID as userId
-            FROM issues as i
-            LEFT JOIN modules m
-              ON (m.ID=i.module)
-            LEFT JOIN candidate c
-              ON (i.candID=c.CandID)
-            LEFT JOIN session s
-              ON (i.sessionID = s.ID)
-            LEFT JOIN issues_watching w
-              ON (i.issueID = w.issueID AND w.userID=:username)
-            LEFT JOIN issues_comments ic
-              ON (i.issueID = ic.issueID)
-            JOIN users uReporter
-              ON (i.reporter = uReporter.UserID)
-            LEFT JOIN users uAssignee
-              ON (i.assignee = uAssignee.UserID)
-            GROUP BY i.issueID, w.userID
-            ORDER BY i.issueID DESC",
-            ['username' => $userID]
-        );
+        $query = self::BASE_QUERY;
+        if (!$this->_hasPartialAccess($user)) {
+            $query .= self::GROUP_ORDER_CLAUSE;
+        } else {
+            $query .= self::PERMISSION_QUERY . self::GROUP_ORDER_CLAUSE;
+        }
+
+        parent::__construct($loris, $query, ['username' => $userID]);
+
+    }
+
+    /**
+     * Check user has permission to see only issues created by the user
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasPartialAccess($user): bool
+    {
+        return !$user->hasAnyPermission(
+            [
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue',
+            ]
+        ) && $user->hasPermission('issue_tracker_own_issue');
     }
 
     /**
@@ -114,7 +137,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         if (isset($row['centerId'])) {
             // convert the value from string to int array
-            $cids = [new \CenterID($row['centerId'])];
+            $cids = [\CenterID::singleton(intval($row['centerId']))];
 
         } else {
             $cids = $this->allCenterIDs;

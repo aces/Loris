@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 use \LORIS\StudyEntities\Candidate\CandID;
 use \LORIS\Data\Query\QueryTerm;
@@ -47,7 +48,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         protected \LORIS\LorisInstance $loris,
         public readonly int $queryID,
         ?array $query=null,
-        protected ?string $name=null,
+        public ?string $name=null,
         protected ?string $adminname=null,
         protected ?array $sharedBy=null,
         protected ?bool $starred=null,
@@ -248,11 +249,11 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $cname = $item['category'];
                 $fname = $item['fieldname'];
                 $this->_populateModuleDictCache($mname);
-                if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+                if (!isset(self::$moduleDictCache[$mname][$cname][$fname])) {
                     // This query references a field that no longer exist.
                     throw new \OutOfBoundsException();
                 }
-                $usedDicts[] = $this->moduleDictCache[$mname][$cname][$fname];
+                $usedDicts[] = self::$moduleDictCache[$mname][$cname][$fname];
             }
         }
         return $usedDicts;
@@ -365,7 +366,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 'Name'    => $name,
             ]
         );
-
     }
 
     /**
@@ -386,7 +386,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Entries are of the form
      *     $cache[modulename][categoryname][fieldname]= DictionaryItem
      */
-    private $moduleDictCache = [];
+    private static $moduleDictCache = [];
 
     /**
      * Populate $this->moduleDictCache for a module.
@@ -397,7 +397,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      */
     private function _populateModuleDictCache(string $mname) : void
     {
-        if (isset($this->moduleDictCache[$mname])) {
+        if (isset(self::$moduleDictCache[$mname])) {
             return;
         }
         $module = $this->loris->getModule($mname);
@@ -406,13 +406,13 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($moduleDict as $category) {
             $cname = $category->getName();
             foreach ($category->getItems() as $cfield) {
-                if (!isset($this->moduleDictCache[$mname])) {
-                    $this->moduleDictCache[$mname] = [];
+                if (!isset(self::$moduleDictCache[$mname])) {
+                    self::$moduleDictCache[$mname] = [];
                 }
-                if (!isset($this->moduleDictCache[$mname][$cname])) {
-                    $this->moduleDictCache[$mname][$cname] = [];
+                if (!isset(self::$moduleDictCache[$mname][$cname])) {
+                    self::$moduleDictCache[$mname][$cname] = [];
                 }
-                $this->moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
+                self::$moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
             }
         }
     }
@@ -449,12 +449,12 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $fname = $field['field'];
 
             $this->_populateModuleDictCache($mname);
-            if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+            if (!isset(self::$moduleDictCache[$mname][$cname][$fname])) {
                 // This query references a field that no longer exist.
                 throw new \OutOfBoundsException();
             }
-            assert(isset($this->moduleDictCache[$mname][$cname][$fname]));
-            $fields[] = $this->moduleDictCache[$mname][$cname][$fname];
+            assert(isset(self::$moduleDictCache[$mname][$cname][$fname]));
+            $fields[] = self::$moduleDictCache[$mname][$cname][$fname];
         }
         assert($this->data !== null);
         assert(count($fields) == count($this->data['fields']));
@@ -491,7 +491,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param string $name The name that the admin thinks should be
      *                     used for the query
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -516,7 +516,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Remove this query from the list of queries pinned by an admin.
      *
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -537,7 +537,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @param \User $user The user running the query.
      *
-     * @return CandID[]
+     * @return iterable
      */
     public function matchCandidates(\User $user) : iterable
     {
@@ -548,101 +548,10 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         } else {
             $candidates = $this->_allCandidates();
         }
-        return $this->_filterInaccessibleCandidates($candidates, $user);
-    }
-
-    /**
-     * Filter CandIDs out of $candIDs which aren't accessible to $user
-     *
-     * @param CandID[] $candIDs The CandIDs to be filtered
-     * @param \User    $user    The user whose access should check.
-     *
-     * @return CandID[]
-     */
-    private function _filterInaccessibleCandidates(
-        array $candIDs,
-        \User $user,
-    ) : iterable {
-        if (count($candIDs) == 0) {
-            return [];
-        }
-        $DB = $this->loris->getDatabaseConnection();
-
-        // Put candidates into a temporary table so that it can be used in a join
-        // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
-        // too slow to be useable.
-        $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
-        $DB->run(
-            "CREATE TEMPORARY TABLE accesscandidates(
-            CandID int(6)
-        );"
-        );
-        $insertstmt = "INSERT INTO accesscandidates VALUES"
-                . " (" . join('),(', $candIDs) . ')';
-        $q          = $DB->prepare($insertstmt);
-        $q->execute([]);
-
-        // Get the data which affects accessibility in bulk.
-        $rows      = $DB->pselect(
-            "SELECT c.CandID, c.RegistrationProjectID, c.RegistrationCenterID,
-                s.ProjectID as SProjectID, s.CenterID as SCenterID,
-                s.ID as sessionID
-            FROM candidate c LEFT JOIN session s ON (s.CandID=c.CandID)
-            WHERE c.Active='Y' AND COALESCE(s.Active, 'Y')='Y'
-                AND c.CandID IN (SELECT CandID FROM accesscandidates)
-            ORDER BY c.CandID",
-            []
-        );
-        $organized = [];
-
-        // Foreach CandID, create the TimePointData object for all timepoints
-        // that were returned.
-        foreach ($rows as $row) {
-            $candid = $row['CandID'];
-            if (!isset($organized[$candid])) {
-                $organized[$candid] = [
-                    'CandID'              => new CandID($row['CandID']),
-                    'RegistrationProject' => $row['RegistrationProjectID'],
-                    'RegistrationCenter'  => $row['RegistrationCenterID'],
-                    'Timepoints'          => [],
-                ];
-            }
-
-            if ($row['sessionID'] !== null) {
-                $organized[$candid]['Timepoints'][] = new \TimePoint(
-                    new \TimePointData(
-                        new \SessionID($row['sessionID']),
-                        new \ProjectID($row['SProjectID']),
-                        new \CenterID($row['SCenterID']),
-                    )
-                );
-            }
-        }
-
-        // Remove inaccessible candidates from the temp table
-        foreach ($organized as $vals) {
-            $canddata  = new \CandidateData(
-                candID: $vals['CandID'],
-                registrationProjectID: new \ProjectID($vals['RegistrationProject']),
-                registrationCenterID: new \CenterID($vals['RegistrationCenter']),
-                timepoints: $vals['Timepoints']
-            );
-            $candidate = new \Candidate($canddata);
-
-            if (!$candidate->isAccessibleBy($user)) {
-                // Not accessible, so delete from accesscandidates
-                $DB->delete("accesscandidates", ['CandID' => $vals['CandID']]);
-                continue;
-            }
-        }
-
-        $candidates = $DB->pselectCol("SELECT CandID from accesscandidates", []);
-        $DB->run("DROP TEMPORARY TABLE accesscandidates");
-        return array_map(
-            function ($row) {
-                return new CandID($row);
-            },
-            $candidates
+        return \Candidate::filterInaccessibleCandIDs(
+            $this->loris,
+            $candidates,
+            $user
         );
     }
 
@@ -661,7 +570,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($row) {
-                return new CandID($row);
+                return new CandID(strval($row));
             },
             $results
         );

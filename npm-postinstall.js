@@ -88,7 +88,7 @@ getConfig.stdout.on('data', (data) => {
     );
   }
 
-  if (EEGVisEnabled === 'true') {
+  if (EEGVisEnabled === 'true' || EEGVisEnabled === '1') {
     console.info('\n ----- \n >> '
       + 'EEG Browser visualization components enabled '
       + '\n -----'
@@ -123,5 +123,5 @@ getConfig.stdout.on('data', (data) => {
 });
 
 getConfig.on('error', (error) => {
-    console.error(error);
+  console.error(error);
 });

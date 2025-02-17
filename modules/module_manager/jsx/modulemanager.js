@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * Module Manager React Component
@@ -63,16 +64,16 @@ class ModuleManagerIndex extends Component {
    */
   mapColumn(column, cell) {
     switch (column) {
-      case 'Active':
-        if (cell === 'Y') {
-          return 'Yes';
-        } else if (cell === 'N') {
-          return 'No';
-        }
-        // This shouldn't happen, it's a non-nullable
-        // enum in the backend.
-        return '?';
-      default: return cell;
+    case 'Active':
+      if (cell === 'Y') {
+        return 'Yes';
+      } else if (cell === 'N') {
+        return 'No';
+      }
+      // This shouldn't happen, it's a non-nullable
+      // enum in the backend.
+      return '?';
+    default: return cell;
     }
   }
 
@@ -160,16 +161,16 @@ class ModuleManagerIndex extends Component {
    */
   formatColumn(column, cell, row) {
     if (column == 'Active' && this.props.hasEditPermission) {
-        return <td><SelectElement
-              name={row.Name}
-              id={row.Name}
-              label=''
-              emptyOption={false}
-              options={{'Y': 'Yes', 'N': 'No'}}
-              value={cell}
-              onUserInput={this.toggleActive}
-              noMargins={true}
-            /></td>;
+      return <td><SelectElement
+        name={row.Name}
+        id={row.Name}
+        label=''
+        emptyOption={false}
+        options={{'Y': 'Yes', 'N': 'No'}}
+        value={cell}
+        onUserInput={this.toggleActive}
+        noMargins={true}
+      /></td>;
     }
     cell = this.mapColumn(column, cell);
     return <td>{cell}</td>;
@@ -205,8 +206,8 @@ class ModuleManagerIndex extends Component {
         name: 'Active',
         type: 'select',
         options: {
-            'Y': 'Yes',
-            'N': 'No',
+          'Y': 'Yes',
+          'N': 'No',
         },
       }},
     ];

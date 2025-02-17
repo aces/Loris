@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This class features the code for the menu portion
@@ -85,7 +85,7 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new DicomArchiveRowProvisioner();
+        $provisioner = new DicomArchiveRowProvisioner($this->loris);
 
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
 

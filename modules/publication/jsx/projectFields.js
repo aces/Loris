@@ -1,6 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
+import {
+  StaticElement,
+  TagsElement,
+  FileElement,
+  ButtonElement,
+  TextareaElement,
+  TextboxElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Email element component
@@ -77,15 +87,15 @@ class EmailElement extends React.Component {
           {errorMessage}
         </div>
         <div className="col-sm-2">
-        <span>
-          <input
-            name={this.props.name + '_notify'}
-            type="checkbox"
-            onChange={this.props.toggleEmailNotify}
-            value={this.props.addressee}
-          />
-          <span>Send email notification?</span>
-        </span>
+          <span>
+            <input
+              name={this.props.name + '_notify'}
+              type="checkbox"
+              onChange={this.props.toggleEmailNotify}
+              value={this.props.addressee}
+            />
+            <span>Send email notification?</span>
+          </span>
         </div>
       </div>
     );
@@ -153,26 +163,26 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    }).then(function(willDelete) {
-        if (willDelete) {
-          let url = loris.BaseURL
+    }).then((result) => {
+      if (result.value) {
+        let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
 
-          fetch(url, {
-            method: 'DELETE',
-          }).then((response) => {
-            if (!response.ok) {
-              console.error(response.status);
-              return;
-            }
+        fetch(url, {
+          method: 'DELETE',
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            return;
+          }
 
-            this.props.fetchData();
-          }).catch((error) => {
-            console.error(error);
-          });
-        }
-      });
+          this.props.fetchData();
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+    });
   }
 
   /**
@@ -186,7 +196,7 @@ class ProjectFormFields extends React.Component {
     if (this.props.files) {
       this.props.files.forEach(function(f) {
         let downloadURL = loris.BaseURL
-                          + '/publication/ajax/FileDownload.php?File='
+                          + '/publication/files/'
                           + encodeURIComponent(f.Filename);
         let link = (
           <span>

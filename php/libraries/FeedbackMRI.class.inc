@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
@@ -86,7 +87,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function setPredefinedComments(array $predefinedCommentIDs=null): bool
+    function setPredefinedComments(?array $predefinedCommentIDs=null): bool
     {
         // choke if we are passed an empty array
         if (empty($predefinedCommentIDs)) {

@@ -3,12 +3,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    SelectElement,
-    TextboxElement,
-    StaticElement,
-    FileElement,
-    ButtonElement,
+  FormElement,
+  SelectElement,
+  TextboxElement,
+  StaticElement,
+  FileElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -32,7 +32,6 @@ class UploadForm extends Component {
     this.state = {
       formData: {},
       form: form,
-      hasError: {},
       errorMessage: {},
       uploadProgress: -1,
     };
@@ -70,14 +69,26 @@ class UploadForm extends Component {
         delete formData.visitLabel;
       } else if (typeof formData.mriFile !== 'undefined') {
         let patientName = formData.mriFile.name
-                          .replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+          .replace(/\.[a-z]+\.?[a-z]+?$/i, '');
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
+        // visitLabel can contain underscores, filename can have suffix appended to PSCID_CandID_VisitLabel
+        // join the remaining elements of patientName and pattern match
+        // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        const suffix = ids.join('_');
+        const visitLabels = Object.keys(form.visitLabel.options);
+        let bestMatch = '';
+        visitLabels.map((visitLabel) => {
+          if (suffix.match(visitLabel) !== null) {
+            // consider the first match only
+            if (suffix.match(visitLabel)[0].length > bestMatch.length) {
+              bestMatch = suffix.match(visitLabel)[0];
+            }
+          }
+        });
+        formData.visitLabel = bestMatch;
       }
     }
 
@@ -89,10 +100,22 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
+        // visitLabel can contain underscores,  filename can have suffix appended to PSCID_CandID_VisitLabel
+        // join the remaining elements of patientName and pattern match
+        // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        const suffix = ids.join('_');
+        const visitLabels = Object.keys(form.visitLabel.options);
+        let bestMatch = '';
+        visitLabels.map((visitLabel) => {
+          if (suffix.match(visitLabel) !== null) {
+            // consider the first match only
+            if (suffix.match(visitLabel)[0].length > bestMatch.length) {
+              bestMatch = suffix.match(visitLabel)[0];
+            }
+          }
+        });
+        formData.visitLabel = bestMatch;
       }
     }
 
@@ -133,14 +156,7 @@ class UploadForm extends Component {
         visitLabel: undefined,
       };
 
-      let hasError = {
-        mriFile: true,
-        candID: false,
-        pSCID: false,
-        visitLabel: false,
-      };
-
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 
@@ -264,18 +280,16 @@ class UploadForm extends Component {
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
         // Upon successful upload:
-        // - Resets errorMessage and hasError so no errors are displayed on form
+        // - Resets errorMessage so no errors are displayed on form
         // - Displays pop up window with success message
         // - Returns to Browse tab
         const errorMessage = this.state.errorMessage;
-        const hasError = this.state.hasError;
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = '';
-            hasError[i] = false;
+            errorMessage[i] = null;
           }
         }
-        this.setState({errorMessage: errorMessage, hasError: hasError});
+        this.setState({errorMessage: errorMessage});
         let text = '';
         if (this.props.imagingUploaderAutoLaunch === 'true' ||
             this.props.imagingUploaderAutoLaunch === '1'
@@ -288,8 +302,10 @@ class UploadForm extends Component {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
-        window.location.assign(loris.BaseURL + '/imaging_uploader/');
       } else {
         this.processError(xhr);
       }
@@ -311,13 +327,12 @@ class UploadForm extends Component {
   processError(xhr) {
     // Upon errors in upload:
     // - Displays pop up window with submission error message
-    // - Updates errorMessage and hasError so relevant errors are displayed on form
+    // - Updates errorMessage so relevant errors are displayed on form
     // - Returns to Upload tab
 
     console.error(xhr.status + ': ' + xhr.statusText);
 
     let errorMessage = Object.assign({}, this.state.errorMessage);
-    const hasError = Object.assign({}, this.state.hasError);
     let messageToPrint = '';
     if (xhr.response) {
       const resp = JSON.parse(xhr.response);
@@ -344,12 +359,11 @@ class UploadForm extends Component {
       };
     }
     for (const [key, error] of Object.entries(errorMessage)) {
-      errorMessage[key] = error.toString();
       if (error.length) {
-        hasError[key] = true;
+        errorMessage[key] = error.toString();
         messageToPrint += error + '\n';
       } else {
-        hasError[key] = false;
+        errorMessage[key] = null;
       }
     }
     swal.fire({
@@ -360,7 +374,6 @@ class UploadForm extends Component {
     this.setState({
       uploadProgress: -1,
       errorMessage: errorMessage,
-      hasError: hasError,
     });
   }
 
@@ -384,22 +397,22 @@ class UploadForm extends Component {
     );
 
     const notes = (
-        <span>
+      <span>
           File cannot exceed {this.props.maxUploadSize}<br/>
           File must be of type .tgz or tar.gz or .zip<br/>
           For files that are not Phantom Scans, file name must begin with
-          <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
+        <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
           For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
           Visit Label <i>V1</i> the file name should be prefixed by:
-          <b> ABC123_100000_V1</b><br/>
-        </span>
+        <b> ABC123_100000_V1</b><br/>
+      </span>
     );
 
     // Returns individual form elements
     // For CandID, PSCID, and Visit Label, disabled and required
     // are updated depending on Phantom Scan value
-    // For all elements, hasError and errorMessage
-    // are updated depending on what values are submitted
+    // For all elements, errorMessage
+    // is updated depending on what values are submitted
     return (
       <div className='row'>
         <div className='col-md-7'>
@@ -415,7 +428,6 @@ class UploadForm extends Component {
               options={this.props.form.IsPhantom.options}
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.IsPhantom}
               errorMessage={this.state.errorMessage.IsPhantom}
               value={this.state.formData.IsPhantom}
             />
@@ -424,7 +436,6 @@ class UploadForm extends Component {
               label='CandID'
               disabled={true}
               required={false}
-              hasError={this.state.hasError.candID}
               errorMessage={this.state.errorMessage.candID}
               value={this.state.formData.candID}
             />
@@ -433,7 +444,6 @@ class UploadForm extends Component {
               label='PSCID'
               disabled={true}
               required={false}
-              hasError={this.state.hasError.pSCID}
               errorMessage={this.state.errorMessage.pSCID}
               value={this.state.formData.pSCID}
             />
@@ -442,7 +452,6 @@ class UploadForm extends Component {
               label='Visit Label'
               disabled={true}
               required={false}
-              hasError={this.state.hasError.visitLabel}
               errorMessage={this.state.errorMessage.visitLabel}
               value={this.state.formData.visitLabel}
             />
@@ -451,7 +460,6 @@ class UploadForm extends Component {
               label='File to Upload'
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.mriFile}
               errorMessage={this.state.errorMessage.mriFile}
               value={this.state.formData.mriFile}
             />

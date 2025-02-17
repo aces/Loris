@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all modules
  * for the Module Manager menu page.
@@ -33,30 +34,31 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a ModuleManagerProvisioner, which gets modules for the
      * module manager menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
-            "
-  select
- e.full_name as Examiner,
-             u.Email,
- GROUP_CONCAT(DISTINCT psc.CenterID) as centerIds,
-             e.examinerID as ID,
-
- e.radiologist as Radiologist,
- GROUP_CONCAT(DISTINCT tn.full_name SEPARATOR ', ') as
-                                Certification
-
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
-                                (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
-                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                            LEFT JOIN users u ON u.ID=e.userID
-                            group by e.examinerID
+            $loris,
+            "SELECT 
+                e.full_name as Examiner,
+                u.Email,
+                GROUP_CONCAT(DISTINCT epr.CenterID) as centerIds,
+                e.examinerID as ID,
+                e.radiologist as Radiologist,
+                GROUP_CONCAT(DISTINCT tn.full_name SEPARATOR ', ') as
+                    Certification
+                FROM examiners e
+                    LEFT JOIN examiners_psc_rel epr ON
+                        (epr.examinerID=e.examinerID)
+                    LEFT JOIN certification c ON
+                        (c.examinerID=e.examinerID and c.pass = 'certified')
+                    LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                    LEFT JOIN users u ON u.ID=e.userID
+                WHERE epr.active='Y'
+                GROUP BY e.examinerID
 ",
             [],
         );
@@ -77,7 +79,7 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         if (isset($row['centerIds'])) {
             $cids = array_map(
                 function (string $cid) : \CenterID {
-                    return new \CenterID($cid);
+                    return \CenterID::singleton(intval($cid));
                 },
                 explode(',', $row['centerIds'])
             );

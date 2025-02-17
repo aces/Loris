@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * - Option to detect conflicts for the given instrument
  * and create corresponding CSV file
@@ -120,7 +121,9 @@ if (($change && $change_all)
 /// Initialization
 $config = NDB_Config::singleton();
 $db     = $lorisInstance->getDatabaseConnection();
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+$ddeInstruments = array_keys(
+    \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
+);
 $db_config      = $config->getSetting('database');
 $paths          = $config->getSetting('paths');
 $dataDir        = $paths['base'] . $config->getSetting('log');
@@ -301,12 +304,13 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
     $query  = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
-        JOIN candidate c ON (c.CandID=s.CandID)";
+        JOIN candidate c ON (c.CandID=s.CandID)
+        LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
     $where  = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND f.Test_name= :instrument ";
+        $where .= " AND tn.Test_name= :instrument ";
         $params['instrument'] = $test_name;
 
         if (($visit_label!=null) && (isset($visit_label))) {
@@ -335,12 +339,13 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
     $query  = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
         JOIN session s on (s.id = f.sessionid)
-        JOIN candidate c on (c.CandID = s.CandID)";
+        JOIN candidate c on (c.CandID = s.CandID)
+        LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
 
     $where = " WHERE c.Active='Y' AND  s.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND f.Test_name= :instrument ";
+        $where .= " AND tn.Test_name= :instrument ";
         $params['instrument'] = $test_name;
 
         if ($visit_label!=null) {
@@ -625,22 +630,22 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
     global $db;
 
     foreach ($instrumentFields as $field => $instr) {
-        $query        = "SELECT TableName, FieldName, Value1, Value2 
+        $query        = "SELECT TestName, FieldName, Value1, Value2 
             FROM conflicts_unresolved 
-            WHERE TableName = '$instrument' AND FieldName = '$field'";
+            WHERE TestName = '$instrument' AND FieldName = '$field'";
         $ignoreColumn = $db->pselectOne($query, []);
 
         if (!empty($ignoreColumn)) {
             $query = "SELECT 
-                TableName, FieldName, CommentId1, Value1, CommentId2, Value2 
+                TestName, FieldName, CommentId1, Value1, CommentId2, Value2 
                 FROM conflicts_unresolved 
-                WHERE TableName = '$instrument' AND FieldName = '$field'";
+                WHERE TestName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
 
             if ($confirm) {
                 $query = "DELETE FROM conflicts_unresolved 
-                    WHERE TableName = '$instrument' AND FieldName = '$field'";
+                    WHERE TestName = '$instrument' AND FieldName = '$field'";
                 $db->run($query);
             }
         }

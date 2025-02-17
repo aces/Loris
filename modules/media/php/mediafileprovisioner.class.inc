@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible files
  * for the media menu page.
@@ -46,6 +47,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT m.file_name as fileName,
                     m.instrument as testName,
                     c.PSCID as pscid,
@@ -60,7 +62,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                		substring(m.comments, 1, 50) as comments,
                     m.last_modified as lastModified,
                		m.file_type as fileType,
-               		s.CandID as candidateId,
+               		c.CandID as candidateId,
                		s.ID as sessionId,
                     CASE
                         WHEN m.hide_file = 0 THEN 'visible'
@@ -69,7 +71,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                		m.id
              FROM media m
              INNER JOIN session s ON m.session_id = s.ID
-             INNER JOIN candidate c ON c.CandID=s.CandID
+             INNER JOIN candidate c ON c.ID=s.CandidateID
              LEFT JOIN language l USING (language_id)
              WHERE s.Active='Y' and c.Active='Y'",
             []
@@ -90,10 +92,19 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         // make sure not to call the factory when $testname is null or ''
         if (!empty($testname) && !isset($this->_instrumentnames[$testname])) {
-            $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
-                $this->loris,
-                $testname,
-            )->getFullname();
+            try {
+                $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
+                    $this->loris,
+                    $testname,
+                )->getFullname();
+            } catch (\Exception $e) {
+                error_log(
+                    "There was a problem instantiating the instrument ".
+                    "'$testname'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the media ".
+                    "module."
+                );
+            }
         }
         $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
 

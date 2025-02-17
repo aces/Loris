@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Survey accounts automated integration tests
  *
@@ -71,6 +72,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 111,
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '1',
                 'UserID'                => '1',
@@ -82,7 +84,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '111111',
-                'CandID'      => '999888',
+                'CandidateID' => 111,
                 'CenterID'    => '1',
                 'ProjectID'   => '1',
                 'UserID'      => '1',
@@ -94,6 +96,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 112,
                 'CandID'                => '999999',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -105,7 +108,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '111112',
-                'CandID'      => '999999',
+                'CandidateID' => 112,
                 'CenterID'    => '1',
                 'ProjectID'   => '1',
                 'UserID'      => '1',
@@ -138,7 +141,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "session",
-            ['CandID' => '999888']
+            ['ID' => '111111']
         );
         $this->DB->delete(
             "candidate",
@@ -146,7 +149,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "session",
-            ['CandID' => '999999']
+            ['ID' => '111112']
         );
         $this->DB->delete(
             "candidate",

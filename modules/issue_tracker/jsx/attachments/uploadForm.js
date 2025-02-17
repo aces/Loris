@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  ButtonElement,
+  TextareaElement,
+  FileElement,
+} from 'jsx/Form';
 
 /**
  * Issue Upload Attachment Form
@@ -103,16 +109,16 @@ class IssueUploadAttachmentForm extends Component {
           swal.fire('Permission denied', '', 'error');
         }
       }).catch((error) => {
-      console.error(error);
-      const msg = error.responseJSON ?
-        error.responseJSON.message
-        : 'Upload error!';
-      this.setState({
-        errorMessage: msg,
-        uploadProgress: -1,
+        console.error(error);
+        const msg = error.responseJSON ?
+          error.responseJSON.message
+          : 'Upload error!';
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal.fire(msg, '', 'error');
       });
-      swal.fire(msg, '', 'error');
-    });
   }
 
   /**

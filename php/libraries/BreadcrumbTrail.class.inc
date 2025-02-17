@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file represents a BreadcrumbTrail object that can be printed as a string
  * that contains all its breadcrumbs.

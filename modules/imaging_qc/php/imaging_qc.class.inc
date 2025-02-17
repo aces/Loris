@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the Imaging_QC class
  *
@@ -11,6 +12,9 @@
  * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\imaging_qc;
+
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Main class for imaging quality control module corresponding to /imaging_qc/
@@ -56,14 +60,14 @@ class Imaging_QC extends \NDB_Menu_Filter
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
         $all_scan_types_2d = $db->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri",
+            "SELECT MriScanTypeID, MriScanTypeName FROM mri_scan_type",
             []
         );
 
         $all_scan_types = [];
         foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
+            $type = $row['MriScanTypeName'];
+            $all_scan_types[$row['MriScanTypeID']] = $type;
         }
 
         // Get the intersection between all the scan types and those
@@ -102,7 +106,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
-           s.CandID as cand_id,
+           c.CandID as cand_id,
            (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
            s.Visit_label as visit_label,
            '".$scan_type."' as scan_type,
@@ -113,7 +117,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                       *
                   FROM
                       tarchive_series ts
-                  LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
+                  LEFT JOIN mri_protocol mp ON mp.MriScanTypeID=".$acqID."
                   WHERE
                       ts.TarchiveID = t.TarchiveID
                       AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
@@ -149,20 +153,21 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $joins = " FROM flag f
         JOIN session s ON (f.SessionID=s.ID)
-        JOIN candidate c ON (s.CandID=c.CandID)
+        JOIN test_names tn ON tn.ID = f.TestID
+        JOIN candidate c ON (s.CandidateID=c.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
-        fi.AcquisitionProtocolID=".$acqID.")
+        fi.MriScanTypeID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."
+        (mvl.Candidate = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name='mri_parameter_form'
+          AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
           AND s.CenterID <> '1' ";
@@ -281,7 +286,8 @@ class Imaging_QC extends \NDB_Menu_Filter
 
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
-                "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
+                "SELECT MriScanTypeID FROM mri_scan_type
+                    WHERE MriScanTypeName=:scan_type",
                 $query_params
             );
             if (substr("$scan_type", 0, 2) == "t1") {
@@ -386,5 +392,29 @@ class Imaging_QC extends \NDB_Menu_Filter
             )
         );
     }
-}
 
+    /**
+     * This method overrides the NBD_Page handle function.
+     * It checks if the MRI Parameter Form table exists
+     * before calling the parent handle function.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $db = $this->loris->getDatabaseConnection();
+        if ($db->tableExists('mri_parameter_form')) {
+            return parent::handle($request);
+        } else {
+            return (new \LORIS\Http\Response())
+                ->withStatus(500)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        "MRI Parameter Form table does not exist"
+                    )
+                );
+        }
+    }
+}

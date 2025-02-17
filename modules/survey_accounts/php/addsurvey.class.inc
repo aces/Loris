@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements the add_survey page which is used by the Loris
  * survey module, for creating user account/keys that are tied to a
@@ -103,7 +104,7 @@ class AddSurvey extends \NDB_Form
 
         $numSessions = $db->pselectOne(
             "SELECT COUNT(*) FROM session
-            WHERE CandID=:v_CandID
+            WHERE CandidateID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
             [
@@ -120,9 +121,9 @@ class AddSurvey extends \NDB_Form
             ];
         }
 
-        $projectID = $db->pselectOne(
+        $projectID = $db->pselectOneInt(
             "SELECT ProjectID FROM session
-            WHERE CandID=:v_CandID
+            WHERE CandidateID=:v_CandID
             AND Visit_Label=:v_VL",
             [
                 'v_CandID' => $values['CandID'],
@@ -131,16 +132,17 @@ class AddSurvey extends \NDB_Form
         );
 
         $user = \NDB_Factory::singleton()->user();
-        if (!$user->hasProject(new \ProjectID($projectID))) {
+        if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
                 'Project' => "You are not affiliated with this session's project"
             ];
         }
 
         $instrument_list = $db->pselect(
-            "SELECT f.Test_name FROM flag f
+            "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID
+             JOIN test_names tn ON tn.ID = f.TestID
+             WHERE s.CandidateID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
             [
@@ -162,8 +164,9 @@ class AddSurvey extends \NDB_Form
                 ];
             }
         }
-
-        if ($_REQUEST['fire_away'] !== 'Create survey') {
+        if (!isset($_REQUEST['fire_away'])
+            || ($_REQUEST['fire_away'] !== 'Create survey')
+        ) {
             if (!filter_var(
                 $values['Email'],
                 FILTER_VALIDATE_EMAIL
@@ -192,8 +195,9 @@ class AddSurvey extends \NDB_Form
         $email = $values['Email'];
         unset($values['Email']);
         $SessionID = $db->pselectOne(
-            "SELECT ID FROM session".
-            " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
+            "SELECT s.ID FROM session s".
+            " JOIN candidate c ON c.ID=s.CandidateID".
+            " WHERE c.CandID=:v_CandID AND Visit_label=:v_VL",
             [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
@@ -241,11 +245,11 @@ class AddSurvey extends \NDB_Form
                     'CommentID'       => $commentID,
                 ]
             );
+            $this->tpl_data['success'] = true;
         } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
-        $this->tpl_data['success'] = true;
 
         if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
@@ -291,7 +295,7 @@ class AddSurvey extends \NDB_Form
             "Instrument",
             array_merge(
                 ['' => ''],
-                \Utility::getDirectInstruments()
+                \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
             )
         );
         $this->addBasicText("Email", "Email address");

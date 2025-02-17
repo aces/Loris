@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery\endpoints\queries;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -106,6 +107,20 @@ class Query extends \LORIS\Http\Endpoint
                         'dashboard'
                     );
                     $resp['dashboard'] = 'Pinned query to dashboard';
+                }
+            }
+
+            if (isset($params['loginname'])) {
+                if ($params['loginname'] == '') {
+                    $query->removeAdminPinnedQuery('loginpage');
+                    $resp['loginpage'] = 'Unpinned query from login page';
+                } else {
+                    $query->setAdminPinnedQuery(
+                        $user,
+                        $params['loginname'],
+                        'loginpage'
+                    );
+                    $resp['loginpage'] = 'Pinned query to login page';
                 }
             }
 

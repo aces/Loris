@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The menu for user accounts
  *
@@ -93,7 +94,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new UserAccountRowProvisioner();
+        return new UserAccountRowProvisioner($this->loris);
     }
 
     /**

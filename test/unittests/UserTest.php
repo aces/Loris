@@ -1,4 +1,5 @@
 <?php declare (strict_types=1);
+
 /**
  * Unit tests for the User and UserPermissions class
  *
@@ -91,10 +92,12 @@ class UserTest extends TestCase
      * @var array
      */
     private $_projectInfo = [0 => ['ProjectID' => '1',
-        'Name'      => 'project_test'
+        'Name'      => 'project_test',
+        'Alias'     => 'TST1',
     ],
         1 => ['ProjectID' => '3',
-            'Name'      => 'project_test2'
+            'Name'      => 'project_test2',
+            'Alias'     => 'TST2',
         ]
     ];
 
@@ -105,6 +108,7 @@ class UserTest extends TestCase
      * @var array
      */
     private $_examinerInfo = [0 => ['full_name' => 'John Doe',
+        'userID'      => '1',
         'examinerID'  => 1,
         'radiologist' => 1
     ]

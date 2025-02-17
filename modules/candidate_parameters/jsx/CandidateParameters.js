@@ -8,6 +8,7 @@ import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
 import CandidateDOB from './CandidateDOB';
 import CandidateDOD from './CandidateDOD';
+import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
 
 /**
@@ -78,6 +79,11 @@ class CandidateParameters extends Component {
         label: 'Date of Death',
         component: CandidateDOD,
       },
+      {
+        id: 'diagnosisEvolution',
+        label: 'Diagnosis Evolution',
+        component: DiagnosisEvolution,
+      },
     ];
 
     if (loris.config('useProband') === 'true') {
@@ -107,8 +113,8 @@ class CandidateParameters extends Component {
     return (
       <div>
         <a className='btn btn-sm btn-primary'
-           href={loris.BaseURL + '/' + this.props.candID}
-           style={{marginBottom: '20px'}}
+          href={loris.BaseURL + '/' + this.props.candID}
+          style={{marginBottom: '20px'}}
         >
           Return to timepoint list
         </a>

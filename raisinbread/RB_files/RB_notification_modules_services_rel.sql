@@ -10,5 +10,6 @@ INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALU
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (7,2);
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (8,2);
 INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (9,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (10,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

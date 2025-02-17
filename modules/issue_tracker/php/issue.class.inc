@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file features the code for the form portion of the Loris issue
  * tracker.
@@ -45,8 +46,9 @@ class Issue extends \NDB_Form
             || !isset($issueID))
             && !$user->hasAnyPermission(
                 [
-                    'issue_tracker_reporter',
-                    'issue_tracker_developer',
+                    'issue_tracker_all_issue',
+                    'issue_tracker_own_issue',
+                    'issue_tracker_site_issue',
                 ]
             )
         ) {
@@ -102,13 +104,16 @@ class Issue extends \NDB_Form
         if (!$issueID) {
             return true;
         }
-        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
+        $issueData  = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
+        $centerIDs  = $user->getCenterIDs();
+        $centerList = implode(",", $centerIDs);
+        $centerList = explode(',', $centerList);
         return (is_null($issueData)
-            || in_array($issueData['centerID'], $user->getCenterIDs())
-            || ($user->hasPermission('access_all_profiles'))
+            || in_array($issueData['centerID'], $centerList)
+            || ($user->hasPermission('issue_tracker_all_issue'))
             || (empty($issueData['centerID']))
         );
     }
@@ -158,5 +163,22 @@ class Issue extends \NDB_Form
         // display based on whether it's a PUT or GET request in order to remove
         // the ajax/EditIssue.php hack.
         return parent::handle($request);
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Issue',
+                "/issue_tracker/issue/$this->issueID"
+            )
+        );
     }
 }

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Mri_violations automated integration tests
  *
@@ -67,6 +68,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -77,6 +79,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 2,
                 'CandID'                => '999777',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '2',
@@ -88,7 +91,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '9888',
-                'CandID'      => '999888',
+                'CandidateID' => 1,
                 'CenterID'    => '55',
                 'ProjectID'   => '7777',
                 'UserID'      => '1',
@@ -101,7 +104,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '9777',
-                'CandID'      => '999777',
+                'CandidateID' => 2,
                 'CenterID'    => '55',
                 'ProjectID'   => '7777',
                 'UserID'      => '2',
@@ -175,7 +178,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "mri_protocol_violated_scans",
             [
                 'ID'                 => '1001',
-                'CandID'             => '999888',
+                'CandidateID'        => 1,
                 'PatientName'        => '[Test]PatientName_Test1',
                 'time_run'           => '2009-06-29 04:00:44',
                 'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
@@ -189,7 +192,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "mri_protocol_violated_scans",
             [
                 'ID'                 => '1002',
-                'CandID'             => '999777',
+                'CandidateID'        => 2,
                 'PatientName'        => '[name]test_Test2',
                 'time_run'           => '2008-06-29 04:00:44',
                 'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
@@ -249,15 +252,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "session",
             [
-                'CandID'   => '999888',
-                'CenterID' => '55',
+                'CandidateID' => 1,
+                'CenterID'    => '55',
             ]
         );
         $this->DB->delete(
             "session",
             [
-                'CandID'   => '999777',
-                'CenterID' => '55',
+                'CandidateID' => 2,
+                'CenterID'    => '55',
             ]
         );
         $this->DB->delete(

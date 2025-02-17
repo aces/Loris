@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the help editor menu page.
@@ -33,10 +34,14 @@ class HelpRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a HelpRowProvisioner, which gets rows for the help_editory
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT help.helpID as helpID,
                     help.topic as Topic,
                     help.content as Content

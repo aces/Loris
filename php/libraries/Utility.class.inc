@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -126,6 +127,23 @@ class Utility
     }
 
     /**
+     * Returns list of sex options in the database
+     *
+     * @return array An associative array of sex values.
+     */
+    static function getSexList(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $query = "SELECT Name FROM sex";
+
+        $result = $DB->pselectCol($query, []);
+
+        return array_combine($result, $result);
+    }
+
+    /**
      * Returns a list of sites in the database
      *
      * @param boolean $study_site if true only return study sites from psc
@@ -227,6 +245,11 @@ class Utility
      */
     static function getVisitList(?ProjectID $projectID = null) : array
     {
+        static $cache = [];
+        $projStr      = strval($projectID);
+        if (isset($cache[$projStr])) {
+            return $cache[$projStr];
+        }
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
         $qparams = [];
@@ -239,19 +262,19 @@ class Utility
             $ExtraProject_Criteria ='';
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
+            JOIN candidate c ON (s.CandidateID = c.ID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
+            AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
         // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column($result, 'Visit_label');
+        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
         // Generates an array where the keys are equal to the values.
-        return array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        return $cache[$projStr];
     }
 
     /**
@@ -557,24 +580,18 @@ class Utility
             most accurate Full_name value and should be replaced by
             getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
-        $Factory       = \NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $config        = $Factory->config();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+        $Factory = \NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+        $ddeInstruments = $DB->pselect(
+            "SELECT DISTINCT test_battery.Test_name, Full_name
+            FROM test_battery
+            JOIN test_names ON test_battery.Test_name = test_names.Test_name
+            WHERE DoubleDataEntryEnabled = 'Y'",
             []
         );
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
-
-        $instruments = [];
-        foreach ($instruments_q as $row) {
-            if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
-                    $instruments[$row['Test_name']] = $row['Full_name'];
-                }
-            }
+        $instruments    = [];
+        foreach ($ddeInstruments as $instrument) {
+            $instruments[$instrument['Test_name']] = $instrument['Full_name'];
         }
         return $instruments;
     }
@@ -651,10 +668,11 @@ class Utility
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $query = "select DISTINCT Current_stage from session where ".
+        $query = "SELECT DISTINCT Current_stage FROM session s ".
+            "JOIN candidate c ON c.ID=s.CandidateID WHERE ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
-        return $stage[0]['Current_stage'];
+        return $stage->getFirstRow()['Current_stage'];
     }
 
     /**
@@ -689,7 +707,6 @@ class Utility
         $DB      = $factory->database();
 
         //get sourcefield using instrument
-        $sourcefields = [];
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
@@ -699,7 +716,9 @@ class Utility
             );
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
-                "SELECT Test_name FROM flag WHERE CommentID = :cid",
+                "SELECT Test_name FROM flag
+                 JOIN test_names ON (test_names.ID = flag.TestID)
+                 WHERE CommentID = :cid",
                 ['cid' => $commentID]
             );
             $sourcefields = $DB->pselect(
@@ -709,12 +728,14 @@ class Utility
                 ['instrument' => $instrument]
             );
         } elseif (!is_null($name)) { //get all source fields
-            $sourcefields = $DB->pselectRow(
+            return $DB->pselectRow(
                 "SELECT * FROM parameter_type WHERE Name = :pn",
                 ['pn' => $name]
             );
+        } else {
+            return [];
         }
-        return $sourcefields;
+        return iterator_to_array($sourcefields);
     }
 
 
@@ -755,12 +776,11 @@ class Utility
         $test_names = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT t.Test_name, t.Full_name
             FROM session s
-            JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN psc ON (s.CenterID=psc.CenterID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
             JOIN flag f ON (f.sessionID=s.id)
-            JOIN test_names t ON (f.test_name=t.Test_name)
+            JOIN test_names t ON (f.TestID=t.ID)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
-            AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+            AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
             ['vl' => $visit_label],
             'Test_name'
@@ -950,15 +970,15 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type
-             FROM mri_scan_type mri
-                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            "SELECT MriScanTypeID, MriScanTypeName
+             FROM mri_scan_type JOIN files USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
-            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+            $scan_types[$scan_type['MriScanTypeID']]
+                = $scan_type['MriScanTypeName'];
         }
 
         return $scan_types;
@@ -1019,5 +1039,45 @@ class Utility
             }
         }
         return $formData;
+    }
+
+    /**
+     * Update the candidate_diagnosis_evolution_rel diagnosis confirmation status
+     *
+     * @param SessionID $sessionID  The sessionID that has been approved
+     * @param bool      $isApproved Specifies if session approval is set to pass
+     *
+     * @return void
+     */
+    static function updateDiagnosisConfirmationStatus(
+        SessionID $sessionID,
+        bool $isApproved
+    ) : void {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $status  = $isApproved ? 'Y' : 'N';
+
+        $dxToUpdate = $DB->pselect(
+            "SELECT c.CandID, cde.DxEvolutionID
+            FROM candidate_diagnosis_evolution_rel cde
+            JOIN diagnosis_evolution de USING (DxEvolutionID)
+            JOIN session s ON (
+                cde.CandidateID=s.CandidateID AND s.Visit_label=de.visitLabel
+            )
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE s.ID=:sid",
+            ['sid' => $sessionID]
+        );
+
+        foreach ($dxToUpdate as $row) {
+            $DB->update(
+                'candidate_diagnosis_evolution_rel',
+                ['Confirmed' => $status],
+                [
+                    'CandID'        => $row['CandID'],
+                    'DxEvolutionID' => $row['DxEvolutionID']
+                ]
+            );
+        }
     }
 }

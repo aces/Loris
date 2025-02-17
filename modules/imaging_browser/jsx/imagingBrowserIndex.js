@@ -60,41 +60,41 @@ class ImagingBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-      case 'New Data':
-        if (cell === 'new') {
-          result = (
-            <td className="newdata">NEW</td>
-          );
-        }
-        break;
-      case 'Links':
-        let cellTypes = cell.split(',');
-        let cellLinks = [];
-        for (let i = 0; i < cellTypes.length; i += 1) {
-          cellLinks.push(<a key={i} href={loris.BaseURL +
+    case 'New Data':
+      if (cell === 'new') {
+        result = (
+          <td className="newdata">NEW</td>
+        );
+      }
+      break;
+    case 'Links':
+      let cellTypes = cell.split(',');
+      let cellLinks = [];
+      for (let i = 0; i < cellTypes.length; i += 1) {
+        cellLinks.push(<a key={i} href={loris.BaseURL +
           '/imaging_browser/viewSession/?sessionID=' +
           row.SessionID + '&outputType=' +
           cellTypes[i] + '&backURL=/imaging_browser/'}>
-            {cellTypes[i]}
-          </a>);
-          cellLinks.push(' | ');
-        }
-        cellLinks.push(<a key="selected" href={loris.BaseURL +
+          {cellTypes[i]}
+        </a>);
+        cellLinks.push(' | ');
+      }
+      cellLinks.push(<a key="selected" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
         '&selectedOnly=1&backURL=/imaging_browser/'}>
           selected
-        </a>);
+      </a>);
 
-        cellLinks.push(' | ');
-        cellLinks.push(<a key="all" href={loris.BaseURL +
+      cellLinks.push(' | ');
+      cellLinks.push(<a key="all" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
         '&backURL=/imaging_browser/'}>
           all types
-        </a>);
-        result = (<td>{cellLinks}</td>);
-        break;
+      </a>);
+      result = (<td>{cellLinks}</td>);
+      break;
     }
 
     return result;
@@ -168,9 +168,9 @@ class ImagingBrowserIndex extends Component {
         options: options.pendingNew,
       }},
       {label: 'Entity Type', show: false, filter: {
-       name: 'entityType',
-       type: 'multiselect',
-       option: options.entityType,
+        name: 'entityType',
+        type: 'multiselect',
+        option: options.entityType,
       }},
     ];
     /**

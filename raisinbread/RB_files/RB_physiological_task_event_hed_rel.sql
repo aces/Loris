@@ -1,0 +1,13 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `physiological_task_event_hed_rel`;
+LOCK TABLES `physiological_task_event_hed_rel` WRITE;
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (1,1,1165,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (2,1,542,NULL,1,1,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (3,2,1164,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (4,3,1165,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (5,4,1166,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (6,5,1167,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (7,6,1168,NULL,0,NULL,0);
+INSERT INTO `physiological_task_event_hed_rel` (`ID`, `PhysiologicalTaskEventID`, `HEDTagID`, `TagValue`, `HasPairing`, `PairRelID`, `AdditionalMembers`) VALUES (8,7,1169,NULL,0,NULL,0);
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

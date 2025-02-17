@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -121,8 +122,8 @@ writeFile(
 INSERT INTO modules (Name, Active) VALUES ('$mname', 'Y');
 
 /*
- INSERT INTO permissions (code, description, moduleID, action) 
-     SELECT '$mname','Access module $mname', m.ID, 'View' 
+ INSERT INTO permissions (code, description, moduleID, action)
+     SELECT '$mname','Access module $mname', m.ID, 'View'
         FROM modules m WHERE Name='$mname';
 */
 
@@ -319,7 +320,7 @@ Next steps:
   in module getWidgets function
 EOF;
 if ($jsx) {
-    print "\n- Update webpack.config.js to ensure module entrypoint is compiled";
+    print "\n- Update webpack.config.ts to ensure module entrypoint is compiled";
 }
 
 /**
