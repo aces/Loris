@@ -142,6 +142,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
+                    "SessionFailure",
+                    "Whether a session was failure or did the candidate withdrawal",
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration('Failure', 'Withdrawal', 'Neither'),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "Project",
                     "The LORIS project to categorize this session",
                     $sesscope,
@@ -267,14 +274,26 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'rsite.Name';
         case 'DateRegistered':
             $this->addTable(
-                "LEFT JOIN session s1 ON s1.CandID=c.CandID"
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
             );
-            return 's1.Date_registered';
+            return 's.Date_registered';
         case 'CurrentStage':
             $this->addTable(
-                "LEFT JOIN session s2 ON s2.CandID=c.CandID"
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
             );
-            return 's2.Current_stage';
+            return 's.Current_stage';
+        case 'SessionFailure':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
+	    return
+            "CASE
+                WHEN s.Visit='Failure' THEN 'Failure'
+                WHEN s.Screening='Failure' THEN 'Failure'
+                WHEN s.Visit='Withdrawal' THEN 'Withdrawal'
+                WHEN s.Screening='Withdrawal' THEN 'Withdrawal'
+                ELSE 'Neither'
+             END";
         case 'Sex':
             return 'c.Sex';
         case 'DoB':
