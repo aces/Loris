@@ -110,7 +110,7 @@ class RedcapConfig
         bool $prefix_instrument_variable,
         RedcapConfigRedcapId $redcap_participant_id,
         RedcapConfigLorisId $candidate_id,
-        array $visits,
+        ?array $visits,
     ) {
         $this->issue_assignee      = $issue_assignee;
         $this->redcap_project_id   = $redcap_project_id;
