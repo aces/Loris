@@ -34,14 +34,14 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
     /**
      * Construct a BaseRouter
      *
-     * @param \User  $user       The user accessing LORIS. (May be an AnonymousUser
-     *                           instance).
-     * @param string $projectdir The base of the LORIS project directory.
-     * @param string $moduledir  The base of the LORIS modules directory.
+     * @param \LORIS\LorisInstance $loris The LORIS instance being routed
+     * @param \User                $user  The user accessing LORIS. (May be an
+     *                                    AnonymousUser instance).
      */
-    public function __construct(protected $loris,
-	    protected \User $user)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        protected \User $user
+    ) {
     }
 
     /**
