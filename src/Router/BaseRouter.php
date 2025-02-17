@@ -31,9 +31,6 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $loris;
-    protected $user;
-
     /**
      * Construct a BaseRouter
      *
@@ -42,17 +39,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      * @param string $projectdir The base of the LORIS project directory.
      * @param string $moduledir  The base of the LORIS modules directory.
      */
-    public function __construct(\User $user, string $projectdir, string $moduledir)
+    public function __construct(protected $loris,
+	    protected \User $user)
     {
-        $this->user  = $user;
-        $this->loris = new \LORIS\LorisInstance(
-            \NDB_Factory::singleton()->database(),
-            \NDB_Factory::singleton()->config(),
-            [
-             $projectdir . "/modules",
-             $moduledir,
-            ]
-        );
     }
 
     /**
