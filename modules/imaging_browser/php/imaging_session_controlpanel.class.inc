@@ -103,6 +103,8 @@ class Imaging_Session_ControlPanel
                    // else 'Could not find linked instruments';
         }
         $subjectData['links'] = $links;
+        // check sessionID has data to view feedback_mri_popup page
+        $subjectData['hasData'] = empty($links)? true : false;
 
         $candidate = \Candidate::singleton($timePoint->getCandID());
 
