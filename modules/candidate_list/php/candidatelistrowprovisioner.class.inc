@@ -32,11 +32,15 @@ namespace LORIS\candidate_list;
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     private string $dobFormat;
+
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $factory  = \NDB_Factory::singleton();
         $config   = $factory->config();
@@ -48,6 +52,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $this->dobFormat = $config->getSetting("dobFormat");
 
         parent::__construct(
+            $this->loris,
             "SELECT
                 c.PSCID,
                 c.CandID AS DCCID,
@@ -68,10 +73,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 $maybeEDC
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
-                    LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
+                    LEFT JOIN session s ON (c.ID=s.CandidateID AND s.Active = 'Y')
                     LEFT JOIN feedback_bvl_thread
-                        ON (c.CandID=feedback_bvl_thread.CandID)
-                    LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                        ON (c.ID=feedback_bvl_thread.CandidateID)
+                    LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
@@ -100,8 +105,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
-        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
+        $cid = \CenterID::singleton($row['RegistrationCenterID']);
+        $pid = \ProjectID::singleton($row['RegistrationProjectID']);
         if ($row['DoB'] !== null) {
             $dob = new \DateTimeImmutable($row['DoB']);
             switch ($this->dobFormat) {

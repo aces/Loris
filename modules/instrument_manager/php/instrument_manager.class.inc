@@ -209,7 +209,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new InstrumentManagerProvisioner();
+        return new InstrumentManagerProvisioner($this->loris);
     }
 
     /**

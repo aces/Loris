@@ -112,13 +112,14 @@ class MRIFile
      */
     function getAcquisitionProtocol(): ?string
     {
-        if (is_null($this->fileData['AcquisitionProtocolID'])) {
+        if (is_null($this->fileData['MriScanTypeID'])) {
             return null;
         }
 
         return \NDB_Factory::singleton()->database()->pselectOne(
-            'SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID',
-            ['ProtoID' => $this->fileData['AcquisitionProtocolID']]
+            'SELECT MriScanTypeName FROM mri_scan_type
+             WHERE MriScanTypeID=:ID',
+            ['ID' => $this->fileData['MriScanTypeID']]
         );
     }
 }

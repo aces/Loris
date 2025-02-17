@@ -28,6 +28,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -59,7 +60,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -85,6 +86,15 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'CommentID'  => '11111111111111111',
             ]
         );
+        $this->DB->insert(
+            'participant_accounts',
+            [
+                'ID'        => '999999',
+                'Test_name' => 'testtest',
+                'SessionID' => '999999',
+                'Status'    => 'Created',
+            ]
+        );
         // Set up database wrapper and config
     }
 
@@ -95,10 +105,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("session", ['ID' => '999999']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
+        $this->DB->delete("participant_accounts", ['ID' => '999999']);
         parent::tearDown();
     }
 

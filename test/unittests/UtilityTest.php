@@ -95,11 +95,11 @@ class UtilityTest extends TestCase
      *      by getStageUsingCandID method
      */
     private $_sessionInfo = [
-        ['CandID' => '100001',
+        ['CandidateID' => '100001',
             'CohortID'      => '2',
             'Current_stage' => 'Not Started'
         ],
-        ['CandID' => '100003',
+        ['CandidateID' => '100003',
             'CohortID'      => '4',
             'Current_stage' => 'Approval'
         ]
@@ -516,12 +516,12 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['Visit_label' => 'VL1',
-                        'CandID'      => '100001',
+                        'CandidateID' => '100001',
                         'CenterID'    => '2',
                         'Active'      => 'Y'
                     ],
                     ['Visit_label' => 'VL2',
-                        'CandID'      => '100003',
+                        'CandidateID' => '100003',
                         'CenterID'    => '4',
                         'Active'      => 'Y'
                     ]
@@ -559,7 +559,7 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['Visit_label' => 'VL1',
-                        'CandID'      => '123456',
+                        'CandidateID' => '123456',
                         'CenterID'    => '1234567890',
                         'Active'      => 'Y'
                     ]
@@ -1144,15 +1144,18 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->once())->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
+                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
                 )
             )
             ->willReturn(
-                [0 => ['ID' => 123,
-                    'Scan_type' => 'scan 1'
-                ],
-                    1 => ['ID' => 234,
-                        'Scan_type' => 'scan 2'
+                [
+                    0 => [
+                        'ID'   => 123,
+                        'Name' => 'scan 1'
+                    ],
+                    1 => [
+                        'ID'   => 234,
+                        'Name' => 'scan 2'
                     ]
                 ]
             );

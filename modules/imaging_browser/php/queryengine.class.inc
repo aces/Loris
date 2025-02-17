@@ -103,12 +103,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 "SELECT DISTINCT s.Visit_label
                 FROM files f
                     JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
-                    JOIN mri_scan_type mst ON (mst.ID=f.AcquisitionProtocolID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
+                    JOIN mri_scan_type mst ON (mst.MriScanTypeID=f.MriScanTypeID)
                 WHERE
                     c.Active='Y' AND
                     s.Active='Y' AND
-                    mst.Scan_type=:scantype AND
+                    mst.MriScanTypeName=:scantype AND
                     c.Entity_Type='Human'
                 ORDER BY s.Visit_label",
                 ['scantype' => $item->getModality()],
@@ -132,7 +132,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
         if ($item->getName() == 'ScanDone') {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
                 return "CASE WHEN s.Scan_Done='Y' THEN true
                              WHEN s.Scan_Done='N' THEN false
                              ELSE NULL END";
@@ -140,7 +140,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item instanceof LocationDictionaryItem) {
             $modality = $item->getModality();
 
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
 
             // Because of complex interactions between joins that get
@@ -148,10 +148,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             // alongside one that does, we use a subselect here.
             if (str_ends_with($item->getName(), "_file")) {
                 return "(SELECT File FROM files as files2
-                            JOIN mri_scan_type
-                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                            JOIN mri_scan_type mst
+                                ON (files2.MriScanTypeID=mst.MriScanTypeID)
                             WHERE files2.FileID=files.FileID
-                                AND mri_scan_type.Scan_type='{$modality}')";
+                                AND mst.MriScanTypeName='{$modality}')";
             } else if (str_ends_with($item->getName(), "_url")) {
                 return "(SELECT CONCAT(
                             \"$this->baseURL\",
@@ -159,27 +159,27 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                             c.CandID,
                             \"/\",
                             s.Visit_label,
-                            \"/images/\", 
+                            \"/images/\",
                             SUBSTRING_INDEX(files.File, '/', -1)
                             ) FROM files as files2
-                            JOIN mri_scan_type
-                                ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                            JOIN mri_scan_type mst
+                                ON (files2.MriScanTypeID=mst.MriScanTypeID)
                             WHERE files2.FileID=files.FileID
-                                AND mri_scan_type.Scan_type='{$modality}')";
+                                AND mst.MriScanTypeName='{$modality}')";
             }
         }
         if ($item instanceof QCDictionaryItem) {
             $modality = $item->getModality();
 
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
-            return "(SELECT QCStatus FROM files_qcstatus 
+            return "(SELECT QCStatus FROM files_qcstatus
                         JOIN files as files2
-                        JOIN mri_scan_type
-                            ON (files2.AcquisitionProtocolID=mri_scan_type.ID)
+                        JOIN mri_scan_type mst
+                            ON (files2.MriScanTypeID=mst.MriScanTypeID)
                         WHERE files_qcstatus.FileID=files.FileID
                             AND files2.FileID=files.FileID
-                            AND mri_scan_type.Scan_type='{$modality}')";
+                            AND mst.MriScanTypeName='{$modality}')";
         }
 
         throw new \DomainException("Invalid field " . $item->getName());
@@ -211,7 +211,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item instanceof LocationDictionaryItem
             || $item instanceof QCDictionaryItem
         ) {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
+            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }

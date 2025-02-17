@@ -252,6 +252,12 @@ class NDB_BVL_InstrumentStatus
                     ConflictDetector::recordUnresolvedConflicts($diff);
                 }
             }
+
+            $GLOBALS['DB']->update(
+                'participant_accounts',
+                ['Status' => $status],
+                ['CommentID' => $this->_commentID]
+            );
         }
 
         // Remove conflicts for SDE & DDE form from the

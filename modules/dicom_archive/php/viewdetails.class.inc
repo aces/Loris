@@ -14,6 +14,8 @@
  */
 namespace LORIS\dicom_archive;
 
+use \Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -52,7 +54,63 @@ class ViewDetails extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('dicom_archive_view_allsites');
+        // remove the possibility to have no tarchive ID in this page
+        if (is_null($this->tarchiveID)) {
+            // defaults to permission denied
+            return false;
+        }
+
+        // get project ID from Tarchive ID.
+        $projectID = $this->_getProjectFromTarchiveID();
+        if (is_null($projectID)) {
+            return false;
+        }
+
+        // check permissions
+        return $user->hasPermission('dicom_archive_view_allsites')
+            && $user->hasProject($projectID);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User                  $user    The user this request is for
+     * @param ServerRequestInterface $request The PSR7 request
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+        $gets = $request->getQueryParams();
+        if (is_null($gets['tarchiveID'])) {
+            $this->tarchiveID = null;
+        } else {
+            $this->tarchiveID = intval($gets['tarchiveID']);
+        }
+    }
+
+    /**
+     * Get the ProjectID attached to a given tarchive ID.
+     *
+     * @return \ProjectID|null a ProjectID if found, else null
+     */
+    private function _getProjectFromTarchiveID(): ?\ProjectID
+    {
+        $db  = $this->loris->getDatabaseConnection();
+        $pid = $db->pselectOne(
+            "SELECT p.ProjectID
+            FROM tarchive t
+                JOIN session s ON (t.SessionID = s.ID)
+                JOIN Project p ON (p.ProjectID = s.ProjectID)
+            WHERE t.TarchiveID = :tar",
+            ['tar' => $this->tarchiveID]
+        );
+        //
+        if (is_null($pid)) {
+            return null;
+        }
+        return \ProjectID::singleton(intval($pid));
     }
 
     /**
@@ -259,7 +317,7 @@ class ViewDetails extends \NDB_Form
     function _setProtocols()
     {
         try {
-            $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
+            $query           = "SELECT MriScanTypeID, TR_min, TR_max, TE_min, TE_max,
                 TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, []);
@@ -293,7 +351,7 @@ class ViewDetails extends \NDB_Form
                     $protocol['slice_thickness_max']
                 ))
             ) {
-                return $this->_getProtocolNameFromID($protocol['Scan_type']);
+                return $this->_getProtocolNameFromID($protocol['MriScanTypeID']);
             }
         }
         return "Unknown";
@@ -338,9 +396,10 @@ class ViewDetails extends \NDB_Form
     function _getProtocolNameFromID($id): string
     {
         try {
-            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+            $query = "SELECT MriScanTypeName FROM mri_scan_type
+                WHERE MriScanTypeID=:ID";
             $array = $this->DB->pselectRow($query, ['ID' => $id]);
-            return $array['Scan_type'] ?? 'Unknown';
+            return $array['MriScanTypeName'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }

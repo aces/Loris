@@ -96,7 +96,6 @@ class DeleteDocCategoryForm extends React.Component {
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
-              hasError={false}
               value={this.state.formData.categoryID}
             />
             {deleteButton}
@@ -106,9 +105,11 @@ class DeleteDocCategoryForm extends React.Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
 
   /**

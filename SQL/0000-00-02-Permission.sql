@@ -105,8 +105,8 @@ INSERT INTO `permissions` VALUES
     (33,'genomic_data_manager','Genomic Files',(SELECT ID FROM modules WHERE Name='genomic_browser'),'Upload','2'),
     (34,'media_write','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'Edit/Upload/Hide','2'),
     (35,'media_read','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),'View/Download','2'),
-    (36,'issue_tracker_reporter', 'Create/Edit Own Issues and Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
-    (37,'issue_tracker_developer', 'Close/Edit/Re-assign/Comment on All Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
+    (36,'issue_tracker_own_issue', 'See/Edit/Comment and Close on Own Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
+    (37,'issue_tracker_all_issue', 'See/Edit/Comment on all Issues',(SELECT ID FROM modules WHERE Name='issue_tracker'),NULL, 2),
     (38,'imaging_browser_phantom_allsites', 'Phantom Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),'View', 2),
     (39,'imaging_browser_phantom_ownsite', 'Phantom Scans - Own Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),'View', 2),
     (40,'data_release_view', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),'View', 2),
@@ -136,7 +136,11 @@ INSERT INTO `permissions` VALUES
     (64,'dataquery_admin','Admin dataquery queries',(SELECT ID FROM modules WHERE Name='dataquery'),NULL,'2'),
     (65,'schedule_module','Schedule Module - edit and delete the appointment',(SELECT ID FROM modules WHERE Name='schedule_module'),'View/Create/Edit','2'),
     (66,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
-    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
+    (67,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2'),
+    (68,'issue_tracker_site_issue','See/Edit/Comment on Own Site Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2),
+    (69,'issue_tracker_close_site_issue','Close Own Site Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2),
+    (70,'issue_tracker_close_all_issue','Close all Issues',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),NULL,2);
+
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

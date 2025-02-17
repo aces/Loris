@@ -284,6 +284,15 @@ class IssueForm extends Component {
             sortByValue={false}
           />
           <SelectElement
+            name='instrument'
+            label='Instrument'
+            emptyOption={true}
+            options={this.state.Data.instruments}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.instrument}
+          />
+          <SelectElement
             name='category'
             label='Category'
             emptyOption={true}
@@ -388,6 +397,10 @@ class IssueForm extends Component {
             // a NULL centerID (= All Sites) is converted to the ALL Sites option
             if (formData.centerID == null) {
               formData.centerID = 'all';
+            }
+
+            if (formData.instrument_name) {
+              formData.instrument = formData.instrument_name;
             }
           }
 
@@ -515,7 +528,7 @@ class IssueForm extends Component {
       if (formDataToCheck[field]) {
         requiredFields[field] = formDataToCheck[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required';
         isValidForm = false;
       }
     });

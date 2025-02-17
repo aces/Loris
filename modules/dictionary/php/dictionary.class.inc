@@ -52,9 +52,20 @@ class Dictionary extends \DataFrameworkMenu
         foreach ($this->modules as $module) {
             $amodules[$module->getName()] = $module->getLongName();
         }
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
+        $cohort_options = [];
+        foreach (array_values($cohorts) as $name) {
+            $cohort_options[$name] = $name;
+        }
         return [
             'modules'    => $amodules,
             'categories' => $this->categories,
+            'cohorts'    => $cohort_options
         ];
     }
 

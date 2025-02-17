@@ -56,7 +56,7 @@ class Error extends HtmlResponse
         $lorisInstance = $request->getAttribute('loris');
         $user          = $request->getAttribute('user') ?? new \LORIS\AnonymousUser();
 
-        // Variables used to suggest the user to login and later redirect them if they
+        //Variables used to suggest the user to login and later redirect them if they
         // are not authenticated in a 403.
         $tpl_data['anonymous'] = $user instanceof \LORIS\AnonymousUser;
         $tpl_data['url']       = urlencode($uri->__toString());
@@ -75,8 +75,9 @@ class Error extends HtmlResponse
             // the correct permissions.
             $canReport = $user->hasAnyPermission(
                 [
-                 'issue_tracker_reporter',
-                 'issue_tracker_developer',
+                 'issue_tracker_all_issue',
+                 'issue_tracker_own_issue',
+                 'issue_tracker_site_issue',
                 ]
             );
             if ($canReport) {

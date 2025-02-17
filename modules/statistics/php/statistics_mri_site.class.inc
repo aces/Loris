@@ -102,7 +102,10 @@ class Statistics_Mri_Site extends Statistics_Site
         $DB = $this->loris->getDatabaseConnection();
 
         $scan_types = iterator_to_array(
-            $DB->pselect("SELECT Scan_type from mri_scan_type", [])
+            $DB->pselect(
+                "SELECT MriScanTypeName AS ScanType from mri_scan_type",
+                []
+            )
         );
         $where      = "WHERE (";
         $counter    = 1;
@@ -119,15 +122,16 @@ class Statistics_Mri_Site extends Statistics_Site
         $query = '';
         switch ($issue) {
         case 'Tarchive_Missing':
-            $query = "SELECT DISTINCT f.CommentID as CommentID, 
-                            c.PSCID, s.ID as SessionID, s.CandID as CandID,
+            // TODO: MID() as-is may not work for longer int(10) CandIDs
+            $query = "SELECT DISTINCT f.CommentID as CommentID,
+                            c.PSCID, s.ID as SessionID, c.CandID as CandID,
                             s.Visit_label
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
                         JOIN test_names tn ON tn.ID = f.TestID
                         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-                        LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6)
+                        LEFT JOIN candidate c ON (s.CandidateID=c.ID)
+                        LEFT JOIN tarchive t ON (c.CandID=MID(t.PatientName, 9, 6)
                         AND MID(t.PatientName, 16, 7)=s.Visit_label)
-                        LEFT JOIN candidate c ON (s.CandID=c.CandID)
                         $where
                             AND f.CommentID NOT LIKE 'DDE%'
                             AND tn.Test_name='mri_parameter_form'
@@ -154,12 +158,12 @@ class Statistics_Mri_Site extends Statistics_Site
             }
 
             $query = "SELECT DISTINCT f.CommentID as CommentID,
-                      s.ID as SessionID, c.PSCID, s.CandID, s.Visit_label
+                      s.ID as SessionID, c.PSCID, c.CandID, s.Visit_label
                     FROM mri_parameter_form m LEFT JOIN flag f ON
                                         (f.CommentID=m.CommentID)
                     LEFT JOIN session s ON (s.ID=f.SessionID)
                     LEFT JOIN files fi ON (fi.SessionID=f.SessionID)
-                    LEFT JOIN candidate c ON (c.CandID=s.CandID)
+                    LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                     $where
                         AND fi.FileID IS NULL
                         AND f.Data_entry= 'Complete'
@@ -176,8 +180,8 @@ class Statistics_Mri_Site extends Statistics_Site
                         LEFT JOIN test_names tn ON (tn.ID = f.TestID)
                         LEFT JOIN mri_parameter_form mpf
                        ON (mpf.CommentID=f.CommentID)
-                        LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                        WHERE s.Active='Y' 
+                        LEFT JOIN candidate c ON (c.ID=s.CandidateID)
+                        WHERE s.Active='Y'
                            AND c.Entity_type != 'Scanner'
                            AND (f.ID IS NULL OR
                            f.Data_entry <> 'Complete' OR

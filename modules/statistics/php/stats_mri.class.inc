@@ -309,15 +309,15 @@ class Stats_MRI extends \NDB_Form
 
         //GET SCAN TYPES
         $Scan_type_results = $DB->pselect(
-            "SELECT mst.ID, mst.Scan_type
+            "SELECT mst.MriScanTypeID, mst.MriScanTypeName
               FROM mri_scan_type mst
-                JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+                JOIN mri_protocol mp USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($Scan_type_results as $row) {
-            $scan_types[$row['ID']] = $row['Scan_type'];
+            $scan_types[$row['MriScanTypeID']] = $row['MriScanTypeName'];
         }
 
         $scans_selected = [];
@@ -386,7 +386,7 @@ class Stats_MRI extends \NDB_Form
                 FROM mri_parameter_form m
                     JOIN flag f USING (CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND f.Administration <> 'None'
                     AND s.Active='Y'
@@ -433,7 +433,7 @@ class Stats_MRI extends \NDB_Form
                 "SELECT COUNT(*)
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
@@ -452,7 +452,7 @@ class Stats_MRI extends \NDB_Form
                 "SELECT s.CohortID as subID, COUNT(*) as cnt
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
@@ -481,7 +481,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -502,7 +502,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -533,7 +533,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -554,7 +554,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'

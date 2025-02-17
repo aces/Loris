@@ -84,7 +84,7 @@ CandidateScanQCSummaryWidget.propTypes = {
 function getModalities(files) {
   let modalities = {};
   for (const row of Object.values(files)) {
-    modalities[row.Scan_type] = true;
+    modalities[row.ScanType] = true;
   }
   return Object.keys(modalities).sort();
 }
@@ -171,7 +171,7 @@ function getDataObject(modalities, files) {
   for (let i = 0; i < files.length; i++) {
     const session = files[i];
     const QC = session.QC == '' ? 'Other' : session.QC;
-    data[session.Scan_type][QC][session.Visit_label] = session.nfiles;
+    data[session.ScanType][QC][session.Visit_label] = session.nfiles;
   }
   return data;
 }

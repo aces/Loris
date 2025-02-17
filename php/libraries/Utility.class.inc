@@ -262,7 +262,7 @@ class Utility
             $ExtraProject_Criteria ='';
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
+            JOIN candidate c ON (s.CandidateID = c.ID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
@@ -668,7 +668,8 @@ class Utility
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $query = "select DISTINCT Current_stage from session where ".
+        $query = "SELECT DISTINCT Current_stage FROM session s ".
+            "JOIN candidate c ON c.ID=s.CandidateID WHERE ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage->getFirstRow()['Current_stage'];
@@ -715,7 +716,9 @@ class Utility
             );
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
-                "SELECT Test_name FROM flag WHERE CommentID = :cid",
+                "SELECT Test_name FROM flag
+                 JOIN test_names ON (test_names.ID = flag.TestID)
+                 WHERE CommentID = :cid",
                 ['cid' => $commentID]
             );
             $sourcefields = $DB->pselect(
@@ -773,9 +776,9 @@ class Utility
         $test_names = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT t.Test_name, t.Full_name
             FROM session s
-            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
             JOIN flag f ON (f.sessionID=s.id)
-            JOIN test_names t ON (f.test_name=t.Test_name)
+            JOIN test_names t ON (f.TestID=t.ID)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
             AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
@@ -967,15 +970,15 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type
-             FROM mri_scan_type mri
-                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            "SELECT MriScanTypeID, MriScanTypeName
+             FROM mri_scan_type JOIN files USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
-            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+            $scan_types[$scan_type['MriScanTypeID']]
+                = $scan_type['MriScanTypeName'];
         }
 
         return $scan_types;
@@ -1055,10 +1058,13 @@ class Utility
         $status  = $isApproved ? 'Y' : 'N';
 
         $dxToUpdate = $DB->pselect(
-            "SELECT cde.CandID, cde.DxEvolutionID
-            FROM candidate_diagnosis_evolution_rel cde 
+            "SELECT c.CandID, cde.DxEvolutionID
+            FROM candidate_diagnosis_evolution_rel cde
             JOIN diagnosis_evolution de USING (DxEvolutionID)
-            JOIN session s ON (cde.CandID=s.CandID AND s.Visit_label=de.visitLabel)
+            JOIN session s ON (
+                cde.CandidateID=s.CandidateID AND s.Visit_label=de.visitLabel
+            )
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE s.ID=:sid",
             ['sid' => $sessionID]
         );

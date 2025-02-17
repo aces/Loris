@@ -82,13 +82,13 @@ class EditDocCategoryForm extends React.Component {
       updateButton = <ButtonElement label="Edit Category"/>;
     }
 
-    let errorSameParent = false;
+    let errorSameParent = null;
 
     if (
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
     ) {
-      errorSameParent = true;
+      errorSameParent = 'Cannot be equal to itself';
     }
 
     return (
@@ -106,7 +106,6 @@ class EditDocCategoryForm extends React.Component {
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
-              hasError={false}
               value={this.state.formData.categoryID}
             />
             <TextboxElement
@@ -124,8 +123,7 @@ class EditDocCategoryForm extends React.Component {
               onUserInput={this.setFormData}
               required={false}
               disabled={disabled}
-              hasError={errorSameParent}
-              errorMessage={'Cannot be equal to itself'}
+              errorMessage={errorSameParent}
               value={this.state.formData.newParentID}
             />
             {updateButton}
@@ -135,9 +133,11 @@ class EditDocCategoryForm extends React.Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
   /**
    * Handle form submission

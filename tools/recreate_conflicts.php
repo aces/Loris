@@ -64,6 +64,7 @@ foreach ($allInstruments as $instrument => $Full_name) {
                                      FROM flag
                                      JOIN session s ON (s.ID=flag.SessionID)
                                      JOIN candidate c ON (c.CandID=s.CandID)
+                                     JOIN test_names tn ON (tn.ID=flag.TestID)
                                      WHERE Test_name=:testname AND CommentID
                                            NOT LIKE 'DDE%' AND s.Active='Y'
                                            AND c.Active='Y'",
@@ -78,16 +79,17 @@ foreach ($allInstruments as $instrument => $Full_name) {
 foreach ($ddeInstruments as $test) {
     $instruments = $db->pselect(
         "SELECT CommentID, Test_name, CONCAT('DDE_',
-                                        CommentID) AS DDECommentID
-                                 FROM flag sde
-                                 JOIN session s ON (s.ID=sde.SessionID)
-                                 JOIN candidate c ON (c.CandID=s.CandID)
-                                 WHERE sde.Test_name=:testname AND sde.CommentID
-                                       NOT LIKE 'DDE%' AND sde.Data_entry='Complete'
-                                       AND s.Active='Y' AND c.Active='Y'
-                                       AND EXISTS (SELECT 'x' FROM flag dde WHERE
-                                           dde.CommentID=CONCAT('DDE_',sde.CommentID)
-                                       AND Data_entry='Complete')",
+            CommentID) AS DDECommentID
+        FROM flag sde
+        JOIN session s ON (s.ID=sde.SessionID)
+        JOIN candidate c ON (c.CandID=s.CandID)
+        JOIN test_names tn ON (tn.ID=sde.TestID)
+        WHERE Test_name=:testname AND sde.CommentID
+        NOT LIKE 'DDE%' AND sde.Data_entry='Complete'
+        AND s.Active='Y' AND c.Active='Y'
+        AND EXISTS (SELECT 'x' FROM flag dde WHERE
+            dde.CommentID=CONCAT('DDE_',sde.CommentID)
+        AND Data_entry='Complete')",
         ['testname' => $test]
     );
 

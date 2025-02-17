@@ -85,7 +85,7 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new DicomArchiveRowProvisioner();
+        $provisioner = new DicomArchiveRowProvisioner($this->loris);
 
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
 

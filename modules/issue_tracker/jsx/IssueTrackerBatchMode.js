@@ -22,6 +22,8 @@ function IssueTrackerBatchMode({options}) {
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [assignees, setAssignees] = useState({});
+  const [otherWatchers, setOtherWatchers] = useState({});
 
   // Pagination state
   const [page, setPage] = useState({
@@ -63,7 +65,9 @@ function IssueTrackerBatchMode({options}) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setIssues(data);
+      setIssues(data.issues || []);
+      setAssignees(data.assignees || {});
+      setOtherWatchers(data.otherWatchers || {});
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching issues:', error);
@@ -73,7 +77,7 @@ function IssueTrackerBatchMode({options}) {
   }
 
   /**
-   * Filters issues based on selected categories, priorities, and statuses
+   * Filters issues based on selected categories, priorities, statuses, and sites
    */
   function filterIssues() {
     setFilteredIssues(issues.filter((issue) =>
@@ -121,10 +125,18 @@ function IssueTrackerBatchMode({options}) {
   }
 
   // Pagination functions
+  /**
+   *
+   * @param pageNumber
+   */
   function changePage(pageNumber) {
     setPage((prevPage) => ({...prevPage, number: pageNumber}));
   }
 
+  /**
+   *
+   * @param e
+   */
   function updatePageRows(e) {
     const newRowsPerPage = parseInt(e.target.value, 10);
     setPage({number: 1, rows: newRowsPerPage});
@@ -323,6 +335,8 @@ function IssueTrackerBatchMode({options}) {
             <IssueCard
               key={issue.issueID}
               issue={issue}
+              assignees={assignees}
+              otherWatchers={otherWatchers}
               onUpdate={handleIssueUpdate}
               statuses={statuses}
               priorities={priorities}

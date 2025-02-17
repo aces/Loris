@@ -87,7 +87,7 @@ class FeedbackMRI
      *
      * @return bool true if operation succeeded
      */
-    function setPredefinedComments(array $predefinedCommentIDs=null): bool
+    function setPredefinedComments(?array $predefinedCommentIDs=null): bool
     {
         // choke if we are passed an empty array
         if (empty($predefinedCommentIDs)) {
