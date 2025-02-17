@@ -145,7 +145,11 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "SessionFailure",
                     "Whether a session was failure or did the candidate withdrawal",
                     $sesscope,
-                    new \LORIS\Data\Types\Enumeration('Failure', 'Withdrawal', 'Neither'),
+                    new \LORIS\Data\Types\Enumeration(
+                        'Failure',
+                        'Withdrawal',
+                        'Neither'
+                    ),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
