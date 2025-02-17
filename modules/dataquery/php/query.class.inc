@@ -366,7 +366,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 'Name'    => $name,
             ]
         );
-
     }
 
     /**
@@ -492,7 +491,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param string $name The name that the admin thinks should be
      *                     used for the query
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -517,7 +516,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Remove this query from the list of queries pinned by an admin.
      *
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */

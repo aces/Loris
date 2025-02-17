@@ -54,7 +54,7 @@ class SurveyAccountsProvisioner
                 s.ProjectID
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
-                JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
              WHERE c.Active = 'Y'
                 AND s.Active = 'Y'
              ORDER BY PSCID",

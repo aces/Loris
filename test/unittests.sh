@@ -28,7 +28,7 @@ sed -i \
     -e "s/%DATABASE%/$database/g" \
     config.xml
 LORIS_DB_CONFIG=$(pwd)/config.xml
-export $LORIS_DB_CONFIG
+export LORIS_DB_CONFIG
 
 if [ $# -eq 2 ]; then
   # Run specific unit test by specifying test name and file path

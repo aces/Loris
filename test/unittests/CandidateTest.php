@@ -144,6 +144,7 @@ class CandidateTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
 
         $this->_candidateInfo = [
+            'ID'                    => 111111,
             'RegistrationCenterID'  => 2,
             'CandID'                => new CandID('969664'),
             'PSCID'                 => 'AAA0011',
@@ -1193,15 +1194,18 @@ class CandidateTest extends TestCase
             "participant_status",
             [
                 0 => [
-                    'CandID'             => '969664',
-                    'participant_status' => '2'
+                    'CandidateID'        => 111111,
+                    'participant_status' => '2',
                 ]
             ]
         );
         $result = $this->_candidate->getParticipantStatusDescription($this->_DB);
         $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
         $this->_DB->run("DROP TEMPORARY TABLE participant_status");
-        $this->assertEquals($result, 'description2');
+        $this->assertEquals(
+            $result,
+            'description2'
+        );
     }
 
     /**

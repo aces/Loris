@@ -81,7 +81,7 @@ foreach ($instruments as $testName=>$instrument) {
     $CommentIDs = $DB->pselectCol(
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
-            JOIN candidate c ON c.CandID=s.CandID
+            JOIN candidate c ON c.ID=s.CandidateID
             JOIN test_names tn ON tn.ID=f.TestID
         WHERE c.Active='Y' AND s.Active='Y'
             AND f.DataID IS NOT NULL

@@ -44,7 +44,7 @@ class ElectrophysiologyUploaderProvisioner
                 c.RegistrationProjectID
             FROM electrophysiology_uploader e
                 JOIN session s ON (s.ID = e.SessionID)
-                JOIN candidate c ON (c.CandID = s.CandID)
+                JOIN candidate c ON (c.ID = s.CandidateID)
                 JOIN psc ON (psc.CenterID = c.RegistrationCenterID)
             ",
             []

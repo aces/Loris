@@ -50,7 +50,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
             $this->loris,
             '
              SELECT
-               s.CandID as Candidate,
+               c.CandID as Candidate,
                c.PSCID as PSCID,
                c.Entity_type as Entity_type,
                s.Visit_label as Visit,
@@ -69,7 +69,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              LEFT JOIN session s
                ON (f.SessionID = s.ID)
              LEFT JOIN candidate c
-               ON (s.CandID = c.CandID)
+               ON (s.CandidateID = c.ID)
              LEFT JOIN psc p
                ON (s.CenterID = p.CenterID)
              LEFT JOIN files_qcstatus qc

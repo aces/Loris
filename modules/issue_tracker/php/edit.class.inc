@@ -75,7 +75,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $inactive_users = [];
         if ($user->hasPermission('issue_tracker_all_issue')) {
             $assignee_expanded = $db->pselect(
-                "SELECT Real_name, UserID FROM users 
+                "SELECT Real_name, UserID FROM users
                     WHERE Active='Y' AND Pending_approval='N'",
                 []
             );
@@ -131,7 +131,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
-            "SELECT Real_name, UserID FROM users 
+            "SELECT Real_name, UserID FROM users
                 WHERE Active='Y' AND Pending_approval='N'",
             []
         );
@@ -400,9 +400,9 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Fetch issues
         $baseQuery = "
-            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+            SELECT i.*, c.CandID as candID, c.PSCID, s.Visit_label AS visitLabel
             FROM issues AS i
-            LEFT JOIN candidate c ON i.candID = c.CandID
+            LEFT JOIN candidate c ON i.CandidateID = c.ID
             LEFT JOIN session s ON i.sessionID = s.ID
         ";
 
@@ -503,7 +503,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             "SELECT issueComment, dateAdded, addedBy
              FROM issues_comments
              WHERE issueID = :issueID
-             ORDER BY dateAdded DESC 
+             ORDER BY dateAdded DESC
              LIMIT 3",
             ['issueID' => $issueID]
         );
@@ -537,12 +537,13 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData = $db->pselectRow(
                 "SELECT
                             i.*,
+                            c.CandID AS candID,
                             c.PSCID,
                             s.Visit_label AS visitLabel,
                             t.Test_name as instrument_name
                         FROM
                             issues AS i
-                            LEFT JOIN candidate c ON (i.candID = c.CandID)
+                            LEFT JOIN candidate c ON (i.CandidateID = c.ID)
                             LEFT JOIN session s ON (i.sessionID = s.ID)
                             LEFT JOIN test_names t ON (i.instrument = t.ID)
                         WHERE
@@ -670,7 +671,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $watching = $db->pselect(
             "SELECT Real_name, UserID from users
-            WHERE UserID IN 
+            WHERE UserID IN
               (SELECT userID from issues_watching
               WHERE issueID=:issueID)
             AND UserID NOT IN
@@ -1121,13 +1122,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                     SELECT
                         EXISTS (
                             SELECT
-                                *
+                                *, c.CandID
                             FROM
                                 session s
                             JOIN
                                 candidate c
                             ON
-                                c.CandID = s.CandID
+                                c.ID = s.CandidateID
                             WHERE
                                 s.CenterID = :center_id AND
                                 c.PSCID = :psc_id
@@ -1153,8 +1154,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (isset($result['PSCID']) && isset($result['visit'])) {
             $session = iterator_to_array(
                 $db->pSelect(
-                    "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
-                INNER JOIN session s on (c.CandID = s.CandID)
+                    "SELECT s.ID as sessionID, c.CandID as candID FROM candidate c
+                INNER JOIN session s on (c.ID = s.CandidateID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
                     [
                         'PSCID'      => $result['PSCID'],
