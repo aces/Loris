@@ -51,7 +51,7 @@
 
     <h3>Visit Level QC</h3>
     <div class="visit-level-feedback">
-    {if $subject.sessionID != ""}
+     {if $subject.sessionID != ""}
           <a class="btn btn-default" href="#"
                onClick="javascript:open_popup('{$baseurl|default}/imaging_browser/feedback_mri_popup/sessionID={$subject.sessionID}')">
                  <span class="text-default">
@@ -59,7 +59,7 @@
                      <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
                  </span>
         </a>
-    {/if}
+        {/if}
      </div>
     <br>
     <div class='div-controlpanel-bottom'>
