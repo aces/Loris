@@ -286,7 +286,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             $this->addTable(
                 "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
             );
-	    return
+            return
             "CASE
                 WHEN s.Visit='Failure' THEN 'Failure'
                 WHEN s.Screening='Failure' THEN 'Failure'
