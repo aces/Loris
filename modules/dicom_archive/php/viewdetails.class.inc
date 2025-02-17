@@ -96,7 +96,7 @@ class ViewDetails extends \NDB_Form
      */
     private function _getProjectFromTarchiveID(): ?\ProjectID
     {
-        $db  = \NDB_Factory::singleton()->database();
+        $db  = $this->loris->getDatabaseConnection();
         $pid = $db->pselectOne(
             "SELECT p.ProjectID
             FROM tarchive t
