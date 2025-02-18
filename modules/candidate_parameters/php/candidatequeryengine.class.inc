@@ -374,7 +374,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 "AND pc_comment.ParameterTypeID=( " .
                     "SELECT ParameterTypeID " .
                     "FROM parameter_type " .
-		    "WHERE Name='candidate_comment')"
+                    "WHERE Name='candidate_comment')"
             );
             return 'pc_comment.Value';
         default:
