@@ -87,4 +87,17 @@ Targeting multiple REDCap instances and projects: ideally at least 2 REDCap inst
 
 ## REDCap tools
 
-TBD
+### Tool `redcap2linst`
+
+For this tool, there are 2 modes/input-types: `api` or `file`:
+    - `input-type=api` connects to the REDCap API to get the data dictionary, then parses it.
+    - `input-type=file` uses a data dictionary file extracted from a REDCap instance, then parse it.
+
+1. [output_directory] check that the `--output-dir` is mandatory.
+2. [api] using the `--input-type=api` mode:
+    - check that both `-r/--redcap-instance=INSTANCE_NAME` and `-p/--redcap-project=PROJECT_ID` are mandatory.
+    - check that both `-r/--redcap-instance=INSTANCE_NAME` and `-p/--redcap-project=PROJECT_ID` must be defined in `config.xml` file.
+3. [file] using the `--input-type=api` mode:
+    - check that the file is correctly parsed.
+    - if `-r/--redcap-instance=INSTANCE_NAME` and `-p/--redcap-project=PROJECT_ID` mentioned, check the name/title of the instrument is also generated in the LINST file.
+4. [trim_form_name] check that the instrument name does not appear as a prfix of each field name when `-t/--trim-formname` option is used.
