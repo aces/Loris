@@ -202,6 +202,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
+                    "CandidateComments",
+                    "Candidate comments",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "RegistrationSite",
                     "The site at which this candidate was initially registered",
                     $candscope,
@@ -360,6 +367,16 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 'LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)'
             );
             return 'ps.reason_specify';
+        case 'CandidateComments':
+            $this->addTable(
+                "LEFT JOIN parameter_candidate pc_comment " .
+                "ON (pc_comment.CandID=c.CandID) " .
+                "AND pc_comment.ParameterTypeID=( " .
+                    "SELECT ParameterTypeID " .
+                    "FROM parameter_type " .
+		    "WHERE Name='candidate_comment')"
+            );
+            return 'pc_comment.Value';
         default:
             throw new \DomainException("Invalid field " . $item->getName());
         }
