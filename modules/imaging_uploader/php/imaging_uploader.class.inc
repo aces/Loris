@@ -95,6 +95,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'Visit_label' => 's.Visit_label',
             'IsPhantom'   => 'mu.IsPhantom',
         ];
+        $this->order_by     ="UploadDate DESC";
     }
      /**
       * Sets up the menu filter items for the imaging uploader
