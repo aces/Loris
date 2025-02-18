@@ -15,8 +15,9 @@ and relational tables.
 
 ### Faking Data Entry Trigger notification
 
-Testing the notification process can be done from a REDCap instance but also
-directly from LORIS. It is still requiring the REDCap instance API access.
+Testing the notification process can be done from a REDCap instance i.e. saving
+an instrument form in REDCap, but also directly from LORIS using the LORIS API
+endpoint. It is still requiring the REDCap instance API access.
 
 You do not need to test the Data Entry Trigger (DET) itself, meaning you do not
 need to go the the REDCap front-end and change the DET option to target the test
@@ -58,21 +59,31 @@ error.
 
 #### Single REDCap instance
 
+Targeting a single REDCap instance:
+
 1. [structure] Check that all properties of the DET notifiction structure are required.
-2. [structure] Check that `${instrument_backend_name}__complete` codes that are not `2` are ignored.
-3. [structure] Check that `${instrument_backend_name}` and `instrument_backend_name` value must match.
-4. [client] Check that any or both of `redcap_url` and `project_id` not filled out in a `config.xml >  redcap` instance are not creating a REDCap client.
-5. [client] Check that unmatching `redcap_url` and `project_id` in config vs. DET notification are not creating a REDCap client.
-6. [notification] Check that any new notification is registered in the `redcap_notification` table in database.
+2. [structure] Check that `${instrument_backend_name}` and `instrument_backend_name` value must match.
+3. [ignored_notifications]:
+    - [structure] Check that `${instrument_backend_name}_complete` codes that are not `2` are ignored, and trigger a log starting with `[redcap][notification:skip] instrument not complete`.
+    - [structure] Check that `${instrument_backend_name}` not included in the configuration `redcap_importable_instrument` are not imported, and trigger a log starting with `[redcap][notification:skip] unauthorized instrument`.
+4. [client] Check that any or both of `redcap_url` and `project_id` not filled out in a `config.xml > redcap` instance are not creating a REDCap client, nor importing data.
+5. [client] Check that unmatching `redcap_url` and `project_id` in config vs. DET notification are not creating a REDCap client, nor importing data.
+6. [notification] Check that any new notification (i.e. that is not ignored) is registered in the `redcap_notification` table in database.
 6. [import] Check that instrument with a `Data Entry = "In Progress"` can import data.
 7. [import] Check that an instrument with a `Data Entry = "Complete"` cannot have its data overwritten, and triggers an error.
 8. [import] Check that the process ends with instrument metadata being `Data Entry = "Complete"`, `Administration = "All"` and `Validity = "Valid"`.
 9. [import] Check that the process ends with instrument data having the `REDCap` examiner.
-10. [issue] Check that issues are created in the issue tracker when error are encounter (can happen at some points, see code).
+10. [issue] Check that issues are created in the issue tracker when error are encounter (several points of failure, see `notifications.class.inc`). `500 - internal server error` should be returned in these cases. Logs should also contain the payload starting with `[redcap][issue:created][id:` and the issue tracker's issue ID.
+
 
 #### Multiple REDCap instances
 
-TBD
+Targeting multiple REDCap instances and projects: ideally at least 2 REDCap instances with 2 projects each. The process will be the same as single REDCap instance, except we also want to check the cross-import configuration.
+
+1. [structure] Check that data import expects a correctly defined couple of REDCap instance URL and project ID/token to fetch the data. Make the right definition in the `config.xml` file, then try sending a notification with: wrong instance URL and wrong project ID.
+
+> NOTE: even very unlikely, there is a limit/gap in the process where if a tuple composed by the same (`instrument name`, `visit label` and `candidate ID`) in 2 different REDCap instance/projects, the first one to be imported will lock the data LORIS-side.
+
 
 ## REDCap tools
 
