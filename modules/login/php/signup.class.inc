@@ -94,23 +94,23 @@ class Signup extends \NDB_Page implements ETagCalculator
         $factory  = \NDB_Factory::singleton();
         $DB       = \NDB_Factory::singleton()->database();
         $name     = htmlspecialchars(
-                        $values['firstname'], 
-                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                        null, 
-                        false
-                    );
+            $values['firstname'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
         $lastname = htmlspecialchars(
-                        $values['lastname'],
-                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                        null, 
-                        false
-                    );
+            $values['lastname'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
         $from     = htmlspecialchars(
-                        $values['email'], 
-                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
-                        null, 
-                        false
-                    );
+            $values['email'],
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
         $site     = $values['site'];
         $project  = $values['project'];
         $fullname = $name . ' ' . $lastname;

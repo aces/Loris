@@ -915,21 +915,21 @@ function editUploads($id) : void
         $ver = $_POST[$versionIndex] ?? null;
 
         if (htmlspecialchars(
-                $cit, 
-                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                null, 
-                false
-                ) 
-            !== $data['Citation']) {
+            $cit,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Citation']
+        ) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
         if (htmlspecialchars(
-                $ver, 
-                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                null, 
-                false
-                ) 
-            !== $data['Version']) {
+            $ver,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Version']
+        ) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }

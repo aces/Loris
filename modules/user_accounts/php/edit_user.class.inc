@@ -118,11 +118,11 @@ class Edit_User extends \NDB_Form
                 // this check prevents PHP Notices
                 if (!empty($defaults[$fieldName])) {
                     $defaults[$fieldName] = htmlspecialchars(
-                                                $defaults[$fieldName],
-                                                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                                                null,
-                                                false
-                                            );
+                        $defaults[$fieldName],
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    );
                 }
             }
 
@@ -983,11 +983,11 @@ class Edit_User extends \NDB_Form
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 htmlspecialchars(
-                    $row['label'], 
-                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                    null, 
+                    $row['label'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
                     false
-                    ) 
+                )
                     . "<br>",
                 $attribs
             );
@@ -1022,11 +1022,11 @@ class Edit_User extends \NDB_Form
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
                 htmlspecialchars(
-                    $row['Real_Name'], 
-                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                    null, 
+                    $row['Real_Name'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
                     false
-                    )
+                )
                     . "<br>",
                 $attribs
             );

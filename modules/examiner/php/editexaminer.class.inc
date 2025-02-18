@@ -360,11 +360,11 @@ class EditExaminer extends \NDB_Form
             throw new \LorisException(
                 'No full name found in Database for examiner with ID ' .
                 htmlspecialchars(
-                    $this->identifier, 
+                    $this->identifier,
                     ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
-                    null, 
+                    'UTF-8',
                     false
-                    )
+                )
             );
         }
         // Get identifier, to be added to the Reset button href

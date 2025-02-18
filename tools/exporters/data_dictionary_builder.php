@@ -141,11 +141,11 @@ foreach ($instruments AS $instrument) {
                     // inserted in the database but not escaped
                     // in the $title variable
                     "name" => htmlspecialchars(
-                                $title,
-                                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                                null, 
-                                false
-                            ),
+                        $title,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    ),
                     "type" => "Instrument",
                 ]
             );
@@ -197,11 +197,11 @@ foreach ($instruments AS $instrument) {
 
             print "\tInserting $testname $bits[1]\n";
             $bits[2] = htmlspecialchars(
-                        $bits[2],
-                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                        null, 
-                        false
-                    );
+                $bits[2],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             //find values to insert
             $Name = $testname . "_" . $bits[1];
             if (in_array($Name, $parameterNames, true)) {

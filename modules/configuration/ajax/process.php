@@ -54,11 +54,11 @@ foreach ($_POST as $key => $value) {
                 if (!validPath($value)) {
                     $err = 'Directory `'
                         . htmlspecialchars(
-                            $value, 
+                            $value,
                             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
-                            null, 
+                            'UTF-8',
                             false
-                            )
+                        )
                         . '` is invalid';
                     // Set response code and display error message.
                     displayError(400, $err);
@@ -99,11 +99,11 @@ foreach ($_POST as $key => $value) {
                     400,
                     "Duplicate value submitted: "
                     . htmlspecialchars(
-                        $value, 
-                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                        null, 
+                        $value,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
                         false
-                        )
+                    )
                 );
                 exit(0);
             }
@@ -112,11 +112,11 @@ foreach ($_POST as $key => $value) {
             if (in_array($ConfigSettingsID, $pathIDs)) {
                 if (!validPath($value)) {
                     $err = 'Directory `' . htmlspecialchars(
-                                            $value, 
-                                            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
-                                            null, 
-                                            false
-                                            )
+                        $value,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    )
                         . '` is invalid';
                     // Set response code and display error message.
                     displayError(400, $err);

@@ -55,11 +55,11 @@ foreach ($instruments as $instrument) {
         case "page":
             if (array_key_exists(2, $bits)) {
                 $pages[] = htmlspecialchars(
-                            $bits[2],
-                            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                            null, 
-                            false
-                        );
+                    $bits[2],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
             }
             continue 2;
 

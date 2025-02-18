@@ -581,12 +581,12 @@ class Installer
         $escapedValues = array_map(
             function ($val) {
                 return htmlspecialchars(
-                        $val, 
-                        ENT_XML1 | ENT_SUBSTITUTE | ENT_HTML5,
-                        'ISO-8859-1', 
-                        false
-                    );
-            }, 
+                    $val,
+                    ENT_XML1 | ENT_SUBSTITUTE | ENT_HTML5,
+                    'ISO-8859-1',
+                    false
+                );
+            },
             $values
         );
 

@@ -102,11 +102,11 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars(
-                $_REQUEST['test_name'], 
-                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                null, 
+                $_REQUEST['test_name'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
                 false
-                ) 
+            )
                 : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
@@ -279,11 +279,11 @@ class Stats_Demographic extends \NDB_Form
         if (!empty($demographicSite)) {
             $paramSite           = 'AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
             $demographicSite     = htmlspecialchars(
-                                        $demographicSite, 
-                                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                                        null, 
-                                        false
-                                    );
+                $demographicSite,
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             $this->params['sid'] = $demographicSite;
         }
 
@@ -534,11 +534,11 @@ class Stats_Demographic extends \NDB_Form
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars(
-                                        $demographicInstrument, 
-                                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                                        null, 
-                                        false
-                                    );
+                $demographicInstrument,
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             $subcategories         = [
                 'Complete',
                 'Incomplete',

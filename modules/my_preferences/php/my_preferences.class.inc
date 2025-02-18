@@ -49,11 +49,11 @@ class My_Preferences extends \NDB_Form
             // this check prevents PHP Notices
             if (!empty($defaults[$fieldName])) {
                 $defaults[$fieldName] = htmlspecialchars(
-                                            $defaults[$fieldName],
-                                            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                                            null, 
-                                            false
-                                        );
+                    $defaults[$fieldName],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
             }
         }
 

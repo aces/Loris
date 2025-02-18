@@ -134,9 +134,9 @@ class Stats_Behavioural extends \NDB_Form
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars(
-                    $_REQUEST['BehaviouralProject'], 
-                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 
-                    null, 
+                    $_REQUEST['BehaviouralProject'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
                     false
                 );
         } elseif (!empty($userProjectsIDs)) {
