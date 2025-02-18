@@ -20,7 +20,7 @@ class UserProjectMatch implements \LORIS\Data\Filter
      *
      * @param ?bool     $defaultReturn The default return value to return instead of
      *                                throwing an exception when an exception is
-     *                                indesirable.
+     *                                undesirable.
      *
      */
     public function __construct(protected ?bool $defaultReturn = null)
