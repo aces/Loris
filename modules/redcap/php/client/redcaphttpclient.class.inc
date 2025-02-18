@@ -627,7 +627,7 @@ class RedcapHttpClient
         return array_filter(
             $this->_cache['dictionary'],
             fn($d) => in_array(
-                $d->getFormName(),
+                $d->form_name,
                 $givenInstruments,
                 true
             )
