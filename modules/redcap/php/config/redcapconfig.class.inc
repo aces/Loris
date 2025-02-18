@@ -74,7 +74,7 @@ class RedcapConfig
      * The configuration parameters to map the REDCap arms and events to the LORIS
      * visits.
      *
-     * @var RedcapConfigVisit[]
+     * @var ?RedcapConfigVisit[]
      */
     public readonly ?array $visits;
 
