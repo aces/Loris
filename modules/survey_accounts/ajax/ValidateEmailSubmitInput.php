@@ -52,7 +52,7 @@ if ($numCandidates != 1) {
 
 $numSessions = $db->pselectOne(
     "SELECT COUNT(*) FROM session
-            WHERE CandID=:v_CandID
+            WHERE CandidateID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
     [
