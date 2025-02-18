@@ -99,7 +99,7 @@ class RedcapConfig
      * @param RedcapConfigLorisId  $candidate_id               The REDCap LORIS
      *                                                         candidate identifier
      *                                                         configuration.
-     * @param array                $visits                     The REDCap visit
+     * @param ?array               $visits                     The REDCap visit
      *                                                         mappings.
      */
     public function __construct(
