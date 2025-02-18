@@ -135,8 +135,8 @@ class RedcapDictionaryRecord
                     . " have form name '$form_name' as a prefix"
                 );
             } else {
-                $pattern    = "/^{preg_quote($form_name)}(_*)/";
-                $field_name = preg_replace($pattern, "", $field_name);
+                $pattern    = "/^". preg_quote($form_name) ."(_*)/";
+                $field_name = preg_replace($pattern, "", $field_name, 1);
             }
         }
 
