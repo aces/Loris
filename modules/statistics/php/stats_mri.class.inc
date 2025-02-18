@@ -96,7 +96,12 @@ class Stats_MRI extends \NDB_Form
         $tpl_data = [];
         // Sanitize test name if present. Otherwise use empty string.
         $tpl_data['test_name']  = isset($_REQUEST['test_name'])
-            ? htmlspecialchars($_REQUEST['test_name'])
+            ? htmlspecialchars(
+                $_REQUEST['test_name'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            )
             : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
@@ -250,8 +255,18 @@ class Stats_MRI extends \NDB_Form
                 ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
-            $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
-            $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
+            $this->params['pid']    = htmlspecialchars(
+                $_REQUEST['MRIProject'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
+            $bigTable_params['pid'] = htmlspecialchars(
+                $_REQUEST['MRIProject'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
         } else {
             $Param_Project = '';
         }
@@ -267,7 +282,12 @@ class Stats_MRI extends \NDB_Form
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
             $Param_Site          ='AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
-            $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
+            $this->params['sid'] = htmlspecialchars(
+                $_REQUEST['MRIsite'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
         } else {
             $Param_Site = '';
         }
