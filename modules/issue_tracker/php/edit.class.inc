@@ -161,6 +161,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'feedback'     => 'Feedback',
                 'resolved'     => 'Resolved',
                 'closed'       => 'Closed',
+                'rejected'     => 'Rejected',
             ];
         } else {
             $statuses = [
