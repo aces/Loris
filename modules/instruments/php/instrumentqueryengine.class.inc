@@ -419,3 +419,4 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         }
     }
 }
+}
