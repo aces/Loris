@@ -86,14 +86,14 @@ class Run extends \LORIS\Http\Endpoint
                 . $db->quote(json_encode($rowsArray))
                 . " FROM candidate c"
                 . "            WHERE c.CandID=" . intval($candid);
-                 if ((count($values) >= 2000 || $end) && count($values) > 0) {
-                     $insertstmt = "INSERT INTO dataquery_run_results
+                if ((count($values) >= 2000 || $end) && count($values) > 0) {
+                    $insertstmt = "INSERT INTO dataquery_run_results
                                          (RunID, CandidateID, RowData) "
                     . join(' UNION ', $values);
-                    $q = $db->prepare($insertstmt);
-                     $q->execute([]);
-                     $values = [];
-                 }
+                    $q          = $db->prepare($insertstmt);
+                    $q->execute([]);
+                    $values = [];
+                }
 
                 if ($end) {
                     $db->commit();
