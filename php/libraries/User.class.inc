@@ -165,10 +165,19 @@ class User extends UserPermissions implements
      */
     public static function &singleton(?string $username = null): \User
     {
-        static $instance;
-        if (is_null($instance)) {
-            $instance = User::factory($username);
+        static $currentuser = null;
+        static $allusers    = [];
+        if ($username === null && $currentuser !== null) {
+            return $currentuser;
         }
+        if ($username !== null && isset($allusers[$username])) {
+            return $allusers[$username];
+        }
+        $instance = User::factory($username);
+        if ($currentuser === null) {
+            $currentuser = $instance;
+        }
+        $allusers[$username] = $instance;
         return $instance;
     }
 
