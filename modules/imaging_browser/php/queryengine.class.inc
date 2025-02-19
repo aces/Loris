@@ -236,7 +236,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 $ScanType . "_Selected",
                 "Selected file for $ScanType for session",
                 $scope,
-                new \LORIS\Data\Types\BooleanType(),
+                new \LORIS\Data\Types\Enumeration("true", "false"),
                 new Cardinality(Cardinality::MANY),
                 $ScanType,
             );
@@ -349,13 +349,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         }
 
         if ($item instanceof QCDictionaryItem) {
-            return "(SELECT $field FROM files_qcstatus
-                        JOIN files as files2
-                        JOIN mri_scan_type mst
-                            ON (files2.MriScanTypeID=mst.MriScanTypeID)
-                        WHERE files_qcstatus.FileID=files.FileID
-                            AND files2.FileID=files.FileID
-                            AND mst.MriScanTypeName='{$modality}')";
+            return "(SELECT $field FROM files_qcstatus fqs
+                     JOIN files as files2
+                         ON (fqs.FileID=files2.FileID)
+                     JOIN mri_scan_type mst
+                         ON (files2.MriScanTypeID=mst.MriScanTypeID)
+                     WHERE files2.FileID=files.FileID
+                         AND mst.MriScanTypeName='{$modality}')";
         }
 
         if ($item instanceof ParameterDictionaryItem) {
