@@ -80,18 +80,20 @@ class Run extends \LORIS\Http\Endpoint
                 $rowsBinary,
                 bool $end
             ) use (&$values, &$db, &$runid) {
-                $values[] = join(
-                    ',',
-                    [$runid, $candid, $db->quote(json_encode($rowsArray))]
-                );
-                if ((count($values) >= 2000 || $end) && count($values) > 0) {
-                    $insertstmt = "INSERT INTO dataquery_run_results
-    					    (RunID, CandID, RowData) VALUES "
-                    . " (" . join('),(', $values) . ')';
-                    $q          = $db->prepare($insertstmt);
-                    $q->execute([]);
-                    $values = [];
-                }
+                $values[] = "SELECT "
+                .  $runid . ","
+                . "c.ID, "
+                . $db->quote(json_encode($rowsArray))
+                . " FROM candidate c"
+                . "            WHERE c.CandID=" . intval($candid);
+                 if ((count($values) >= 2000 || $end) && count($values) > 0) {
+                     $insertstmt = "INSERT INTO dataquery_run_results
+                                         (RunID, CandidateID, RowData) "
+                    . join(' UNION ', $values);
+                    $q = $db->prepare($insertstmt);
+                     $q->execute([]);
+                     $values = [];
+                 }
 
                 if ($end) {
                     $db->commit();
