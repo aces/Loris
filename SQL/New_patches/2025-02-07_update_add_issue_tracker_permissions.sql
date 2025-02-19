@@ -1,3 +1,24 @@
+ALTER TABLE permissions CHANGE `action` `action` enum (
+      'Close',
+      'Create',
+      'Create/Edit',
+      'Delete',
+      'Download',
+      'Edit',
+      'Edit/Upload',
+      'Edit/Upload/Delete',
+      'Edit/Upload/Hide',
+      'Upload',
+      'View', 
+      'View/Create',
+      'View/Create/Edit',
+      'View/Download',
+      'View/Edit',
+      'View/Edit/Comment',
+      'View/Edit/Comment/Close',
+      'View/Upload' 
+      );
+
 UPDATE permissions SET code = 'issue_tracker_own_issue', description = 'Issues - Own', action = 'View/Edit/Comment/Close'
 WHERE code = 'issue_tracker_reporter';
 UPDATE permissions SET code = 'issue_tracker_all_issue', description = 'Issues - All Sites', action = 'View/Edit/Comment'
