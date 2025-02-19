@@ -73,7 +73,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Composer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -112,18 +112,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+<<<<<<< HEAD
     # Cache node_modules to avoid downloading dependencies if already cached
     - name: Cache node_modules
       uses: actions/cache@v3
+=======
+    - uses: actions/download-artifact@v4
+      name: Download node_modules artifact
+>>>>>>> aces/26.0-release
       with:
         path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
 
+<<<<<<< HEAD
     # Download and extract compiled LORIS JavaScript artifact (from build job)
     - name: Download compiled LORIS javascript artifact
       uses: actions/download-artifact@v4
+=======
+    - uses: actions/download-artifact@v4
+      name: Download compiled LORIS javascript artifact
+>>>>>>> aces/26.0-release
       with:
         name: lorisjs
         path: .
@@ -246,7 +256,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Composer cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -255,6 +265,10 @@ jobs:
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> aces/26.0-release
     - name: Install protoc-gen-js plugin
       run: npm install -g protoc-gen-js
 
@@ -265,7 +279,11 @@ jobs:
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+<<<<<<< HEAD
            libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+=======
+             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+>>>>>>> aces/26.0-release
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 

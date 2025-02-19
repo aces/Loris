@@ -170,7 +170,7 @@ class ImagingBrowserIndex extends Component {
       {label: 'Entity Type', show: false, filter: {
         name: 'entityType',
         type: 'multiselect',
-        option: options.entityType,
+        options: options.entityType,
       }},
     ];
     /**
