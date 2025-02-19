@@ -142,6 +142,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
+                    "SessionFeedback",
+                    "Behavioural feedback at the session level",
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "SessionFailure",
                     "Whether a session was failure or did the candidate withdrawal",
                     $sesscope,
@@ -293,6 +300,17 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
             );
             return 's.Current_stage';
+        case 'SessionFeedback':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID)"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)"
+            );
+            return 'fbe.Comment';
         case 'SessionFailure':
             $this->addTable(
                 "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
