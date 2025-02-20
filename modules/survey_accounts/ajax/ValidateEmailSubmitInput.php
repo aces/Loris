@@ -52,7 +52,7 @@ if ($numCandidates != 1) {
 
 $numSessions = $db->pselectOne(
     "SELECT COUNT(*) FROM session
-            WHERE CandID=:v_CandID
+            WHERE CandidateID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
     [
@@ -91,15 +91,22 @@ $instrument_list = $db->pselect(
         'v_VL'     => $_REQUEST['VL'],
     ]
 );
+
+$instr_string   =$_REQUEST['TN'];
+$selected_instr =explode(",", $instr_string);
+
 foreach ($instrument_list as $instrument) {
-    if ($_REQUEST['TN'] == $instrument['Test_name']) {
-        echo json_encode(
-            [
-                'error_msg' => "Instrument ". $_REQUEST['TN'].
-                " already exists for given candidate for visit ". $_REQUEST['VL'],
-            ]
-        );
-        exit(0);
+    foreach ($selected_instr as $testName) {
+        if ($testName == $instrument['Test_name']) {
+            echo json_encode(
+                [
+                    'error_msg' => "Instrument ". $testName.
+                    " already exists for given candidate for visit ".
+                    $_REQUEST['VL'],
+                ]
+            );
+            exit(0);
+        }
     }
 }
 
