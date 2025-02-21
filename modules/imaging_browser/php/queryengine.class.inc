@@ -121,7 +121,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         'SlicewiseRejected'     => [
             'StringType',
             'processing:slicewise_rejected',
-            'regexp_replace(pf.value, "\\(.*", "")',
+            'IF(
+                 pf.Value LIKE "%(%",
+                 SUBSTR(pf.Value, 1, POSITION("(" in pf.Value) - 1),
+                 pf.Value
+            )',
             'slicewise rejected'
         ],
         // List of directions obtained for InterlaceRejected is not sorted as in
@@ -129,7 +133,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         'InterlaceRejected'     => [
             'StringType',
             'processing:interlace_rejected',
-            'regexp_replace(pf.value, "\\(.*", "")',
+            'IF(
+                 pf.Value LIKE "%(%",
+                 SUBSTR(pf.Value, 1, POSITION("(" in pf.Value) - 1),
+                 pf.Value
+            )',
             'interlace rejected'
         ],
         // List of directions obtained for IntergradientRejected is not sorted as in
@@ -137,7 +145,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         'IntergradientRejected' => [
             'StringType',
             'processing:intergradient_rejected',
-            'regexp_replace(pf.value, "\\(.*", "")',
+            'IF(
+                 pf.Value LIKE "%(%",
+                 SUBSTR(pf.Value, 1, POSITION("(" in pf.Value) - 1),
+                 pf.Value
+            )',
             'intergradient rejected'
         ],
         // List of directions obtained for TotalRejected is not sorted as in
