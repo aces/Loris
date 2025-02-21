@@ -76,11 +76,16 @@ if (strpos(strtolower($architecture), 'mysql') !== false) {
 }
 
 $helper->printLine('Checking NodeJS version');
-$versionString = trim(shell_exec('nodejs -v'));
-// The output for `nodejs -v` has the format `v8.10.0`. We need to remove the
-// first character.
-$versionString = ltrim($versionString, $versionString[0]);
-evaluateVersionRequirement('NodeJS', $versionString, MINIMUM_NODE_VERSION);
+$nodeInstalled = shell_exec('which nodejs');
+if ($nodeInstalled === null) {
+    $helper->printError('NodeJS is not installed.');
+} else {
+    $versionString = trim(shell_exec('nodejs -v'));
+    // The output for `nodejs -v` has the format `v8.10.0`. We need to remove the
+    // first character.
+    $versionString = ltrim($versionString, $versionString[0]);
+    evaluateVersionRequirement('NodeJS', $versionString, MINIMUM_NODE_VERSION);
+}
 
 $helper->printLine('Checking composer version');
 // The output for `composer --version` has the format:
