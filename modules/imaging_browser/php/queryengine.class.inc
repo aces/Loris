@@ -157,7 +157,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         'TotalRejected'         => [
             'StringType',
             'processing:total_rejected',
-            'regexp_replace(pf.value, "\\(.*", "")',
+            'IF(
+                 pf.Value LIKE "%(%",
+                 SUBSTR(pf.Value, 1, POSITION("(" in pf.Value) - 1),
+                 pf.Value
+            )',
             'total rejected'
         ],
         'ProcessingPipeline'    => [
