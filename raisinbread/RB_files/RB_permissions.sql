@@ -71,7 +71,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (77,'issue_tracker_site_issue','See/Edit/Comment on Own Site Issues',27,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (78,'issue_tracker_close_site_issue','Close Own Site Issues',27,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (79,'issue_tracker_close_all_issue','Close all Issues',27,NULL,2);
-
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (80,'dicom_archive_nosessionid','DICOMs with no session ID',15,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (81,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,'View',2);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
