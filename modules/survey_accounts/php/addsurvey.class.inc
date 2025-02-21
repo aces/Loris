@@ -252,6 +252,7 @@ class AddSurvey extends \NDB_Form
         }
 
         if ($email && ($values['send_email'] == 'true')) {
+            $participant_account_id = intval($db->getLastInsertId());
             $config   = \NDB_Config::singleton();
             $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
@@ -261,6 +262,13 @@ class AddSurvey extends \NDB_Form
                 'EmailForm' => $values['email_dialog'],
             ];
             \Email::send($email, 'new_survey.tpl', $msg_data);
+            $db->insert(
+                "participant_portal_emails",
+                [
+                    'ParticipantAccountID'   =>  $participant_account_id,
+                    'ParticipantSurveyEmail' => $email,
+                ]
+            );
         }
     }
 
