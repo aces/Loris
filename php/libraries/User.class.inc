@@ -171,7 +171,7 @@ class User extends UserPermissions implements
             return $currentuser;
         }
         if ($username !== null && isset($allusers[$username])) {
-            return $allusers[$username ?? ''];
+            return $allusers[$username];
         }
         $instance = User::factory($username);
         if ($currentuser === null) {
