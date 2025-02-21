@@ -371,6 +371,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         $candData[$dict->getName()] = [];
                     }
                     $sid = $loadedInstrument->getSessionID();
+
                     switch ($dict->fieldname) {
                     case 'Administration':
                     case 'Data_entry':
@@ -383,16 +384,39 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         ];
                         break;
                     default:
-                        $candData[$dict->getName()][$sid->__toString()] = [
-                            'VisitLabel' => $loadedInstrument->getVisitLabel(),
-                            'SessionID'  => $sid->__toString(),
-                            'value'      => $loadedInstrument
-                        ->getDictionaryValue($dict),
-                        ];
+                        if ($dict->getCardinality()->__toString() == "many") {
+                            $candData[$dict->getName()][$sid->__toString()] = [
+                                'keytype'    => $dict->getName() . " response",
+                                'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                                'SessionID'  => $sid->__toString(),
+                                'values'     => [],
+                            ];
+                            $i = 1;
+
+                            // Line length work-arounds
+                            $candData =& $candData[$dict->getName()];
+                            $vals     =& $candData[$sid->__toString()]['values'];
+
+                            $values = explode(
+                                '{@}',
+                                $loadedInstrument->getDictionaryValue($dict)
+                            );
+                            foreach ($values as $value) {
+                                $vals["Response $i"] = $value;
+                                $i++;
+                            }
+                        } else {
+                            $candData[$dict->getName()][$sid->__toString()] = [
+                                'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                                'SessionID'  => $sid->__toString(),
+                                'value'      =>
+                            $loadedInstrument->getDictionaryValue($dict),
+                            ];
+                        }
                     }
                 }
+                yield "$iCandID" => $candData;
             }
-            yield "$iCandID" => $candData;
         }
     }
 }

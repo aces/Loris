@@ -177,13 +177,30 @@ const module: webpack.ModuleOptions = {
     },
     {
       test: /\.tsx?$/,
+      exclude: [/react-series-data-viewer/],
       use: [
         {
           loader: 'ts-loader',
-          options: {onlyCompileBundledFiles: true},
+          options: {
+            onlyCompileBundledFiles: true,
+          },
         },
       ],
     },
+    {
+      test: /.*\/react-series-data-viewer\/.*\.tsx?$/,
+      use: [
+        {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+            compilerOptions: {
+              strict: false,
+          },
+        },
+      },
+    ],
+  },
   ],
 };
 
@@ -352,41 +369,5 @@ configs.push({
   module,
   stats: 'errors-warnings',
 });
-
-// HACK: For some reason, the electrophysiology session view only compiles if
-// it uses a separate (although possibly identical) configuration.
-if (!target || target === 'electrophysiology_browser') {
-  configs.push({
-    entry: {
-      electrophysiology_browser: {
-        import: './modules/electrophysiology_browser/'
-          + 'jsx/electrophysiologySessionView',
-        filename: './modules/electrophysiology_browser/'
-          + 'js/electrophysiologySessionView.js',
-        library: {
-          name: [
-            'lorisjs',
-            'electrophysiology_browser',
-            'electrophysiologySessionView',
-          ],
-          type: 'window',
-        },
-      },
-    },
-    output: {
-      path: __dirname,
-      filename: './htdocs/js/components/[name].js',
-      library: ['lorisjs', '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
-    devtool: 'source-map',
-    plugins,
-    optimization,
-    resolve,
-    module,
-    stats: 'errors-warnings',
-  });
-}
 
 export default configs;

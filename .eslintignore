@@ -2,6 +2,7 @@ node_modules/*
 vendor/*
 project/*
 babel.config.js
+webpack.config.ts
 
 # compiled js ignored since it is run on the jsx directory
 modules/*/js/*

@@ -14,7 +14,7 @@ const getPath = (p) => {
 
   if (
     pathParts[0] === 'modules' &&
-    fs.existsSync(path.join(__dirname, 'project', 'modules', pathParts[1]))
+    fs.existsSync(path.join(__dirname, 'project', ...pathParts))
   ) {
     return path.join('project', p);
   }
