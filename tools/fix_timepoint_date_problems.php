@@ -529,7 +529,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     unset($dateArray);
 
     // candidate object - needed to get the dob/edc
-    $candidate =& Candidate::singleton($candID);
+    $candidate =& Candidate::singleton(new CandID(strval($candID)));
 
     // fixing DOB or EDC
     if (in_array($dateType, ['dob', 'edc'])) {
@@ -544,7 +544,10 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
         * add Feedback
         */
         // feedback object
-        $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
+        $feedback =& NDB_BVL_Feedback::singleton(
+            $user->getUsername(),
+            new CandID(strval($candID))
+        );
 
         //get thread feedback type
         $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
