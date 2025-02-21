@@ -165,22 +165,7 @@ if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
     );
     return false;
 }
-<<<<<<< HEAD
-=======
-// check $candID
-if (!preg_match("/^([0-9]{1,10})$/", strval($candID))) {
-    fwrite(
-        STDERR,
-        "Error: invalid 2st argument CandID ($candID).\n " .
-        "It has to be a 6-digit number\n"
-    );
-    fwrite(
-        STDERR,
-        "For the script syntax type: fix_timepoint_date_problems.php help \n"
-    );
-    return false;
-}
->>>>>>> 278e8102c (Fix PHP Fatal error when running fix_timepoint_date_problems.php)
+
 // Candidate object - to check if valid $candID
 $candidate =& Candidate::singleton($candID);
 //get the list of timepoints (sessionIDs) for the profile
@@ -524,11 +509,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     // check the date format (redundant)
     $dateArray = explode('-', $newDate);
     if (!is_array($dateArray)
-        || !checkdate(
-            intval($dateArray[1]),
-            intval($dateArray[2]),
-            intval($dateArray[0])
-        )
+        || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
     ) {
         throw new LorisException(
             "Invalid Date! Please use the following format: YYYY-MM-DD \n"
