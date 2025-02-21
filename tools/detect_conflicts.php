@@ -143,7 +143,7 @@ if ($delete_ignored_conflicts) {
         } else {
             echo "Detecting ignored conflicts\n\n";
         }
-        detectIgnoreColumns($instrument_ignored, $confirm);
+        detectIgnoreColumns($lorisInstance, $instrument_ignored, $confirm);
         if ($confirm) {
             echo "Finished.\n\n";
         } else {
@@ -304,7 +304,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
     $query  = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
-        JOIN candidate c ON (c.CandID=s.CandID)
+        JOIN candidate c ON (c.ID=s.CandidateID)
         LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
     $where  = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'
@@ -465,7 +465,7 @@ function getInfoUsingCommentID($commentid)
     $data =  $db->pselectRow(
         "SELECT c.PSCID, c.CandID, s.Visit_label FROM flag f
         JOIN session s on (f.sessionid=s.ID)
-        JOIN candidate c on (c.CandID=s.CandID)
+        JOIN candidate c on (c.ID=s.CandidateID)
         WHERE f.CommentID = :cid",
         ['cid' => $commentid]
     );
@@ -581,7 +581,7 @@ function findConflict($conflict, $conflicts)
  *
  * @throws Exception
  */
-function detectIgnoreColumns($instruments, $confirm)
+function detectIgnoreColumns($lorisInstance, $instruments, $confirm)
 {
     $instrumentFields = [];
 
@@ -589,11 +589,9 @@ function detectIgnoreColumns($instruments, $confirm)
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
             include_once $file;
-            $commentids      = getCommentIDs($instrument, null);
-            $instance        =& NDB_BVL_Instrument::factory(
-                $instrument,
-                $commentids[0]['CommentID'],
-                null
+            $instance        = NDB_BVL_Instrument::factory(
+                $lorisInstance,
+                $instrument
             );
             $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
 

@@ -67,7 +67,7 @@ if ($opts['i']!=null) {
 /**
  * To be removed
  */
-if ($opts['r']!=null) {
+if (($opts['r'] ?? null)!=null) {
     $to_remove = true;
 }
 
@@ -103,10 +103,10 @@ foreach ($instruments as $instrument => $full_name) {
             foreach ($cohortids as $cohortid) {
                 $session_info = $DB->pselectRow(
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
-                    JOIN candidate c on (c.candid=s.candid)
+                    JOIN candidate c on (c.ID=s.CandidateID)
                     JOIN flag f on (f.sessionid=s.id)
                     JOIN test_names tn ON tn.ID = f.TestID
-                    WHERE s.candID = :cid AND tn.test_name = :fname AND
+                    WHERE c.CandID = :cid AND tn.test_name = :fname AND
                     s.cohortid = :subid",
                     [
                         'cid'   => $candid,
