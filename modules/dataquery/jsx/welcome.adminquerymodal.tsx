@@ -83,11 +83,11 @@ function AdminQueryModal(props: {
           onUserInput={
             (name: string, value: boolean) => setTopQuery(value)
           }
-          label='Pin Study Query'
+          label='Pin study query'
         />
         <CheckboxElement name='dashboardquery'
           value={dashboardQuery}
-          label='Pin Dashboard Summary'
+          label='Show on dashboard'
           onUserInput={
             (name: string, value: boolean) =>
               setDashboardQuery(value)
@@ -95,7 +95,7 @@ function AdminQueryModal(props: {
         />
         <CheckboxElement name='loginpage'
           value={loginQuery}
-          label='Pin To Login Page'
+          label='Show summary on login page'
           onUserInput={
             (name: string, value: boolean) =>
               setLoginQuery(value)
