@@ -2,10 +2,11 @@
 
 namespace LORIS\Middleware;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\MiddlewareInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
+
 use LORIS\StudyEntities\Candidate\CandID;
 
 class UserPageDecorationMiddleware implements MiddlewareInterface
@@ -44,7 +45,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface a PSR15 response of handler, after adding decorations.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         ob_start();
         // Set the page template variables
@@ -165,9 +166,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Variables that get passed along to the LorisHelper javascript object.
         $tpl_data['studyParams'] = array(
                                     'useEDC'      => $this->Config->getSetting('useEDC'),
-                                    'useProband'  => $this->Config->getSetting('useProband'),
-                                    'useFamilyID' => $this->Config->getSetting('useFamilyID'),
-                                    'useConsent'  => $this->Config->getSetting('useConsent'),
+                                    'useProband'  => $this->Config->getSetting(
+                                        'useProband'
+                                    ),
+                                    'useFamilyID' => $this->Config->getSetting(
+                                        'useFamilyID'
+                                    ),
+                                    'useConsent'  => $this->Config->getSetting(
+                                        'useConsent'
+                                    ),
                                    );
         $tpl_data['jsonParams']  = json_encode(
             array(
@@ -193,8 +200,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['userNumProjects'] = count($project_arr);
 
         // Retrieve site and project names for tooltips
-        $tpl_data['user']['SitesTooltip']    = implode("<br/>", $this->user->getSiteNames());
-        $tpl_data['user']['ProjectsTooltip'] = implode("<br/>", $this->user->getProjectNames());
+        $tpl_data['user']['SitesTooltip']    = implode(
+            "<br/>",
+            $this->user->getSiteNames()
+        );
+        $tpl_data['user']['ProjectsTooltip'] = implode(
+            "<br/>",
+            $this->user->getProjectNames()
+        );
 
 
         $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission('context_help');

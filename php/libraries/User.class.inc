@@ -55,35 +55,33 @@ class User extends UserPermissions implements
     {
         $obj = new User;
 
-        // Set the username
+        // right off, set the username
         $obj->userInfo['UserID'] = $username;
 
-        // Get the user's permissions
+        // get the user's permissions
         if ($obj->select($username) === false) {
-            // If user selection fails, return an AnonymousUser instance
             $obj = new \LORIS\AnonymousUser();
             return $obj;
         }
 
-        // Create DB object
+        // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
-        // Fetch user data from the 'users' table
+        // get user data from database
         $query = "SELECT * FROM users WHERE UserID = :UID";
         $row   = $DB->pselectRow($query, ['UID' => $username]);
 
         if (is_null($row)) {
-            // If no user is found, return an AnonymousUser instance
             $obj = new \LORIS\AnonymousUser();
             return $obj;
         }
 
-        // Convert 'language_preference' from string to integer
+        //Change 'language_preference' to number rather than a string
         $row['language_preference'] = (int)$row['language_preference'];
 
-        // ------------------- Extract User Sites -------------------
-        // Fetch user's centers and their names from 'user_psc_rel' and 'psc' tables
-        $user_centerID_query = $DB->pselect(
+        // get user sites
+
+        $user_centerID_query =  $DB->pselect(
             "
              SELECT
                upr.CenterID,
@@ -94,13 +92,13 @@ class User extends UserPermissions implements
                psc
                ON (upr.CenterID = psc.CenterID)
              WHERE
-               upr.UserID = :UID
+               upr.UserID= :UID
             ",
             ['UID' => $row['ID']]
         );
 
-        $user_cid  = [];     // Array to store CenterID objects
-        $sitenames = [];     // Array to store site names
+        $user_cid  = [];
+        $sitenames = [];
 
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
@@ -122,8 +120,8 @@ class User extends UserPermissions implements
             ['UID' => $row['ID']]
         );
 
-        $user_pid      = [];        // Array to store ProjectID objects
-        $project_names = [];   // Array to store project names
+        $user_pid      = [];
+        $project_names = [];
 
         foreach ($user_projects_query as $key => $val) {
             // Convert ProjectID to ProjectID object, ensuring it's a string
@@ -143,36 +141,31 @@ class User extends UserPermissions implements
                     epr.active,
                     epr.pending_approval
               FROM examiners e
-              JOIN examiners_psc_rel epr ON (e.examinerID = epr.examinerID)
-              WHERE e.userID = :uid
-                AND (epr.active = 'Y'
-                      OR (epr.active = 'N' AND epr.pending_approval = 'Y'))
+              JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+              WHERE e.userID=:uid
+                AND (epr.active='Y'
+                      OR (epr.active='N' AND epr.pending_approval='Y'))
             ",
             [
                 "uid" => $row['ID'],
             ]
         );
 
-        $examiner_info = [];
+        $examiner_info =[];
 
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
-                    // Store pending approval status if examiner is active
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                /*
-                Store examiner's centerID with active status and radiologist flag,
-                ensuring centerID is a string
-                */
-                $examiner_info[$val['centerID']] = [
+                $examiner_info[$val['centerID']] =[
                     $val['active'],
                     $val['radiologist'],
                 ];
             }
         }
 
-        // Assign examiner information, CenterIDs, and ProjectIDs to userInfo
+        // store user data in object property
         $row['examiner']   = $examiner_info;
         $row['CenterIDs']  = $user_cid;
         $row['ProjectIDs'] = $user_pid;
@@ -183,7 +176,7 @@ class User extends UserPermissions implements
 
     /**
      * Singleton method. Retrieve the user passed as parameter, but only
-     * one instance exists.
+     * 1 instance.
      *
      * @param string|null $username Identifies the user
      *
@@ -215,7 +208,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Updates a user in the `users` table.
+     * Updates a user
      *
      * @param array $set The array formatted for use in a Database call
      *
@@ -248,12 +241,12 @@ class User extends UserPermissions implements
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
-                "The function getData('CenterID') is deprecated and is 
+                "The function getData('CenterID') is deprecated and is
                 replaced with getData('CenterIDs')"
             );
         } elseif ($var === 'Site') {
             throw new \LorisException(
-                "The function getData('Site') is deprecated and is 
+                "The function getData('Site') is deprecated and is
                 replaced with getData('Sites')"
             );
         } else {
@@ -306,21 +299,21 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' names.
+     *  Returns an array of sites a user belongs to.
      *
      * @return array
      */
     function getSiteNames(): array
     {
-        /* The original query in the factory() function CONCATs the site names
-         * together in a string using semi-colons. Therefore, this string must
-         * be split and returned as an array.
+        /* The original query to fetch userInfo in the factory() function CONCAT
+         * CONCATs the site names together in a string using semi-colons.
+         * Therefore this string must be split and returned as an array.
          */
         return explode(';', $this->userInfo['Sites'] ?? '');
     }
 
     /**
-     * Get the user's project names.
+     * Get the user's sites' ID numbers
      *
      * @return array
      */
@@ -334,7 +327,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers.
+     * Get the user's sites' ID numbers
      *
      * @return CenterID[]
      */
@@ -344,7 +337,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's projects' ID numbers.
+     * Get the user's projects' ID numbers
      *
      * @return ProjectID[]
      */
@@ -354,7 +347,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's projects.
+     * Get the user's projects
      *
      * @return Project[]
      */
@@ -367,9 +360,9 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's language preference.
+     * Get the user's language preference
      *
-     * @return ?int|null
+     * @return ?int
      */
     function getLanguagePreference(): ?int
     {
@@ -377,15 +370,15 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all sites where Examiner is active.
+     * Returns all sites where Examiner is active
      *
      * @return array
      */
     function getExaminerSites(): array
     {
         $site_list = $this->userInfo['examiner'] ?? [];
-        unset($site_list['pending']); // Remove 'pending' status if exists
-        ksort($site_list);            // Sort sites by centerID
+        unset($site_list['pending']);
+        ksort($site_list);
         return $site_list;
     }
 
@@ -405,7 +398,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites in an associative array (CenterID => CenterName).
+     * Returns all user's sites in an associative array (CenterID => CenterName)
      *
      * @return array
      */
