@@ -167,7 +167,7 @@ class InstrumentDataParser extends CSVParser
             function ($columns, $field) use ($instrumentName, $excluded) {
                 $fieldName = implode(
                     '',     // Strip first occurrence of prefix
-                    explode("${instrumentName}_", $field->getName(), 2)
+                    explode("{$instrumentName}_", $field->getName(), 2)
                 );
                 if (!in_array($fieldName, $excluded)) {
                     $columns[] = $fieldName;
