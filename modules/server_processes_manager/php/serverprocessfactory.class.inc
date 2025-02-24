@@ -69,7 +69,7 @@ class ServerProcessFactory
                     $dbRow['exit_text']
                 ),
             default => throw new \InvalidArgumentException(
-                "Unknown server process type: ${dbRow['type']}"
+                "Unknown server process type: {$dbRow['type']}"
             )
         };
     }
