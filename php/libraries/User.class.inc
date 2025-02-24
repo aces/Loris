@@ -62,14 +62,15 @@ class User extends UserPermissions implements
         if ($obj->select($username) === false) {
             $obj = new \LORIS\AnonymousUser();
             return $obj;
-        }
+        };
 
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
         // get user data from database
         $query = "SELECT * FROM users WHERE UserID = :UID";
-        $row   = $DB->pselectRow($query, ['UID' => $username]);
+
+        $row = $DB->pselectRow($query, ['UID' => $username]);
 
         if (is_null($row)) {
             $obj = new \LORIS\AnonymousUser();
@@ -80,7 +81,6 @@ class User extends UserPermissions implements
         $row['language_preference'] = (int)$row['language_preference'];
 
         // get user sites
-
         $user_centerID_query =  $DB->pselect(
             "
              SELECT
@@ -99,13 +99,11 @@ class User extends UserPermissions implements
 
         $user_cid  = [];
         $sitenames = [];
-
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
             $user_cid[$key] = \CenterID::singleton($val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
-
         $row['Sites'] = implode(';', $sitenames);
 
         // ------------------- Extract User Projects -------------------
@@ -152,7 +150,6 @@ class User extends UserPermissions implements
         );
 
         $examiner_info =[];
-
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
@@ -164,7 +161,6 @@ class User extends UserPermissions implements
                 ];
             }
         }
-
         // store user data in object property
         $row['examiner']   = $examiner_info;
         $row['CenterIDs']  = $user_cid;
@@ -173,6 +169,7 @@ class User extends UserPermissions implements
 
         return $obj;
     }
+
 
     /**
      * Singleton method. Retrieve the user passed as parameter, but only
@@ -193,6 +190,7 @@ class User extends UserPermissions implements
         return $instance;
     }
 
+
     /**
      * Inserts data into the `users` table.
      *
@@ -206,6 +204,7 @@ class User extends UserPermissions implements
     {
         \NDB_Factory::singleton()->database()->insert('users', $set);
     }
+
 
     /**
      * Updates a user
@@ -299,7 +298,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     *  Returns an array of sites a user belongs to.
+     * Returns an array of sites a user belongs to.
      *
      * @return array
      */
@@ -345,6 +344,7 @@ class User extends UserPermissions implements
     {
         return $this->userInfo['ProjectIDs'] ?? [];
     }
+
 
     /**
      * Get the user's projects
@@ -411,6 +411,7 @@ class User extends UserPermissions implements
         return $sites;
     }
 
+
     /**
      * Returns all user's sites that are StudySites
      *
@@ -448,7 +449,6 @@ class User extends UserPermissions implements
         }
         return false;
     }
-
 
     /**
      * Checks that the user's email is valid
