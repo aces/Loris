@@ -148,29 +148,29 @@ toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                             <li class="hidden-xs hidden-sm help-container"></li>
 
                             <!-- Affiliations Dropdown Menu -->
-<li class="nav dropdown">
-    <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-        Affiliations
-        <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu affiliations-dropdown">
-        <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
-        <li>
-            <a href="#">
-                <span class="tooltip-text">{$user.SitesTooltip}</span>
-            </a>
-        </li>
+                            <li class="nav dropdown nav-affiliations">
+                                <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Affiliations
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu affiliations-dropdown">
+                                    <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.SitesTooltip}</span>
+                                        </a>
+                                    </li>
 
-        <li role="separator" class="divider"></li>
+                                    <li role="separator" class="divider"></li>
 
-        <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
-        <li>
-            <a href="#">
-                <span class="tooltip-text">{$user.ProjectsTooltip}</span>
-            </a>
-        </li>
-    </ul>
-</li>
+                                    <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.ProjectsTooltip}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
                             <!-- User Dropdown Menu -->
                             <li class="dropdown">
