@@ -307,7 +307,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            $candid      = intval(trim($args['values']['candID']));
+            $candid      = intval($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
             ////////////////////////////////////////////////////////////////
