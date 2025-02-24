@@ -19,6 +19,12 @@ use SplFileObject;
 class CSVParser
 {
     protected SplFileInfo $csvFile;
+
+    const DEFAULT_CSV_FLAGS = SplFileObject::READ_CSV |
+        SplFileObject::DROP_NEW_LINE |
+        SplFileObject::SKIP_EMPTY |
+        SplFileObject::READ_AHEAD;
+
     /**
      * Construct parser
      *
@@ -101,12 +107,7 @@ class CSVParser
         string $separator = ',',
         string $enclosure = '"',
         string $escape = '\\',
-        int $flags
-        =
-        SplFileObject::READ_CSV |
-        SplFileObject::DROP_NEW_LINE |
-        SplFileObject::SKIP_EMPTY |
-        SplFileObject::READ_AHEAD,
+        int $flags = self::DEFAULT_CSV_FLAGS,
     ): array {
         $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
