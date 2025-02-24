@@ -574,8 +574,9 @@ function findConflict($conflict, $conflicts)
  * Populates the DDE ignore fields for each instrument and runs
  * the ignoreColumn function on the instrument for the given fields
  *
- * @param array $instruments The instruments to check
- * @param bool  $confirm     Whether to execute
+ * @param string $lorisInstance The Loris instance
+ * @param array  $instruments   The instruments to check
+ * @param bool   $confirm       Whether to execute
  *
  * @return void
  *
