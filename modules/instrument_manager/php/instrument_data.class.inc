@@ -71,7 +71,7 @@ class Instrument_Data extends \NDB_Page
                     $instrument
                 );
 
-                $fileName   = "${instrument}_headers.csv";
+                $fileName   = "{$instrument}_headers.csv";
                 $fileObject = new \SplFileObject(
                     sys_get_temp_dir() . "/$fileName",
                     'w'

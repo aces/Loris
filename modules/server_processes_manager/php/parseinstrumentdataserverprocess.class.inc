@@ -178,15 +178,17 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
             ["uid" => $this->getUserId()]       // TODO: Examiner?
         );
 
-        $msg_data = [
-            'name'    => $user['First_name'],
-            'message' => $this->getExitText(),
-        ];
-        \Email::send(
-            $user['Email'],
-            'notifier_instrument_data_upload.tpl',
-            $msg_data
-        );
+        if (!is_null($user)) {
+            $msg_data = [
+                'name'    => $user['First_name'],
+                'message' => $this->getExitText(),
+            ];
+            \Email::send(
+                $user['Email'],
+                'notifier_instrument_data_upload.tpl',
+                $msg_data
+            );
+        }
     }
 
     /**
