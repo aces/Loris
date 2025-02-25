@@ -188,28 +188,29 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr    = $this->user->getCenterIDs();
-        $site        = array();
-        $isStudySite = array();
-        foreach ($site_arr as $key => $val) {
-            $site[$key]        = & \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
+        $site_arr = $this->user->getCenterIDs();
+        // add projects to nav bar
+        $project_arr = $this->user->getProjectIDs();
 
-        $oneIsStudySite   = in_array("1", $isStudySite);
         $tpl_data['user'] = [];
         $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
-        $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
-        $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = implode(
+        $tpl_data['user']['user_from_study_site'] = $this->user->hasStudySite();
+        $tpl_data['userNumSites']    = count($site_arr);
+        $tpl_data['userNumProjects'] = count($project_arr);
+
+        // Retrieve site and project names for tooltips
+        $tpl_data['user']['SitesTooltip']    = implode(
             "<br/>",
             $this->user->getSiteNames()
         );
-
-        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
-            'context_help'
+        $tpl_data['user']['ProjectsTooltip'] = implode(
+            "<br/>",
+            $this->user->getProjectNames()
         );
+
+
+        $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission('context_help');
 
         // FIXME: This should be array_filter
         $realPerms = array();

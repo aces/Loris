@@ -198,7 +198,7 @@ class CouchDBDemographicsImporter
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
 
         $tablesToJoin = " FROM session s
-                            JOIN candidate c USING (CandID)
+                            JOIN candidate c ON (c.ID = s.CandidateID)
                             LEFT JOIN psc p ON (p.CenterID=s.CenterID)
                             LEFT JOIN Project pr ON
                                 (pr.ProjectID=c.RegistrationProjectID)

@@ -51,10 +51,11 @@ if ($numCandidates != 1) {
 }
 
 $numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session
+    "SELECT COUNT(*) FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
             WHERE CandID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
-            AND Active='Y'",
+            AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],

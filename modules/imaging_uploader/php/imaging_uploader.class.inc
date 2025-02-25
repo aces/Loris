@@ -307,7 +307,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            $candid      = trim($args['values']['candID']);
+            $candid      = intval($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
             ////////////////////////////////////////////////////////////////
@@ -329,7 +329,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      LEFT JOIN candidate c2
                      ON (c.candid=c2.candid AND c2.pscid = :pid)
                      LEFT JOIN session s
-                     ON (s.candid=c.candid and s.visit_label = :vlabel)
+                     ON (s.CandidateID=c2.ID and s.visit_label = :vlabel)
                      WHERE c.candid = :cid",
                     [
                         ':cid'    => $candid,
@@ -511,7 +511,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $pscid       = $args['values']['pSCID'];
                 $pname       = $pscid. "_" . $candid . "_" . $visit_label;
                 $sessionid   = $db->pselectOne(
-                    "SELECT ID FROM session s
+                    "SELECT s.ID FROM session s
                         JOIN candidate c ON c.ID=s.CandidateID
                         WHERE c.CandID = :cid
                         AND Visit_label =:vlabel",

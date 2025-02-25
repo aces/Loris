@@ -83,7 +83,9 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
-                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
+                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
+                    pso.Description, c.DOB, c.Date_registered, p.Name,
+                    c.RegistrationCenterID, c.RegistrationProjectID
                 ORDER BY c.PSCID ASC
             ",
             []

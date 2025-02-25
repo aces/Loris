@@ -713,6 +713,13 @@ class NDB_BVL_Feedback
             'Date_taken'    => $today,
             'UserID'        => $this->_username,
         ];
+
+        $candID      = $this->_feedbackCandidateProfileInfo['CandID'];
+        $candidateID = $DB->pselectOne(
+            "SELECT ID FROM candidate WHERE CandID=:candID",
+            ['candID' => $candID]
+        );
+
         if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
             $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
@@ -721,19 +728,18 @@ class NDB_BVL_Feedback
                 [
                     "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
                     "SessionID"      => $feedbackInfo['SessionID'],
-                    "CandID"         => $feedbackInfo['CandID'],
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "instrument",
                     "FieldName"      => $fieldname,
                 ]
             );
 
         } elseif ($level == 'visit' || $this->_feedbackLevel=='visit') {
-            $candID   = $this->_feedbackCandidateProfileInfo['CandID'];
             $setArray = array_merge(
                 $setArray,
                 [
                     "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
-                    "CandID"         => $candID,
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "visit",
                 ]
             );
@@ -741,7 +747,7 @@ class NDB_BVL_Feedback
             $setArray = array_merge(
                 $setArray,
                 [
-                    "CandID"         => $this->_feedbackObjectInfo['CandID'],
+                    "CandidateID"    => $candidateID,
                     "Feedback_level" => "profile",
                 ]
             );
