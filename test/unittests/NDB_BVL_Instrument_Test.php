@@ -458,7 +458,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     ],
                     ['label' => '',
                         'name'    => 'hourMinField_status',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control input-sm not-answered',
                         'type'    => 'select',
                         'options' => [
                             ''             => '',
@@ -472,7 +472,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ],
                 'label'     => 'hourMinLabel',
                 'delimiter' => ' ',
-                'options'   => false,
+                'options'   => null,
                 'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
