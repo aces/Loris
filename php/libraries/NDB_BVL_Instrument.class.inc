@@ -1844,9 +1844,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $options = []
     ): void {
 
-        if (empty($options)) {
-            $options = $this->dateOptions;
-        }
+        $options = ($options ?? []) + $this->dateOptions;
 
         $group   = [];
         $group[] = $this->createDate(
