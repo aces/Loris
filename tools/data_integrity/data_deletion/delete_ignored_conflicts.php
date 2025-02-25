@@ -69,7 +69,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
     $instrumentSpecified = true;
 } else {
     $instruments = array_keys(
-        \NDB_BVL_Instrument::getDDEInstrumentNamesList($loris)
+        \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
     );
 }
 

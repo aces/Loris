@@ -52,12 +52,12 @@ $loris = new \LORIS\LorisInstance(
 );
 
 foreach ($candIDs as $candID) {
-    $candidate         = \Candidate::singleton(new CandID($candID));
+    $candidate         = \Candidate::singleton(new CandID(strval($candID)));
     $candidateVisits   = $candidate->getListOfVisitLabels();
     $candidateProjects = $DB->pselectColWithIndexKey(
-        "SELECT DISTINCT Visit_label, ProjectID
-        FROM session
-        WHERE CandID=:candID",
+        "SELECT DISTINCT s.Visit_label, s.ProjectID FROM session s
+        JOIN candidate c ON (c.ID = s.CandidateID)
+        WHERE c.CandID=:candID",
         ['candID' => $candID],
         'Visit_label'
     );
