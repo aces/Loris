@@ -544,8 +544,10 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         $criteria = $this->getCriteria();
 
         if ($criteria) {
+            \Profiler::checkpoint("Matching with criteria");
             $candidates = $this->_candidateMatches($criteria);
         } else {
+            \Profiler::checkpoint("Matching all candidates");
             $candidates = $this->_allCandidates();
         }
         return \Candidate::filterInaccessibleCandIDs(
@@ -553,6 +555,98 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $candidates,
             $user
         );
+    }
+
+    /**
+     * Filter CandIDs out of $candIDs which aren't accessible to $user
+     *
+     * @param CandID[] $candIDs The CandIDs to be filtered
+     * @param \User    $user    The user whose access should check.
+     *
+     * @return iterable
+     */
+    private function _filterInaccessibleCandidates(
+        array $candIDs,
+        \User $user,
+    ) : iterable {
+        \Profiler::checkpoint("Filtering inaccessible candidates");
+        if (count($candIDs) == 0) {
+            return [];
+        }
+        $DB = $this->loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
+
+        // Put candidates into a temporary table so that it can be used in a join
+        // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
+        // too slow to be useable.
+        $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
+        $DB->run(
+            "CREATE TEMPORARY TABLE accesscandidates(
+	    CandID int(6) NOT NULL,
+	    PRIMARY KEY(CandID)
+        );"
+        );
+        $insertstmt = "INSERT INTO accesscandidates VALUES"
+                . " (" . join('),(', $candIDs) . ')';
+        $q          = $DB->prepare($insertstmt);
+        $q->execute([]);
+
+        // Get the data which affects accessibility in bulk.
+        $rows      = $DB->pselect(
+            "SELECT c.CandID, c.RegistrationProjectID, c.RegistrationCenterID,
+                s.ProjectID as SProjectID, s.CenterID as SCenterID,
+                s.ID as sessionID
+            FROM candidate c LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE c.Active='Y' AND COALESCE(s.Active, 'Y')='Y'
+                AND c.CandID IN (SELECT CandID FROM accesscandidates)
+            ORDER BY c.CandID",
+            []
+        );
+        $curCandID = '';
+        $canddata  = null;
+
+        // Foreach CandID, create the TimePointData object for all timepoints
+        // that were returned.
+        foreach ($rows as $row) {
+            if ($curCandID != $row['CandID']) {
+                if ($canddata !== null) {
+                     $candidate = new \Candidate($canddata);
+                    if ($candidate->isAccessibleBy($user)) {
+                        yield $canddata->CandID;
+                    }
+                }
+                $canddata  = new \CandidateData(
+                    candID: new CandID(strval($row['CandID'])),
+                    registrationProjectID: $row['RegistrationProjectID'] !== null
+                    ? \ProjectID::singleton($row['RegistrationProjectID'])
+                    : null,
+                    registrationCenterID: $row['RegistrationCenterID'] !== null
+                    ? \CenterID::singleton($row['RegistrationCenterID'])
+                    : null,
+                    timepoints: [],
+                );
+                $curCandID = $row['CandID'];
+            }
+            if ($row['sessionID'] !== null) {
+                $canddata->timepoints[] = new \TimePoint(
+                    new \TimePointData(
+                        new \SessionID(strval($row['sessionID'])),
+                        \ProjectID::singleton($row['SProjectID']),
+                        \CenterID::singleton($row['SCenterID']),
+                    )
+                );
+            }
+        }
+
+        // check the last candidate that wouldn't have entered the check in the
+        // loop
+        if ($canddata !== null) {
+            $candidate = new \Candidate($canddata);
+            if ($candidate->isAccessibleBy($user)) {
+                yield $canddata->CandID;
+            }
+        }
+        \Profiler::checkpoint("Finished filtering candidates");
     }
 
     /**
@@ -591,7 +685,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         foreach ($criteria['group'] as $crit) {
+            \Profiler::checkpoint("Checking groups");
             if (isset($crit['group'])) {
+                \Profiler::checkpoint("Subgroup");
                 $subresults = $this->_candidateMatches($crit);
                 if (is_array($subresults)) {
                     $results[] = $subresults;
@@ -660,12 +756,14 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $visitlist = $query['visits'];
             }
 
+            \Profiler::checkpoint("Calling engine get matches");
             $matches = $engine->getCandidateMatches($term, $visitlist);
             if (is_array($matches)) {
                 $results[] = $matches;
             } else {
                 $results[] = iterator_to_array($matches);
             }
+            \Profiler::checkpoint("Done group");
         }
         $combinedresult = [];
         if (count($results) == 1) {

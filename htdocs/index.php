@@ -34,6 +34,7 @@ ini_set('session.use_strict_mode', '1');
 $client = new \NDB_Client;
 $client->initialize();
 
+Profiler::checkpoint("Profiler started");
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
