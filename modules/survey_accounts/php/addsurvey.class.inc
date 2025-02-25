@@ -102,11 +102,12 @@ class AddSurvey extends \NDB_Form
             return ['VL' => "You must specify a valid Visit Label."];
         }
 
-        $numSessions = $db->pselectOne(
-            "SELECT COUNT(*) FROM session
-            WHERE CandidateID=:v_CandID
+	$numSessions = $db->pselectOne(
+    "SELECT COUNT(*) FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE CandID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
-            AND Active='Y'",
+            AND s.Active='Y'",		
             [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
@@ -122,15 +123,16 @@ class AddSurvey extends \NDB_Form
         }
 
         $projectID = $db->pselectOneInt(
-            "SELECT ProjectID FROM session
-            WHERE CandidateID=:v_CandID
+		"SELECT ProjectID FROM session s
+		JOIN candidate c ON (c.ID = s.CandidateID)
+            WHERE c.CandID=:v_CandID
             AND Visit_Label=:v_VL",
             [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL']
             ]
         );
-
+error_log(print_r($projectID,true));
         $user = \NDB_Factory::singleton()->user();
         if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
@@ -141,8 +143,9 @@ class AddSurvey extends \NDB_Form
         $instrument_list = $db->pselect(
             "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             JOIN test_names tn ON tn.ID = f.TestID
-             WHERE s.CandidateID=:v_CandID
+	     JOIN test_names tn ON tn.ID = f.TestID
+             JOIN candidate c ON (c.ID = s.CandidateID)
+             WHERE c.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
             [

@@ -53,7 +53,7 @@ if ($numCandidates != 1) {
 $numSessions = $db->pselectOne(
     "SELECT COUNT(*) FROM session s
             JOIN candidate c ON (c.ID=s.CandidateID)
-            WHERE CandID=:v_CandID
+            WHERE c.CandID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
             AND s.Active='Y'",
     [
@@ -61,7 +61,7 @@ $numSessions = $db->pselectOne(
         'v_VL'     => $_REQUEST['VL'],
     ]
 );
-
+/*
 if ($numSessions != 1) {
     echo json_encode(
         [
@@ -71,7 +71,7 @@ if ($numSessions != 1) {
     );
     exit(0);
 }
-
+ */
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         ['error_msg' => 'Please choose an instrument']
@@ -82,7 +82,7 @@ if (empty($_REQUEST['TN'])) {
 $instrument_list = $db->pselect(
     "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             JOIN candidate ON c.ID = s.CandidateID
+             JOIN candidate c ON c.ID = s.CandidateID
              JOIN test_names tn ON tn.ID = f.TestID
              WHERE c.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
