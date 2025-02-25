@@ -154,7 +154,7 @@ if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
     return false;
 }
 // check $candID
-if (!preg_match("/^([0-9]{1,10})$/", $candID)) {
+if (!preg_match("/^([0-9]{1,10})$/", strval($candID))) {
     fwrite(
         STDERR,
         "Error: invalid 2st argument CandID ($candID).\n " .
@@ -516,7 +516,11 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     // check the date format (redundant)
     $dateArray = explode('-', $newDate);
     if (!is_array($dateArray)
-        || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
+        || !checkdate(
+            intval($dateArray[1]),
+            intval($dateArray[2]),
+            intval($dateArray[0])
+        )
     ) {
         throw new LorisException(
             "Invalid Date! Please use the following format: YYYY-MM-DD \n"
@@ -525,7 +529,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     unset($dateArray);
 
     // candidate object - needed to get the dob/edc
-    $candidate =& Candidate::singleton($candID);
+    $candidate =& Candidate::singleton(new CandID(strval($candID)));
 
     // fixing DOB or EDC
     if (in_array($dateType, ['dob', 'edc'])) {
@@ -540,7 +544,10 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
         * add Feedback
         */
         // feedback object
-        $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
+        $feedback =& NDB_BVL_Feedback::singleton(
+            $user->getUsername(),
+            new CandID(strval($candID))
+        );
 
         //get thread feedback type
         $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
