@@ -86,8 +86,7 @@ try {
 } catch (DomainException $e) {
     fwrite(
         STDERR,
-        "Error: invalid 2st argument CandID ({$argv[2]}).\n " .
-        "It has to be a 6-digit number\n"
+        "Error: invalid 2st argument CandID ({$argv[2]}).\n"
     );
     fwrite(
         STDERR,
