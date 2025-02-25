@@ -102,12 +102,12 @@ class AddSurvey extends \NDB_Form
             return ['VL' => "You must specify a valid Visit Label."];
         }
 
-	$numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session s
+        $numSessions = $db->pselectOne(
+            "SELECT COUNT(*) FROM session s
             JOIN candidate c ON (c.ID=s.CandidateID)
             WHERE CandID=:v_CandID
             AND UPPER(Visit_label)=UPPER(:v_VL)
-            AND s.Active='Y'",		
+            AND s.Active='Y'",
             [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
@@ -123,7 +123,7 @@ class AddSurvey extends \NDB_Form
         }
 
         $projectID = $db->pselectOneInt(
-		"SELECT ProjectID FROM session s
+            "SELECT ProjectID FROM session s
 		JOIN candidate c ON (c.ID = s.CandidateID)
             WHERE c.CandID=:v_CandID
             AND Visit_Label=:v_VL",
@@ -132,7 +132,7 @@ class AddSurvey extends \NDB_Form
                 'v_VL'     => $values['VL']
             ]
         );
-error_log(print_r($projectID,true));
+        error_log(print_r($projectID, true));
         $user = \NDB_Factory::singleton()->user();
         if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
