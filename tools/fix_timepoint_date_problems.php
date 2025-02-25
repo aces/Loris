@@ -81,7 +81,20 @@ if (empty($argv[1]) || empty($argv[2]) || $argv[1] == 'help') {
 $action = strtolower($argv[1]);
 
 // CandID
-$candID = new CandID($argv[2]);
+try {
+    $candID = new CandID($argv[2]);
+} catch (DomainException $e) {
+    fwrite(
+        STDERR,
+        "Error: invalid 2st argument CandID ({$argv[2]}).\n " .
+        "It has to be a 6-digit number\n"
+    );
+    fwrite(
+        STDERR,
+        "For the script syntax type: fix_timepoint_date_problems.php help \n"
+    );
+    exit;
+}
 
 // get the rest of the arguments
 switch ($action) {
@@ -146,19 +159,6 @@ if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
         STDERR,
         "Error: invalid 1st argument ($action).\n Available options are:" .
         "'diagnose','fix_date','add_instrument'\n"
-    );
-    fwrite(
-        STDERR,
-        "For the script syntax type: fix_timepoint_date_problems.php help \n"
-    );
-    return false;
-}
-// check $candID
-if (!preg_match("/^([0-9]{1,10})$/", $candID)) {
-    fwrite(
-        STDERR,
-        "Error: invalid 2st argument CandID ($candID).\n " .
-        "It has to be a 6-digit number\n"
     );
     fwrite(
         STDERR,
