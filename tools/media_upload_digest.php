@@ -41,7 +41,7 @@ if (isset($argv[3]) && $argv[3] === '-email') {
 $startDate = date('Y-m-d H:i:s', strtotime("-$num $timespan"));
 
 // Selects file information for files uploaded since the startDate
-$allUploadedFiles  = $DB->pselect(
+$allUploadedFiles = $DB->pselect(
     "SELECT PSCID, file_name, last_modified, uploaded_by, s.ProjectID, p.Alias
     FROM media m 
     JOIN session s ON (m.session_id=s.ID)
