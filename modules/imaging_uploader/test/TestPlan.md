@@ -41,6 +41,10 @@
     - A `CandID` that does not exist in the `candidate` table (e.g. try appending letters to an existing `CandID`)
     - A `PSCID` that is invalid for a specific `CandID` in the `candidate` table
     - A `Visit_label` that is invalid for a specific `CandID` in the `session` table
+    - Make sure the `useImagingSiteProjectPermissions` (Use Site Project Permissions) Configuration is set to NO
+        - Check that you can upload a scan to any site or project (including ones your user is not affiliated to)
+    - Make sure the `useImagingSiteProjectPermissions` (Use Site Project Permissions) Configuration is set to YES
+        - Check that you can NOT upload a scan to a site or project your user is not affiliated to
     - A candidate that has `Active` set to 'N' in the `candidate` table
     - A session that has `Active` set to 'N' in the `session` table
     - You should also consider scenarios where there are a combination of these errors or no error at all 

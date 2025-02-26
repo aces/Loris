@@ -326,6 +326,11 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
         $db        = $this->loris->getDatabaseConnection();
+        $config    = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useImagingSiteProjectPermissions'
+        );
+        $user = \NDB_Factory::singleton()->user();
         // creates associative array to store error messages for each form element
         $errors = [
             'IsPhantom'  => [],
@@ -372,7 +377,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      c2.candid AS candid_with_pscid,
                      s.visit_label,
                      c2.active AS candidate_active,
-                     s.active AS session_active
+                     s.active AS session_active,
+                     s.ID AS SessionID
                      FROM candidate c
                      LEFT JOIN candidate c2
                      ON (c.candid=c2.candid AND c2.pscid = :pid)
@@ -410,6 +416,21 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                 " Visit Label and CandID."
                             );
                     }
+                    if ($siteprojectperms === 'true') {
+                        // Basic fields have been validated, check user permisions
+                        // only if siteproject permissions configuration is on
+                        $session = \TimePoint::singleton(
+                            new \SessionID(strval($candidate['SessionID']))
+                        );
+                        if (!$session->isAccessibleBy($user)) {
+                            $errors["user"] = "This user does not have permission ".
+                            "to upload files for this session.";
+                            http_response_code(403);
+                            header('Content-Type: application/json; charset=UTF-8');
+                            exit(json_encode(['errors' => $errors]));
+                        }
+                    }
+
                     if ($candidate['candidate_active'] == 'N') {
                         array_push(
                             $errors["pSCID"],
