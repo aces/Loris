@@ -627,7 +627,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     intval($comment['newValue'])
                 );
                 $comment['fieldChanged'] = 'site';
-            } else if ($comment['fieldChanged'] === 'candID') {
+            } else if ($comment['fieldChanged'] === 'CandidateID') {
                 $PSCID = $db->pselectOne(
                     "SELECT PSCID FROM candidate WHERE ID=:candidateID",
                     ['candidateID' => $comment['newValue']]
@@ -1290,7 +1290,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (!empty($value) || $key === 'centerID') {
                 $changedValues = [
                     'newValue'     => $value ?? '',
-                    'fieldChanged' => ($key == 'CandidateID')? 'candID' : $key,
+                    'fieldChanged' => $key,
                     'issueID'      => $issueID,
                     'addedBy'      => $user->getUsername(),
                 ];
