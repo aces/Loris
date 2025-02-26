@@ -629,8 +629,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $comment['fieldChanged'] = 'site';
             } else if ($comment['fieldChanged'] === 'candID') {
                 $PSCID = $db->pselectOne(
-                    "SELECT PSCID FROM candidate WHERE CandID=:candID",
-                    ['candID' => $comment['newValue']]
+                    "SELECT PSCID FROM candidate WHERE ID=:candidateID",
+                    ['candidateID' => $comment['newValue']]
                 );
                 $comment['newValue']     = $PSCID;
                 $comment['fieldChanged'] = 'PSCID';
@@ -802,9 +802,12 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
-
         if (array_key_exists('candID', $validatedInput)) {
-            $issueValues['candID'] = $validatedInput['candID'];
+            $candidateID = $db->pselectOne(
+                "SELECT ID FROM candidate WHERE CandID=:candID",
+                ['candID' => $validatedInput['candID']]
+            );
+            $issueValues['CandidateID'] = $candidateID;
         }
 
         // Get changed values to save in history
@@ -1157,7 +1160,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         // If both are set, return SessionID and CandID
         if (isset($result['PSCID']) && isset($result['visit'])) {
             $session = iterator_to_array(
-                $db->pSelect(
+                $db->pselect(
                     "SELECT s.ID as sessionID, c.CandID as candID FROM candidate c
                 INNER JOIN session s on (c.ID = s.CandidateID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
@@ -1193,7 +1196,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
             }
 
-            $candidate = $db->pSelectOne($query, $params);
+            $candidate = $db->pselectOne($query, $params);
             if ($candidate) {
                 $result['candID'] = $candidate;
             } else {
@@ -1287,7 +1290,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (!empty($value) || $key === 'centerID') {
                 $changedValues = [
                     'newValue'     => $value ?? '',
-                    'fieldChanged' => $key,
+                    'fieldChanged' => ($key == 'CandidateID')? 'candID' : $key,
                     'issueID'      => $issueID,
                     'addedBy'      => $user->getUsername(),
                 ];
