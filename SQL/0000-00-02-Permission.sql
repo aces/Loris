@@ -72,7 +72,6 @@ CREATE TABLE `user_perm_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-<<<<<<< HEAD
 INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALUES
     ('superuser','Superuser - supersedes all permissions',NULL,NULL,1),
     ('user_accounts','User Accounts - Own Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit',2),
@@ -102,7 +101,7 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('document_repository_view','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'View',2),
     ('document_repository_delete','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Delete',2),
     ('server_processes_manager','Processes',(SELECT ID FROM modules WHERE Name='server_processes_manager'),'View',2),
-    ('imaging_uploader','Imaging Scans',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload',2),
+    ('imaging_uploader_allsites','Imaging Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload',2),
     ('acknowledgements_view','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'View',2),
     ('acknowledgements_edit','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'Edit',2),
     ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),'View/Download',2),
