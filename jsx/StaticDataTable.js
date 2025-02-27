@@ -293,7 +293,7 @@ class StaticDataTable extends Component {
   /**
    * Get if the current sorting column has mixed types in its values.
    *
-   * @return {bool} true if mixed types, else false.
+   * @return {boolean} true if mixed types, else false.
    */
   hasMixedTypes() {
     // TODO: data column type check should probably be done once at init,
