@@ -8,6 +8,6 @@ CREATE TABLE `test_names_multilingual` (
 	CONSTRAINT `FK_test_names_multilingual_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
 	KEY `FK_test_names_multilingual_2` (`LanguageID`),
 	CONSTRAINT `FK_test_names_multilingual_2` FOREIGN KEY (`LanguageID`) REFERENCES `language` (`language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 UPDATE session SET LanguageID='1' WHERE LanguageID IS NULL;
