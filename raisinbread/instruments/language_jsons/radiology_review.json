@@ -1,0 +1,70 @@
+{
+	"en-CA" : {
+		"header" : "Radiology Review Form",
+		"yes_no_option" : {
+			"" : "",
+			"yes" : "Yes",
+			"no" : "No",
+			"not_answered" : "Not Answered"
+		},
+		"normal_option" : {
+			"" : "",
+			"normal" : "Normal",
+			"abnormal" : "Abnormal",
+			"atypical" : "Atypical",
+			"not_answered" : "Not Answered"
+		},
+		"exclusionaryOrNot" : {
+			"" : "",
+			"exclusionary" : "Exclusionary",
+			"non_exclusionary" : "Non-Exclusionary",
+			"not_answered" : "Not Answered"
+		},
+		"3d_t1_mp_rage" : "3D T1 MP-Rage",
+		"Scan_done" : "Was an MRI performed?",
+		"if_yes" : "If Yes?",
+		"MRI_date" : "Date of MRI acquisition",
+		"enter_scan_info" : "Please enter the scan information",
+		"Review_date" : "Date of local radiology review",
+		"Review_results" : "Results of local radiology review?",
+		"abnormal_atypical_exclusionary" : "If the results are ABNORMAL or ATYPICAL:",
+		"abnormal_atypical_exclusionary_rule" : "Please indicate if the Abnormal or Atypical review is Exclusionary or Not.",
+		"Incidental_findings_message" : "If Abnormal or Atypical, describe incidental finding(s)",
+		"Incidental_findings" : "Description of incidental findings:",
+		"describe_abnormality" : "Please describe the abnormality"
+	},
+	"fr-CA" : {
+		"header" : "Formulaire d'examen radiologique",
+		"yes_no_option" : {
+			"" : "",
+			"yes" : "Oui",
+			"no" : "Non",
+			"not_answered" : "Non répondu"
+		},
+		"normal_option" : {
+			"" : "",
+			"normal" : "Normal",
+			"abnormal" : "Anormal",
+			"atypical" : "Atypique",
+			"not_answered" : "Non répondu"
+		},
+		"exclusionaryOrNot" : {
+			"" : "",
+			"exclusionary" : "Exclusionnaire",
+			"non_exclusionary" : "Non-exclusionnaire",
+			"not_answered" : "Non répondu"
+		},
+		"3d_t1_mp_rage" : "3D T1 MP-Rage",
+		"Scan_done" : "Une IRM a-t-elle été réalisée ?",
+		"if_yes" : "Si oui ?",
+		"MRI_date" : "Date de l'acquisition IRM",
+		"enter_scan_info" : "Veuillez entrer les informations de l'examen",
+		"Review_date" : "Date de l'examen radiologique local",
+		"Review_results" : "Résultats de l'examen radiologique local ?",
+		"abnormal_atypical_exclusionary" : "Si les résultats sont ANORMAUX ou ATYPIQUES :",
+		"abnormal_atypical_exclusionary_rule" : "Veuillez indiquer si l'examen Anormal ou Atypique est Exclusionnaire ou Non.",
+		"Incidental_findings_message" : "Si Anormal ou Atypique, décrivez les constatations incidentes",
+		"Incidental_findings" : "Description des constatations incidentes :",
+		"describe_abnormality" : "Veuillez décrire l'anomalie"
+	}
+}

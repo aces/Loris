@@ -42,6 +42,11 @@ determines which candidate age is displayed as part of the
 metadata fields: `Candidate Age (Months)` or
 `Candidate Age at Death (Months)`.
 
+## Multi-lingual support
+Instrument labels are added in JSON files with the language code as a key. A default JSON labels file is included in `modules/instruments/language_labels/instrument_library_labels.json` which includes English and French for labels referenced in NDB_BVL_Instruments.class.inc. To add more languages to be supported by a project's instruments, first add the language to the `language` table. Next, copy the `instrument_library_labels.json` file to `project/instruments/language_labels/instrument_library_labels.json` with a new key for the additional language, and all of the same labels translated into the additional language. This new file should be tracked on the project's repository.
+
+Multilingual support is only available for PHP instrument at the moment. To have a multilingual instrument, the translated test name should be inserted into `test_names_multilingual` linked to the appropriate language ID. The function `$this->getLangLabel('key')` can be used anywhere in the instrument to display translated labels. A JSON file must be created in the same format as `modules/instruments/language_labels/instrument_library_labels.json` and put into the `project/instruments/language_labels/` directory with the following naming convention: <test_name>.json
+
 ## Interactions with LORIS
 
 The survey module uses instruments of the same format as data entry
