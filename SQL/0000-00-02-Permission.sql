@@ -142,7 +142,9 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', 2),
     ('issue_tracker_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'View/Edit/Comment',2),
     ('issue_tracker_close_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2),
-    ('issue_tracker_close_all_issue','Issues - All Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2)
+    ('issue_tracker_close_all_issue','Issues - All Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2),
+    ('imaging_uploader_ownsites', 'Imaging Scans - Own Sites', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
+    ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2')
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)
