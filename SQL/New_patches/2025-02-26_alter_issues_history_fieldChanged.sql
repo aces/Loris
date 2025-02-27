@@ -6,4 +6,4 @@ ALTER TABLE issues_history CHANGE `fieldChanged` `fieldChanged` enum('assignee',
 
 UPDATE issues_history
 JOIN candidate ON issues_history.newValue = candidate.CandID
-SET issues_history.newValue = candidate.ID WHERE issues_history.fieldChanged = 'candID';
+SET issues_history.newValue = candidate.ID WHERE issues_history.fieldChanged = 'CandidateID';
