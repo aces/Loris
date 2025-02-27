@@ -41,7 +41,7 @@ class Notifications extends Endpoint
      *
      * @var ?\User
      */
-    private ?\User $_issue_assignee;
+    private ?\User $_issue_assignee = null;
 
     /**
      * Construct an endpoint
