@@ -107,6 +107,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
-
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
