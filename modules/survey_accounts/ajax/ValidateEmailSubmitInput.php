@@ -82,7 +82,7 @@ if (empty($_REQUEST['TN'])) {
 $instrument_list = $db->pselect(
     "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             JOIN candidate ON c.ID = s.CandidateID
+             JOIN candidate c ON c.ID = s.CandidateID
              JOIN test_names tn ON tn.ID = f.TestID
              WHERE c.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
