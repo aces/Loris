@@ -51,99 +51,84 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 
         // display test name
         $this->addHeader(
-            "Radiology Review Form"
+            $this->getLangLabel('header')
         );
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $yes_no_option = [
-            null           => "",
-            "no"           => "No",
-            "yes"          => "Yes",
-            "not_answered" => "Not Answered",
-        ];
-        $normal_option = [
-            null           => "",
-            "normal"       => "Normal",
-            "abnormal"     => "Abnormal",
-            "atypical"     => "Atypical",
-            "not_answered" => "Not Answered",
-        ];
-        $exclusionaryOrNot = [
-            null               => "",
-            "exclusionary"     => "Exclusionary",
-            "non_exclusionary" => "Non-Exclusionary",
-            "not_answered"     => "Not Answered",
-        ];
+        $yes_no_option = $this->getLangLabel('yes_no_option');
+
+        $normal_option = $this->getLangLabel('normal_option');
+        $exclusionaryOrNot = $this->getLangLabel('exclusionaryOrNot');
 
         $this->addHeader(
-            '3D T1 MP-Rage'
+            $this->getLangLabel('3d_t1_mp_rage')
         );
         $this->addSelect(
             'Scan_done',
-            'Was an MRI performed?',
+            $this->getLangLabel('Scan_done'),
             $yes_no_option
         );
         $this->addLabel(
-            'If Yes?'
+            $this->getLangLabel('if_yes')
         );
 
         $this->addDateElement(
             'MRI',
-            'Date of MRI acquisition'
+            $this->getLangLabel('MRI_date')
         );
 
         $this->XINRegisterRule(
             "MRI_date",
             ["Scan_done{@}=={@}yes"],
-            "Please enter the scan information",
+            $this->getLangLabel('enter_scan_info'),
             "MRI_date_group"
         );
         $this->addDateElement(
             'Review',
-            'Date of local radiology review'
+            $this->getLangLabel('Review_date')
         );
         $this->XINRegisterRule(
             "Review_date",
             ["Scan_done{@}=={@}yes"],
-            "Please enter the scan information",
+            $this->getLangLabel('enter_scan_info'),
             "Review_date_group"
         );
 
         $this->addSelect(
             'Review_results',
-            'Results of local radiology review?',
+            $this->getLangLabel('Review_results'),
             $normal_option
         );
         $this->XINRegisterRule(
             "Review_results",
             ["Scan_done{@}=={@}yes"],
-            "Please enter the scan information"
+            $this->getLangLabel('enter_scan_info')
         );
 
         $this->addSelect(
             'abnormal_atypical_exclusionary',
-            $this->indent . "If the results are ABNORMAL or ATYPICAL:",
+            $this->indent . $this->getLangLabel('abnormal_atypical_exclusionary'),
             $exclusionaryOrNot
         );
 
         $this->XINRegisterRule(
             'abnormal_atypical_exclusionary',
             ['Review_results{@}=={@}abnormal|atypical'],
-            "Please indicate if the Abnormal or Atypical review is Exclusionary or Not."
+            $this->getLangLabel("abnormal_atypical_exclusionary_rule")
         );
 
         $this->addLabel(
             $this->indent . $this->indent .
-            'If Abnormal or Atypical, describe incidental finding(s)'
+            $this->getLangLabel('Incidental_findings_message')
         );
         $this->addTextAreaElement(
             'Incidental_findings',
             $this->indent . $this->indent .
-            'Description of incidental findings:',
+            $this->getLangLabel('Incidental_findings'),
             ["Review_results{@}=={@}abnormal"],
-            "Please describe the abnormality"
+            $this->getLangLabel("describe_abnormality")
         );
     } // End Setup form
 }
