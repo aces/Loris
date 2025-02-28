@@ -8,7 +8,7 @@
     [Manual Testing]
 4. Test Steps 1-3 for a few modules modules, their subpages, and instruments. All modules should take help content from their respective help.md files in their directory, while instruments’ help content is created and edited in the Edit Help section. (Feel free to open issues if you spot features not covered / updated in the Help text, though this is the responsibility of the module's tester.)
     [Manual Testing]
-5. Test the Admin Help Editor module.
+5.  Test the Admin Help Editor module.
     [Manual Testing]
 6. Test filter to ensure that it filters properly
     [Automation Testing]
