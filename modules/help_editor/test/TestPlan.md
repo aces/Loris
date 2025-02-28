@@ -18,7 +18,7 @@
     [Manual Testing]
 9.  Sort all header columns.
     [Manual Testing]
-10. Check multiple pages links.
+10.  Check multiple pages links.
    [Manual Testing]
 11. Test Preview - In the Help Editor, update title and content. Make sure the recent changes are visible (in real time) in the Help side panel.
     [Manual Testing]
