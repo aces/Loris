@@ -71,6 +71,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (77,'issue_tracker_site_issue','Issues - Own Sites',27,'View/Edit/Comment',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (78,'issue_tracker_close_site_issue','Issues - Own Sites',27,'Close',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (79,'issue_tracker_close_all_issue','Issues - All Sites',27,'Close',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (80,'dataquery_admin','Admin dataquery queries',44,NULL,2);
 
 
 UNLOCK TABLES;
