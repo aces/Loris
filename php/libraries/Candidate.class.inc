@@ -1294,7 +1294,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE accesscandidates(
-	    CandID int(10) NOT NULL,
+	    CandID int(10) unsigned NOT NULL,
 	    PRIMARY KEY(CandID)
         );"
         );
