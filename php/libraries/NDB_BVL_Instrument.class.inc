@@ -28,7 +28,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Variable storing the labels used for an instrument
      * supporting multiple languages
      *
-     * @var string
+     * @var array
      */
     public $labels;
 
@@ -437,7 +437,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $tn The name of the JSON file to be used.
      *
-     * @return array
+     * @throws NotFound If the JSON label file is not found
+     *
+     * @return void
      */
     function getLanguageMapping($tn = null)
     {
@@ -458,22 +460,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             throw new NotFound($msg);
         }
 
-        $libraryLabelMap = json_decode(file_get_contents($libraryLabelFile), true);
+        $libraryLabelMap = json_decode(file_get_contents($libraryLabelFile), true) ??
+            [];
 
         $lang = $this->getLanguage();
 
-        $this->labels = $libraryLabelMap[$lang];
+        $this->labels = is_array($libraryLabelMap) && isset($libraryLabelMap[$lang])
+            ? $libraryLabelMap[$lang]
+            : [];
 
         // Get labels for the instrument if they exist
         $instLabelFile = $base."project/instruments/language_jsons/{$tn}.json";
         if (file_exists($instLabelFile)) {
-            $instLabelMap = json_decode(
-                file_get_contents($instLabelFile),
-                true
-            );
+            $instLabelMap = json_decode(file_get_contents($instLabelFile), true) ??
+                [];
             $this->labels = array_merge(
-                $instLabelMap[$lang],
-                $libraryLabelMap[$lang]
+                is_array($instLabelMap) && isset($instLabelMap[$lang]) ?
+                    $instLabelMap[$lang] : [],
+                $this->labels
             );
         }
     }
@@ -1714,11 +1718,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Wrapper to auto-create a simple Yes, No, Null, Not Answered type
      * of question
      *
-     * @param string $field        The database field in which the response
-     *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        {@} delimited rules
-     * @param string $rule_message rule message to display
+     * @param string      $field        The database field in which the response
+     *                                  will be stored
+     * @param string      $label        The question text to display
+     * @param array       $rules        {@} delimited rules
+     * @param string|null $rule_message rule message to display (nullable)
      *
      * @return void
      */
@@ -1726,7 +1730,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message=null
+        ?string $rule_message=null
     ): void {
         $this->addSelect(
             $field,
@@ -1747,18 +1751,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create a text field with an accompanying status field.
      *
-     * @param string $field        The database field in which the response
-     *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        rules with values and comparisson operators
-     *                             {@} seperated.
-     *                             Example: array(
-     *                             'q_40{@}=={@}1_yes',
-     *                             'q_40_b{@}=={@}1_yes'
-     *                             )
-     * @param string $rule_message rule message to display
-     * @param array  $refusals     options in the refusal select (ie. Refusal,
-     *                             Unknown, Not Answered).
+     * @param string      $field        The database field in which the response
+     *                                  will be stored
+     * @param string      $label        The question text to display
+     * @param array       $rules        rules with values and comparisson operators
+     *                                  {@} seperated. Example: array(
+     *                                  'q_40{@}=={@}1_yes', 'q_40_b{@}=={@}1_yes'
+     *                                  )
+     * @param string|null $rule_message rule message to display (nullable)
+     * @param array|null  $refusals     options in the refusal select (ie. Refusal,
+     *                                  Unknown, Not Answered) (nullable)
      *
      * @return void
      */
@@ -1766,8 +1768,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message = null,
-        array $refusals = null
+        ?string $rule_message = null,
+        ?array $refusals = null
     ): void {
         $rule_message = $rule_message ?? $this->getLangLabel('field_required');
         $refusals     = $refusals ??  [
@@ -1794,10 +1796,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Wrapper to create a text area field for questions that require
      * Refused and Don't know options
      *
-     * @param string $field        The database name for this field
-     * @param string $label        The question text
-     * @param array  $rules        XINRules for this question
-     * @param string $rule_message The error message if rules are violated
+     * @param string      $field        The database name for this field
+     * @param string      $label        The question text
+     * @param array       $rules        XINRules for this question
+     * @param string|null $rule_message The error message if rules are violated
      *
      * @return void
      * @note   This was only ever used by the EARLI instrument and should be moved
@@ -1806,9 +1808,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function addTextAreaElementRD(string $field,
         string $label,
         array $rules=[],
-        string $rule_message=null
+        ?string $rule_message=null
     ): void {
-        $rule_message = $rule_message ?? $this->getLanglaebl('specify_or_select');
+        $rule_message = $rule_message ?? $this->getLanglabel('specify_or_select');
         $group        = [];
         $group[]      = $this->form->createElement(
             "textarea",
@@ -1840,11 +1842,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create a text area field, with an accompanying status field.
      *
-     * @param string $field        The database field in which the response
-     *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        {@} delimited rules
-     * @param string $rule_message rule message to display upon rule violation
+     * @param string      $field        The database field in which the response
+     *                                  will be stored
+     * @param string      $label        The question text to display
+     * @param array       $rules        {@} delimited rules
+     * @param string|null $rule_message rule message to display upon rule violation
      *
      * @return void
      */
@@ -1852,7 +1854,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label,
         array $rules=[],
-        string $rule_message=null
+        ?string $rule_message=null
     ): void {
         $rule_message = $rule_message ?? $this->getLangLabel('field_required');
         $group        = [];
@@ -1896,7 +1898,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param string      $label        The question text to display
      * @param array       $rules        Additional rules to apply to the element
      *                                  being added,{@} delimited
-     * @param string|null $rule_message Message to display upon rule violation.
+     * @param string|null $rule_message Message to display upon rule violation
      *
      * @return void
      * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
