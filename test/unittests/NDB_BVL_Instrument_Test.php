@@ -179,8 +179,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $instrument->labels["specify_or_select"]
             = "You must specify or select from the drop-down";
 
-        $instrument->labels["88_refused"]        = "88 Refused";
-        $instrument->labels["99_do_not_know"]    = "99 Do not know";
+        $instrument->labels["88_refused"]     = "88 Refused";
+        $instrument->labels["99_do_not_know"] = "99 Do not know";
         $instrument->labels["select_status_leave_blank"] = "You are required";
         $instrument->labels["dnk"]     = "DNK";
         $instrument->labels["refusal"] = "Refusal";
