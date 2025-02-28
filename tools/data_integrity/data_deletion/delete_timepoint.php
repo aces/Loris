@@ -83,8 +83,9 @@ if ($candExists == 0) {
 
 if ($sessionID != null) {
     $sessionExists = $DB->pselectOne(
-        "SELECT COUNT(*) FROM session 
-        WHERE ID=:sid AND CandID=:cid AND Active ='Y'",
+        "SELECT COUNT(*) FROM session s
+        JOIN candidate c ON c.ID = s.CandidateID
+        WHERE s.ID=:sid AND c.CandID=:cid AND s.Active ='Y'",
         ['sid' => $sessionID, 'cid' => $CandID]
     );
     if ($sessionExists == 0) {
@@ -211,7 +212,7 @@ function deleteTimepoint(
             WHERE CommentId1=:cid OR CommentId2=:cid',
             ['cid' => $instrument['CommentID']]
         );
-        print_r($result);
+        print_r(iterator_to_array($result));
         echo "\nConflicts Resolved\n";
         echo "--------------------\n";
         $result = $DB->pselect(
@@ -219,7 +220,7 @@ function deleteTimepoint(
             WHERE CommentId1=:cid OR CommentId2=:cid',
             ['cid' => $instrument['CommentID']]
         );
-        print_r($result);
+        print_r(iterator_to_array($result));
     }
     // Print from flag
     echo "\nFlag\n";
@@ -228,7 +229,7 @@ function deleteTimepoint(
         'SELECT * FROM flag WHERE SessionID=:sid',
         ['sid' => $sessionID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print from media
     echo "\nMedia\n";
@@ -237,7 +238,7 @@ function deleteTimepoint(
         'SELECT * FROM media WHERE session_id=:sid',
         ['sid' => $sessionID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print from issues
     echo "\nIssues\n";
@@ -246,7 +247,7 @@ function deleteTimepoint(
         'SELECT * FROM issues WHERE sessionID=:sid',
         ['sid' => $sessionID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print from mri_upload
     echo "\nMRI Upload\n";
@@ -255,7 +256,7 @@ function deleteTimepoint(
         'SELECT * FROM mri_upload WHERE SessionID=:sid',
         ['sid' => $sessionID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print from session
     echo "\nSession\n";
@@ -264,26 +265,23 @@ function deleteTimepoint(
         'SELECT * FROM session WHERE ID=:id',
         ['id' => $sessionID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print from feedback
     echo "\nBehavioural Feedback\n";
     echo "----------------------\n";
-    $result = $DB->pselect(
+    $feedback_threads = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
         ['sid' => $sessionID]
     );
-    print_r($result);
-    $feedbackIDs = $DB->pselect(
-        'SELECT FeedbackID from feedback_bvl_thread WHERE SessionID =:sid',
-        ['sid' => $sessionID]
-    );
-    foreach ($feedbackIDs as $id) {
+    $feedback_threads = iterator_to_array($feedback_threads);
+    print_r($feedback_threads);
+    foreach ($feedback_threads as $feedback) {
         $result = $DB->pselect(
             'SELECT * from feedback_bvl_entry WHERE FeedbackID=:fid',
-            ['fid' => $id['FeedbackID']]
+            ['fid' => $feedback['FeedbackID']]
         );
-        print_r($result);
+        print_r(iterator_to_array($result));
     }
 
     // IF CONFIRMED, DELETE TIMEPOINT
@@ -354,10 +352,10 @@ function deleteTimepoint(
 
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
-        foreach ($feedbackIDs as $id) {
+        foreach ($feedback_threads as $feedback) {
             $DB->delete(
                 'feedback_bvl_entry',
-                ['FeedbackID' => $id['FeedbackID']]
+                ['FeedbackID' => $feedback['FeedbackID']]
             );
         }
         $DB->delete('feedback_bvl_thread', ['SessionID' => $sessionID]);
