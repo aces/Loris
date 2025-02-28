@@ -253,13 +253,8 @@ function addProjectModules(
     = require('./project/webpack-project.config.js');
 
   // Copy the record of LORIS modules
-  const allModules: Record<string, string[]> = {};
-  for (const [moduleName, moduleEntryPoints] of
-    Object.entries(projectModules)
-  ) {
-    allModules[moduleName] = [...moduleEntryPoints];
-  }
-
+  const allModules: Record<string, string[]> = modules;
+  
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)
