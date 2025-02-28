@@ -20,7 +20,7 @@
     [Manual Testing]
 10.  Check multiple pages links.
    [Manual Testing]
-11. Test Preview - In the Help Editor, update title and content. Make sure the recent changes are visible (in real time) in the Help side panel.
+11.  Test Preview - In the Help Editor, update title and content. Make sure the recent changes are visible (in real time) in the Help side panel.
     [Manual Testing]
 12.  Test-edit an Instrument's help text, from the Help Editor module (e.g. bmi). Open the instrument form for a candidante and check that the changes took effect and are visible from the instrument.
     [Manual Testing]
