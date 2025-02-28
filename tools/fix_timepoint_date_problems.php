@@ -679,9 +679,10 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
 
         // check the date format (redundant)
         $dateArray = explode('-', $newDate);
-        if (!is_array($dateArray)
-            || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
-        ) {
+        $year      = intval($dateArray[0]);
+        $month     = intval($dateArray[1]);
+        $day       = intval($dateArray[2]);
+        if (!is_array($dateArray) || !checkdate($month, $day, $year)) {
             throw new LorisException(
                 "Invalid Date! Please use the following format: YYYY-MM-DD"
             );
