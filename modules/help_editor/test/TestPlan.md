@@ -12,7 +12,7 @@
     [Manual Testing]
 6.  Test filter to ensure that it filters properly
     [Automation Testing]
-7. Test clear filter button.
+7.  Test clear filter button.
     [Automation Testing]
 8. Ensure permission for Edit Help is working properly.
     [Manual Testing]
