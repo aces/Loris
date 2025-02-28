@@ -2,7 +2,7 @@
 
 1.  Click on help button at the top. Contextual pull-down should appear.
     [Manual Testing]
-2. Verify that contextual help text presentation is working - it's displayed for the right module - and that the help text for this module reflects its features.
+2.  Verify that contextual help text presentation is working - it's displayed for the right module - and that the help text for this module reflects its features.
     [Manual Testing]
 3. Click Close Button. Ensure it closes.
     [Manual Testing]
