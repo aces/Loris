@@ -22,7 +22,7 @@
    [Manual Testing]
 11. Test Preview - In the Help Editor, update title and content. Make sure the recent changes are visible (in real time) in the Help side panel.
     [Manual Testing]
-12. Test-edit an Instrument's help text, from the Help Editor module (e.g. bmi). Open the instrument form for a candidante and check that the changes took effect and are visible from the instrument.
+12.  Test-edit an Instrument's help text, from the Help Editor module (e.g. bmi). Open the instrument form for a candidante and check that the changes took effect and are visible from the instrument.
     [Manual Testing]
 13.  Test-edit a Module's contextual help text, by modifying the md file in that module's `help/` subdirectory.  Check that the update renders in the module front-end.
     [Manual Testing]
