@@ -16,7 +16,7 @@
     [Automation Testing]
 8.  Ensure permission for Edit Help is working properly.
     [Manual Testing]
-9. Sort all header columns.
+9.  Sort all header columns.
     [Manual Testing]
 10. Check multiple pages links.
    [Manual Testing]
