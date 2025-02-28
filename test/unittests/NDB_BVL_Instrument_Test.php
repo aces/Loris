@@ -147,27 +147,33 @@ class NDB_BVL_Instrument_Test extends TestCase
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
         $instrument->labels["age_out_of_range"]          = " (Age out of range)";
-        $instrument->labels["data_entry_error_detected"] = "A data entry error has been detected so this data <b>WAS NOT SAVED</b>";
-        $instrument->labels["age_not_found"]          = "Candidate age could not be found.";
+        $instrument->labels["data_entry_error_detected"]
+            = "A data entry error has been detected so this data <b>WAS NOT SAVED</b>";
+        $instrument->labels["age_not_found"]
+            = "Candidate age could not be found.";
         $instrument->labels["date_of_administration"] = "Date of Administration";
         $instrument->labels["candidate_age"]          = "Candidate Age (Months)";
-        $instrument->labels["candidate_age_death"]    = "Candidate Age at Death (Months)";
-        $instrument->labels["window_difference"]      = "Window Difference (+/- Days)";
+        $instrument->labels["candidate_age_death"]
+            = "Candidate Age at Death (Months)";
+        $instrument->labels["window_difference"]
+            = "Window Difference (+/- Days)";
         $instrument->labels["examiner"] = "Examiner";
-        $instrument->labels["date_of_administration_required"] = "Date of Administration is required";
+        $instrument->labels["date_of_administration_required"]
+            = "Date of Administration is required";
         $instrument->labels["examiner_required"] = "Examiner is required";
         $instrument->labels["required"]          = "Required.";
         $instrument->labels["field_required"]    = "This field is required.";
         $instrument->labels["yes"]          = "Yes";
         $instrument->labels["no"]           = "No";
         $instrument->labels["not_answered"] = "Not Answered";
-        $instrument->labels["specify_or_select"] = "You must specify or select from the drop-down";
+        $instrument->labels["specify_or_select"]
+            = "You must specify or select from the drop-down";
         $instrument->labels["88_refused"]        = "88 Refused";
         $instrument->labels["99_do_not_know"]    = "99 Do not know";
-        $instrument->labels["select_status_leave_blank"] = "You are required to select a status if you want to leave this time blank.";
+        $instrument->labels["select_status_leave_blank"] = "You are required";
         $instrument->labels["dnk"]     = "DNK";
         $instrument->labels["refusal"] = "Refusal";
-        $instrument->labels["date_or_NA_required"] = "A Date, or Not Answered is required.";
+        $instrument->labels["date_or_NA_required"] = "Required.";
         $instrument->labels["must_be_numeric"]     = "Value must be numeric.";
 
         // Use reflection to set the internal

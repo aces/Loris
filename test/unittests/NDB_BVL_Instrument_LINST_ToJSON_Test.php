@@ -95,7 +95,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $i->testName = "Test";
         $i->labels["age_out_of_range"]          = " (Age out of range)";
         $i->labels["data_entry_error_detected"]
-         ="A data entry error has been detected so this data <b>WAS NOT SAVED</b>";
+            ="A data entry error has been detected so this data";
 
         $i->labels["age_not_found"]          = "Candidate age could not be found.";
         $i->labels["date_of_administration"] = "Date of Administration";
@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $i->labels["window_difference"]      = "Window Difference (+/- Days)";
         $i->labels["examiner"] = "Examiner";
         $i->labels["date_of_administration_required"]
-         = "Date of Administration is required";
+            = "Date of Administration is required";
         $i->labels["examiner_required"] = "Examiner is required";
         $i->labels["required"]          = "Required.";
         $i->labels["field_required"]    = "This field is required.";
@@ -112,11 +112,11 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $i->labels["no"]           = "No";
         $i->labels["not_answered"] = "Not Answered";
         $i->labels["specify_or_select"]
-          = "You must specify or select from the drop-down";
+            = "You must specify or select from the drop-down";
         $i->labels["88_refused"]        = "88 Refused";
         $i->labels["99_do_not_know"]    = "99 Do not know";
         $i->labels["select_status_leave_blank"]
-           = "You are required to select a status".
+            = "You are required to select a status".
              " if you want to leave this time blank.";
         $i->labels["dnk"]     = "DNK";
         $i->labels["refusal"] = "Refusal";
