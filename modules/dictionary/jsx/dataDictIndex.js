@@ -200,7 +200,7 @@ class DataDictIndex extends Component {
     case 'Data Type':
       if (cell == 'enumeration') {
         const fieldOptions = rowData['Field Options'];
-        const cell = Array.isArray(fieldOptions) ? fieldOptions.join(';') : '';
+        cell = Array.isArray(fieldOptions) ? fieldOptions.join(';') : '';
       }
       return <td>{cell}</td>;
     default:
