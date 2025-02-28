@@ -14,7 +14,7 @@
     [Automation Testing]
 7.  Test clear filter button.
     [Automation Testing]
-8. Ensure permission for Edit Help is working properly.
+8.  Ensure permission for Edit Help is working properly.
     [Manual Testing]
 9. Sort all header columns.
     [Manual Testing]
