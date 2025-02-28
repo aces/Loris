@@ -26,5 +26,5 @@
     [Manual Testing]
 13. Test-edit a Module's contextual help text, by modifying the md file in that module's `help/` subdirectory.  Check that the update renders in the module front-end.
     [Manual Testing]
-14. Test-edit the help text for a Module's sub-page, (e.g. Imaging Browser (View Session subpage), or Dicom Archive, Electrophysiology Browser, Survey Module, etc) in the same manner.  Check that the update renders in the module front-end.
+14.  Test-edit the help text for a Module's sub-page, (e.g. Imaging Browser (View Session subpage), or Dicom Archive, Electrophysiology Browser, Survey Module, etc) in the same manner.  Check that the update renders in the module front-end.
     [Manual Testing]
