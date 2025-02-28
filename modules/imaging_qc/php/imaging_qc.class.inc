@@ -160,7 +160,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.MriScanTypeID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.Candidate = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
+        (mvl.CandidateID = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
