@@ -180,7 +180,7 @@ if ($delete_ignored_conflicts) {
             print  "instrument is $instrument \n";
 
             //Run the script for all the instruments
-            $commentids = getCommentIDs($instrument, $visit_label);
+            $commentids = getCommentIDs($instrument, $visit_label)->getIterator();
 
 
             //check to make sure that the commentids are set
@@ -295,13 +295,13 @@ if ($delete_ignored_conflicts) {
  * @param ?string $visit_label The  visit_label been searched
  * @param ?string $candid      The  candid been searched
  *
- * @return array $commentids An array of commentids found
+ * @return LORIS\Database\Query $commentids A Query object of commentids found
  */
 function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
     global $db;
     $params = [];
-    $query  = "SELECT CommentID, s.visit_label,Test_name,
+    $query  = "SELECT CommentID, s.visit_label, tn.Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
         JOIN candidate c ON (c.CandID=s.CandID)
@@ -310,7 +310,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
-        $where .= " AND tn.Test_name= :instrument ";
+        $where .= " AND tn.Test_name=:instrument ";
         $params['instrument'] = $test_name;
 
         if (($visit_label!=null) && (isset($visit_label))) {
@@ -330,9 +330,10 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
  * @param String  $test_name   The instrument been searched
  * @param ?string $visit_label The visit_label been searched
  *
- * @return array $conflicts An array of conflicts detected
+ * @return LORIS\Database\Query $conflicts An Query object of conflicts detected
  */
-function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
+function getCurrentUnresolvedConflicts($test_name, $visit_label = null):
+\LORIS\Database\Query
 {
     global $db;
     $params = [];
@@ -371,6 +372,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
  */
 function detectConflicts($test_name, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $detected_conflicts = [];
     /**
      * Go through each commentid
@@ -380,6 +382,7 @@ function detectConflicts($test_name, $commentids, $current_conflicts)
          * Detect new conflicts
          */
         $diff =ConflictDetector::detectConflictsForCommentIds(
+            $lorisInstance,
             $test_name,
             $cid['CommentID'],
             $cid['DDECommentID']
@@ -486,19 +489,23 @@ function getInfoUsingCommentID($commentid)
  */
 function detectConflictsTobeExcluded($instrument, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $conflicts_to_excluded = [];
-    $instance1      =& NDB_BVL_Instrument::factory(
-        $instrument,
-        $commentids[0]['CommentID'],
-        null
-    );
-    $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
-    foreach ($current_conflicts as $conflict) {
-         // if the field is part of the ignore_columns,
-         // and it doesn exist in the conflict array
-         // then track it
-        if (in_array($conflict['FieldName'], $ignore_columns)) {
-            $conflicts_to_excluded[] = $conflict;
+    foreach ($commentids as $cid) {
+        $instance1      =& NDB_BVL_Instrument::factory(
+            $lorisInstance,
+            $instrument,
+            $cid['CommentID'],
+            null
+        );
+        $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
+        foreach ($current_conflicts as $conflict) {
+            // if the field is part of the ignore_columns,
+            // and it doesn exist in the conflict array
+            // then track it
+            if (in_array($conflict['FieldName'], $ignore_columns)) {
+                $conflicts_to_excluded[] = $conflict;
+            }
         }
     }
     return $conflicts_to_excluded;
@@ -583,31 +590,35 @@ function findConflict($conflict, $conflicts)
  */
 function detectIgnoreColumns($instruments, $confirm)
 {
+    global $lorisInstance;
     $instrumentFields = [];
 
     foreach ($instruments as $instrument) {
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
             include_once $file;
-            $commentids      = getCommentIDs($instrument, null);
-            $instance        =& NDB_BVL_Instrument::factory(
-                $instrument,
-                $commentids[0]['CommentID'],
-                null
-            );
-            $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
+            $commentids = getCommentIDs($instrument, null);
 
-            if ($DDEIgnoreFields != null) {
-                foreach ($DDEIgnoreFields as $key => $DDEField) {
-                    $instrumentFields = array_merge(
-                        $instrumentFields,
-                        [$DDEField => $instrument]
-                    );
+            foreach ($commentids as $cid) {
+                $instance        = NDB_BVL_Instrument::factory(
+                    $lorisInstance,
+                    $instrument,
+                    $cid['CommentID']
+                );
+                $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
+
+                if ($DDEIgnoreFields != null) {
+                    foreach ($DDEIgnoreFields as $key => $DDEField) {
+                        $instrumentFields = array_merge(
+                            $instrumentFields,
+                            [$DDEField => $instrument]
+                        );
+                    }
+                } else {
+                    echo "No DDE ignore fields found for " . $instrument;
                 }
-            } else {
-                echo "No DDE ignore fields found for " . $instrument;
+                ignoreColumn($instrument, $instrumentFields, $confirm);
             }
-            ignoreColumn($instrument, $instrumentFields, $confirm);
         } else {
             echo $file . " was not found.\n";
         }
@@ -642,6 +653,7 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
                 WHERE TestName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
+            echo "\n";
 
             if ($confirm) {
                 $query = "DELETE FROM conflicts_unresolved 
@@ -650,5 +662,4 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
             }
         }
     }
-    echo "\n";
 }
