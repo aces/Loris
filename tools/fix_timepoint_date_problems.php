@@ -154,7 +154,7 @@ if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
     return false;
 }
 // check $candID
-if (!preg_match("/^([0-9]{1,10})$/", strval($candID))) {
+if (!assert($candID instanceof \LORIS\StudyEntities\Candidate\CandID)) {
     fwrite(
         STDERR,
         "Error: invalid 2st argument CandID ($candID).\n " .
