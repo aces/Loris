@@ -400,7 +400,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Fetch issues
         $baseQuery = "
-            SELECT i.*, c.CandID as candID, c.PSCID, s.Visit_label AS visitLabel
+            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
             FROM issues AS i
             LEFT JOIN candidate c ON i.CandidateID = c.ID
             LEFT JOIN session s ON i.sessionID = s.ID
@@ -479,6 +479,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 : null;
 
             $issue['topComments'] = $this->getTopComments($issueID);
+            unset($issue['CandidateID']);
         }
 
         return [
@@ -537,7 +538,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData = $db->pselectRow(
                 "SELECT
                             i.*,
-                            c.CandID AS candID,
                             c.PSCID,
                             s.Visit_label AS visitLabel,
                             t.Test_name as instrument_name
@@ -563,6 +563,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $issueData['lastUpdatedBy']
             );
             // return
+            unset($issueData['CandidateID']);
             return $issueData;
         }
 
