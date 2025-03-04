@@ -170,7 +170,7 @@ class CouchDBMRIImporter
         }
 
         $Query .= " FROM session s"
-                . " JOIN candidate c USING (CandID)"
+                . " JOIN candidate c ON (c.ID = s.CandidateID)"
                 . " LEFT JOIN feedback_mri_comments fmric"
                 . " ON (fmric.SessionID=s.ID)"
                 . " LEFT JOIN feedback_mri_comment_types fmct"

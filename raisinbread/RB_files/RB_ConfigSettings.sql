@@ -112,8 +112,7 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (122,'AWS_S3_Endpoint','Endpoint to use for accessing files stored in S3. Endpoint or region are required for S3 support.',1,0,'text',121,'AWS S3 Endpoint',3);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (123,'AWS_S3_Region','AWS Region to use for accessing files stored in S3. Endpoint or region are required for S3 support.',1,0,'text',121,'AWS S3 Region',3);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (124,'AWS_S3_Default_Bucket','Default bucket for LORIS to use for accessing files in S3.',1,0,'text',121,'AWS S3 Default Bucket',3);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES 
-(125,'useEEGBrowserVisualizationComponents','Whether to enable the visualization components on the EEG Browser module',1,0,'boolean',39,'Enable the EEG Browser components',4);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (125,'useEEGBrowserVisualizationComponents','Whether to enable the visualization components on the EEG Browser module',1,0,'boolean',39,'Enable the EEG Browser components',4);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (126,'createVisit','Enable visit creation in the imaging pipeline',1,0,'boolean',69,'Enable visit creation',11);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (127,'default_project','Default project used when creating scan candidate or visit',1,0,'text',69,'Default project',12);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (128,'default_cohort','Default cohort used when creating scan visit',1,0,'text',69,'Default cohort',13);
@@ -121,5 +120,7 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (130,'DownloadPath','Where files are downloaded',1,0,'text',26,'Downloads',4);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (131,'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', 26, 'EEG Incoming Directory', 15);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (132,'useDoB','Use DoB (Date of Birth)',1,0,'boolean',1,'Use DoB',12);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (133,'EEGS3DataPath','EEG S3 data path for assembly data',1,0,'text',26,'EEG S3 data path',15);
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

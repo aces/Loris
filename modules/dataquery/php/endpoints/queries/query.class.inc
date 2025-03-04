@@ -110,6 +110,20 @@ class Query extends \LORIS\Http\Endpoint
                 }
             }
 
+            if (isset($params['loginname'])) {
+                if ($params['loginname'] == '') {
+                    $query->removeAdminPinnedQuery('loginpage');
+                    $resp['loginpage'] = 'Unpinned query from login page';
+                } else {
+                    $query->setAdminPinnedQuery(
+                        $user,
+                        $params['loginname'],
+                        'loginpage'
+                    );
+                    $resp['loginpage'] = 'Pinned query to login page';
+                }
+            }
+
             if (isset($params['name'])) {
                 $query->setQueryName($user, $params['name']);
                 $resp['Name'] = 'Named query';

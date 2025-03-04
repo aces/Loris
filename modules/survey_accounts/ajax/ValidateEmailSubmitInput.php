@@ -34,8 +34,8 @@ $db = \NDB_Factory::singleton()->database();
 
 
 $numCandidates = $db->pselectOne(
-    "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+    "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
     [
         'v_PSCID'  => $_REQUEST['pscid'],
@@ -51,10 +51,11 @@ if ($numCandidates != 1) {
 }
 
 $numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
-            AND Active='Y'",
+    "SELECT COUNT(*) FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
+            AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],
@@ -81,9 +82,10 @@ if (empty($_REQUEST['TN'])) {
 $instrument_list = $db->pselect(
     "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
+             JOIN candidate ON c.ID = s.CandidateID
              JOIN test_names tn ON tn.ID = f.TestID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             WHERE c.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],

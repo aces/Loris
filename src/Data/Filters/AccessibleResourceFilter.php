@@ -12,6 +12,19 @@ namespace LORIS\Data\Filters;
  */
 class AccessibleResourceFilter implements \LORIS\Data\Filter
 {
+
+    /**
+     * Constructor
+     *
+     * @param ?bool     $defaultReturn The default return value to return instead of
+     *                                throwing an exception when an exception is
+     *                                undesirable.
+     *
+     */
+    public function __construct(protected ?bool $defaultReturn = null)
+    {
+    }
+
     /**
      * Implements the \LORIS\Data\Filter interface
      *
@@ -24,7 +37,12 @@ class AccessibleResourceFilter implements \LORIS\Data\Filter
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
         if (!($resource instanceof \LORIS\StudyEntities\AccessibleResource)) {
-            throw new \LorisException("Resource is not an AccessibleResource instance");
+            if ($this->defaultReturn === null) {
+                throw new \LorisException(
+                    "Resource is not an AccessibleResource instance"
+                );
+            }
+            return $this->defaultReturn;
         }
         return $resource->isAccessibleBy($user);
     }

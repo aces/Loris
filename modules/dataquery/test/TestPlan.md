@@ -2,7 +2,7 @@
 
 ## Welcome page
 
-1. Ensure the module loads only for a user that has the `dataquery_view` permission.
+1. Ensure the module loads only for a user that has the `dataquery_view` permission. They must also have access to the dictionary module.
 2. Assert that: `Instructions` panel, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
 3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
 4. `Recent Queries` panel
@@ -21,8 +21,8 @@
    13. Click the `Pin` icon to pin some queries.
       1. With and empty text in the `query name` text field, click the `Submit` button.
       2. Assert that: the error message `Must provide a query name to pin query as.` is triggered.
-      3. Unchecking all checkboxes (i.e. `Pin Study Query` and `Pin Dashboard Summary`).
-      4. Assert that: clicking `Submit` triggers the error message `Must pin as study query or pin to dashboard.`.
+      3. Unchecking all checkboxes (i.e. `Pin Study Query` and `Pin Dashboard Summary` and `Pin to Login Page`).
+      4. Assert that: clicking `Submit` triggers the error message `Must pin as study query, to dashboard, or to the login page.`.
       5. Check the `Pin Study Query` checkbox and click the submit button.
       6. Assert that: the query is now pinned at the top of the page in the `Study Queries` panel.
       7. Go to LORIS main page by clicking the `LORIS` name in the top-left corner.
@@ -34,8 +34,8 @@
       13. Assert that: the query is displayed inside the right-side `Study Queries` panel.
       14. Click the pinned query.
       15. Assert that: the confirmation message `Query loaded` is displayed and query can immediately be executed.
-      16. Try pinning a query with both `Pin Study Query` and `Pin Dashboard Summary` options.
-      17. Assert that: both `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page are displayed.
+      16. Try pinning a query with `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` options.
+      17. Assert that: `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page **AND** `Data in LORIS` on the LORIS Login Page are displayed.
    14. Assert that: the query is now pinned at the top of the page, in `Study Queries` panel.
    15. Go back to `LORIS main page`.
    16. Assert that: `starred queries` are available in the right side `Starred Queries` panel.
