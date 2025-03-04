@@ -106,8 +106,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
-        ];
+            'hiddenVideo'     => ['yes' => "Yes", 'no' => "No"], ];
     }
     /**
      * Handler of parsing category
