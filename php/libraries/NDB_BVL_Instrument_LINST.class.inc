@@ -440,16 +440,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'title':
                     $this->fullName = trim($pieces[1]);
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'header',
-                            'instrument_title',
-                            $pieces[1]
-                        );
-                        if ($this->DataEntryType!=="DirectEntry") {
-                            $this->_addMetadataFields();
-                        }
-                    }
                     $this->dictionary = array_merge(
                         $this->dictionary,
                         [
@@ -523,6 +513,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             ),
                         ]
                     );
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'header',
+                            'instrument_title',
+                            $pieces[1]
+                        );
+                        if ($this->DataEntryType!=="DirectEntry") {
+                            $this->_addMetadataFields();
+                        }
+                    }
                     break;
                 case 'begingroup':
                     if ($addElements) {
