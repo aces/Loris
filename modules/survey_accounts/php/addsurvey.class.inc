@@ -132,7 +132,6 @@ class AddSurvey extends \NDB_Form
                 'v_VL'     => $values['VL']
             ]
         );
-        error_log(print_r($projectID, true));
         $user = \NDB_Factory::singleton()->user();
         if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
