@@ -243,7 +243,7 @@ class Files extends \NDB_Page
                 "visitLabel, " .
                 "Instrument as instrument, " .
                 "comments, " .
-                "hidden_video as hiddenVideo," .
+                "hide_video as hiddenVideo," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
