@@ -440,45 +440,67 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'title':
                     $this->fullName = trim($pieces[1]);
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Date_taken',
-                                'Date of Administration',
-                                $scope,
-                                new \LORIS\Data\Types\DateType(),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Date_taken',
-                            ),
-                        ]
-                    );
-                    if (strrpos($this->testName ?? '', '_proband') === false) {
-                        if (!$this->postMortem) {
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'header',
+                            'instrument_title',
+                            $pieces[1]
+                        );
+                    }
+                    if ($this->DataEntryType!=="DirectEntry") {
+                        $this->dictionary = array_merge(
+                            $this->dictionary,
+                            [
+                                new DictionaryItem(
+                                    $this->testName.'_Date_taken',
+                                    'Date of Administration',
+                                    $scope,
+                                    new \LORIS\Data\Types\DateType(),
+                                    new Cardinality(Cardinality::SINGLE),
+                                    'Date_taken',
+                                ),
+                            ]
+                        );
+                        if (strrpos($this->testName ?? '', '_proband') === false) {
+                            if (!$this->postMortem) {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            'Candidate Age (Months)',
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            } else {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            'Candidate Age at Death (Months)',
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            }
                             $this->dictionary = array_merge(
                                 $this->dictionary,
                                 [
                                     new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age (Months)',
+                                        $this->testName.'_Window_Difference',
+                                        'Window difference from test battery (days)',
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
-                                    ),
-                                ]
-                            );
-                        } else {
-                            $this->dictionary = array_merge(
-                                $this->dictionary,
-                                [
-                                    new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age at Death (Months)',
-                                        $scope,
-                                        new \LORIS\Data\Types\Duration(),
-                                        new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
+                                        'Window_Difference',
                                     ),
                                 ]
                             );
@@ -487,39 +509,19 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->dictionary,
                             [
                                 new DictionaryItem(
-                                    $this->testName.'_Window_Difference',
-                                    'Window difference from test battery (days)',
+                                    $this->testName.'_Examiner',
+                                    'Examiner',
                                     $scope,
-                                    new \LORIS\Data\Types\Duration(),
+                                    // This should be an enum of examiners, but
+                                    // getExaminerNames currently returns an empty
+                                    // array if CommentID is not set.
+                                    new StringType(255),
                                     new Cardinality(Cardinality::SINGLE),
-                                    'Window_Difference',
+                                    'Examiner',
                                 ),
                             ]
                         );
-                    }
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Examiner',
-                                'Examiner',
-                                $scope,
-                                // This should be an enum of examiners, but
-                                // getExaminerNames currently returns an empty
-                                // array if CommentID is not set.
-                                new StringType(255),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Examiner',
-                            ),
-                        ]
-                    );
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'header',
-                            'instrument_title',
-                            $pieces[1]
-                        );
-                        if ($this->DataEntryType!=="DirectEntry") {
+                        if ($addElements) {
                             $this->_addMetadataFields();
                         }
                     }
