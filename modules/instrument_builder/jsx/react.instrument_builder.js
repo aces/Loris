@@ -41,23 +41,23 @@ class LoadPane extends Component {
    */
   chooseFile(e) {
     let value = e.target.files[0];
-  
+
     if (value) {
       const fileName = value.name;
       const allowedExtension = '.linst';
-  
+
       // Extract file name (without extension) and extension
       const lastDotIndex = fileName.lastIndexOf('.');
       const nameWithoutExtension = fileName.substring(0, lastDotIndex);
       const fileExtension = fileName.substring(lastDotIndex);
-  
+
       // Only allow letters, numbers, and underscores (_)
       const validNamePattern = /^[a-zA-Z0-9_]+$/;
       // File Name cannot be end with Special characters
       const invalidTrailingChars = /[^a-zA-Z0-9]$/;
 
       let errorMessage = '';
-  
+
       if (fileExtension !== allowedExtension) {
         errorMessage = 'Invalid extension. Only .linst files are allowed.';
       } else if (/\s/.test(nameWithoutExtension)) {
@@ -65,11 +65,12 @@ class LoadPane extends Component {
       } else if ((nameWithoutExtension.match(/\./g) || []).length > 0) {
         errorMessage = 'Multiple periods in the file name are not allowed.';
       } else if (!validNamePattern.test(nameWithoutExtension)) {
-        errorMessage = 'Special characters are not allowed (only letters, numbers, and _).';
+        errorMessage =
+        'Special characters are not allowed (only letters, numbers, and _).';
       } else if (invalidTrailingChars.test(nameWithoutExtension)) {
         errorMessage = 'File name cannot end with a special character.';
       }
-  
+
       if (errorMessage) {
         this.setState({
           alert: 'typeError',
