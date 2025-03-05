@@ -76,8 +76,8 @@ class DataDictRow implements \LORIS\Data\DataInstance,
             $val['type'] = "enum(".implode(",", $itype->getOptions()).")";
         }
         if ($scope->__toString() == "session") {
-            $val['visits']  = implode(",", $this->visits);
-            $val['cohorts'] = implode(",", $this->cohorts);
+            $val['visits']  = implode(",", $this->visits ?? []);
+            $val['cohorts'] = implode(",", $this->cohorts ?? []);
         }
 
         return $val;
