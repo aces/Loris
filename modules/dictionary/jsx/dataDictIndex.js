@@ -161,6 +161,7 @@ class DataDictIndex extends Component {
         return resp.json();
       })
       .then((data) => {
+        console.log(data)
         this.setState({data});
       })
       .catch((error) => {
@@ -197,12 +198,6 @@ class DataDictIndex extends Component {
       return <td>{cell}
         <span style={{color: '#838383'}}>{edited} {editIcon} </span>
       </td>;
-    case 'Data Type':
-      if (cell == 'enumeration') {
-        const fieldOptions = rowData['Field Options'];
-        cell = Array.isArray(fieldOptions) ? fieldOptions.join(';') : '';
-      }
-      return <td>{cell}</td>;
     default:
       return <td>{cell}</td>;
     }
@@ -307,6 +302,15 @@ class DataDictIndex extends Component {
             'optional': 'Optional',
             'many': 'Many',
           },
+        },
+      },
+      {
+        label: 'Visits',
+        show: true,
+        filter: {
+          name: 'Visits',
+          type: 'multiselect',
+          options: options.visits,
         },
       },
       {
