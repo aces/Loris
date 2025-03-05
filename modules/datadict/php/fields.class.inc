@@ -35,7 +35,7 @@ class Fields extends \NDB_Page
         }
         return new \LORIS\Http\Response\JSON\OK(
             [
-                'sourceFrom' => 
+                'sourceFrom' =>
                 \NDB_BVL_Instrument::getInstrumentNamesList($this->loris),
                 'cohort'     => $cohort_options
             ]
