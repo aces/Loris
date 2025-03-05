@@ -395,7 +395,8 @@ class NDB_BVL_Battery
             'SELECT DISTINCT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
-            AND Test_name=:Test_name',
+	    AND Test_name=:Test_name
+            AND DoubleDataEntryEnabled IS NOT NULL',
             ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
         ) == 'Y' ? true : false;
 
