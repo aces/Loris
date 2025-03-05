@@ -63,7 +63,7 @@ class LoadPane extends Component {
       } else if (/\s/.test(nameWithoutExtension)) {
         errorMessage = 'Spaces are not allowed in the file name.';
       } else if ((nameWithoutExtension.match(/\./g) || []).length > 0) {
-        errorMessage = 'Multiple periods in the file name are not allowed.\n Works';
+        errorMessage = 'Multiple periods in the file name are not allowed.';
       } else if (!validNamePattern.test(nameWithoutExtension)) {
         errorMessage = 'Special characters are not allowed (only letters, numbers, and _).';
       } else if (invalidTrailingChars.test(nameWithoutExtension)) {
