@@ -97,9 +97,6 @@ class ParticipantStatus extends Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     let required = this.state.Data.required;
-    if (formElement === 'participantStatus' && required.indexOf(value) < 0) {
-      formData.participantSuboptions = '';
-    }
     formData[formElement] = value;
     this.setState(
       {
@@ -148,21 +145,15 @@ class ParticipantStatus extends Component {
         this.state.formData.participantStatus :
         this.state.Data.participantStatus
     );
-
-    if (participantStatus && required.indexOf(participantStatus) > -1) {
+    if (participantStatus && required.includes(Number(participantStatus))) {
       subOptions = this.state.Data.parentIDs[participantStatus];
       suboptionsRequired = true;
     }
 
-    let commentsRequired = false;
     let statusOpts = this.state.Data.statusOptions;
-    if (
-      statusOpts &&
+    let commentsRequired = statusOpts &&
           statusOpts[participantStatus] !== 'Active' &&
-          statusOpts[participantStatus] !== 'Complete'
-    ) {
-      commentsRequired = true;
-    }
+          statusOpts[participantStatus] !== 'Complete';
 
     let formattedHistory = [];
     for (let statusKey in this.state.Data.history) {
