@@ -161,7 +161,6 @@ class DataDictIndex extends Component {
         return resp.json();
       })
       .then((data) => {
-        console.log(data)
         this.setState({data});
       })
       .catch((error) => {
