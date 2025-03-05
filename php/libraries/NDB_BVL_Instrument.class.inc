@@ -854,10 +854,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->instanceData = $newData;
     }
-
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
+     * current form. Note that NDB_BVL_Instrument_LINST.class.inc mimics the logic
+     * of this function to build the data dictionary, so any changes here should
+     * be reflected there as well.
      *
      * @return void
      * @access private
