@@ -96,7 +96,6 @@ class ParticipantStatus extends Component {
    */
   setFormData(formElement, value) {
     let formData = this.state.formData;
-    let required = this.state.Data.required;
     formData[formElement] = value;
     this.setState(
       {
