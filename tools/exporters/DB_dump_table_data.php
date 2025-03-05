@@ -97,7 +97,8 @@ preg_match('/\d+\.\d+\.\d+/', $mysqlVersionOutput, $matches);
 $mysqlVersion = $matches[0] ?? '0.0.0';
 
 // Determine whether --column-statistics=0 is needed
-$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '<=') ? '--column-statistics=0 ' : '';
+$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '<=') ?
+ '--column-statistics=0 ' : '';
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
