@@ -135,7 +135,7 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
         return $this->getDatabaseProvider()->getDatabase()->pselectOne(
             "SELECT Value FROM Config
             LEFT JOIN ConfigSettings ON ConfigSettings.ID = ConfigID
-            WHERE NAme = :configName",
+            WHERE Name = :configName",
             ['configName' => 'tempPath']
         ) ?? sys_get_temp_dir();
     }
