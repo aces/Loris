@@ -194,7 +194,6 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
         $listOfInstruments = $battery->getBatteryVerbose();
-
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
@@ -210,6 +209,10 @@ class Instrument_List extends \NDB_Menu_Filter
 
             $i = 0;
             foreach ($listOfInstruments as $instrument) {
+                 // Skip instruments that are not active
+                if ($instrument['Active'] !== 'Y') {
+                    continue;
+                }
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
                     $x++;
@@ -246,7 +249,7 @@ class Instrument_List extends \NDB_Menu_Filter
                     $instrument['Test_name']
                 );
 
-                $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
+                       $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
 
                 if ($ins) {
                     $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
@@ -259,28 +262,28 @@ class Instrument_List extends \NDB_Menu_Filter
                     $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] =  $ins;
                 }
 
-                $ins = $instrument['isDirectEntry'];
-                $this->tpl_data[$Ins][$x][$i]['isDirectEntry'] = $ins;
+                       $ins = $instrument['isDirectEntry'];
+                       $this->tpl_data[$Ins][$x][$i]['isDirectEntry'] = $ins;
 
-                $ins =  $instrument['instrument_order'];
-                $this->tpl_data[$Ins][$x][$i]['instrumentOrder'] = $ins;
+                       $ins =  $instrument['instrument_order'];
+                       $this->tpl_data[$Ins][$x][$i]['instrumentOrder'] = $ins;
 
-                // create feedback object for the time point
-                $feedback = \NDB_BVL_Feedback::singleton(
-                    $username,
-                    null,
-                    null,
-                    $instrument['CommentID']
-                );
+                       // create feedback object for the time point
+                    $feedback = \NDB_BVL_Feedback::singleton(
+                        $username,
+                        null,
+                        null,
+                        $instrument['CommentID']
+                    );
 
-                $feedback_status = $feedback->getMaxThreadStatus(
-                    $feedback_select_inactive
-                );
+                    $feedback_status = $feedback->getMaxThreadStatus(
+                        $feedback_select_inactive
+                    );
 
-                $feedback_count = $feedback->getThreadCount();
+                       $feedback_count = $feedback->getThreadCount();
 
-                $this->tpl_data[$Ins][$x][$i]['feedbackCount']
-                    =       (empty($feedback_count))
+                       $this->tpl_data[$Ins][$x][$i]['feedbackCount']
+                           =       (empty($feedback_count))
                              ? $feedback_status : $feedback_count;
 
                 if (!empty($feedback_status)) {
@@ -294,7 +297,7 @@ class Instrument_List extends \NDB_Menu_Filter
                     $this->tpl_data[$Ins][$x][$i]['feedbackStatus'] = "-";
                 }
 
-                $i++;
+                       $i++;
             }
         }
 

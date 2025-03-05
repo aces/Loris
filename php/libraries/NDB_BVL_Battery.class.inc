@@ -341,7 +341,8 @@ class NDB_BVL_Battery
                       ts.Subgroup_name as Sub_group,
                       ts.group_order as Subgroup_order,
                       t.isDirectEntry,
-                      MAX(b.instr_order) as instrument_order
+		      MAX(b.instr_order) as instrument_order,
+                      b.Active
                   FROM flag f
             	      JOIN test_names t ON (f.TestID=t.ID)
             	      JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
@@ -350,7 +351,7 @@ class NDB_BVL_Battery
        	                ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
       	                AND (s.CohortID=b.CohortID OR b.CohortID IS NULL)
        	                AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
-       	                AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
+			AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
        	          WHERE f.SessionID=:SID
                       AND LEFT(f.CommentID, 4) != 'DDE_'
                   GROUP BY t.Test_name,
