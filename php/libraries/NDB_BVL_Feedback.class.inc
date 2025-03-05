@@ -726,7 +726,7 @@ class NDB_BVL_Feedback
             $setArray = array_merge(
                 $setArray,
                 [
-                    "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
+                    "CommentID"      => $this->_feedbackObjectInfo['CommentID'] ?? "",
                     "SessionID"      => $feedbackInfo['SessionID'],
                     "CandidateID"    => $candidateID,
                     "Feedback_level" => "instrument",

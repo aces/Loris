@@ -184,11 +184,19 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             $subOutputType = $outputType;
         }
         foreach ($sessions as $sid) {
-            $out = shell_exec(
+            $out = null;
+            $retVal = null;
+            exec(
                 "php ".__DIR__."/delete_timepoint.php delete_timepoint".
-                " $CandID $PSCID $sid $subOutputType"
+                " $CandID $PSCID $sid $subOutputType",
+                $out,
+                $retVal
             );
-            //echo $out;
+            if ($retVal != 0) {
+                echo "Error deleting session $sid for CandID: $CandID\n";
+                echo "Output: ".implode("\n", $out)."\n";
+                exit;
+            }
             $match    = [];
             $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
             if ($nbDelete > 0) {
@@ -308,6 +316,33 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         print_r(iterator_to_array($result));
     }
 
+    // Print family
+    echo "\Family\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM family WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
+
+    // Print dataquery_run_results
+    echo "\Dataquery Run Results\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM dataquery_run_results WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
+    
+    // Print mri_protocol_violated_scans
+    echo "\MRI Protocol Violated Scans\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM mri_protocol_violated_scans WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
+
     // Print candidate
     echo "\nCandidate\n";
     echo "-----------\n";
@@ -362,6 +397,15 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 
         //delete from feedback_bvl_thread
         $DB->delete("feedback_bvl_thread", ["CandidateID" => $CandidateID]);
+
+        //delete from family
+        $DB->delete("family", ["CandidateID" => $CandidateID]);
+        
+        //delete from dataquery_run_results
+        $DB->delete("dataquery_run_results", ["CandidateID" => $CandidateID]);
+        
+        //delete from mri_protocol_violated_scans
+        $DB->delete("mri_protocol_violated_scans", ["CandidateID" => $CandidateID]);
 
         //delete from candidate
         $DB->delete("candidate", ["CandID" => $CandID]);

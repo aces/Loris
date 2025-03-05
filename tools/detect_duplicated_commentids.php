@@ -184,6 +184,7 @@ function getCommentIDs(
 
     ///include the flag_data_entry and in_flag
     if ($commentids !=null) {
+        $commentids = iterator_to_array($commentids);
         foreach ($commentids as $key => $commentid) {
             $flag = [];
             $flag = $GLOBALS['DB']->pselectRow(

@@ -78,7 +78,7 @@ $candExists = $DB->pselectOne(
 if ($candExists == 0) {
     echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
         "not exist in the database or is set to Active='N' state.\n\n";
-    die();
+    exit(1);
 }
 
 if ($sessionID != null) {
@@ -89,10 +89,9 @@ if ($sessionID != null) {
         ['sid' => $sessionID, 'cid' => $CandID]
     );
     if ($sessionExists == 0) {
-        die(
-            "Session ID $sessionID for candidate $CandID either does not exist "
-            . "in the database or is set to Active='N' state.\n\n"
-        );
+        echo "Session ID $sessionID for candidate $CandID either does not exist "
+            . "in the database or is set to Active='N' state.\n\n";
+        exit(1);
     }
     // Check for existence of imaging data
     $filesExist = $DB->pselectOne(
@@ -104,9 +103,9 @@ if ($sessionID != null) {
         echo <<<MSG
 Session ID $sessionID for candidate $CandID has imaging data and files
 in the database, and should not be deleted. Look at `files` and `tarchive`
-tables before deleting timepoint.
+tables before deleting timepoint.\n
 MSG;
-        die();
+        exit(1);
     }
 }
 
@@ -257,6 +256,15 @@ function deleteTimepoint(
         ['sid' => $sessionID]
     );
     print_r(iterator_to_array($result));
+    
+    // Print from physiological_file
+    echo "\nPhysiological File\n";
+    echo "-------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM physiological_file WHERE SessionID=:sid',
+        ['sid' => $sessionID]
+    );
+    print_r(iterator_to_array($result));
 
     // Print from session
     echo "\nSession\n";
@@ -349,6 +357,10 @@ function deleteTimepoint(
         // Delete from mri_upload
         echo "\n-- Deleting from mri upload.\n";
         $DB->delete('mri_upload', ['SessionID' => $sessionID]);
+        
+        // Delete from physiological_file
+        echo "\n-- Deleting from physiological file.\n";
+        $DB->delete('physiological_file', ['SessionID' => $sessionID]);
 
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
@@ -434,13 +446,22 @@ function deleteTimepoint(
             $output,
             $DB
         );
+        
+        // Delete from physiological_file
+        $output .= "\n-- Deleting from physiological file.\n";
+        _printResultsSQL(
+            'physiological_file',
+            ['SessionID' => $sessionID],
+            $output,
+            $DB
+        );
 
         // Delete from feedback
         $output .= "\n-- Deleting from feedback.\n";
-        foreach ($feedbackIDs as $id) {
+        foreach ($feedback_threads as $feedback) {
             _printResultsSQL(
                 'feedback_bvl_entry',
-                ['FeedbackID' => $id['FeedbackID']],
+                ['FeedbackID' => $feedback['FeedbackID']],
                 $output,
                 $DB
             );
@@ -497,7 +518,7 @@ function _printResultsSQL($table, $where, &$output, $DB)
 function _exportSQL($output, $CandID, $sessionID): void
 {
     //export file
-    $filename = __DIR__ . "/../project/tables_sql/DELETE_session_"
+    $filename = __DIR__ . "/../../../project/tables_sql/DELETE_session_"
         .$CandID."_".$sessionID.".sql";
     $fp       = fopen($filename, "w");
     fwrite($fp, $output);

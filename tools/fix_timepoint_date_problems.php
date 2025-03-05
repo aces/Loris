@@ -386,15 +386,7 @@ function printUsage()
  */
 function addInstrument($sessionID, $testName, $loris)
 {
-    // check the user $_ENV['USER']
-    $user =& User::singleton(getenv('USER'));
-    if (is_a($user, 'LORIS\AnonymousUser')) {
-        throw new LorisException(
-            "Error: Database user named " . getenv('USER')
-            . " does not exist. Please create and then retry script\n"
-        );
-    }
-
+    global $lorisInstance;
     // check the args
     if (empty($sessionID) || empty($testName)) {
         throw new LorisException("SessionID and Test name must be provided");
@@ -423,7 +415,7 @@ function addInstrument($sessionID, $testName, $loris)
     }
 
     // add to battery - this method check if the $testName is valid
-    $success = $battery->addInstrument($testName);
+    $success = $battery->addInstrument($lorisInstance, $testName);
 
     // get CommentID of the newly assigned instrument
     $query = "SELECT CommentID FROM flag
@@ -435,11 +427,12 @@ function addInstrument($sessionID, $testName, $loris)
      * add Feedback
      */
     // feedback object
+    $user = (new \User())->factory('admin');
     print $user->getUsername();
     $feedback = NDB_BVL_Feedback::singleton(
         $user->getUsername(),
         null,
-        $sessionID
+        new \SessionID($sessionID)
     );
 
     //get thread feedback type

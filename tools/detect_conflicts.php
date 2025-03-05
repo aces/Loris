@@ -132,6 +132,11 @@ $new_conflicts  = [];
 $detected_conflicts       = [];
 $current_conflicts        = [];
 $conflicts_to_be_excluded = [];
+if ((!$change) && (!$change_all)) {
+    //just show the conflicts
+        print "This will only display the conflicts needed to be inserted \n";
+        print "To re-create the conflict, run this script with -c option \n";
+}
 
 if ($delete_ignored_conflicts) {
     if ($instrument_ignored[0] == "all") {
@@ -174,9 +179,6 @@ if ($delete_ignored_conflicts) {
 
     foreach ($instruments as $instrument) {
         if (isset($instrument)) {
-            include_once $paths['base'] .
-                "project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
-
             print  "instrument is $instrument \n";
 
             //Run the script for all the instruments
@@ -184,7 +186,7 @@ if ($delete_ignored_conflicts) {
 
 
             //check to make sure that the commentids are set
-            if (isset($commentids)) {
+            if (isset($commentids) && !empty($commentids)) {
                 //get the current conflicts
                 $current_conflicts  = getCurrentUnresolvedConflicts(
                     $instrument,
@@ -206,16 +208,11 @@ if ($delete_ignored_conflicts) {
                     $current_conflicts
                 );
                 /**
-                 * Only Create report for the  confliclits
+                 * Only create report for the conflicts
                  * 1) that should be inserted into the conflicts_unresolved table
                  * 2) that should be deleted from the conflicts_unresolved table
                  */
                 if ((!$change) && (!$change_all)) {
-                    //just show the conflicts
-                    print "This will only display the conflicts needed to
-                be inserted \n";
-                    print "To re-create the conflict, run this script with 
-                -c option \n";
                     if ((empty($new_conflicts))
                         && empty($conflicts_to_be_excluded)
                     ) {
@@ -240,25 +237,24 @@ if ($delete_ignored_conflicts) {
                 }
                 /**
                  * Only insert those conflicts which are new and are not
-                 * currently in the conflict_uresolved
-                 * 1)remove/clear the existing conflicts
+                 * currently in the conflict_unresolved
+                 * 1) remove/clear the existing conflicts
                  * 2) And then re-create the conflicts
                  */
 
-                //if the instrument is not provided, run it only for all the
-                //instruments
+                // if the instrument is not provided, run it only for all the instruments
                 if ($change) {
                     if ((empty($new_conflicts)) || (!isset($new_conflicts))) {
-                        die("There are No new conflicts to be inserted ");
+                        die("There are no new conflicts to be inserted\n");
                     }
                     foreach ($new_conflicts as $conflict) {
                         if (($conflict != null) && (!empty($conflict))) {
                             ConflictDetector::clearConflictsForInstance(
                                 $conflict['CommentId1']
-                            ); ///clear the conflicts
+                            ); // clear the conflicts
                         }
                     }
-                    //////re-insert them into the table
+                    // re-insert them into the table
                     ConflictDetector::recordUnresolvedConflicts($new_conflicts);
                 }
 
@@ -321,7 +317,8 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
 
     $query     .=$where;
     $commentids = $GLOBALS['DB']->pselect($query, $params);
-    return $commentids;
+    print_r($params);
+    return iterator_to_array($commentids);
 }
 
 /**
@@ -339,7 +336,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
     $query  = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
         JOIN session s on (s.id = f.sessionid)
-        JOIN candidate c on (c.CandID = s.CandID)
+        JOIN candidate c on (c.ID = s.CandidateID)
         LEFT JOIN test_names tn ON (tn.ID = f.TestID)";
 
     $where = " WHERE c.Active='Y' AND  s.Active='Y'
@@ -355,7 +352,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
     }
     $query    .=$where;
     $conflicts = $db->pselect($query, $params);
-    return $conflicts;
+    return iterator_to_array($conflicts);
 }
 
 /**
@@ -371,6 +368,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
  */
 function detectConflicts($test_name, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $detected_conflicts = [];
     /**
      * Go through each commentid
@@ -380,6 +378,7 @@ function detectConflicts($test_name, $commentids, $current_conflicts)
          * Detect new conflicts
          */
         $diff =ConflictDetector::detectConflictsForCommentIds(
+            $lorisInstance,
             $test_name,
             $cid['CommentID'],
             $cid['DDECommentID']
@@ -486,11 +485,12 @@ function getInfoUsingCommentID($commentid)
  */
 function detectConflictsTobeExcluded($instrument, $commentids, $current_conflicts)
 {
+    global $lorisInstance;
     $conflicts_to_excluded = [];
-    $instance1      =& NDB_BVL_Instrument::factory(
+    $instance1 = NDB_BVL_Instrument::factory(
+        $lorisInstance,
         $instrument,
-        $commentids[0]['CommentID'],
-        null
+        $commentids[0]['CommentID']
     );
     $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
     foreach ($current_conflicts as $conflict) {
@@ -587,29 +587,23 @@ function detectIgnoreColumns($lorisInstance, $instruments, $confirm)
     $instrumentFields = [];
 
     foreach ($instruments as $instrument) {
-        $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
-        if (file_exists($file)) {
-            include_once $file;
-            $instance        = NDB_BVL_Instrument::factory(
-                $lorisInstance,
-                $instrument
-            );
-            $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
+        $instance        = NDB_BVL_Instrument::factory(
+            $lorisInstance,
+            $instrument
+        );
+        $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
 
-            if ($DDEIgnoreFields != null) {
-                foreach ($DDEIgnoreFields as $key => $DDEField) {
-                    $instrumentFields = array_merge(
-                        $instrumentFields,
-                        [$DDEField => $instrument]
-                    );
-                }
-            } else {
-                echo "No DDE ignore fields found for " . $instrument;
+        if ($DDEIgnoreFields != null) {
+            foreach ($DDEIgnoreFields as $key => $DDEField) {
+                $instrumentFields = array_merge(
+                    $instrumentFields,
+                    [$DDEField => $instrument]
+                );
             }
-            ignoreColumn($instrument, $instrumentFields, $confirm);
         } else {
-            echo $file . " was not found.\n";
+            echo "No DDE ignore fields found for " . $instrument;
         }
+        ignoreColumn($instrument, $instrumentFields, $confirm);
     }
 }
 
