@@ -447,7 +447,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[1]
                         );
                     }
-                    // The sequence of if statements below building the data dictionary
+                    // The sequence of if statements below building the data dict
                     // mimics the same logic in the _addMetadataFields() function of
                     // NDB_BVL_Instrument to keep the dictionary in sync with the
                     // fields added to the form, make sure to modify it accordingly
