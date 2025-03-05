@@ -41,13 +41,48 @@ class LoadPane extends Component {
    */
   chooseFile(e) {
     let value = e.target.files[0];
-    this.setState({
-      file: value,
-      disabled: true,
-      alert: '',
-    });
+  
     if (value) {
-      this.setState({disabled: false});
+      const fileName = value.name;
+      const allowedExtension = '.linst';
+  
+      // Extract file name (without extension) and extension
+      const lastDotIndex = fileName.lastIndexOf('.');
+      const nameWithoutExtension = fileName.substring(0, lastDotIndex);
+      const fileExtension = fileName.substring(lastDotIndex);
+  
+      // Only allow letters, numbers, and underscores (_)
+      const validNamePattern = /^[a-zA-Z0-9_]+$/;
+      // File Name cannot be end with Special characters
+      const invalidTrailingChars = /[^a-zA-Z0-9]$/;
+
+      let errorMessage = '';
+  
+      if (fileExtension !== allowedExtension) {
+        errorMessage = 'Invalid extension. Only .linst files are allowed.';
+      } else if (/\s/.test(nameWithoutExtension)) {
+        errorMessage = 'Spaces are not allowed in the file name.';
+      } else if ((nameWithoutExtension.match(/\./g) || []).length > 0) {
+        errorMessage = 'Multiple periods in the file name are not allowed.\n Works';
+      } else if (!validNamePattern.test(nameWithoutExtension)) {
+        errorMessage = 'Special characters are not allowed (only letters, numbers, and _).';
+      } else if (invalidTrailingChars.test(nameWithoutExtension)) {
+        errorMessage = 'File name cannot end with a special character.';
+      }
+  
+      if (errorMessage) {
+        this.setState({
+          alert: 'typeError',
+          alertMessage: errorMessage, // Set the specific error message
+          disabled: true, // Disable button if invalid
+        });
+      } else {
+        this.setState({
+          file: value, // Store file
+          disabled: false, // Enable button if valid
+          alert: '', // Clear previous errors
+        });
+      }
     }
   }
   /**
@@ -109,7 +144,7 @@ class LoadPane extends Component {
     case 'typeError':
       alert = {
         message: 'Error!',
-        details: 'Wrong file format',
+        details: this.state.alertMessage,
         display: 'block',
         class: 'alert alert-danger alert-dismissible',
       };
