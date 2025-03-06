@@ -283,6 +283,13 @@ class DropdownOptions extends Component {
   addOption() {
     let option = this.state.option.trim();
 
+    // Remove Add Row dropdown error when adding an option
+    if (this.props.element.error && this.props.element.error.dropdownOptions) {
+      let tempError = { ...this.props.element.error };
+      delete tempError.dropdownOptions;
+      this.props.updateState({ error: tempError });
+    }
+
     // Check for empty options
     if (option === '') {
       let temp = (this.state.error) ? this.state.error : {};
@@ -309,7 +316,7 @@ class DropdownOptions extends Component {
     this.props.updateState({Options: temp});
 
     // clear input field
-    this.state.option = '';
+    this.setState({ option: '' });
   }
 
   /**
@@ -330,14 +337,10 @@ class DropdownOptions extends Component {
     let multi = '';
     let options = Instrument.clone(this.props.element.Options.Values);
     let errorMessage = '';
+    let dropdownErrorMessage = '';
     let dropdownClass = 'form-group';
 
-    // Set the select option type
-    if (this.props.element.Options.AllowMultiple) {
-      multi = 'multiple';
-    }
-
-    // If an error is present, display the error
+    // If an error is present for adding an option, display the error
     if (this.state.error && this.state.error.newSelectOption) {
       errorMessage = (
         <span className="form-error">{this.state.error.newSelectOption}</span>
@@ -345,12 +348,18 @@ class DropdownOptions extends Component {
       dropdownClass += ' has-error';
     }
 
+    // If an error exists for "Dropdown options cannot be empty!" show it
+    if (this.props.element.error && this.props.element.error.dropdownOptions) {
+      dropdownErrorMessage = (
+        <div className="form-error" style={{ marginTop: "5px" }}>
+          {this.props.element.error.dropdownOptions}
+        </div>
+      );
+    }
+
     return (
       <div>
-        <BasicOptions
-          updateState={this.props.updateState}
-          element={this.props.element}
-        />
+        <BasicOptions updateState={this.props.updateState} element={this.props.element} />
         <div className={dropdownClass}>
           <label className="col-sm-2 control-label">Dropdown Option: </label>
           <div className="col-sm-3">
@@ -366,7 +375,7 @@ class DropdownOptions extends Component {
             className="btn btn-default"
             type="button"
             value="Add option"
-            onClick={this.addOption.bind(this, false) }
+            onClick={this.addOption.bind(this, false)}
           />
           <input
             className="btn btn-default"
@@ -375,18 +384,16 @@ class DropdownOptions extends Component {
             onClick={this.resetOptions}
           />
           <div className="col-sm-6 col-sm-offset-2">
-            {errorMessage}
+            {errorMessage}  {/* Error for Add Option */}
+            {dropdownErrorMessage && <div>{dropdownErrorMessage}</div>}
           </div>
         </div>
         <div className="form-group">
           <label className="col-sm-2 control-label">Preview: </label>
           <div className="col-sm-2">
-            <select multiple={multi}
-              id="selectOptions"
-              className="form-control"
-            >
-              {Object.keys(options).map(function(option, key) {
-                return (<option key={key}>{options[option]}</option>);
+            <select multiple={multi} id="selectOptions" className="form-control">
+              {Object.keys(options).map(function (option, key) {
+                return <option key={key}>{options[option]}</option>;
               })}
             </select>
           </div>
@@ -915,7 +922,24 @@ class AddElement extends Component {
    * @param {object} newState
    */
   updateState(newState) {
-    this.setState(newState);
+    this.setState(prevState => {
+      let updatedState = { ...prevState, ...newState };
+
+      // If the Name field is changing, remove the duplicate error dynamically
+      if (newState.Name && prevState.error && prevState.error.questionName) {
+        let newErrorState = { ...prevState.error };
+        delete newErrorState.questionName;
+        updatedState.error = newErrorState;
+      }
+      // If dropdown options are updated, remove dropdown error dynamically
+      if (newState.Options && Object.keys(newState.Options.Values || {}).length >= 2) {
+        let newErrorState = { ...prevState.error };
+        delete newErrorState.dropdownOptions;
+        updatedState.error = newErrorState;
+      }
+
+      return updatedState;
+    });
   }
 
   /**
@@ -932,6 +956,26 @@ class AddElement extends Component {
       return;
     }
 
+    // Validate Dropdown Options only when the type is 'dropdown' or 'multiselect'
+    if ((selected === "dropdown" || selected === "multiselect") && this.state.Options.Values) {
+      let optionsCount = Object.keys(this.state.Options.Values).length;
+
+      if (optionsCount === 0) {
+        this.setState((state) => ({
+          error: { ...state.error, dropdownOptions: "Dropdown options cannot be empty!" },
+        }));
+        hasError = true;
+      } else if (optionsCount < 2) {
+        this.setState((state) => ({
+          error: { ...state.error, dropdownOptions: "A minimum of two options is required." },
+        }));
+        hasError = true;
+      }
+    }
+    // Stop execution only if dropdown validation fails
+    if (hasError) {
+      return;
+    }
     if (!selected) {
       // Error, no element selected, alert the user and return
       alert('No element type selected');
