@@ -360,8 +360,8 @@ class DropdownOptions extends Component {
     return (
       <div>
         <BasicOptions
-        updateState={this.props.updateState}
-        element={this.props.element}
+          updateState={this.props.updateState}
+          element={this.props.element}
         />
         <div className={dropdownClass}>
           <label className="col-sm-2 control-label">Dropdown Option: </label>
@@ -938,9 +938,9 @@ class AddElement extends Component {
         updatedState.error = newErrorState;
       }
       // If dropdown options are updated, remove dropdown error dynamically
-      if 
+      if
       (
-        newState.Options 
+        newState.Options
         && Object.keys(newState.Options.Values || {}).length >= 2
       ) {
         let newErrorState = {...prevState.error};
@@ -975,14 +975,14 @@ class AddElement extends Component {
       if (optionsCount === 0) {
         this.setState((state) => ({
           error: {...state.error,
-                 dropdownOptions: "Dropdown options cannot be empty!"
+            dropdownOptions: 'Dropdown options cannot be empty!',
           },
         }));
         hasError = true;
       } else if (optionsCount < 2) {
         this.setState((state) => ({
           error: {...state.error,
-                  dropdownOptions: "A minimum of two options is required."
+            dropdownOptions: 'A minimum of two options is required.',
           },
         }));
         hasError = true;
