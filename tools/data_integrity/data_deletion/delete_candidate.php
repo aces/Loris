@@ -184,7 +184,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             $subOutputType = $outputType;
         }
         foreach ($sessions as $sid) {
-            $out = null;
+            $out    = null;
             $retVal = null;
             exec(
                 "php ".__DIR__."/delete_timepoint.php delete_timepoint".
@@ -197,8 +197,8 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
                 echo "Output: ".implode("\n", $out)."\n";
                 exit;
             }
-            $match    = [];
-            foreach($out as $line) {
+            $match = [];
+            foreach ($out as $line) {
                 if (strpos($line, "DELETE FROM") != false) {
                     $output .= $line;
                     $output .= "\n";
@@ -399,10 +399,10 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 
         //delete from family
         $DB->delete("family", ["CandidateID" => $CandidateID]);
-        
+
         //delete from dataquery_run_results
         $DB->delete("dataquery_run_results", ["CandidateID" => $CandidateID]);
-        
+
         //delete from mri_protocol_violated_scans
         $DB->delete("mri_protocol_violated_scans", ["CandidateID" => $CandidateID]);
 

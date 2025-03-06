@@ -109,8 +109,8 @@ foreach ($instruments as $instrument => $full_name) {
                     WHERE s.candID = :cid AND tn.test_name = :fname AND
                     s.cohortid = :cohortid",
                     [
-                        'cid'   => $candid,
-                        'fname' => $instrument,
+                        'cid'      => $candid,
+                        'fname'    => $instrument,
                         'cohortid' => $cohortid['cohortid'],
                     ]
                 );

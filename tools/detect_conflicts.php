@@ -242,7 +242,8 @@ if ($delete_ignored_conflicts) {
                  * 2) And then re-create the conflicts
                  */
 
-                // if the instrument is not provided, run it only for all the instruments
+                // if the instrument is not provided,
+                // run it only for all the instruments
                 if ($change) {
                     if ((empty($new_conflicts)) || (!isset($new_conflicts))) {
                         die("There are no new conflicts to be inserted\n");
@@ -487,7 +488,7 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
 {
     global $lorisInstance;
     $conflicts_to_excluded = [];
-    $instance1 = NDB_BVL_Instrument::factory(
+    $instance1      = NDB_BVL_Instrument::factory(
         $lorisInstance,
         $instrument,
         $commentids[0]['CommentID']
