@@ -198,10 +198,9 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
                 exit;
             }
             $match    = [];
-            $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
-            if ($nbDelete > 0) {
-                for ($i=0; $i < $nbDelete; $i++) {
-                    $output .= $match[0][$i];
+            foreach($out as $line) {
+                if (strpos($line, "DELETE FROM") != false) {
+                    $output .= $line;
                     $output .= "\n";
                 }
             }
@@ -333,7 +332,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         ['cid' => $CandidateID]
     );
     print_r(iterator_to_array($result));
-    
+
     // Print mri_protocol_violated_scans
     echo "\MRI Protocol Violated Scans\n";
     echo "-----------\n";

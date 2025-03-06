@@ -260,11 +260,23 @@ function deleteTimepoint(
     // Print from physiological_file
     echo "\nPhysiological File\n";
     echo "-------\n";
-    $result = $DB->pselect(
+    $physiological_files = $DB->pselect(
         'SELECT * FROM physiological_file WHERE SessionID=:sid',
         ['sid' => $sessionID]
     );
-    print_r(iterator_to_array($result));
+    $physiological_files = iterator_to_array($physiological_files);
+    print_r($physiological_files);
+
+    // Print from physiological_event_file
+    echo "\nPhysiological Event File\n";
+    echo "-------\n";
+    foreach ($physiological_files as $physiological_file) {
+        $result = $DB->pselect(
+            'SELECT * FROM physiological_event_file WHERE PhysiologicalFileID=:pid',
+            ['pid' => $physiological_file['PhysiologicalFileID']]
+        );
+        print_r(iterator_to_array($result));
+    }
 
     // Print from session
     echo "\nSession\n";
@@ -358,6 +370,15 @@ function deleteTimepoint(
         echo "\n-- Deleting from mri upload.\n";
         $DB->delete('mri_upload', ['SessionID' => $sessionID]);
         
+        // Delete from physiological_event_file
+        echo "\n-- Deleting from physiological event file.\n";
+        foreach ($physiological_files as $physiological_file) {
+            $DB->delete(
+                'physiological_event_file',
+                ['PhysiologicalFileID' => $physiological_file['PhysiologicalFileID']]
+            );
+        }
+
         // Delete from physiological_file
         echo "\n-- Deleting from physiological file.\n";
         $DB->delete('physiological_file', ['SessionID' => $sessionID]);
