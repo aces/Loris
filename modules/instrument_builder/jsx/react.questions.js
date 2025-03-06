@@ -359,9 +359,9 @@ class DropdownOptions extends Component {
 
     return (
       <div>
-        <BasicOptions 
-        updateState={this.props.updateState} 
-        element={this.props.element} 
+        <BasicOptions
+        updateState={this.props.updateState}
+        element={this.props.element}
         />
         <div className={dropdownClass}>
           <label className="col-sm-2 control-label">Dropdown Option: </label>
@@ -394,9 +394,9 @@ class DropdownOptions extends Component {
         <div className="form-group">
           <label className="col-sm-2 control-label">Preview: </label>
           <div className="col-sm-2">
-            <select 
-              multiple={multi} 
-              id="selectOptions" 
+            <select
+              multiple={multi}
+              id="selectOptions"
               className="form-control">
               {Object.keys(options).map(function(option, key) {
                 return <option key={key}>{options[option]}</option>;
@@ -928,7 +928,7 @@ class AddElement extends Component {
    * @param {object} newState
    */
   updateState(newState) {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       let updatedState = {...prevState, ...newState};
 
       // If the Name field is changing, remove the duplicate error dynamically
@@ -938,7 +938,11 @@ class AddElement extends Component {
         updatedState.error = newErrorState;
       }
       // If dropdown options are updated, remove dropdown error dynamically
-      if (newState.Options && Object.keys(newState.Options.Values || {}).length >= 2) {
+      if 
+      (
+        newState.Options 
+        && Object.keys(newState.Options.Values || {}).length >= 2
+      ) {
         let newErrorState = {...prevState.error};
         delete newErrorState.dropdownOptions;
         updatedState.error = newErrorState;
@@ -963,21 +967,21 @@ class AddElement extends Component {
     }
 
     // Validate Dropdown Options only when the type is 'dropdown' or 'multiselect'
-    if ((selected === "dropdown" 
-        || selected === "multiselect") 
+    if ((selected === 'dropdown'
+        || selected === 'multiselect')
         && this.state.Options.Values) {
       let optionsCount = Object.keys(this.state.Options.Values).length;
 
       if (optionsCount === 0) {
         this.setState((state) => ({
-          error: {...state.error, 
+          error: {...state.error,
                  dropdownOptions: "Dropdown options cannot be empty!"
           },
         }));
         hasError = true;
       } else if (optionsCount < 2) {
         this.setState((state) => ({
-          error: {...state.error, 
+          error: {...state.error,
                   dropdownOptions: "A minimum of two options is required."
           },
         }));
