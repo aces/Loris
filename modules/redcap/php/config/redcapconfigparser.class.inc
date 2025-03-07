@@ -326,14 +326,14 @@ class RedcapConfigParser
         }
 
         switch ($redcap_participant_id) {
-        case 'record-id':
+        case 'record_id':
             return RedcapConfigRedcapId::RecordId;
-        case 'survey-participant-id':
+        case 'survey_participant_id':
             return RedcapConfigRedcapId::SurveyParticipantId;
         default:
             throw $this->_exception(
                 "invalid REDCap participant identifier type for the selected"
-                . " project, expected 'record-id' or 'survey-participant-id' but"
+                . " project, expected 'record_id' or 'survey_participant_id' but"
                 . " found '$redcap_participant_id'."
             );
         }
