@@ -223,24 +223,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $Ins = "instruments";
 
-                // Get multi-lingual full name if relevant / exists
-                $db = $this->loris->getDatabaseConnection();
-
-                $fullName = $db->pselectOne(
-                    "SELECT tn.Full_name
-                        FROM session s
-                        JOIN test_names_multilingual tn
-                            ON tn.LanguageID=s.LanguageID 
-                        WHERE tn.Test_name=:tn
-                        AND s.ID=:sid",
-                    [
-                        'tn'  => $instrument['Test_name'],
-                        'sid' => $_REQUEST['sessionID']
-                    ]
-                );
-
-                $ins = $fullName ?? $instrument['Full_name'];
-
+                $ins = $instrument['Full_name'];
                 $this->tpl_data[$Ins][$x][$i]['fullName'] = $ins;
 
                 $ins = $status->getDataEntryStatus();
