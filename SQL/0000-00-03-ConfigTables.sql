@@ -181,7 +181,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 
 -- REDCap settings
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('redcap', 'Settings related to REDCap interoperability', 1, 0, 'REDCap', 16);
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'redcap_importable_instrument', 'REDCap instrument names from which data should be imported in LORIS', 1, 1, 'text', parent_config.ID, 'Importable instrument names', 1 FROM ConfigSettings parent_config LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent) WHERE parent_config.Name = 'redcap';
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'redcap_issue_assignee', 'REDCap main issue assignee in issue tracker', 1, 0, 'text', parent_config.ID, 'Main issue assignee', 1 FROM ConfigSettings parent_config LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent) WHERE parent_config.Name = 'redcap';
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'redcap_importable_instrument', 'REDCap instrument names from which data should be imported in LORIS', 1, 1, 'text', parent_config.ID, 'Importable instrument names', 2 FROM ConfigSettings parent_config LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent) WHERE parent_config.Name = 'redcap';
 
 --
 -- Filling Config table with default values
