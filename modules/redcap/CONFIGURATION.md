@@ -8,7 +8,6 @@ The configuration is of the following form:
 
 ```xml
 <redcap>
-  <issue-assignee>REDCap</issue-assignee>
   <instance>
     <redcap-url>https://www.example.net/redcap/</redcap-url>
     <project>
@@ -31,7 +30,6 @@ The configuration is of the following form:
 
 The configuration nodes are the following:
 - `redcap` (required): Root node of the LORIS REDCap configuration.
-- `issue-assignee` (required): The LORIS user ID of the user to whom to assign issues in case of a REDCap module malfunction.
 - `instance` (required, multiple allowed): The list of instance entries to synchronize with LORIS.
 
 In an `instance` entry, the configuration parameters are the following:

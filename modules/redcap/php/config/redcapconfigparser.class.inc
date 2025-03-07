@@ -104,7 +104,7 @@ class RedcapConfigParser
      */
     private function _parseRedcapNode(array $redcap_node): ?RedcapConfig
     {
-        $issue_assignee = $this->_parseIssueAssignee($redcap_node);
+        $issue_assignee = $this->_getIssueAssignee();
 
         $instance_node = $this->_getInstanceNode($redcap_node);
         if ($instance_node === null) {
@@ -143,19 +143,25 @@ class RedcapConfigParser
     }
 
     /**
-     * Parse the REDCap issue assignee from a REDCap configuration XML node.
-     *
-     * @param array $redcap_node The REDCap configuration XML node.
+     * Get the REDCap issue assignee from configuration module.
      *
      * @return \User The REDCap issue assignee user.
      */
-    private function _parseIssueAssignee(array $redcap_node): \User
+    private function _getIssueAssignee(): \User
     {
-        $assignee_user_id = $redcap_node['issue-assignee'] ?? null;
+        $assignee_user_id = $this->_db->pselectOne(
+            "SELECT c.Value
+            FROM Config c
+                JOIN ConfigSettings cs ON (cs.ID = c.ConfigID)
+            WHERE cs.Name = 'redcap_issue_assignee'
+            ",
+            []
+        );
+
         if (empty($assignee_user_id)) {
             throw $this->_exception(
-                "no REDCap issue assignee in configuration, missing node"
-                . " 'issue-assignee'."
+                "no REDCap issue assignee in configuration, missing"
+                . " 'redcap_issue_assignee'."
             );
         }
 
