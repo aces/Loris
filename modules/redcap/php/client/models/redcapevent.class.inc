@@ -57,7 +57,7 @@ class RedcapEvent
     /**
      * The REDCap custom event name, if any.
      *
-     * @var string
+     * @var string|null
      */
     public readonly ?string $custom_label;
 
