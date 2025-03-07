@@ -61,6 +61,7 @@ $numSessions = $db->pselectOne(
         'v_VL'     => $_REQUEST['VL'],
     ]
 );
+
 if ($numSessions != 1) {
     echo json_encode(
         [
@@ -70,6 +71,7 @@ if ($numSessions != 1) {
     );
     exit(0);
 }
+
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         ['error_msg' => 'Please choose an instrument']
