@@ -123,7 +123,7 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hidden_vedio'   => !empty($req['hiddenVideo']) ?
+            'hidden_vedio'  => !empty($req['hiddenVideo']) ?
                 $req['hiddenVideo'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
@@ -256,7 +256,7 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenVideo'  => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo' => ['yes' => "Yes", 'no' => "No"],
         ];
 
         return $result;
@@ -410,7 +410,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
-                    'hide_video'   => $hidden,
+                    'hide_video'    => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",
