@@ -166,7 +166,7 @@ class RedcapConfigParser
         }
 
         $assignee = $this->_db->pselectOne(
-            "SELECT u.userID
+            "SELECT DISTINCT u.userID
             FROM users u
                 JOIN user_perm_rel upr ON (upr.userid = u.id)
                 JOIN permissions p ON (p.permid = upr.permid)
