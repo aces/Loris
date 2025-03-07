@@ -173,7 +173,10 @@ class RedcapConfigParser
             WHERE u.userID = :usid
                 AND u.Active = 'Y'
                 AND u.Pending_approval = 'N'
-                AND p.code = 'issue_tracker_developer'
+                AND (
+                    p.code = 'issue_tracker_developer'
+                    OR p.code = 'superuser'
+                )
             ",
             ['usid' => $assignee_user_id]
         );
