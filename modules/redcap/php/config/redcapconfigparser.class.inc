@@ -358,14 +358,14 @@ class RedcapConfigParser
         }
 
         switch ($loris_candidate_id) {
-        case 'cand-id':
+        case 'candid':
             return RedcapConfigLorisId::CandId;
-        case 'psc-id':
+        case 'pscid':
             return RedcapConfigLorisId::PscId;
         default:
             throw $this->_exception(
                 "invalid LORIS candidate identifier type for the selected project,"
-                . " expected 'cand-id' or 'psc-id' but found '$loris_candidate_id'."
+                . " expected 'candid' or 'pscid' but found '$loris_candidate_id'."
             );
         }
     }
