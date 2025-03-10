@@ -281,7 +281,7 @@ function getFamilyInfoFields()
     // Remove own ID and sibling IDs from list of possible family members
     foreach ($candidatesList as $key => $candidate) {
         foreach ($candidate as $ID) {
-            if (new CandID(strval($ID)) == $candID
+            if (new CandID(strval($ID)) === $candID
                 || in_array($ID, $siblings, true)
             ) {
                 unset($candidatesList[$key]);
