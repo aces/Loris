@@ -400,7 +400,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Fetch issues
         $baseQuery = "
-            SELECT i.*, c.CandID as candID, c.PSCID, s.Visit_label AS visitLabel
+            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
             FROM issues AS i
             LEFT JOIN candidate c ON i.CandidateID = c.ID
             LEFT JOIN session s ON i.sessionID = s.ID
@@ -479,6 +479,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 : null;
 
             $issue['topComments'] = $this->getTopComments($issueID);
+            unset($issue['CandidateID']);
         }
 
         return [
@@ -537,7 +538,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData = $db->pselectRow(
                 "SELECT
                             i.*,
-                            c.CandID AS candID,
                             c.PSCID,
                             s.Visit_label AS visitLabel,
                             t.Test_name as instrument_name
@@ -563,6 +563,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $issueData['lastUpdatedBy']
             );
             // return
+            unset($issueData['CandidateID']);
             return $issueData;
         }
 
@@ -627,10 +628,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     intval($comment['newValue'])
                 );
                 $comment['fieldChanged'] = 'site';
-            } else if ($comment['fieldChanged'] === 'candID') {
+            } else if ($comment['fieldChanged'] === 'CandidateID') {
                 $PSCID = $db->pselectOne(
-                    "SELECT PSCID FROM candidate WHERE CandID=:candID",
-                    ['candID' => $comment['newValue']]
+                    "SELECT PSCID FROM candidate WHERE ID=:candidateID",
+                    ['candidateID' => $comment['newValue']]
                 );
                 $comment['newValue']     = $PSCID;
                 $comment['fieldChanged'] = 'PSCID';
@@ -802,9 +803,12 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
-
         if (array_key_exists('candID', $validatedInput)) {
-            $issueValues['candID'] = $validatedInput['candID'];
+            $candidateID = $db->pselectOne(
+                "SELECT ID FROM candidate WHERE CandID=:candID",
+                ['candID' => $validatedInput['candID']]
+            );
+            $issueValues['CandidateID'] = $candidateID;
         }
 
         // Get changed values to save in history
@@ -1157,7 +1161,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         // If both are set, return SessionID and CandID
         if (isset($result['PSCID']) && isset($result['visit'])) {
             $session = iterator_to_array(
-                $db->pSelect(
+                $db->pselect(
                     "SELECT s.ID as sessionID, c.CandID as candID FROM candidate c
                 INNER JOIN session s on (c.ID = s.CandidateID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
@@ -1193,7 +1197,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
             }
 
-            $candidate = $db->pSelectOne($query, $params);
+            $candidate = $db->pselectOne($query, $params);
             if ($candidate) {
                 $result['candID'] = $candidate;
             } else {
