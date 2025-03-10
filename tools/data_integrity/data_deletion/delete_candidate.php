@@ -207,11 +207,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         }
     }
 
-    $candidate   = $DB->pselect(
-        'SELECT * FROM candidate WHERE CandID=:cid',
-        ['cid' => $CandID]
-    );
-    $CandidateID = $candidate->getFirstRow()['ID'];
+    $CandidateID = $candidate->getID();
 
     // Print participant_status
     echo "\nParticipant Status\n";
@@ -345,7 +341,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     // Print candidate
     echo "\nCandidate\n";
     echo "-----------\n";
-    print_r(iterator_to_array($candidate));
+    print_r($candidate->getData());
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
@@ -407,7 +403,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         $DB->delete("mri_protocol_violated_scans", ["CandidateID" => $CandidateID]);
 
         //delete from candidate
-        $DB->delete("candidate", ["CandID" => $CandID]);
+        $DB->delete("candidate", ["ID" => $CandidateID]);
     } elseif ($printToSQL) {
         echo "Generating all DELETE statements for CandID: " . $CandID
             . " And PSCID: " .

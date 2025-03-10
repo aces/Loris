@@ -98,12 +98,17 @@ if ($sessionID != null) {
         "SELECT COUNT(*) FROM files WHERE SessionID=:sid",
         ['sid' => $sessionID]
     );
+    $physiologicalFilesExist = $DB->pselectOne(
+        "SELECT COUNT(*) FROM physiological_file WHERE SessionID=:sid",
+        ['sid' => $sessionID]
+    );
+    $filesExist += $physiologicalFilesExist;
     $numFiles   = (int)$filesExist;
     if ($numFiles > 0) {
         echo <<<MSG
 Session ID $sessionID for candidate $CandID has imaging data and files
-in the database, and should not be deleted. Look at `files` and `tarchive`
-tables before deleting timepoint.\n
+in the database, and should not be deleted. Look at `files`, `tarchive`,
+and `physiological_file` tables before deleting timepoint.\n
 MSG;
         exit(1);
     }
@@ -257,27 +262,6 @@ function deleteTimepoint(
     );
     print_r(iterator_to_array($result));
 
-    // Print from physiological_file
-    echo "\nPhysiological File\n";
-    echo "-------\n";
-    $physiological_files = $DB->pselect(
-        'SELECT * FROM physiological_file WHERE SessionID=:sid',
-        ['sid' => $sessionID]
-    );
-    $physiological_files = iterator_to_array($physiological_files);
-    print_r($physiological_files);
-
-    // Print from physiological_event_file
-    echo "\nPhysiological Event File\n";
-    echo "-------\n";
-    foreach ($physiological_files as $physiological_file) {
-        $result = $DB->pselect(
-            'SELECT * FROM physiological_event_file WHERE PhysiologicalFileID=:pid',
-            ['pid' => $physiological_file['PhysiologicalFileID']]
-        );
-        print_r(iterator_to_array($result));
-    }
-
     // Print from session
     echo "\nSession\n";
     echo "---------\n";
@@ -370,19 +354,6 @@ function deleteTimepoint(
         echo "\n-- Deleting from mri upload.\n";
         $DB->delete('mri_upload', ['SessionID' => $sessionID]);
 
-        // Delete from physiological_event_file
-        echo "\n-- Deleting from physiological event file.\n";
-        foreach ($physiological_files as $physiological_file) {
-            $DB->delete(
-                'physiological_event_file',
-                ['PhysiologicalFileID' => $physiological_file['PhysiologicalFileID']]
-            );
-        }
-
-        // Delete from physiological_file
-        echo "\n-- Deleting from physiological file.\n";
-        $DB->delete('physiological_file', ['SessionID' => $sessionID]);
-
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
         foreach ($feedback_threads as $feedback) {
@@ -463,15 +434,6 @@ function deleteTimepoint(
         $output .= "\n-- Deleting from MRI upload.\n";
         _printResultsSQL(
             'mri_upload',
-            ['SessionID' => $sessionID],
-            $output,
-            $DB
-        );
-
-        // Delete from physiological_file
-        $output .= "\n-- Deleting from physiological file.\n";
-        _printResultsSQL(
-            'physiological_file',
             ['SessionID' => $sessionID],
             $output,
             $DB
