@@ -1249,7 +1249,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers);
-        return $projMatch && ($centerMatch || $user->hasPermission('access_all_profiles'));
+        return $projMatch && ($centerMatch ||
+            $user->hasPermission('access_all_profiles')
+        );
     }
 }
 

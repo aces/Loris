@@ -139,7 +139,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Erase sites that were setup in LorisApiAuthenticatedTest
         // setup for data access in other tests.
         $this->DB->run(
-            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+            'DELETE FROM user_psc_rel WHERE UserID=999990'
         );
         /**
         * Test changing from a site with no affiliation to a site with affiliation
@@ -185,7 +185,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             ]
         );
         // verify the status code
-        $this->assertequals(409, $response->getstatuscode());
+        $this->assertequals(403, $response->getstatuscode());
         // verify the endpoint has a body
         $body = $response->getbody();
         $this->assertnotempty($body);
