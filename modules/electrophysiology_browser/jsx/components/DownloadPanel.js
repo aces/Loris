@@ -88,13 +88,9 @@ class DownloadPanel extends Component {
                           : <a
                             className='btn btn-primary download col-xs-6'
                             href={
-                              (type ==
-                                'physiological_event_files' ||
-                                type == 'all_files') ?
-                                this.state.annotationsAction
-                                + '?physioFileID=' + this.state.physioFileID
-                                + '&filePath=' + download.file
-                                : '/mri/jiv/get_file.php?file=' + download.file
+                              ['physiological_event_files', 'all_files'].includes(type) ?
+                                '/electrophysiology_browser/pipelinearchive?filename=' + download.file + '&pipeline=raw' :
+                                '/mri/jiv/get_file.php?file=' + download.file
                             }
                             target='_blank'
                             style={{
