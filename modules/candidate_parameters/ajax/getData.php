@@ -252,7 +252,7 @@ function getFamilyInfoFields()
 
     $candidatesList = iterator_to_array(
         $db->pselect(
-            "SELECT ID FROM candidate ORDER BY ID",
+            "SELECT CandID FROM candidate ORDER BY CandID",
             []
         )
     );
