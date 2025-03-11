@@ -67,7 +67,7 @@ if ($opts['i']!=null) {
 /**
  * To be removed
  */
-if ($opts['r']!=null) {
+if (($opts['r'])!=null) {
     $to_remove = true;
 }
 
@@ -107,11 +107,11 @@ foreach ($instruments as $instrument => $full_name) {
                     JOIN flag f on (f.sessionid=s.id)
                     JOIN test_names tn ON tn.ID = f.TestID
                     WHERE s.candID = :cid AND tn.test_name = :fname AND
-                    s.cohortid = :subid",
+                    s.cohortid = :cohortid",
                     [
-                        'cid'   => $candid,
-                        'fname' => $instrument,
-                        'subid' => $cohortid['cohortid'],
+                        'cid'      => $candid,
+                        'fname'    => $instrument,
+                        'cohortid' => $cohortid['cohortid'],
                     ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
