@@ -121,6 +121,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (131,'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', 26, 'EEG Incoming Directory', 15);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (132,'useDoB','Use DoB (Date of Birth)',1,0,'boolean',1,'Use DoB',12);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (133,'EEGS3DataPath','EEG S3 data path for assembly data',1,0,'text',26,'EEG S3 data path',15);
-
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (134,'useAdvancedPermissions','Restricts access to data based on both sites and projects and require a special permission to access data not affiliated to a session (SessionID null). Keeping this setting to NO should ensure backwards compatibility (access to all data when module loads)',1,0,'boolean',50,'Use Advanced Permissions',5);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
