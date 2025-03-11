@@ -37,7 +37,6 @@ class AcknowledgementRow implements \LORIS\Data\DataInstance
      * Create a new HelpRow
      *
      * @param array $row The row
-     *
      */
     public function __construct(array $row)
     {
@@ -46,7 +45,7 @@ class AcknowledgementRow implements \LORIS\Data\DataInstance
 
     /**
      * Serializes the row into an array format compatible with json_encode().
-     * 
+     *
      * @return array which can be serialized by json_encode()
      */
     public function jsonSerialize() : array

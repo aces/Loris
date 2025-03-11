@@ -35,12 +35,11 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      * Create a AcknowledgementsProvisioner
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
-     *
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-	 parent::__construct(
-            $loris,		    
+        parent::__construct(
+            $loris,
             "SELECT
             ordering,
             full_name,
