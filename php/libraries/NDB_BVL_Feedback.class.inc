@@ -513,7 +513,7 @@ class NDB_BVL_Feedback
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
-        $query .= " GROUP BY c.CandID, ft.Feedback_level, ft.SessionID";
+        $query .= " GROUP BY c.CandID, c.PSCID, c.Ethnicity, c.Sex, s.ID, s.Visit_label, ft.Feedback_level, ft.SessionID";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
         }

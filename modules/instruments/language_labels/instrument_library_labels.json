@@ -22,7 +22,14 @@
 		"dnk" : "DNK",
 		"refusal" : "Refusal",
 		"date_or_NA_required" : "A Date, or Not Answered is required.",
-		"must_be_numeric" : "Value must be numeric."
+		"must_be_numeric" : "Value must be numeric.",
+		"must_be_greater_than" : "Must be greater than",
+		"must_be_less_than" : "Must be less than",
+		"is_required" : "is required.",
+		"window_difference_from_test_battery" : "Window difference from test battery (days)",
+		"top" : "Top",
+		"in_progress" : "In Progress",
+		"complete" : "Complete"
 	},
 	"fr-CA" : {
 		"age_out_of_range" : " (Âge hors limites)",
@@ -47,6 +54,11 @@
 		"dnk" : "NSP",
 		"refusal" : "Refus",
 		"date_or_NA_required" : "Une date ou Non Répondu est requis.",
-		"must_be_numeric" : "La valeur doit être numérique."
+		"must_be_numeric" : "La valeur doit être numérique.",
+		"must_be_greater_than" : "Doit être supérieur à",
+		"must_be_less_than" : "Doit être inférieur à",
+		"is_required" : "est requis.",
+		"window_difference_from_test_battery" : "Différence de fenêtre par rapport à la batterie de tests (jours)",
+		"top" : "Résumé"
 	}
 }
