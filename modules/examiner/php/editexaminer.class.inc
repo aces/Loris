@@ -294,7 +294,9 @@ class EditExaminer extends \NDB_Form
             ['EID' => $this->identifier]
         );
 
-        $this->tpl_data['certification_history'] = $certification_history;
+        $this->tpl_data['certification_history'] = \iterator_to_array(
+            $certification_history
+        );
 
         $config = \NDB_Config::singleton();
 

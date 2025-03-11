@@ -145,13 +145,33 @@
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
-                            <li class="nav">
-                                <a href="#" class="css-tooltip">
-                                    Site Affiliations: {$userNumSites}
-                                    <span class="tooltip-text">{$user.SitesTooltip}</span>
+
+                            <!-- Affiliations Dropdown Menu -->
+                            <li class="nav dropdown nav-affiliations">
+                                <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Affiliations
+                                    <span class="caret"></span>
                                 </a>
+                                <ul class="dropdown-menu affiliations-dropdown">
+                                    <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.SitesTooltip}</span>
+                                        </a>
+                                    </li>
+
+                                    <li role="separator" class="divider"></li>
+
+                                    <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.ProjectsTooltip}</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
+                            <!-- User Dropdown Menu -->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                     {$user.Real_name|escape} <b class="caret"></b>

@@ -48,7 +48,6 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                i.dateCreated,
                i.lastUpdate,
                s.ID AS sessionId,
-               c.CandID AS candidateId,
                w.userID AS userId
         FROM issues AS i
         LEFT JOIN modules m ON m.ID = i.module
