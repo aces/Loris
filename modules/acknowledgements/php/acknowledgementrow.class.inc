@@ -19,9 +19,6 @@ namespace LORIS\acknowledgements;
 /**
  * AcknowledgementRow represents a row in the acknowledgements menu table.
  *
- * This class is necessary because the \Module class does not include
- * an "Active" flag, which is required for proper JSON serialization.
- *
  * @category   Core
  * @package    Main
  * @subpackage Core
