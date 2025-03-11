@@ -67,6 +67,19 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     }
 
     /**
+     * Returns the label that should be displayed if and only if it exists
+     * without throwing an exception.
+     *
+     * @param $name string name of the variable (key in the  array)
+     *
+     * @return string
+     */
+    function getLangLabel(string $name)
+    {
+        return $this->labels[$name] ?? null;
+    }
+
+    /**
      * This runs the XIN rules on all the elements on the current page to ensure
      * that no rules were violated.
      *
