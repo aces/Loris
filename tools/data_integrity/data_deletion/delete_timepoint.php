@@ -103,7 +103,7 @@ if ($sessionID != null) {
         ['sid' => $sessionID]
     );
     $filesExist += $physiologicalFilesExist;
-    $numFiles   = (int)$filesExist;
+    $numFiles    = (int)$filesExist;
     if ($numFiles > 0) {
         echo <<<MSG
 Session ID $sessionID for candidate $CandID has imaging data and files
