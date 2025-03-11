@@ -2,14 +2,14 @@
 
 /**
  * This file implements a data provisioner to get all modules
- * for the Module Manager menu page.
+ * for the acknowledgements menu page.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <shen.wang2@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -18,22 +18,22 @@ namespace LORIS\acknowledgements;
 
 /**
  * This class implements a data provisioner to get all modules
- * for the module manager menu page.
+ * for the acknowledgements menu page.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <shen.wang2@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
 class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a ModuleManagerProvisioner, which gets modules for the
-     * module manager menu table.
+     * Create a AcknowledgementsProvisioner, which gets modules for the
+     * acknowledgements menu table.
      */
     function __construct()
     {

@@ -9,7 +9,7 @@
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -27,7 +27,7 @@ namespace LORIS\acknowledgements;
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -38,8 +38,8 @@ class AcknowledgementRow implements \LORIS\Data\DataInstance
     /**
      * Create a new HelpRow
      *
-     * @param array $row The row (in the same format as \Database::pselectRow returns
-     *                   returns
+     * @param array $row The row
+     *
      */
     public function __construct(array $row)
     {

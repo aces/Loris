@@ -1,26 +1,26 @@
 <?php declare(strict_types=1);
 
 /**
- * File contains the Module_Manager class.
+ * File contains the acknowledgements class.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\acknowledgements;
 
 /**
- * The Module_Manager provides the menu filter for the module manager module.
+ * The acknowledgements provides the menu filter for the acknowledgements module.
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
