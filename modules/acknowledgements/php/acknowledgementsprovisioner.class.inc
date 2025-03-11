@@ -32,14 +32,17 @@ namespace LORIS\acknowledgements;
 class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a AcknowledgementsProvisioner, which gets modules for the
-     * acknowledgements menu table.
+     * Create a AcknowledgementsProvisioner
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance
+     *
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
-        parent::__construct(
+	 parent::__construct(
+            $loris,		    
             "SELECT
-		            ordering,
+            ordering,
             full_name,
             citation_name,
             affiliations,
@@ -49,8 +52,7 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
             end_date,
             present
 	    FROM acknowledgements WHERE 1=1
-            ORDER BY ordering	  
-",
+            ORDER BY ordering",
             [],
         );
     }

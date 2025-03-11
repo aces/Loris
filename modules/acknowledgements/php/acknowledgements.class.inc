@@ -73,7 +73,7 @@ class Acknowledgements extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new AcknowledgementsProvisioner();
+        return new AcknowledgementsProvisioner($this->loris);
     }
     /**
      * Override the toJSON function to provide custom behavior.

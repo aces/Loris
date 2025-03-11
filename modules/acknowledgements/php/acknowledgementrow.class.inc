@@ -17,12 +17,10 @@
 namespace LORIS\acknowledgements;
 
 /**
- * A ModuleRow represents a row in the acknowledgements menu table.
+ * AcknowledgementRow represents a row in the acknowledgements menu table.
  *
- * The acknowledgements requires a specific "row" concept because
- * the \Module class does not have any concept of the Active flag
- * for the module in order to serialize it as JSON for the data
- * table.
+ * This class is necessary because the \Module class does not include
+ * an "Active" flag, which is required for proper JSON serialization.
  *
  * @category   Core
  * @package    Main
@@ -47,8 +45,8 @@ class AcknowledgementRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Implements \LORIS\Data\DataInstance interface for this row.
-     *
+     * Serializes the row into an array format compatible with json_encode().
+     * 
      * @return array which can be serialized by json_encode()
      */
     public function jsonSerialize() : array

@@ -15,8 +15,7 @@
 namespace LORIS\acknowledgements;
 
 /**
- * The module class serves as a hint that this directory contains
- * a valid LORIS module.
+ * File contains the LORIS\acknowledgements\Module class.
  *
  * @category   Core
  * @package    Main

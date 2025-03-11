@@ -5,12 +5,11 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Post method handles updating a file.
- * Delete method handles deleting a file.
- * Get method handles getting a file.
- * Put method handles editing a file.
- * This class contains functions providing upload and edit functionality for
- * files in the acknowledgements.
+ * Handles the creation of acknowledgement entries.
+ *
+ * POST method creates a new acknowledgement entry.
+ * This class processes user input and inserts acknowledgement data
+ * into the database.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -21,7 +20,7 @@ class Acknowledgementsprocess extends \NDB_Page
     public $skipTemplate = true;
 
     /**
-     * Same as the permissions for the main menu filter page.
+     * Checks user access permissions for this page.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -33,8 +32,7 @@ class Acknowledgementsprocess extends \NDB_Page
     }
 
     /**
-     * Handle how to operate all the files.
-     * POST method uploads a file.
+     * Handles incoming HTTP requests and routes them accordingly.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -52,7 +50,7 @@ class Acknowledgementsprocess extends \NDB_Page
         }
     }
     /**
-     * Handles the document editing process
+     * Creates a new acknowledgement entry.
      *
      * @param ServerRequestInterface $req The incoming PSR7 request
      *
