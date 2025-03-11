@@ -531,7 +531,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS $tablename");
         $DB->run(
             "CREATE TEMPORARY TABLE $tablename (
-            CandID int(10)
+            CandID int(10) unsigned
         );"
         );
 
