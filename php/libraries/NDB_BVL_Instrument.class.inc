@@ -1815,7 +1815,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
-            ]
+            ],
+            ['class' => 'form-control input-sm not-answered']
         );
         $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
