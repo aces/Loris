@@ -64,9 +64,8 @@ Class TimePoint_List_ControlPanel extends \Candidate
 
         $this->tpl_data['candID'] = $this->getCandID();
 
-        $this->tpl_data['isDataEntryPerson']
-            = $user->hasCenterPermission("data_entry", $cand_CenterID);
-
+        $this->tpl_data['isDataEntryPerson'] = $user->hasCenterPermission("data_entry", $cand_CenterID);
+    
         $this->tpl_data['isImagingPerson'] = $user->hasAnyPermission(
             [
                 'imaging_browser_view_site',
@@ -74,6 +73,13 @@ Class TimePoint_List_ControlPanel extends \Candidate
                 'imaging_browser_phantom_allsites',
                 'imaging_browser_phantom_ownsite'
             ]
+        );
+
+        $this->tpl_data['isCandidatePerson'] = $user->hasAnyPermission(
+                [
+                    'candidate_parameter_view',
+                    'candidate_parameter_edit'
+                ]
         );
 
         //set the baseurl of the tpl_data
