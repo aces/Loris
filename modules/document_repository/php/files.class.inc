@@ -123,7 +123,7 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hidden_vedio'  => !empty($req['hiddenVideo']) ?
+            'hidden_video'  => !empty($req['hiddenVideo']) ?
                 $req['hiddenVideo'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
