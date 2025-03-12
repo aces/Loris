@@ -70,7 +70,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                 }
 
                 $cohorts = $DB->pselectCol(
-                    "SELECT GROUP_CONCAT(DISTINCT c.title) FROM test_names tn
+                    "SELECT DISTINCT c.title FROM test_names tn
                         JOIN test_battery tb ON tn.Test_name=tb.Test_name
                         JOIN cohort c ON tb.CohortID=c.CohortID
                         WHERE tn.Test_name=:tn
