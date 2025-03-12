@@ -280,7 +280,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'c.flagged_other';
         case 'Site':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             $this->addTable('LEFT JOIN psc site ON (s.CenterID=site.CenterID)');
             return 'site.Name';
@@ -333,7 +333,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'c.EDC';
         case 'Project':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             $this->addTable(
                 'LEFT JOIN Project proj ON (s.ProjectID=proj.ProjectID)'
@@ -348,7 +348,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'rproj.Name';
         case 'Cohort':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             $this->addTable(
                 'LEFT JOIN cohort cohort'
@@ -357,14 +357,14 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'cohort.title';
         case 'VisitLabel':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             return 's.Visit_label';
         case 'EntityType':
             return 'c.Entity_type';
         case 'ParticipantStatus':
             $this->addTable(
-                'LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)'
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
             );
             $this->addTable(
                 'LEFT JOIN participant_status_options pso ' .

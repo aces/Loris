@@ -23,7 +23,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (22,12,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/var/www/loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (26,30,'/PATH/TO/EXTERNAL/LIBRARY/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (28,32,'/data/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (29,33,'tools/logs/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (30,34,'/data/incoming/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (31,35,'/data/demo/bin/mri/');
@@ -107,6 +106,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
-
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -73,9 +73,11 @@ class CouchDBIntegrityChecker
         );
         print "Sessions:\n";
         $activeExists = $this->SQLDB->prepare(
-            "SELECT count(*) AS count FROM 
-        candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' 
-        AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL"
+            "SELECT count(*) AS count
+            FROM candidate c
+            LEFT JOIN session s ON (s.CandidateID = c.ID)
+            WHERE s.Active='Y' 
+            AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL"
         );
         foreach ($sessions as $row) {
             $pscid = $row['key'][0];
@@ -83,7 +85,7 @@ class CouchDBIntegrityChecker
             $sqlDB = $this->SQLDB->pselectRow(
                 "SELECT c.*, s.Visit_label, s.Active, c.Active as cActive
                 FROM candidate c
-                LEFT JOIN session s USING (CandID)
+                LEFT JOIN session s ON (s.CandidateID = c.ID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 [
                     "PID" => $pscid,

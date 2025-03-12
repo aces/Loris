@@ -136,19 +136,19 @@ foreach ($testNames as $test) {
     logMessage("------------------------------");
 
     $query = "
-        SELECT s.CandID, 
-            s.Visit_label, 
-            s.ID as SessionID, 
-            f.CommentID, 
+        SELECT c.CandID,
+            s.Visit_label,
+            s.ID as SessionID,
+            f.CommentID,
             c.PSCID
-        FROM candidate c 
-            JOIN session s ON c.CandID=s.CandID
+        FROM candidate c
+            JOIN session s ON c.ID=s.CandidateID
             JOIN flag f ON s.ID=f.SessionID
             JOIN test_names tn ON tn.ID = f.TestID
-        WHERE s.Active = 'Y' 
-            AND c.Active='Y' 
-            AND tn.Test_name = :tnm 
-            AND f.Administration <> 'None' 
+        WHERE s.Active = 'Y'
+            AND c.Active='Y'
+            AND tn.Test_name = :tnm
+            AND f.Administration <> 'None'
             AND f.Administration IS NOT NULL
             ";
 
@@ -156,7 +156,7 @@ foreach ($testNames as $test) {
 
     // only want to score one instrument for one candidate
     if ($action=='one') {
-        $query .= " AND s.ID = :sid AND s.CandID= :cid";
+        $query .= " AND s.ID = :sid AND c.CandID= :cid";
         $params = array_merge(
             $params,
             [
@@ -298,15 +298,15 @@ function showHelp()
     echo "Usage:
     score_instrument.php [help | -h]                                       "
     . "-> displays this message
-            
+
     score_instrument.php <test_name> one <candID> <sessionID> [inprogress] "
     . "-> scores test only for this candidate
-            
+
     score_instrument.php <test_name> all [inprogress]                      "
     . "-> scores test for all candidates meeting the necessary criteria
-            
+
     score_instrument.php all [inprogress]                                  "
-    . "-> scores all instruments for all candidates meeting the necessary criteria 
+    . "-> scores all instruments for all candidates meeting the necessary criteria
     \n\n";
 
     die();

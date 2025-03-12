@@ -102,11 +102,13 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-
-        $select =  " SELECT DISTINCT
+        $user         = \User::singleton();
+        $userSites    = implode(',', array_keys($user->getStudySites()));
+        $userProjects = implode(',', array_values($user->getProjectIDs()));
+        $select       = " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
-           s.CandID as cand_id,
+           c.CandID as cand_id,
            (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
            s.Visit_label as visit_label,
            '".$scan_type."' as scan_type,
@@ -154,13 +156,13 @@ class Imaging_QC extends \NDB_Menu_Filter
         $joins = " FROM flag f
         JOIN session s ON (f.SessionID=s.ID)
         JOIN test_names tn ON tn.ID = f.TestID
-        JOIN candidate c ON (s.CandID=c.CandID)
+        JOIN candidate c ON (s.CandidateID=c.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.MriScanTypeID=".$acqID.")
         LEFT JOIN mri_violations_log mvl ON
-        (mvl.CandID = s.CandID AND mvl.MriScanTypeID=".$acqID."
+        (mvl.CandidateID = s.CandidateID AND mvl.MriScanTypeID=".$acqID."
         AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
@@ -170,7 +172,8 @@ class Imaging_QC extends \NDB_Menu_Filter
           AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.ProjectID IN ($userProjects)
+          AND s.CenterID IN ($userSites) ";
 
         $query = $select.$joins.$where;
         return $query;
@@ -211,10 +214,10 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
+        $userProjects = $user->getProjects();
         $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
+        foreach ($userProjects as $project) {
+            $projectList2[$project->getName()] = $project->getName();
         }
         $cohortList  = \Utility::getCohortList();
         $cohortList2 = [];

@@ -201,6 +201,8 @@ const createLineChart = (data, columns, id, label, targetModal) => {
         type: 'timeseries',
         tick: {
           format: '%m-%Y',
+          rotate: -65,
+          multiline: true,
         },
       },
       y: {

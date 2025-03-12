@@ -309,6 +309,7 @@ class UserTest extends TestCase
         ];
         $this->_userInfoComplete['CenterIDs']  = ['1', '4'];
         $this->_userInfoComplete['ProjectIDs'] = ['1', '3'];
+        $this->_userInfoComplete['Projects']   = 'project_test;project_test2';
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();

@@ -64,7 +64,7 @@ class Image
                      LEFT JOIN session s
                        ON (f.SessionID = s.ID)
                      LEFT JOIN candidate c
-                       ON (s.CandID = c.CandID)
+                       ON (s.CandidateID = c.ID)
                      LEFT JOIN mri_scan_type mst
                        ON (mst.MriScanTypeID = f.MriScanTypeID)
                      WHERE f.FileID = :v_fileid

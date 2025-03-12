@@ -73,17 +73,19 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 $maybeEDC
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
-                    LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
+                    LEFT JOIN session s ON (c.ID=s.CandidateID AND s.Active = 'Y')
                     LEFT JOIN feedback_bvl_thread
-                        ON (c.CandID=feedback_bvl_thread.CandID)
-                    LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                        ON (c.ID=feedback_bvl_thread.CandidateID)
+                    LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
-                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
+                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
+                    pso.Description, c.DOB, c.Date_registered, p.Name,
+                    c.RegistrationCenterID, c.RegistrationProjectID
                 ORDER BY c.PSCID ASC
             ",
             []
