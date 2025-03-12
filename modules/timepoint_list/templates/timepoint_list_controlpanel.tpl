@@ -1,4 +1,4 @@
-{if $isDataEntryPerson || $isImagingPerson ||$isCandidateParameterPerson}
+{if $isDataEntryPerson || $isImagingPerson ||$isCandidatePerson}
     <!-- <div class="col-xs-1"> -->
         <h3>Actions:&nbsp&nbsp</h3>
     <!-- </div> -->
