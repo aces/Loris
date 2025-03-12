@@ -292,17 +292,17 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'rsite.Name';
         case 'DateRegistered':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandidateID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             return 's.Date_registered';
         case 'CurrentStage':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandidateID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             return 's.Current_stage';
         case 'SessionFeedback':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandidateID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             $this->addTable(
                 "LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID)"
@@ -313,7 +313,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'fbe.Comment';
         case 'SessionFailure':
             $this->addTable(
-                "LEFT JOIN session s ON (s.CandidateID=c.CandID AND s.Active='Y')"
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
             );
             return
             "CASE
@@ -373,7 +373,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'pso.Description';
         case 'ParticipantStatusReason':
             $this->addTable(
-                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.CandID)'
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
             );
             $this->addTable(
                 'LEFT JOIN participant_status_options pso1 ' .
@@ -382,13 +382,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'pso1.Description';
         case 'ParticipantStatusComments':
             $this->addTable(
-                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.CandID)'
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
             );
             return 'ps.reason_specify';
         case 'CandidateComments':
             $this->addTable(
                 "LEFT JOIN parameter_candidate pc_comment " .
-                "ON (pc_comment.CandidateID=c.CandID) " .
+                "ON (pc_comment.CandidateID=c.ID) " .
                 "AND pc_comment.ParameterTypeID=( " .
                     "SELECT ParameterTypeID " .
                     "FROM parameter_type " .
