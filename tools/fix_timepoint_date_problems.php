@@ -80,20 +80,17 @@ if (empty($argv[1]) || empty($argv[2]) || $argv[1] == 'help') {
 // get $action argument
 $action = strtolower($argv[1]);
 
-// CandID
-try {
-    $candID = new CandID($argv[2]);
-} catch (DomainException $e) {
+// loosely check that CandID has proper syntax
+if (!preg_match("/^([0-9]{1,10})$/", strval($candID))) {
     fwrite(
         STDERR,
         "Error: invalid 2st argument CandID ({$argv[2]}).\n"
     );
-    fwrite(
-        STDERR,
-        "For the script syntax type: fix_timepoint_date_problems.php help \n"
-    );
-    exit;
+    printUsage();
 }
+
+// CandID
+$candID = new CandID($argv[2]);
 
 // get the rest of the arguments
 switch ($action) {
