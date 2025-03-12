@@ -157,11 +157,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
+        $dde       = 'DoubleDataEntryEnabled';
+        $testArray[$dde] = $testArray[$dde] ?? 'N';
 
-        $testArray['DoubleDataEntryEnabled'] =
-            $testArray['DoubleDataEntryEnabled'] ?? 'N';
-
-        $test      = new Test($this->loris, null, $testArray);
+        $test = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test, "post");
     }
