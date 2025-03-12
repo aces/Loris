@@ -81,7 +81,7 @@ if (empty($argv[1]) || empty($argv[2]) || $argv[1] == 'help') {
 $action = strtolower($argv[1]);
 
 // loosely check that CandID has proper syntax
-if (!preg_match("/^([0-9]{1,10})$/", strval($candID))) {
+if (!preg_match("/^([0-9]{1,10})$/", strval($argv[2]))) {
     fwrite(
         STDERR,
         "Error: invalid 2st argument CandID ({$argv[2]}).\n"
