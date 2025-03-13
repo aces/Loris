@@ -2,19 +2,11 @@
 <?php declare(strict_types=1);
 
 /**
- * This script updates all the data associated with an EEG file
+ * This script updates the event files. This includes adding/updating the
+ * HED column with mappings and creating the archive downloaded from the
+ * EEG browser, which bundles it with its sidecar (corresponding events.json)
  *
- * Delete all table rows for a given EEG file
- * "Usage: php delete_physiological_file.php PhysiologicalFileID";
- * "Example: php delete_physiological_file.php 25";
- *
- * PHP Version 5
- *
- * @category Main
- * @package  Loris
- * @author   Various <example@example.com>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris/
+ * Usage: php update_event_files.php
  */
 
 use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
