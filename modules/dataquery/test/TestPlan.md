@@ -6,8 +6,11 @@
 2. [Panels](#panels)
 3. [Recent Queries](#recent-queries)
 4. [Pin Tests](#pin-tests)
-5. [Filters](#filters)
-6. [Run Query Page](#run-query-page)
+5. [Fields Selection](#fields-selection)
+6. [Other parameters](#other-parameters)
+7. [Sync not Sync](#sync-not-sync)
+8. [Filters](#filters)
+9. [Run Query Page](#run-query-page)
 
 ## Setup
 
@@ -20,7 +23,6 @@ Sign into your loris instance with an **admin** account.
 - [x] Access Profile: View/Create Candidates and Timepoints - Own Sites.
 - [x] Data Dictionary: View Parameter Type Descriptions
 - [x] Data Query Tool: View/Download Cross-Modality Data
--
 
 ## Panels
 
@@ -73,8 +75,11 @@ Click the `Pin` icon to perform the following tests (ensure that you have 'admin
 
 - Enter a query name
 
-- [ ] Uncheck `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` and click 'Submit'.
-Assert that the error message reads :
+- Uncheck the following:
+- [ ] `Pin Study Query`
+- [ ] `Pin Dashboard Summary`
+- [ ] `Pin to Login Page`
+Click 'Submit' and assert that the error message reads :
 
 >`Must pin as study query, to dashboard, or to the login page.'
   
@@ -88,7 +93,7 @@ Assert that the error message reads :
 
 - Click the pinned query. Assert that the confirmation message `Loaded Query` is displayed and query can immediately be executed.
 
-- Try pinning a query with `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` options. <br>
+- Try pinning a query with `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` options.
 Assert that `Study Queries` in the dataquery module **and** `Study Queries` in LORIS welcome page **and** `Data in LORIS` on the LORIS Login Page are displayed.
 
 - Assert that the query is now pinned at the top of the page, in `Study Queries` panel.
@@ -99,13 +104,11 @@ Assert that `Study Queries` in the dataquery module **and** `Study Queries` in L
 
 - Assert that: clicking on any `study query` sends you back to the dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
 
-## Fields selection page
+## Fields selection
 
-### No visits
+- Click `Next Steps` at the bottom right hand side of the page, and, in the next page, under `Available Fields`, select`Candidate Identifiers`. Assert that default visits fields for this category are loaded.
 
-- Select the `Candidate Identifiers` field category in the top dropdown bar and assert that default visits fields for this category are loaded.
-
-- Assert that clicking on a candidate-level field such as `CandID` or `PSCID` only highlights the line **and does not** add visit information on the same line.
+- Assert that clicking on a candidate-level field such as `CandID` or `PSCID` only highlights the line and does **not** add visit information on the same line.
 
 - Assert that clicking `Add all` button adds all displayed fields in the right column.
 
@@ -129,7 +132,7 @@ Assert that `Study Queries` in the dataquery module **and** `Study Queries` in L
 
 - Assert that clicking some selected fields in the main table (greyed-out lines in the table) also remove them from the selected column (toggle interaction).
 
-## Visits
+## Other Parameters
 
 Select the `Other parameters` field category in the top dropdown bar.
 
@@ -139,7 +142,7 @@ Select the `Other parameters` field category in the top dropdown bar.
 
 - Assert that removing visits from `Default Visits` allows to reselect them, either by clicking the right arrow, or by entering corresponding text in the text area.
 
-## sync / not sync
+## Sync not sync
 
 - [ ] uncheck `Sync with selected fields` and add all visits from `Default Visits` box. Then click some fields in the list so that theyj are greyed out. Assert that selected fields have a visit selection box each.
 
@@ -159,7 +162,7 @@ Remove some visits from `Default Visits` box and click on `Other Fields`.
 
 ## Filters
 
-- Click on `Add Filters` in `Next Steps` and make sure no filter is already selected. The sentence `Currently querying for ALL candidates` should be displayed under the light-blue notification.
+- Click on `Add Filters` in `Next Steps` and make sure no filter is already selected. Assert that the sentence `Currently querying for ALL candidates` should be displayed under the light-blue notification.
 
 - Assert the light-blue notification saying `Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query' is there`.
 
@@ -171,7 +174,7 @@ Remove some visits from `Default Visits` box and click on `Other Fields`.
 
    1. Assert that: the condition now appears in the filter list.
 
-   2. Select your filed, filter, and enter your condition, and click `Submit`. assert that: `Add Condition` and `Import from CSV` buttons are now replaced by `Add "and" condition` and `Add "or" condition`.
+   2. Select your filter, and enter your condition, and click `Submit`. assert that: `Add Condition` and `Import from CSV` buttons are now replaced by `Add "and" condition` and `Add "or" condition`.
 
 - Assert that: the top-right corner is updated.
 
@@ -193,7 +196,7 @@ Remove some visits from `Default Visits` box and click on `Other Fields`.
 - Assert that: changing the `header display format` dropdown immediately changes the table header.
 - Assert that: changing the `Display visits as` dropdown immediately changes the table organization.
 - Assert that: `Display visits as = inline values (no download)` has a `Display empty visits?` checkbox.
-- Make sure the checkbox update the table.
+- Make sure the checkbox updates the table.
 - Assert that: the `Download table as CSV` button triggers the file download with the right information in it.
 - Assert that: table pagination buttons work.
 - Assert that: table maximum number of rows per page dropdown modifies the number of displayed rows.
