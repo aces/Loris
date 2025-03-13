@@ -49,14 +49,16 @@ class SurveyAccountsProvisioner
                 s.Visit_label AS Visit,
                 p.Test_name as SurveyName,
                 p.OneTimePassword as URL,
-                p.Status,
+		p.Status,
+                p.CommentID,
                 s.CenterID,
                 s.ProjectID
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.ID=s.CandidateID)
              WHERE c.Active = 'Y'
-                AND s.Active = 'Y'
+		AND s.Active = 'Y'
+                AND p.survey_archived='0'
              ORDER BY PSCID",
             []
         );
