@@ -25,7 +25,6 @@ global $lorisInstance;
 
 $db = \NDB_Factory::singleton()->database();
 
-//Get all file IDs that must be updated
 $physioFileIDs = $db->pselect(
     "SELECT DISTINCT paf.PhysiologicalFileID
     FROM physiological_event_file AS paf
