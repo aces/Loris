@@ -16,7 +16,7 @@ Sign into your loris instance with an **admin** account.
 - Enter all required information.
 - Select *ONE* site for example, "Rome".
 - Select *ONE* project, for example Pumpernickel.
-- Tick box:Roles/Access Profile: View/Create Candidates and Timepoints - Own Sites.
+- [x] View/Create Candidates and Timepoints - Own Sites.
 - Open a separate **incognito** or **private** browser window.
 - Sign into your loris instance. Enter the credentials of the user that you just created.
 
@@ -46,6 +46,8 @@ Assert that the following message is shown:**
 
 ## Open Profile Button
 
+- [x] View/Create Candidates and Timepoints - Own Sites.
+
 - Click the 'Open Profile' button.
 - Enter the CandID number and PSCID of the same candidate.
 This will replicate the same behaviour as clicking on the candidate's PSCID, showing their list of timepoints.
@@ -62,34 +64,31 @@ Assert that other projects are **not** shown
 
 ## Test All Sites Permission
 
-- Tick : Permissions/Access Profile: View/Create Candidates and Timepoints - All Sites
+- [x] View/Create Candidates and Timepoints - All Sites
 
-- Select a candidate from a different site and open up a timepoint.
-
-Assert that, for this candidate, you can see timepoints from different sites.
+- Select a candidate from a different site and open up a timepoint. Assert that, for this candidate, you can see timepoints from different sites.
 
 ## Test Buttons
 
-- For a Candidate of **same site** (Rome, in our example), there should be 3 Buttons, as follows:<br>
+- For a Candidate of **same site** (Rome, in our example), there should be 3 Buttons, as follows:
 
 ### Create Time Point
 
-- Click this.
-**Assert that it takes you to 'Create Time Point'.**
+- Click this and assert that it takes you to 'Create Time Point'.**
 
 ### Candidate Info
 
-- Click this.
-**Assert that you are taken to candidate parameters.**
-- If you get code 403, the
-'Candidate Parameters: View Candidate Information' permission is needed.
+- With the following permissions unchecked :
+- [ ] Candidate Parameters: View Candidate Information
+- [ ] Candidate Parameters: Edit Candidate Information
+Assert that you do not see the `Candidate Info` button. Assert that the button appears when one or both are checked.
 
 ### View Imaging Datasets
 
-Assert that, if you click this, you are taken to imaging browser
+Assert that, if you click this button, you are taken to imaging browser
 
-- If you don't see this button, got to User accounts from the admin page, and tick:
-'Imaging Browser: View Imaging Scans - Own Sites'
+- If you don't see this button, set the following permission :
+- [x] Imaging Browser: View Imaging Scans - Own Sites
 - Refresh and try again.
 
 ## End
