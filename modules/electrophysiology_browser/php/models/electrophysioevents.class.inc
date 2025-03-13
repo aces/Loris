@@ -2,6 +2,7 @@
 
 namespace LORIS\electrophysiology_browser\Models;
 use SodiumException;
+require_once __DIR__ . "/datasettags.class.inc";
 
 /**
  * This object contains the methods to get
