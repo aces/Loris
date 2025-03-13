@@ -34,6 +34,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     static $PSCID      = 'input[name="PSCID"]';
     static $Question   = 'input[name="Question"]';
     static $Project    = 'select[name="Project"]';
+    static $CenterID   = 'select[name="centerid"]';
     //filter location on resolved_conflicts page
     static $Timestamp = 'input[name="ResolutionTimestamp"]';
 
@@ -170,7 +171,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url."/conflict_resolver/");
         $this->safeClick(WebDriverBy::cssSelector("#tab-resolved"));
         $this->_filterTest(
-            self::$ForSite,
+            self::$CenterID,
             self::$display,
             self::$clearFilter,
             "Montreal",
