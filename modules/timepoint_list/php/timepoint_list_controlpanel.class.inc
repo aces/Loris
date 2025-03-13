@@ -64,7 +64,8 @@ Class TimePoint_List_ControlPanel extends \Candidate
 
         $this->tpl_data['candID'] = $this->getCandID();
 
-        $this->tpl_data['isDataEntryPerson'] = $user->hasCenterPermission("data_entry", $cand_CenterID);
+        $this->tpl_data['isDataEntryPerson'] = $user->hasCenterPermission(
+            "data_entry", $cand_CenterID);
     
         $this->tpl_data['isImagingPerson'] = $user->hasAnyPermission(
             [
