@@ -16,11 +16,6 @@ require_once __DIR__
     . "/../modules/electrophysiology_browser/php/models/"
     . "electrophysioevents.class.inc";
 
-/**
- * Update any derivative files that are not up to date
- * with the data in the database
- */
-
 global $lorisInstance;
 
 $db = \NDB_Factory::singleton()->database();
