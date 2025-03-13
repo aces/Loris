@@ -51,6 +51,7 @@ const lorisModules: Record<string, string[]> = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
+    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
