@@ -9,7 +9,7 @@
     {if $isImagingPerson}
         <a class="btn btn-default" role="button" href="{$baseurl}/imaging_browser/?DCCID={$candID}">View Imaging datasets</a>
     {/if}
-    {if $isCandidatePerson}
+    {if $hasCandidateParameterAccess}
     <a class="btn btn-default" role="button" href="{$baseurl}/candidate_parameters/?candID={$candID}&identifier={$candID}">Candidate Info</a>
     {/if}
     <!-- </div> -->
