@@ -194,12 +194,10 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
         $listOfInstruments = $battery->getBatteryVerbose();
-
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
             $username = $user->getUsername();
-
             $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
                 $feedback_select_inactive = true;
@@ -243,6 +241,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
                     $this->timePoint->getVisitLabel(),
+                    $this->timePoint->getCohortID(),
                     $instrument['Test_name']
                 );
 
