@@ -22,11 +22,11 @@ class MRIFeedbackDictionaryItem extends ImagingDictionaryItem
      *
      * @param string      $name              The field name of the dictionary item
      * @param string      $desc              The dictionary item's description
-     * @param Scope       $scope             Scope to which this DictionaryItem applies
+     * @param Scope       $scope             Scope to which this item applies
      * @param Type        $t                 The data type of this dictionary item
      * @param Cardinality $c                 The data cardinality
      * @param string      $modality          The modality that this item is for
-     * @param string      $parameterTypeName Name of the parameter in table 
+     * @param string      $parameterTypeName Name of the parameter in table
      *                                       parameter_type associated with this MRI
      *                                       feedback object.
      */
