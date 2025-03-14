@@ -979,13 +979,6 @@ class AddElement extends Component {
           },
         }));
         hasError = true;
-      } else if (optionsCount < 2) {
-        this.setState((state) => ({
-          error: {...state.error,
-            dropdownOptions: 'A minimum of two options is required.',
-          },
-        }));
-        hasError = true;
       }
     }
     // Stop execution only if dropdown validation fails
