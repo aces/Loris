@@ -25,7 +25,7 @@
 
 13. Follow the [module README extra installation steps](../README.md#installation-requirements-to-use-the-visualization-features)
     and make sure the `Signal Viewer panel` displays correctly on the screen. (Documentation: see [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#user-manual))
-14. Set `useEEGBrowserVisualizationComponents` and run `make dev`. Ensure it runs without failing, and that except the Signal Viewer panel, all the other components in the page display well.
+14. Set `useEEGBrowserVisualizationComponents` to "No" in the Configuration module and run `make dev`. Ensure it runs without failing, and that except the Signal Viewer panel, all the other components in the page display well.
 15. Temporarily deactivate an entry in `physiological_parameter_file`
     for a ParameterTypeID IN (SELECT ParameterTypeID from parameter_type WHERE Name = 'electrophysiology_chunked_dataset_path')
     and a chosen PhysiologicalFileID to simulate an environment for which the visualization components are not loaded.
