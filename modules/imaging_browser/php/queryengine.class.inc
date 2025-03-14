@@ -260,7 +260,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             // All MRI comment types
             $allCommentTypes
                 = \FeedbackMRI::getAllCommentTypesForObjectType('volume');
-            foreach ($allCommentTypes as $commentTypeID => $commentProperties) {
+            foreach (array_values($allCommentTypes) as $commentProperties) {
                 if ($commentProperties['name'] != 'Overall') {
                     $items[] = new MRIFeedbackDictionaryItem(
                         "{$ScanType}_feedback_{$commentProperties['field']}",
@@ -359,7 +359,6 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         }
 
         $modality = $item->getModality();
-        $exploded = explode("_", $item->getName());
 
         // $field = whatever's after the first underscore
         $field = substr($item->getName(), strpos($item->getName(), '_') + 1);

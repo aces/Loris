@@ -360,7 +360,7 @@ class FeedbackMRI
         // build the output array and keep overall section at the end of the array
         $commentNames = [];
         $overallName  = [];
-        $overallType  = [];
+        $overallType  = '';
 
         foreach ($result as $row) {
             $CommentName = $row['CommentName'];
