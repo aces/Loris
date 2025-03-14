@@ -256,6 +256,35 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new Cardinality(Cardinality::MANY),
                 $ScanType,
             );
+
+            // All MRI comment types
+            $allCommentTypes = \FeedbackMRI::getAllCommentTypesForObjectType('volume');
+            foreach($allCommentTypes as $commentTypeID => $commentProperties) {
+                if ($commentProperties['name'] != 'Overall') {
+                    $items[] = new MRIFeedbackDictionaryItem(
+                        implode('_', [$ScanType, 'feedback', $commentProperties['field']]),
+                        "Value for {$commentProperties['name']} in the MRI feedback form for $ScanType acquisitions",
+                        $scope,
+                        new \LORIS\Data\Types\Enumeration(...$commentProperties['values']),
+                        new Cardinality(Cardinality::MANY),
+                        $ScanType,
+                        $commentProperties['field']
+                    );
+                }
+
+                $itemDescription = "Comment in section '{$commentProperties['name']}'"
+                                 . " of the MRI feedback form for $ScanType"
+                                 . " acquisitions";
+                $items[] = new MRICommentDictionaryItem(
+                    implode('_', [$ScanType, 'comment', $commentProperties['field']]),
+                    $itemDescription,
+                    $scope,
+                    new \LORIS\Data\Types\StringType(),
+                    new Cardinality(Cardinality::MANY),
+                    $ScanType,
+                    $commentProperties['name']
+                );
+            }
         }
         $images = $images->withItems($items);
 
@@ -327,7 +356,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $modality = $item->getModality();
         $exploded = explode("_", $item->getName());
-        $field    = $exploded[count($exploded)-1];
+
+        // $field = whatever's after the first underscore
+        $field    = substr($item->getName(), strpos($item->getName(), '_') + 1);
+
         $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
         $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
 
@@ -336,7 +368,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 return "(SELECT CONCAT(
                             \"$this->baseURL\",
                             \"/api/v0.0.3/candidates/\",
-                            c.ID,
+                            c.CandID,
                             \"/\",
                             s.Visit_label,
                             \"/images/\",
@@ -393,6 +425,41 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
         }
 
+        if ($item instanceof MRIFeedbackDictionaryItem) {
+            return sprintf(
+                "(SELECT pf.Value FROM files AS files2
+                  JOIN parameter_file pf
+                      ON (pf.FileID=files2.FileID)
+                  JOIN parameter_type pt
+                      ON (pt.ParameterTypeID=pf.ParameterTypeID AND pt.Name='%s')
+                  JOIN mri_scan_type mst
+                      ON (files2.MriScanTypeID=mst.MriScanTypeID)
+                  WHERE files2.FileID=files.FileID
+                      AND mst.MriScanTypeName='%s'
+                )",
+                $modality
+            );
+        }
+
+        if ($item instanceof MRICommentDictionaryItem) {
+            return sprintf(
+                "(SELECT fmc.Comment FROM files AS files2
+                  JOIN feedback_mri_comments fmc
+                      ON (fmc.FileID=files2.FileID)
+                  JOIN feedback_mri_comment_types fmct
+                      ON (fmc.CommentTypeID=fmct.CommentTypeID)
+                  JOIN mri_scan_type mst
+                      ON (files2.MriScanTypeID=mst.MriScanTypeID)
+                  WHERE files2.FileID=files.FileID
+                      AND fmct.CommentName='%s'
+                      AND mst.MriScanTypeName='%s'
+                      AND fmc.Comment IS NOT NULL
+                )",
+                $item->getCommentName(),
+                $modality
+            );
+        }
+
         throw new \DomainException("Invalid field " . $item->getName());
     }
 
@@ -422,6 +489,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item instanceof LocationDictionaryItem
             || $item instanceof QCDictionaryItem
             || $item instanceof ParameterDictionaryItem
+            || $item instanceof MRIFeedbackDictionaryItem
+            || $item instanceof MRICommentDictionaryItem
         ) {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
