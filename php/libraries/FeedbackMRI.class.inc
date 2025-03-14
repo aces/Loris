@@ -179,7 +179,7 @@ class FeedbackMRI
      * @return array A two-dimensional array with key (int) PredefinedCommentID
      *               and one-element array ('Comment'=> string CommentName)
      */
-    function getAllPredefinedComments(int $commentTypeID): array
+    public static function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
@@ -327,6 +327,26 @@ class FeedbackMRI
      */
     function getAllCommentTypes(): array
     {
+        return self::getAllCommentTypesForObjectType($this->objectType);
+    }
+
+    /**
+     * Gets the list of all comment types for a given object type.
+     *
+     * @param string $objectType Type of object (i.e value of column ComentType
+     *                           in table feedback_mri_comment_types).
+     *
+     * @return array A two-dimensional array of ints (CommentTypeID) and
+     *               three-element arrays ('name'=>string CommentName,
+     *               'field'=>string name of column in mri table for status,
+     *               'values'=>array of possible enum values for field)
+     */
+    public static function getAllCommentTypesForObjectType(string $objectType): array
+    {
+        if ($objectType != 'volume' && $objectType != 'visit') {
+            throw new \LorisException("Invalid object type $objectType");
+        }
+
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
@@ -335,46 +355,46 @@ class FeedbackMRI
                     FROM feedback_mri_comment_types
                   WHERE CommentType=:CT";
 
-        $result = $DB->pselect($query, ['CT' => $this->objectType]);
+        $result = $DB->pselect($query, ['CT' => $objectType]);
 
         // build the output array and keep overall section at the end of the array
         $commentNames = [];
         $overallName  = [];
-        $overallType  = [];
-        if (is_array($result)) {
-            foreach ($result as $row) {
-                $CommentName = $row['CommentName'];
-                $CTID        = $row['CommentTypeID'];
-                $statusField = [];
-                // deal with CommentStatusField
-                if (!empty($row['CommentStatusField'])) {
-                    $statusField = unserialize($row['CommentStatusField']);
-                }
+        $overallType  = '';
 
-                // if CommentName is overall, don't add them yet to
-                // commentNames array we want them only at the end
-                if ($CommentName == "Overall") {
-                    $overallType = $CTID;
-                    $overallName = [
-                        'name'   => stripslashes($CommentName),
-                        'field'  => $statusField['field'] ?? 'overall',
-                        'values' => $statusField['values'] ?? '',
-                    ];
-                } else {
-                    // add a row to the output array
-                    $commentNames[$CTID] = [
-                        'name'   => stripslashes($CommentName) ?? '',
-                        'field'  => $statusField['field'] ?? '',
-                        'values' => $statusField['values'] ?? '',
-                    ];
-                }
+        foreach ($result as $row) {
+            $CommentName = $row['CommentName'];
+            $CTID        = $row['CommentTypeID'];
+            $statusField = [];
+            // deal with CommentStatusField
+            if (!empty($row['CommentStatusField'])) {
+                $statusField = unserialize($row['CommentStatusField']);
+            }
 
-                unset($statusField);
+            // if CommentName is overall, don't add them yet to
+            // commentNames array we want them only at the end
+            if ($CommentName == "Overall") {
+                $overallType = $CTID;
+                $overallName = [
+                    'name'   => stripslashes($CommentName),
+                    'field'  => $statusField['field'] ?? 'overall',
+                    'values' => $statusField['values'] ?? '',
+                ];
+            } else {
+                // add a row to the output array
+                $commentNames[$CTID] = [
+                    'name'   => stripslashes($CommentName) ?? '',
+                    'field'  => $statusField['field'] ?? '',
+                    'values' => $statusField['values'] ?? '',
+                ];
             }
-            // add overall row to the end of the output array
-            if ($overallType !== '' && !empty($overallName)) {
-                $commentNames[$overallType] = $overallName;
-            }
+
+            unset($statusField);
+        }
+
+        // add overall row to the end of the output array
+        if ($overallType !== '' && !empty($overallName)) {
+            $commentNames[$overallType] = $overallName;
         }
 
         // return the output array
