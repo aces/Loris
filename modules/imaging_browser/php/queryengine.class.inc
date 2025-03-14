@@ -258,25 +258,29 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
 
             // All MRI comment types
-            $allCommentTypes = \FeedbackMRI::getAllCommentTypesForObjectType('volume');
-            foreach($allCommentTypes as $commentTypeID => $commentProperties) {
+            $allCommentTypes
+                = \FeedbackMRI::getAllCommentTypesForObjectType('volume');
+            foreach ($allCommentTypes as $commentTypeID => $commentProperties) {
                 if ($commentProperties['name'] != 'Overall') {
                     $items[] = new MRIFeedbackDictionaryItem(
-                        implode('_', [$ScanType, 'feedback', $commentProperties['field']]),
-                        "Value for {$commentProperties['name']} in the MRI feedback form for $ScanType acquisitions",
+                        "{$ScanType}_feedback_{$commentProperties['field']}",
+                        "Value for {$commentProperties['name']} in the MRI"
+                        . " feedback form for $ScanType acquisitions",
                         $scope,
-                        new \LORIS\Data\Types\Enumeration(...$commentProperties['values']),
+                        new \LORIS\Data\Types\Enumeration(
+                            ...$commentProperties['values']
+                        ),
                         new Cardinality(Cardinality::MANY),
                         $ScanType,
                         $commentProperties['field']
                     );
                 }
 
-                $itemDescription = "Comment in section '{$commentProperties['name']}'"
-                                 . " of the MRI feedback form for $ScanType"
-                                 . " acquisitions";
-                $items[] = new MRICommentDictionaryItem(
-                    implode('_', [$ScanType, 'comment', $commentProperties['field']]),
+                $itemDescription = "Comment in section"
+                                 . "'{$commentProperties['name']}' of the MRI"
+                                 . " feedback form for $ScanType acquisitions";
+                $items[]         = new MRICommentDictionaryItem(
+                    "{$ScanType}_comment_{$commentProperties['field']}",
                     $itemDescription,
                     $scope,
                     new \LORIS\Data\Types\StringType(),
@@ -358,7 +362,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $exploded = explode("_", $item->getName());
 
         // $field = whatever's after the first underscore
-        $field    = substr($item->getName(), strpos($item->getName(), '_') + 1);
+        $field = substr($item->getName(), strpos($item->getName(), '_') + 1);
 
         $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
         $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");

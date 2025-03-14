@@ -327,7 +327,11 @@ class FeedbackMRI
     }
 
     /**
-     * Gets the list of all comment types
+     * Gets the list of all comment types for a given object type.
+     *
+     * @param string $objectType Type of object (i.e value of column ComentType
+     *                           in table feedback_mri_comment_types).
+     *
      *
      * @return array A two-dimensional array of ints (CommentTypeID) and
      *               three-element arrays ('name'=>string CommentName,

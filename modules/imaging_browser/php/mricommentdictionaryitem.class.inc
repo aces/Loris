@@ -15,6 +15,7 @@ use \LORIS\Data\Cardinality;
  */
 class MRICommentDictionaryItem extends ImagingDictionaryItem
 {
+    // Name of the comment associated to this record
     private $commentName;
 
     /**
@@ -26,8 +27,8 @@ class MRICommentDictionaryItem extends ImagingDictionaryItem
      * @param Type        $t           The data type of this dictionary item
      * @param Cardinality $c           The data cardinality
      * @param string      $modality    The imaging modality that this item is for
-     * @param string      $commentName Name of the comment (as per table
-     *                                 feedback_mri_comment_types).
+     * @param string      $commentName Name of the comment (i.e. value of column
+     *                                 CommentName in table feedback_mri_comment_types).
      */
     public function __construct(
         string $name,
@@ -42,6 +43,11 @@ class MRICommentDictionaryItem extends ImagingDictionaryItem
         $this->commentName = $commentName;
     }
 
+    /**
+     * Accessor for field $commentName.
+     *
+     * @return string Value of field $commentName.
+     */
     public function getCommentName() : string
     {
         return $this->commentName;
