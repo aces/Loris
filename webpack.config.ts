@@ -18,7 +18,7 @@ const lorisModules: Record<string, string[]> = {
   login: ['loginIndex'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
-  candidate_parameters: ['CandidateParameters', 'ConsentWidget'],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
   configuration: [
     'CohortRelations',
     'configuration_helper',
