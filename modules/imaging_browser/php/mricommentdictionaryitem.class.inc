@@ -28,7 +28,8 @@ class MRICommentDictionaryItem extends ImagingDictionaryItem
      * @param Cardinality $c           The data cardinality
      * @param string      $modality    The imaging modality that this item is for
      * @param string      $commentName Name of the comment (i.e. value of column
-     *                                 CommentName in table feedback_mri_comment_types).
+     *                                 CommentName in table
+     *                                 feedback_mri_comment_types).
      */
     public function __construct(
         string $name,
