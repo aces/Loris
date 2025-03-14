@@ -79,10 +79,8 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     {
         if ($row['CenterID'] !== null) {
             $cid = \CenterID::singleton(intval($row['CenterID']));
-            unset($row['CenterID']);
             return new DICOMArchiveRowWithSession($row, $cid);
         }
-        unset($row['CenterID']);
         return new DICOMArchiveRowWithoutSession($row);
     }
 }
