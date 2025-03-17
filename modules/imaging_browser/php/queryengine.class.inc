@@ -260,8 +260,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             // All MRI comment types
             $allCommentTypes
                 = \FeedbackMRI::getAllCommentTypesForObjectType('volume');
-            foreach (array_values($allCommentTypes) as $commentProperties) {
+            foreach ($allCommentTypes as $commentTypeID => $commentProperties) {
                 if ($commentProperties['name'] != 'Overall') {
+                    //--------------------------------------------------//
+                    // Value of feedback for that specific comment type //
+                    //--------------------------------------------------//
                     $items[] = new MRIFeedbackDictionaryItem(
                         "{$ScanType}_feedback_{$commentProperties['field']}",
                         "Value for {$commentProperties['name']} in the MRI"
@@ -274,8 +277,30 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         $ScanType,
                         $commentProperties['field']
                     );
+           
+                    //--------------------------------------------------------//
+                    // Values of all the predefined comments for this comment //
+                    // type.                                                  //
+                    //--------------------------------------------------------//
+                    $predefinedComments
+                        = \FeedbackMRI::getAllPredefinedComments($commentTypeID);
+                    foreach ($predefinedComments as $ID => $predefinedComment) {
+                        $items[] = new MRIPredefinedCommentDictionaryItem(
+                            "{$ScanType}_{$predefinedComment['Comment']}",
+                            "'{$predefinedComment['FullComment']}' in the MRI feedback form"
+                            . " is checked for $ScanType acquisitions",
+                            $scope,
+                            new \LORIS\Data\Types\Enumeration('Yes', 'No'),
+                            new Cardinality(Cardinality::MANY),
+                            $ScanType,
+                            $ID
+                        );
+                    }
                 }
 
+                //------------------------------------------------//
+                // Free form text comment for  this comment type  //
+                //------------------------------------------------//
                 $itemDescription = "Comment in section"
                                  . "'{$commentProperties['name']}' of the MRI"
                                  . " feedback form for $ScanType acquisitions";
@@ -290,6 +315,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 );
             }
         }
+
         $images = $images->withItems($items);
 
         return [$images];
@@ -463,6 +489,24 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
         }
 
+        if ($item instanceof MRIPredefinedCommentDictionaryItem) {
+            return sprintf(
+                "(SELECT 'Yes' FROM files AS files2
+                  JOIN feedback_mri_comments fmc
+                      ON (fmc.FileID=files2.FileID)
+                  JOIN feedback_mri_predefined_comments fmpc
+                      ON (fmc.PredefinedCommentID=fmpc.PredefinedCommentID)
+                  JOIN mri_scan_type mst
+                      ON (files2.MriScanTypeID=mst.MriScanTypeID)
+                  WHERE files2.FileID=files.FileID
+                      AND mst.MriScanTypeName='%s'
+                      AND fmpc.PredefinedCommentID=%d
+                )",
+                $modality,
+                $item->getPredefinedCommentID()
+            );
+        }
+
         throw new \DomainException("Invalid field " . $item->getName());
     }
 
@@ -494,6 +538,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             || $item instanceof ParameterDictionaryItem
             || $item instanceof MRIFeedbackDictionaryItem
             || $item instanceof MRICommentDictionaryItem
+            || $item instanceof MRIPredefinedCommentDictionaryItem
         ) {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
