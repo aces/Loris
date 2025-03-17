@@ -225,7 +225,7 @@ class NDB_BVL_Battery
 
         $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
             $sessionData['Visit_label'],
-            $sessionData['CohortID'],
+            strval($sessionData['CohortID']),
             $testName
         );
         if ($obj->usesJSONdata() !== true) {
@@ -390,7 +390,7 @@ class NDB_BVL_Battery
      */
     static function isDoubleDataEntryEnabledForInstrument(
         String $Visit_label,
-        int $CohortID,
+        String $CohortID,
         String $Test_name
     ) : bool {
         $DB  = \NDB_Factory::singleton()->database();
