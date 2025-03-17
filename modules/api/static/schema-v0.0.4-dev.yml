@@ -1956,7 +1956,7 @@ components:
           type: string
         Site:
           type: string
-        Battery:
+        Cohort:
           type: string
         Project:
           type: string
