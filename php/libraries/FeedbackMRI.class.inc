@@ -193,13 +193,12 @@ class FeedbackMRI
 
         // build the output array
         $comments = [];
-        if (is_array($result)) {
-            foreach ($result as $row) {
-                $PredefinedID       = $row['PredefinedCommentID'];
-                $preDefinedComments = [];
-                $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-                $comments[$PredefinedID]       = $preDefinedComments;
-            }
+        foreach ($result as $row) {
+            $PredefinedID       = $row['PredefinedCommentID'];
+            $preDefinedComments = [];
+            $preDefinedComments['Comment']     = stripslashes($row['Comment']);
+            $preDefinedComments['FullComment'] = $row['Comment'];
+            $comments[$PredefinedID]           = $preDefinedComments;
         }
 
         // return the output array
