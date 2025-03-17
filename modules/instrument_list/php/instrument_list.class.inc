@@ -241,7 +241,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
                     $this->timePoint->getVisitLabel(),
-                    $this->timePoint->getCohortID(),
+                    strval($this->timePoint->getCohortID()),
                     $instrument['Test_name']
                 );
 
