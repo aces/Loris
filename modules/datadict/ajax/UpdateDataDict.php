@@ -29,6 +29,7 @@ $config =& NDB_Config::singleton();
 $client = new NDB_Client();
 $client->initialize();
 
+$DB = \NDB_Factory::singleton()->database();
 
 list($name,$extra) = explode("___", $_REQUEST['fieldname']);
 
