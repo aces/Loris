@@ -29,7 +29,8 @@ class MRIPredefinedCommentDictionaryItem extends ImagingDictionaryItem
      *                                         DictionaryItem applies
      * @param Type        $t                   The data type of this dictionary item
      * @param Cardinality $c                   The data cardinality
-     * @param string      $modality            The imaging modality that this item is for
+     * @param string      $modality            The imaging modality that this item
+     *                                         is for
      * @param string      $predefinedCommentID Value of column PredefinedCommentID
      *                                         in table
      *                                         feedback_mri_predefined_comments

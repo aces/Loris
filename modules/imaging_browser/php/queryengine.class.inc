@@ -277,7 +277,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         $ScanType,
                         $commentProperties['field']
                     );
-           
+
                     //--------------------------------------------------------//
                     // Values of all the predefined comments for this comment //
                     // type.                                                  //
@@ -287,8 +287,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     foreach ($predefinedComments as $ID => $predefinedComment) {
                         $items[] = new MRIPredefinedCommentDictionaryItem(
                             "{$ScanType}_{$predefinedComment['Comment']}",
-                            "'{$predefinedComment['FullComment']}' in the MRI feedback form"
-                            . " is checked for $ScanType acquisitions",
+                            "'{$predefinedComment['FullComment']}' in the MRI "
+                            . "feedback form is checked for $ScanType acquisitions",
                             $scope,
                             new \LORIS\Data\Types\Enumeration('Yes', 'No'),
                             new Cardinality(Cardinality::MANY),
