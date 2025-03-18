@@ -89,7 +89,7 @@ function uploadPublication() : void
 
         $leadInvID = $db->getLastInsertId();
     } else {
-        showPublicationError('Lead investigator with this email already exists', 400);
+        showPublicationError('Lead Investigator email already exists', 400);
     }
     if (!isset($desc, $leadInvest, $leadInvestEmail)) {
         showPublicationError('A mandatory field is missing!', 400);
