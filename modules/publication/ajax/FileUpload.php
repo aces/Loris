@@ -68,15 +68,14 @@ function uploadPublication() : void
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
-    // check if lead investigator already exists in collaborator table
+    // check if lead investigator email already exists in collaborator table
     // use ID if exists, else insert
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Name = :n AND Email = :e',
+        'WHERE Email = :e',
         [
-            'e' => $leadInvestEmail,
-            'n' => $leadInvest,
+            'e' => $leadInvestEmail
         ]
     );
     if (empty($leadInvID)) {
@@ -89,6 +88,8 @@ function uploadPublication() : void
         );
 
         $leadInvID = $db->getLastInsertId();
+    } else {
+        showPublicationError('Lead investigator with this email already exists', 400);
     }
     if (!isset($desc, $leadInvest, $leadInvestEmail)) {
         showPublicationError('A mandatory field is missing!', 400);
