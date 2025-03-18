@@ -186,6 +186,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             'assigned'     => 'Assigned',
             'resolved'     => 'Resolved',
             'closed'       => 'Closed',
+            'rejected'     => 'Rejected',
         ];
 
         $unorgCategories = $db -> pselect(
