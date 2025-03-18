@@ -336,7 +336,7 @@ class FeedbackMRI
         // build the output array and keep overall section at the end of the array
         $commentNames = [];
         $overallName  = [];
-        $overallType  = [];
+        $overallType  = null;
         foreach ($result as $row) {
             $CommentName = $row['CommentName'];
             $CTID        = $row['CommentTypeID'];
@@ -368,7 +368,7 @@ class FeedbackMRI
         }
 
         // add overall row to the end of the output array
-        if ($overallType !== '' && !empty($overallName)) {
+        if (!is_null($overallType) && !empty($overallName)) {
             $commentNames[$overallType] = $overallName;
         }
 
