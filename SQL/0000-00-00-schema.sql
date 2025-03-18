@@ -1115,7 +1115,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL,
-  `ProcessID` int(11) NOT NULL,
+  `ProcessID` int(11) DEFAULT NULL,
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
