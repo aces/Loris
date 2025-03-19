@@ -46,6 +46,14 @@ export default function UploadForm(props) {
       newFormData.pscid = ids[0];
       newFormData.candID = ids[1];
       newFormData.visit = ids[2];
+
+      // Clear possible error messages from previous file selection
+      setErrorMessage({
+        eegFile: null,
+        candID: null,
+        pscid: null,
+        visit: null,
+      });
     }
 
     setFormData(newFormData);
@@ -149,6 +157,10 @@ export default function UploadForm(props) {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
+        }).then((result) => {
+          if (result.value) {
+            this.props.refreshPage();
+          }
         });
 
         resetForm();

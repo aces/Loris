@@ -8,7 +8,7 @@ This test plan should be executed by someone with decent knowledge of the MRI up
 2. Log in with a user that has the "View and manage server processes" permission. 
    Check that there is a Server Processes Manager sub menu in the Admin menu.
    [Automation Test]
-3. Check three filters, input correct data and click the show data button.Then check the table.
+3. Check three filters, input correct data and verify that the contents of the table are filtered as expected.
    [Automation Test]
 4. Check the contents of the server processes page and remember the number of entries.
    Ensure that the ImagingUploader Auto-Launch is set to Yes (Config module, Study section).

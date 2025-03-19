@@ -12,6 +12,7 @@ export type ModalProps = PropsWithChildren<{
   onSubmit?: () => Promise<any>;
   onSuccess?: (data: any) => void;
   title?: ReactNode;
+  width?: string;
 }>;
 
 /**
@@ -32,6 +33,7 @@ const Modal = ({
   onSuccess,
   title,
   children,
+  width,
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
@@ -142,7 +144,7 @@ const Modal = ({
     margin: 'auto',
     padding: 0,
     border: '1px solid #888',
-    width: '700px',
+    width: width ?? '700px',
     boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
     transition: '0.4s ease',
   };

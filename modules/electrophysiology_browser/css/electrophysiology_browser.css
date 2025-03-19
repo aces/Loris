@@ -266,13 +266,13 @@ svg:not(:root) {
   margin-bottom: 15px;
 }
 
-#tag-modal-container > div > button {
+#tag-modal-container > button {
   position: unset;
   width: unset;
 }
 
 
-#tag-modal-container > div > div > div {
+#tag-modal-container > div > div {
   width: 75vw !important;
   height: 75vh;
 }
@@ -417,7 +417,7 @@ svg:not(:root) {
     margin-left: 150px;
   }
 
-  #tag-modal-container > div > button {
+  #tag-modal-container > button {
     position: fixed;
     left: 15px;
     bottom: 20px;

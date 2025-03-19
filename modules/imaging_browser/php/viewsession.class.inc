@@ -853,7 +853,7 @@ class ViewSession extends \NDB_Form
             "SELECT FileID FROM files ".
             "WHERE MriScanTypeID =:initialFileAcquisitionID ".
             "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
-            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            "ON s1.CandidateID = s2.CandidateID WHERE s1.ID =:initialFileID)",
             [
                 'initialFileAcquisitionID' => $initialFileAcquisitionID,
                 'initialFileID'            => $initialFileID,

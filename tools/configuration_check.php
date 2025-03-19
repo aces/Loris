@@ -14,7 +14,7 @@ use \LORIS\Http\Client;
 use \LORIS\Http\Request;
 
 // XXX These must be updated manually in future releases.
-define('MINIMUM_PHP_VERSION', '7.3');
+define('MINIMUM_PHP_VERSION', '8.3');
 define('MINIMUM_APACHE_VERSION', '2.4');
 define('MINIMUM_MYSQL_VERSION', '5.7');
 define('MINIMUM_MARIADB_VERSION', '10.3');
@@ -76,11 +76,16 @@ if (strpos(strtolower($architecture), 'mysql') !== false) {
 }
 
 $helper->printLine('Checking NodeJS version');
-$versionString = trim(shell_exec('nodejs -v'));
-// The output for `nodejs -v` has the format `v8.10.0`. We need to remove the
-// first character.
-$versionString = ltrim($versionString, $versionString[0]);
-evaluateVersionRequirement('NodeJS', $versionString, MINIMUM_NODE_VERSION);
+$nodeInstalled = shell_exec('which nodejs');
+if ($nodeInstalled === null) {
+    $helper->printError('NodeJS is not installed.');
+} else {
+    $versionString = trim(shell_exec('nodejs -v'));
+    // The output for `nodejs -v` has the format `v8.10.0`. We need to remove the
+    // first character.
+    $versionString = ltrim($versionString, $versionString[0]);
+    evaluateVersionRequirement('NodeJS', $versionString, MINIMUM_NODE_VERSION);
+}
 
 $helper->printLine('Checking composer version');
 // The output for `composer --version` has the format:

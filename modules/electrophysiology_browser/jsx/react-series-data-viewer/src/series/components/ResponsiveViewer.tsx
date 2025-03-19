@@ -53,6 +53,9 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   const layers = React.Children.toArray(children).map(provision);
 
   const domain = window.EEGLabSeriesProviderStore[chunksURL]?.getState().bounds.domain;
+  // Data not loaded yet
+  if (!domain) return null;
+
   const amplitude = [0, 1];
   const eventScale = [
     scaleLinear()

@@ -61,13 +61,13 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     public function getQuery() : string
     {
         $subquery = "SELECT
-    appointment.AppointmentID, 
+    appointment.AppointmentID,
     appointment.SessionID,
-    appointment.AppointmentTypeID, 
+    appointment.AppointmentTypeID,
     date(appointment.StartsAt) as day,
     time(appointment.StartsAt) as time,
-    candidate.PSCID, 
-    session.CandID AS DCCID,
+    candidate.PSCID,
+    candidate.CandID AS DCCID,
     session.Visit_label,
     session.CenterID,
     session.CohortID,
@@ -91,7 +91,7 @@ ON
 JOIN
     candidate
 ON
-    session.CandID = candidate.CandID
+    session.CandidateID = candidate.ID
 JOIN
     Project
 ON

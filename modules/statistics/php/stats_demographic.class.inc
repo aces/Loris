@@ -101,7 +101,13 @@ class Stats_Demographic extends \NDB_Form
         $projectID = empty($projectID) ? null : \ProjectID::singleton($projectID);
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
-            htmlspecialchars($_REQUEST['test_name']) : '';
+            htmlspecialchars(
+                $_REQUEST['test_name'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            )
+                : '';
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_NeuroDB('statistics');
@@ -272,7 +278,12 @@ class Stats_Demographic extends \NDB_Form
 
         if (!empty($demographicSite)) {
             $paramSite           = 'AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
-            $demographicSite     = htmlspecialchars($demographicSite);
+            $demographicSite     = htmlspecialchars(
+                $demographicSite,
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             $this->params['sid'] = $demographicSite;
         }
 
@@ -328,7 +339,7 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -356,10 +367,10 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                           LEFT JOIN participant_status_options pso
                                     ON (pso.ID=ps.participant_status)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -389,10 +400,10 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
                           LEFT JOIN participant_status_options pso
                                       ON (pso.ID=ps.participant_status)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
@@ -417,8 +428,8 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -450,8 +461,8 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.cohortid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -486,8 +497,8 @@ class Stats_Demographic extends \NDB_Form
               (SELECT DISTINCT c.CandID, s.cohortid as rowid,
                           c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)
+                          LEFT JOIN session s ON (s.CandidateID=c.ID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -522,7 +533,12 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
-            $demographicInstrument = htmlspecialchars($demographicInstrument);
+            $demographicInstrument = htmlspecialchars(
+                $demographicInstrument,
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             $subcategories         = [
                 'Complete',
                 'Incomplete',
@@ -535,7 +551,7 @@ class Stats_Demographic extends \NDB_Form
                         s.CohortID as CohortID,
                         s.visit_label as VLabel
                 FROM session s
-                JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN candidate c ON (s.CandidateID=c.ID)
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
@@ -556,7 +572,7 @@ class Stats_Demographic extends \NDB_Form
                        s.CohortID as CohortID,
                        s.visit_label as VLabel
                 FROM session s
-                JOIN candidate c USING(CandID)
+                JOIN candidate c ON c.ID=s.CandidateID
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
@@ -599,9 +615,9 @@ class Stats_Demographic extends \NDB_Form
                         s.CohortID as CohortID,
                         s.visit_label as VLabel,
                         c.sex as Subcat,
-                        count(s.CandID) as val
+                        count(s.CandidateID) as val
                 FROM session s
-                JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN candidate c ON (s.CandidateID=c.ID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
                 AND c.RegistrationProjectID IN (" . $projectsString . ")

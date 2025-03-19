@@ -102,7 +102,7 @@ class ImagingQueryEngineTest extends TestCase
                 // without.
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
@@ -112,7 +112,7 @@ class ImagingQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
@@ -124,7 +124,7 @@ class ImagingQueryEngineTest extends TestCase
                 // It contains multiple ScanType1 and no ScanType2
                 [
                     'ID'          => 3,
-                    'CandID'      => "123457",
+                    'CandidateID' => 2,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,

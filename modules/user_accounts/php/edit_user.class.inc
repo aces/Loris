@@ -117,7 +117,12 @@ class Edit_User extends \NDB_Form
             foreach ($fieldsThatAreStrings as $fieldName) {
                 // this check prevents PHP Notices
                 if (!empty($defaults[$fieldName])) {
-                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                    $defaults[$fieldName] = htmlspecialchars(
+                        $defaults[$fieldName],
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    );
                 }
             }
 
@@ -809,6 +814,7 @@ class Edit_User extends \NDB_Form
             'Sites',
             $siteOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
@@ -828,6 +834,7 @@ class Edit_User extends \NDB_Form
             'Projects',
             $projectOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
@@ -977,7 +984,13 @@ class Edit_User extends \NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                htmlspecialchars($row['label']) . "<br>",
+                htmlspecialchars(
+                    $row['label'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . "<br>",
                 $attribs
             );
         }
@@ -1010,7 +1023,13 @@ class Edit_User extends \NDB_Form
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
-                htmlspecialchars($row['Real_Name']) . "<br>",
+                htmlspecialchars(
+                    $row['Real_Name'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . "<br>",
                 $attribs
             );
         }

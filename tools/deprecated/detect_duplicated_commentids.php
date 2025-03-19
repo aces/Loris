@@ -67,7 +67,7 @@ if ($opts['i']!=null) {
 /**
  * To be removed
  */
-if ($opts['r']!=null) {
+if (($opts['r'])!=null) {
     $to_remove = true;
 }
 
@@ -101,22 +101,22 @@ foreach ($instruments as $instrument => $full_name) {
             $candid = $candidate['CandID'];
             $pscid  = $candidate['PSCID'];
             foreach ($cohortids as $cohortid) {
-                $session_info = $DB->pselectRow(
+                $session_info = $DB->pselect(
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     JOIN test_names tn ON tn.ID = f.TestID
                     WHERE s.candID = :cid AND tn.test_name = :fname AND
-                    s.cohortid = :subid",
+                    s.cohortid = :cohortid",
                     [
-                        'cid'   => $candid,
-                        'fname' => $instrument,
-                        'subid' => $cohortid['cohortid'],
+                        'cid'      => $candid,
+                        'fname'    => $instrument,
+                        'cohortid' => $cohortid['cohortid'],
                     ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
-                    $sessionid   = $session_info['ID'];
-                    $visit_label = $session_info['Visit_label'];
+                    $sessionid   = $session_info[0]['ID'];
+                    $visit_label = $session_info[0]['Visit_label'];
                     if ($sessionid !=null) {
                         $commentid = getCommentIDs(
                             $instrument,

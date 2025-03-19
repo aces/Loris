@@ -19,7 +19,7 @@ window.addEventListener('load', () => {
         + '/issue_tracker/Edit/'}
       issue={id}
       baseURL={loris.BaseURL}
-      userHasPermission={loris.userHasPermission('issue_tracker_developer')}
+      userHasPermission={loris.userHasPermission('issue_tracker_all_issue')}
     />
   );
 });

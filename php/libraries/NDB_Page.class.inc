@@ -158,7 +158,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function setTemplateVar($name, $value)
     {
-        $this->tpl_data[$name] = htmlspecialchars(strval($value));
+        $this->tpl_data[$name] = htmlspecialchars(
+            strval($value),
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        );
     }
 
     /**

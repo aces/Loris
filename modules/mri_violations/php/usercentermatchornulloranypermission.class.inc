@@ -46,9 +46,7 @@ class UserCenterMatchOrNullOrAnyPermission implements \LORIS\Data\Filter
         if (method_exists($res, 'getCenterID')) {
             $resourceCenter = $res->getCenterID();
             if (!is_null($resourceCenter)) {
-                return $user->hasCenter(
-                    \CenterID::singleton($resourceCenter)
-                );
+                return $user->hasCenter($resourceCenter);
             }
             return true;
         }

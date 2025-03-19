@@ -134,8 +134,8 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query ="SELECT s.ID, s.cohortID, s.CandID from session
-            s LEFT JOIN candidate c USING (CandID)
+    $query ="SELECT s.ID, s.cohortID, c.CandID from session
+            s LEFT JOIN candidate c ON c.ID=s.CandidateID
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
     $where = ['vl' => $argv[1]];
@@ -145,8 +145,8 @@ if (isset($visit_label)) {
         populateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query   ="SELECT s.ID, s.cohortID, s.Visit_label, s.CandID from session s
-            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y'
+    $query   ="SELECT s.ID, s.cohortID, s.Visit_label, c.CandID from session s
+            LEFT JOIN candidate c ON c.ID=s.CandidateID WHERE s.Active='Y'
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $results = $DB->pselect($query, []);
     foreach ($results as $result) {

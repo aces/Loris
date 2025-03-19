@@ -24,8 +24,8 @@ class ProtocolViolationProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
     ) {
         parent::__construct(
             $loris,
-            "SELECT 
-                mpv.CandID,
+            "SELECT
+                c.CandID,
                 mpv.PSCID,
                 mpv.time_run,
                 mpv.series_description,
@@ -48,12 +48,14 @@ class ProtocolViolationProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
                 mpv.image_type,
                 mpv.PhaseEncodingDirection,
                 mpv.EchoNumber
-             FROM mri_protocol_violated_scans mpv
+            FROM mri_protocol_violated_scans mpv
                 LEFT JOIN mri_protocol_group mpg ON
                  (mpg.MriProtocolGroupID=mpv.MriProtocolGroupID)
                 LEFT JOIN tarchive ON
                  (mpv.PatientName = tarchive.PatientName)
-             WHERE SeriesUID=:sid",
+                JOIN candidate c ON
+                 (mpv.CandidateID=c.ID)
+            WHERE SeriesUID=:sid",
             ['sid' => $seriesUID]
         );
     }

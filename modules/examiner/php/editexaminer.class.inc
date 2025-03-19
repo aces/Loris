@@ -294,7 +294,9 @@ class EditExaminer extends \NDB_Form
             ['EID' => $this->identifier]
         );
 
-        $this->tpl_data['certification_history'] = $certification_history;
+        $this->tpl_data['certification_history'] = \iterator_to_array(
+            $certification_history
+        );
 
         $config = \NDB_Config::singleton();
 
@@ -359,7 +361,12 @@ class EditExaminer extends \NDB_Form
         if (is_null($row)) {
             throw new \LorisException(
                 'No full name found in Database for examiner with ID ' .
-                htmlspecialchars($this->identifier)
+                htmlspecialchars(
+                    $this->identifier,
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
             );
         }
         // Get identifier, to be added to the Reset button href

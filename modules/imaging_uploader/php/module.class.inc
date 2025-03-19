@@ -36,7 +36,12 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('imaging_uploader');
+        return parent::hasAccess($user) && $user->hasAnyPermission(
+            [
+                'imaging_uploader_allsites',
+                'imaging_uploader_ownsites',
+            ]
+        );
     }
 
     /**

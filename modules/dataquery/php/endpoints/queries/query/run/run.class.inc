@@ -60,7 +60,10 @@ class Run extends \LORIS\Http\Endpoint
     {
         $db      = $this->loris->getDatabaseConnection();
         $candIDs = $db->pselectCol(
-            "SELECT CandID FROM dataquery_run_results WHERE RunID=:rid",
+            "SELECT c.CandID
+                FROM dataquery_run_results drr
+                JOIN candiate c on c.ID=drr.CandidateID
+                WHERE drr.RunID=:rid",
             [
                 'rid' => $this->runID
             ]
@@ -84,7 +87,10 @@ class Run extends \LORIS\Http\Endpoint
             );
         }
         $results = $db->pselect(
-            "SELECT CandID, RowData FROM dataquery_run_results WHERE RunID=:rid",
+            "SELECT c.CandID, drr.RowData
+                FROM dataquery_run_results drr
+                JOIN candiate c on c.ID=drr.CandidateID
+                WHERE drr.RunID=:rid",
             [
                 'rid' => $this->runID
             ]

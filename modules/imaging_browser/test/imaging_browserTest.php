@@ -86,6 +86,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '000001',
                 'PSCID'                 => 'DCC0001',
                 'RegistrationCenterID'  => 1,
@@ -98,6 +99,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 2,
                 'CandID'                => '000002',
                 'PSCID'                 => 'AOL0002',
                 'RegistrationCenterID'  => 253,
@@ -110,6 +112,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 3,
                 'CandID'                => 000003,
                 'PSCID'                 => 'BOL0003',
                 'RegistrationCenterID'  => 254,
@@ -123,7 +126,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999997,
-                'CandID'        => 000001,
+                'CandidateID'   => 1,
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -137,7 +140,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999998,
-                'CandID'        => 000002,
+                'CandidateID'   => 2,
                 'Visit_label'   => 'Test1',
                 'CenterID'      => 253,
                 'ProjectID'     => 1,
@@ -151,7 +154,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999999,
-                'CandID'        => 000003,
+                'CandidateID'   => 3,
                 'Visit_label'   => 'Test2',
                 'CenterID'      => 254,
                 'ProjectID'     => 1,

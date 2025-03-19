@@ -197,9 +197,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $totalRecruitment = intval(
             $db->pselectOne(
-                "SELECT COUNT(DISTINCT s.CandID)
+                "SELECT COUNT(DISTINCT s.CandidateID)
                 FROM session s JOIN candidate c
-                     ON (s.CandID=c.CandID)
+                     ON (s.CandidateID=c.ID)
                 WHERE s.CohortID=:sid
                 AND s.CenterID IN ({$centerList})
                 AND s.ProjectID IN ({$projectList})
@@ -272,9 +272,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         return intval(
             $DB->pselectOne(
-                "SELECT COUNT(DISTINCT s.CandID)
+                "SELECT COUNT(DISTINCT s.CandidateID)
                 FROM session s
-                JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE CohortID=:sid
                 AND CenterID IN ({$centerList})
                 AND ProjectID IN ({$projectList})

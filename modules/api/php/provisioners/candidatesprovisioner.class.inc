@@ -44,7 +44,7 @@ class CandidatesProvisioner extends DBRowProvisioner
         parent::__construct(
             $this->loris,
             '
-             SELECT 
+             SELECT
                c.CandID as CandID,
                p.Name as ProjectName,
                c.RegistrationProjectID as ProjectID,
@@ -61,6 +61,7 @@ class CandidatesProvisioner extends DBRowProvisioner
              LEFT JOIN Project p
                ON (c.RegistrationProjectID = p.ProjectID)
              WHERE c.Active=\'Y\'
+             ORDER BY c.CandID
             ',
             []
         );

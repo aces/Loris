@@ -35,7 +35,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
              SELECT
               conflicts_unresolved.ConflictID as conflictid,
               conflicts_unresolved.TestName as instrument,
-              session.CandID as candid,
+              candidate.CandID as candid,
               candidate.PSCID as pscid,
               session.Visit_label as visitlabel,
               Project.Name as project,
@@ -60,7 +60,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_unresolved
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
              LEFT JOIN session ON (flag.SessionID=session.ID)
-             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
+             LEFT JOIN candidate ON (candidate.ID=session.CandidateID)
              LEFT JOIN Project ON (session.ProjectID=Project.ProjectID)
              LEFT JOIN psc ON (session.CenterID = psc.CenterID)
              LEFT JOIN cohort ON (cohort.CohortID=session.CohortID)

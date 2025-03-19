@@ -141,7 +141,7 @@ class CouchDBInstrumentImporter
 
         $from = "FROM flag f
             JOIN session s ON(s.ID=f.SessionID)
-            JOIN candidate c ON(c.CandID=s.CandID)
+            JOIN candidate c ON(c.ID=s.CandidateID)
             LEFT JOIN flag ddef ON(ddef.CommentID=CONCAT('DDE_', f.CommentID))
             LEFT JOIN test_names tn ON(f.TestID = tn.ID)";
 

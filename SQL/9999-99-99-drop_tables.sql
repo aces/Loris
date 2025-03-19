@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS dataquery_shared_queries_rel;
 DROP TABLE IF EXISTS dataquery_run_queries;
 DROP TABLE IF EXISTS dataquery_query_names;
 DROP TABLE IF EXISTS dataquery_queries;
+DROP TABLE IF EXISTS `Login_Summary_Statistics`;
 
 -- 0000-00-05-ElectrophysiologyTables.sql
 DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;

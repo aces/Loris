@@ -113,7 +113,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(["issue_tracker_reporter"]);
+        $this->setupPermissions(["issue_tracker_all_issue"]);
         $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")

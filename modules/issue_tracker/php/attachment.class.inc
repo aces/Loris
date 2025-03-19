@@ -191,7 +191,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
         // Check if User shouldn't be able to Delete.
         if (empty($result)
             && !$user->hasPermission(
-                'issue_tracker_developer'
+                'issue_tracker_all_issue'
             )
         ) {
             return false;
@@ -241,8 +241,9 @@ class Attachment extends \NDB_Page implements ETagCalculator
     {
         return $user->hasAnyPermission(
             [
-                'issue_tracker_reporter',
-                'issue_tracker_developer'
+                'issue_tracker_all_issue',
+                'issue_tracker_own_issue',
+                'issue_tracker_site_issue',
             ]
         );
     }

@@ -305,7 +305,7 @@ class IssueTrackerIndex extends Component {
     ];
 
     // Only display the Batch mode tab if user has the required permission
-    if (this.props.hasPermission('issue_tracker_developer')) {
+    if (this.props.hasPermission('issue_tracker_all_issue')) {
       tabList.push({
         id: 'batch',
         label: 'Batch Edit',

@@ -54,7 +54,7 @@ if ($projectID == 'new') {
         exit(0);
     }
 
-    $project = \Project::createNew($projectName, $projectAlias, $recTarget);
+    $project = \Project::createNew($projectName, $projectAlias, intval($recTarget));
     $db->insert(
         'user_project_rel',
         ["UserID"=>$user->getId(),"ProjectID"=>$project->getId()]
