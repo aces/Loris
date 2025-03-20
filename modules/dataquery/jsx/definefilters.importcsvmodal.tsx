@@ -53,6 +53,7 @@ function ImportCSVModal(props: {
     // If sessions: validate 2 columns
     const expectedLength = (csvType === 'session' ? 2 : 1);
     const startLine = csvHeader ? 1 : 0;
+
     for (let i = startLine; i < value.data.length; i++) {
       if (value.data[i].length != expectedLength) {
         swal.fire({
@@ -71,10 +72,14 @@ function ImportCSVModal(props: {
             title: 'Invalid DCC ID',
             text: 'Invalid DCC ID (' + value.data[i][0]
                             + ') on line '
-                            + (i+1) + '.',
+                            + (i+1) + '.',                    
           });
+          return;
+        
         }
+        
       }
+      
     }
 
     // Now that it's been validated, build a new query
