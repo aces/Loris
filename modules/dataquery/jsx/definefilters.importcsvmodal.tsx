@@ -7,7 +7,6 @@ import {FileElement} from 'jsx/Form';
 
 /**
  * Render a modal window for adding a filter
- *
  * @param {object} props - React props
  * @param {function} props.setQuery - Function to set the current criteria
  * @param {function} props.closeModal - Callback to close the current modal
@@ -23,7 +22,6 @@ function ImportCSVModal(props: {
   const [idType, setIdType] = useState<string>('PSCID');
   /**
    * Promise for handling modal closing. Always accepts.
-   *
    * @returns {Promise} - a stub promise
    */
   const submitPromise = () =>
@@ -36,7 +34,6 @@ function ImportCSVModal(props: {
 
   /**
    * Callback function for after papaparse has parsed the csv
-   *
    * @param {any} value - the value from papaparse callback
    */
   const csvParsed = (value: Papa.ParseResult<any>) => {
@@ -72,14 +69,11 @@ function ImportCSVModal(props: {
             title: 'Invalid DCC ID',
             text: 'Invalid DCC ID (' + value.data[i][0]
                             + ') on line '
-                            + (i+1) + '.',                    
+                            + (i+1) + '.',
           });
           return;
-        
         }
-        
       }
-      
     }
 
     // Now that it's been validated, build a new query
