@@ -87,7 +87,7 @@ class InstrumentManagerIndex extends Component {
     data.append('instrument', instrument);
     data.append('data_file', this.state.selectedDataFile);
 
-    const url = loris.BaseURL.concat('/instrument_manager/');
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
 
     return new Promise(
       (resolve, reject) => {
