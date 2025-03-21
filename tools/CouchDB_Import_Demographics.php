@@ -383,7 +383,7 @@ class CouchDBDemographicsImporter
         $projects = \Utility::getProjectList();
         foreach ($projects as $projectID => $project) {
             $projectAlias = \Project::getProjectFromID(
-                new ProjectID(strval($projectID))
+                \ProjectID::singleton($projectID)
             )->getAlias();
             $fieldName    = "latestDiagnosis_" . $projectAlias;
 

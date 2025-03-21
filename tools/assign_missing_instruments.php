@@ -135,7 +135,7 @@ function populateVisitLabel($result, $visit_label)
 
 if (isset($visit_label)) {
     $query ="SELECT s.ID, s.cohortID, c.CandID from session
-            s LEFT JOIN candidate c ON c.ID=s.CandiateID
+            s LEFT JOIN candidate c ON c.ID=s.CandidateID
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
     $where = ['vl' => $argv[1]];

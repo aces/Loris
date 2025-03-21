@@ -512,7 +512,7 @@ class Sessions extends \NDB_Page
             []
         );
 
-        $fileSummary['hedSchema'] = $hedSchema;
+        $fileSummary['hedSchema'] = iterator_to_array($hedSchema);
 
         return $fileSummary;
     }
