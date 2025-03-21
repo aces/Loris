@@ -116,11 +116,12 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
             return null;
         }
 
-        $exitText = file_get_contents($this->getStdoutFile());
+        $exitText           = file_get_contents($this->getStdoutFile());
+        $processDescription = "Instrument data parse with PID {$this->getPid()}";
         if (is_numeric($exitCode) && $exitCode == 0) {
-            return "Instrument data parse completed without errors.\n\n$exitText";
+            return "$processDescription completed without errors.\n\n$exitText";
         } else {
-            return "Instrument data parse failed with error code: $exitCode." .
+            return "$processDescription failed with error code: $exitCode." .
                 "\n\n$exitText";
         }
     }
