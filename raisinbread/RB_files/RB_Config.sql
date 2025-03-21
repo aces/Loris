@@ -107,7 +107,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (132,135,'/data/uploads/instruments/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (133,136,'/data/tmp/');
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

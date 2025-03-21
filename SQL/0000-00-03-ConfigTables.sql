@@ -229,7 +229,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/" FRO
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/to_be_deleted/" FROM ConfigSettings WHERE Name="publication_deletions";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%MINCToolsPath%" FROM ConfigSettings WHERE Name="MINCToolsPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/uploads/instruments/" FROM ConfigSettings WHERE Name="instrumentDataPath";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/tmp/" FROM ConfigSettings WHERE Name="tempPath";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="useEEGBrowserVisualizationComponents";
 

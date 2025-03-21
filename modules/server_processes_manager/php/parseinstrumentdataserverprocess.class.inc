@@ -89,7 +89,7 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
             "/tools/parse_instrument_data.php ";
         $parseScript .= "$this->_instrument $this->_fileLocation ";
         $parseScript .= "{$this->getUserId()} {$this->getUserId()}";
-        return escapeshellarg($parseScript);
+        return $parseScript;
     }
 
     /**
@@ -124,22 +124,6 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
                 "\n\n$exitText";
         }
     }
-
-    /**
-     * Gets directory where all temporary files created by this task should go
-     *
-     * @return string full path to the temporary directory
-     */
-    public function getTmpDir()
-    {
-        return $this->getDatabaseProvider()->getDatabase()->pselectOne(
-            "SELECT Value FROM Config
-            LEFT JOIN ConfigSettings ON ConfigSettings.ID = ConfigID
-            WHERE Name = :configName",
-            ['configName' => 'tempPath']
-        ) ?? sys_get_temp_dir();
-    }
-
 
     /**
      * Accessor for the process type.
@@ -190,26 +174,6 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
             );
         }
     }
-
-    /**
-     * Change file permissions
-     *
-     * @return void
-     */
-    public function changeFilePermissions()
-    {
-        array_map(
-            function ($file) {
-                chmod($file, 0775);
-            },
-            [
-                $this->getStdoutFile(),
-                $this->getStderrFile(),
-                $this->getExitCodeFile(),
-            ]
-        );
-    }
-
 
     /**
      * Perform action once process is completed
