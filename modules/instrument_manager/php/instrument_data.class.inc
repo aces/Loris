@@ -143,9 +143,9 @@ class Instrument_Data extends \NDB_Page
                     $result = [
                         'success' => true,
                         'message' => "Due to the relatively large size of the " .
-                            "uploaded file, the process has been sent to the " .
-                            "background task queue. You will receive an email " .
-                            "once completed."
+                            "uploaded file, the process will being run " .
+                            "asynchronously in the background. You will receive " .
+                            "an email once completed."
 
                     ];
                     return new \LORIS\Http\Response\JSON\Created($result);
