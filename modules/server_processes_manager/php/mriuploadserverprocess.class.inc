@@ -187,16 +187,6 @@ class MriUploadServerProcess extends AbstractServerProcess
     }
 
     /**
-     * Gets directory where all temporary files created by this task should go
-     *
-     * @return string full path to the temporary directory
-     */
-    public function getTmpDir()
-    {
-        return sys_get_temp_dir();
-    }
-
-    /**
      * Accessor for the process type.
      *
      * @return string process type.
@@ -221,21 +211,13 @@ class MriUploadServerProcess extends AbstractServerProcess
     }
 
     /**
-     * Change file permissions
-     *
-     * @return void
-     */
-    public function changeFilePermissions()
-    {
-    }
-
-    /**
      * Perform action once process is completed
      *
      * @return void
      */
     public function performPostAction()
     {
+        // Do nothing
     }
 }
 
