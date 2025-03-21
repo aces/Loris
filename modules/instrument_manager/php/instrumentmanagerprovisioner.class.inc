@@ -31,13 +31,17 @@ namespace LORIS\instrument_manager;
  */
 class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-     /**
-      * Create a ModuleManagerProvisioner, which gets modules for the
-      * module manager menu table.
-      */
-    function __construct()
+    /**
+     * Create a ModuleManagerProvisioner, which gets modules for the
+     * module manager menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     */
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT
 	    tn.test_name as Instrument,
             'type' as Instrument_Type,

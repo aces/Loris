@@ -162,7 +162,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new CandidateListRowProvisioner();
+        return new CandidateListRowProvisioner($this->loris);
     }
 }
 

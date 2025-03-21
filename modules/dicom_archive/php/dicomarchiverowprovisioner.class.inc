@@ -34,10 +34,14 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     /**
      * Create a DicomArchiveRowProvisioner, which gets rows for the dicom_archive
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT t.PatientID AS patientID,
             t.PatientName AS patientName,
             t.PatientSex AS sex,
@@ -55,7 +59,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             m.IsPhantom AS IsPhantom
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
-                  LEFT JOIN candidate c ON (c.CandID=s.CandID)
+                  LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                   LEFT JOIN psc ON (psc.CenterID=s.CenterID)
                   LEFT JOIN mri_upload m ON (m.TarchiveID=t.TarchiveID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",

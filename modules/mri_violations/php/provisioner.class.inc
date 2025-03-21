@@ -13,10 +13,14 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a Provisioner for the module.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT v.PatientName,
                     v.Project,
                     v.Cohort,
@@ -66,17 +70,17 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                          violations_resolved.Resolved, 'unresolved'
                        ) AS Resolved,
                        mpvs.TarchiveID AS TarchiveID,
-                       mpvs.CandID AS CandID,
+                       c.CandID AS CandID,
                        c.PSCID AS PSCID
                 FROM mri_protocol_violated_scans AS mpvs
                 LEFT JOIN violations_resolved ON (
                       violations_resolved.ExtID=mpvs.ID
                   AND violations_resolved.TypeTable='mri_protocol_violated_scans'
                 )
-                LEFT JOIN candidate c ON (mpvs.CandID = c.CandID)
+                LEFT JOIN candidate c ON (mpvs.CandidateID = c.ID)
                 LEFT JOIN session s ON (
                       SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label
-                  AND mpvs.CandID = s.CandID
+                  AND mpvs.CandidateID = s.CandidateID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
               UNION
@@ -100,7 +104,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                          violations_resolved.Resolved, 'unresolved'
                        ) AS Resolved,
                        mrl.TarchiveID AS TarchiveID,
-                       mrl.CandID AS CandID,
+                       c.CandID AS CandID,
                        c.PSCID AS PSCID
                 FROM mri_violations_log AS mrl
                 LEFT JOIN mri_scan_type mst ON (mst.MriScanTypeID=mrl.MriScanTypeID)
@@ -108,9 +112,9 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                       violations_resolved.ExtID=mrl.LogID
                   AND violations_resolved.TypeTable='mri_violations_log'
                 )
-                LEFT JOIN candidate c ON (mrl.CandID=c.CandID)
+                LEFT JOIN candidate c ON (mrl.CandidateID=c.ID)
                 LEFT JOIN session s ON (
-                  mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID
+                  mrl.Visit_label = s.Visit_label AND mrl.CandidateID=s.CandidateID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
                 GROUP BY PatientName, TimeRun, Project, Cohort, MincFile,

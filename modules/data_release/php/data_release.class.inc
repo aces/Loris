@@ -79,7 +79,8 @@ class Data_Release extends \DataFrameworkMenu
     function getFilesList(\Database $DB)
     {
         $result = $DB->pselectWithIndexKey(
-            "SELECT id, file_name, version, hidden_by_userid, ProjectID FROM data_release
+            "SELECT
+            id, file_name, version, hidden_by_userid, ProjectID FROM data_release
             WHERE ProjectID IS NULL OR ProjectID IN
                 (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
             [':userID' => \User::singleton()->getID()],
@@ -310,7 +311,7 @@ class Data_Release extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new DataReleaseProvisioner();
+        return new DataReleaseProvisioner($this->loris);
     }
 
     /**

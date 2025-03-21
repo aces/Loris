@@ -114,9 +114,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $DB = $this->loris->getDatabaseConnection();
 
             $query  = "
-                SELECT CenterID 
-                FROM session 
-                WHERE CandID=:cid AND Date_visit IS NOT NULL 
+                SELECT CenterID
+                FROM session s
+                JOIN candidate c ON c.ID=s.CandidateID
+                WHERE c.CandID=:cid AND Date_visit IS NOT NULL
                 ORDER BY Date_visit DESC LIMIT 1
             ";
             $where  = ['cid' => $values['candID']];

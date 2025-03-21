@@ -1,4 +1,4 @@
-Subject: Change to Issue # - {$issueID}
+Subject: Change to Issue # - {$issueID} [{$study}]
 {$firstname},
 
 {$currentUser} has updated an issue "{$title}" you are watching.

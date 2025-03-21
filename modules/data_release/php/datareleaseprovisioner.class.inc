@@ -35,8 +35,11 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a DataReleaseProvisioner, which gets releases for the
      * data release menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $user  =& \User::singleton();
         $query = "
@@ -69,7 +72,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         $query .= " ORDER BY uploadDate";
 
-        parent::__construct($query, []);
+        parent::__construct($loris, $query, []);
     }
 
     /**
