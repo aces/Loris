@@ -252,7 +252,7 @@ class InstrumentDataParser extends CSVParser
 
         $query = "SELECT s.ID
             FROM session AS s
-            LEFT JOIN candidate USING (CandID)
+            LEFT JOIN candidate c ON c.ID = s.CandidateID
             WHERE Visit_label = :visitLabel
             AND PSCID = :PSCID";
 
