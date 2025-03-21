@@ -125,8 +125,8 @@ foreach ($candIDs as $candID) {
                     ) ? 'Y' : 'N';
 
                     $candidateID = $DB->pselectOne(
-                      "SELECT ID FROM candidate WHERE CandID=:CandID",
-                    ["CandID" => $candID]
+                        "SELECT ID FROM candidate WHERE CandID=:CandID",
+                        ["CandID" => $candID]
                     );
 
                     $set = [
