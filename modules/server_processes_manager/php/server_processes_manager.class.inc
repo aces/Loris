@@ -55,7 +55,8 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         $idsToMonitor = $DB->pselect(
             "SELECT id
             FROM server_processes
-            WHERE end_time IS NULL",
+            WHERE end_time IS NULL
+            OR exit_code IS NULL",
             []
         );
 
