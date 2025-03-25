@@ -70,9 +70,9 @@ function IssueTrackerBatchMode({options}) {
       const orderedWatchers = Object.keys(data.otherWatchers)
         .sort()
         .reduce((obj, key) => {
-            obj[key] = data.otherWatchers[key];
-            return obj;
-          },{}
+          obj[key] = data.otherWatchers[key];
+          return obj;
+        }, {}
         );
 
       // set data
