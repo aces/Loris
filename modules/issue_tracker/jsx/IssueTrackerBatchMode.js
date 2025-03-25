@@ -65,9 +65,20 @@ function IssueTrackerBatchMode({options}) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+
+      // ordering watchers
+      const orderedWatchers = Object.keys(data.otherWatchers)
+        .sort()
+        .reduce((obj, key) => {
+            obj[key] = data.otherWatchers[key];
+            return obj;
+          },{}
+        );
+
+      // set data
       setIssues(data.issues || []);
       setAssignees(data.assignees || {});
-      setOtherWatchers(data.otherWatchers || {});
+      setOtherWatchers(orderedWatchers || {});
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching issues:', error);
