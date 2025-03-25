@@ -40,6 +40,12 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
+        $user = \User::singleton();
+
+        $where  = $user->hasPermission('examiner_multisite') ? ''
+            : "AND upr.UserID=:uid";
+        $params = $user->hasPermission('examiner_multisite') ? []
+            : ['uid' => $user->getID()];
         parent::__construct(
             $loris,
             "SELECT 
@@ -57,10 +63,11 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         (c.examinerID=e.examinerID and c.pass = 'certified')
                     LEFT JOIN test_names tn ON (tn.ID = c.testID)
                     LEFT JOIN users u ON u.ID=e.userID
+                    LEFT JOIN user_psc_rel upr ON upr.CenterID=epr.CenterID
                 WHERE epr.active='Y'
-                GROUP BY e.examinerID
-",
-            [],
+                $where
+                GROUP BY e.examinerID",
+            $params,
         );
     }
 
