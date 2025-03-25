@@ -291,7 +291,7 @@ class MediaUploadForm extends Component {
       swal.fire(
         'Invalid file name!',
         'Your file\'s base name should be: <code>'+ requiredFileName +'</code>'  
-        + '<br>followed by the file extension.',
+        + '<br>followed by the file extension.' ,
         'error'
       );
       return;
