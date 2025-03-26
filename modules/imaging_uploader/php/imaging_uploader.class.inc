@@ -217,47 +217,86 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
+                    $this->setMriUploadInserting($db, $this->mri_upload_id, 1);
+
                     // Perform the real upload on the server
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
-                    $serverProcessLauncher->mriUpload(
+                    $mriUploadProcess      = $serverProcessLauncher->mriUpload(
                         $this->mri_upload_id,
                         $this->uploaded_file_path
                     );
-                    $db->update(
-                        'mri_upload',
-                        ['Inserting' => 1],
-                        ['UploadID' => $this->mri_upload_id]
-                    );
                 } catch (\Exception $e) {
-                    $notificationTypeID = $db->pselectOne(
-                        "SELECT NotificationTypeID
-                         FROM notification_types
-                         WHERE Type = :type",
-                        ['type' => 'mri upload handler emergency']
+                    $message = 'MRI pipeline could not be started: '
+                             . $e->getMessage() . "\n"
+                             . 'This indicates an incorrect or non-'
+                             . "existent MRI pipeline setup\n";
+                    $this->addLaunchFailureNotification(
+                        $db,
+                        $message,
+                        $this->mri_upload_id
                     );
-                    $values = [
-                        'NotificationTypeID' => $notificationTypeID,
-                        'Message'            => 'MRI pipeline could not be '
-                                              . 'started: ' . $e->getMessage() . "\n"
-                                              . 'This indicates an incorrect or non-'
-                                              . "existent MRI pipeline setup\n",
-                        'Origin'             => 'Launch of the MRI pipeline',
-                        'ProcessID'          => $this->mri_upload_id,
-                        'Error'              => 'Y',
-                        'Verbose'            => 'N',
-                    ];
-                    $db->insert('notification_spool', $values);
-                    $db->update(
-                        'mri_upload',
-                        ['Inserting' => 0],
-                        ['UploadID' => $this->mri_upload_id]
-                    );
+                    $this->setMriUploadInserting($db, $this->mri_upload_id, null);
                     return false;
+                }
+
+                if (!$mriUploadProcess->isRunning()) {
+                    $this->setMriUploadInserting($db, $this->mri_upload_id, 0);
                 }
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * Adds a record in table notification_spool indicating that the
+     * MRI pipeline could not be launched successfully.
+     *
+     * @param $db       database object.
+     * @param $message  reason for the launch failure.
+     * @param $uploadID ID of the upload that the pipeline was meant to process.
+     *
+     * @return void.
+     */
+    function addLaunchFailureNotification($db, $message, $uploadID)
+    {
+        $notificationTypeID = $db->pselectOne(
+            "SELECT NotificationTypeID
+             FROM notification_types
+             WHERE Type = :type",
+            ['type' => 'mri upload handler emergency']
+        );
+
+        $values = [
+            'NotificationTypeID' => $notificationTypeID,
+            'Message'            => $message,
+            'Origin'             => 'Launch of the MRI pipeline',
+            'ProcessID'          => $uploadID,
+            'Error'              => 'Y',
+            'Verbose'            => 'N',
+        ];
+
+        $db->insert('notification_spool', $values);
+    }
+
+    /**
+     * Set the value of column Inserting in table mri_upload for a
+     * given upload ID.
+     *
+     * @param $db        database object.
+     * @param $uploadID  ID of the upload for which Inserting should be
+     *                   set.
+     * @param $inserting new value for the inserting column.
+     *
+     * @return void.
+     */
+    function setMriUploadInserting($db, $uploadID, $inserting)
+    {
+        $db->update(
+            'mri_upload',
+            ['Inserting' => $inserting],
+            ['UploadID'  => $uploadID]
+        );
     }
 
     // methods available to all children
