@@ -271,7 +271,9 @@ class MediaUploadForm extends Component {
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal.fire(
         'Invalid file name!',
-        'File name should begin with: ' + requiredFileName,
+        'Your file\'s base name should be: <code>'
+        + requiredFileName +'</code>'
+        + '<br>followed by the file extension.',
         'error'
       );
       return;
@@ -282,8 +284,8 @@ class MediaUploadForm extends Component {
     if (isDuplicate >= 0) {
       swal.fire({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n '
-              + 'Would you like to override existing file?',
+        text: 'A file with this name already exists!' + '\n'
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -292,7 +294,7 @@ class MediaUploadForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal.fire('Cancelled', 'Your file was not overwritten', 'error');
         }
       }.bind(this));
     } else {
