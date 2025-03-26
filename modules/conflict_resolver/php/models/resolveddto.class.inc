@@ -36,10 +36,8 @@ class ResolvedDTO implements DataInstance, SiteHaver
      */
     protected $resolvedid;
     protected $projectid;
-    protected $project;
     protected $cohort;
     protected $centerid;
-    protected $site;
     protected $candid;
     protected $pscid;
     protected $visitlabel;
@@ -62,9 +60,9 @@ class ResolvedDTO implements DataInstance, SiteHaver
     {
         return [
             'ResolvedID'          => $this->resolvedid,
-            'Project'             => $this->project,
+            'ProjectID'           => $this->projectid,
             'Cohort'              => $this->cohort,
-            'Site'                => $this->site,
+            'CenterId'            => $this->centerid,
             'CandID'              => $this->candid,
             'PSCID'               => $this->pscid,
             'Visit Label'         => $this->visitlabel,
