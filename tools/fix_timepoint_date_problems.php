@@ -506,7 +506,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     // check the date format (redundant)
     $dateArray = explode('-', $newDate);
     if (!is_array($dateArray)
-        || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
+        || !checkdate(intval($dateArray[1]), intval($dateArray[2]), intval($dateArray[0]))
     ) {
         throw new LorisException(
             "Invalid Date! Please use the following format: YYYY-MM-DD \n"
