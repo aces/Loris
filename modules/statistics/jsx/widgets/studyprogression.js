@@ -89,8 +89,8 @@ const StudyProgression = (props) => {
           {
             content: json['studyprogression']['total_scans'] > 0 ? (
               <div style={{display: 'flex',
-                            flexDirection: 'column', 
-                            gap: '10px'}}>
+                flexDirection: 'column', 
+                gap: '10px'}}>
                 {showFiltersScans && (
                   <QueryChartForm
                     Module={'statistics'}
@@ -112,26 +112,26 @@ const StudyProgression = (props) => {
           },
           {
             content: json['studyprogression']['recruitment']
-            ['overall']['total_recruitment'] > 0 ? (
-              <div style={{display: 'flex',
-              flexDirection: 'column',
-              gap: '10px'}}>
-                {showFiltersRecruitment && (
-                  <QueryChartForm
-                    Module={'statistics'}
-                    name={'studyprogression'}
-                    id={'studyprogressionSiteRecruitmentForm'}
-                    data={props.data}
-                    callback={(formDataObj) => {
-                      updateFilters(formDataObj, 'total_recruitment');
-                    }}
-                  />
-                )}
-                {showChart('total_recruitment', 'siterecruitment_line')}
-              </div>
-            ) : (
-              <p>There have been no candidates registered yet.</p>
-            ),
+              ['overall']['total_recruitment'] > 0 ? (
+                <div style={{display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px'}}>
+                  {showFiltersRecruitment && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionSiteRecruitmentForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'total_recruitment');
+                      }}
+                    />
+                  )}
+                  {showChart('total_recruitment', 'siterecruitment_line')}
+                </div>
+              ) : (
+                <p>There have been no candidates registered yet.</p>
+              ),
             title: 'Study Progression - site recruitment',
             onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
           },
@@ -151,4 +151,3 @@ StudyProgression.defaultProps = {
 };
 
 export default StudyProgression;
-;

@@ -14,166 +14,169 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
-    const [activeView, setActiveView] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
+  const [activeView, setActiveView] = useState(0);
 
-    let json = props.data;
+  let json = props.data;
 
-    const [chartDetails, setChartDetails] = useState(
-        {
-            'siteBreakdown': {
-                'agerecruitment_pie': {
-                    sizing: 5,
-                    title: 'Total recruitment by Age',
-                    filters: '',
-                    chartType: 'pie',
-                    dataType: 'pie',
-                    label: 'Age (Years)',
-                    options: {pie: 'pie', bar: 'bar'},
-                    legend: 'under',
-                },
-                'ethnicity_pie': {
-                    sizing: 5,
-                    title: 'Ethnicity at Screening',
-                    filters: '',
-                    chartType: 'pie',
-                    dataType: 'pie',
-                    label: 'Ethnicity',
-                    options: {pie: 'pie', bar: 'bar'},
-                    legend: 'under',
-                },
-                'siterecruitment_pie': {
-                    sizing: 5,
-                    title: 'Total Recruitment per Site',
-                    filters: '',
-                    chartType: 'pie',
-                    dataType: 'pie',
-                    label: 'Participants',
-                    legend: '',
-                    options: {pie: 'pie', bar: 'bar'},
-                },
-                'siterecruitment_bysex': {
-                    sizing: 5,
-                    title: 'Biological sex breakdown by site',
-                    filters: '',
-                    chartType: 'bar',
-                    dataType: 'bar',
-                    legend: 'under',
-                    options: {bar: 'bar', pie: 'pie'},
-                },
-            },
-        }
-    );
+  const [chartDetails, setChartDetails] = useState(
+      {
+          'siteBreakdown': {
+              'agerecruitment_pie': {
+                  sizing: 5,
+                  title: 'Total recruitment by Age',
+                  filters: '',
+                  chartType: 'pie',
+                  dataType: 'pie',
+                  label: 'Age (Years)',
+                  options: {pie: 'pie', bar: 'bar'},
+                  legend: 'under',
+              },
+              'ethnicity_pie': {
+                  sizing: 5,
+                  title: 'Ethnicity at Screening',
+                  filters: '',
+                  chartType: 'pie',
+                  dataType: 'pie',
+                  label: 'Ethnicity',
+                  options: {pie: 'pie', bar: 'bar'},
+                  legend: 'under',
+              },
+              'siterecruitment_pie': {
+                  sizing: 5,
+                  title: 'Total Recruitment per Site',
+                  filters: '',
+                  chartType: 'pie',
+                  dataType: 'pie',
+                  label: 'Participants',
+                  legend: '',
+                  options: {pie: 'pie', bar: 'bar'},
+              },
+              'siterecruitment_bysex': {
+                  sizing: 5,
+                  title: 'Biological sex breakdown by site',
+                  filters: '',
+                  chartType: 'bar',
+                  dataType: 'bar',
+                  legend: 'under',
+                  options: {bar: 'bar', pie: 'pie'},
+              },
+          },
+      }
+  );
 
   const showChart = (section, chartID) => {
-        return props.showChart(section, chartID, chartDetails, setChartDetails);
+    return props.showChart(section, chartID, chartDetails, setChartDetails);
     };
 
-    const updateFilters = (formDataObj, section) => {
-        props.updateFilters(formDataObj, section, chartDetails, setChartDetails);
-    };
+  const updateFilters = (formDataObj, section) => {
+    props.updateFilters(formDataObj,
+        section,
+        chartDetails,
+        setChartDetails);
+  };
 
-    useEffect(
-        () => {
-        if (json && Object.keys(json).length !== 0) {
-            setupCharts(false, chartDetails).then(
-            (data) => {
-                setChartDetails(data);
-            }
-            );
-            json = props.data;
-            setLoading(false);
-        }
-        },
-        [props.data]
-    );
+  useEffect(
+      () => {
+      if (json && Object.keys(json).length !== 0) {
+          setupCharts(false, chartDetails).then(
+          (data) => {
+              setChartDetails(data);
+          }
+          );
+          json = props.data;
+          setLoading(false);
+      }
+      },
+      [props.data]
+  );
 
   return loading ? <Panel title ='Recruitment'><Loader/></Panel> : (
     <>
       <Panel
-        title        ='Recruitment'
-        id           ='statistics_recruitment'
-        activeView   ={activeView}
+        title ='Recruitment'
+        id ='statistics_recruitment'
+        activeView ={activeView}
         onChangeView ={(index) => {
             setupCharts(false, chartDetails);
             setActiveView(index);
             }}
-        views        ={[
-            {
-                content:
-                <div className     ='recruitment-panel' id='overall-recruitment'>
-                {progressBarBuilder(json['recruitment']['overall'])}
-                </div>,
-                title: 'Recruitment - overall',
-            },
-            {
-                content:
-                json['recruitment']['overall'] &&
-                json['recruitment']['overall']['total_recruitment'] > 0 ? (
-                <>
-                  {showFiltersBreakdown && (
-                        <div style ={{ marginTop: '15px' }}>
-                        <QueryChartForm
-                        Module     ={'statistics'}
-                        name       ={'recruitment'}
-                        id         ={'recruitmentSiteBreakdownForm'}
-                        data       ={json}
-                        callback   ={(formDataObj) => {
-                            updateFilters(formDataObj, 'siteBreakdown');
-                            }}
-                      />
-                    </div>
-                  )}
-                  <div className            ="site-breakdown-grid">
-                    {Object.keys(chartDetails['siteBreakdown']).map(
-                        (chartID) => (
-                        <React.Fragment key ={chartID}>
-                        {showChart('siteBreakdown', chartID)}
-                        </React.Fragment>
-                        )
-                    )}
+        views ={[
+          {
+            content:
+            <div className     ='recruitment-panel' id='overall-recruitment'>
+            {progressBarBuilder(json['recruitment']['overall'])}
+            </div>,
+            title: 'Recruitment - overall',
+          },
+          {
+              content:
+              json['recruitment']['overall'] &&
+              json['recruitment']['overall']['total_recruitment'] > 0 ? (
+              <>
+                {showFiltersBreakdown && (
+                      <div style ={{ marginTop: '15px' }}>
+                      <QueryChartForm
+                      Module     ={'statistics'}
+                      name       ={'recruitment'}
+                      id         ={'recruitmentSiteBreakdownForm'}
+                      data       ={json}
+                      callback   ={(formDataObj) => {
+                          updateFilters(formDataObj, 'siteBreakdown');
+                          }}
+                    />
                   </div>
-                </>
-              ) : (
-                <p>There have been no candidates registered yet.</p>
-              ),
-            title: 'Recruitment - site breakdown',
-            onToggleFilters: () => {
-                setActiveView(1);
-                setShowFiltersBreakdown((prev) => !prev);
-                }
-            },
-            {
-                content:
-                <>
-                {Object.entries(json['recruitment']).map(
-                    ([key, value]) => {
-                    if (key !== 'overall') {
-                        return <div key ={`projectBreakdown_${key}`}>
-                          {progressBarBuilder(value)}
-                        </div>;
-                    }
-                    }
                 )}
-                </>,
-                title: 'Recruitment - project breakdown',
-            },
-            {
-                content:
-                <>
-                {Object.entries(json['recruitmentcohorts'])
-                    .map(
-                        ([key, value]) => {
-                        return <div key ={`cohortBreakdown_${key}`}>
-                            {progressBarBuilder(value)}
-                            </div>;
-                        }
-                    )}
-                </>,
-                title: 'Recruitment - cohort breakdown',
-            },
-            ]}
+                <div className            ="site-breakdown-grid">
+                  {Object.keys(chartDetails['siteBreakdown']).map(
+                      (chartID) => (
+                      <React.Fragment key ={chartID}>
+                      {showChart('siteBreakdown', chartID)}
+                      </React.Fragment>
+                      )
+                  )}
+                </div>
+              </>
+            ) : (
+              <p>There have been no candidates registered yet.</p>
+            ),
+          title: 'Recruitment - site breakdown',
+          onToggleFilters: () => {
+              setActiveView(1);
+              setShowFiltersBreakdown((prev) => !prev);
+              }
+          },
+          {
+              content:
+              <>
+              {Object.entries(json['recruitment']).map(
+                  ([key, value]) => {
+                  if (key !== 'overall') {
+                      return <div key ={`projectBreakdown_${key}`}>
+                        {progressBarBuilder(value)}
+                      </div>;
+                  }
+                  }
+              )}
+              </>,
+              title: 'Recruitment - project breakdown',
+          },
+          {
+              content:
+              <>
+              {Object.entries(json['recruitmentcohorts'])
+                  .map(
+                      ([key, value]) => {
+                      return <div key ={`cohortBreakdown_${key}`}>
+                          {progressBarBuilder(value)}
+                          </div>;
+                      }
+                  )}
+              </>,
+              title: 'Recruitment - cohort breakdown',
+          },
+        ]}
       />
     </>
   );
