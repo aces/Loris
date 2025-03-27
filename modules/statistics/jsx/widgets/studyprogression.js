@@ -77,7 +77,7 @@ const StudyProgression = (props) => {
         onChangeView={(index) => {
           setActiveView(index);
           setupCharts(false, chartDetails);
-      
+
           // reset filters when switching views
           if (index === 0) {
             setShowFiltersScans(false);
@@ -88,7 +88,9 @@ const StudyProgression = (props) => {
         views={[
           {
             content: json['studyprogression']['total_scans'] > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{display: 'flex',
+                            flexDirection: 'column', 
+                            gap: '10px'}}>
                 {showFiltersScans && (
                   <QueryChartForm
                     Module={'statistics'}
@@ -109,8 +111,11 @@ const StudyProgression = (props) => {
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
-            content: json['studyprogression']['recruitment']['overall']['total_recruitment'] > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            content: json['studyprogression']['recruitment']
+            ['overall']['total_recruitment'] > 0 ? (
+              <div style={{display: 'flex',
+              flexDirection: 'column',
+              gap: '10px'}}>
                 {showFiltersRecruitment && (
                   <QueryChartForm
                     Module={'statistics'}
@@ -146,3 +151,4 @@ StudyProgression.defaultProps = {
 };
 
 export default StudyProgression;
+;
