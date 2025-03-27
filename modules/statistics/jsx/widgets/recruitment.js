@@ -15,6 +15,9 @@ import {setupCharts} from './helpers/chartBuilder';
  */
 const Recruitment = (props) => {
   const [loading, setLoading] = useState(true);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
+  const [activeView, setActiveView] = useState(0);
+
   let json = props.data;
 
   const [chartDetails, setChartDetails] = useState({
@@ -84,8 +87,10 @@ const Recruitment = (props) => {
       <Panel
         title='Recruitment'
         id='statistics_recruitment'
-        onChangeView={() => {
+        activeView={activeView}
+        onChangeView={(index) => {
           setupCharts(false, chartDetails);
+          setActiveView(index);
         }}
         views={[
           {
@@ -97,24 +102,38 @@ const Recruitment = (props) => {
           },
           {
             content:
-              json['recruitment']['overall']
-              && json['recruitment']['overall']['total_recruitment'] > 0 ?
+              json['recruitment']['overall'] &&
+              json['recruitment']['overall']['total_recruitment'] > 0 ? (
                 <>
-                  <QueryChartForm
-                    Module={'statistics'}
-                    name={'recruitment'}
-                    id={'recruitmentSiteBreakdownForm'}
-                    data={json}
-                    callback={(formDataObj) => {
-                      updateFilters(formDataObj, 'siteBreakdown');
-                    }}
-                  />
-                  {Object.keys(chartDetails['siteBreakdown']).map((chartID) => {
-                    return showChart('siteBreakdown', chartID);
-                  })}
-                </> :
-                <p>There have been no candidates registered yet.</p>,
+                  {showFiltersBreakdown && (
+                    <div style={{ marginTop: '15px' }}>
+                      <QueryChartForm
+                        Module={'statistics'}
+                        name={'recruitment'}
+                        id={'recruitmentSiteBreakdownForm'}
+                        data={json}
+                        callback={(formDataObj) => {
+                          updateFilters(formDataObj, 'siteBreakdown');
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="site-breakdown-grid">
+                    {Object.keys(chartDetails['siteBreakdown']).map((chartID) => (
+                      <React.Fragment key={chartID}>
+                        {showChart('siteBreakdown', chartID)}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p>There have been no candidates registered yet.</p>
+              ),
             title: 'Recruitment - site breakdown',
+            onToggleFilters: () => {
+              setActiveView(1); 
+              setShowFiltersBreakdown((prev) => !prev);
+            }
           },
           {
             content:

@@ -26,63 +26,65 @@ const WidgetIndex = (props) => {
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
-    let {sizing, title, chartType, options} = chartDetails[section][chartID];
-    return <div
-      className={'col-lg-' + sizing + ' col-md-' + sizing + ' col-sm-' + sizing}
-    >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
-        <h5 className='chart-title'>
-          {title}
-        </h5>
-        {Object.keys(chartDetails[section][chartID].options).length > 1 &&
-          <SelectElement
-            className='col-md-3'
-            emptyOption={false}
-            options={options}
-            value={options[chartType]}
-            onUserInput={(name, value) => {
-            // set the chart type in the chartDetails object for that chartID
-              setChartDetails(
-                {...chartDetails,
-                  [section]: {
-                    ...chartDetails[section],
-                    [chartID]: {
-                      ...chartDetails[section][chartID],
-                      chartType: options[value],
-                    },
-                  },
+      let {sizing, title, chartType, options} = chartDetails[section][chartID];
+        return (
+          <div
+            className="site-breakdown-card"
+          >
+            {/* Chart Title and Dropdown */}
+            <div className='chart-header'>
+              <h5 className='chart-title'>{title}</h5>
+              {Object.keys(chartDetails[section][chartID].options).length > 1 && (
+                <div className="chart-dropdown-wrapper">
+                <SelectElement
+                  className='chart-dropdown'
+                  emptyOption={false}
+                  options={options}
+                  value={options[chartType]}
+                  onUserInput={(name, value) => {
+                    setChartDetails({
+                      ...chartDetails,
+                      [section]: {
+                        ...chartDetails[section],
+                        [chartID]: {
+                          ...chartDetails[section][chartID],
+                          chartType: options[value],
+                        },
+                      },
+                    });
+                    setupCharts(
+                      false,
+                      {
+                        [section]: {
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: options[value],
+                          },
+                        },
+                      }
+                    );
+                  }}
+                />
+                </div>
+              )}
+            </div>
+            {/* Chart Canvas / Modal Trigger */}
+            <div className="chart-visual-wrapper">
+            <a
+              onClick={() => {
+                setModalChart(chartDetails[section][chartID]);
+                setupCharts(true, {
+                  [section]: { [chartID]: chartDetails[section][chartID] },
                 });
-              setupCharts(
-                false,
-                {[section]: {[chartID]: {
-                  ...chartDetails[section][chartID],
-                  chartType: options[value]},
-                }}
-              );
-            }}
-          />
-        }
-      </div>
-      <a
-        onClick={() => {
-          setModalChart(chartDetails[section][chartID]);
-          setupCharts(
-            true,
-            {[section]: {[chartID]: chartDetails[section][chartID]}}
-          );
-        }}
-        id={chartID}
-      >
-        <Loader />
-      </a>
-    </div>;
-  };
+              }}
+              id={chartID}
+            >
+              <Loader />
+            </a>
+            </div>
+          </div>
+        );
+  };  
 
   const downloadAsCSV = (data, filename, dataType) => {
     const convertBarToCSV = (data) => {

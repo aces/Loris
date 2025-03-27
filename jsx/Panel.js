@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
  */
 const Panel = (props) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [activeView, setActiveView] = useState(0);
+  const activeView = props.activeView ?? 0;
 
   /**
    * Similar to componentDidMount and componentDidUpdate.
@@ -29,13 +29,26 @@ const Panel = (props) => {
     }
   };
 
+  // Toggle filters for QueryChartForm
+  const toggleFilters = () => {
+    const currentView = props.views?.[activeView];
+  
+    if (currentView?.onToggleFilters) {
+      // If current view supports filters, toggle them
+      currentView.onToggleFilters();
+    } else if (props.views?.[1]?.onToggleFilters) {
+      // If not, fall back to view index 1
+      props.views[1].onToggleFilters();
+      if (props.onChangeView) props.onChangeView(1);
+    }
+  };
+  
   /**
    * User clicked a view to display.
    *
    * @param {number} index
    */
   const viewClicked = (index) => {
-    setActiveView(index);
     if (props.onChangeView) {
       props.onChangeView(index);
     }
@@ -66,7 +79,8 @@ const Panel = (props) => {
       );
     }
     panelViews = (
-      <div className='btn-group views'>
+    <div className='btn-group views' style={{ display: 'inline-flex', gap: '5px' }}>
+      <div className='btn-group'>
         <button type='button'
           className='btn btn-default btn-xs dropdown-toggle'
           data-toggle='dropdown'>
@@ -77,7 +91,15 @@ const Panel = (props) => {
           {views}
         </ul>
       </div>
-    );
+      <button
+        type='button'
+        className='btn btn-default btn-xs'
+        onClick={toggleFilters}
+      >
+        Filters
+      </button>
+    </div>
+    );    
   }
   // Panel Views (END)
 
