@@ -101,7 +101,7 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('document_repository_view','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'View',2),
     ('document_repository_delete','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Delete',2),
     ('server_processes_manager','Processes',(SELECT ID FROM modules WHERE Name='server_processes_manager'),'View',2),
-    ('imaging_uploader','Imaging Scans',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload',2),
+    ('imaging_uploader_allsites','Imaging Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_uploader'),'View/Upload',2),
     ('acknowledgements_view','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'View',2),
     ('acknowledgements_edit','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),'Edit',2),
     ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),'View/Download',2),
@@ -142,7 +142,9 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', 2),
     ('issue_tracker_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'View/Edit/Comment',2),
     ('issue_tracker_close_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2),
-    ('issue_tracker_close_all_issue','Issues - All Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2)
+    ('issue_tracker_close_all_issue','Issues - All Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2),
+    ('imaging_uploader_ownsites', 'Imaging Scans - Own Sites', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
+    ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2')
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)

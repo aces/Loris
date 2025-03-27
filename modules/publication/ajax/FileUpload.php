@@ -604,11 +604,41 @@ function editProject() : void
     if ($pubData['link'] !== $link) {
         $toUpdate['link'] = $link;
     }
-    if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
-        $leadInvToUpdate['Name'] = $leadInvestigator;
-    }
+    $leadInvToUpdate['Name'] = $leadInvestigator;
+
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
+        // check if email exists in database
+        $cid = $db->pselectOne(
+            'SELECT PublicationCollaboratorID '.
+            'FROM publication_collaborator '.
+            'WHERE Email=:email',
+            ['email' => $leadInvestigatorEmail]
+        );
         $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
+
+        // if email exists in database, update new email association to name & cid
+        if ($cid) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $cid]
+            );
+             $toUpdate['LeadInvestigatorID'] = $cid;
+        } else {
+            // otherwise, create new collaborator with a new id
+            $db->insert(
+                'publication_collaborator',
+                $leadInvToUpdate
+            );
+            $toUpdate['LeadInvestigatorID'] = $db->getLastInsertId();
+        }
+        // if only name is updated, update name associated to the email
+    } else if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
+        $db->update(
+            'publication_collaborator',
+            $leadInvToUpdate,
+            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+        );
     }
 
     editEditors($id);
@@ -629,13 +659,6 @@ function editProject() : void
             'publication',
             $toUpdate,
             ['PublicationID' => $id]
-        );
-    }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
 }

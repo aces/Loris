@@ -62,10 +62,15 @@ class Dictionary extends \DataFrameworkMenu
         foreach (array_values($cohorts) as $name) {
             $cohort_options[$name] = $name;
         }
+        $visit_options = [];
+        foreach (\Utility::getVisitList() as $visit) {
+            $visit_options[$visit] = $visit;
+        }
         return [
             'modules'    => $amodules,
             'categories' => $this->categories,
-            'cohorts'    => $cohort_options
+            'visits'     => $visit_options,
+            'cohorts'    => $cohort_options,
         ];
     }
 
