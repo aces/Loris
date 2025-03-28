@@ -116,7 +116,7 @@ const Recruitment = (props) => {
               json['recruitment']['overall']['total_recruitment'] > 0 ? (
                   <>
                     {showFiltersBreakdown && (
-                      <div style ={{ marginTop: '15px' }}>
+                      <div style ={{marginTop: '15px'}}>
                         <QueryChartForm
                           Module ={'statistics'}
                           name ={'recruitment'}
@@ -125,7 +125,7 @@ const Recruitment = (props) => {
                           callback ={(formDataObj) => {
                             updateFilters(formDataObj, 'siteBreakdown');
                           }}
-                        /> 
+                        />
                       </div>
                     )}
                     <div className ="site-breakdown-grid">

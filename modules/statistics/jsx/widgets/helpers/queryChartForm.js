@@ -170,9 +170,9 @@ const QueryChartForm = (props) => {
               value ={formDataObj['selectedSites']}
               onUserInput ={(name, value) => {
                 if (value.includes('__clear__')) {
-                        setFormData(name, []);
+                  setFormData(name, []);
                 } else {
-                        setFormData(name, value);
+                  setFormData(name, value);
                 }
               }}
               style ={{width: '100%', padding: '8px',
@@ -225,9 +225,9 @@ const QueryChartForm = (props) => {
               value ={formDataObj['selectedParticipantStatus']}
               onUserInput ={(name, value) => {
                 if (value.includes('__clear__')) {
-                    setFormData(name, []);
+                  setFormData(name, []);
                 } else {
-                    setFormData(name, value);
+                  setFormData(name, value);
                 }
               }}
               style ={{width: '100%', padding: '8px',

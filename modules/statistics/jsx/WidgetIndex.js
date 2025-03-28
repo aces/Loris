@@ -115,9 +115,9 @@ const WidgetIndex = (props) => {
     };
     const convertPieToCSV = (data) => {
       const csvRows = [];
-        const headers = Object.keys(data[0]);
-        csvRows.push(headers.join(','));
-        for (const row of data) {
+      const headers = Object.keys(data[0]);
+      csvRows.push(headers.join(','));
+      for (const row of data) {
         const values = headers.map(
           (header) => {
             const escapedValue = row[header].toString().replace(/"/g, '\\"');
@@ -125,15 +125,15 @@ const WidgetIndex = (props) => {
           }
         );
         csvRows.push(values.join(','));
-        }
+      }
       return csvRows.join('\n');
     };
     const convertLineToCSV = (data) => {
       const csvRows = [];
       // Adding headers row
       const headers = [
-      'Labels',
-      ...data.datasets.map((dataset) => dataset.name),
+        'Labels',
+        ...data.datasets.map((dataset) => dataset.name),
       ];
       csvRows.push(headers.join(','));
       // Adding data rows
@@ -155,7 +155,7 @@ const WidgetIndex = (props) => {
       csvData = convertLineToCSV(data);
     }
     const blob = new Blob([csvData], {type: 'text/csv'});
-    const url  = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
@@ -181,46 +181,46 @@ const WidgetIndex = (props) => {
     const queryString = '?' + new URLSearchParams(formObject).toString();
     let newChartDetails = {...chartDetails};
     Object.keys(chartDetails[section]).forEach(
-    (chart) => {
-      // update filters
-        let newChart = {...chartDetails[section][chart], filters: queryString};
-        setupCharts(false,
-            {[section]:{[chart]: newChart}}).then(
-        (data) => {
-          // update chart data
-          newChartDetails[section][chart] = data[section][chart];
-        }
-      );
-    }
+      (chart) => {
+        // update filters
+          let newChart = {...chartDetails[section][chart], filters: queryString};
+          setupCharts(false,
+              {[section]:{[chart]: newChart}}).then(
+          (data) => {
+            // update chart data
+            newChartDetails[section][chart] = data[section][chart];
+          }
+        );
+      }
     );
     setChartDetails(newChartDetails);
-    };
+  };
 
-    /**
+  /**
      * Similar to componentDidMount and componentDidUpdate.
      */
-    useEffect(
-        () => {
+  useEffect(
+    () => {
         /**
           * setup - fetch recruitment and study progression data.
           *
           * @return {Promise<void>}
           */
-            const setup = async() => {
-              const data = await fetchData(
-                `${props.baseURL}/Widgets`
-              );
-              setRecruitmentData(data);
-              setStudyProgressionData(data);
-            };
-        setup().catch(
-                (error) => {
-                console.error(error);
-                }
-            );
-        },
-        []
-    );
+      const setup = async() => {
+        const data = await fetchData(
+          `${props.baseURL}/Widgets`
+        );
+        setRecruitmentData(data);
+        setStudyProgressionData(data);
+      };
+      setup().catch(
+        (error) => {
+        console.error(error);
+        }
+      );
+    },
+    []
+  );
 
   /**
    * Renders the React component.
@@ -234,61 +234,61 @@ const WidgetIndex = (props) => {
         onClose ={() => setModalChart(null)}
         width ={'1200px'}
         title ={modalChart && modalChart.title}
-        throwWarning  ={false}
+        throwWarning ={false}
       >
         <div
           style ={{
-                margin: 'auto',
-                display: 'flex',
+            margin: 'auto',
+            display: 'flex',
           }}
         >
-        <div
-          style ={{
+          <div
+            style ={{
               margin: 'auto',
               display: 'flex',
-          }}
-          id        ='dashboardModal'
-        >
+            }}
+            id        ='dashboardModal'
+          >
             <Loader />
           </div>
         </div>
         {modalChart && modalChart.chartType &&
             <a
-            style     ={{
+              style     ={{
                 position: 'absolute',
                 bottom: '10px',
                 left: '10px',
-                }}
-            onClick   ={() => {
+              }}
+              onClick   ={() => {
                 downloadAsCSV(
-                    modalChart.data,
-                    modalChart.title,
-                    modalChart.dataType
+                  modalChart.data,
+                  modalChart.title,
+                  modalChart.dataType
                 );
-                }}
-            className ='btn btn-info'>
-            <span className ='glyphicon glyphicon-download' aria-hidden='true'/>
-            {' '}Download data as csv
+              }}
+              className ='btn btn-info'>
+              <span className ='glyphicon glyphicon-download' aria-hidden='true'/>
+              {' '}Download data as csv
             </a>
         }
         {modalChart
             && modalChart.chartType
             && modalChart.chartType !== 'line'
             && <a
-            style           ={{
+              style ={{
                 position: 'absolute',
                 bottom: '10px',
                 right: '10px',
-                }}
-            onClick         ={() => {
+              }}
+              onClick         ={() => {
                 exportChartAsImage('dashboardModal');
-                }}
-            className       ='btn btn-info'>
-            <span
-              className     ='glyphicon glyphicon-download'
-              aria-hidden   ='true'
-            />
-            {' '}Download as image(png)
+              }}
+              className ='btn btn-info'>
+              <span
+                className ='glyphicon glyphicon-download'
+                aria-hidden ='true'
+              />
+              {' '}Download as image(png)
             </a>
         }
       </Modal>
@@ -308,23 +308,23 @@ const WidgetIndex = (props) => {
   );
 };
 WidgetIndex.propTypes = {
-    baseURL: PropTypes.string,
+  baseURL: PropTypes.string,
 };
 
 /**
  * Render StatisticsIndex on page load.
  */
 window.addEventListener(
-    'load',
-    () => {
+  'load',
+  () => {
     createRoot(
-            document.getElementById('statistics_widgets')
-        ).render(
-        <WidgetIndex
-            baseURL ={`${loris.BaseURL}/statistics`}
-            />
+      document.getElementById('statistics_widgets')
+    ).render(
+      <WidgetIndex
+        baseURL ={`${loris.BaseURL}/statistics`}
+      />
     );
-    }
+  }
 );
 
 /**
@@ -333,58 +333,58 @@ window.addEventListener(
  * @param {string} chartId
  */
 const exportChartAsImage = (chartId) => {
-    const chartContainer = document.getElementById(chartId);
+  const chartContainer = document.getElementById(chartId);
 
-    if (!chartContainer) {
-        console.error(`Chart with ID '${chartId}' not found.`);
-        return;
+  if (!chartContainer) {
+    console.error(`Chart with ID '${chartId}' not found.`);
+    return;
+  }
+
+  // Get the SVG element that represents the chart
+  const svgNode = chartContainer.querySelector('svg');
+
+  // Clone the SVG node to avoid modifying the original chart
+  const clonedSvgNode = svgNode.cloneNode(true);
+
+  // Modify the font properties of the text elements
+  const textElements = clonedSvgNode.querySelectorAll('text');
+  textElements.forEach(
+    (textElement) => {
+      textElement.style.fontFamily = 'Arial, sans-serif';
+      textElement.style.fontSize = '12px';
     }
-
-    // Get the SVG element that represents the chart
-    const svgNode = chartContainer.querySelector('svg');
-
-    // Clone the SVG node to avoid modifying the original chart
-    const clonedSvgNode = svgNode.cloneNode(true);
-
-    // Modify the font properties of the text elements
-    const textElements = clonedSvgNode.querySelectorAll('text');
-    textElements.forEach(
-        (textElement) => {
-        textElement.style.fontFamily = 'Arial, sans-serif';
-        textElement.style.fontSize   = '12px';
-        }
-    );
+  );
 
   // Create a canvas element
   const canvas = document.createElement('canvas');
-  const ctx    = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
 
   // Get the SVG as XML data
   const svgData = new XMLSerializer().serializeToString(clonedSvgNode);
 
   // Create an image that can be used as the source for the canvas
-  const img  = new Image();
+  const img = new Image();
   img.onload = () => {
-        // Set the canvas size to match the chart's size
-        canvas.width  = img.width;
-        canvas.height = img.height;
+    // Set the canvas size to match the chart's size
+    canvas.width = img.width;
+    canvas.height = img.height;
 
-        // Draw the image on the canvas
-        ctx.drawImage(img, 0, 0);
+    // Draw the image on the canvas
+    ctx.drawImage(img, 0, 0);
 
-        // Export the canvas to a data URL
-        const dataURL = canvas.toDataURL('image/png');
+    // Export the canvas to a data URL
+    const dataURL = canvas.toDataURL('image/png');
 
-        // Create a link and trigger a download
-        const link    = document.createElement('a');
-        link.href     = dataURL;
-        link.download = 'chart.png';
-        link.click();
+    // Create a link and trigger a download
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'chart.png';
+    link.click();
 
-        // Clean up
-        canvas.remove();
-    };
-    img.src =
-    'data:image/svg+xml;base64,'
-    + btoa(unescape(encodeURIComponent(svgData)));
+    // Clean up
+    canvas.remove();
+  };
+  img.src =
+  'data:image/svg+xml;base64,'
+  + btoa(unescape(encodeURIComponent(svgData)));
 };
