@@ -185,7 +185,7 @@ const WidgetIndex = (props) => {
         // update filters
         let newChart = {...chartDetails[section][chart], filters: queryString};
         setupCharts(false,
-          {[section]:{[chart]: newChart}}).then(
+          {[section]:{ [chart]: newChart }}).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
@@ -247,14 +247,14 @@ const WidgetIndex = (props) => {
               margin: 'auto',
               display: 'flex',
             }}
-            id        ='dashboardModal'
+            id ='dashboardModal'
           >
             <Loader />
           </div>
         </div>
         {modalChart && modalChart.chartType &&
             <a
-              style     ={{
+              style ={{
                 position: 'absolute',
                 bottom: '10px',
                 left: '10px',
@@ -268,8 +268,8 @@ const WidgetIndex = (props) => {
               }}
               className ='btn btn-info'>
               <span
-              className ='glyphicon glyphicon-download'
-              aria-hidden='true'/>
+                className ='glyphicon glyphicon-download'
+                aria-hidden='true'/>
               {' '}Download data as csv
             </a>
         }
@@ -282,7 +282,7 @@ const WidgetIndex = (props) => {
                 bottom: '10px',
                 right: '10px',
               }}
-              onClick         ={() => {
+              onClick ={() => {
                 exportChartAsImage('dashboardModal');
               }}
               className ='btn btn-info'>
