@@ -89,7 +89,7 @@ const StudyProgression = (props) => {
           {
             content: json['studyprogression']['total_scans'] > 0 ? (
               <div style={{display: 'flex',
-                flexDirection: 'column', 
+                flexDirection: 'column',
                 gap: '10px'}}>
                 {showFiltersScans && (
                   <QueryChartForm

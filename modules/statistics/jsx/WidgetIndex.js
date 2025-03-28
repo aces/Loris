@@ -25,34 +25,34 @@ const WidgetIndex = (props) => {
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
-      let {sizing, title, chartType, options} = chartDetails[section][chartID];
-      return (
-        <div
-          className ="site-breakdown-card"
-        >
-          {/* Chart Title and Dropdown */}
-          <div className  ='chart-header'>
-            <h5 className ='chart-title'>{title}</h5>
-            {Object.keys(chartDetails[section][chartID].options).length > 1 && (
-                  <div className ="chart-dropdown-wrapper">
-                  <SelectElement
-                  className ='chart-dropdown'
-                  emptyOption ={false}
-                  options ={options}
-                  value ={options[chartType]}
-                  onUserInput ={(name, value) => {
-                      setChartDetails(
-                          {
-                              ...chartDetails,
-                              [section]: {
-                                  ...chartDetails[section],
-                                  [chartID]: {
-                                      ...chartDetails[section][chartID],
-                                      chartType: options[value],
-                                  },
+    let {sizing, title, chartType, options} = chartDetails[section][chartID];
+    return (
+      <div
+        className ="site-breakdown-card"
+      >
+        {/* Chart Title and Dropdown */}
+        <div className ='chart-header'>
+          <h5 className ='chart-title'>{title}</h5>
+          {Object.keys(chartDetails[section][chartID].options).length > 1 && (
+            <div className ="chart-dropdown-wrapper">
+              <SelectElement
+                className ='chart-dropdown'
+                emptyOption ={false}
+                options ={options}
+                value ={options[chartType]}
+                onUserInput ={(name, value) => {
+                  setChartDetails(
+                      {
+                          ...chartDetails,
+                          [section]: {
+                              ...chartDetails[section],
+                              [chartID]: {
+                                  ...chartDetails[section][chartID],
+                                  chartType: options[value],
                               },
-                          }
-                      );
+                          },
+                      }
+                  );
                   setupCharts(
                       false,
                       {
@@ -66,13 +66,13 @@ const WidgetIndex = (props) => {
                   );
                       }}
               />
-              </div>
-            )}
+            </div>
+          )}
           </div>
           {/* Chart Canvas / Modal Trigger */}
           <div className ="chart-visual-wrapper">
           <a
-            onClick      ={() => {
+            onClick ={() => {
                   setModalChart(chartDetails[section][chartID]);
                   setupCharts(
                       true,
@@ -81,7 +81,7 @@ const WidgetIndex = (props) => {
                       }
                   );
                   }}
-            id           ={chartID}
+            id ={chartID}
           >
             <Loader />
           </a>

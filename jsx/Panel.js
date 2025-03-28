@@ -17,10 +17,10 @@ const Panel = (props) => {
      * Similar to componentDidMount and componentDidUpdate.
      */
   useEffect(
-      () => {
+    () => {
       setCollapsed(props.initCollapsed);
-      },
-      []
+    },
+    []
   );
 
   /**
@@ -28,7 +28,7 @@ const Panel = (props) => {
    */
   const toggleCollapsed = () => {
     if (props.collapsing) {
-        setCollapsed(!collapsed);
+      setCollapsed(!collapsed);
     }
   };
 
@@ -37,14 +37,14 @@ const Panel = (props) => {
     const currentView = props.views?.[activeView];
 
     if (currentView?.onToggleFilters) {
-        // If current view supports filters, toggle them
-        currentView.onToggleFilters();
+      // If current view supports filters, toggle them
+      currentView.onToggleFilters();
     } else if (props.views?.[1]?.onToggleFilters) {
-        // If not, fall back to view index 1
-        props.views[1].onToggleFilters();
-        if (props.onChangeView) {
-            props.onChangeView(1);
-        }
+      // If not, fall back to view index 1
+      props.views[1].onToggleFilters();
+      if (props.onChangeView) {
+        props.onChangeView(1);
+      }
     }
   };
 
@@ -54,9 +54,9 @@ const Panel = (props) => {
      * @param {number} index
      */
   const viewClicked = (index) => {
-      if (props.onChangeView) {
-          props.onChangeView(index);
-      }
+    if (props.onChangeView) {
+      props.onChangeView(index);
+    }
   };
 
   // Panel Views (START)
@@ -70,24 +70,24 @@ const Panel = (props) => {
           onClick ={() => viewClicked(index)}
           className ={index === activeView ? 'active' : null}>
           <a data-target ={`${index}_panel_content`}>
-          {view['title']}
+            {view['title']}
           </a>
         </li>
-       );
+      );
       content.push(
-        <div key  ={index}
+        <div key ={index}
           id ={`${index}_panel_content_${props.id}`}
           className ={index === activeView ?
-              `${index}_panel_content` : `${index}_panel_content hidden`}>
+            `${index}_panel_content` : `${index}_panel_content hidden`}>
           {view['content']}
         </div>
       );
     }
     panelViews = (
       <div className ='btn-group views'
-      style={{display: 'inline-flex',
-      gap: '5px'}}>
-      <div className ='btn-group'>
+        style={{display: 'inline-flex',
+          gap: '5px'}}>
+        <div className ='btn-group'>
           <button type ='button'
             className ='btn btn-default btn-xs dropdown-toggle'
             data-toggle ='dropdown'>
@@ -97,14 +97,14 @@ const Panel = (props) => {
             role ='menu'>
             {views}
           </ul>
-      </div>
-      <button
+        </div>
+        <button
           type ='button'
           className ='btn btn-default btn-xs'
           onClick ={toggleFilters}
-          >
+        >
           Filters
-      </button>
+        </button>
       </div>
     );
   }
@@ -112,26 +112,26 @@ const Panel = (props) => {
 
   // Add panel header, if title is set
   const panelHeading = props.title || props.views ? (
-  <div className ='panel-heading'
-    data-parent ={props.parentId
-          ? `#${props.parentId}`
-          : null}>
-    <h3 className ='panel-title'>
-      {props.views && props.views[activeView]['title']
-          ? props.views[activeView]['title']
-          : props.title}
-    </h3>
-    {panelViews}
-    {props.collapsing
+    <div className ='panel-heading'
+      data-parent ={props.parentId
+        ? `#${props.parentId}`
+        : null}>
+      <h3 className ='panel-title'>
+        {props.views && props.views[activeView]['title']
+        ? props.views[activeView]['title']
+        : props.title}
+      </h3>
+      {panelViews}
+      {props.collapsing
         ? <span className ={collapsed ?
-            'glyphicon glyphicon-chevron-down' :
-            'glyphicon glyphicon-chevron-up'}
+          'glyphicon glyphicon-chevron-down' :
+          'glyphicon glyphicon-chevron-up'}
         onClick ={toggleCollapsed}
         data-toggle ='collapse'
         data-target ={`#${props.id}`}
         style ={{cursor: 'pointer'}}/>
         : null}
-  </div>
+    </div>
   ) : '';
 
   /**
@@ -157,7 +157,7 @@ const Panel = (props) => {
     </div>
   );
 };
-Panel.propTypes    = {
+Panel.propTypes = {
   initCollapsed: PropTypes.bool,
   collapsed: PropTypes.bool,
   parentId: PropTypes.string,
