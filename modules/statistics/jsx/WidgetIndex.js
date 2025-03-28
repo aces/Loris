@@ -183,9 +183,9 @@ const WidgetIndex = (props) => {
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
         // update filters
-          let newChart = {...chartDetails[section][chart], filters: queryString};
-          setupCharts(false,
-              {[section]:{[chart]: newChart}}).then(
+        let newChart = {...chartDetails[section][chart], filters: queryString};
+        setupCharts(false,
+          {[section]:{[chart]: newChart}}).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
@@ -201,12 +201,12 @@ const WidgetIndex = (props) => {
      */
   useEffect(
     () => {
-        /**
+      /**
           * setup - fetch recruitment and study progression data.
           *
           * @return {Promise<void>}
           */
-      const setup = async() => {
+      const setup = async () => {
         const data = await fetchData(
           `${props.baseURL}/Widgets`
         );
@@ -215,7 +215,7 @@ const WidgetIndex = (props) => {
       };
       setup().catch(
         (error) => {
-        console.error(error);
+          console.error(error);
         }
       );
     },
@@ -259,7 +259,7 @@ const WidgetIndex = (props) => {
                 bottom: '10px',
                 left: '10px',
               }}
-              onClick   ={() => {
+              onClick ={() => {
                 downloadAsCSV(
                   modalChart.data,
                   modalChart.title,
@@ -267,7 +267,9 @@ const WidgetIndex = (props) => {
                 );
               }}
               className ='btn btn-info'>
-              <span className ='glyphicon glyphicon-download' aria-hidden='true'/>
+              <span
+              className ='glyphicon glyphicon-download'
+              aria-hidden='true'/>
               {' '}Download data as csv
             </a>
         }
@@ -293,15 +295,15 @@ const WidgetIndex = (props) => {
         }
       </Modal>
       <Recruitment
-        data          ={recruitmentData}
-        baseURL       ={props.baseURL}
-        showChart     ={showChart}
+        data ={recruitmentData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
         updateFilters ={updateFilters}
       />
       <StudyProgression
-        data          ={studyProgressionData}
-        baseURL       ={props.baseURL}
-        showChart     ={showChart}
+        data ={studyProgressionData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
         updateFilters ={updateFilters}
       />
     </>
