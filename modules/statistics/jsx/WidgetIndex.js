@@ -185,7 +185,7 @@ const WidgetIndex = (props) => {
         // update filters
         let newChart = {...chartDetails[section][chart], filters: queryString};
         setupCharts(false,
-          {[section]: { [chart]: newChart }}).then(
+          {[section]: {[chart]: newChart}}).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
