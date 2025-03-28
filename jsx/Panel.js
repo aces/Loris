@@ -118,8 +118,8 @@ const Panel = (props) => {
         : null}>
       <h3 className ='panel-title'>
         {props.views && props.views[activeView]['title']
-        ? props.views[activeView]['title']
-        : props.title}
+          ? props.views[activeView]['title']
+          : props.title}
       </h3>
       {panelViews}
       {props.collapsing

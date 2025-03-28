@@ -27,7 +27,7 @@ const QueryChartForm = (props) => {
         let projectOptions = {};
         for (const [key, value] of
           Object.entries(json['options']['projects'])) {
-            projectOptions[key] = value;
+          projectOptions[key] = value;
         }
         setOptionsProjects(projectOptions);
         let cohortOptions = {};
@@ -75,7 +75,7 @@ const QueryChartForm = (props) => {
         const newFormData = {
           ...prevState,
           [formElement]: normalizedValue.length > 0
-          ?normalizedValue : undefined,
+            ?normalizedValue : undefined,
         };
         props.callback(newFormData);
         return newFormData;
@@ -117,9 +117,9 @@ const QueryChartForm = (props) => {
               value ={formDataObj['selectedProjects']}
               onUserInput ={(name, value) => {
                 if (value.includes('__clear__')) {
-                    setFormData(name, []);
+                  setFormData(name, []);
                 } else {
-                    setFormData(name, value);
+                  setFormData(name, value);
                 }
               }}
               style ={{width: '100%', padding: '8px',
@@ -144,9 +144,9 @@ const QueryChartForm = (props) => {
               value ={formDataObj['selectedCohorts']}
               onUserInput ={(name, value) => {
                 if (value.includes('__clear__')) {
-                    setFormData(name, []);
+                  setFormData(name, []);
                 } else {
-                    setFormData(name, value);
+                  setFormData(name, value);
                 }
               }}
               style ={{width: '100%', padding: '8px',
@@ -169,12 +169,12 @@ const QueryChartForm = (props) => {
               emptyOption ={false}
               value ={formDataObj['selectedSites']}
               onUserInput ={(name, value) => {
-                    if (value.includes('__clear__')) {
+                if (value.includes('__clear__')) {
                         setFormData(name, []);
-                    } else {
+                } else {
                         setFormData(name, value);
-                    }
-                    }}
+                }
+              }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
                 border: '1px solid #ccc'}}
@@ -185,7 +185,7 @@ const QueryChartForm = (props) => {
         {/* Visit Section */}
         {Object.keys(props.data['options']['visits']).length > 0 && (
           <div>
-            <label style ={{ fontWeight: 'bold',
+            <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
               display: 'block'}}>Visit</label>
             <SelectElement
@@ -196,12 +196,12 @@ const QueryChartForm = (props) => {
               emptyOption ={false}
               value ={formDataObj['selectedVisits']}
               onUserInput ={(name, value) => {
-                    if (value.includes('__clear__')) {
-                        setFormData(name, []);
-                    } else {
-                        setFormData(name, value);
-                    }
-                    }}
+                if (value.includes('__clear__')) {
+                  setFormData(name, []);
+                } else {
+                  setFormData(name, value);
+                }
+              }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
                 border: '1px solid #ccc'}}
@@ -218,18 +218,18 @@ const QueryChartForm = (props) => {
               display: 'block'}}>Status</label>
             <SelectElement
               name ='selectedParticipantStatus'
-              options ={{ __clear__: '-- Clear Selection --',
-                ...optionsStatus }}
+              options ={{__clear__: '-- Clear Selection --',
+                ...optionsStatus}}
               multiple ={true}
               emptyOption ={false}
               value ={formDataObj['selectedParticipantStatus']}
               onUserInput ={(name, value) => {
-                    if (value.includes('__clear__')) {
-                        setFormData(name, []);
-                    } else {
-                        setFormData(name, value);
-                    }
-                    }}
+                if (value.includes('__clear__')) {
+                    setFormData(name, []);
+                } else {
+                    setFormData(name, value);
+                }
+              }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
                 border: '1px solid #ccc'}}
@@ -251,7 +251,7 @@ const QueryChartForm = (props) => {
     </FormElement>
   );
 };
-QueryChartForm.propTypes    = {
+QueryChartForm.propTypes = {
   data: PropTypes.object,
   callback: PropTypes.func,
   Module: PropTypes.string,

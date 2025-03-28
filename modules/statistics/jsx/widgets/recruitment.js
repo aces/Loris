@@ -79,15 +79,15 @@ const Recruitment = (props) => {
 
   useEffect(
     () => {
-    if (json && Object.keys(json).length !== 0) {
+      if (json && Object.keys(json).length !== 0) {
         setupCharts(false, chartDetails).then(
-        (data) => {
+          (data) => {
             setChartDetails(data);
-        }
+          }
         );
         json = props.data;
         setLoading(false);
-    }
+      }
     },
     [props.data]
   );
@@ -118,23 +118,23 @@ const Recruitment = (props) => {
                     {showFiltersBreakdown && (
                       <div style ={{ marginTop: '15px' }}>
                         <QueryChartForm
-                        Module ={'statistics'}
-                        name ={'recruitment'}
-                        id ={'recruitmentSiteBreakdownForm'}
-                        data ={json}
-                        callback ={(formDataObj) => {
+                          Module ={'statistics'}
+                          name ={'recruitment'}
+                          id ={'recruitmentSiteBreakdownForm'}
+                          data ={json}
+                          callback ={(formDataObj) => {
                             updateFilters(formDataObj, 'siteBreakdown');
-                            }}
-                        />  
+                          }}
+                        /> 
                       </div>
                     )}
                     <div className ="site-breakdown-grid">
                       {Object.keys(chartDetails['siteBreakdown']).map(
-                          (chartID) => (
+                        (chartID) => (
                           <React.Fragment key ={chartID}>
-                          {showChart('siteBreakdown', chartID)}
+                            {showChart('siteBreakdown', chartID)}
                           </React.Fragment>
-                          )
+                        )
                       )}
                     </div>
                   </>
@@ -145,12 +145,12 @@ const Recruitment = (props) => {
             onToggleFilters: () => {
               setActiveView(1);
               setShowFiltersBreakdown((prev) => !prev);
-            }
+            },
           },
           {
             content:
               <>
-              {Object.entries(json['recruitment']).map(
+                {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
                     if (key !== 'overall') {
                       return <div key ={`projectBreakdown_${key}`}>
@@ -158,7 +158,7 @@ const Recruitment = (props) => {
                       </div>;
                     }
                   }
-              )}
+                )}
               </>,
             title: 'Recruitment - project breakdown',
           },
@@ -172,7 +172,7 @@ const Recruitment = (props) => {
                         {progressBarBuilder(value)}
                       </div>;
                     }
-                )}
+                  )}
               </>,
             title: 'Recruitment - cohort breakdown',
           },

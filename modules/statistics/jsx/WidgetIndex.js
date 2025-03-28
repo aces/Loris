@@ -25,7 +25,7 @@ const WidgetIndex = (props) => {
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
-    let {sizing, title, chartType, options} = chartDetails[section][chartID];
+    let {title, chartType, options} = chartDetails[section][chartID];
     return (
       <div
         className ="site-breakdown-card"
@@ -42,156 +42,157 @@ const WidgetIndex = (props) => {
                 value ={options[chartType]}
                 onUserInput ={(name, value) => {
                   setChartDetails(
-                      {
-                          ...chartDetails,
-                          [section]: {
-                              ...chartDetails[section],
-                              [chartID]: {
-                                  ...chartDetails[section][chartID],
-                                  chartType: options[value],
-                              },
-                          },
-                      }
+                    {
+                      ...chartDetails,
+                      [section]: {
+                        ...chartDetails[section],
+                        [chartID]: {
+                          ...chartDetails[section][chartID],
+                          chartType: options[value],
+                        },
+                      },
+                    }
                   );
                   setupCharts(
-                      false,
-                      {
-                          [section]: {
-                              [chartID]: {
-                                  ...chartDetails[section][chartID],
-                                  chartType: options[value],
-                              },
-                          },
-                      }
+                    false,
+                    {
+                      [section]: {
+                        [chartID]: {
+                          ...chartDetails[section][chartID],
+                          chartType: options[value],
+                        },
+                      },
+                    }
                   );
-                      }}
+                }}
               />
             </div>
           )}
-          </div>
-          {/* Chart Canvas / Modal Trigger */}
-          <div className ="chart-visual-wrapper">
+        </div>
+        {/* Chart Canvas / Modal Trigger */}
+        <div className ="chart-visual-wrapper">
           <a
             onClick ={() => {
-                  setModalChart(chartDetails[section][chartID]);
-                  setupCharts(
-                      true,
-                      {
-                          [section]: { [chartID]: chartDetails[section][chartID] },
-                      }
-                  );
-                  }}
+              setModalChart(chartDetails[section][chartID]);
+              setupCharts(
+                true,
+                {
+                  [section]:
+                  {[chartID]: chartDetails[section][chartID]},
+                }
+              );
+            }}
             id ={chartID}
           >
             <Loader />
           </a>
-          </div>
         </div>
-      );
+      </div>
+    );
   };
 
   const downloadAsCSV = (data, filename, dataType) => {
-      const convertBarToCSV = (data) => {
-          const csvRows = [];
-          // Adding headers row
-          const headers = ['Labels', ...Object.keys(data.datasets)];
-          csvRows.push(headers.join(','));
-          // Adding data rows
-          const maxDatasetLength = Math.max(
-              ...Object.values(data.datasets).map(
-                  (arr) => arr.length
-              )
-          );
+    const convertBarToCSV = (data) => {
+      const csvRows = [];
+      // Adding headers row
+      const headers = ['Labels', ...Object.keys(data.datasets)];
+      csvRows.push(headers.join(','));
+      // Adding data rows
+      const maxDatasetLength = Math.max(
+        ...Object.values(data.datasets).map(
+          (arr) => arr.length
+        )
+      );
       for (let i = 0; i < maxDatasetLength; i++) {
-          const values = [`"${data.labels[i]}"` || '']; // Label for this row
-          for (const datasetKey of Object.keys(data.datasets)) {
-              const value = data.datasets[datasetKey][i];
-              values.push(`"${value}"` || '');
-          }
-          csvRows.push(values.join(','));
+        const values = [`"${data.labels[i]}"` || '']; // Label for this row
+        for (const datasetKey of Object.keys(data.datasets)) {
+          const value = data.datasets[datasetKey][i];
+          values.push(`"${value}"` || '');
+        }
+        csvRows.push(values.join(','));
       }
       return csvRows.join('\n');
-      };
-      const convertPieToCSV = (data) => {
-          const csvRows = [];
-          const headers = Object.keys(data[0]);
-          csvRows.push(headers.join(','));
-          for (const row of data) {
-              const values = headers.map(
-                  (header) => {
-                      const escapedValue = row[header].toString().replace(/"/g, '\\"');
-                      return `"${escapedValue}"`;
-                  }
-              );
-              csvRows.push(values.join(','));
+    };
+    const convertPieToCSV = (data) => {
+      const csvRows = [];
+        const headers = Object.keys(data[0]);
+        csvRows.push(headers.join(','));
+        for (const row of data) {
+        const values = headers.map(
+          (header) => {
+            const escapedValue = row[header].toString().replace(/"/g, '\\"');
+            return `"${escapedValue}"`;
           }
-          return csvRows.join('\n');
-      };
-      const convertLineToCSV = (data) => {
-          const csvRows = [];
-          // Adding headers row
-          const headers = [
-          'Labels',
-          ...data.datasets.map((dataset) => dataset.name),
-          ];
-          csvRows.push(headers.join(','));
-          // Adding data rows
-          for (let i = 0; i < data.labels.length; i++) {
-              const values = [data.labels[i]]; // Label for this row
-              for (const dataset of data.datasets) {
-                  values.push(dataset.data[i] || '');
-              }
-              csvRows.push(values.join(','));
-          }
-          return csvRows.join('\n');
-      };
-      let csvData = '';
-      if (dataType == 'pie') {
-          csvData = convertPieToCSV(data);
-      } else if (dataType == 'bar') {
-          csvData = convertBarToCSV(data);
-      } else if (dataType == 'line') {
-          csvData = convertLineToCSV(data);
+        );
+        csvRows.push(values.join(','));
+        }
+      return csvRows.join('\n');
+    };
+    const convertLineToCSV = (data) => {
+      const csvRows = [];
+      // Adding headers row
+      const headers = [
+      'Labels',
+      ...data.datasets.map((dataset) => dataset.name),
+      ];
+      csvRows.push(headers.join(','));
+      // Adding data rows
+      for (let i = 0; i < data.labels.length; i++) {
+        const values = [data.labels[i]]; // Label for this row
+        for (const dataset of data.datasets) {
+          values.push(dataset.data[i] || '');
+        }
+        csvRows.push(values.join(','));
       }
-      const blob = new Blob([csvData], {type: 'text/csv'});
-      const url  = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      return csvRows.join('\n');
+    };
+    let csvData = '';
+    if (dataType == 'pie') {
+      csvData = convertPieToCSV(data);
+    } else if (dataType == 'bar') {
+      csvData = convertBarToCSV(data);
+    } else if (dataType == 'line') {
+      csvData = convertLineToCSV(data);
+    }
+    const blob = new Blob([csvData], {type: 'text/csv'});
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
-   // used by recruitment.js and studyprogression.js to update the filters for each chart.
-   const updateFilters = (
-   formDataObj,
-   section,
-   chartDetails,
-   setChartDetails
+  // used by recruitment.js and studyprogression.js to update the filters for each chart.
+  const updateFilters = (
+    formDataObj,
+    section,
+    chartDetails,
+    setChartDetails
   ) => {
-        let formObject  = new FormData();
-        for (const key in formDataObj) {
-            if (formDataObj[key] != '' && formDataObj[key] != ['']) {
-                formObject.append(key, formDataObj[key]);
-            }
+    let formObject = new FormData();
+    for (const key in formDataObj) {
+      if (formDataObj[key] != '' && formDataObj[key] != ['']) {
+        formObject.append(key, formDataObj[key]);
+      }
+    }
+    const queryString = '?' + new URLSearchParams(formObject).toString();
+    let newChartDetails = {...chartDetails};
+    Object.keys(chartDetails[section]).forEach(
+    (chart) => {
+      // update filters
+        let newChart = {...chartDetails[section][chart], filters: queryString};
+        setupCharts(false,
+            {[section]:{[chart]: newChart}}).then(
+        (data) => {
+          // update chart data
+          newChartDetails[section][chart] = data[section][chart];
         }
-        const queryString = '?' + new URLSearchParams(formObject).toString();
-
-        let newChartDetails = {...chartDetails};
-        Object.keys(chartDetails[section]).forEach(
-            (chart) => {
-            // update filters
-                let newChart = {...chartDetails[section][chart], filters: queryString};
-            setupCharts(false, {[section]: {[chart]: newChart}}).then(
-                    (data) => {
-                    // update chart data
-                        newChartDetails[section][chart] = data[section][chart];
-                    }
-                );
-            }
-        );
+      );
+    }
+    );
     setChartDetails(newChartDetails);
     };
 
