@@ -22,15 +22,16 @@ import SidebarContent from './components/SidebarContent';
 let EEGLabSeriesProvider;
 let SeriesRenderer;
 let EEGMontage;
+
+EEGLabSeriesProvider = require(
+  './react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
+).default;
+EEGMontage = require(
+  './react-series-data-viewer/src/series/components/EEGMontage'
+).default;
 if (EEG_VIS_ENABLED) {
-  EEGLabSeriesProvider = require(
-    './react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
-  ).default;
   SeriesRenderer = require(
     './react-series-data-viewer/src/series/components/SeriesRenderer'
-  ).default;
-  EEGMontage = require(
-    './react-series-data-viewer/src/series/components/EEGMontage'
   ).default;
 }
 
@@ -366,7 +367,6 @@ class ElectrophysiologySessionView extends Component {
               title={this.state.database[i].file.name}
               data={this.state.database[i].file.details}
             >
-              {EEG_VIS_ENABLED &&
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
                   chunksURL={
@@ -383,6 +383,7 @@ class ElectrophysiologySessionView extends Component {
                     this.state.database[i].file.summary[0].value
                   }
                 >
+                  {EEG_VIS_ENABLED &&
                   <Panel
                     id='channel-viewer'
                     title={
@@ -443,7 +444,7 @@ class ElectrophysiologySessionView extends Component {
                     <SeriesRenderer
                       physioFileID={this.state.database[i].file.id}
                     />
-                  </Panel>
+                  </Panel>}
                   <div className='row'>
                     <div className='col-md-6 col-lg-4'>
                       <SummaryPanel
@@ -462,7 +463,7 @@ class ElectrophysiologySessionView extends Component {
                     </div>
                   </div>
                 </EEGLabSeriesProvider>
-              </div>}
+              </div>
             </FilePanel>
           </div>
         );
