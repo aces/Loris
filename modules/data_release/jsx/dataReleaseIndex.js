@@ -193,7 +193,8 @@ class DataReleaseIndex extends Component {
       }},
       {label: 'Version', show: true, filter: {
         name: 'version',
-        type: 'text',
+        type: 'select',
+        options: this.state.data.fieldOptions.versions,
       }},
       {label: 'Upload Date', show: true, filter: {
         name: 'uploadDate',
@@ -229,6 +230,7 @@ class DataReleaseIndex extends Component {
           }
           action={loris.BaseURL + '/data_release/files'}
           projects={this.state.data.fieldOptions.projects}
+          versions={this.state.data.fieldOptions.versions}
         />
       </Modal>
     );
