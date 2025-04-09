@@ -75,77 +75,12 @@ class InstrumentDataParser extends CSVParser
     ): array {
         return array_merge(
             ['PSCID', 'Visit_label'],   // SessionID
-            self::getFlagHeaders(
-                [
-                    'ID', 'SessionID', 'Test_name', 'TestID',
-                    'CommentID', 'UserID', 'Data', 'DataID',
-                    'Order'
-                ]
-            ),
             self::getInstrumentHeaders(
                 $loris,
                 $instrumentName,
-                [
-                    'CommentID', 'UserID', 'Testdate', 'Examiner'
-                ]
+                ['CommentID', 'UserID', 'Testdate', 'Examiner']
             ),
         );
-    }
-
-    /**
-     * Get expected columns from `flag` table
-     *
-     * @param array $excluded Excluded columns. Default is
-     *                        single-item array with empty
-     *                        string
-     *
-     * @return array    Returns columns from flag table
-     */
-    public static function getFlagHeaders(array $excluded = ['']): array
-    {
-        return self::getDBColumns('flag', $excluded);
-    }
-
-    /**
-     * Get columns from DB table
-     *
-     * @param string $tableName DB table name
-     * @param array  $excluded  Excluded columns. Default is
-     *                          single-item array with empty
-     *                          string
-     *
-     * @return array            Returns columns from DB table
-     */
-    public static function getDBColumns(
-        string $tableName, array $excluded = ['']
-    ): array {
-        $db = NDB_Factory::singleton()->database();
-
-        $query   = "SELECT column_name
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE table_name = :table
-             AND column_name NOT IN (" .
-            implode(
-                ',',
-                array_map(
-                    function ($col) {
-                        return "'$col'";
-                    },
-                    $excluded,
-                )
-            ) . ")";
-        $results = $db->pselect(
-            $query,
-            [
-                'table' => $tableName,
-            ]
-        );
-
-        $headers = [];
-        foreach ($results as $row) {
-            $headers[] = $row['column_name'];
-        }
-        return $headers;
     }
 
     /**
