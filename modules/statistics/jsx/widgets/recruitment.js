@@ -24,7 +24,6 @@ const Recruitment = (props) => {
     {
       'siteBreakdown': {
         'agerecruitment_pie': {
-          sizing: 5,
           title: 'Total recruitment by Age',
           filters: '',
           chartType: 'pie',
@@ -34,7 +33,6 @@ const Recruitment = (props) => {
           legend: 'under',
         },
         'ethnicity_pie': {
-          sizing: 5,
           title: 'Ethnicity at Screening',
           filters: '',
           chartType: 'pie',
@@ -44,7 +42,6 @@ const Recruitment = (props) => {
           legend: 'under',
         },
         'siterecruitment_pie': {
-          sizing: 5,
           title: 'Total Recruitment per Site',
           filters: '',
           chartType: 'pie',
@@ -54,7 +51,6 @@ const Recruitment = (props) => {
           options: {pie: 'pie', bar: 'bar'},
         },
         'siterecruitment_bysex': {
-          sizing: 5,
           title: 'Biological sex breakdown by site',
           filters: '',
           chartType: 'bar',
@@ -114,33 +110,40 @@ const Recruitment = (props) => {
             content:
               json['recruitment']['overall'] &&
               json['recruitment']['overall']['total_recruitment'] > 0 ? (
-                  <>
-                    {showFiltersBreakdown && (
-                      <div style ={{marginTop: '15px'}}>
-                        <QueryChartForm
-                          Module ={'statistics'}
-                          name ={'recruitment'}
-                          id ={'recruitmentSiteBreakdownForm'}
-                          data ={json}
-                          callback ={(formDataObj) => {
-                            updateFilters(formDataObj, 'siteBreakdown');
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className ="site-breakdown-grid">
-                      {Object.keys(chartDetails['siteBreakdown']).map(
-                        (chartID) => (
-                          <React.Fragment key ={chartID}>
-                            {showChart('siteBreakdown', chartID)}
-                          </React.Fragment>
-                        )
-                      )}
+                <>
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                    >
+                      {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                    </button>
+                  </div>
+                  {showFiltersBreakdown && (
+                    <div style={{marginTop: '15px'}}>
+                      <QueryChartForm
+                        Module={'statistics'}
+                        name={'recruitment'}
+                        id={'recruitmentSiteBreakdownForm'}
+                        data={json}
+                        callback={(formDataObj) => {
+                          updateFilters(formDataObj, 'siteBreakdown');
+                        }}
+                      />
                     </div>
-                  </>
-                ) : (
-                  <p>There have been no candidates registered yet.</p>
-                ),
+                  )}
+                  <div className="site-breakdown-grid">
+                    {Object.keys(chartDetails['siteBreakdown']).map((chartID) => (
+                      <React.Fragment key={chartID}>
+                        {showChart('siteBreakdown', chartID)}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p>There have been no candidates registered yet.</p>
+              ),
             title: 'Recruitment - site breakdown',
             onToggleFilters: () => {
               setActiveView(1);
