@@ -127,13 +127,13 @@ const StudyProgression = (props) => {
             content: json['studyprogression']['recruitment']['overall'][
               'total_recruitment'
             ] > 0 ? (
-               <div
+                <div
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '10px',
                   }}
-               >
+                >
                   <div className="btn-group" style={{marginBottom: '10px'}}>
                     <button
                       type="button"
