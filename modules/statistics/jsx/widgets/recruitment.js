@@ -110,40 +110,42 @@ const Recruitment = (props) => {
             content:
               json['recruitment']['overall'] &&
               json['recruitment']['overall']['total_recruitment'] > 0 ? (
-                <>
-                  <div className="btn-group" style={{marginBottom: '10px'}}>
-                    <button
-                      type="button"
-                      className="btn btn-default btn-xs"
-                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
-                    >
-                      {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
-                    </button>
-                  </div>
-                  {showFiltersBreakdown && (
-                    <div style={{marginTop: '15px'}}>
-                      <QueryChartForm
-                        Module={'statistics'}
-                        name={'recruitment'}
-                        id={'recruitmentSiteBreakdownForm'}
-                        data={json}
-                        callback={(formDataObj) => {
-                          updateFilters(formDataObj, 'siteBreakdown');
-                        }}
-                      />
+                  <>
+                    <div className="btn-group" style={{marginBottom: '10px'}}>
+                      <button
+                        type="button"
+                        className="btn btn-default btn-xs"
+                        onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                      >
+                        {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                      </button>
                     </div>
-                  )}
-                  <div className="site-breakdown-grid">
-                    {Object.keys(chartDetails['siteBreakdown']).map((chartID) => (
-                      <React.Fragment key={chartID}>
-                        {showChart('siteBreakdown', chartID)}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p>There have been no candidates registered yet.</p>
-              ),
+                    {showFiltersBreakdown && (
+                      <div style={{marginTop: '15px'}}>
+                        <QueryChartForm
+                          Module={'statistics'}
+                          name={'recruitment'}
+                          id={'recruitmentSiteBreakdownForm'}
+                          data={json}
+                          callback={(formDataObj) => {
+                            updateFilters(formDataObj, 'siteBreakdown');
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="site-breakdown-grid">
+                      {Object
+                        .keys(chartDetails['siteBreakdown'])
+                        .map((chartID) => (
+                          <React.Fragment key={chartID}>
+                            {showChart('siteBreakdown', chartID)}
+                          </React.Fragment>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p>There have been no candidates registered yet.</p>
+                ),
             title: 'Recruitment - site breakdown',
             onToggleFilters: () => {
               setActiveView(1);

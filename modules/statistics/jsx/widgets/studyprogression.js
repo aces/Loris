@@ -88,8 +88,14 @@ const StudyProgression = (props) => {
         views={[
           {
             content: json['studyprogression']['total_scans'] > 0 ? (
-              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <div className="btn-group" style={{ marginBottom: '10px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div className="btn-group" style={{marginBottom: '10px'}}>
                   <button
                     type="button"
                     className="btn btn-default btn-xs"
@@ -118,9 +124,17 @@ const StudyProgression = (props) => {
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
-            content: json['studyprogression']['recruitment']['overall']['total_recruitment'] > 0 ? (
-              <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                <div className="btn-group" style={{ marginBottom: '10px' }}>
+            content: json['studyprogression']['recruitment']['overall'][
+              'total_recruitment'
+            ] > 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div className="btn-group" style={{marginBottom: '10px'}}>
                   <button
                     type="button"
                     className="btn btn-default btn-xs"
@@ -143,8 +157,8 @@ const StudyProgression = (props) => {
                 {showChart('total_recruitment', 'siterecruitment_line')}
               </div>
             ) : (
-                <p>There have been no candidates registered yet.</p>
-              ),
+              <p>There have been no candidates registered yet.</p>
+            ),
             title: 'Study Progression - site recruitment',
             onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
           },
