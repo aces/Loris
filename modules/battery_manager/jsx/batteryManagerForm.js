@@ -146,8 +146,9 @@ class BatteryManagerForm extends Component {
           label="Enable Double Data Entry"
           options={options.DoubleDataEntryEnabled}
           onUserInput={setTest}
-          required={false}
+          required={true}
           value={test.DoubleDataEntryEnabled}
+          emptyOption={false}
         />
         <ButtonElement
           label="Submit"
