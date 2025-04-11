@@ -140,7 +140,7 @@ const Recruitment = (props) => {
                           <React.Fragment key={chartID}>
                             {showChart('siteBreakdown', chartID)}
                           </React.Fragment>
-                      ))}
+                        ))}
                     </div>
                   </>
                 ) : (
