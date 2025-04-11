@@ -200,7 +200,7 @@ RaisinBread:
 
 "Language: PHP":
 - changed-files:
-  - any-glob-to-any-file: '**/*.class.inc'
+  - any-glob-to-any-file: ['**/*.class.inc', '**/*.php']
 
 "Language: Javascript":
 - changed-files:
