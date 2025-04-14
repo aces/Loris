@@ -488,6 +488,24 @@ class RedcapNotificationHandler
             );
         }
 
+        // if REDCap checkbox (multiselect) options, extract the base name
+        // REDCap checkbox is noted by a triple underscore and a the selected
+        // option key i.e. "___{optionKey}"
+        $record_names = array_unique(
+            array_reduce(
+                $record_names,
+                function ($names, $name) {
+                    preg_match('/(.*)[_][_][_](.*)/', $name, $matches);
+                    if (!empty($matches[1])) {
+                        $name = $matches[1];
+                    }
+                    $names[] = $name;
+                    return $names;
+                },
+                []
+            )
+        );
+
         // -- DIFF LORIS-REDCap FIELD NAMES
         // Make sure all REDCap fields exists in LORIS.
         // Note: Score fields should be removed to have an exact match.
