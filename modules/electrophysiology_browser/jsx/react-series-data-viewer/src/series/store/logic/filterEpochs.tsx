@@ -59,7 +59,7 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
 
       if (filteredEpochs.includes(index)) {
         newFilteredEpochs = filteredEpochs.filter((i) => i !== index);
-      } else if (index >= 0 && index < epochs.length) {
+      } else if (typeof index === 'number' && index >= 0 && index < epochs.length) {
         newFilteredEpochs = filteredEpochs.slice();
         newFilteredEpochs.push(index);
         newFilteredEpochs.sort();
@@ -86,7 +86,7 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
       const {epochs} = fromState(state);
       const index = payload;
 
-      if (index < 0 || index >= epochs.length) {
+      if (typeof index !== 'number' || index < 0 || index >= epochs.length) {
         return;
       }
 
