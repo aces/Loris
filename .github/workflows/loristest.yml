@@ -18,6 +18,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install protoc-gen-js plugin
+      run: npm install -g protoc-gen-js
+
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
