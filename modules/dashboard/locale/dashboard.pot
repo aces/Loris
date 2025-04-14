@@ -24,3 +24,8 @@ msgstr ""
 msgid "My Tasks"
 msgstr ""
 
+msgid "Site: All"
+msgstr ""
+
+msgid "Site: All User Sites"
+msgstr ""
