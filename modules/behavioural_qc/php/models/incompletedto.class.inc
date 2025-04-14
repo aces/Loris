@@ -28,6 +28,13 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     private $_instrument = '';
 
     /**
+     * Data Entry Type (FDE or DDE)
+     *
+     * @var string
+     */
+    private $_data_entry_type = '';
+
+    /**
      * The candID
      *
      * @var string
@@ -134,18 +141,19 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return [
-            'instrument' => $this->_instrument,
-            'candID'     => $this->_candID,
-            'pscID'      => $this->_pscID,
-            'visit'      => $this->_visit,
-            'project'    => $this->_project,
-            'cohort'     => $this->_cohort,
-            'site'       => $this->_site,
-            'id'         => $this->_id,
-            'sessionID'  => $this->_sessionID,
-            'test_name'  => $this->_test_name,
-            'data_entry' => $this->_data_entry,
-            'commentID'  => $this->_commentID,
+            'instrument'      => $this->_instrument,
+            'data_entry_type' => $this->_data_entry_type,
+            'candID'          => $this->_candID,
+            'pscID'           => $this->_pscID,
+            'visit'           => $this->_visit,
+            'project'         => $this->_project,
+            'cohort'          => $this->_cohort,
+            'site'            => $this->_site,
+            'id'              => $this->_id,
+            'sessionID'       => $this->_sessionID,
+            'test_name'       => $this->_test_name,
+            'data_entry'      => $this->_data_entry,
+            'commentID'       => $this->_commentID,
         ];
     }
 }
