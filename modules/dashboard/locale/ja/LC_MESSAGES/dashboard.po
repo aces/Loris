@@ -24,3 +24,8 @@ msgstr "ダッシュボード"
 msgid "My Tasks"
 msgstr "私のタスク"
 
+msgid "Site: All"
+msgstr "サイト: すべて"
+
+msgid "Site: All User Sites"
+msgstr "サイト: すべてのユーザーサイト"

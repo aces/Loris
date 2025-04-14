@@ -35,9 +35,11 @@ class TaskQueryWidget extends TaskWidget
      * Construct a TaskQueryWidget
      *
      * @param \User     $user         The user whose tasks are being displayed
-     * @param string    $label        The label for the task widget. It should be
-     *                                singular and phrased in a way that adding
-     *                                an "s" pluralizes.
+     * @param string    $labeldomain  The gettext textdomain to use for the label
+     * @param string    $label        The label for the task widget when the count
+     *                                is "1".
+     * @param string    $labelplural  The label for the task widget when the count
+     *                                is more than 1.
      * @param \Database $db           The database connection for the query.
      * @param string    $dbquery      The query to run to get a count.
      * @param string    $allperm      The permission to use to determine if the user
@@ -54,7 +56,9 @@ class TaskQueryWidget extends TaskWidget
      */
     public function __construct(
         \User $user,
+        string $labeldomain,
         string $label,
+        string $labelplural,
         \Database $db,
         string $dbquery,
         string $allperm,
@@ -64,13 +68,13 @@ class TaskQueryWidget extends TaskWidget
         string $cssclass
     ) {
         $queryparams = [];
-        $siteLabel   = 'Site: All';
+        $siteLabel   = dgettext("dashboard", 'Site: All');
         if ($allperm != '') {
             if (!$user->hasPermission($allperm)) {
                 $sites = $user->getCenterIDs();
                 $queryparams['SiteID'] = implode(',', $sites);
                 $dbquery  .= " AND FIND_IN_SET($sitefield, :SiteID)";
-                $siteLabel = 'Site: All User Sites';
+                $siteLabel = dgettext("dashboard", 'Site: All User Sites');
             }
         }
         if ($projectfield) {
@@ -79,9 +83,7 @@ class TaskQueryWidget extends TaskWidget
         }
 
         $number = (int )$db->pselectOne($dbquery, $queryparams);
-        if ($number != 1) {
-            $label .= "s";
-        }
+        $label  = dngettext($labeldomain, $label, $labelplural, $number);
 
         parent::__construct($label, $number, $link, $cssclass, $siteLabel);
     }
