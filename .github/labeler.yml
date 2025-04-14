@@ -204,7 +204,7 @@ RaisinBread:
 
 "Language: Javascript":
 - changed-files:
-  - any-glob-to-any-file: '**/*.js'
+  - any-glob-to-any-file: ['**/*.js', '**/*.ts']
 
 "Language: Python":
 - changed-files:
