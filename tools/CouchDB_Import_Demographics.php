@@ -291,7 +291,7 @@ class CouchDBDemographicsImporter
                 $latestProjDx.Diagnosis AS $latestProjDx";
             $tablesToJoin  .= "
                 LEFT JOIN (
-                    SELECT c.CandID, Diagnosis
+                    SELECT c.ID as CandidateID, c.CandID, Diagnosis
                     FROM candidate_diagnosis_evolution_rel cde
                     JOIN diagnosis_evolution de USING (DxEvolutionID)
                     JOIN candidate c ON c.ID=cde.CandidateID
@@ -304,7 +304,7 @@ class CouchDBDemographicsImporter
                         WHERE de2.ProjectID=$projectID
                         GROUP BY CandID
                         ) AS maxOrderNumber ON (
-                            maxOrderNumber.CandidateID=cde.CandidateID
+                            maxOrderNumber.CandID=cde.CandidateID
                             AND maxOrderNumber.OrderNumber=de.OrderNumber
                         )
                     WHERE ProjectID=$projectID
@@ -432,7 +432,7 @@ class CouchDBDemographicsImporter
             if ($config_setting->getSetting("useFamilyID") === "true") {
                 $familyID = $this->SQLDB->pselectOne(
                     "SELECT FamilyID FROM family
-                                                          WHERE CandID=:cid",
+                                                          WHERE CandidateID=:cid",
                     ['cid' => $demographics['CandID']]
                 );
                 if (!empty($familyID)) {
