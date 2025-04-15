@@ -37,7 +37,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return dgettext("loris", "Imaging");
     }
 
     /**
@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Browser";
+        return dgettext("imaging_browser", "Imaging Browser");
     }
 
     /**
@@ -70,7 +70,9 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
+                    "imaging_browser",
                     "New and pending imaging session",
+                    "New and pending imaging sessions",
                     $DB,
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f

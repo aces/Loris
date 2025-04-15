@@ -18,7 +18,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Candidate Parameters";
+        return dgettext("candidate_parameters", "Candidate Parameters");
     }
 
     /**

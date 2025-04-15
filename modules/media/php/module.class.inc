@@ -30,7 +30,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Clinical";
+        return dgettext("loris", "Clinical");
     }
 
     /**
@@ -40,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Media";
+        return dgettext("media", "Media");
     }
 
     /**

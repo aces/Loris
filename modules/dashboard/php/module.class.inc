@@ -34,7 +34,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Dashboard";
+        return dgettext("dashboard", "Dashboard");
     }
 
     /**
@@ -151,7 +151,7 @@ class Module extends \Module
         }
         return new Widget(
             new WidgetContent(
-                "My Tasks",
+                dgettext("dashboard", "My Tasks"),
                 $this->renderTemplate(
                     "mytasks.tpl",
                     [
