@@ -120,7 +120,7 @@
                        <!-- toggle feedback in mobile view -->
 
 
-                        <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
+                        <a class="navbar-brand" href="{$baseurl}/">{dgettext("loris", "LORIS")}{if $sandbox}: {dgettext("loris", "DEV")}{/if}</a>
                    </div>
                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
                         <ul class="nav navbar-nav">
@@ -149,11 +149,11 @@
                             <!-- Affiliations Dropdown Menu -->
                             <li class="nav dropdown nav-affiliations">
                                 <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Affiliations
+                                    {dgettext("loris", "Affiliations")}
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu affiliations-dropdown">
-                                    <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
+                                    <li class="dropdown-header">{dngettext("loris", "Site Affiliation", "Site Affiliations", $userNumSites)}: {$userNumSites}</li>
                                     <li>
                                         <a href="#">
                                             <span class="tooltip-text">{$user.SitesTooltip}</span>
@@ -162,7 +162,7 @@
 
                                     <li role="separator" class="divider"></li>
 
-                                    <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
+                                    <li class="dropdown-header">{dngettext("loris", "Project Affiliation", "Project Affiliations", $userNumProjects)}: {$userNumProjects}</li>
                                     <li>
                                         <a href="#">
                                             <span class="tooltip-text">{$user.ProjectsTooltip}</span>
@@ -180,13 +180,13 @@
                                     {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
-                                            My Preferences
+                                            {dgettext("loris", "My Preferences")}
                                         </a>
                                     </li>
                                     {/if}
                                     <li>
                                         <a href="{$baseurl}/?logout=true">
-                                            Log Out
+                                            {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>
                                 </ul>

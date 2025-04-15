@@ -134,18 +134,6 @@ class Datadict extends \DataFrameworkMenu
     }
 
     /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
-        );
-    }
-
-    /**
      * The datadict module does not have any concept of a project.
      *
      * @return bool

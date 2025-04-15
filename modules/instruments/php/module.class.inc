@@ -104,7 +104,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Instruments";
+        return dgettext("instruments", "Instruments");
     }
 
     /**

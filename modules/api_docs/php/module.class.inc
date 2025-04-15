@@ -48,7 +48,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API Documentation";
+        return dgettext("api_docs", "API Documentation");
     }
 
     /**
@@ -63,7 +63,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return dgettext("loris", "Tools");
     }
 
 }

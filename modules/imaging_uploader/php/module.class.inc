@@ -51,7 +51,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return dgettext("loris", "Imaging");
     }
 
     /**
@@ -61,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Uploader";
+        return dgettext("imaging_uploader", "Imaging Uploader");
     }
 
     /**
