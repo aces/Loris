@@ -1,0 +1,55 @@
+openapi: 3.0.1
+info:
+  title: LORIS redcap module - REST API endpoints
+  description: Enpoints related to REDCap coupling in LORIS
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 0.0.3
+servers:
+  - url: /redcap
+security:
+  - ApiKeyAuth: []
+paths:
+  /notifications:
+    post:
+      tags:
+        - Notifications
+      summary:
+        Handles record notifications from REDCap
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RedcapNotification'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedcapNotification'
+      responses:
+        '200':
+          description:
+            Ok
+components:
+  schemas:
+    RedcapNotification:
+      type: object
+      properties:
+        instrument:
+          type: string
+        project_id:
+          type: string
+        project_url:
+          type: string
+        record:
+          type: string
+        redcap_event_name:
+          type: string
+        redcap_url:
+          type: string
+        username:
+          type: string
+        ${instrument}_complete:
+          type: string
