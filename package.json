@@ -47,8 +47,7 @@
     "ts-loader": "^8.3.0",
     "typescript": "^5.2.2",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.0",
-    "@types/react-redux": "^7.1.25"
+    "webpack-cli": "^3.3.0"
   },
   "scripts": {
     "lint:javascript": "./test/run-js-linter.sh",
@@ -63,7 +62,7 @@
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
     "compile": "webpack",
     "watch": "webpack --watch",
-    "postinstall": "cd modules/electrophysiology_browser/jsx/react-series-data-viewer && npm ci"
+    "postinstall": "cd modules/electrophysiology_browser/jsx/react-series-data-viewer && npm install"
   },
   "repository": {
     "type": "git",
