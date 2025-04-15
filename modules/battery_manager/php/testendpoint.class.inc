@@ -100,7 +100,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = \Database::singleton();
+        $this->db   = $this->loris->getDatabaseConnection();
         $this->user = $request->getAttribute('user');
         $method     = $request->getMethod();
 

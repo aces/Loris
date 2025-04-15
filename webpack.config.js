@@ -21,7 +21,6 @@ const optimization = {
 
 const resolve = {
   alias: {
-    util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
@@ -59,6 +58,7 @@ if (!fs.existsSync(
 ) {
   mod.rules.push({
     test: /react-series-data-viewer\/src\/chunks/,
+    exclude: /project/,
     use: 'null-loader',
   });
 }

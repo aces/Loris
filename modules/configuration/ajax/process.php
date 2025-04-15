@@ -212,7 +212,7 @@ function getPathIDs(string $table): array
             . "WHERE DataType = 'web_path';";
         break;
     }
-    return \Database::singleton()->pselectCol($query, []);
+    return \NDB_Factory::singleton()->database()->pselectCol($query, []);
 }
 
 /**

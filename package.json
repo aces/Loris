@@ -63,7 +63,7 @@
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
     "compile": "webpack",
     "watch": "webpack --watch",
-    "postinstall": "cd modules/electrophysiology_browser/jsx/react-series-data-viewer && npm install"
+    "postinstall": "cd modules/electrophysiology_browser/jsx/react-series-data-viewer && npm ci"
   },
   "repository": {
     "type": "git",

@@ -46,7 +46,7 @@ class Statistics extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
                  FROM StatisticsTabs

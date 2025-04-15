@@ -203,7 +203,7 @@ function insertCollaborators(int $pubID) : void
     if (!isset($_POST['collaborators'])) {
         return;
     }
-    $db = Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $collaborators = json_decode($_POST['collaborators'], true);
     foreach ($collaborators as $c) {
@@ -255,7 +255,7 @@ function insertEditors(int $pubID) : void
         return;
     }
 
-    $db = Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $usersWithEditPerm = json_decode($_POST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $uid) {
         $insert = [
@@ -282,7 +282,7 @@ function insertKeywords(int $pubID) : void
     if (empty($_POST['keywords'])) {
         return;
     }
-    $db       = Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $keywords = json_decode($_POST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -329,7 +329,7 @@ function insertVOIs(int $pubID) : void
     if (empty($_POST['voiFields'])) {
         return;
     }
-    $db        = Database::singleton();
+    $db        = \NDB_Factory::singleton()->database();
     $testNames = $db->pselectColWithIndexKey(
         'SELECT ID, Test_name FROM test_names',
         [],
@@ -379,7 +379,7 @@ function insertVOIs(int $pubID) : void
  */
 function cleanup(int $pubID) : void
 {
-    $db    = Database::singleton();
+    $db    = \NDB_Factory::singleton()->database();
     $where = ['PublicationID' => $pubID];
 
     $tables = [
@@ -498,7 +498,7 @@ function notify($pubID, $type) : void
  */
 function editProject() : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
     if (isset($id)) {
@@ -611,7 +611,7 @@ function editProject() : void
  */
 function editEditors($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $usersWithEditPerm = isset($_POST['usersWithEditPerm'])
         ? json_decode($_POST['usersWithEditPerm']) : null;
 
@@ -654,7 +654,7 @@ function editEditors($id) : void
  */
 function editCollaborators($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $submittedCollaborators = isset($_POST['collaborators'])
         ? json_decode($_POST['collaborators'], true) : null;
 
@@ -739,7 +739,7 @@ function editCollaborators($id) : void
  */
 function editKeywords($id) : void
 {
-    $db       = \Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $keywords = isset($_POST['keywords'])
         ? json_decode($_POST['keywords']) : null;
 
@@ -788,7 +788,7 @@ function editKeywords($id) : void
  */
 function editVOIs($id) : void
 {
-    $db  = \Database::singleton();
+    $db  = \NDB_Factory::singleton()->database();
     $voi = isset($_POST['voiFields'])
         ? json_decode($_POST['voiFields']) : null;
 
@@ -858,7 +858,7 @@ function editVOIs($id) : void
  */
 function editUploads($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $pubUploads = $db->pselectWithIndexKey(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',

@@ -56,7 +56,7 @@ class Dicoms_0_0_4_Dev
             'Patientname' => $dicom->getPatientname(),
             'SeriesInfo'  => array_map(
                 [
-                    'self',
+                    self::class,
                     '_formatSeries'
                 ],
                 $dicom->getSeries()
@@ -99,7 +99,7 @@ class Dicoms_0_0_4_Dev
         ];
 
         $dicomtars = array_map(
-            'self::_formatDicomTars',
+            [self::class, '_formatDicomTars'],
             $this->_dicoms
         );
 

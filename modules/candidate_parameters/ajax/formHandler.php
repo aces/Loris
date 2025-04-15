@@ -26,7 +26,7 @@ if ($tab === '') {
     exit;
 }
 
-$db = \Database::singleton();
+$db = \NDB_Factory::singleton()->database();
 
 switch ($tab) {
 case 'candidateInfo':

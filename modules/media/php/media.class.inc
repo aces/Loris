@@ -76,7 +76,7 @@ class Media extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $user = \User::singleton();
-        $db   = \Database::singleton();
+        $db   = $this->loris->getDatabaseConnection();
 
         $siteList  = [];
         $visitList = \Utility::getVisitList();

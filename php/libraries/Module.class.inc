@@ -169,10 +169,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function __construct(string $name, string $moduledir)
     {
-        $config   = \NDB_Factory::singleton()->config();
-        $loglevel = $config->getLogSettings()->getRequestLogLevel();
-
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
         parent::__construct(
             new \ArrayIterator(
                 [

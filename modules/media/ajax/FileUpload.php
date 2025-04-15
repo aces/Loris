@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& Database::singleton();
+    $db   = \NDB_Factory::singleton()->database();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
@@ -85,7 +85,7 @@ function uploadFile()
         "upload"
     );
 
-    $db     =& Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
@@ -349,7 +349,7 @@ function getUploadFields()
         $mediaData   = $db->pselectRow(
             "SELECT " .
             "m.session_id as sessionID, " .
-            "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
+            "c.PSCID as pscid, " .
             "Visit_label as visitLabel, " .
             "instrument, " .
             "CenterID as forSite, " .
@@ -358,9 +358,10 @@ function getUploadFields()
             "file_name as fileName, " .
             "hide_file as hideFile, " .
             "language_id as language," .
-            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
-            "WHERE m.id = $idMediaFile",
-            []
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID 
+                LEFT JOIN candidate c ON (c.CandID=s.CandID) " .
+            "WHERE m.id = :mediaId",
+            ['mediaId' => $idMediaFile]
         );
     }
 
@@ -432,7 +433,7 @@ function toSelect($options, $item, $item2)
  */
 function getFilesList()
 {
-    $db       =& Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
     $mediaFiles = [];

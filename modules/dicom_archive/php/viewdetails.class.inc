@@ -61,7 +61,7 @@ class ViewDetails extends \NDB_Form
      */
     function setup()
     {
-        $this->DB = \Database::singleton();
+        $this->DB = $this->loris->getDatabaseConnection();
 
         $user = \User::singleton();
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
@@ -157,7 +157,7 @@ class ViewDetails extends \NDB_Form
     function _validateNamesIds()
     {
         $config =& \NDB_Config::singleton();
-        $db     = \Database::singleton();
+        $db     = $this->loris->getDatabaseConnection();
         $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
         // escape any forward slashes

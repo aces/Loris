@@ -90,8 +90,9 @@ class ConflictDetector
      */
     static function recordUnresolvedConflicts(array $diffResult): void
     {
+        $db = \NDB_Factory::singleton()->database();
         foreach ($diffResult as $diffLine) {
-            \Database::singleton()->replace('conflicts_unresolved', $diffLine);
+            $db->replace('conflicts_unresolved', $diffLine);
         }
 
     }
@@ -118,7 +119,8 @@ class ConflictDetector
             'CommentId2'     => $diffLine['CommentId2'],
         ];
 
-        \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
+        \NDB_Factory::singleton()->database()
+            ->delete('conflicts_unresolved', $deleteWhere);
     }
 
     /**
@@ -131,7 +133,7 @@ class ConflictDetector
      */
     static function clearConflictsForInstance(string $commentId): void
     {
-        \Database::singleton()->delete(
+        \NDB_Factory::singleton()->database()->delete(
             'conflicts_unresolved',
             ['CommentId1' => $commentId]
         );
@@ -146,7 +148,7 @@ class ConflictDetector
      */
     static function isInstrumentInstanceInConflictState(string $commentId): bool
     {
-        $conflictCount = \Database::singleton()->pselectOne(
+        $conflictCount = \NDB_Factory::singleton()->database()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
             ['CID' => $commentId]
         );

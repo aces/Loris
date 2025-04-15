@@ -277,7 +277,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                       'workspace' => $undecorated->getBody(),
                      );
 
-        $smarty = new \Smarty_neurodb;
+        $smarty = new \Smarty_NeuroDB;
         $smarty->assign($tpl_data);
         return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("main.tpl")));
     }

@@ -164,6 +164,8 @@ class DocIndex extends React.Component {
       case 'File Name':
         let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
+                          + encodeURIComponent(row['Uploaded By'])
+                          + '/'
                           + encodeURIComponent(row['File Name']);
         result = <td>
           <a

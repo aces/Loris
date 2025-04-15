@@ -52,7 +52,9 @@ class Notify
             'Message'            => $message,
             'CenterID'           => $centerID,
         ];
-        \Database::singleton()->insert('notification_spool', $setArray);
+
+        $db = \NDB_Factory::singleton()->database();
+        $db->insert('notification_spool', $setArray);
     }
 
     /**

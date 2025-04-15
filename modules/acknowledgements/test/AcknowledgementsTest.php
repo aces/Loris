@@ -120,6 +120,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             self::$testData['full_name'],
             "1 row"
         );
+
         $this->_filterTest(
             self::$citationName,
             self::$display,

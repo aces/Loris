@@ -11,7 +11,7 @@ phpdev:
 	composer install
 
 javascript:
-	npm install
+	npm ci
 	npm run compile
 
 dev: VERSION phpdev javascript
@@ -21,7 +21,7 @@ clean:
 	rm -f VERSION
 	rm -rf vendor
 	rm -rf node_modules
-	rm package-lock.json
+	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/node_modules
 
 # Perform static analysis checks
 checkstatic: phpdev

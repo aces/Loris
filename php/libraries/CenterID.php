@@ -44,9 +44,9 @@ class CenterID extends ValidatableIdentifier implements \JsonSerializable
     /**
      * Specify how the data should be serialized to JSON.
      *
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : string
     {
         return $this->value;
     }

@@ -19,7 +19,8 @@ is correct.
 5. If the instrument has multiple pages (on the left pane), move from page to page and check that the
 saved data stays the same. The data that wasn't saved should be lost.
 6. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
-has the 'Send to DCC' permission.
+has the 'Send to DCC' permission, and the configuration `InstrumentResetting` (_"Instrument Resetting"_) is set to
+'Yes' in the Configuration module.
 7. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
 8. Select a candidate with a Date Of Death (DoD) or put one in for a candidate as needed, then select an
 instrument for that candidate. Enter a date (same a step 4) posterior to the DoD. Refresh the page and check that the 

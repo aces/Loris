@@ -167,6 +167,11 @@ class ImagingBrowserIndex extends Component {
         type: 'multiselect',
         options: options.pendingNew,
       }},
+      {label: 'Entity Type', show: false, filter: {
+       name: 'entityType',
+       type: 'multiselect',
+       option: options.entityType,
+      }},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types

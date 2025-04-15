@@ -140,9 +140,13 @@ class ExaminerIndex extends Component {
 
     switch (column) {
       case 'Examiner':
-        const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                  row.ID;
-        result = <td><a href={url}>{cell}</a></td>;
+        if (this.state.data.useCertification) {
+          const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
+                    row.ID;
+          result = <td><a href={url}>{cell}</a></td>;
+        } else {
+          result = <td>{cell}</td>;
+        }
         break;
       case 'Radiologist':
         if (row.Radiologist === '1') {

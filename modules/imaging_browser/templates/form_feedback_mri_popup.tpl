@@ -21,7 +21,7 @@
 <p>Comments saved.</p>
 {/if}
 
-<table cellpadding="2" class="list">
+<table cellpadding="2" class="table table-hover table-bordered dynamictable">
 {section name=data loop=$identifier}
     <tr>
         <th style="text-align:left">{$identifier[data].name}:</th>
@@ -36,14 +36,23 @@
 
 {foreach from=$comment item=curr_comment}
 <h3>
-{if $curr_comment.select_value_array|default and $curr_comment.select_name|default}
-{* the assign is simply because i [jharlap] don't have time to figure out how to make this work otherwise *}
-{assign var="save_comment_status_field_name" value="saveCommentStatusField["|cat:$curr_comment.select_name|cat:"]"}
-{html_options name=$save_comment_status_field_name values=$curr_comment.select_value_array selected=$curr_comment.selected|default output=$curr_comment.select_value_array}
-{else}
-{$curr_comment.selected|default}
-{/if}
-{$curr_comment.name}
+    {$curr_comment.name}
+    {if $curr_comment.select_value_array|default and $curr_comment.select_name|default}
+        {* the assign is simply because i [jharlap] don't have time to figure out how to make this work otherwise *}
+        {assign
+            var="save_comment_status_field_name"
+            value="saveCommentStatusField["|cat:$curr_comment.select_name|cat:"]"
+        }
+        {html_options
+            name=$save_comment_status_field_name
+            values=$curr_comment.select_value_array
+            selected=$curr_comment.selected|default
+            output=$curr_comment.select_value_array
+            class='input-sm'
+        }
+    {else}
+        {if $curr_comment.selected}({$curr_comment.selected}){/if}
+    {/if}
 </h3>
 
 {if !$has_permission}
@@ -52,9 +61,9 @@
 
 {section name=predefined loop=$curr_comment.predefined}
 {if $has_permission}
-<input type="checkbox" name="savecomments[predefined][]" value="{$curr_comment.predefined[predefined].id}" {if $curr_comment.predefined[predefined].checked}checked="checked"{/if}>{$curr_comment.predefined[predefined].predefined_text}<br />
+<input type="checkbox" name="savecomments[predefined][]" value="{$curr_comment.predefined[predefined].id}" {if $curr_comment.predefined[predefined].checked}checked="checked"{/if}>&nbsp;{$curr_comment.predefined[predefined].predefined_text}<br />
 {elseif $curr_comment.predefined[predefined].checked}
-<li>{$curr_comment.predefined[predefined].predefined_text}</li>
+<li style="padding-left:0.4em">{$curr_comment.predefined[predefined].predefined_text}</li>
 {/if}
 {/section}
 

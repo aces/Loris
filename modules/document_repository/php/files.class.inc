@@ -71,20 +71,26 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $filename = urldecode(basename($request->getUri()->getPath()));
-            $route    = explode('/', $request->getUri()->getPath());
+            $route = explode('/', $request->getUri()->getPath());
             if ($route[2] == 'meta') {
+                $id = urldecode(basename($request->getUri()->getPath()));
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode($this->getUploadDocFields($filename))
+                            json_encode($this->getUploadDocFields($id))
                         )
                     );
             }
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
-                    $downloadpath . $request->getAttribute('user')->getUsername()
+                    $downloadpath
                 )
             );
             return $downloader->handle(
@@ -206,7 +212,7 @@ class Files extends \NDB_Page
      */
     function getUploadDocFields(string $id): array
     {
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             []
@@ -261,7 +267,7 @@ class Files extends \NDB_Page
     function parseCategory(array $value): array
     {
         $id           = $value['id'];
-        $DB           = \Database::singleton();
+        $DB           = $this->loris->getDatabaseConnection();
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
@@ -425,7 +431,7 @@ class Files extends \NDB_Page
      */
     function existFilename(string $filename): bool
     {
-        $DB        = \Database::singleton();
+        $DB        = $this->loris->getDatabaseConnection();
         $fileCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository
              WHERE File_Name=:name",

@@ -48,7 +48,7 @@ class Configuration extends \NDB_Form
     {
         parent::setup();
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
             "SELECT Scan_type
@@ -103,7 +103,7 @@ class Configuration extends \NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
             "SELECT Label, Name 
@@ -126,7 +126,7 @@ class Configuration extends \NDB_Form
     function _getConfigSettingTree()
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         // Get the names and meta-information for the config settings in the database
         $configs = $DB->pselect(

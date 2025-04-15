@@ -56,7 +56,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   = \Database::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
         $user = \User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
@@ -302,7 +302,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // create user object
         $user    =& \User::singleton();
         $config  =& \NDB_Config::singleton();
-        $db      =& \Database::singleton();
+        $db      = $this->loris->getDatabaseConnection();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 

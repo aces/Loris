@@ -207,7 +207,7 @@ function getProjectData($db, $user, $id) : array
  */
 function getVOIs($id) : array
 {
-    $db        = \Database::singleton();
+    $db        = \NDB_Factory::singleton()->database();
     $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
@@ -236,7 +236,7 @@ function getVOIs($id) : array
  */
 function getKeywords($id) : array
 {
-    $db  = \Database::singleton();
+    $db  = \NDB_Factory::singleton()->database();
     $kws = $db->pselectCol(
         'SELECT pk.Label FROM publication_keyword pk '.
         'LEFT JOIN publication_keyword_rel pkr '.
@@ -257,7 +257,7 @@ function getKeywords($id) : array
  */
 function getCollaborators($id) : array
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $collaborators = $db->pselect(
         'SELECT Name as name, Email as email FROM publication_collaborator pc '.
@@ -279,7 +279,7 @@ function getCollaborators($id) : array
  */
 function getFiles($id) : array
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $files = $db->pselect(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
@@ -301,7 +301,7 @@ function getFiles($id) : array
  */
 function getStatusOptions() : array
 {
-    $db        = \Database::singleton();
+    $db        = \NDB_Factory::singleton()->database();
     $rawStatus = $db->pselect(
         'SELECT * FROM publication_status',
         []
@@ -322,7 +322,7 @@ function getStatusOptions() : array
  */
 function getUploadTypes() : array
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     return $db->pselectColWithIndexKey(
         'SELECT PublicationUploadTypeID, Label FROM publication_upload_type',

@@ -185,7 +185,7 @@ class ImageInfo extends \NDB_Page
                                      '' as Visit_label,
                                      MincFile as File,
                                      LogID as FileID
-                              FROM mri_violation_log
+                              FROM mri_violations_log
                               WHERE LogID IN (" . join(",", $params) .")";
                 break;
             case 'CandidateError':

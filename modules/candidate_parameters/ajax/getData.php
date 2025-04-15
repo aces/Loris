@@ -73,7 +73,7 @@ function getCandInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get caveat options
     $caveat_options = [];
@@ -153,7 +153,7 @@ function getProbandInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -233,7 +233,7 @@ function getFamilyInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -305,7 +305,7 @@ function getParticipantStatusFields()
     \Module::factory('candidate_parameters');
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -385,7 +385,7 @@ function getParticipantStatusFields()
  */
 function getParticipantStatusHistory(CandID $candID)
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
             (SELECT Description 
@@ -511,7 +511,7 @@ function getConsentStatusHistory($pscid)
 function getDOBFields(): array
 {
     $candID = new CandID($_GET['candID']);
-    $db     = \Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
     // Get PSCID
     $candidateData = $db->pselectRow(
         'SELECT PSCID,DoB FROM candidate where CandID =:candid',
@@ -535,7 +535,7 @@ function getDOBFields(): array
 function getDODFields(): array
 {
     $candID = new CandID($_GET['candID']);
-    $db     = \Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
         'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',

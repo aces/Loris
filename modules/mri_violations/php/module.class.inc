@@ -41,8 +41,9 @@ class Module extends \Module
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
         $siteClauseElements = [];
+        $db = \NDB_Factory::singleton()->database();
         foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+            $siteClauseElements[] = $db->quote($siteID);
         }
         $siteClause = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",

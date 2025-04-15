@@ -99,7 +99,7 @@ class Stats_MRI extends \NDB_Form
             : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
-        $smarty = new \Smarty_neurodb("statistics");
+        $smarty = new \Smarty_NeuroDB("statistics");
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;

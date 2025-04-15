@@ -8,6 +8,37 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 24.1 (Release Date: 2022-10-04)
+### Core
+#### Updates and Improvements
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
+  and `mri_protocol_violated_scans` tables to allow for better discrimination between some
+  MRI sequences.
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `files`, `files_qcstatus`
+  and `feedback_mri_comments` tables to ensure uniqueness keys for specific GE sequences for
+  which the `SeriesUID/EchoTime` combination is not enough (PR #8152).
+- Addition of `image_type`, `PhaseEncodingDirection` and `EchoNumber` fields to the tables
+  present in the "Could not identify scan" page of the MRI violation module (PR #8156)
+- Modification of the list of headers displayed in the image panel headers table (PR #8157)
+#### Bug Fixes
+- Bug fix to the imaging uploader so that when clicking on an upload row, the row is 
+  highlighted and the proper log is being displayed in the log viewer (PR #8154)
+- Remove SNR label from the image panel of the imaging browser when no SNR values can
+be found for the image (PR #8155)
+- Add the missing download buttons for BVAL, BVEC and JSON files that comes with BIDS/NIfTI
+  dataset/images. In addition, the "Download MINC" button has been renamed to a more generic
+  label "Download Image" (PR #8159)
+- Fix ConfigurationException bug (PR #8107)
+- Fix PHP fatal error when running the LORIS installation script (PR #8108)
+- Add psr/log to composer (PR #8109)
+- Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
+- Add support for PHP 8.1 (PR #7989)
+- Fix Project tab of Configuration module to give correct errors, and prevent saving without Alias (PR #8349)
+### Modules
+#### API
+- Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
+
+
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features

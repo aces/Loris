@@ -594,13 +594,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // If the credentials are invalid, an error message will be logged to
         // the backend.
         try {
+            $dbname = $db_config['database'];
+            putenv("LORIS_{$dbname}_USERNAME=" . $db_config['adminUser']);
+            putenv("LORIS_{$dbname}_PASSWORD=" . $db_config['adminPassword']);
+            putenv("LORIS_{$dbname}_HOST=" . $db_config['host']);
             $connected = $db->connect(
-                $db_config['database'],
-                $db_config['adminUser'],
-                $db_config['adminPassword'],
-                $db_config['host'],
+                $dbname,
                 false
             );
+            putenv("LORIS_{$dbname}_USERNAME=");
+            putenv("LORIS_{$dbname}_PASSWORD=");
+            putenv("LORIS_{$dbname}_HOST=");
         } catch (\DatabaseException $e) {
             $connected = false;
         }

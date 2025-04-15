@@ -357,6 +357,12 @@ If a GET request for a candidate is issued such as
 GET /candidates/$CandID
 ```
 
+or
+
+```
+GET /candidates/$PSCID
+```
+
 A JSON object representing that candidate will be returned.
 
 The JSON object is of the form:
@@ -375,8 +381,16 @@ PUT / PATCH are not supported for candidates in this version of the
 API.
 
 It will return a 200 OK on success, a 404 if the candidate does not exist, and
-a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
-true of all of the API hierarchy under /candidates/$CandID.
+a 400 Bad Request if the CandID or PSCID is invalid or there are multiple
+entries in the database with the same PSCID. The same is
+true of all of the API hierarchy under /candidates/$CandID (which
+may all use PSCID in place of CandID, as long as there is a single
+unique PSCID with that identifier in the database.)
+
+Note that it's theoretically possible that a study may have a PSCID that
+is the same value as a different CandID (ie. PSCID=123456 for one candidate, but
+CandID=123456 for a different candidate.) The caller should verify the candidate
+object in the Meta key to ensure the correct candidate was retrieved.
 
 ### 3.2 Getting Candidate visit data
 

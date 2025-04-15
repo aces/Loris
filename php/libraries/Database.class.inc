@@ -68,14 +68,16 @@ class Database implements LoggerAwareInterface
     /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
-     * NOTE There is no return type declaration for this function as it returns
-     * the type `Database` which is not supported by PHPs built in return types.
+     *
+     * To avoid credentials being displayed in stack traces,
+     * credentials must be passed in environment variables.
+     *
+     * The caller must ensure there are variables named
+     * LORIS_$dbname_USERNAME, LORIS_$dbname_PASSWORD, and
+     * LORIS_$dbname_HOST with their respective values. This
+     * is usually done by NDB_Factory.
      *
      * @param string $database     the database to select
-     * @param string $username     the username with which to log into
-     *                             the database server
-     * @param string $password     the password that matches the username
-     * @param string $host         the name of the database server
      * @param bool   $trackChanges boolean determining if changes should be
      *                             logged to the history table
      *
@@ -84,12 +86,12 @@ class Database implements LoggerAwareInterface
      * @access public
      */
     static function &singleton(
-        string $database     = '',
-        string $username     = '',
-        string $password     = '',
-        string $host         = '',
+        string $database,
         bool $trackChanges = true
     ): \Database {
+        $username = getenv("LORIS_{$database}_USERNAME");
+        $password = getenv("LORIS_{$database}_PASSWORD");
+        $host     = getenv("LORIS_{$database}_HOST");
 
         static $connections = [];
 
@@ -119,9 +121,6 @@ class Database implements LoggerAwareInterface
                 $connections[$connection] = new Database();
                 $connections[$connection]->connect(
                     $database,
-                    $username,
-                    $password,
-                    $host,
                     $trackChanges
                 );
             }
@@ -136,24 +135,20 @@ class Database implements LoggerAwareInterface
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
-     * @param string      $database     the database to select
-     * @param string|null $username     the username with which to log into
-     *                                  the database server
-     * @param string|null $password     the password that matches the username
-     * @param string|null $host         the name of the database server
-     * @param bool        $trackChanges whether to use the trackChanges
-     *                                  mechanism on this connection
+     * @param string $database     the database to select
+     * @param bool   $trackChanges whether to use the trackChanges
+     *                             mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
      */
     function connect(
         string $database,
-        ?string $username,
-        ?string $password,
-        ?string $host,
         bool $trackChanges = true
     ): bool {
+        $username = getenv("LORIS_{$database}_USERNAME");
+        $password = getenv("LORIS_{$database}_PASSWORD");
+        $host     = getenv("LORIS_{$database}_HOST");
 
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
@@ -191,7 +186,7 @@ class Database implements LoggerAwareInterface
                 . "and the supplied password."
             );
         }
-        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
@@ -362,8 +357,13 @@ class Database implements LoggerAwareInterface
                 $retVal[$key] = '';
                 continue;
             }
+
             // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+            //
+            // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
+            // earlier versions, since the default flags changed in PHP 8.1.
+            $retVal[$key] = is_string($val)
+                ? htmlspecialchars($val, ENT_COMPAT) : $val;
         }
         return $retVal;
     }
@@ -730,7 +730,20 @@ class Database implements LoggerAwareInterface
             return [];
         }
 
-        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        $rows = array_map(
+            function ($row) {
+                $strrow = [];
+                foreach ($row as $key => $val) {
+                    if ($val === null) {
+                        $strrow[$key] = null;
+                    } else {
+                        $strrow[$key] = strval($val);
+                    }
+                }
+                return $strrow;
+            },
+            $prepared->fetchAll(PDO::FETCH_ASSOC)
+        );
         // The fetchAll function will return an empty set if no results are
         // found and FALSE on "failure". We don't expect this case so an
         // exception is thrown.
@@ -997,7 +1010,10 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        if ($result === null) {
+            return null;
+        }
+        return strval($result);
     }
 
     /**
@@ -1026,7 +1042,7 @@ class Database implements LoggerAwareInterface
             return null;
         }
 
-        return $result;
+        return intval($result);
     }
 
     /**
@@ -1143,7 +1159,6 @@ class Database implements LoggerAwareInterface
         string $where,
         string $type = 'U'
     ): void {
-
         // Tracking changes on the history table would result in an
         // infinite loop
         if (!$this->_trackChanges || $table == 'history') {
@@ -1526,9 +1541,9 @@ class Database implements LoggerAwareInterface
 
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
-            $error[0],
-            $error[1],
-            $error[2],
+            $error[0] ?? '',
+            $error[1] ?? '',
+            $error[2] ?? '',
         );
     }
 

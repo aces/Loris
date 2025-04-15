@@ -85,7 +85,7 @@ class ResolvedDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID($this->centerid);
+        return new \CenterID(strval($this->centerid));
     }
 
     /**
@@ -96,6 +96,6 @@ class ResolvedDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID($this->projectid);
+        return new \ProjectID(strval($this->projectid));
     }
 }

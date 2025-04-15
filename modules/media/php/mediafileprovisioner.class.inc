@@ -36,10 +36,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      * Cache of instrument->getFullname returned value.
      * Initializing empty keys to prevent instanciation of empty testnames.
      */
-    private $_instrumentnames = [
-        null => '',
-        ''   => ''
-    ];
+    private $_instrumentnames = [];
 
     /**
      * Create a MediaFileProvisioner, which gets files for the meida
@@ -92,11 +89,21 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         $testname = $row['testName'] ?? '';
         unset($row['testName']);
 
-        if (!isset($this->_instrumentnames[$testname])) {
-            $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
-                $this->lorisinstance,
-                $testname,
-            )->getFullname();
+        // make sure not to call the factory when $testname is null or ''
+        if (!empty($testname) && !isset($this->_instrumentnames[$testname])) {
+            try {
+                $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
+                    $this->lorisinstance,
+                    $testname,
+                )->getFullname();
+            } catch (\Exception $e) {
+                error_log(
+                    "There was a problem instantiating the instrument ".
+                    "'$testname'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the media ".
+                    "module."
+                );
+            }
         }
         $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
 

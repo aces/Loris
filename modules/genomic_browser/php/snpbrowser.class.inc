@@ -80,7 +80,7 @@ class SnpBrowser extends \DataFrameworkMenu implements ETagCalculator
     function getFieldOptions() : array
     {
         $user = \NDB_Factory::singleton()->user();
-        $DB   = \Database::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
         $platform_results
             = $DB->pselect(
                 "SELECT distinct Name FROM genotyping_platform ",

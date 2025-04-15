@@ -93,7 +93,7 @@ class Database_Test extends TestCase
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
-        $this->DB     = Database::singleton(
+        $this->DB     = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -187,7 +187,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -216,7 +216,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '<b>Hello</b>'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -245,7 +245,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -269,12 +269,13 @@ class Database_Test extends TestCase
             ->onlyMethods($this->_getAllMethodsExcept(['unsafeinsert']))
             ->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())->method("prepare")
             ->will($this->returnValue($stmt));
@@ -805,12 +806,13 @@ class Database_Test extends TestCase
             )
             ->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -839,12 +841,13 @@ class Database_Test extends TestCase
             )
             ->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -903,7 +906,8 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
-        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
 
         $PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
@@ -1828,7 +1832,13 @@ class Database_Test extends TestCase
             ->getMock();
         '@phan-var \Database $stub';
 
-        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['query'])->getMock();
+
+        $PDO->expects($this->once())
+            ->method("query")
+            ->willReturn("1");
+
         '@phan-var \FakePDO $PDO';
 
         $stub->_PDO = $PDO;

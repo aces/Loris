@@ -100,7 +100,7 @@ class AttachmentsList extends Component {
    */
   displayAttachmentOptions(deleteData, item) {
     if (this.props.userHasPermission
-      || this.state.attachments.whoami === item.user) {
+      || this.props.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
@@ -244,6 +244,7 @@ AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
+  whoami: PropTypes.string.isRequired,
 };
 AttachmentsList.defaultProps = {
   attachments: [],

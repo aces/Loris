@@ -38,11 +38,13 @@ to remove the old column from instrument tables.
 ####################################################################################
 
 \n";
-$DB = \Database::singleton();
+$factory = \NDB_Factory::singleton();
+$DB      = $factory->database();
+$config  = $factory->config();
 
 $loris = new \LORIS\LorisInstance(
-    \NDB_Factory::singleton()->database(),
-    \NDB_Factory::singleton()->config(),
+    $DB,
+    $config,
     [
         "project/modules",
         "modules",

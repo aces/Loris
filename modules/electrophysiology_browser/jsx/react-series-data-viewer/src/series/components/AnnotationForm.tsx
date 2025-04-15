@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Epoch as EpochType, RightPanel} from '../store/types';
-import {connect, DefaultRootState} from 'react-redux';
+import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';

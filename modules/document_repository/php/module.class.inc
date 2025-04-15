@@ -86,7 +86,10 @@ class Module extends \Module
             $last_login = $user->getLastLogin($DB);
 
             $docs         = $DB->pselect(
-                "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
+                "SELECT File_name,
+                        Date_uploaded,
+                        CONCAT(uploaded_by, '/', File_name) AS Data_dir
+                 FROM document_repository
                  ORDER BY Date_uploaded DESC LIMIT 4",
                 []
             );

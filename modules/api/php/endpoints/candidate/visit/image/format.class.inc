@@ -90,7 +90,11 @@ class Format extends Endpoint
             $handler = new Format\Brainbrowser($this->_image);
             break;
         case 'thumbnail':
-            $handler = new Format\Thumbnail($this->_image);
+        case 'nifti':
+        case 'bval':
+        case 'bvec':
+        case 'bidsjson':
+            $handler = new Format\DownloadFile($this->_image, $format);
             break;
         default:
             return new \LORIS\Http\Response\JSON\UnsupportedMediaType();

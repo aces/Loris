@@ -135,7 +135,7 @@ class Files extends \NDB_Page
         bool $overwrite
     ) : ?ResponseInterface {
         // Check if file is duplicate
-        $DB            = \Database::singleton();
+        $DB            = $this->loris->getDatabaseConnection();
         $duplicateFile = $DB->pselectRow(
             "SELECT id, file_name FROM data_release WHERE file_name=:f",
             ['f' => $fileName]
@@ -199,7 +199,7 @@ class Files extends \NDB_Page
         ?string $version,
         bool $overwrite
     ) : ResponseInterface {
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         if ($version !== null) {
             $version = strtolower($version);
         }
@@ -262,7 +262,7 @@ class Files extends \NDB_Page
             return new \LORIS\Http\Response\JSON\NotFound("Not found");
         }
 
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         if (isset($matches[1])) {
             $fileID   = substr($matches[1], 1);
             $filename = $DB->pselectOne(

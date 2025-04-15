@@ -64,7 +64,7 @@ class Imaging_Session_ControlPanel
      */
     function getData()
     {
-        $DB        = \Database::singleton();
+        $DB        = \NDB_Factory::singleton()->database();
         $config    = \NDB_Config::singleton();
         $timePoint = \TimePoint::singleton(
             new \SessionID(strval($_REQUEST['sessionID']))
@@ -195,7 +195,7 @@ class Imaging_Session_ControlPanel
     {
         $this->tpl_data['subject'] = $this->getData();
 
-        $smarty = new \Smarty_neurodb("imaging_browser");
+        $smarty = new \Smarty_NeuroDB("imaging_browser");
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("imaging_session_controlpanel.tpl");

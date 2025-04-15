@@ -33,7 +33,7 @@ class DefaultDatabaseProvider implements IDatabaseProvider
      */
     public function getDatabase()
     {
-        return \Database::singleton();
+        return \NDB_Factory::singleton()->database();
     }
 }
 

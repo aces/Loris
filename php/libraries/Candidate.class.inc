@@ -18,6 +18,7 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -222,6 +223,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -240,13 +242,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 EDC_NOT_SPECIFIED
             );
         }
-        if ($dateOfBirth !== null
-            && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
-            || empty($dateOfBirth))
-        ) {
+        if (empty($dateOfBirth)) {
             throw new InvalidArgumentException(
                 "Date of Birth must be specified",
                 DOB_NOT_SPECIFIED
+            );
+        }
+        $dob = DateTime::createFromFormat('!Y-m-d', $dateOfBirth);
+        if ($dob === false) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                DOB_INVALID
             );
         }
 
@@ -256,6 +262,25 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid uniqueness
+            $existing = $db->pselectOne(
+                'SELECT
+                  COUNT(*)
+                 FROM candidate
+                 WHERE PSCID = :v_pscid
+                 GROUP BY
+                   PSCID
+                ',
+                ['v_pscid' => $PSCID]
+            );
+
+            if ($existing > 0) {
+                throw new \ConflictException(
+                    "PSCID must be unique",
+                    PSCID_NOT_UNIQUE
                 );
             }
 
@@ -307,6 +332,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
         $attemptcount = 0;
+
+        $db = \NDB_Factory::singleton()->database();
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -314,7 +341,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             try {
-                \Database::singleton()->insert('candidate', $setArray);
+                $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
                 // Occurs in the case of a race condition where another CandID
                 // with the same value has been inserted into the DB before this
@@ -844,7 +871,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusOptions(): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -868,7 +895,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusSubOptions(int $parentID): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options

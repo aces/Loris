@@ -83,7 +83,10 @@ foreach($instrumentNames as $instrumentName) {
     $instrumentData=array();
     if ($useObjects) {
         try {
-            $instrument = \NDB_BVL_Instrument::factory($instrumentName);
+            $instrument = \NDB_BVL_Instrument::factory(
+                $lorisInstance,
+                $instrumentName
+            );
         } catch (Exception $e) {
             printError(
                 "There was an error instantiating instrument $instrumentName.
@@ -93,7 +96,11 @@ foreach($instrumentNames as $instrumentName) {
             continue;
         }
         foreach ($instrumentCIDs as $cid) {
-            $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
+            $instrumentInstance = \NDB_BVL_Instrument::factory(
+                $lorisInstance,
+                $instrumentName,
+                $cid
+            );
             $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ
@@ -116,7 +123,7 @@ foreach($instrumentNames as $instrumentName) {
     foreach ($instrumentData as $cid => $instrumentCandData) {
         foreach ($instrumentCandData as $field => $value) {
             // regex detecting any escaped character in the database
-            if (!empty($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
+            if (!empty($value) && is_string($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
                 $escapedEntries[$tableName][$cid][$field] = $value;
                 $escapedFields[$tableName][] = $field;
                 $errorsDetected = true;

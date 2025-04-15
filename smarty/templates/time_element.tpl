@@ -4,9 +4,9 @@
 		{if $index < 10}
 			{assign var="displayValue" value="0$index"}
 			{if $displayValue eq $value['H']}
-				<option value="{$index}" selected="selected">{$displayValue}</option>
+				<option value="{$displayValue}" selected="selected">{$displayValue}</option>
 			{else}
-				<option value="{$index}">{$displayValue}</option>
+				<option value="{$displayValue}">{$displayValue}</option>
 			{/if}
 		{else}
 			{if $index eq $value['H']}
@@ -23,9 +23,9 @@
 		{if $index < 10}
 			{assign var="displayValue" value="0$index"}
 			{if $displayValue eq $value['i']}
-				<option value="{$index}" selected="selected">{$displayValue}</option>
+				<option value="{$displayValue}" selected="selected">{$displayValue}</option>
 			{else}
-				<option value="{$index}">{$displayValue}</option>
+				<option value="{$displayValue}">{$displayValue}</option>
 			{/if}
 		{else}
 			{if $index eq $value['i']}

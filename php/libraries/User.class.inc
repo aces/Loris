@@ -64,7 +64,7 @@ class User extends UserPermissions implements
         };
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get user data from database
         $query = "SELECT * FROM users WHERE UserID = :UID";
@@ -122,12 +122,12 @@ class User extends UserPermissions implements
                     epr.pending_approval
                   FROM examiners e
                   JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.full_name=:fn
+                  WHERE e.userID=:uid
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             [
-                "fn" => $row['Real_name'],
+                "uid" => $row['ID'],
             ]
         );
 
@@ -183,7 +183,7 @@ class User extends UserPermissions implements
      */
     public static function insert(array $set): void
     {
-        \Database::singleton()->insert('users', $set);
+        \NDB_Factory::singleton()->database()->insert('users', $set);
     }
 
 
@@ -197,7 +197,7 @@ class User extends UserPermissions implements
      */
     public function update(array $set): void
     {
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'users',
             $set,
             ['UserID' => $this->userInfo['UserID']]

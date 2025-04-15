@@ -30,7 +30,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB = Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 
 $result = $DB->pselectOne(
     "SELECT DefaultEmail FROM participant_emails WHERE Test_name=:TN",

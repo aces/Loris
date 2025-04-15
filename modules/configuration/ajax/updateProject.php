@@ -44,18 +44,35 @@ if ($projectID == 'new') {
         exit;
     }
 
+    if (empty($_POST['Name'])
+        || empty($_POST['Alias'])
+        || strlen($_POST['Alias']) > 4
+    ) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Bad Request']);
+        exit;
+    }
+
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
     $db->insert(
         'user_project_rel',
         ["UserID"=>$user->getId(),"ProjectID"=>$project->getId()]
     );
 } else {
+    if (empty($_POST['Name'])
+        || empty($_POST['Alias'])
+        || strlen($_POST['Alias']) > 4
+    ) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Bad Request']);
+        exit;
+    }
+
     // Update Project fields
     $project = \Project::getProjectFromID(new \ProjectID($projectID));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
-
 }
 
 // Subproject information isn't mandatory. If the array is empty, give an
