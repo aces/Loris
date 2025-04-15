@@ -4,6 +4,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
   WHERE Name="imaging_pipeline";
 
 INSERT INTO Config (ConfigID, Value)
-  SELECT ID, 0
+  SELECT ID, 1
   FROM ConfigSettings cs
   WHERE cs.Name='use_legacy_dicom_study_importer';
