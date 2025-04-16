@@ -31,7 +31,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $ValidityEnabled;
     public $ValidityRequired;
     protected $instrument;
-    protected $labels;
 
     protected CandID $candID;
     protected SessionID $sessionID;
@@ -116,7 +115,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             );
 
             $this->instrument = $instrument;
-            $this->labels = $instrument->labels;
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
             $this->ValidityRequired = $instrument->ValidityRequired;
@@ -130,7 +128,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $hasAccess = $this->_hasAccess();
 
             if ($this->getDataEntryStatus() == null && $hasAccess) {
-                $this->setDataEntryStatus($instrument::getLangLabel('in_progress'));
+                $this->setDataEntryStatus('In Progress');
             }
 
             // generate the administration flag buttons
@@ -147,7 +145,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
 
             if ($config->settingEnabled('InstrumentResetting')
-                && $this->getDataEntryStatus() != $instrument::getLangLabel('complete')
+                && $this->getDataEntryStatus() != 'Complete'
             ) {
                 $user = User::singleton();
                 if ($user->hasPermission('send_to_dcc')) {
