@@ -16,7 +16,10 @@ jobs:
             php: ['7.4','8.0','8.1']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
+    - name: Install protoc-gen-js plugin
+      run: npm install -g protoc-gen-js
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -32,7 +35,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Composer cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -42,15 +45,11 @@ jobs:
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler 
-        cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
-        protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
+             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+          cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+          protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'

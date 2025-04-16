@@ -160,7 +160,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const [signalViewer, ...rest] = this.props.children;
+    const [signalViewer, ...rest] = React.Children.toArray(this.props.children);
     return (
       <Provider store={this.store}>
         {(this.state.channels.length > 0) && signalViewer}
