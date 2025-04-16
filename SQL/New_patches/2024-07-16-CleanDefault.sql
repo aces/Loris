@@ -10,7 +10,7 @@ ALTER TABLE `candidate`
   ALTER `RegistrationCenterID` DROP DEFAULT;
 
 ALTER TABLE `session`
-  ALTER `CandID` DROP DEFAULT;
+  ALTER `CandidateID` DROP DEFAULT;
 
 ALTER TABLE `instrument_subtests`
   ALTER `Order_number` SET DEFAULT 0;
@@ -94,10 +94,10 @@ ALTER TABLE `notification_spool`
   ALTER `ProcessID` DROP DEFAULT;
 
 ALTER TABLE `participant_status`
-  ALTER `CandID` DROP DEFAULT;
+  ALTER `CandidateID` DROP DEFAULT;
 
 ALTER TABLE `participant_status_history`
-  ALTER `CandID` DROP DEFAULT;
+  ALTER `CandidateID` DROP DEFAULT;
 
 ALTER TABLE `certification`
   ALTER `examinerID` DROP DEFAULT;
@@ -118,7 +118,7 @@ ALTER TABLE `parameter_type_category_rel`
   ALTER `ParameterTypeCategoryID` DROP DEFAULT;
 
 ALTER TABLE `parameter_candidate`
-  ALTER `CandID` DROP DEFAULT;
+  ALTER `CandidateID` DROP DEFAULT;
 
 ALTER TABLE `parameter_candidate`
   ALTER `ParameterTypeID` DROP DEFAULT;
@@ -139,7 +139,7 @@ ALTER TABLE `SNP_candidate_rel`
   ALTER `SNPID` DROP DEFAULT;
 
 ALTER TABLE `SNP_candidate_rel`
-  ALTER `CandID` DROP DEFAULT;
+  ALTER `CandidateID` DROP DEFAULT;
 
 ALTER TABLE `feedback_mri_predefined_comments`
   ALTER `CommentTypeID` DROP DEFAULT;
