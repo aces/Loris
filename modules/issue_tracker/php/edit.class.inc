@@ -148,7 +148,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Give "close" option if user has site close permissions and the issue
         // is at a user site, or if the user has close permissions for all sites,
-        // or it is the user's own permission
+        // or it is the user's own issue
         if ($user->hasPermission('issue_tracker_close_all_issue')
             || ($user->hasPermission('issue_tracker_close_site_issue')
             && in_array($issueData['centerID'], $user->getCenterIDs()))
