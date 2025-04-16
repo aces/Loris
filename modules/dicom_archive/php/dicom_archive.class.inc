@@ -15,6 +15,14 @@
  */
 namespace LORIS\dicom_archive;
 
+use LORIS\Data\Filters\CompositeORFilter;
+use LORIS\Data\Filters\CompositeANDFilter;
+use LORIS\Data\Filters\UserSiteMatch;
+use LORIS\Data\Filters\UserHasAnyPermission;
+use LORIS\Data\Filters\UserProjectMatch;
+use LORIS\Data\Filters\ResourceHasNoSession;
+use LORIS\Data\Filters\UserIsCreator;
+
 /**
  * Provides the PHP code for the menu filter for the dicom archive
  *
@@ -27,6 +35,7 @@ namespace LORIS\dicom_archive;
  */
 class Dicom_Archive extends \DataFrameworkMenu
 {
+    protected $dataSessionCanBeNull = true;
 
     /**
      * Determine whether the user has permission to view this page
@@ -37,7 +46,12 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('dicom_archive_view_allsites');
+        return $user->hasAnyPermission(
+            [
+                'dicom_archive_view_allsites',
+                'dicom_archive_view_ownsites',
+            ]
+        );
     }
 
     /**
@@ -59,7 +73,24 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     public function useProjectFilter() : bool
     {
-        return false;
+        // Only enable project filtering if the site project permissions are enabled
+        // to be compatible with projects not requiring a session ID for all DICOMS
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useAdvancedPermissions'
+        );
+        return $siteprojectperms === 'true';
+    }
+
+    /**
+     * Determines which permissions (if any) allows the user access to resources
+     * where the project is null.
+     *
+     * @return ?array
+     */
+    public function nullSessionPermissionNames() : ?array
+    {
+        return ['dicom_archive_nosessionid'];
     }
 
     /**
@@ -89,6 +120,75 @@ class Dicom_Archive extends \DataFrameworkMenu
 
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
 
+        return $provisioner;
+    }
+
+    /**
+     * Return a data provisioner of the same type as BaseDataProvisioner, with
+     * default LORIS filters applied. A subclass may override this to remove (or
+     * change) filters.
+     *
+     * @return \LORIS\Data\Provisioner a provisioner with default filters added
+     */
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
+    {
+        $provisioner      = $this->getBaseDataProvisioner();
+        $allSitePerms     = $this->allSitePermissionNames();
+        $nullSessionPerms = $this->nullSessionPermissionNames();
+
+        // Set filter default returns based on if the data loaded by this module can
+        // have or not a null session
+        $defaultReturn = $this->dataSessionCanBeNull ? false : null;
+
+        //Default filter to User Site Match
+        $filter = new UserSiteMatch($defaultReturn);
+
+        //Combine filter with Null session permissions if data can have null sessions
+        if ($this->dataSessionCanBeNull) {
+            $filter = new CompositeORFilter(
+                $filter,
+                new CompositeANDFilter(
+                    new UserHasAnyPermission($nullSessionPerms),
+                    new ResourceHasNoSession(),
+                ),
+            );
+        }
+
+        // If the user has any of the All Site permissions, combine as an OR filter
+        if (!empty($allSitePerms)) {
+            $filter = new CompositeORFilter(
+                $filter,
+                new UserHasAnyPermission($allSitePerms),
+            );
+        }
+
+        // Check if module uses Project filters
+        if ($this->useProjectFilter()) {
+            //Default project filter to User Project Match
+            $projectFilter = new UserProjectMatch($defaultReturn);
+
+            // Check if resources with null project should be included in the results
+            if (!empty($nullSessionPerms)) {
+                $projectFilter = new CompositeORFilter(
+                    new CompositeANDFilter(
+                        new ResourceHasNoSession(),
+                        new UserHasAnyPermission($nullSessionPerms)
+                    ),
+                    new UserProjectMatch($defaultReturn)
+                );
+            }
+
+            $filter = new CompositeANDFilter($filter, $projectFilter);
+        }
+
+        // Final filter, check if the user looking at the data is the user that
+        // uploaded the data
+        $filter = new CompositeORFilter(
+            $filter,
+            new UserIsCreator(),
+        );
+
+        $provisioner = $provisioner->filter($filter);
         return $provisioner;
     }
 

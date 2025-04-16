@@ -14,8 +14,6 @@
  */
 namespace LORIS\dicom_archive;
 
-use \Psr\Http\Message\ServerRequestInterface;
-
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -54,63 +52,62 @@ class ViewDetails extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        // remove the possibility to have no tarchive ID in this page
-        if (is_null($this->tarchiveID)) {
-            // defaults to permission denied
-            return false;
-        }
-
-        // get project ID from Tarchive ID.
-        $projectID = $this->_getProjectFromTarchiveID();
-        if (is_null($projectID)) {
-            return false;
-        }
-
-        // check permissions
-        return $user->hasPermission('dicom_archive_view_allsites')
-            && $user->hasProject($projectID);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param \User                  $user    The user this request is for
-     * @param ServerRequestInterface $request The PSR7 request
-     *
-     * @return void
-     */
-    public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void {
-        $gets = $request->getQueryParams();
-        if (is_null($gets['tarchiveID'])) {
-            $this->tarchiveID = null;
-        } else {
-            $this->tarchiveID = intval($gets['tarchiveID']);
-        }
-    }
-
-    /**
-     * Get the ProjectID attached to a given tarchive ID.
-     *
-     * @return \ProjectID|null a ProjectID if found, else null
-     */
-    private function _getProjectFromTarchiveID(): ?\ProjectID
-    {
-        $db  = $this->loris->getDatabaseConnection();
-        $pid = $db->pselectOne(
-            "SELECT p.ProjectID
-            FROM tarchive t
-                JOIN session s ON (t.SessionID = s.ID)
-                JOIN Project p ON (p.ProjectID = s.ProjectID)
-            WHERE t.TarchiveID = :tar",
-            ['tar' => $this->tarchiveID]
+        // Permission of access to this page needs to match the module's filters
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useAdvancedPermissions'
         );
-        //
-        if (is_null($pid)) {
-            return null;
+        $DB  = $this->loris->getDatabaseConnection();
+        $row = $DB->pselectRow(
+            "SELECT CenterID, ProjectID, SessionID, CreatingUser
+            FROM tarchive t 
+                JOIN session s ON s.ID = t.SessionID 
+            WHERE TarchiveID = :ID",
+            ['ID' => $_REQUEST['tarchiveID']]
+        );
+
+        $hasCenterAccess    = false;
+        $hasNoSessionAccess = false;
+        $hasProjectAccess   = false;
+        $isCreator          = false;
+
+        if (isset($row['CenterID'])) {
+            $hasCenterAccess = $user->hasCenter(
+                \CenterID::singleton(intval($row['CenterID']))
+            );
         }
-        return \ProjectID::singleton(intval($pid));
+        if (!isset($row['SessionID'])) {
+            $hasNoSessionAccess = $user->hasPermission("dicom_archive_nosessionid");
+        }
+        if (isset($row['ProjectID'])) {
+            $hasProjectAccess = $user->hasProject(
+                \ProjectID::singleton(intval($row['ProjectID']))
+            );
+        }
+        if (isset($row['CreatingUser'])) {
+            $isCreator = $row['CreatingUser'] === $user->getUsername();
+        }
+
+        // Assume project match is turned off first (as module filter does)
+        // User site match
+        // OR resource has no session but user has the no session permission
+        // OR user has access to all sites data
+        $access = $hasCenterAccess || $hasNoSessionAccess
+            || ($user->hasPermission('dicom_archive_view_allsites'));
+
+        // If the site project permissions are enabled
+        if ($siteprojectperms === 'true') {
+            // User has basic center access
+            // AND
+            // Either User has the project
+            // OR resource has no session but user has the no session permission
+            $access = $access && ($hasProjectAccess || $hasNoSessionAccess);
+        }
+
+        // User is the creator of the data
+        $access = $access || $isCreator;
+
+        return $access;
     }
 
     /**
