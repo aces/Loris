@@ -54,6 +54,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbrea
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (62,80,'1');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (63,81,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (64,82,'65');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (65,83,'t1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (66,84,'19');
