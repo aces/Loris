@@ -154,13 +154,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if (!empty($min)) {
                         if ($value < $min) {
                             $errors[$elname . "_group"]
-                                = $this->getLangLabel('must_be_greater_than') . " $min.";
+                                = $this->getLangLabel('must_be_greater_than')
+                                    . " $min.";
                         }
                     }
                     if (!empty($max)) {
                         if ($value > $max) {
                             $errors[$elname . "_group"]
-                                = $this->getLangLabel('must_be_less_than') . " $max.";
+                                = $this->getLangLabel('must_be_less_than')
+                                    . " $max.";
                         }
                     }
                 }
@@ -244,7 +246,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // Check if element part of a group.
                     // If so, the error should be on the group to show up
                     $errorEl          = $this->GroupElements[$elname] ?? $elname;
-                    $errors[$errorEl] = $elname . " " . $this->getLangLabel('is_required');
+                    $errors[$errorEl] = $elname . " "
+                        . $this->getLangLabel('is_required');
 
                     if ($this->XINDebug) {
                         echo "Required by default";
@@ -499,7 +502,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     [
                                         new DictionaryItem(
                                             $this->testName.'_Candidate_Age',
-                                            $this->getLangLabel('candidate_age_death'),
+                                            $this->getLangLabel(
+                                                'candidate_age_death'
+                                            ),
                                             $scope,
                                             new \LORIS\Data\Types\Duration(),
                                             new Cardinality(Cardinality::SINGLE),
@@ -513,7 +518,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 [
                                     new DictionaryItem(
                                         $this->testName.'_Window_Difference',
-                                        $this->getLangLabel('window_difference_from_test_battery'),
+                                        $this->getLangLabel(
+                                            'window_difference_from_test_battery'
+                                        ),
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
@@ -729,7 +736,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'numeric':
                     if ($addElements) {
-                        $this->addNumericElement($pieces[1], $this->getLangLabel($pieces[1]) ?? $pieces[2]);
+                        $this->addNumericElement(
+                            $pieces[1],
+                            $this->getLangLabel($pieces[1]) ?? $pieces[2]
+                        );
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
@@ -791,7 +801,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $this->getLangLabel($pieces[1]) ?? $pieces[2],
+                                        $this->getLangLabel($pieces[1])
+                                            ?? $pieces[2],
                                         $opt,
                                         [ "multiple" => "multiple" ]
                                     );
@@ -800,7 +811,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $this->getLangLabel($pieces[1]) ?? $pieces[2],
+                                        $this->getLangLabel($pieces[1])
+                                            ?? $pieces[2],
                                         $opt
                                     );
                             }
@@ -1055,7 +1067,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $element['Name'] = $value[1];
                 $specialCase     = false;
                 if ($value[0] !== 'table' && $value[0] !== 'title') {
-                    $element['Description'] = rtrim(strval($this->getLangLabel($value[1]) ?? $value[2]));
+                    $element['Description'] = rtrim(
+                        strval(
+                            $this->getLangLabel($value[1]) ?? $value[2]
+                        )
+                    );
                 }
                 switch ($value[0]) {
                 case 'selectmultiple':

@@ -1924,18 +1924,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "",
             [
                 ''             => null,
-<<<<<<< HEAD
-                "dnk"          => "DNK",
-                "refusal"      => "Refusal",
-                'not_answered' => 'Not Answered',
-            ],
-            ['class' => 'form-control input-sm not-answered']
-=======
                 "dnk"          => $this->getLangLabel('dnk'),
                 "refusal"      => $this->getLangLabel('refusal'),
                 'not_answered' => $this->getLangLabel('not_answered'),
-            ]
->>>>>>> 209e815a3f... adding languages to instruments
+            ],
+            ['class' => 'form-control input-sm not-answered']
         );
         $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
