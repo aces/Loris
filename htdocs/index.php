@@ -39,6 +39,8 @@ Profiler::checkpoint("Profiler started");
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
 $middlewarechain = (new \LORIS\Middleware\ContentLength())
+    ->withMiddleware(new \LORIS\Middleware\LorisMenu())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
