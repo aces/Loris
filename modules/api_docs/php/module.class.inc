@@ -52,18 +52,12 @@ class Module extends \Module
     }
 
     /**
-     * Return a value which is used as the default menu category
-     * (dropdown) to add this module to in the LORIS frontend.
+     * {@inheritDoc}
      *
-     * Unless overridden, this defaults to the empty string (which
-     * results in the module not being added to the LORIS menu.)
-     *
-     * @return string The category (dropdown) of the LORIS menu to add
-     *                this module to.
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return dgettext("loris", "Tools");
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
-
 }
