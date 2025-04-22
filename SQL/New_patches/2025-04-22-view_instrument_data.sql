@@ -1,3 +1,3 @@
-INSERT INTO permissions (code, description, ModuleID, action, category)
+INSERT INTO permissions (code, description, ModuleID, action, categoryID)
 VALUES ('view_instrument_data', 'Data Query Tool - View Instrument Data', 
 (SELECT ID FROM modules WHERE Name = 'instruments'), 'View', 2);
