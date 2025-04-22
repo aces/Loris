@@ -38,7 +38,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasAnyPermission(['data_entry','view_instrument_data']);
+        return parent::hasAccess($user) && $user->hasAnyPermission(
+        ['data_entry','view_instrument_data']);
     }
 
     /**
