@@ -22,6 +22,7 @@ CREATE TABLE `Config` (
   `ConfigID` int(11) NOT NULL,
   `Value` text,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `uq_Config_ConfigID` (`ConfigID`),
   KEY `fk_Config_1_idx` (`ConfigID`),
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
