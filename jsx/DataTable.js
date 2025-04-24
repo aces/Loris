@@ -376,7 +376,6 @@ class DataTable extends Component {
           let searchArray = searchString.split(',');
           match = (searchArray.includes(searchKey));
         }
-        match = (searchArray.includes(searchKey));
         if (match) {
           result = true;
         }
