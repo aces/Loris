@@ -82,7 +82,7 @@ class Appointment extends \NDB_Page
         if ($this->duplicateCheck($data)) {
             return false;
         }
-        $DB      = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getDatabaseConnection();
 
         $time = $data['AppointmentTime'] ?? '00:00';
 
