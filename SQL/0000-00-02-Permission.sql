@@ -147,7 +147,7 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2'),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2')
-    ('view_instrument_data', 'Data Query Tool - View Instrument Data', (SELECT ID FROM modules WHERE Name = 'instruments'), 'View', 2)
+    ('view_instrument_data', 'Data Query Tool - View Instrument Data', (SELECT ID FROM modules WHERE Name = 'instruments'), 'View', '2')
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)
