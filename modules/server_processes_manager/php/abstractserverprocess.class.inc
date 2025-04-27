@@ -124,6 +124,9 @@ abstract class AbstractServerProcess
      */
     private $_exitText;
 
+
+    private $_processSyncListeners = [];
+
     /**
      * Build a new server process
      *
@@ -169,6 +172,18 @@ abstract class AbstractServerProcess
     public function getId()
     {
         return $this->_id;
+    }
+
+    /**
+     * Mutator for field $_id.
+     *
+     * @param int $id new value for field $_id.
+     *
+     * @return void.
+     */
+    public function setId(int $id)
+    {
+        $this->_id = $id;
     }
 
     /**
@@ -373,6 +388,18 @@ abstract class AbstractServerProcess
     }
 
     /**
+     * Adds a listener to class variable $_processSyncListeners.
+     *
+     * @param $listener listener to add.
+     *
+     * @return void.
+     */
+    public function addProcessSyncListener($listener)
+    {
+        $this->_processSyncListeners[] = $listener;
+    }
+
+    /**
      * Updates the current object and its associated information in the database
      * in order to reflect the task's current state. This should be done if
      * execution of the task is finished to update all attributes related to the
@@ -454,35 +481,15 @@ abstract class AbstractServerProcess
                // Problem with the exit code file: end time is unknown (null)
             $endTime = null;
         }
-
         $exitText = $this->computeExitText($exitCode, $endTime);
-
-        //--------------------------------------------------------------------------
-        // Update object and database values to reflect what was computed previously
-        //--------------------------------------------------------------------------
-        $setValues   = [
-            'exit_text' => $exitText,
-            'exit_code' => $exitCode,
-            'end_time'  => $endTime,
-        ];
-        $whereValues = ['id' => $this->getId()];
-
-        try {
-            $this->getDatabaseProvider()->getDatabase()->update(
-                'server_processes',
-                $setValues,
-                $whereValues
-            );
-        } catch (\DatabaseException $exception) {
-            error_log(
-                "Failed to update task (pid=" . $this->getPid() . ") status: "
-                . $exception->getMessage()
-            );
-        }
 
         $this->_exitCode = $exitCode;
         $this->_exitText = $exitText;
         $this->_endTime  = $endTime;
+
+        foreach ($this->_processSyncListeners as $listener) {
+            $listener->processSynced($this);
+        }
 
         //------------------------------------------------------------------
         // Delete the temporary (stdout stderr and exitCode) files if it is
