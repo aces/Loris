@@ -1,3 +1,5 @@
+
+
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -263,15 +265,6 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'DoB',
-        'show': true,
-        'filter': {
-          name: 'DoB',
-          type: 'date',
-          hide: this.state.hideFilter,
-        },
-      },
-      {
         'label': 'Date of registration',
         'show': true,
         'filter': {
@@ -339,6 +332,19 @@ class CandidateListIndex extends Component {
       );
     }
 
+    if (options.usedob === 'true') {
+      fields.push(
+        {
+          'label': 'Derived Age',
+          'show': true,
+          'filter': {
+            name: 'dob',
+            type: 'date',
+            hide: this.state.hideFilter,
+          },
+        }
+      );
+    }
     // Open profile modal window
     const profileForm = (
       <Modal
