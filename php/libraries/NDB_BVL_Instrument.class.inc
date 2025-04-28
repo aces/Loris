@@ -2535,7 +2535,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID()->__toString(),
+                'CandidateID'   => $this->getID()->__toString(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
