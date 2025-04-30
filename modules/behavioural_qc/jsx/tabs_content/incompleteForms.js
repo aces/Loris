@@ -179,7 +179,7 @@ class IncompleteForms extends Component {
           name: 'Data Entry Type',
           type: 'select',
           options: {
-            'FDE': 'First Data Entry (FDE)',
+            'IDE': 'Initial Data Entry (IDE)',
             'DDE': 'Double Data Entry (DDE)',
           },
         },
