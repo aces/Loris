@@ -28,7 +28,7 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 t.Full_name AS _instrument,
                 CASE
                     WHEN f.commentid LIKE 'DDE_%' THEN 'DDE'
-                    ELSE 'FDE'
+                    ELSE 'IDE'
                 END AS _data_entry_type,
                 c.CandID AS _candID,
                 c.PSCID AS _pscID,

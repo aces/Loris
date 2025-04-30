@@ -28,7 +28,7 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     private $_instrument = '';
 
     /**
-     * Data Entry Type (FDE or DDE)
+     * Data Entry Type (IDE or DDE)
      *
      * @var string
      */
