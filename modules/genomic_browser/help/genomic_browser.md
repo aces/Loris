@@ -1,10 +1,8 @@
 # Genomic Browser
 
-This module is intended to allow users to visualize the results of already analyzed genetic tests cross-linked with behavioral and imaging candidate data.
+This module allows you to visualize the results of already analyzed genetic tests cross-linked with behavioral and imaging candidate data.
 
-The intended users are researchers and study personnel browsing and reviewing summary data. This module is a beta version which aims to present summary genomic data of several types so that researchers can usefully review and explore data available for study participants in a cross-modal context. SNP, CNV, and methylation (epigenomic) data are example types of data supported.
-
-Utilities are included for uploading and visualizing data, and these functions can be extended for additional data types. This module is not designed to replace existing databases designed for storing genomic data.
+It is designed for researchers and study personnel who are browsing and reviewing summary data. This module presents summary genomic data of several types, enabling you to review and explore data available for study participants in a cross-modal context. Supported data types include SNP, CNV, and methylation (epigenomic) data.
 
 ### Usage
 You can switch between the different tabs to view different types of genomic data. The tabs are:

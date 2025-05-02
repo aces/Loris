@@ -71,7 +71,7 @@ class Genomicfile
                 'file_type'         => $files['file']->getClientMediaType(),
                 'file_name'         => $files['file']->getClientFilename(),
                 'tmp_name'          => $files['file']
-                                       ->getStream()->getMetadata('uri'),
+                    ->getStream()->getMetadata('uri'),
                 'size'              => round($this->_bytes / 1048576, 0),
                 'inserted_by'       => $this->_user->getData('UserID'),
                 'genomic_file_type' => empty($this->_values['fileType']) ?
