@@ -203,7 +203,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clear,
             'No',
-            'displayed of 432'
+            '5 rows'
         );
 
         $this->_filterTest(
