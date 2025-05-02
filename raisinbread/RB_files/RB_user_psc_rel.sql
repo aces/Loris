@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `user_psc_rel`;
 LOCK TABLES `user_psc_rel` WRITE;

@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `bids_scan_type_subcategory`;
 LOCK TABLES `bids_scan_type_subcategory` WRITE;

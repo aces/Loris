@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `physiological_task_event_hed_rel`;
 LOCK TABLES `physiological_task_event_hed_rel` WRITE;

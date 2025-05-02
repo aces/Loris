@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `publication_keyword_rel`;
 LOCK TABLES `publication_keyword_rel` WRITE;

@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `feedback_mri_comment_types`;
 LOCK TABLES `feedback_mri_comment_types` WRITE;

@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `dataquery_starred_queries_rel`;
 LOCK TABLES `dataquery_starred_queries_rel` WRITE;

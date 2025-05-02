@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `mri_scanner`;
 LOCK TABLES `mri_scanner` WRITE;

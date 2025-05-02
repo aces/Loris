@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `testnames_permissions_rel`;
 LOCK TABLES `testnames_permissions_rel` WRITE;

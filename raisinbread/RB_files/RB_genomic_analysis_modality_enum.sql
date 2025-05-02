@@ -1,4 +1,3 @@
-/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `genomic_analysis_modality_enum`;
 LOCK TABLES `genomic_analysis_modality_enum` WRITE;
