@@ -31,7 +31,6 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
                 cohort.CohortID AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 gscr.sample_label AS _Sample,
                 cpg.cpg_name AS _cpg_name,
                 cpg.beta_value AS _Beta_value,
