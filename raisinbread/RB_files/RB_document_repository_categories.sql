@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `document_repository_categories`;
 LOCK TABLES `document_repository_categories` WRITE;

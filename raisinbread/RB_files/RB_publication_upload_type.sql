@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `publication_upload_type`;
 LOCK TABLES `publication_upload_type` WRITE;

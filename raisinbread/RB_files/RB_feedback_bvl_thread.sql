@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `feedback_bvl_thread`;
 LOCK TABLES `feedback_bvl_thread` WRITE;

@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `users_notifications_rel`;
 LOCK TABLES `users_notifications_rel` WRITE;

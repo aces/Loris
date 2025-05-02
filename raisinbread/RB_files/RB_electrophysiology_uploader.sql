@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `electrophysiology_uploader`;
 LOCK TABLES `electrophysiology_uploader` WRITE;

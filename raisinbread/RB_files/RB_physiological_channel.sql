@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `physiological_channel`;
 LOCK TABLES `physiological_channel` WRITE;

@@ -1,0 +1,6 @@
+/*!999999\- enable the sandbox mode */ 
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `Login_Summary_Statistics`;
+LOCK TABLES `Login_Summary_Statistics` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

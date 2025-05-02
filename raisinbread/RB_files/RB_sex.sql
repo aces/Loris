@@ -1,0 +1,9 @@
+/*!999999\- enable the sandbox mode */ 
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `sex`;
+LOCK TABLES `sex` WRITE;
+INSERT INTO `sex` (`Name`) VALUES ('Female');
+INSERT INTO `sex` (`Name`) VALUES ('Male');
+INSERT INTO `sex` (`Name`) VALUES ('Other');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

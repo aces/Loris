@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `participant_status_history`;
 LOCK TABLES `participant_status_history` WRITE;

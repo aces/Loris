@@ -1,3 +1,4 @@
+/*!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `hrrt_archive_files`;
 LOCK TABLES `hrrt_archive_files` WRITE;
