@@ -74,5 +74,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (80,'dataquery_admin','Admin dataquery queries',44,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (81,'imaging_uploader_ownsites','Imaging Scans - Own Sites',22,'View/Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (82,'imaging_uploader_nosessionid', 'Imaging Scans with no session ID',22,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (83,'dicom_archive_nosessionid','DICOMs with no session ID',15,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (84,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,'View',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

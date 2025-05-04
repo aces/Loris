@@ -631,23 +631,25 @@ function getDiagnosisEvolutionFields(): array
         ['candID' => $candID]
     );
 
-    $candidateDiagnosisEvolution = $db->pselect(
-        "SELECT
-            de.Name AS TrajectoryName,
-            p.Name AS Project,
-            visitLabel,
-            instrumentName,
-            sourceField,
-            Diagnosis,
-            Confirmed,
-            LastUpdate,
-            OrderNumber
-        FROM candidate_diagnosis_evolution_rel cder
-        JOIN diagnosis_evolution de USING (DxEvolutionID)
-        JOIN Project p USING (ProjectID)
-        JOIN candidate c ON c.ID=cder.CandidateID
-        WHERE c.CandID=:candID",
-        ['candID' => $candID]
+    $candidateDiagnosisEvolution = iterator_to_array(
+        $db->pselect(
+            "SELECT
+                de.Name AS TrajectoryName,
+                p.Name AS Project,
+                visitLabel,
+                instrumentName,
+                sourceField,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM candidate_diagnosis_evolution_rel cder
+            JOIN diagnosis_evolution de USING (DxEvolutionID)
+            JOIN Project p USING (ProjectID)
+            JOIN candidate c ON c.ID=cder.CandidateID
+            WHERE c.CandID=:candID",
+            ['candID' => $candID]
+        )
     );
 
     $projectList = \Utility::getProjectList();

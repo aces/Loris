@@ -91,7 +91,7 @@ ALTER TABLE `notification_spool`
   ALTER `NotificationTypeID` DROP DEFAULT;
 
 ALTER TABLE `notification_spool`
-  ALTER `ProcessID` DROP DEFAULT;
+  CHANGE `ProcessID` `ProcessID` int(11) DEFAULT NULL;
 
 ALTER TABLE `participant_status`
   ALTER `CandID` DROP DEFAULT;

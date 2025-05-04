@@ -170,6 +170,8 @@ class ExaminerIndex extends Component {
       // If user has multiple sites, join array of sites into string
       result = (
         <td>{cell
+          .filter((centerId) => this.state.data.fieldOptions.sites[centerId]
+          != null)
           .map((centerId) => this.state.data.fieldOptions.sites[centerId])
           .join(', ')}
         </td>

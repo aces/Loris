@@ -16,7 +16,6 @@ require_once __DIR__ . '/../generic_includes.php';
 
 use LORIS\StudyEntities\Candidate\CandID;
 
-$DB      = \NDB_Factory::singleton()->database();
 $candIDs = $DB->pselectCol(
     "SELECT CandID FROM candidate
     WHERE Entity_type='Human' AND Active='Y'",
@@ -41,15 +40,6 @@ $diagnosisTrajectoryByProject = [];
 foreach ($diagnosisTrajectories as $key => $data) {
     $diagnosisTrajectoryByProject[$data['ProjectID']][] = $data;
 }
-
-$loris = new \LORIS\LorisInstance(
-    $DB,
-    \NDB_Factory::singleton()->config(),
-    [
-        "project/modules",
-        "modules",
-    ]
-);
 
 foreach ($candIDs as $candID) {
     $candidate         = \Candidate::singleton(new CandID(strval($candID)));
@@ -97,7 +87,7 @@ foreach ($candIDs as $candID) {
 
                 // get instrument instance data
                 $instrument     = \NDB_BVL_Instrument::factory(
-                    $loris,
+                    $lorisInstance,
                     $data['instrumentName'],
                     $commentID
                 );
@@ -114,7 +104,7 @@ foreach ($candIDs as $candID) {
 
                 if (!empty($diagnosis)) {
                     $timepoint = \TimePoint::singleton(
-                        new SessionID($sessionID)
+                        new SessionID(strval($sessionID))
                     );
                     // Check for Visit Status 'Pass' and
                     // Approval Status at least 'In Progress'
@@ -124,8 +114,13 @@ foreach ($candIDs as $candID) {
                         && $timepoint->getApprovalStatus() !== null
                     ) ? 'Y' : 'N';
 
+                    $candidateID = $DB->pselectOne(
+                        "SELECT ID FROM candidate WHERE CandID=:CandID",
+                        ["CandID" => $candID]
+                    );
+
                     $set = [
-                        'CandID'        => $candID,
+                        'CandidateID'   => $candidateID,
                         'DxEvolutionID' => $data['DxEvolutionID'],
                         'Diagnosis'     => json_encode($diagnosis),
                         'Confirmed'     => $confirmed

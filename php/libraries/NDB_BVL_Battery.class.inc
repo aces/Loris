@@ -225,6 +225,7 @@ class NDB_BVL_Battery
 
         $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
             $sessionData['Visit_label'],
+            strval($sessionData['CohortID']),
             $testName
         );
         if ($obj->usesJSONdata() !== true) {
@@ -370,7 +371,6 @@ class NDB_BVL_Battery
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-
         // return all the data selected
         return iterator_to_array($rows);
     }
@@ -381,6 +381,8 @@ class NDB_BVL_Battery
      *
      * @param string $Visit_label The Visit_label that we want to
      *                            check if DDE is enabled for.
+     * @param string $CohortID    The CohortID that we want to
+     *                            check if DDE is enabled for.
      * @param string $Test_name   The test_name that we want to
      *                            check if DDE is enabled for.
      *
@@ -388,6 +390,7 @@ class NDB_BVL_Battery
      */
     static function isDoubleDataEntryEnabledForInstrument(
         String $Visit_label,
+        String $CohortID,
         String $Test_name
     ) : bool {
         $DB  = \NDB_Factory::singleton()->database();
@@ -395,8 +398,13 @@ class NDB_BVL_Battery
             'SELECT DISTINCT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
+            AND CohortID=:CohortID
             AND Test_name=:Test_name',
-            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
+            [
+                'Visit_label' => $Visit_label,
+                'CohortID'    => $CohortID,
+                'Test_name'   => $Test_name
+            ]
         ) == 'Y' ? true : false;
 
         return $ans;
