@@ -53,6 +53,7 @@ const SpecimenProcessForm = (props) => {
     options,
     errors = {},
     edit,
+    render,
   } = props;
 
   const updateButton = specimen && (
@@ -134,7 +135,7 @@ const SpecimenProcessForm = (props) => {
 
   const examiners = mapFormOptions(options.examiners, 'label');
   if (typeId && edit === true) {
-    return [
+    const elements = [
       protocolField,
       <SelectElement
         name="examinerId"
@@ -174,13 +175,18 @@ const SpecimenProcessForm = (props) => {
       />,
       updateButton,
     ];
+
+     const flatElements = React.Children.toArray(elements);
+ 
+     // If `render` is provided, pass the elements through it
+     return render ? render(flatElements) : <>{flatElements}</>;    
   } else if (edit === false) {
     const protocolAttributes = options.specimen.protocolAttributes[
       process.protocolId
     ] || [];
 
     const protocolStaticFields = protocolAttributes.map((attribute) => {
-      let value = process.data[attribute.id]; // Fetch the corresponding value from process.data
+      let value = process.data?.[attribute.id]; // Fetch the corresponding value from process.data
 
       // Convert boolean values to "Yes" or "No"
       if (value === true) {
@@ -278,7 +284,6 @@ SpecimenProcessForm.propTypes = {
     }).isRequired,
     centers: PropTypes.arrayOf(PropTypes.string).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string),
-    candidateSessions: PropTypes.arrayOf(PropTypes.string),
     sessions: PropTypes.arrayOf(PropTypes.string),
     examiners: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,

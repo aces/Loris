@@ -170,6 +170,6 @@ abstract class Endpoint
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 }

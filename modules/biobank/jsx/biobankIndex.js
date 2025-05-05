@@ -41,7 +41,6 @@ class BiobankIndex extends Component {
         examiners: {},
         users: {},
         projects: {},
-        sessionCenters: {},
         sessions: {},
         specimen: {
           types: {},
@@ -622,49 +621,47 @@ class BiobankIndex extends Component {
       const specimenopts = this.state.options.specimen;
       const datatypes = specimenopts.attributeDatatypes;
 
-      const protocolId = process.protocolId;
-      const protocolAttributes = specimenopts.protocolAttributes[protocolId];
-      // FIXME: This if statement was introduced because certain processes have
-      // a data object even though their protocol isn't associated with attributes.
-      // This is a sign of bad importing/configuration and should be fixed in
-      // configuration rather than here.
-      if (protocolAttributes) {
-        Object.keys(protocolAttributes)
-          .forEach((attributeId) => {
-          // validate required
-            if (protocolAttributes[attributeId].required == 1
-              && !process.data[attributeId]) {
-              errors.data[attributeId] = 'This field is required!';
-            }
-
-            const dataTypeId= attributes[attributeId].datatypeId;
-            // validate number
-            if (datatypes[dataTypeId].datatype === 'number') {
-              if (isNaN(parseInt(process.data[attributeId])) ||
-                !isFinite(process.data[attributeId])) {
-                errors.data[attributeId] = 'This field must be a number!';
-              }
-            }
-
-            // validate date
-            if (datatypes[dataTypeId].datatype === 'date') {
-              regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
-              if (regex.test(process.data[attributeId]) === false ) {
-                errors.data[attributeId] = 'This field must be a valid date! ';
-              }
-            }
-
-            // validate time
-            if (datatypes[dataTypeId].datatype === 'time') {
-              regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-              if (regex.test(process.data[attributeId]) === false) {
-                errors.data[attributeId] = 'This field must be a valid time! ';
-              }
-            }
-
-          // TODO: Eventually introduce file validation.
-          });
-      }
+      // FIXME: This if statement was introduced because certain processes have         
+      // a data object even though their protocol isn't associated with attributes.  
+      // This is a sign of bad importing/configuration and should be fixed in           
+      // configuration rather than here.                                                
+      if (attributes) {                                                                 
+        Object.values(attributes)                                                       
+          .forEach((attribute) => {                                                     
+          // validate required                                                          
+            if (attribute.required == 1                                                 
+              && !process.data[attribute.id]) {                                         
+              errors.data[attribute.id] = 'This field is required!';                    
+            }                                                                           
+                                                                                        
+            const dataTypeId= attribute.datatypeId;                                     
+            // validate number                                                          
+            if (datatypes[dataTypeId].datatype === 'number') {                          
+              if (isNaN(parseInt(process.data[attribute.id])) ||                        
+                !isFinite(process.data[attribute.id])) {                                
+                errors.data[attribute.id] = 'This field must be a number!';             
+              }                                                                         
+            }                                                                           
+                                                                                        
+            // validate date                                                            
+            if (datatypes[dataTypeId].datatype === 'date') {                            
+              regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;         
+              if (regex.test(process.data[attribute.id]) === false ) {                  
+                errors.data[attribute.id] = 'This field must be a valid date! ';        
+              }                                                                         
+            }                                                                           
+                                                                                        
+            // validate time                                                            
+            if (datatypes[dataTypeId].datatype === 'time') {                            
+              regex = /^([01]\d|2[0-3]):([0-5]\d)$/;                                    
+              if (regex.test(process.data[attribute.id]) === false) {                   
+                errors.data[attribute.id] = 'This field must be a valid time! ';        
+              }                                                                         
+            }                                                                           
+                                                                                        
+          // TODO: Eventually introduce file validation.                                
+          });                                                                           
+      }        
 
       if (isEmpty(errors.data)) {
         delete errors.data;

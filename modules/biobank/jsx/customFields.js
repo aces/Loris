@@ -27,7 +27,7 @@ function CustomFields(props) {
             name={attribute.id}
             label={attribute.label}
             onUserInput={props.setData}
-            required={attribute.required}
+            required={Boolean(attribute.required)}
             value={object[attribute.id]}
             errorMessage={errors[attribute.id]}
           />
@@ -40,7 +40,7 @@ function CustomFields(props) {
             name={attribute.id}
             label={attribute.label}
             onUserInput={props.setData}
-            required={attribute.required}
+            required={Boolean(attribute.required)}
             value={object[attribute.id]}
             errorMessage={errors[attribute.id]}
           />
@@ -53,7 +53,7 @@ function CustomFields(props) {
             name={attribute.id}
             label={attribute.label}
             onUserInput={props.setData}
-            required={attribute.required}
+            required={Boolean(attribute.required)}
             value={object[attribute.id]}
             errorMessage={errors[attribute.id]}
           />
@@ -66,7 +66,7 @@ function CustomFields(props) {
             name={attribute.id}
             label={attribute.label}
             onUserInput={props.setData}
-            required={attribute.required}
+            required={Boolean(attribute.required)}
             value={object[attribute.id]}
             errorMessage={errors[attribute.id]}
           />
@@ -81,7 +81,7 @@ function CustomFields(props) {
             name={attribute.id}
             label={attribute.label}
             onUserInput={props.setData}
-            required={attribute.required}
+            required={Boolean(attribute.required)}
             value={props.current.files[object[attribute.id]]}
             errorMessage={errors[attribute.id]}
           />

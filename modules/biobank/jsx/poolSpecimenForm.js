@@ -234,7 +234,7 @@ class PoolSpecimenForm extends React.Component {
             disabled={!isEmpty(list) || !filter.candidateId}
             value={filter.sessionId}
             options={mapFormOptions(
-              (options?.candidateSessions?.[filter.candidateId] || {}),
+              (options?.candidates?.[filter.candidateId] || {}),
               'label'
             )}
           />
@@ -348,7 +348,6 @@ PoolSpecimenForm.propTypes = {
     ).isRequired,
   }).isRequired,
   options: PropTypes.shape({
-    candidateSessions: PropTypes.obj,
     specimen: PropTypes.shape({
       units: PropTypes.string,
       types: PropTypes.arrayOf(PropTypes.string),

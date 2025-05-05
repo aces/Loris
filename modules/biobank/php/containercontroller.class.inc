@@ -182,7 +182,7 @@ class ContainerController
             }
             break;
         case 'update':
-            if (!$this->user->hasPermission('biobank_container_edit')) {
+            if (!$this->user->hasPermission('biobank_container_update')) {
                 throw new Forbidden('Container: Update Permission Denied');
             }
             break;

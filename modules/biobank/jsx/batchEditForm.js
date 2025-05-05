@@ -255,14 +255,14 @@ class BatchEditForm extends React.PureComponent {
         <TextboxElement
           name='quantity'
           label='Quantity'
-          value={this.state.specimen.quantity}
+          value={this.state.specimen.quantity || null}
           errorMessage={errors.specimen.quantity}
           onUserInput={this.setSpecimen}
         />
         <SelectElement
           name='unitId'
           label='Unit'
-          value={this.state.specimen.unitId}
+          value={this.state.specimen.unitId || null}
           options={units}
           errorMessage={errors.specimen.unitId}
           onUserInput={this.setSpecimen}
@@ -319,19 +319,22 @@ class BatchEditForm extends React.PureComponent {
           label='Protocol'
           text={options.specimen.protocols[collection.protocolId].label}
         />
-        <EditForm>
-          <SpecimenProcessForm
-            edit={true}
-            errors={errors.specimen.collection || {}}
-            options={options}
-            process={collection}
-            processStage='collection'
-            setParent={this.setProcess}
-            setCurrent={this.setCurrent}
-            typeId={current.typeId}
-            hideProtocol={true}
-          />
-        </EditForm>
+        <SpecimenProcessForm
+           edit={true}
+           errors={errors.specimen.collection || {}}
+           options={options}
+           process={collection}
+           processStage="collection"
+           setParent={this.setProcess}
+           setCurrent={this.setCurrent}
+           typeId={current.typeId}
+           hideProtocol={true}
+           render={(elements) => (
+             <EditForm>
+               {elements}
+             </EditForm>
+           )}
+         />         
       </div>
     ) : null;
 
@@ -673,8 +676,11 @@ BarcodeInput.propTypes = {
  * @param {object} props
  * @return {JSX}
  */
-function EditForm(props) {
-  return React.Children.map(props.children, (child) => {
+function EditForm({ children }) {
+   return React.Children.map(children, (child) => {
+     if (!React.isValidElement(child) || typeof child.type !== 'function') {
+       return child;
+     }    
     const handleClick = (name, value) => {
       if (!value) {
         child.props.onUserInput(name, null);
@@ -683,12 +689,13 @@ function EditForm(props) {
         child.props.onUserInput(name, '');
       }
     };
-    return React.isValidElement(child) && typeof child.type === 'function' && (
+
+    return (      
       <div className="row">
         <div className="col-xs-12">
           <div className="row">
             <div className="col-xs-10">
-              {React.cloneElement(child, {required: false})}
+              {React.cloneElement(child, { required: false })}
             </div>
             <div className="col-xs-2">
               <CheckboxElement
