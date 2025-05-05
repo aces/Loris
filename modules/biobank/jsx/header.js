@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-  FormElement,
   TextboxElement,
   DateElement,
 } from 'jsx/Form';
 import Modal from 'Modal';
 import LifeCycle from './lifeCycle.js';
 import SpecimenForm from './specimenForm.js';
+import {clone} from './helpers.js';
 
 import Swal from 'sweetalert2';
 
@@ -68,7 +68,7 @@ class Header extends Component {
     };
 
     const alterLotNumber = () => {
-      if (loris.userHasPermission('biobank_specimen_edit')) {
+      if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
           <div className='action' title='Alter Lot Number'>
             <span
@@ -85,7 +85,7 @@ class Header extends Component {
     };
 
     const alterExpirationDate = () => {
-      if (loris.userHasPermission('biobank_specimen_edit')) {
+      if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
           <div className='action' title='Alter Expiration Date'>
             <span
@@ -108,14 +108,12 @@ class Header extends Component {
         show={editable.lotForm}
         onSubmit={updateContainer}
       >
-        <FormElement>
-          <TextboxElement
-            name='lotNumber'
-            label='Lot Number'
-            onUserInput={this.props.setContainer}
-            value={current.container.lotNumber}
-          />
-        </FormElement>
+        <TextboxElement
+          name='lotNumber'
+          label='Lot Number'
+          onUserInput={this.props.setContainer}
+          value={current.container.lotNumber}
+        />
       </Modal>
     );
 
@@ -126,14 +124,12 @@ class Header extends Component {
         show={editable.expirationForm}
         onSubmit={updateContainer}
       >
-        <FormElement>
-          <DateElement
-            name='expirationDate'
-            label='Expiration Date'
-            onUserInput={this.props.setContainer}
-            value={current.container.expirationDate}
-          />
-        </FormElement>
+        <DateElement
+          name='expirationDate'
+          label='Expiration Date'
+          onUserInput={this.props.setContainer}
+          value={current.container.expirationDate}
+        />
       </Modal>
     );
 
@@ -177,7 +173,7 @@ class Header extends Component {
             current={current}
             editContainer={this.props.editContainer}
             setContainer={this.props.setContainer}
-            updateContainer={updateContainer}
+            updateContainer={this.props.updateContainer}
           />
         </div>
         <LifeCycle
@@ -265,10 +261,10 @@ Header.propTypes = {
  */
 function ContainerCheckout(props) {
   const checkoutContainer = () => {
-    props.editContainer(props.container)
-      .then(() => props.setContainer('parentContainerId', null))
-      .then(() => props.setContainer('coordinate', null))
-      .then(() => props.updateContainer());
+    const container = clone(props.container);
+    container.parentContainerId = null;
+    container.coordinate = null;
+    props.updateContainer(container);    
   };
 
   return (loris.userHasPermission('biobank_container_edit') &&

@@ -105,7 +105,7 @@ class PoolTab extends Component {
       return <td>{value}</td>;
     case 'Visit Label':
       if (candidatePermission) {
-        const sessId = Object.values(options.candidateSessions[candId]).find(
+        const sessId = Object.values(options.candidates[candId]).find(
           (sess) => sess.label == value
         )?.id;
         const sessionPermission = sessId !== undefined;
@@ -260,7 +260,6 @@ PoolTab.propTypes = {
     }).isRequired,
     centers: PropTypes.arrayOf(PropTypes.string).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string),
-    candidateSessions: PropTypes.arrayOf(PropTypes.string),
     projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     sessions: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,

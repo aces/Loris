@@ -31,7 +31,7 @@ function Globals(props) {
     />
   );
 
-  const edit = loris.userHasPermission('biobank_specimen_edit')
+  const edit = loris.userHasPermission('biobank_specimen_alter')
     && specimen && (
     () => {
       props.edit('containerType');
@@ -221,37 +221,21 @@ function Globals(props) {
     </InlineField>
   );
 
-  const projectField = () => specimen && (
-    <InlineField
-      loading={props.loading}
-      label='Projects'
-      clearAll={props.clearAll}
-      updateValue={()=>props.updateSpecimen(current.specimen)}
-      edit={() => props.edit('project')}
-      editValue={() => props.editSpecimen(specimen)}
-      value={specimen.projectIds.length !== 0 ?
-        specimen.projectIds
-          .map((id) => options.projects[id])
-          .join(', ') : 'None'}
-      editable={editable.project}
-    >
-      <SelectElement
-        name='projectIds'
-        options={props.options.projects}
-        onUserInput={props.setSpecimen}
-        multiple={true}
-        emptyOption={false}
-        value={props.current.specimen.projectIds}
-        errorMessage={props.errors.specimen.projectIds}
-      />
-    </InlineField>
-  );
+  const projectField = () => specimen && (                                              
+    <InlineField                                                                        
+      label='Projects'                                                                  
+      value={specimen.projectIds.length !== 0 ?                                         
+        specimen.projectIds                                                             
+          .map((id) => options.projects[id])                                            
+          .join(', ') : 'None'}                                                         
+    />                                                                                  
+  );           
 
   const drawField = specimen && (
     <InlineField
       label='Draw Site'
       value={options.centers[
-        options.sessionCenters[specimen.sessionId]?.centerId
+        options.sessions[specimen.sessionId]?.centerId
       ]}
     />
   );
@@ -500,10 +484,8 @@ Globals.propTypes = {
     }).isRequired,
     projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     centers: PropTypes.arrayOf(PropTypes.string).isRequired,
-    sessionCenters: PropTypes.arrayOf(PropTypes.string),
     candidates: PropTypes.arrayOf(PropTypes.string),
     sessions: PropTypes.arrayOf(PropTypes.string),
-    candidateSessions: PropTypes.arrayOf(PropTypes.string), // Added
     attributes: PropTypes.arrayOf(
       PropTypes.shape({
         label: PropTypes.string.isRequired,

@@ -54,28 +54,28 @@ class SpecimenTab extends Component {
    * @return {string}
    */
   mapSpecimenColumns(column, value) {
-    const {options} = this.props;
-    switch (column) {
-    case 'Type':
-      return options.specimen.types[value].label;
-    case 'Container Type':
-      return options.container.typesPrimary[value].label;
-    case 'Diagnosis':
-      if (value) {
-        return value.map((id) => options.diagnoses[id].label);
-      }
-      break;
-    case 'Status':
-      return options.container.stati[value].label;
-    case 'Current Site':
-      return options.centers[value];
-    case 'Draw Site':
-      return options.centers[value];
-    case 'Projects':
-      return value.map((id) => options.projects[id]);
-    default:
-      return value;
-    }
+    const {options} = this.props;                                                       
+    switch (column) {                                                                   
+    case 'Type':                                                                        
+      return options.specimen.types[value].label;                                       
+    case 'Container Type':                                                              
+      return options.container.typesPrimary[value].label;                               
+    case 'Diagnosis':                                                                   
+      if (Array.isArray(value) && value.length > 0) {                                   
+        return value.map((id) => options.diagnoses[id].label);                          
+      }                                                                                 
+      break;                                                                            
+    case 'Status':                                                                      
+      return options.container.stati[value].label;                                      
+    case 'Current Site':                                                                
+      return options.centers[value];                                                    
+    case 'Draw Site':                                                                   
+      return options.centers[value];                                                    
+    case 'Projects':                                                                    
+      return value.map((id) => options.projects[id]);                                   
+    default:                                                                            
+      return value;                                                                     
+    }         
   }
 
   /**
@@ -86,71 +86,71 @@ class SpecimenTab extends Component {
    * @param {array} row - an array of the row values
    * @return {JSX}
    */
-  formatSpecimenColumns(column, value, row) {
-    const {data, options} = this.props;
-    value = this.mapSpecimenColumns(column, value);
-    const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row['PSCID']);
-    const candidatePermission = candidate !== undefined;
-    switch (column) {
-    case 'Barcode':
-      return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
-    case 'Parent Specimens':
-      // TODO: if the user doesn't have access then these shouldn't be hyperlinked
-      const barcodes = value && value.map((id, key) => {
-        return <Link key={key} to={`/barcode=${value}`}>{value}</Link>;
-      }).reduce((prev, curr) => [prev, ', ', curr]);
-      return <td>{barcodes}</td>;
-    case 'PSCID':
-      if (candidatePermission) {
-        return (
-          <td>
-            <a href={loris.BaseURL + '/' + candidate.id}>{value}</a>
-          </td>
-        );
-      }
-      return <td>{value}</td>;
-    case 'Visit Label':
-      if (candidatePermission) {
-        const ses = Object.values(options.candidateSessions[candidate.id])
-          .find((sess) => sess.label == value).id;
-        const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+ses;
-        return <td><a href={visitLabelURL}>{value}</a></td>;
-      }
-      return <td>{value}</td>;
-    case 'Status':
-      const style = {};
-      switch (value) {
-      case 'Available':
-        style.color = 'green';
-        break;
-      case 'Reserved':
-        style.color = 'orange';
-        break;
-      case 'Dispensed':
-        style.color = 'red';
-        break;
-      case 'Discarded':
-        style.color = 'red';
-        break;
-      }
-      return <td style={style}>{value}</td>;
-    case 'Projects':
-      return <td>{value.join(', ')}</td>;
-    case 'Container Barcode':
-      // check if container has be queried
-      if (
-        Object.values(data.containers)
-          .find((container) => container.barcode == value)
-      ) {
-        return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
-      }
-      return <td>{value}</td>;
-    default:
-      return <td>{value}</td>;
-    }
-  }
+  formatSpecimenColumns(column, value, row) {                                        
+    const {data, options} = this.props;                                              
+    const display = this.mapSpecimenColumns(column, value);                          
+    const candidate = Object.values(options.candidates)                              
+      .find((cand) => cand?.pscid == row['PSCID']);                                  
+    const candidatePermission = candidate !== undefined;                             
+    switch (column) {                                                                
+    case 'Barcode':                                                                  
+      return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;             
+    case 'Parent Specimens':                                                         
+      // TODO: if the user doesn't have access then these shouldn't be hyperlinked   
+      const barcodes = display && display.map((id, key) => {                         
+        return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;          
+      }).reduce((prev, curr) => [prev, ', ', curr]);                                 
+      return <td>{barcodes}</td>;                                                    
+    case 'PSCID':                                                                    
+      if (candidatePermission) {                                                     
+        return (                                                                     
+          <td>                                                                       
+            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>               
+          </td>                                                                      
+        );                                                                           
+      }                                                                              
+      return <td>{display}</td>;                                                     
+    case 'Visit Label':                                                              
+      if (candidatePermission) {                                                     
+        const sessionId = candidate.sessionIds                                       
+          .find(sessionId => options.sessions[sessionId].label === value);           
+        const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+             
+          candidate.id+'&sessionID='+sessionId;                                      
+        return <td><a href={visitLabelURL}>{display}</a></td>;                       
+      }                                                                              
+      return <td>{display}</td>;                                                     
+    case 'Status':                                                                   
+      const style = {};                                                              
+      switch (display) {                                                             
+      case 'Available':                                                              
+        style.color = 'green';                                                       
+        break;                                                                       
+      case 'Reserved':                                                               
+        style.color = 'orange';                                                      
+        break;                                                                       
+      case 'Dispensed':                                                              
+        style.color = 'red';                                                         
+        break;                                                                       
+      case 'Discarded':                                                              
+        style.color = 'red';                                                         
+        break;                                                                       
+      }                                                                              
+      return <td style={style}>{display}</td>;                                       
+    case 'Projects':                                                                 
+      return <td>{display.join(', ')}</td>;                                          
+    case 'Container Barcode':                                                        
+      // check if container has be queried                                           
+      if (                                                                           
+        Object.values(data.containers)                                               
+          .find((container) => container.barcode == display)                         
+      ) {                                                                            
+        return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;           
+      }                                                                              
+      return <td>{display}</td>;                                                     
+    default:                                                                         
+      return <td>{display}</td>;                                                     
+    }                                                                                
+  }   
 
   /**
    * Render the React component
@@ -212,7 +212,7 @@ class SpecimenTab extends Component {
         container.statusId,
         specimen.projectIds,
         specimen.centerId,
-        options.sessionCenters[specimen.sessionId]?.centerId,
+        options.sessions[specimen.sessionId]?.centerId,
         specimen.collection.date,
         specimen.collection.time,
         (specimen.preparation||{}).time,
@@ -385,7 +385,7 @@ class SpecimenTab extends Component {
             onClose={this.clearEditable}
             onSubmit={this.props.createPool}
           /> : null}
-        {loris.userHasPermission('biobank_specimen_edit') ?
+        {loris.userHasPermission('biobank_specimen_update') ?
           <BatchProcessForm
             show={editable.batchProcessForm}
             onClose={this.clearEditable}
@@ -393,7 +393,7 @@ class SpecimenTab extends Component {
             options={this.props.options}
             data={this.props.data}
           /> : null}
-        {loris.userHasPermission('biobank_specimen_edit') ?
+        {loris.userHasPermission('biobank_specimen_alter') ?
           <BatchEditForm
             show={editable.batchEditForm}
             onClose={this.clearEditable}
@@ -456,12 +456,6 @@ SpecimenTab.propTypes = {
     projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string).isRequired,
     sessions: PropTypes.arrayOf(PropTypes.string).isRequired,
-    sessionCenters: PropTypes.arrayOf(
-      PropTypes.shape({
-        centerId: PropTypes.number.isRequired,
-      })
-    ),
-    candidateSessions: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
 
   // Data prop: Contains containers, specimens, and pools data

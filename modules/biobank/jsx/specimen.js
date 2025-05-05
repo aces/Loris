@@ -146,7 +146,7 @@ function ProcessPanel(props) {
   if (protocolExists
         && !specimen[process]
         && !editable[process]
-        && loris.userHasPermission('biobank_specimen_edit')
+        && loris.userHasPermission('biobank_specimen_update')
   ) {
     const addProcess = () => props.addProcess(process);
     panel = (
