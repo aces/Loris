@@ -259,7 +259,7 @@ function ContainerDisplay(props) {
                 '<h5>'+optcon.stati[children[coord].statusId].label+'</h5>';
             }
             draggable = !loris.userHasPermission(
-              'biobank_container_edit') ||
+              'biobank_container_update') ||
                         editable.loadContainer ||
                         editable.containerCheckout
               ? 'false' : 'true';
@@ -276,7 +276,7 @@ function ContainerDisplay(props) {
             }
             onDragOver = null;
             onDrop = null;
-          } else if (loris.userHasPermission('biobank_container_edit') &&
+          } else if (loris.userHasPermission('biobank_container_update') &&
                      !editable.containerCheckout) {
             nodeClass = coordinate == current.coordinate ?
               'node selected' : 'node load';

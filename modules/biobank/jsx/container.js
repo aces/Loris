@@ -39,7 +39,7 @@ class BiobankContainer extends Component {
     const {current, data, editable, options, container} = this.props;
 
     const checkoutButton = () => {
-      if (!(loris.userHasPermission('biobank_container_edit'))
+      if (!(loris.userHasPermission('biobank_container_update'))
               || (data.containers[container.id].childContainerIds.length == 0)
       ) {
         return;

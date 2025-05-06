@@ -292,7 +292,7 @@ function Globals(props) {
       };
 
       const updateParentContainer = () => {
-        if (loris.userHasPermission('biobank_container_edit')) {
+        if (loris.userHasPermission('biobank_container_update')) {
           return (
             <div>
               <div className='action' title='Move Container'>
