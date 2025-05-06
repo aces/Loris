@@ -58,6 +58,9 @@ class SpecimenForm extends React.Component {
         .map((item) => item.specimen.id);
       current.candidateId = specimen.candidateId;
       current.sessionId = specimen.sessionId;
+      current.projectIds = [
+        this.props.options.sessions[specimen.sessionId].projectId
+      ];
       current.typeId = specimen.typeId;
       current.originId = container.originId;
       current.centerId = container.centerId;
