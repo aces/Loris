@@ -267,7 +267,7 @@ function ContainerCheckout(props) {
     props.updateContainer(container);    
   };
 
-  return (loris.userHasPermission('biobank_container_edit') &&
+  return (loris.userHasPermission('biobank_container_update') &&
       props.container.parentContainerId) ? (
       <div className='action'>
         <div
