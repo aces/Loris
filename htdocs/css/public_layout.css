@@ -43,57 +43,74 @@ h1, h2, h3, h4 {
     transition: background-color 0.2s ease-in;
 }
 
+
+
+
+
+
+
+
 .header {
     height: 100px;
     background-color: #064785;
     padding: 5px 0;
+    position: relative;
 }
 
 .flex-wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    position: relative;
 }
 
-.header .loris-logo {
+.logo-wrapper {
+    max-height: 80px;
+    max-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    display: block;
+}
+
+/* Left logo specific spacing */
+.logo-left {
     margin-right: auto;
 }
 
-.header .loris-logo img {
-    height: 80px;
-}
-
-.header .github-logo {
+/* Right logo specific spacing */
+.logo-right {
     margin-left: auto;
-.
 }
 
-.header .github-logo img {
-    height: 40px;
+.logo-right img {
     padding-right: 10px;
     opacity: 0.8;
-}
-
-.header .github-logo img:hover {
-    opacity: 1;
-    -webkit-transition: opacity 0.2s ease-in;
     transition: opacity 0.2s ease-in;
 }
 
-.header .nav-link {
-    color: #fff;
-    font-size: 22px;
-    line-height: 130px;
+.logo-right img:hover {
+    opacity: 1;
 }
 
-.header .study-title {
-    width: 500px;
-    padding: 0 20px;
+.study-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     color: #eee;
     font-size: 25px;
-    line-height: 1.15;
     font-weight: 600;
     font-variant: small-caps;
     text-align: center;
+    white-space: nowrap;
 }
 
 .main-content {

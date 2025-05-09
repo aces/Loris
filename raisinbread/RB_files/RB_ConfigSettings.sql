@@ -121,6 +121,10 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (129,'UserMaximumDaysInactive','The maximum number of days since last login before making a user inactive.',1,0,'text',1,'Maximum Days Before Making User Inactive',30);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (130,'EEGUploadIncomingPath','Path to the upload directory for incoming EEG studies',1,0,'text',45,'EEG Incoming Directory',15);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (131,'EEGS3DataPath','EEG S3 data path for assembly data',1,0,'text',45,'EEG S3 data path',15);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (132,'login_logo_left','Path for top left logo on the login page.',1,0,'text',1,'Login Top Left Logo',3);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (133,'login_logo_right','Path for top right logo on the login page.',1,0,'text',1,'Login Top Right Logo',3);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (134,'login_logo_left_link','Optional link to redirect when clicking on top left logo',1,0,'text', 1,'Login Top Left Logo Link',4);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (135,'login_logo_right_link','Optional link to redirect when clicking on top right logo',1,0,'text',1,'Login Top Right Logo Link',4);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
