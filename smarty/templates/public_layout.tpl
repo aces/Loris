@@ -22,7 +22,7 @@
 </head>
 <body>
   <header class="header">
-    <div class="container">
+    <div class="header-container">
       <div class="flex-wrapper">
         <!-- Left Logo (conditionally a link) -->
         <div class="logo-wrapper logo-left">
