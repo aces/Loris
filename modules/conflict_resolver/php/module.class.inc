@@ -80,7 +80,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Clinical";
+        return dgettext("loris", "Clinical");
     }
 
     /**
@@ -90,7 +90,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Conflict Resolver";
+        return dgettext("conflict_resolver", "Conflict Resolver");
     }
 
     /**
@@ -113,7 +113,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Data entry conflict",
+                    dgettext("conflict_resolver", "Data entry conflict"),
                     $DB,
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                          LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
@@ -165,7 +165,7 @@ class Module extends \Module
             }
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Unresolved Conflicts",
+                    dgettext("conflict_resolver", "Unresolved Conflicts"),
                     $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",
                     [

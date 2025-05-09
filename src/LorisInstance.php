@@ -171,6 +171,13 @@ class LorisInstance
                 $cls       = new $className($this, $name, $mpath);
                 $this->moduleInstances[$name] = $cls;
                 $cls->registerAutoloader();
+
+        // NB: This gets overridden by the BaseRouter if a project/locale/
+        //     override exists for the user's language
+                if (is_dir("$mpath/locale/")) {
+                    \bind_textdomain_codeset($name, 'UTF-8');
+                    \bindtextdomain($name, "$mpath/locale");
+                }
                 return $cls;
             }
         }
