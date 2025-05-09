@@ -42,76 +42,65 @@ h1, h2, h3, h4 {
     -webkit-transition: background-color 0.2s ease-in;
     transition: background-color 0.2s ease-in;
 }
-
-
-
-
-
-
-
-
 .header {
     height: 100px;
     background-color: #064785;
-    padding: 5px 0;
+    padding: 0;
     position: relative;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .flex-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
     height: 100%;
     position: relative;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .logo-wrapper {
-    max-height: 80px;
-    max-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    max-height: 100%;
+    max-width: 120px;
 }
 
 .logo-wrapper img {
-    max-height: 100%;
-    max-width: 100%;
-    height: auto;
+    max-height: 120px;
+    height:auto;
     width: auto;
-    display: block;
 }
 
-/* Left logo specific spacing */
 .logo-left {
     margin-right: auto;
 }
 
-/* Right logo specific spacing */
 .logo-right {
     margin-left: auto;
 }
 
-.logo-right img {
-    padding-right: 10px;
-    opacity: 0.8;
-    transition: opacity 0.2s ease-in;
-}
-
-.logo-right img:hover {
-    opacity: 1;
-}
-
 .study-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1;
     color: #eee;
     font-size: 25px;
     font-weight: 600;
     font-variant: small-caps;
     text-align: center;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
 }
+
 
 .main-content {
     background-color: #f8f8f8;
