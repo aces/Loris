@@ -122,6 +122,27 @@ class Module extends \Module
                     1,
                 )
             ];
+        case 'study-progression':
+            $DB = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                    "SELECT 
+                        p.ProjectID,
+                        p.Name AS ProjectName,
+                        COUNT(s.ID) AS count,
+                        'rgb(235, 255, 254)' as colour,
+                        '".$baseURL."/imaging_browser' as url
+                    FROM session s
+                    JOIN Project p ON p.ProjectID = s.ProjectID
+                    JOIN mri_upload mu ON mu.SessionID = s.ID
+                    WHERE s.Active <> 'N' 
+                    AND s.CenterID <> 1
+                    GROUP BY p.Name",
+                    [],
+                    'ProjectID'
+            );
+            return [
+                "Imaging Session" => $data
+            ];
         }
         return [];
     }
