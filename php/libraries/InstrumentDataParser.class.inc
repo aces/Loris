@@ -225,6 +225,7 @@ class InstrumentDataParser extends CSVParser
             $loris,
             $this->instrumentName,
         );
+        // TODO: Handle unexisting players
 
         $errors = [];
         try {
@@ -249,33 +250,46 @@ class InstrumentDataParser extends CSVParser
                         $instrument = \NDB_BVL_Instrument::factory(
                             $loris,
                             $this->instrumentName,
-                            ''
+                            '',
+                            '',
+                            false
                         );
 
-                        // Populate instrument with data
-                        // Change below is expected to allow population
-                        $_FILES   = [];
-                        $_REQUEST = $rowData;
-                        $_POST    = $rowData;
+                        if (!is_null($instrument)) {
+                          // Instrument exists
 
-                        $instrument->form->getGroupValues(
+                          // Populate instrument with data
+                          // Change below is expected to allow population
+                          $_FILES   = [];
+                          $_REQUEST = $rowData;
+                          $_POST    = $rowData;
+
+                          $instrument->form->getGroupValues(
                             array_keys($rowData),
                             $out
-                        );
+                          );
 
-                        // Generate CommentID for instrument
-                        $battery = new \NDB_BVL_Battery();
-                        $battery->selectBattery(
+                          // Generate CommentID for instrument
+                          $battery = new \NDB_BVL_Battery();
+                          $battery->selectBattery(
                             new \SessionID(strval($data['SessionID']))
-                        );
-                        $commentID = $battery->addInstrument(
+                          );
+                          $commentID = $battery->addInstrument(
                             $loris,
                             $this->instrumentName
-                        );
-                        $instrument->commentID = $commentID;
+                          );
+                          $instrument->commentID = $commentID;
 
-                        // Validate and save
-                        $success = $instrument->save();
+                          // Validate and save
+                          $success = $instrument->save();
+                        } else {
+                          // Instrument doesn't exist. Create it
+
+
+                          $success = false;
+                        }
+
+
 
                         if (!$success) {
                             throw new RuntimeException(
@@ -340,6 +354,25 @@ class InstrumentDataParser extends CSVParser
                 'message' => "DB Error: {$e->getMessage()}"
             ];
         }
+    }
+
+    /**
+     * Create .linst file from csv
+     *
+     * @param LorisInstance $loris Loris instance
+     *
+     * @return array    Returns array of column names as strings
+     * @throws RuntimeException
+     */
+    public function createLINST(): array
+    {
+      try {
+        return $this->parse();
+      } catch (\Exception $e) {
+        throw new RuntimeException(
+          "An error occurred while parsing: {$e->getMessage()}"
+        );
+      }
     }
 }
 
