@@ -813,7 +813,7 @@ object of the form:
             "SeriesInfo" :
                 [{
                     "SeriesDescription" : "MPRAGE_ipat2",
-                    "SeriesNumber" : "2",
+                    "SeriesNumber" : 2,
                     "EchoTime" : "2.98",
                     "RepetitionTime" : "2300",
                     "InversionTime" : "900",
@@ -823,7 +823,7 @@ object of the form:
                     },
                     {
                     "SeriesDescription" : "BOLD Resting State",
-                    "SeriesNumber" : "5",
+                    "SeriesNumber" : 5,
                     "EchoTime" : "30",
                     "RepetitionTime" : "2100",
                     "InversionTime" : NULL,
@@ -837,7 +837,7 @@ object of the form:
             "SeriesInfo" :
                 [{
                 "SeriesDescription" : "MPRAGE_ipat2",
-                "SeriesNumber" : "2",
+                "SeriesNumber" : 2,
                 "EchoTime" : "2.98",
                 "RepetitionTime" : "2300",
                 "InversionTime" : "900",
