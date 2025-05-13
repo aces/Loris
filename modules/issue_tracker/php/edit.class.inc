@@ -142,37 +142,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $issueData  = $this->getIssueData(null, $user);
-        $isOwnIssue = $issueData['reporter']
-            == $this->formatUserInformation($user->getUsername());
-
-        // Give "close" option if user has site close permissions and the issue
-        // is at a user site, or if the user has close permissions for all sites,
-        // or it is the user's own permission
-        if ($user->hasPermission('issue_tracker_close_all_issue')
-            || ($user->hasPermission('issue_tracker_close_site_issue')
-            && in_array($issueData['centerID'], $user->getCenterIDs()))
-            || ($user->hasPermission('issue_tracker_own_issue')
-            && $isOwnIssue)
-        ) {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-                'closed'       => 'Closed',
-            ];
-        } else {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-            ];
-        }
-
         $priorities = [
             'low'       => 'Low',
             'normal'    => 'Normal',
@@ -202,11 +171,19 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
 
+        $issueData  = $this->getIssueData(null, $user);
+        $isOwnIssue = $issueData['reporter']
+            == $this->formatUserInformation($user->getUsername());
+
         if (!empty($values['issueID'])
             && $values['issueID'] != "new"
         ) { // if an existing issue
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID, $user);
+
+            // Re-set isOwnIssue variable if not a new issue
+            $isOwnIssue = $issueData['reporter']
+                == $this->formatUserInformation($user->getUsername());
 
             $provisioner = (new AttachmentProvisioner($issueID));
             $attachments = (new \LORIS\Data\Table())
@@ -270,6 +247,27 @@ class Edit extends \NDB_Page implements ETagCalculator
             // React is escaping the string in the template
             // This fixes an issue with multiple escaping (#6643)
         }
+
+        $statuses = [
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'assigned'     => 'Assigned',
+            'feedback'     => 'Feedback',
+            'resolved'     => 'Resolved',
+        ];
+
+        // Give "close" option if user has site close permissions and the issue
+        // is at a user site, or if the user has close permissions for all sites,
+        // or it is the user's own permission
+        if ($user->hasPermission('issue_tracker_close_all_issue')
+            || ($user->hasPermission('issue_tracker_close_site_issue')
+            && in_array($issueData['centerID'], $user->getCenterIDs()))
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $isOwnIssue)
+        ) {
+            $statuses['closed'] = 'Closed';
+        }
+
         $issueData['comment'] = null;
 
         $result = [
