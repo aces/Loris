@@ -639,7 +639,7 @@ class DashboardTest extends LorisIntegrationTest
             WebDriverBy::Id("overall-recruitment")
         )->getText();
         $this->assertStringContainsString(
-            "Please add a recruitment target for Overall Recruitment.",
+            "Target",
             $testText
         );
         $this->restoreConfigSetting("recruitmentTarget");

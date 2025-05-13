@@ -77,10 +77,10 @@ class Module extends \Module
         $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
         switch ($type) {
-            case 'study-progression':
-                $DB = $factory->database();
-                $data = $DB->pselectWithIndexKey(
-                        "SELECT 
+        case 'study-progression':
+            $DB   = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                "SELECT 
                             p.ProjectID,
                             COUNT(*) AS count,
                             'rgb(252, 241, 255)' as colour,
@@ -94,13 +94,13 @@ class Module extends \Module
                         AND s.CenterID <> 1 
                         AND f.CommentID NOT LIKE 'DDE_%'
                         GROUP BY p.Name",
-                        [],
-                        'ProjectID'
-                );
-                return [
-                    "Behavioural Session" => $data
-                ];
-            }
+                [],
+                'ProjectID'
+            );
+            return [
+                "Behavioural Session" => $data
+            ];
+        }
         return [];
     }
 }

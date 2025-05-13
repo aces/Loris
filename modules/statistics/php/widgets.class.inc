@@ -96,31 +96,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $cohortOptions      = [];
         $visitOptions       = [];
         $recruitmentCohorts = [];
-        $centerIDs   = $user->getCenterIDs();
-        $sites       = \Utility::getSiteList();
-        // $studyProgressionRaw['Participant'] = iterator_to_array(
-        //     $db->pselectWithIndexKey(
-        //         "SELECT 
-        //             COALESCE(p.ProjectID, p2.ProjectID) AS ProjectID,
-        //             COALESCE(p.Name, p2.Name) AS ProjectName,
-        //             COUNT(DISTINCT c.PSCID) AS Participant
-        //         FROM candidate c
-        //         LEFT JOIN session s ON s.CandidateID = c.ID 
-        //         LEFT JOIN Project p ON p.ProjectID = s.ProjectID
-        //         JOIN Project p2 ON c.RegistrationProjectID = p2.ProjectID 
-        //         WHERE c.Active <> 'N' 
-        //         AND s.Active <> 'N' 
-        //         GROUP BY COALESCE(p.ProjectID, p2.ProjectID)",
-        //         [],
-        //         'ProjectID'
-        //     )
-        // );
-        
+        $centerIDs          = $user->getCenterIDs();
+        $sites = \Utility::getSiteList();
+
         $modules = $this->loris->getActiveModules();
 
         $studyProgressionWidgets = [];
-        foreach ($modules as $module) { 
-            if ($module->hasAccess($user)) {
+        foreach ($modules as $module) {
+            if ($module->hasAccess($user)
+                || $module->getName() == 'candidate_list'
+            ) {
                 $mwidget = $module->getWidgets(
                     'study-progression',
                     $user,
@@ -131,10 +116,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 }
             }
         }
-        error_log(
-            "Study Progression Widgets: " .
-            json_encode($studyProgressionWidgets)
-        );  
 
         foreach ($projects as $projectID) {
             // Set project recruitment data
@@ -145,17 +126,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     'project ID ' . intval(strval($projectID))
                 );
             }
-            $recruitment[intval(strval($projectID))]
-                = $this->_createProjectProgressBar(
-                    strval($projectID),
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject(
-                        $recruitmentRaw,
-                        $projectID
-                    ),
-                    $recruitmentRaw
-                );
+            $recruitment[intval($projectID)] = $this->_createProjectProgressBar(
+                strval($projectID),
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject(
+                    $recruitmentRaw,
+                    $projectID
+                ),
+                $recruitmentRaw
+            );
             $studyProgressionProjects[$projectInfo['Name']]
                 = $this->_createProjectSummary(
                     strval($projectID),
@@ -164,8 +144,10 @@ class Widgets extends \NDB_Page implements ETagCalculator
             // Set cohort recruitment data
             $centerList  = "'" . implode("','", $centerIDs) . "'";
             $projectList = "'" . implode("','", $projects) . "'";
-            $cohortsRaw = $db->pselectWithIndexKey(
-                "SELECT COUNT(DISTINCT s.CandidateID) as Count, s.CohortID, co.Title, co.RecruitmentTarget
+            $cohortsRaw  = $db->pselectWithIndexKey(
+                "SELECT
+                COUNT(DISTINCT s.CandidateID) as Count,
+                s.CohortID, co.Title, co.RecruitmentTarget
                 FROM session s JOIN candidate c
                         ON (s.CandidateID=c.ID)
                 JOIN cohort co ON (s.CohortID=co.CohortID)
@@ -177,7 +159,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 'CohortID'
             );
             foreach ($cohortsRaw AS $sp) {
-                $cohortOptions[$sp["CohortID"]] = $sp["Title"];
+                $cohortOptions[$sp["CohortID"]]      = $sp["Title"];
                 $recruitmentCohorts[$sp["CohortID"]]
                     = $this->_createCohortProgressBar(
                         $sp["CohortID"],
@@ -189,7 +171,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
         $siteOptions = [];
-        foreach($centerIDs as $center) {
+        foreach ($centerIDs as $center) {
             if (array_key_exists($center->__toString(), $sites)) {
                 $siteOptions[$center->__toString()] = $sites[$center->__toString()];
             }
@@ -210,9 +192,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $values['recruitment'] = $recruitment;
         // Used for the react widget studyprogression.js
         $values['studyprogression']   = [
-            'total_scans' => $totalScans,
-            'recruitment' => $recruitment,
-            'progressionData'  => $studyProgressionProjects,
+            'total_scans'     => $totalScans,
+            'recruitment'     => $recruitment,
+            'progressionData' => $studyProgressionProjects,
         ];
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
@@ -229,7 +211,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *                           created.
      * @param $title             The title to add to the template variables.
      * @param $recruitmentTarget The target for this recruitment type.
-     * @param \Database $db                The database connection to get data from.
+     * @param $db                The database connection to get data from.
+     * @param $totalRecruitment  The total number of candidates of all
      *
      * @return array Smarty template data
      */
@@ -406,7 +389,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
      * Generates the template data for a project summary.
      *
      * @param string $ID      The name of the progress bar being created.
-     * @param array  $rawData The raw data from the database
+     * @param array  $widgets The raw data from the database
      *
      * @return array data for the project summary
      */
@@ -422,10 +405,10 @@ class Widgets extends \NDB_Page implements ETagCalculator
             foreach ($widget as $name => $data) {
                 if (isset($data[$ID])) {
                     $projectData[] = [
-                        'title' => $name,
-                        'url'   => $data[$ID]['url'],
-                        'colour'  => $data[$ID]['colour'],
-                        'count' => $data[$ID]['count']
+                        'title'  => $name,
+                        'url'    => $data[$ID]['url'],
+                        'colour' => $data[$ID]['colour'],
+                        'count'  => $data[$ID]['count']
                     ];
                 }
             }
