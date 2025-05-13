@@ -1,29 +1,50 @@
 # Identifiers
 
-## Overview
-By default LORIS provides 3 different identifiers for each candidate: 
+Table of Contents
+- [CandID](#CandID-Candidate-Identifier)
+- [PSCID](#PSCID-Project-Study-Center-ID)
+    1. [Sequential Generation](#Sequential-Generation)
+    2. [Manual Generation](#Manual-Generation)
+    3. [Random Generation](#Random-Generation)
+- [External ID](#External-ID)
 
-- **CandID**, also known as the **DCCID**, is a unique randomized 6-digit numeric ID (e.g. '436792') assigned automatically by LORIS upon the candidate's registration. The CandID is not configurable.
-- **PSCID** (Project Study Center ID) is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and usually contains the site or project abbreviation followed by sequential or randomized characters (e.g. 'MTL0006'), but its exact format is customizable.
-- **ExternalID** is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and it is generally completely de-identified (no site or project information incorporated) to be used for data dissemination.
+By default, each participant in a study is attributed 3 unique identifiers.
 
-The format and the generation of the **PSCID** and **ExternalID** must be configured by an admin by editing the `config.xml` file.
+## 1. CandID (Candidate Identifier)
 
-## Configuration
+- What is its purpose? : For internal operations like linking data across the database.
+- What is its structure? : A Randomized 6-digit numeric ID. Example: `436792`.
+- How is is generated? : Automatically.
+- What is its cardinality? : One per participant per study.
+- Can it be changed? : No. Once it is set, it is set.
+- Link
+- What database tables is it found in? :
 
-### Configuration from the front end
-_not yet available_
 
-### Configuration from SQL
-_not yet available_
+Provide example of SQL query in both plain language and SQL and diagram
 
-### Configuration from the config.xml file
 
-Both the format and the generation of PSCIDs can be configured by an administrator in the `config.xml` file. These settings are applied to any and all new candidates.
 
-PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated*, *manually entered*, or *randomly generated*.
 
-1. ***sequential*** generates PSCIDs sequentially for each new candiddate registered. **(default)**
+
+
+## 2. PSCID (Project Study Center ID)
+
+- What is its purpose: This is the main participant identifier in Loris.
+- What is its structure? A site abbreviation followed by digits. Examples: MTL0006, DDC0703, OTT2345
+- How is it generated? : One of three ways:
+    1. Sequentially
+    2. Manually
+    3. Randomly-generated
+- What is its cardinality: One per participant per study.
+- Can it be changed: ???
+- What database table is it found in: `project` and `psc`
+- Configuration: The format and generation options must be configured by an admin. 
+
+### Sequential Generation
+
+- Generates PSCIDs sequentially for each new candidate registered.
+- **(This is the default)**
 
 ```xml
 <PSCID>
@@ -33,11 +54,14 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
         <seq type="numeric" length="4" min="10" max="9999"/>
     </structure>
 </PSCID>
-```
- > Example PSCID generated: MTL1234
- > Where the site's alias is MTL
+``` 
 
-2. ***manual*** asks the user to enter the PSCID when registering a new candidate.
+- Example : `MTL1234`, `MTL1235`, `MTL1236`
+
+
+### Manual Generation
+
+- asks the user to enter the PSCID when registering a new candidate.
 
 ```xml
 <PSCID> 
@@ -47,9 +71,12 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
     </structure>
 </PSCID>
 ```
-  > Example PSCID accepted: A1
 
-3. ***random*** generates PSCIDs with a random numerical value for each new participant registered.
+- Example : `A1`
+
+### Random Generation
+
+- Generates a random numerical value for each new participant registered.
 
 ```xml
 <PSCID>
@@ -60,8 +87,32 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
     </structure>
 </PSCID>
 ```
- > Example PSCID generated: PREFIX3994
- 
+
+ - Example: `PREFIX3994`
+
+## 3. ExternalID
+
+- What is its purpose? : This is used for data-dissemination. It is de-identified from its site or project.
+- What is its structure? : A project abbreviation followed by digits. Example: xxxx25256265.
+- How is it generated? : Manually or Automatically
+- What is its cardinality? :
+- What is its purpose :
+- Can it be changed? :
+- What database table is it found in:
+
+- To create a new participant, navigate to the `Candidate` dropdown menu, click `New Profile`, enter your information, and hit `Create`. This action generates all 3 ID's, according to the configurations you set up.
+
+The format and the generation of the **PSCID** and **ExternalID** must be configured by an admin by editing the `config.xml` file.
+
+### Configuration from SQL
+
+not yet available_
+
+### Configuration from the config.xml file
+
+The format and the generation of PSCIDs can be configured by an administrator in the `config.xml` file. These settings are applied to any and all new candidates.
+
+
  Options for the `type` element of the `<seq>` tag are:
 
   - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
@@ -87,3 +138,4 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  The **PSCID** is dependent on the list of sites in the `psc` table of the database, more specifically the `Alias` column that is used for the `siteAbbrev` type in the generation of the ID. Please refer to the [Sites Parameter Setup](03_Sites.md) page for more details.
  
   The **PSCID** is also dependent on the list of projects in the `Project` table of the database, more specifically the `Alias` column that is used for the `projectAbbrev` type in the generation of the ID. Please refer to the [Projects Parameter Setup](02_Projects.md) page for more details.
+
