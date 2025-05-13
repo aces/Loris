@@ -177,6 +177,7 @@ class DocUploadForm extends Component {
             <ButtonElement
               label="Upload File(s)"
               disabled={this.state.uploadInProgress}
+              disabledText="Uploading..."
             />
           </FormElement>
         </div>
