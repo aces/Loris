@@ -1,6 +1,7 @@
 # Identifiers
 
 Table of Contents
+- [ID Table](#id-table)
 - [CandID](#CandID-Candidate-Identifier)
 - [PSCID](#PSCID-Project-Study-Center-ID)
     1. [Sequential Generation](#Sequential-Generation)
@@ -10,16 +11,25 @@ Table of Contents
 
 By default, each participant in a study is attributed 3 unique identifiers.
 
+## ID Table
+
+|Name|Example|Generation|Structure
+|:--|:--|:--|:--|
+|CandID|436792, 1349680403|Automatic|Random|
+|PSCID|MTL0006, MTL0007|Manual or Automatic|Random or Sequential|
+|ExternalID|xxxx25256265|Manual or Automatic| ??
+
+
+
 ## 1. CandID (Candidate Identifier)
-
-- What is its purpose? : For internal operations like linking data across the database.
-- What is its structure? : A Randomized 6-digit numeric ID. Example: `436792`.
-- How is is generated? : Automatically.
-- What is its cardinality? : One per participant per study.
+- Purpose : For internal operations like linking data across the database.
+- Cardinality? : One per participant per study.
 - Can it be changed? : No. Once it is set, it is set.
-- Link
-- What database tables is it found in? :
+- What database tables is it found in?  
 
+|Table|Field|
+|:--|:--|
+|candidate|CandID||
 
 Provide example of SQL query in both plain language and SQL and diagram
 
@@ -93,7 +103,7 @@ Provide example of SQL query in both plain language and SQL and diagram
 ## 3. ExternalID
 
 - What is its purpose? : This is used for data-dissemination. It is de-identified from its site or project.
-- What is its structure? : A project abbreviation followed by digits. Example: xxxx25256265.
+- What is its structure? : A project abbreviation followed by digits. Example: .
 - How is it generated? : Manually or Automatically
 - What is its cardinality? :
 - What is its purpose :
