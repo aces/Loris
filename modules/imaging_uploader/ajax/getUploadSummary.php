@@ -24,8 +24,8 @@ if (!$user->hasAnyPermission(
     [
         'imaging_uploader_allsites',
         'imaging_uploader_ownsites',
-    ])
-) {
+    ]
+)) {
     http_response_code(403);
     return;
 }
@@ -43,7 +43,7 @@ if (!validRequest()) {
 
 $uploadId = $_POST['uploadId'];
 $summary  = $_POST['summary'] === 'true';
-$DB    = \NDB_Factory::singleton()->database();
+$DB       = \NDB_Factory::singleton()->database();
 
 // Access Control - mimic menu filter behaviour
 // MySQL order of operations dictates that ANDs get computed before ORs which
@@ -89,7 +89,6 @@ $where = $where . ") AND UploadId =:uploadId";
 $accessData = $DB->pselectRow(
     $accessQuery.$accessWhere,
     ['uploadId' => $uploadId]
-    []
 );
 
 
