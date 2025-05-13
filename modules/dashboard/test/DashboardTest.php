@@ -484,7 +484,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     *  Check user has 'issue_tracker_developer' permission,
+     *  Check user has 'issue_tracker_all_issue' permission,
      *  user can see the issue panel.
      *  Click the issue link can access issue module.
      *
@@ -493,7 +493,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testIssues()
     {
         $this->setupPermissions(
-            ["issue_tracker_developer"]
+            ["issue_tracker_all_issue"]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(

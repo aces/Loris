@@ -283,7 +283,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         $insertData = [
-            'CandID'          => $candidate->getCandID()->__toString(),
+            'CandidateID'     => $candidate->getID(),
             'CohortID'        => $CohortID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,

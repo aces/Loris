@@ -73,9 +73,8 @@ class ServerProcessesMonitor
      * stored in the database is updated to reflect the current process state.
      *
      * @param array       $idsToMonitor IDs of the server processes to monitor.
-     *                                  If null, then the state of all the
-     *                                  processes stored in the database is
-     *                                  returned.
+     *                                  If null, then the state of all the processes
+     *                                  stored in the database is returned.
      * @param string|null $userid       Only the processes run by the user with name
      *                                  $userid are considered. If null, then the
      *                                  userid check is not performed.
@@ -94,7 +93,7 @@ class ServerProcessesMonitor
         //------------------------------------------------------
         $db = $this->getDatabaseProvider()->getDatabase();
 
-        $query = "SELECT id, pid, type, userid, stdout_file, stderr_file, 
+        $query = "SELECT id, pid, type, userid, stdout_file, stderr_file,
                          exit_code_file, exit_code, start_time, end_time,
                          exit_text
                   FROM server_processes

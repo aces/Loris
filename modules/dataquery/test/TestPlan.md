@@ -2,7 +2,7 @@
 
 ## Welcome page
 
-1. Ensure the module loads only for a user that has the `dataquery_view` permission.
+1. Ensure the module loads only for a user that has the `dataquery_view` permission. They must also have access to the dictionary module.
 2. Assert that: `Instructions` panel, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
 3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
 4. `Recent Queries` panel
@@ -35,7 +35,8 @@
       14. Click the pinned query.
       15. Assert that: the confirmation message `Query loaded` is displayed and query can immediately be executed.
       16. Try pinning a query with `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` options.
-      17. Assert that: `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page **AND** `Data in LORIS` on the LORIS Login Page are displayed.
+      17. For testing the `Pin to Login Page` option, check the Login module test plan: `modules/login/test/Login_Statistics_Test_Plan.md`.
+      18. Assert that: `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page **AND** `Data in LORIS` on the LORIS Login Page are displayed.
    14. Assert that: the query is now pinned at the top of the page, in `Study Queries` panel.
    15. Go back to `LORIS main page`.
    16. Assert that: `starred queries` are available in the right side `Starred Queries` panel.

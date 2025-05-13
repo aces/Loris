@@ -193,7 +193,7 @@ CREATE TABLE `candidate` (
 
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
   `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
@@ -341,7 +341,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
-  `DoubleDataEntryEnabled` enum('Y','N') default 'N',
+  `DoubleDataEntryEnabled` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -521,7 +521,7 @@ CREATE TABLE `mri_scanner` (
   `Model` varchar(255) default NULL,
   `Serial_number` varchar(255) default NULL,
   `Software` varchar(255) default NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_scanner_1` (`CandidateID`),
   CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
@@ -976,7 +976,7 @@ CREATE TABLE `mri_violations_log` (
   `TarchiveID` int(11) DEFAULT NULL,
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `CheckID` int(11) DEFAULT NULL,
   `MriScanTypeID` int(11) unsigned DEFAULT NULL,
@@ -1115,7 +1115,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL,
-  `ProcessID` int(11) NOT NULL,
+  `ProcessID` int(11) DEFAULT NULL,
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
@@ -1290,7 +1290,7 @@ SET @tmp_val = NULL;
 
 CREATE TABLE `participant_status` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `UserID` varchar(255) DEFAULT NULL,
   `entry_staff` varchar(255) DEFAULT NULL,
   `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1329,7 +1329,7 @@ CREATE TABLE `participant_emails` (
 
 CREATE TABLE `participant_status_history` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `entry_staff` varchar(255) DEFAULT NULL,
   `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `participant_status` int(11) DEFAULT NULL,
@@ -1344,7 +1344,7 @@ CREATE TABLE `participant_status_history` (
 CREATE TABLE `family` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `FamilyID` int(6) NOT NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
@@ -1549,7 +1549,7 @@ CREATE TABLE `issues` (
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
   `centerID` integer unsigned DEFAULT NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
   `instrument` int(10) unsigned DEFAULT NULL,
@@ -1576,7 +1576,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -1805,7 +1805,7 @@ INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID
 
 CREATE TABLE `parameter_candidate` (
   `ParameterCandidateID` int(10) unsigned NOT NULL auto_increment,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `ParameterTypeID` int(10) unsigned NOT NULL,
   `Value` varchar(255) default NULL,
   `InsertTime` int(10) unsigned NOT NULL default 0,
@@ -1916,7 +1916,7 @@ CREATE TABLE `SNP` (
 CREATE TABLE `SNP_candidate_rel` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `AlleleA` enum('A','C','T','G') DEFAULT NULL,
   `AlleleB` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
@@ -1934,7 +1934,7 @@ CREATE TABLE `SNP_candidate_rel` (
 
 CREATE TABLE `CNV` (
   `CNVID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `Description` text,
   `Type` enum('gain','loss','unknown') DEFAULT NULL,
   `EventName` varchar(255) DEFAULT NULL,
@@ -2017,7 +2017,7 @@ CREATE TABLE `genomic_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `genomic_candidate_files_rel` (
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `GenomicFileID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`CandidateID`,`GenomicFileID`),
   KEY `GenomicFileID` (`GenomicFileID`),
@@ -2027,7 +2027,7 @@ CREATE TABLE `genomic_candidate_files_rel` (
 
 CREATE TABLE `genomic_sample_candidate_rel` (
   `sample_label` varchar(100) NOT NULL,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`sample_label`,`CandidateID`),
   UNIQUE KEY `sample_label` (`sample_label`),
   KEY `CandidateID` (`CandidateID`),
@@ -2175,7 +2175,7 @@ INSERT INTO `feedback_bvl_type` (Name, Description) VALUES
 
 CREATE TABLE `feedback_bvl_thread` (
   `FeedbackID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `SessionID` int(11) unsigned DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
   `Feedback_level` enum('profile','visit','instrument') NOT NULL DEFAULT 'profile',
@@ -2324,7 +2324,7 @@ CREATE TABLE `consent` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_rel` (
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned  NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
   `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
@@ -2383,7 +2383,7 @@ CREATE TABLE `diagnosis_evolution` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_diagnosis_evolution_rel` (
-  `CandidateID` int(10) unsigned,
+  `CandidateID` int(10) unsigned NOT NULL,
   `DxEvolutionID` int(10) unsigned NOT NULL,
   `Diagnosis` text DEFAULT NULL,
   `Confirmed` enum('Y', 'N') DEFAULT NULL,
@@ -2566,7 +2566,7 @@ CREATE TABLE dataquery_starred_queries_rel (
 
 CREATE TABLE dataquery_run_results (
     RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
-    CandidateID int(10) unsigned,
+    CandidateID int(10) unsigned NOT NULL,
     -- JSON or same format that's streamed in?
     RowData LONGTEXT DEFAULT NULL,
 
@@ -2612,4 +2612,22 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `openid_connect_providers` (
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
+    `ClientID` text NOT NULL,
+    `ClientSecret` text NOT NULL,
+    `RedirectURI` text NOT NULL, -- our local redirectURI that the provider is configured to authorize
+                                 -- should be something like "https://something.loris.ca/oidc/callback"
+    PRIMARY KEY (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `openid_connect_csrf` (
+    `State` varchar(64) NOT NULL UNIQUE,
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Nonce` varchar(64) NOT NULL,
+    `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`State`),
+    CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

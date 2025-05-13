@@ -197,11 +197,6 @@ class DataDictIndex extends Component {
       return <td>{cell}
         <span style={{color: '#838383'}}>{edited} {editIcon} </span>
       </td>;
-    case 'Data Type':
-      if (cell == 'enumeration') {
-        cell = rowData['Field Options'].join(';');
-      }
-      return <td>{cell}</td>;
     default:
       return <td>{cell}</td>;
     }
@@ -309,13 +304,22 @@ class DataDictIndex extends Component {
         },
       },
       {
-        // We may or may not have an 8th column depending
-        // on type, which we need for formatting other columns.
-        // We don't show or display a filter because it's only
-        // valid for some data types.
-        label: 'Field Options',
-        show: false,
-        filter: null,
+        label: 'Visits',
+        show: true,
+        filter: {
+          name: 'Visits',
+          type: 'multiselect',
+          options: options.visits,
+        },
+      },
+      {
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohorts,
+        },
       },
     ];
     return (

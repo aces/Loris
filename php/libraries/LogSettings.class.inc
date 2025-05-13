@@ -51,4 +51,14 @@ class LogSettings
     {
         return $this->levels['exception_log_level']  ?? "none";
     }
+
+    /**
+     * Get the current verbosity level for performance profile logging
+     *
+     * @return string
+     */
+    function getProfilerLogLevel() : string
+    {
+        return $this->levels['profiler_log_level']  ?? "none";
+    }
 }

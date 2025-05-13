@@ -146,7 +146,7 @@ class ExaminerIndex extends Component {
 
     switch (column) {
     case 'Examiner':
-      if (this.state.data.useCertification) {
+      if (this.state.data.fieldOptions.useCertification) {
         const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
                     row.ID;
         result = <td><a href={url}>{cell}</a></td>;
@@ -170,6 +170,8 @@ class ExaminerIndex extends Component {
       // If user has multiple sites, join array of sites into string
       result = (
         <td>{cell
+          .filter((centerId) => this.state.data.fieldOptions.sites[centerId]
+          != null)
           .map((centerId) => this.state.data.fieldOptions.sites[centerId])
           .join(', ')}
         </td>

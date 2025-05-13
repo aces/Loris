@@ -96,7 +96,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
+        $query = "SELECT c.ID, c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy,
@@ -141,6 +141,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 break;
             case 'CandID':
                 $this->candidateInfo[$key] = new CandID(strval($value));
+                break;
+            case 'ID':
+                $this->candidateInfo[$key] = strval($value);
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -269,7 +272,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $project = \Project::getProjectFromID($registrationProjectID);
 
-        $user = \User::singleton($_SESSION['State']->getUsername());
+        if (isset($_SESSION['State'])) {
+            $user = \User::singleton($_SESSION['State']->getUsername());
+        } elseif (!empty(getenv('USER'))) {
+            $user = \User::singleton(getenv('USER'));
+        } else {
+            throw new \LorisException(
+                "No username found to associate with the creation of this candidate"
+            );
+        }
 
         // figure out how to generate PSCID
         $config        = $factory->config();
@@ -586,7 +597,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["CandID"];
     }
-
+    /**
+     * Returns the ID of this candidate
+     *
+     * @return string ID
+     */
+    function getID()
+    {
+        return $this->candidateInfo["ID"];
+    }
 
     /**
      * Returns the PSCID of this candidate
@@ -1275,7 +1294,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE accesscandidates(
-	    CandID int(10) NOT NULL,
+	    CandID int(10) unsigned NOT NULL,
 	    PRIMARY KEY(CandID)
         );"
         );

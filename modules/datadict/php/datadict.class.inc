@@ -59,7 +59,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        $instruments     = \Utility::getAllInstruments();
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $dictInstruments = [];
         $user            = \User::singleton();
 

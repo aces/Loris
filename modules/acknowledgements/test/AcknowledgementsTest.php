@@ -196,7 +196,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             self::$testData['present'],
-            "30"
+            "31"
         );
     }
 
