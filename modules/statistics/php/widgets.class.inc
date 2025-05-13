@@ -116,7 +116,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 }
             }
         }
-
+        $studyProgressionProjects = [];
         foreach ($projects as $projectID) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
@@ -398,7 +398,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $widgets
     ): array {
         $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
 
         $projectData = [];
         foreach ($widgets as $widget) {

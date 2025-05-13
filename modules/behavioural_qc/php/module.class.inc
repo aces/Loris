@@ -74,7 +74,6 @@ class Module extends \Module
     public function getWidgets(string $type, \User $user, array $options) : array
     {
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
         switch ($type) {
         case 'study-progression':
