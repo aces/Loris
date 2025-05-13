@@ -108,11 +108,16 @@ class CSVParser
         string $enclosure = '"',
         string $escape = '\\',
         int $flags = self::DEFAULT_CSV_FLAGS,
+        int $numRows = -1,
     ): array {
         $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
 
         $csvHeaders = $fileObject->fgetcsv($separator, $enclosure, $escape);
+
+        if ($numRows === 0) {
+          return $csvHeaders;
+        }
 
         // Validate expected headers, if provided
         if (count($expectedHeaders) > 0) {
@@ -125,8 +130,10 @@ class CSVParser
 
         // Parse and create header => value mapping
         $csv = [];
+        $rowCount = 0;
         while ($row = $fileObject->fgetcsv($separator, $enclosure, $escape)) {
             $csv[] = array_combine($csvHeaders, $row);
+            if (++$rowCount === $numRows) break;
         }
         return $csv;
     }
