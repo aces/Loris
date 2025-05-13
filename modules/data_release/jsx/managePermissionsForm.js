@@ -4,7 +4,6 @@ import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import {
-  FormElement,
   CheckboxElement,
   StaticElement,
   SearchableDropdown,
@@ -89,74 +88,72 @@ class ManagePermissionsForm extends Component {
         onClose={this.props.onClose}
         onSubmit={this.handleSubmit}
       >
-        <FormElement name="manage_permissions">
-          <SearchableDropdown name="user"
-            label="Manage Versions a User has access to"
-            placeHolder="Search for a User"
-            options={options.users}
-            strictSearch={true}
-            onUserInput={this.setFormData}
-            value={this.state.user}
-          />
-          {this.state.user && <StaticElement
-            label={'Versions'}
-            text={Object.values(options.versions).map((version) =>
-              <div>
-                <CheckboxElement
-                  name={'versionsByUser'}
-                  label={version}
-                  value={data[this.state.user].versions.includes(version)}
-                  onUserInput={(formElement, checked) =>
-                    this.setFormData(
-                      'versionsByUser', {
-                        userId: this.state.user, version, checked,
-                      }
-                    )
-                  }
-                /><br/>
-              </div>
+        <SearchableDropdown name="user"
+          label="Manage Versions a User has access to"
+          placeHolder="Search for a User"
+          options={options.users}
+          strictSearch={true}
+          onUserInput={this.setFormData}
+          value={this.state.user}
+        />
+        {this.state.user && <StaticElement
+          label={'Versions'}
+          text={Object.values(options.versions).map((version) =>
+            <div>
+              <CheckboxElement
+                name={'versionsByUser'}
+                label={version}
+                value={data[this.state.user].versions.includes(version)}
+                onUserInput={(formElement, checked) =>
+                  this.setFormData(
+                    'versionsByUser', {
+                      userId: this.state.user, version, checked,
+                    }
+                  )
+                }
+              /><br/>
+            </div>
+          )}
+        />
+        }
+        <SearchableDropdown
+          name="version"
+          label="Manage Users with access to a Version"
+          placeHolder="Search for a Version"
+          options={options.versions}
+          strictSearch={true}
+          onUserInput={this.setFormData}
+          value={this.state.version}
+        />
+        {this.state.version &&
+          <StaticElement
+            label={'Users'}
+            text={Object.values(this.state.originalData).map((user) => {
+              if (user.versions.includes(this.state.version)) {
+                return <div>
+                  <CheckboxElement
+                    name={'usersByVersion'}
+                    label={user.name}
+                    value={
+                      data[user.id].versions.includes(this.state.version)
+                    }
+                    onUserInput={(_, checked) =>
+                      this.setFormData(
+                        'usersByVersion',
+                        {
+                          userId: user.id,
+                          checked,
+                          version: this.state.version,
+                        }
+                      )
+                    }
+                  /><br/>
+                </div>;
+              }
+            }
             )}
           />
-          }
-          <SearchableDropdown
-            name="version"
-            label="Manage Users with access to a Version"
-            placeHolder="Search for a Version"
-            options={options.versions}
-            strictSearch={true}
-            onUserInput={this.setFormData}
-            value={this.state.version}
-          />
-          {this.state.version &&
-            <StaticElement
-              label={'Users'}
-              text={Object.values(this.state.originalData).map((user) => {
-                if (user.versions.includes(this.state.version)) {
-                  return <div>
-                    <CheckboxElement
-                      name={'usersByVersion'}
-                      label={user.name}
-                      value={
-                        data[user.id].versions.includes(this.state.version)
-                      }
-                      onUserInput={(_, checked) =>
-                        this.setFormData(
-                          'usersByVersion',
-                          {
-                            userId: user.id,
-                            checked,
-                            version: this.state.version,
-                          }
-                        )
-                      }
-                    /><br/>
-                  </div>;
-                }
-              }
-              )}
-            />
-          }
-        </FormElement>
+        }
       </Modal>
     );
   }

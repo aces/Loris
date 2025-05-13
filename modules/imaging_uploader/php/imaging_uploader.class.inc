@@ -133,7 +133,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ];
         $this->query        = " FROM mri_upload mu".
                               " LEFT JOIN session s ON (s.ID = mu.SessionID)".
-                              " LEFT JOIN candidate c ON (c.CandID = s.CandidateID)".
+                              " LEFT JOIN candidate c ON (c.ID = s.CandidateID)".
                               " LEFT JOIN tarchive ta ON".
                               " (mu.TarchiveID = ta.TarchiveID)";
         $this->query       .= $where;
@@ -381,7 +381,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      s.ID AS SessionID
                      FROM candidate c
                      LEFT JOIN candidate c2
-                     ON (c.candid=c2.candid AND c2.pscid = :pid)
+                     ON (c.ID=c2.ID AND c2.pscid = :pid)
                      LEFT JOIN session s
                      ON (s.CandidateID=c2.ID and s.visit_label = :vlabel)
                      WHERE c.candid = :cid",

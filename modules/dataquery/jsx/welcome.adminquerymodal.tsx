@@ -68,41 +68,39 @@ function AdminQueryModal(props: {
     throwWarning={true}
     onClose={props.closeModal}
     onSubmit={submitPromise}>
-    <form style={{width: '100%', padding: '1em'}}>
-      <FieldsetElement
-        legend='Study Query'>
-        <TextboxElement name='queryname'
-          value={queryName}
-          placeholder="Query name"
-          onUserInput={
-            (name: string, value: string) => setQueryName(value)
-          }
-        />
-        <CheckboxElement name='topquery'
-          value={topQuery}
-          onUserInput={
-            (name: string, value: boolean) => setTopQuery(value)
-          }
-          label='Pin Study Query'
-        />
-        <CheckboxElement name='dashboardquery'
-          value={dashboardQuery}
-          label='Pin Dashboard Summary'
-          onUserInput={
-            (name: string, value: boolean) =>
-              setDashboardQuery(value)
-          }
-        />
-        <CheckboxElement name='loginpage'
-          value={loginQuery}
-          label='Pin To Login Page'
-          onUserInput={
-            (name: string, value: boolean) =>
-              setLoginQuery(value)
-          }
-        />
-      </FieldsetElement>
-    </form>
+    <FieldsetElement
+      legend='Study Query'>
+      <TextboxElement name='queryname'
+        value={queryName}
+        placeholder="Query name"
+        onUserInput={
+          (name: string, value: string) => setQueryName(value)
+        }
+      />
+      <CheckboxElement name='topquery'
+        value={topQuery}
+        onUserInput={
+          (name: string, value: boolean) => setTopQuery(value)
+        }
+        label='Pin Study Query'
+      />
+      <CheckboxElement name='dashboardquery'
+        value={dashboardQuery}
+        label='Pin Dashboard Summary'
+        onUserInput={
+          (name: string, value: boolean) =>
+            setDashboardQuery(value)
+        }
+      />
+      <CheckboxElement name='loginpage'
+        value={loginQuery}
+        label='Pin To Login Page'
+        onUserInput={
+          (name: string, value: boolean) =>
+            setLoginQuery(value)
+        }
+      />
+    </FieldsetElement>
   </Modal>;
 }
 
