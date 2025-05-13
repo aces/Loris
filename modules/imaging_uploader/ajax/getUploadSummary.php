@@ -21,11 +21,11 @@
 // Base access check - user must have either of these permissions
 // more access validation after request validation
 if (!$user->hasAnyPermission(
-        [
-            'imaging_uploader_allsites',
-            'imaging_uploader_ownsites',
-        ]
-    )
+    [
+        'imaging_uploader_allsites',
+        'imaging_uploader_ownsites',
+    ]
+)
 ) {
     http_response_code(403);
     return;
