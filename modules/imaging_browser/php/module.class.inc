@@ -141,7 +141,11 @@ class Module extends \Module
                 'ProjectID'
             );
             return [
-                "Imaging Session" => $data
+                new \LORIS\dashboard\DataWidget(
+                    "Imaging Session",
+                    $data,
+                    "",
+                )
             ];
         }
         return [];

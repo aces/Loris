@@ -9,7 +9,6 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
- *
  * @param  {object} props
  * @return {JSX.Element}
  */
@@ -130,7 +129,11 @@ const Recruitment = (props) => {
                         />
                       </div>
                     )}
-                    <div className="site-breakdown-grid">
+                    <div className={'site-breakdown-grid'}
+                      id={Object.keys(json.options.sites).length > 15
+                        ? 'site-breakdown-grid-one-column'
+                        : undefined
+                      }>
                       {Object
                         .keys(chartDetails['siteBreakdown'])
                         .map((chartID) => (
@@ -159,7 +162,7 @@ const Recruitment = (props) => {
               >
                 {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
-                    if (key !== 'overall') {
+                    if (key !== 'overall' && value['total_recruitment'] > 0) {
                       return <div key ={`projectBreakdown_${key}`}>
                         {progressBarBuilder(value)}
                       </div>;

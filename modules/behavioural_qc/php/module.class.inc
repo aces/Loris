@@ -97,7 +97,11 @@ class Module extends \Module
                 'ProjectID'
             );
             return [
-                "Behavioural Session" => $data
+                new \LORIS\dashboard\DataWidget(
+                    "Behavioural Session",
+                    $data,
+                    "",
+                )
             ];
         }
         return [];

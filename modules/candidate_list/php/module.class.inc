@@ -109,7 +109,6 @@ class Module extends \Module
     public function getWidgets(string $type, \User $user, array $options) : array
     {
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
         switch ($type) {
         case 'study-progression':
@@ -140,7 +139,11 @@ class Module extends \Module
                 'ProjectID'
             );
             return [
-                "Participant" => $data
+                new \LORIS\dashboard\DataWidget(
+                    "Participant",
+                    $data,
+                    "",
+                )
             ];
         }
         return [];

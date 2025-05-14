@@ -67,7 +67,6 @@ const StudyProgression = (props) => {
       chartDetails, setChartDetails);
   };
 
-  console.log(json['studyprogression']);
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
     <>
       <Panel
@@ -99,36 +98,39 @@ const StudyProgression = (props) => {
                 {Object.entries(json['studyprogression']
                   ['progressionData']).map(
                   ([projectName, projectData]) => {
-                    return <div key={`studyProgression_${projectName}`}>
-                      <h3 style={{marginTop: 0}}>{projectName}</h3>
-                      <div
-                        className='study-progression-container'
-                      >
-                        {projectData.map((data) => {
-                          return <a
-                            className='study-progression-button'
-                            href={data['url']}
-                            style={{
-                              backgroundColor: data['colour'],
-                              color: 'black',
-                              textDecoration: 'none',
-                            }}
-                          >
-                            <h4>
-                              {data['count']}
-                            </h4>
-                            <div>
-                              {data['title'].replace('_', ' ')}
-                              {data['count'] != 1 && 's'}
-                            </div>
-                          </a>;
-                        })}
-                      </div>
-                    </div>;
+                    if (projectData.length > 0) {
+                      return <div key={`progress_${projectName}`}>
+                        <h3 style={{marginTop: 0}}>{projectName}</h3>
+                        <div
+                          className='study-progression-container'
+                        >
+                          {projectData.map((data) => {
+                            return <a
+                              className='study-progression-button'
+                              href={data['url']}
+                              style={{
+                                backgroundColor: data['colour'],
+                                color: 'black',
+                                textDecoration: 'none',
+                              }}
+                              key={`progress_${projectName}_${data['title']}`}
+                            >
+                              <h4>
+                                {data['count']}
+                              </h4>
+                              <div>
+                                {data['title'].replace('_', ' ')}
+                                {data['count'] != 1 && 's'}
+                              </div>
+                            </a>;
+                          })}
+                        </div>
+                      </div>;
+                    }
                   }
                 )}
               </div>,
-            title: 'Study Progression - Summary',
+            title: 'Study Progression - summary',
           },
           {
             content: json['studyprogression']['total_scans'] > 0 ? (

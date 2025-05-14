@@ -101,7 +101,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $modules = $this->loris->getActiveModules();
 
-        $studyProgressionWidgets = [];
+        $studyWidgets = [];
         foreach ($modules as $module) {
             if ($module->hasAccess($user)
                 || $module->getName() == 'candidate_list'
@@ -111,35 +111,37 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     $user,
                     []
                 );
-                if (!empty($mwidget)) {
-                    $studyProgressionWidgets[] =  $mwidget;
+                foreach ($mwidget as $mwidget) {
+                    if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
+                        $studyWidgets[$mwidget->label()] = $mwidget->data();
+                    }
                 }
             }
         }
         $studyProgressionProjects = [];
-        foreach ($projects as $projectID) {
+        foreach ($projects as $pid) {
             // Set project recruitment data
-            $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
             if (is_null($projectInfo)) {
                 throw new \LorisException(
                     'No project settings exist in the Database for ' .
-                    'project ID ' . intval(strval($projectID))
+                    'project ID ' . intval(strval($pid))
                 );
             }
-            $recruitment[intval($projectID)] = $this->_createProjectProgressBar(
-                strval($projectID),
+            $recruitment[intval(strval($pid))] = $this->_createProjectProgressBar(
+                strval($pid),
                 $projectInfo['Name'],
                 $projectInfo['recruitmentTarget'],
                 $this->getTotalRecruitmentByProject(
                     $recruitmentRaw,
-                    $projectID
+                    $pid
                 ),
                 $recruitmentRaw
             );
             $studyProgressionProjects[$projectInfo['Name']]
                 = $this->_createProjectSummary(
-                    strval($projectID),
-                    $studyProgressionWidgets
+                    strval($pid),
+                    $studyWidgets
                 );
             // Set cohort recruitment data
             $centerList  = "'" . implode("','", $centerIDs) . "'";
@@ -397,17 +399,19 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $ID,
         $widgets
     ): array {
-        $factory = \NDB_Factory::singleton();
-
         $projectData = [];
-        foreach ($widgets as $widget) {
-            foreach ($widget as $name => $data) {
-                if (isset($data[$ID])) {
+        foreach ($widgets as $name => $widget) {
+            foreach ($widget as $projectID => $data) {
+                error_log("ID is ");
+                error_log(print_r($projectID, true));
+                error_log("Data is ");
+                error_log(print_r($data, true));
+                if ($projectID == $ID) {
                     $projectData[] = [
                         'title'  => $name,
-                        'url'    => $data[$ID]['url'],
-                        'colour' => $data[$ID]['colour'],
-                        'count'  => $data[$ID]['count']
+                        'url'    => $data['url'],
+                        'colour' => $data['colour'],
+                        'count'  => $data['count']
                     ];
                 }
             }
