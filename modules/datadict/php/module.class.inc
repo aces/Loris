@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return dgettext("loris", "Tools");
     }
 
     /**
@@ -56,6 +56,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Dictionary (Legacy)";
+        return dgettext("datadict", "Data Dictionary (Legacy)");
     }
 }

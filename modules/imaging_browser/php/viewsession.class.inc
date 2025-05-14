@@ -1032,9 +1032,12 @@ class ViewSession extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
             new \LORIS\Breadcrumb(
-                'View Session',
+                dgettext("imaging_browser", 'Imaging Browser'),
+                '/imaging_browser'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("imaging_browser", 'View Session'),
                 "/imaging_browser/viewSession/?sessionID=$this->sessionID"
             )
         );

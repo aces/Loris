@@ -101,7 +101,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Admin";
+        return dgettext("loris", "Admin");
     }
 
     /**
@@ -111,6 +111,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Server Processes Manager";
+        return dgettext("server_processes_manager", "Server Processes Manager");
     }
 }

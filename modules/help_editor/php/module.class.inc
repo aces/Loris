@@ -44,7 +44,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Admin";
+        return dgettext("loris", "Admin");
     }
 
     /**
@@ -54,6 +54,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Help Editor";
+        return dgettext("help_editor", "Help Editor");
     }
 }

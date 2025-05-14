@@ -51,7 +51,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return dgettext("loris", "Tools");
     }
 
     /**
@@ -61,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Issue Tracker";
+        return dgettext("issue_tracker", "Issue Tracker");
     }
 
     /**
@@ -91,7 +91,9 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
+                    "issue_tracker",
                     "Your assigned issue",
+                    "Your assigned issues",
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
