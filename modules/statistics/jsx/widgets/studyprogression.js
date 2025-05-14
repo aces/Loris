@@ -105,24 +105,35 @@ const StudyProgression = (props) => {
                           className='study-progression-container'
                         >
                           {projectData.map((data) => {
-                            return <a
-                              className='study-progression-button'
-                              href={data['url']}
-                              style={{
+                            const commonProps = {
+                              className: 'study-progression-button',
+                              style: {
                                 backgroundColor: data['colour'],
                                 color: 'black',
                                 textDecoration: 'none',
-                              }}
-                              key={`progress_${projectName}_${data['title']}`}
-                            >
-                              <h4>
-                                {data['count']}
-                              </h4>
-                              <div>
-                                {data['title'].replace('_', ' ')}
-                                {data['count'] != 1 && 's'}
+                              },
+                              key: `progress_${projectName}_${data['title']}`,
+                            };
+
+                            const content = (
+                              <>
+                                <h4>{data['count']}</h4>
+                                <div>
+                                  {data['title'].replace('_', ' ')}
+                                  {data['count'] !== 1 && 's'}
+                                </div>
+                              </>
+                            );
+
+                            return data['url'] ? (
+                              <a {...commonProps} href={data['url']}>
+                                {content}
+                              </a>
+                            ) : (
+                              <div {...commonProps}>
+                                {content}
                               </div>
-                            </a>;
+                            );
                           })}
                         </div>
                       </div>;

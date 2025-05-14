@@ -112,7 +112,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
                     $studyWidgets[$mwidget->label()] = $mwidget->data();
                     if (!$module->hasAccess($user)) {
-                        foreach ($studyWidgets[$mwidget->label()] as $key => $value) {
+                        foreach (
+                            $studyWidgets[$mwidget->label()] as $key => $value
+                        ) {
                             if (isset($value['url'])) {
                                 $studyWidgets[$mwidget->label()][$key]['url'] = null;
                             }

@@ -715,9 +715,21 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan7And8()
     {
         $this->safeGet($this->url . '/dashboard/');
+        // Summary View
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_studyprogression .panel-body div:nth-child(2)"
+                ".0_panel_content_statistics_studyprogression"
+            )
+        )->getText();
+
+        $this->assertStringContainsString(
+            "Imaging Sessions",
+            $testText
+        );
+        // Site scans view
+        $testText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                ".1_panel_content_statistics_studyprogression"
             )
         )->getText();
 
@@ -728,6 +740,18 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
+            $testText
+        );
+
+        // Site recruitment view
+        $testText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                ".2_panel_content_statistics_studyprogression"
+            )
+        )->getText();
+
+        $this->assertStringContainsString(
+            "Recruitment per site",
             $testText
         );
     }
