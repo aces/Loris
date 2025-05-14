@@ -717,7 +717,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#statistics_studyprogression .panel-body div:nth-child(1)"
+                "#statistics_studyprogression .panel-body div:nth-child(2)"
             )
         )->getText();
 
