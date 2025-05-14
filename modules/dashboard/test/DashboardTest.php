@@ -718,7 +718,7 @@ class DashboardTest extends LorisIntegrationTest
         // Summary View
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".0_panel_content_statistics_studyprogression"
+                "#0_panel_content_statistics_studyprogression"
             )
         )->getText();
 
@@ -729,7 +729,7 @@ class DashboardTest extends LorisIntegrationTest
         // Site scans view
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".1_panel_content_statistics_studyprogression"
+                "#1_panel_content_statistics_studyprogression"
             )
         )->getText();
 
@@ -746,7 +746,7 @@ class DashboardTest extends LorisIntegrationTest
         // Site recruitment view
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".2_panel_content_statistics_studyprogression"
+                "#2_panel_content_statistics_studyprogression"
             )
         )->getText();
 
