@@ -42,7 +42,6 @@ class Container implements
      * @var float        $temperature
      * @var int          $statusId
      * @var array        $shipmentBarcodes
-     * @var \ProjectID[] $projectIds
      * @var \CenterID    $centerId
      * @var int          $parentContainerId
      * @var ?string      $parentContainerBarcode
@@ -62,7 +61,6 @@ class Container implements
     private $temperature;
     private $statusId;
     private $shipmentBarcodes;
-    private array $projectIds;
     private \CenterID $centerId;
     private $parentContainerId;
     private ?string $parentContainerBarcode = null;
@@ -263,28 +261,6 @@ class Container implements
     public function getStatusId() : ?int
     {
         return $this->statusId;
-    }
-
-    /**
-     * Sets Project IDs of affiliated container specimen.
-     *
-     * @param \ProjectID[] $projectIds List of porject IDs
-     *
-     * @return void
-     */
-    public function setProjectIds(array $projectIds) : void
-    {
-        $this->projectIds = $projectIds;
-    }
-
-    /**
-     * Return Project ID of affiliated specimen container.
-     *
-     * @return \ProjectID[]
-     */
-    public function getProjectIds() : array
-    {
-        return $this->projectIds;
     }
 
     /**
@@ -499,9 +475,6 @@ class Container implements
         if (isset($data['shipmentBarcodes'])) {
             $this->setShipmentBarcodes($data['shipmentBarcodes']);
         }
-        if (isset($data['projectIds'])) {
-            $this->setProjectIds($data['projectIds']);
-        }
         if (isset($data['centerId'])) {
             $this->setCenterId(new \CenterID(strval($data['centerId'])));
         }
@@ -565,7 +538,6 @@ class Container implements
             'temperature'            => $this->temperature,
             'statusId'               => $this->statusId,
             'shipmentBarcodes'       => $this->shipmentBarcodes,
-            'projectIds'             => $this->projectIds,
             'centerId'               => $this->centerId,
             'parentContainerId'      => $this->parentContainerId,
             'parentContainerBarcode' => $this->parentContainerBarcode,

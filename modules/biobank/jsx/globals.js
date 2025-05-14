@@ -223,11 +223,8 @@ function Globals(props) {
 
   const projectField = () => specimen && (                                              
     <InlineField                                                                        
-      label='Projects'                                                                  
-      value={specimen.projectIds.length !== 0 ?                                         
-        specimen.projectIds                                                             
-          .map((id) => options.projects[id])                                            
-          .join(', ') : 'None'}                                                         
+      label='Project'                                                                  
+      value={options.projects[specimen.projectId]}
     />                                                                                  
   );           
 
@@ -408,7 +405,7 @@ Globals.propTypes = {
       poolId: PropTypes.number,
       typeId: PropTypes.number.isRequired,
       fTCycle: PropTypes.string,
-      projectIds: PropTypes.arrayOf(PropTypes.number),
+      projectId: PropTypes.number,
       sessionId: PropTypes.number,
       candidateId: PropTypes.number,
       quantity: PropTypes.number,
@@ -438,7 +435,6 @@ Globals.propTypes = {
   editable: PropTypes.shape({
     containerType: PropTypes.func.isRequired,
     fTCycle: PropTypes.func.isRequired,
-    project: PropTypes.func.isRequired,
     quantity: PropTypes.func.isRequired,
     containerParentForm: PropTypes.func.isRequired,
     temperature: PropTypes.func.isRequired, // Added
@@ -497,7 +493,7 @@ Globals.propTypes = {
     typeId: PropTypes.number.isRequired,
     poolId: PropTypes.number,
     fTCycle: PropTypes.string,
-    projectIds: PropTypes.arrayOf(PropTypes.number),
+    projectId: PropTypes.number,
     sessionId: PropTypes.number,
     candidateId: PropTypes.number,
     quantity: PropTypes.number,
@@ -548,7 +544,7 @@ Globals.propTypes = {
       quantity: PropTypes.string,
       unitId: PropTypes.string,
       fTCycle: PropTypes.string,
-      projectIds: PropTypes.string,
+      projectId: PropTypes.string,
       candidateId: PropTypes.string,
       sessionId: PropTypes.string,
     }),

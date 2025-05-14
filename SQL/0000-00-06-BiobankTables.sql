@@ -291,16 +291,6 @@ CREATE TABLE `biobank_specimen_parent` (
   CONSTRAINT `FK_biobank_specimen_parent_SpecimenID` FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen` (`SpecimenID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Table structure for table `biobank_specimen_project_rel`
-CREATE TABLE `biobank_specimen_project_rel` (
-  `SpecimenID` int(10) unsigned NOT NULL,
-  `ProjectID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`SpecimenID`,`ProjectID`),
-  KEY `FK_biobank_specimen_project_rel_ProjectID` (`ProjectID`),
-  CONSTRAINT `FK_biobank_specimen_project_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`),
-  CONSTRAINT `FK_biobank_specimen_project_rel_SpecimenID` FOREIGN KEY (`SpecimenID`) REFERENCES `biobank_specimen` (`SpecimenID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- Table structure for table `biobank_pool`
 CREATE TABLE `biobank_pool` (
   `PoolID` int(10) unsigned NOT NULL AUTO_INCREMENT,

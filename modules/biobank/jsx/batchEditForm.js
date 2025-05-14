@@ -300,16 +300,6 @@ class BatchEditForm extends React.PureComponent {
           errorMessage={errors.container.statusId}
           onUserInput={this.setContainer}
         />
-        <SelectElement
-          name='projectIds'
-          label='Project'
-          value={this.state.specimen.projectIds}
-          options={options.projects}
-          multiple={true}
-          emptyOption={false}
-          errorMessage={errors.specimen.projectIds}
-          onUserInput={this.setSpecimen}
-        />
       </EditForm>
     ) : null;
 
@@ -571,7 +561,6 @@ BatchEditForm.propTypes = {
       typesPrimary: PropTypes.arrayOf(PropTypes.string),
       types: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
-    projects: PropTypes.array.isRequired,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,

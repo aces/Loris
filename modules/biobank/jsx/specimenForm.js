@@ -16,7 +16,7 @@ import {
 
 const initialState = {
   list: {},
-  current: {container: {}, projectIds: [], sessionId: null, candidateId: null},  
+  current: {container: {}, sessionId: null, candidateId: null},  
   printBarcodes: false,
   errors: {specimen: {}, container: {}, list: {}},
 };
@@ -58,9 +58,6 @@ class SpecimenForm extends React.Component {
         .map((item) => item.specimen.id);
       current.candidateId = specimen.candidateId;
       current.sessionId = specimen.sessionId;
-      current.projectIds = [
-        this.props.options.sessions[specimen.sessionId].projectId
-      ];
       current.typeId = specimen.typeId;
       current.originId = container.originId;
       current.centerId = container.centerId;
@@ -116,7 +113,6 @@ class SpecimenForm extends React.Component {
   setSession(session, sessionId) {                                                      
     const {current} = clone(this.state);                                                
     current.centerId = this.props.options.sessions[sessionId].centerId;                 
-    current.projectIds = [this.props.options.sessions[sessionId].projectId];            
     current.originId = current.centerId;                                                
     current.sessionId = sessionId;                                                      
     this.setState({current});                                                           
@@ -210,7 +206,7 @@ class SpecimenForm extends React.Component {
     };
 
     const renderGlobalFields = () => {                                               
-      const { sessionId, candidateId, projectIds } = current                         
+      const { sessionId, candidateId } = current                         
       if (parent && candidateId && sessionId) {                                      
         const parentBarcodes = Object.values(parent).map(                            
           (item) => item.container.barcode                                           
@@ -229,10 +225,6 @@ class SpecimenForm extends React.Component {
             <StaticElement                                                           
               label="Visit Label"                                                    
               text={options.sessions[sessionId].label}                               
-            />                                                                       
-            <StaticElement                                                           
-              label="Project"                                                        
-              text={options.projects[projectIds[0]]}                                 
             />                                                                       
           </>                                                                        
         );                                                                           
@@ -271,10 +263,6 @@ class SpecimenForm extends React.Component {
               disabled={candidateId ? false : true}                                  
               errorMessage={errors.specimen.sessionId}                               
               autoSelect={true}                                                      
-            />                                                                       
-            <StaticElement                                                           
-              label="Project"                                                        
-              text={options.projects[projectIds[0]]}                                 
             />                                                                       
           </>                                                                        
         );                                                                           
