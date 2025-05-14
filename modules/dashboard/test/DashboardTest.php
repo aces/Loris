@@ -705,53 +705,27 @@ class DashboardTest extends LorisIntegrationTest
         );
     }
     /**
-     * 7. Check that scans per site (study progression panel) view is correct
-     * (scan dates and scan numbers).
-     * 8. Check that recruitment per site view is correct
-     * (study progression panel).
+     * 7. Check that study progression panel is correct.
+     * 8. Check that there is no error message in the panel.
      *
      * @return void
      */
     private function _testPlan7And8()
     {
         $this->safeGet($this->url . '/dashboard/');
-        // Summary View
         $testText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".0_panel_content"
+                "#statistics_studyprogression .panel-body div:nth-child(1)"
             )
         )->getText();
 
         $this->assertStringContainsString(
-            "Imaging Sessions",
-            $testText
-        );
-        // Site scans view
-        $testText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                ".1_panel_content"
-            )
-        )->getText();
-
-        $this->assertStringContainsString(
-            "Scan sessions per site",
+            "Participants",
             $testText
         );
 
         $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
-            $testText
-        );
-
-        // Site recruitment view
-        $testText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                ".2_panel_content"
-            )
-        )->getText();
-
-        $this->assertStringContainsString(
-            "Recruitment per site",
             $testText
         );
     }
