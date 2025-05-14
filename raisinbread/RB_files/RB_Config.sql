@@ -50,7 +50,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (55,73,'/data/demo/bin/m
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (56,74,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (57,75,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (58,76,'dcm2mnc');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data/raisinbread/tarchive/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbread/tarchive/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (62,80,'1');
