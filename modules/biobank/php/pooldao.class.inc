@@ -129,7 +129,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
             $poolRow['CandidatePSCID'] = $specimen->getCandidatePSCID();
             $poolRow['SessionID']      = $specimen->getSessionId();
             $poolRow['CenterID']       = $specimen->getCenterId();
-            $projectIds        = $specimen->getProjectIds();
+            $projectId        = $specimen->getProjectId();
             $poolRow['TypeID'] = $specimen->getTypeId();
 
             // instantiate pool entity
@@ -137,7 +137,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
                 $poolRow,
                 $specimenIds,
                 $specimenBarcodes,
-                $projectIds
+                $projectId
             );
         }
 
@@ -242,10 +242,10 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      * This function takes an array that resulted from an SQL query and
      * instantiates it as a Pool Object
      *
-     * @param array $data             Values to be reassigned.
-     * @param array $specimenIds      List of specimen IDs.
-     * @param array $specimenBarcodes List of specimen Barcodes.
-     * @param array $projectIds       List of project IDs.
+     * @param array      $data             Values to be reassigned.
+     * @param array      $specimenIds      List of specimen IDs.
+     * @param array      $specimenBarcodes List of specimen Barcodes.
+     * @param \ProjectId $projectId        List of project IDs.
      *
      * @return Pool
      */
@@ -253,7 +253,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         array $data,
         array $specimenIds,
         array $specimenBarcodes,
-        array $projectIds
+        \ProjectId $projectId
     ) : Pool {
         $pool = new Pool();
         if (isset($data['PoolID'])) {
@@ -292,8 +292,8 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         if (isset($data['CenterID'])) {
             $pool->setCenterId($data['CenterID']);
         }
-        if (isset($projectIds)) {
-            $pool->setProjectIds($projectIds);
+        if (isset($projectId)) {
+            $pool->setProjectId($projectId);
         }
         if (isset($data['Date'])) {
             $pool->setDate(new \DateTime($data['Date']));

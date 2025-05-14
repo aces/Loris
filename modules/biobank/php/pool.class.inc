@@ -40,20 +40,20 @@ class Pool implements
      *
      * These properties describe a pool entity.
      *
-     * @var ?int      $id
-     * @var string    $label
-     * @var float     $quantity
-     * @var int       $unitId
-     * @var array     $specimenIds
-     * @var array     $specimenBarcodes
-     * @var int       $candidateId
-     * @var string    $candidatePSCID
-     * @var int       $sessionId
-     * @var int       $typeId
-     * @var \CenterID $centerId
-     * @var array     $projectIds
-     * @var \DateTime $date
-     * @var \DateTime $time
+     * @var ?int       $id
+     * @var string     $label
+     * @var float      $quantity
+     * @var int        $unitId
+     * @var array      $specimenIds
+     * @var array      $specimenBarcodes
+     * @var int        $candidateId
+     * @var string     $candidatePSCID
+     * @var int        $sessionId
+     * @var int        $typeId
+     * @var \CenterID  $centerId
+     * @var \ProjectID $projectId
+     * @var \DateTime  $date
+     * @var \DateTime  $time
      */
     private $id;
     private $label;
@@ -66,7 +66,7 @@ class Pool implements
     private $sessionId;
     private $typeId;
     private \CenterID $centerId;
-    private array $projectIds;
+    private \ProjectID $projectId;
     private $date;
     private $time;
 
@@ -330,25 +330,25 @@ class Pool implements
     }
 
     /**
-     * Sets the Project IDs of the constituent specimens
+     * Sets the Project ID of the constituent specimens
      *
-     * @param array $projectIds Project IDs of the pool
+     * @param array $projectId Project ID of the pool
      *
      * @return void
      */
-    public function setProjectIds(array $projectIds) : void
+    public function setProjectId(\ProjectID $projectId) : void
     {
-         $this->projectIds = $projectIds;
+         $this->projectId = $projectId;
     }
 
     /**
-     * Gets the Project IDs of the pool
+     * Gets the Project ID of the pool
      *
-     * @return array
+     * @return \ProjectID
      */
-    public function getProjectIds() : array
+    public function getProjectId() : \ProjectID
     {
-        return $this->projectIds;
+        return $this->projectId;
     }
     /**
      * Sets the date at which the pool was created.
@@ -436,8 +436,8 @@ class Pool implements
         if (isset($data['centerId'])) {
             $this->setCenterId(new \CenterID(strval($data['centerId'])));
         }
-        if (isset($data['projectIds'])) {
-            $this->setProjectIds($data['projectIds']);
+        if (isset($data['projectId'])) {
+            $this->setProjectId($data['projectId']);
         }
         if (isset($data['date'])) {
             $this->setDate(new \DateTime($data['date']));
@@ -481,7 +481,7 @@ class Pool implements
             'sessionId'        => $this->sessionId,
             'typeId'           => $this->typeId,
             'centerId'         => $this->centerId,
-            'projectIds'       => $this->projectIds,
+            'projectId'        => $this->projectId,
             'date'             => $this->date->format('d-m-Y'),
             'time'             => $this->time->format('H:i'),
         ];

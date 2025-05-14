@@ -87,24 +87,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
-     * Returns an array of all the Project IDs associated with the given
-     * Specimen from the biobank_specimen_project_rel table.
-     *
-     * @param ?int $id Specimen ID
-     *
-     * @return $projectIds
-     */
-    private function _getProjectIds(?int $id) : array
-    {
-        $query      = 'SELECT ProjectID                                         
-                  FROM biobank_specimen_project_rel                            
-                  WHERE SpecimenID=:i';
-        $projectIds = $this->db->pselectCol($query, ['i' => $id]);
-
-        return $projectIds;
-    }
-
-    /**
      * This will select all specimens from the database that match the
      * attribute values passed by $conditions and will return an array
      * of specimen objects.
@@ -127,7 +109,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                       bs.Quantity,
                       bs.UnitID,
                       bc.CenterID,
-                      GROUP_CONCAT(DISTINCT(bsprr.ProjectID)) as ProjectIDs,
+                      s.ProjectID,
                       bsf.FreezeThawCycle,
                       GROUP_CONCAT(DISTINCT bspa.ParentSpecimenID)
                         as ParentSpecimenIDs,
@@ -167,8 +149,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                FROM biobank_specimen bs
                INNER JOIN biobank_container bc
                  ON bs.ContainerID=bc.ContainerID
-               LEFT JOIN biobank_specimen_project_rel bsprr
-                 ON bs.SpecimenID=bsprr.SpecimenID
                LEFT JOIN biobank_specimen_freezethaw bsf
                  ON bs.SpecimenID=bsf.SpecimenID
                LEFT JOIN session s
@@ -409,30 +389,30 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                 USING (SpecimenAttributeID)
             ORDER BY bsp.SpecimenProtocolID, bspa.OrderIndex
         ";
-
+    
         $result = $this->db->pselect($query, []);
         $protocolAttributes = [];
-
+    
         foreach ($result as $row) {
             $protocolId = $row['protocolId'];
             // Ensure the protocol exists in the array
             if (!isset($protocolAttributes[$protocolId])) {
                 $protocolAttributes[$protocolId] = [];
             }
-
+    
             // Add the attribute data, keeping the order intact
             $protocolAttributes[$protocolId][] = [
-                'id'              => $row['attributeId'],
-                'label'           => $row['label'],
-                'datatypeId'      => $row['datatypeId'],
-                'required'        => (int) $row['required'],
-                'showInDataTable' => (int) $row['showInDataTable'],
-                'orderIndex'      => (int) $row['orderIndex'],
+                'id'               => $row['attributeId'],
+                'label'            => $row['label'],
+                'datatypeId'       => $row['datatypeId'],
+                'required'         => (int) $row['required'],
+                'showInDataTable'  => (int) $row['showInDataTable'],
+                'orderIndex'       => (int) $row['orderIndex'],
             ];
         }
-
+    
         return $protocolAttributes;
-    }
+    }    
 
     /**
      * Queries all rows from the biobank_specimen_protocol_attribute_rel table
@@ -564,62 +544,12 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             );
         }
 
-        // Validate that 'biobank_specimen_project_rel' exists and is an array
-        if (!isset($data['biobank_specimen_project_rel'])
-            || !is_array($data['biobank_specimen_project_rel'])
-        ) {
-            throw new \InvalidArgumentException(
-                "'biobank_specimen_project_rel' must be a non-nullable array."
-            );
-        }
-
-        // Prepare project data and send it to be saved.
-        foreach ($data['biobank_specimen_project_rel'] as $i => $insert) {
-            // Ensure each insert is an array
-            if (!is_array($insert)) {
-                throw new \InvalidArgumentException(
-                    "Each project relationship must be an array."
-                );
-            }
-
-            // Reference to the current project relationship
-            $projInsert =& $data['biobank_specimen_project_rel'][$i];
-
-            // Assign the SpecimenID to the project relationship
-            $projInsert['SpecimenID'] = $specimen->getId();
-        }
-
-        $this->_saveProject($specimen, $data);
-
         return $this->getInstanceFromId($specimen->getId());
     }
 
-    /**
-     * Saves the Specimen Project to the database.
-     *
-     * @param Specimen $specimen Specimen
-     * @param array    $data     The data to save
-     *
-     * @return void
-     */
-    private function _saveProject(Specimen $specimen, array $data)
-    {
-        // insert on update biobank_specimen_project_rel with relevant data.
-        $this->db->delete(
-            'biobank_specimen_project_rel',
-            ['SpecimenID' => $specimen->getId()]
-        );
-        foreach ($data['biobank_specimen_project_rel'] as $insert) {
-            $this->db->insert(
-                'biobank_specimen_project_rel',
-                $insert
-            );
-        }
-    }
-
 
     /**
-     * Saves the Specimen Project to the database.
+     * Generates a new sample number for the specimen.
      *
      * @param int $candId - The candidate for which to generate the sample number
      *
@@ -667,8 +597,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             $sampleNumber = $this->_getSampleNumber($specimen->getCandidateId());
             $specimenData['SampleNumber'] = $sampleNumber;
         } else {
-            $specimenData['SampleNumber'] = $specimen->getSampleNumber();                              
-        }              
+            $specimenData['SampleNumber'] = $specimen->getSampleNumber();
+        }
 
         $freezeThawData = [
             'SpecimenID'      => $specimen->getId(),
@@ -727,18 +657,12 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                 json_encode($analysis->getData()) : null;
         }
 
-        $specimenProjectData = [];
-        foreach ($specimen->getProjectIds() as $id) {
-            $specimenProjectData[] = ['ProjectID' => $id];
-        }
-
         return [
             'biobank_specimen'             => $specimenData,
             'biobank_specimen_freezethaw'  => $freezeThawData,
             'biobank_specimen_collection'  => $collectionData,
             'biobank_specimen_preparation' => $preparationData,
             'biobank_specimen_analysis'    => $analysisData,
-            'biobank_specimen_project_rel' => $specimenProjectData,
         ];
     }
 
@@ -778,12 +702,8 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         if (isset($data['CenterID'])) {
             $specimen->setCenterId(new \CenterID((string) $data['CenterID']));
         }
-        if (isset($data['ProjectIDs'])) {
-            $projectIds = array_map(
-                fn($id) => new \ProjectID($id),
-                explode(',', $data['ProjectIDs'])
-            );
-            $specimen->setProjectIds($projectIds);
+        if (isset($data['ProjectID'])) {
+            $specimen->setProjectId(new \ProjectID((string) $data['ProjectID']));
         }
         if (isset($data['FreezeThawCycle'])) {
             $specimen->setFTCycle((int) $data['FreezeThawCycle']);

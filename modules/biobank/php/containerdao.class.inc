@@ -106,7 +106,6 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                      bc.ContainerStatusID,
                      GROUP_CONCAT(DISTINCT(s.Barcode)) as ShipmentBarcodes,
                      bc.Temperature,
-                     GROUP_CONCAT(DISTINCT(bspr.ProjectID)) as ProjectIDs,
                      bc.CenterID,
                      bcp.ParentContainerID,
                      bc2.Barcode as ParentContainerBarcode,
@@ -132,9 +131,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                   LEFT JOIN shipment s
                     ON bcsr.ShipmentID=s.ShipmentID
                   LEFT JOIN biobank_specimen bs
-                    ON bc.ContainerID=bs.ContainerID
-                  LEFT JOIN biobank_specimen_project_rel bspr
-                    ON bs.SpecimenID=bspr.SpecimenID';
+                    ON bc.ContainerID=bs.ContainerID';
         if (!empty($conditions)) {
             $whereClause = [];
             foreach ($conditions as $condition) {
@@ -602,15 +599,6 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
             $container->setShipmentBarcodes($shipmentBarcodes);
         } else {
             $container->setShipmentBarcodes([]);
-        }
-        if (isset($data['ProjectIDs'])) {
-            $projectIds = array_map(
-                fn($id) => new \ProjectID($id),
-                explode(',', $data['ProjectIDs'])
-            );
-            $container->setProjectIds($projectIds);
-        } else {
-            $container->setProjectIds([]);
         }
         if (isset($data['CenterID'])) {
             $container->setCenterId(new \CenterID(strval($data['CenterID'])));

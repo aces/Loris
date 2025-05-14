@@ -78,7 +78,7 @@ LifeCycle.propTypes = {
     quantity: PropTypes.number,
     poolId: PropTypes.number,
     fTCycle: PropTypes.string,
-    projectIds: PropTypes.arrayOf(PropTypes.number),
+    projectId: PropTypes.number,
     sessionId: PropTypes.number,
     candidateId: PropTypes.number,
     unitId: PropTypes.number,

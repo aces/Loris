@@ -65,14 +65,16 @@ class SpecimenTab extends Component {
         return value.map((id) => options.diagnoses[id].label);                          
       }                                                                                 
       break;                                                                            
+    case 'Visit Label':
+      return options.sessions[value].label;        
     case 'Status':                                                                      
       return options.container.stati[value].label;                                      
     case 'Current Site':                                                                
       return options.centers[value];                                                    
     case 'Draw Site':                                                                   
       return options.centers[value];                                                    
-    case 'Projects':                                                                    
-      return value.map((id) => options.projects[id]);                                   
+    case 'Project':                                                                    
+      return options.projects[value];
     default:                                                                            
       return value;                                                                     
     }         
@@ -112,10 +114,8 @@ class SpecimenTab extends Component {
       return <td>{display}</td>;                                                     
     case 'Visit Label':                                                              
       if (candidatePermission) {                                                     
-        const sessionId = candidate.sessionIds                                       
-          .find(sessionId => options.sessions[sessionId].label === value);           
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+             
-          candidate.id+'&sessionID='+sessionId;                                      
+          candidate.id+'&sessionID='+value;                                      
         return <td><a href={visitLabelURL}>{display}</a></td>;                       
       }                                                                              
       return <td>{display}</td>;                                                     
@@ -136,8 +136,6 @@ class SpecimenTab extends Component {
         break;                                                                       
       }                                                                              
       return <td style={style}>{display}</td>;                                       
-    case 'Projects':                                                                 
-      return <td>{display.join(', ')}</td>;                                          
     case 'Container Barcode':                                                        
       // check if container has be queried                                           
       if (                                                                           
@@ -207,10 +205,10 @@ class SpecimenTab extends Component {
         candidate?.sex || null,
         specimen.candidateAge,
         candidate?.diagnosisIds || null,
-        options.sessions[specimen.sessionId].label,
+        specimen.sessionId,
         specimen.poolId ? (data.pools[specimen.poolId]||{}).label : null,
         container.statusId,
-        specimen.projectIds,
+        specimen.projectId,
         specimen.centerId,
         options.sessions[specimen.sessionId]?.centerId,
         specimen.collection.date,
@@ -293,8 +291,8 @@ class SpecimenTab extends Component {
         type: 'select',
         options: stati,
       }},
-      {label: 'Projects', show: true, filter: {
-        name: 'projects',
+      {label: 'Project', show: true, filter: {
+        name: 'project',
         type: 'multiselect',
         options: options.projects,
       }},

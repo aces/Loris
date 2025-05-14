@@ -48,7 +48,7 @@ class Specimen implements
      * @var string      $quantity
      * @var int         $unitId
      * @var \CenterID   $CenterId
-     * @var array       $ProjectIds
+     * @var \ProjectID  $ProjectId
      * @var int         $fTCycle
      * @var array       $parentSpecimenIds
      * @var array       $parentSpecimenBarcodes
@@ -71,7 +71,7 @@ class Specimen implements
     private $unitId;
     private $fTCycle;
     private \CenterID $centerId;
-    private $projectIds;
+    private $projectId;
     private $parentSpecimenIds;
     private $parentSpecimenBarcodes;
     private $candidateId;
@@ -549,25 +549,25 @@ class Specimen implements
     }
 
     /**
-     * Sets ProjectIDs for the Specimen.
+     * Sets ProjectID for the Specimen.
      *
-     * @param \ProjectID[] $projectIds The Specimen's Projects
+     * @param \ProjectID $projectId The Specimen's Project
      *
      * @return void
      */
-    public function setProjectIds(array $projectIds)
+    public function setProjectId(\ProjectID $projectId)
     {
-        $this->projectIds = $projectIds;
+        $this->projectId = $projectId;
     }
 
     /**
      * Return Project ID of affiliated specimen container.
      *
-     * @return \ProjectID[]
+     * @return \ProjectID
      */
-    public function getProjectIds() : array
+    public function getProjectId() : \ProjectID
     {
-        return $this->projectIds ?? [];
+        return $this->projectId ?? [];
     }
 
     /**
@@ -603,8 +603,8 @@ class Specimen implements
         if (isset($data['centerId'])) {
             $this->setCenterId(new \CenterID(strval($data['centerId'])));
         }
-        if (isset($data['projectIds'])) {
-            $this->setProjectIds($data['projectIds']);
+        if (isset($data['projectId'])) {
+            $this->setProjectId($data['projectId']);
         }
         if (isset($data['fTCycle'])) {
             $this->setFTCycle((int) $data['fTCycle']);
@@ -683,7 +683,7 @@ class Specimen implements
             'quantity'               => $this->quantity,
             'unitId'                 => $this->unitId,
             'centerId'               => $this->centerId,
-            'projectIds'             => $this->projectIds,
+            'projectId'              => $this->projectId,
             'fTCycle'                => $this->fTCycle,
             'parentSpecimenIds'      => $this->parentSpecimenIds,
             'parentSpecimenBarcodes' => $this->parentSpecimenBarcodes,

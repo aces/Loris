@@ -251,7 +251,6 @@ class BiobankIndex extends Component {
    */
   createSpecimens(list, current, print) {
     const {options, data} = this.state;
-    const projectIds = current.projectIds;
     const centerId = current.centerId;
     const availableId = Object.keys(options.container.stati).find(
       (key) => options.container.stati[key].label === 'Available'
@@ -264,7 +263,6 @@ class BiobankIndex extends Component {
       const specimen = list[key];
       specimen.candidateId = current.candidateId;
       specimen.sessionId = current.sessionId;
-      specimen.projectIds = projectIds;
       specimen.quantity = specimen.collection.quantity;
       specimen.unitId = specimen.collection.unitId;
       specimen.collection.centerId = centerId;
@@ -491,7 +489,6 @@ class BiobankIndex extends Component {
       'unitId',
       'candidateId',
       'sessionId',
-      'projectIds',
       'collection',
     ];
     const float = ['quantity'];
