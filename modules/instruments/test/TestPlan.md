@@ -1,43 +1,71 @@
 # Instrument Test Plan
 
-This test plan verifies that permissions and configurations do what they are supposed to do. The two permissions are called 'Data Entry' and 'View Instrument Data'
-
-Table of Contents
+## Table of Contents
 
 - [Data Entry](#data-entry)
-  -  [View the Instruments](#view-the-instruments)
-  - [Test Configurations](#test-configurations)
-    - [Instrument Resetting](#instrument-resetting)
-    - [Post Mortem](#post-mortem)
-    - [Verify Validity](#verify-validity)
-  - [Dashboard Module tests](#dashboard-module-tests)
-
 - [View Instrument Data](#view-instrument-data)
-  - [Test the Data Query Tool](#test-the-data-query-tool)
-  - [Share a Link to a Frozen instrument](#share-a-link-to-a-frozen-instrument)
-  - [Test Configurations](#test-configurations)
+
+In the database, these permissions are found in the `permissions` table:
+
+|permID|code|description|moduleID|action|categoryID|
+|:--|:--|:--|:--|:--|:--|
+|11|data_entry|Candidates and Timepoints - Own Sites|6|View/Create|1|
+|85|view_instrument_data|Data|26|View|2|
+
+In the front end, these permissions can be accessed by entering into an admin account, then naviagting to the `Admin` drop down menu and selecting `User accounts` . The permissions appear with checkboxes next to them in the `Permissions` Section of the page.
+- [x] Access Profile: View/Create Candidates and Timepoints - Own Sites
+- [x] Instruments: View Data
 
 ## Data Entry
 
-- [x] Access Profile: View/Create Candidates and Timepoints - Own Sites
+### This permission permits the following:
 
-- enter `loris.ca/candidate_list` in url
-- click on a PSCID, click### Visit the Candidate Dashboard module on a timepoint, click on an instrument
-- Assert that link to the instrument is shown, ex:`loris.ca/instruments/mri_parameter_form/?commentID=300166OTT166166241522092433&sessionID=166&candID=300166`
-- Enter a date and click 'Save Data'. Assert that `Age Calculation` is correct
+- View existing candidates + create new candidates.
+- View existing timepoints and create new timepoints
+- View instrument lists assigned to the candidate at a particular timepoint
+- View the instrument fields and enter data into these fields
+- Save this data in the database
+
+### Data Entry Test 1
+
+- In your admin account enable **only** the following permission for your user:
+- [x] Access Profile - View/Create Candidates and Timepoints
+- Go to your user account and click on `Candidate`-> `Access Profile`
+- Click on a timepoint. This will redirect you to, for example, /instrument_list/?candID=400162$sessionID=542
+- Click on an instrument
+  - Assert that link to the instrument is shown, ex:`/instruments/mri_parameter_form/?commentID=400162ROM162542341471021802&sessionID=542&candID=400162`
+- Assert that, if, for that instrument, the `Data Entry` column = `Complete`, that when you click on the instrument name, you are redirected to the instrument form. 
+- Assert the fields are "frozen" (greyed-out and not fillable)
+- Go back to the instrument list
+- Assert that, if, for an instrument, if the `Data Entry` column = `In Progress` that, when you click on the instrument name, you are redirected to the instrument form
+- Assert that the fields of the instrument form are fillable (not greyed out)
+- Assert that when a field is **not** filled, and you hit `Save`, that the red-coloured "required" messages and field highlighting appears. 
+- Assert that when `Not Answered` is selected, these red requirement alerts do not occur.
+- Navigate to all the `Subtests` pages (in the left sidebar) and repeat this test for all fields of the instrument form.
+- Assert that the data you have saved is now registered in the database.
+  - go to the ______ table in SQL and enter the following command: 
+  SELECT xxx FROM yyy WHERE ZZZ = aaa;
+
+### Data Entry Config Tests
+
+- In `Date of Administration`, Enter a date, and click `Save Data`.
+  - Assert that `Age Calculation` is correct.
 - Set Examiner to NULL and assert that `An Examiner is Required` appears.
-- If the instrument has multiple pages (on the left sidebar), enter some data, then move from page to page and assert that the
-saved data stays the same.
+- If the instrument has multiple pages (on the left sidebar), enter some data, then move from page to page and assert that the saved data stays the same.
 - Change some data, but don't hit save, and change page. Assert that the data that wasn't saved is not still there (ie is not persistent)
 
 ### View the Instruments
 
-  1. go to `/new_profile` and enter data, click `Create` and `Access Profile`
-  2. click `Create Time Point` and enter data and click `Create Time Point` and click `OK`. Assert that you see your new time point with `Not Started` in the `Stage` field
-  3. Click the Visit Label you just created of your new candidate
-  4. In the side bar, click `Start Visit Stage` and enter `Date of Visit` and `Continue`. Assert that you are taken to a list of instruments assigned to this time point: `/instrument_list`
-
-  6.Enter sample data, testing each field's type and logic constraints
+- Create a new participant
+  - go to `/new_profile`, enter `Date of Birth`, `Date of Birth Confirm`, `Sex`, `Site`, `Project`.
+  - click `Create`. This registers the participant.
+- click `Access Profile` and Click `Create Time Point`
+- enter `Site`, `Project`, `Cohort`, `Visit Label` and `Language`
+- click `Create Time Point`.
+- Assert that you see your new time point with `Not Started` in the `Stage` field
+- Click the Visit Label you just created of your new participant
+- In the side bar, click `Start Visit Stage` and enter `Date of Visit` and `Continue`. Assert that you are taken to a list of instruments assigned to this time point: `/instrument_list`
+- Enter sample data, testing each field's type and logic constraints
 
 ### Test Configurations
 
