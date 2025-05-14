@@ -103,17 +103,20 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $studyWidgets = [];
         foreach ($modules as $module) {
-            if ($module->hasAccess($user)
-                || $module->getName() == 'candidate_list'
-            ) {
-                $mwidget = $module->getWidgets(
-                    'study-progression',
-                    $user,
-                    []
-                );
-                foreach ($mwidget as $mwidget) {
-                    if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
-                        $studyWidgets[$mwidget->label()] = $mwidget->data();
+            $mwidget = $module->getWidgets(
+                'study-progression',
+                $user,
+                []
+            );
+            foreach ($mwidget as $mwidget) {
+                if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
+                    $studyWidgets[$mwidget->label()] = $mwidget->data();
+                    if (!$module->hasAccess($user)) {
+                        foreach ($studyWidgets[$mwidget->label()] as $key => $value) {
+                            if (isset($value['url'])) {
+                                $studyWidgets[$mwidget->label()][$key]['url'] = null;
+                            }
+                        }
                     }
                 }
             }
@@ -402,10 +405,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $projectData = [];
         foreach ($widgets as $name => $widget) {
             foreach ($widget as $projectID => $data) {
-                error_log("ID is ");
-                error_log(print_r($projectID, true));
-                error_log("Data is ");
-                error_log(print_r($data, true));
                 if ($projectID == $ID) {
                     $projectData[] = [
                         'title'  => $name,
