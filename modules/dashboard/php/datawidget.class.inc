@@ -59,7 +59,7 @@ class DataWidget implements \LORIS\GUI\Widget
     /**
      * Returns the number associated with this task.
      *
-     * @return int
+     * @return array
      */
     public function data() : array
     {
