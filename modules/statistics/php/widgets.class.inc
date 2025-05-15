@@ -156,13 +156,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $siteOptions = [];
-        foreach ($centerIDs as $center) {
-            if (array_key_exists($center->__toString(), $sites)) {
-                $siteOptions[$center->__toString()] = $sites[$center->__toString()];
-            }
-        }
-
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
 
