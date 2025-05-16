@@ -9,14 +9,12 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
- *
  * @param  {object} props
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
-  const [activeView, setActiveView] = useState(0);
 
   let json = props.data;
 
@@ -93,10 +91,8 @@ const Recruitment = (props) => {
       <Panel
         title ='Recruitment'
         id ='statistics_recruitment'
-        activeView ={activeView}
         onChangeView ={(index) => {
           setupCharts(false, chartDetails);
-          setActiveView(index);
         }}
         views ={[
           {
@@ -133,7 +129,11 @@ const Recruitment = (props) => {
                         />
                       </div>
                     )}
-                    <div className="site-breakdown-grid">
+                    <div className={'site-breakdown-grid'}
+                      id={Object.keys(json.options.sites).length > 15
+                        ? 'site-breakdown-grid-one-column'
+                        : undefined
+                      }>
                       {Object
                         .keys(chartDetails['siteBreakdown'])
                         .map((chartID) => (
@@ -148,13 +148,18 @@ const Recruitment = (props) => {
                 ),
             title: 'Recruitment - site breakdown',
             onToggleFilters: () => {
-              setActiveView(1);
               setShowFiltersBreakdown((prev) => !prev);
             },
           },
           {
             content:
-              <>
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'scroll',
+                  overflowX: 'hidden',
+                }}
+              >
                 {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
                     if (key !== 'overall') {
@@ -164,12 +169,18 @@ const Recruitment = (props) => {
                     }
                   }
                 )}
-              </>,
+              </div>,
             title: 'Recruitment - project breakdown',
           },
           {
             content:
-              <>
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'scroll',
+                  overflowX: 'hidden',
+                }}
+              >
                 {Object.entries(json['recruitmentcohorts'])
                   .map(
                     ([key, value]) => {
@@ -178,7 +189,7 @@ const Recruitment = (props) => {
                       </div>;
                     }
                   )}
-              </>,
+              </div>,
             title: 'Recruitment - cohort breakdown',
           },
         ]}
@@ -190,8 +201,8 @@ const Recruitment = (props) => {
 Recruitment.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
-  updateFilters: PropTypes.function,
-  showChart: PropTypes.function,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 Recruitment.defaultProps = {
   data: {},
