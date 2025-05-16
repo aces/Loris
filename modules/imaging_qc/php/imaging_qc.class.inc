@@ -382,21 +382,6 @@ class Imaging_QC extends \NDB_Menu_Filter
     }
 
     /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb(
-                'Imaging Quality Control',
-                '/imaging_qc'
-            )
-        );
-    }
-
-    /**
      * This method overrides the NBD_Page handle function.
      * It checks if the MRI Parameter Form table exists
      * before calling the parent handle function.

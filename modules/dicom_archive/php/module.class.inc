@@ -117,7 +117,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return dgettext("loris", "Imaging");
     }
 
     /**
@@ -127,6 +127,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "DICOM Archive";
+        return dgettext("dicom_archive", "DICOM Archive");
     }
 }

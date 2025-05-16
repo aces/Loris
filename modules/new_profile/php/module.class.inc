@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Candidate";
+        return dgettext("loris", "Candidate");
     }
 
     /**
@@ -57,6 +57,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "New Profile";
+        return dgettext("new_profile", "New Profile");
     }
 }
