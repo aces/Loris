@@ -60,8 +60,6 @@ testdata:
 locales: 
 	msgfmt -o locale/ja/LC_MESSAGES/loris.mo locale/ja/LC_MESSAGES/loris.po
 	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
-	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
-	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
@@ -71,8 +69,6 @@ locales:
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
-	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
-	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	msgfmt -o modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po
 	msgfmt -o modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
@@ -152,8 +148,6 @@ issue_tracker:
 candidate_list:
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
-	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
-	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
 candidate_parameters:
