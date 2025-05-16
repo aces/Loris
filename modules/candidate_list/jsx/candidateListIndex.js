@@ -13,7 +13,6 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
-import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -407,8 +406,6 @@ CandidateListIndex.propTypes = {
 window.addEventListener('load', () => {
   const args = QueryString.get();
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
-  i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
-
 
   const CLIndex = withTranslation(
     ['candidate_list', 'loris']
