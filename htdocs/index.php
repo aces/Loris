@@ -67,7 +67,8 @@ Profiler::checkpoint("Profiler started");
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
-$middlewarechain = (new \LORIS\Middleware\ContentLength())
+$middlewarechain = (new \LORIS\Middleware\Language())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
@@ -111,7 +112,6 @@ $serverrequest = $serverrequest->withAttribute("user", $user)
     ->withAttribute("loris", $lorisInstance);
 
 // Now handle the request.
-//
 $response = $middlewarechain->process($serverrequest, $entrypoint);
 
 // Add the HTTP header line.

@@ -35,3 +35,4 @@ VERSION
 .DS_Store
 .eslintcache
 tools/logs
+*.mo
