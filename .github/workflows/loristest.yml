@@ -30,6 +30,9 @@ jobs:
       - name: Install npm modules
         run: npm ci
 
+      - name: Generate LORIS locales
+        run: make locales
+
       - name: Compile LORIS javascript
         run: npm run compile
 
