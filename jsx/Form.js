@@ -2284,7 +2284,11 @@ export class ButtonElement extends Component {
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
-            {this.props.disabled ? 'Uploading...' : this.props.label}
+            {
+              this.props.disabled
+                ? (this.props.disabledLabel ?? this.props.label)
+                : this.props.label
+            }
           </button>
         </div>
       </div>
@@ -2298,6 +2302,7 @@ ButtonElement.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+  disabledLabel: PropTypes.string,
   style: PropTypes.object,
   onUserInput: PropTypes.func,
   columnSize: PropTypes.string,
@@ -2308,6 +2313,7 @@ ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
   disabled: null,
+  disabledLabel: null,
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
