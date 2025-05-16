@@ -27,6 +27,9 @@ jobs:
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
           protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
+      - name: Install other package dependencies
+        run: sudo apt install -y gettext
+
       - name: Install npm modules
         run: npm ci
 
@@ -268,7 +271,7 @@ jobs:
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
-           libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+           libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler gettext
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
