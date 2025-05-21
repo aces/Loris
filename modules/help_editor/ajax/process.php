@@ -78,4 +78,22 @@ if (!empty($_POST['helpID'])
             ),
         ]
     );
+
 }
+
+    error_log(print_r($_POST,true));
+    if ($_POST['new'] == true){
+    // insert the help file
+    HelpFile::insert(
+        [
+            'hash'    => md5( $_POST['instrument']),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'created' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
+        ]
+    ); 
+    echo "done";
+    }
