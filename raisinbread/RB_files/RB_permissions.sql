@@ -29,7 +29,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (35,'document_repository_view','Documents',16,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (36,'document_repository_delete','Documents',16,'Delete',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (37,'server_processes_manager','Processes',34,'View',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (38,'imaging_uploader','Imaging Scans',22,'View/Upload',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (38,'imaging_uploader_allsites','Imaging Scans - All Sites',22,'View/Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (39,'acknowledgements_view','Acknowledgee List',1,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (40,'acknowledgements_edit','Acknowledgee List',1,'Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (41,'dataquery_view','Cross-Modality Data',44,'View/Download',2);
@@ -71,7 +71,10 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (77,'issue_tracker_site_issue','Issues - Own Sites',27,'View/Edit/Comment',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (78,'issue_tracker_close_site_issue','Issues - Own Sites',27,'Close',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (79,'issue_tracker_close_all_issue','Issues - All Sites',27,'Close',2);
-
-
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (80,'dataquery_admin','Admin dataquery queries',44,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (81,'imaging_uploader_ownsites','Imaging Scans - Own Sites',22,'View/Upload',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (82,'imaging_uploader_nosessionid', 'Imaging Scans with no session ID',22,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (83,'dicom_archive_nosessionid','DICOMs with no session ID',15,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (84,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,'View',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

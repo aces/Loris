@@ -341,7 +341,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
-  `DoubleDataEntryEnabled` enum('Y','N') default 'N',
+  `DoubleDataEntryEnabled` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1115,7 +1115,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL,
-  `ProcessID` int(11) NOT NULL,
+  `ProcessID` int(11) DEFAULT NULL,
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
@@ -1564,7 +1564,7 @@ CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -2600,4 +2600,22 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `openid_connect_providers` (
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
+    `ClientID` text NOT NULL,
+    `ClientSecret` text NOT NULL,
+    `RedirectURI` text NOT NULL, -- our local redirectURI that the provider is configured to authorize
+                                 -- should be something like "https://something.loris.ca/oidc/callback"
+    PRIMARY KEY (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `openid_connect_csrf` (
+    `State` varchar(64) NOT NULL UNIQUE,
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Nonce` varchar(64) NOT NULL,
+    `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`State`),
+    CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

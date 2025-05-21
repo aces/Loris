@@ -18,7 +18,7 @@ const lorisModules: Record<string, string[]> = {
   login: ['loginIndex'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
-  candidate_parameters: ['CandidateParameters', 'ConsentWidget'],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
   configuration: [
     'CohortRelations',
     'configuration_helper',
@@ -51,6 +51,7 @@ const lorisModules: Record<string, string[]> = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
+    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
@@ -253,13 +254,8 @@ function addProjectModules(
     = require('./project/webpack-project.config.js');
 
   // Copy the record of LORIS modules
-  const allModules: Record<string, string[]> = {};
-  for (const [moduleName, moduleEntryPoints] of
-    Object.entries(projectModules)
-  ) {
-    allModules[moduleName] = [...moduleEntryPoints];
-  }
-
+  const allModules: Record<string, string[]> = modules;
+  
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)

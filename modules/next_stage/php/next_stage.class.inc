@@ -266,19 +266,20 @@ class Next_Stage extends \NDB_Form
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                'Candidate Profile ' . $candid . ' / ' . $pscid,
+                dgettext("candidate_profile", 'Candidate Profile')
+                . " " .$candid . ' / ' . $pscid,
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                dgettext("loris", "TimePoint") . " $visitlabel",
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
-                'Start Next Stage',
+                dgettext('next_stage', 'Start Next Stage'),
                 "/next_stage/?candID=$candid&sessionID=$sessionid" .
                 "&identifier=$sessionid"
             )

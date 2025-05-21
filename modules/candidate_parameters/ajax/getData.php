@@ -252,7 +252,7 @@ function getFamilyInfoFields()
 
     $candidatesList = iterator_to_array(
         $db->pselect(
-            "SELECT ID FROM candidate ORDER BY ID",
+            "SELECT CandID FROM candidate ORDER BY CandID",
             []
         )
     );
@@ -281,7 +281,9 @@ function getFamilyInfoFields()
     // Remove own ID and sibling IDs from list of possible family members
     foreach ($candidatesList as $key => $candidate) {
         foreach ($candidate as $ID) {
-            if ($ID == $candID || in_array($ID, $siblings)) {
+            if (new CandID(strval($ID)) === $candID
+                || in_array($ID, $siblings, true)
+            ) {
                 unset($candidatesList[$key]);
             } else {
                 $candidates[$ID] = $ID;
@@ -629,23 +631,25 @@ function getDiagnosisEvolutionFields(): array
         ['candID' => $candID]
     );
 
-    $candidateDiagnosisEvolution = $db->pselect(
-        "SELECT
-            de.Name AS TrajectoryName,
-            p.Name AS Project,
-            visitLabel,
-            instrumentName,
-            sourceField,
-            Diagnosis,
-            Confirmed,
-            LastUpdate,
-            OrderNumber
-        FROM candidate_diagnosis_evolution_rel cder
-        JOIN diagnosis_evolution de USING (DxEvolutionID)
-        JOIN Project p USING (ProjectID)
-        JOIN candidate c ON c.ID=cder.CandidateID
-        WHERE c.CandID=:candID",
-        ['candID' => $candID]
+    $candidateDiagnosisEvolution = iterator_to_array(
+        $db->pselect(
+            "SELECT
+                de.Name AS TrajectoryName,
+                p.Name AS Project,
+                visitLabel,
+                instrumentName,
+                sourceField,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM candidate_diagnosis_evolution_rel cder
+            JOIN diagnosis_evolution de USING (DxEvolutionID)
+            JOIN Project p USING (ProjectID)
+            JOIN candidate c ON c.ID=cder.CandidateID
+            WHERE c.CandID=:candID",
+            ['candID' => $candID]
+        )
     );
 
     $projectList = \Utility::getProjectList();

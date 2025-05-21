@@ -102,8 +102,10 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $scan_done, $acqID): string
     {
-
-        $select =  " SELECT DISTINCT
+        $user         = \User::singleton();
+        $userSites    = implode(',', array_keys($user->getStudySites()));
+        $userProjects = implode(',', array_values($user->getProjectIDs()));
+        $select       = " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
            c.CandID as cand_id,
@@ -170,7 +172,8 @@ class Imaging_QC extends \NDB_Menu_Filter
           AND tn.Test_name='mri_parameter_form'
           AND c.Active='Y'
           AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.ProjectID IN ($userProjects)
+          AND s.CenterID IN ($userSites) ";
 
         $query = $select.$joins.$where;
         return $query;
@@ -211,10 +214,10 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
+        $userProjects = $user->getProjects();
         $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
+        foreach ($userProjects as $project) {
+            $projectList2[$project->getName()] = $project->getName();
         }
         $cohortList  = \Utility::getCohortList();
         $cohortList2 = [];
@@ -375,21 +378,6 @@ class Imaging_QC extends \NDB_Menu_Filter
             [
                 $baseURL . "/imaging_qc/js/imagingQCIndex.js",
             ]
-        );
-    }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb(
-                'Imaging Quality Control',
-                '/imaging_qc'
-            )
         );
     }
 

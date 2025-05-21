@@ -36,6 +36,9 @@ const Panel = (props) => {
    */
   const viewClicked = (index) => {
     setActiveView(index);
+    if (props.onChangeView) {
+      props.onChangeView(index);
+    }
   };
 
   // Panel Views (START)
@@ -135,6 +138,7 @@ Panel.propTypes = {
   class: PropTypes.string,
   children: PropTypes.node,
   views: PropTypes.array,
+  onChangeView: PropTypes.func,
   collapsing: PropTypes.bool,
   bold: PropTypes.bool,
   panelSize: PropTypes.string,

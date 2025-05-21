@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import Loader from './Loader';
 import {
   ButtonElement,
+  FormElement,
 } from 'jsx/Form';
 
 export type ModalProps = PropsWithChildren<{
@@ -12,6 +13,7 @@ export type ModalProps = PropsWithChildren<{
   onSubmit?: () => Promise<any>;
   onSuccess?: (data: any) => void;
   title?: ReactNode;
+  width?: string;
 }>;
 
 /**
@@ -32,6 +34,7 @@ const Modal = ({
   onSuccess,
   title,
   children,
+  width,
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
@@ -86,11 +89,7 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return (
-        <div style={submitStyle}>
-          <ButtonElement onUserInput={handleSubmit}/>
-        </div>
-      );
+      return <div style={submitStyle}><ButtonElement/></div>;
     }
   };
 
@@ -142,7 +141,7 @@ const Modal = ({
     margin: 'auto',
     padding: 0,
     border: '1px solid #888',
-    width: '700px',
+    width: width ?? '700px',
     boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
     transition: '0.4s ease',
   };
@@ -193,6 +192,17 @@ const Modal = ({
     </div>
   );
 
+  const content = (
+    <>
+      <div style={bodyStyle}>{show && children}</div>
+      <div style={footerStyle}>
+        {loader}
+        {successDisplay}
+        {submitButton()}
+      </div>
+    </>
+  );
+
   return (
     <div style={modalContainer} onClick={handleClose}>
       <div style={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -201,12 +211,11 @@ const Modal = ({
           <span style={glyphStyle} onClick={handleClose}>×</span>
         </div>
         <div>
-          <div style={bodyStyle}>{show && children}</div>
-          <div style={footerStyle}>
-            {loader}
-            {successDisplay}
-            {submitButton()}
-          </div>
+          {onSubmit ? (
+            <FormElement onSubmit={handleSubmit}>
+              {content}
+            </FormElement>
+          ) : content}
         </div>
       </div>
     </div>

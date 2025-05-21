@@ -54,6 +54,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbrea
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (62,80,'1');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (63,81,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (64,82,'65');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (65,83,'t1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (66,84,'19');
@@ -107,6 +108,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
-
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
