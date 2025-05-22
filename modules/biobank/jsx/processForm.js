@@ -308,6 +308,7 @@ SpecimenProcessForm.propTypes = {
   getParentContainerBarcodes: PropTypes.func.isRequired,
   getBarcodePathDisplay: PropTypes.func.isRequired,
   setParent: PropTypes.func.isRequired,
+  render: PropTypes.func,
   updateSpecimen: PropTypes.func.isRequired,
 };
 

@@ -391,7 +391,6 @@ function CreateShipment({
   updateShipments,
   setData,
 }) {
-  const [containerId, setContainerId] = useState(null);
   const logIndex = 0;
   const handler = new UseShipment();
   const shipment = handler.getShipment();
@@ -428,8 +427,6 @@ function CreateShipment({
       handler.setLog('centerId', container.centerId, logIndex);
     }
   }, [shipment.containerIds]);
-
-  const containers = mapFormOptions(data.containers, 'barcode');
 
   return (
     <Modal

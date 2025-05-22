@@ -3,7 +3,7 @@ import SpecimenProcessForm from './processForm';
 import ContainerParentForm from './containerParentForm';
 import {ListForm, ListItem} from './listForm';
 import Modal from 'Modal';
-import {mapFormOptions, clone, padBarcode} from './helpers.js';
+import {mapFormOptions, clone} from './helpers.js';
 import {
   SearchableDropdown,
   StaticElement,
@@ -230,7 +230,8 @@ class SpecimenForm extends React.Component {
         );
       } else {
         const sessionsObject = current.candidateId
-          ? options.candidates[current.candidateId].sessionIds.reduce((acc, sessionId) => {
+          ? options.candidates[current.candidateId].sessionIds
+          .reduce((acc, sessionId) => {
             if (options.sessions[sessionId]) {
               acc[sessionId] = options.sessions[sessionId];
             }
