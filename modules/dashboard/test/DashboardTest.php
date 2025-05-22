@@ -626,8 +626,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * Make sure there is no recruitment target set in the configuration
-     * module. Check that an incentive to define a recruitment target is
-     * displayed in recruitment panel.
+     * module, and then confirm that the overall recruitment is still shown.
      *
      * @return void
      */
