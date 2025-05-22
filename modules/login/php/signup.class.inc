@@ -143,7 +143,7 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Check email address' uniqueness
-        $result = $DB->pselectOne(
+        $result   = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             ['VEmail' => $from]
         );
@@ -247,7 +247,7 @@ class Signup extends \NDB_Page implements ETagCalculator
                 // Send email to users with User Management permissions.
                 $config    = \NDB_Factory::singleton()->config();
                 $studyName = $config->getSetting('title');
-                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+                $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
                     $row['Email'],
                     'request_account.tpl',
@@ -256,7 +256,8 @@ class Signup extends \NDB_Page implements ETagCalculator
                         'Site'      => $siteList[$site],
                         'Real_name' => $fullname,
                         'Email'     => $from,
-                        'URL'       => $baseURL . "/user_accounts/?pendingApproval=Y",
+                        'URL'       => $baseURL
+                                       . "/user_accounts/?pendingApproval=Y",
                     ]
                 );
             }
