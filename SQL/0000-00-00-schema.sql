@@ -2349,6 +2349,7 @@ CREATE TABLE `feedback_mri_comments` (
   KEY `FK_feedback_mri_comments_2` (`PredefinedCommentID`),
   KEY `FK_feedback_mri_comments_3` (`FileID`),
   KEY `FK_feedback_mri_comments_4` (`SessionID`),
+  KEY `fmc_comment` (`Comment`),
   CONSTRAINT `FK_feedback_mri_comments_4` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
