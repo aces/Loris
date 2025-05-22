@@ -129,7 +129,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
             $poolRow['CandidatePSCID'] = $specimen->getCandidatePSCID();
             $poolRow['SessionID']      = $specimen->getSessionId();
             $poolRow['CenterID']       = $specimen->getCenterId();
-            $projectId        = $specimen->getProjectId();
+            $projectId         = $specimen->getProjectId();
             $poolRow['TypeID'] = $specimen->getTypeId();
 
             // instantiate pool entity

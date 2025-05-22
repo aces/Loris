@@ -221,12 +221,12 @@ function Globals(props) {
     </InlineField>
   );
 
-  const projectField = () => specimen && (                                              
-    <InlineField                                                                        
-      label='Project'                                                                  
+  const projectField = () => specimen && (
+    <InlineField
+      label='Project'
       value={options.projects[specimen.projectId]}
-    />                                                                                  
-  );           
+    />
+  );
 
   const drawField = specimen && (
     <InlineField

@@ -176,10 +176,10 @@ const SpecimenProcessForm = (props) => {
       updateButton,
     ];
 
-     const flatElements = React.Children.toArray(elements);
- 
-     // If `render` is provided, pass the elements through it
-     return render ? render(flatElements) : <>{flatElements}</>;    
+    const flatElements = React.Children.toArray(elements);
+
+    // If `render` is provided, pass the elements through it
+    return render ? render(flatElements) : <>{flatElements}</>;
   } else if (edit === false) {
     const protocolAttributes = options.specimen.protocolAttributes[
       process.protocolId

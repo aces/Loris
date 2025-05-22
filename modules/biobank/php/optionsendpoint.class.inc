@@ -128,92 +128,92 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
      * @return array All options required by the Biobank Module
      */
     function getOptions(\Database $db, \User $user)
-    {                                                                                   
-        $contCont = new ContainerController($this->loris, $user);                       
-        $specCont = new SpecimenController($this->loris, $user);                        
-        $shipDAO  = new ShipmentDAO($db);                                               
-                                                                                        
-        $userCenters  = implode(',', $user->getCenterIDs());                            
-        $userProjects = implode(',', $user->getProjectIDs());                           
-        // TODO: This should eventually be replaced by a call directly to a             
-        // Candidate endpoint or Candidate controller that will be able to              
-        // provide Candidate Objects.                                                   
-        $query      = "SELECT c.CandID as id,                                           
-                            PSCID as pscid,                                             
-                            Sex as sex,                                                 
-                            GROUP_CONCAT(DISTINCT DiagnosisID) as diagnosisIds,         
-                            GROUP_CONCAT(DISTINCT s.ID) as sessionIds                   
-                       FROM candidate c                                                 
-                            LEFT JOIN session s USING (CandID)                          
-                            LEFT JOIN candidate_diagnosis_rel USING (CandID)            
-                       WHERE s.CenterID IN ($userCenters)                               
-                            AND s.ProjectID IN ($userProjects)                          
-                       GROUP BY                                                         
-                          CandID";                                                      
-        $candidates = $db->pselectWithIndexKey($query, [], 'id');                       
-        foreach ($candidates as $id => $candidate) {                                    
-            $candidates[$id]['diagnosisIds'] = $candidate['diagnosisIds']               
-                ? explode(',', $candidate['diagnosisIds'])                              
-                : [];                                                                   
-            $candidates[$id]['sessionIds']  = $candidate['sessionIds']                  
-                ? explode(',', $candidate['sessionIds'])                                
-                : [];                                                                   
-        }                                                                               
-                                                                                        
-        // XXX: This should eventually be replaced by a call directly to a              
-        // Candidate endpoint or Candidate controller that will be able to              
-        // provide Diagnosis Options.                                                   
-        $query     = 'SELECT DiagnosisID as id, Name as label FROM diagnosis';          
-        $diagnoses = $db->pselectWithIndexKey($query, [], 'id');                        
-                                                                                        
-        $sessionQuery = "SELECT                                                         
-            s.ID as id,                                                                 
-            s.Visit_label as label,                                                     
-            s.CenterID as centerId,                                                     
-            s.ProjectID as projectId                                                    
-        FROM session s                                                                  
-        WHERE s.CenterID IN ($userCenters)                                              
-          AND s.ProjectID IN ($userProjects)";                                          
-        $sessions = $db->pselectWithIndexKey($sessionQuery, [], 'id');                  
-                                                                                        
-        // XXX: This should eventually be replaced by a call directly to a              
-        // Examiner endpoint or Examiner controller that will be able to provide        
-        // Examiner Objects.                                                            
-        $query     = 'SELECT examinerID as id, full_name as label FROM examiners';   
-        $examiners = $db->pselectWithIndexKey($query, [], 'id');                        
-                                                                                        
-        // XXX: This should eventually be replaced by a call directly to a              
-        // User endpoint or Examiner controller that will be able to provide            
-        // User Objects.                                                                
-        $query = 'SELECT ID as id, Real_name as label FROM users';                      
-        $users = $db->pselectWithIndexKey($query, [], 'id');                            
-                                                                                        
-        // XXX: This should eventually be replaced by a call directly to a              
-        // Center Endpoint or Center Controller that will be able to provide            
-        // Center Objects.                                                              
-        $centers = \Utility::getSiteList();                                             
-        // foreach ($centers as $id => $center) {                                       
-        //     if ($user->hasCenter(new \CenterID(strval($id))) === false) {            
-        //         unset($centers[$id]);                                                
-        //     }                                                                        
-        // }                                                                            
-                                                                                        
-        $shipment = [                                                                   
-            'statuses' => $shipDAO->getStatuses(),                                      
-            'types'    => $shipDAO->getTypes(),                                         
-        ];                                                                              
-                                                                                        
-        return [                                                                        
-            'candidates'        => $candidates,                                         
-            'diagnoses'         => $diagnoses,                                          
-            'sessions'          => $sessions,                                           
-            'projects'          => \Utility::getProjectList(),                          
-            'centers'           => $centers,                                            
-            'examiners'         => $examiners,                                          
-            'users'             => $users,                                              
-            'container'         => $contCont->getOptions(),                             
-            'specimen'          => $specCont->getOptions(),                             
-            'shipment'          => $shipment,                                           
-        ];                                                                              
-    }           
+    {
+        $contCont = new ContainerController($this->loris, $user);
+        $specCont = new SpecimenController($this->loris, $user);
+        $shipDAO  = new ShipmentDAO($db);
+
+        $userCenters  = implode(',', $user->getCenterIDs());
+        $userProjects = implode(',', $user->getProjectIDs());
+        // TODO: This should eventually be replaced by a call directly to a
+        // Candidate endpoint or Candidate controller that will be able to
+        // provide Candidate Objects.
+        $query      = "SELECT c.CandID as id,
+                            PSCID as pscid,
+                            Sex as sex,
+                            GROUP_CONCAT(DISTINCT DiagnosisID) as diagnosisIds,
+                            GROUP_CONCAT(DISTINCT s.ID) as sessionIds
+                       FROM candidate c
+                            LEFT JOIN session s USING (CandID)
+                            LEFT JOIN candidate_diagnosis_rel USING (CandID)
+                       WHERE s.CenterID IN ($userCenters)
+                            AND s.ProjectID IN ($userProjects)
+                       GROUP BY
+                          CandID";
+        $candidates = $db->pselectWithIndexKey($query, [], 'id');
+        foreach ($candidates as $id => $candidate) {
+            $candidates[$id]['diagnosisIds'] = $candidate['diagnosisIds']
+                ? explode(',', $candidate['diagnosisIds'])
+                : [];
+            $candidates[$id]['sessionIds']   = $candidate['sessionIds']
+                ? explode(',', $candidate['sessionIds'])
+                : [];
+        }
+
+        // XXX: This should eventually be replaced by a call directly to a
+        // Candidate endpoint or Candidate controller that will be able to
+        // provide Diagnosis Options.
+        $query     = 'SELECT DiagnosisID as id, Name as label FROM diagnosis';
+        $diagnoses = $db->pselectWithIndexKey($query, [], 'id');
+
+        $sessionQuery = "SELECT
+            s.ID as id,
+            s.Visit_label as label,
+            s.CenterID as centerId,
+            s.ProjectID as projectId
+        FROM session s
+        WHERE s.CenterID IN ($userCenters)
+          AND s.ProjectID IN ($userProjects)";
+        $sessions     = $db->pselectWithIndexKey($sessionQuery, [], 'id');
+
+        // XXX: This should eventually be replaced by a call directly to a
+        // Examiner endpoint or Examiner controller that will be able to provide
+        // Examiner Objects.
+        $query     = 'SELECT examinerID as id, full_name as label FROM examiners';
+        $examiners = $db->pselectWithIndexKey($query, [], 'id');
+
+        // XXX: This should eventually be replaced by a call directly to a
+        // User endpoint or Examiner controller that will be able to provide
+        // User Objects.
+        $query = 'SELECT ID as id, Real_name as label FROM users';
+        $users = $db->pselectWithIndexKey($query, [], 'id');
+
+        // XXX: This should eventually be replaced by a call directly to a
+        // Center Endpoint or Center Controller that will be able to provide
+        // Center Objects.
+        $centers = \Utility::getSiteList();
+        // foreach ($centers as $id => $center) {
+        //     if ($user->hasCenter(new \CenterID(strval($id))) === false) {
+        //         unset($centers[$id]);
+        //     }
+        // }
+
+        $shipment = [
+            'statuses' => $shipDAO->getStatuses(),
+            'types'    => $shipDAO->getTypes(),
+        ];
+
+        return [
+            'candidates' => $candidates,
+            'diagnoses'  => $diagnoses,
+            'sessions'   => $sessions,
+            'projects'   => \Utility::getProjectList(),
+            'centers'    => $centers,
+            'examiners'  => $examiners,
+            'users'      => $users,
+            'container'  => $contCont->getOptions(),
+            'specimen'   => $specCont->getOptions(),
+            'shipment'   => $shipment,
+        ];
+    }
 }
