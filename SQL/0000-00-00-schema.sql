@@ -1377,6 +1377,11 @@ CREATE TABLE `examiners_psc_rel` (
   CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- REDCap examiner
+INSERT INTO examiners (full_name) VALUES ('REDCap');
+INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
+    SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
+
 CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `examinerID` int(10) unsigned NOT NULL,
@@ -2600,6 +2605,7 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `openid_connect_providers` (
     `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` varchar(255) NOT NULL,
@@ -2618,4 +2624,24 @@ CREATE TABLE `openid_connect_csrf` (
     `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`State`),
     CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- REDCap tables
+-- ********************************
+
+CREATE TABLE `redcap_notification` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `complete` char(1) NOT NULL,
+  `project_id` varchar(50) NOT NULL,
+  `record` varchar(20) NOT NULL COMMENT 'PSCID',
+  `redcap_event_name` varchar(50) NOT NULL COMMENT 'Visit_label',
+  `instrument` varchar(150) NOT NULL COMMENT 'Test_name',
+  `username` varchar(100) NOT NULL,
+  `redcap_url` varchar(255) NOT NULL,
+  `project_url` varchar(255) NOT NULL,
+  `received_dt` datetime NOT NULL,
+  `handled_dt` datetime NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_redcap_notif_received_dt` (`received_dt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
