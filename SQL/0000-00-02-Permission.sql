@@ -72,7 +72,6 @@ CREATE TABLE `user_perm_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-<<<<<<< HEAD
 INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALUES
     ('superuser','Superuser - supersedes all permissions',NULL,NULL,1),
     ('user_accounts','User Accounts - Own Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit',2),
