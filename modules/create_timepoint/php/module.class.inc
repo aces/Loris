@@ -32,6 +32,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Create Timepoint";
+        return dgettext("create_timepoint", "Create Timepoint");
     }
 }

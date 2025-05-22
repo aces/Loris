@@ -78,7 +78,14 @@ class User extends UserPermissions implements
         }
 
         //Change 'language_preference' to number rather than a string
-        $row['language_preference'] = (int)$row['language_preference'];
+        if ($row['language_preference'] !== null) {
+            $row['language_preference'] = (int)$row['language_preference'];
+            $language_code        = $DB->pselectOne(
+                "SELECT language_code FROM language WHERE language_id=:langid",
+                ['langid' => $row['language_preference']]
+            );
+            $row['language_code'] = $language_code;
+        }
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
@@ -376,6 +383,17 @@ class User extends UserPermissions implements
     function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'] ?? null;
+    }
+
+    /**
+     * Return the ISO 639 language code for the language
+     * this user prefers to use.
+     *
+     * @return string
+     */
+    function getLanguageCode() : string
+    {
+        return $this->userInfo['language_code'] ?? 'en_CA';
     }
 
     /**

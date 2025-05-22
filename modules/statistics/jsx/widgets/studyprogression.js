@@ -13,6 +13,9 @@ import {setupCharts} from './helpers/chartBuilder';
  */
 const StudyProgression = (props) => {
   const [loading, setLoading] = useState(true);
+  const [showFiltersScans, setShowFiltersScans] = useState(false);
+  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
+  const [activeView, setActiveView] = useState(0);
 
   let json = props.data;
 
@@ -70,46 +73,94 @@ const StudyProgression = (props) => {
       <Panel
         title='Study Progression'
         id='statistics_studyprogression'
-        onChangeView={() => {
+        activeView={activeView}
+        onChangeView={(index) => {
+          setActiveView(index);
           setupCharts(false, chartDetails);
+
+          // reset filters when switching views
+          if (index === 0) {
+            setShowFiltersScans(false);
+          } else if (index === 1) {
+            setShowFiltersRecruitment(false);
+          }
         }}
         views={[
           {
-            content: json['studyprogression']['total_scans'] > 0 ?
-              <>
-                <QueryChartForm
-                  Module={'statistics'}
-                  name={'studyprogression'}
-                  id={'studyprogressionSiteScansForm'}
-                  data={props.data}
-                  callback={(formDataObj) => {
-                    updateFilters(formDataObj, 'total_scans');
-                  }}
-                />
+            content: json['studyprogression']['total_scans'] > 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div className="btn-group" style={{marginBottom: '10px'}}>
+                  <button
+                    type="button"
+                    className="btn btn-default btn-xs"
+                    onClick={() => setShowFiltersScans((prev) => !prev)}
+                  >
+                    {showFiltersScans ? 'Hide Filters' : 'Show Filters'}
+                  </button>
+                </div>
+                {showFiltersScans && (
+                  <QueryChartForm
+                    Module={'statistics'}
+                    name={'studyprogression'}
+                    id={'studyprogressionSiteScansForm'}
+                    data={props.data}
+                    callback={(formDataObj) => {
+                      updateFilters(formDataObj, 'total_scans');
+                    }}
+                  />
+                )}
                 {showChart('total_scans', 'scans_bymonth')}
-              </> :
-              <p>There have been no scans yet.</p>,
+              </div>
+            ) : (
+              <p>There have been no scans yet.</p>
+            ),
             title: 'Study Progression - site scans',
+            onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
-            content:
-            json['studyprogression']['recruitment']
-              ['overall']['total_recruitment']
-            > 0 ?
-              <>
-                <QueryChartForm
-                  Module={'statistics'}
-                  name={'studyprogression'}
-                  id={'studyprogressionSiteRecruitmentForm'}
-                  data={props.data}
-                  callback={(formDataObj) => {
-                    updateFilters(formDataObj, 'total_recruitment');
+            content: json['studyprogression']['recruitment']['overall'][
+              'total_recruitment'
+            ] > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
                   }}
-                />
-                {showChart('total_recruitment', 'siterecruitment_line')}
-              </> :
-              <p>There have been no candidates registered yet.</p>,
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersRecruitment((prev) => !prev)}
+                    >
+                      {showFiltersRecruitment ? 'Hide Filters' : 'Show Filters'}
+                    </button>
+                  </div>
+                  {showFiltersRecruitment && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionSiteRecruitmentForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'total_recruitment');
+                      }}
+                    />
+                  )}
+                  {showChart('total_recruitment', 'siterecruitment_line')}
+                </div>
+              ) : (
+                <p>There have been no candidates registered yet.</p>
+              ),
             title: 'Study Progression - site recruitment',
+            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
           },
         ]}
       />
