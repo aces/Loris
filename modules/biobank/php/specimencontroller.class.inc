@@ -198,7 +198,8 @@ class SpecimenController
             break;
         case 'update':
             if (!$this->user->hasPermission('biobank_specimen_update')
-                && !$this->user->hasPermission('biobank_specimen_alter')) {                
+                && !$this->user->hasPermission('biobank_specimen_alter')
+            ) {
                 throw new Forbidden('Specimen: Update Permission Denied');
             }
             break;
@@ -556,63 +557,63 @@ class SpecimenController
      *
      * @return void
      */
-    private function _validateData(Process $process) : void                             
-    {                                                                                   
-        $protocolAttributes = $this->dao->getProtocolAttributes();                      
-        $attributeDatatypes = $this->dao->getAttributeDatatypes();                      
-        $protocolId         = $process->getProtocolId();                                
-        $attributes         = $protocolAttributes[$protocolId] ?? [];                   
-        $data               = $process->getData() ?? [];                                 
-                                                                                        
-        foreach ($attributes as $attribute) {                                           
-            $attributeId = $attribute['id'];                                            
-            $value = $data[$attributeId] ?? null;                                       
-                                                                                        
-            // Check if the attribute is required and missing                           
-            if ($attribute['required'] && $value === null) {                            
-                throw new BadRequest(                                                   
-                    "The attribute '"                                                   
-                    . $attribute['label']                                               
-                    . "' is required. Protocol "                                        
-                    . $protocolId                                                       
-                );                                                                      
-            }                                                                           
-                                                                                        
-            // Skip validation if the attribute is not present in the data              
-            if ($value === null) {                                                      
-                continue;                                                               
-            }                                                                           
-                                                                                        
-            // Validate the attribute's data type                                       
-            $datatype = $attributeDatatypes[$attribute['datatypeId']]['datatype'];   
-            if ($datatype === 'boolean' && !is_bool($value)) {                          
-                throw new BadRequest(                                                   
-                    "The attribute '"                                                   
-                    . $attribute['label']                                               
-                    . "' must be a boolean"                                             
-                );                                                                      
-            }                                                                           
-                                                                                        
-            if ($datatype === 'number' && !is_numeric($value)) {                        
-                throw new BadRequest(                                                   
-                    "The attribute '"                                                   
-                    . $attribute['label']                                               
-                    . "' must be a number"                                              
-                );                                                                      
-            }                                                                           
-                                                                                        
-            // TODO: Add further validations for text, date, time, file, etc., as needed
-            if ($datatype === 'text') {                                                 
-            }                                                                           
-                                                                                        
-            if ($datatype === 'date') {                                                 
-            }                                                                           
-                                                                                        
-            if ($datatype === 'time') {                                                 
-            }                                                                           
-                                                                                        
-            if ($datatype === 'file') {                                                 
-            }                                                                           
-        }                                                                               
-    }           
+    private function _validateData(Process $process) : void
+    {
+        $protocolAttributes = $this->dao->getProtocolAttributes();
+        $attributeDatatypes = $this->dao->getAttributeDatatypes();
+        $protocolId         = $process->getProtocolId();
+        $attributes         = $protocolAttributes[$protocolId] ?? [];
+        $data = $process->getData() ?? [];
+
+        foreach ($attributes as $attribute) {
+            $attributeId = $attribute['id'];
+            $value       = $data[$attributeId] ?? null;
+
+            // Check if the attribute is required and missing
+            if ($attribute['required'] && $value === null) {
+                throw new BadRequest(
+                    "The attribute '"
+                    . $attribute['label']
+                    . "' is required. Protocol "
+                    . $protocolId
+                );
+            }
+
+            // Skip validation if the attribute is not present in the data
+            if ($value === null) {
+                continue;
+            }
+
+            // Validate the attribute's data type
+            $datatype = $attributeDatatypes[$attribute['datatypeId']]['datatype'];
+            if ($datatype === 'boolean' && !is_bool($value)) {
+                throw new BadRequest(
+                    "The attribute '"
+                    . $attribute['label']
+                    . "' must be a boolean"
+                );
+            }
+
+            if ($datatype === 'number' && !is_numeric($value)) {
+                throw new BadRequest(
+                    "The attribute '"
+                    . $attribute['label']
+                    . "' must be a number"
+                );
+            }
+
+            // TODO: Add further validations for text, date, time, file, etc.
+            if ($datatype === 'text') {
+            }
+
+            if ($datatype === 'date') {
+            }
+
+            if ($datatype === 'time') {
+            }
+
+            if ($datatype === 'file') {
+            }
+        }
+    }
 }

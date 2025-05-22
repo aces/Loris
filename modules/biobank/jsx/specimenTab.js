@@ -54,30 +54,30 @@ class SpecimenTab extends Component {
    * @return {string}
    */
   mapSpecimenColumns(column, value) {
-    const {options} = this.props;                                                       
-    switch (column) {                                                                   
-    case 'Type':                                                                        
-      return options.specimen.types[value].label;                                       
-    case 'Container Type':                                                              
-      return options.container.typesPrimary[value].label;                               
-    case 'Diagnosis':                                                                   
-      if (Array.isArray(value) && value.length > 0) {                                   
-        return value.map((id) => options.diagnoses[id].label);                          
-      }                                                                                 
-      break;                                                                            
+    const {options} = this.props;
+    switch (column) {
+    case 'Type':
+      return options.specimen.types[value].label;
+    case 'Container Type':
+      return options.container.typesPrimary[value].label;
+    case 'Diagnosis':
+      if (Array.isArray(value) && value.length > 0) {
+        return value.map((id) => options.diagnoses[id].label);
+      }
+      break;
     case 'Visit Label':
-      return options.sessions[value].label;        
-    case 'Status':                                                                      
-      return options.container.stati[value].label;                                      
-    case 'Current Site':                                                                
-      return options.centers[value];                                                    
-    case 'Draw Site':                                                                   
-      return options.centers[value];                                                    
-    case 'Project':                                                                    
+      return options.sessions[value].label;
+    case 'Status':
+      return options.container.stati[value].label;
+    case 'Current Site':
+      return options.centers[value];
+    case 'Draw Site':
+      return options.centers[value];
+    case 'Project':
       return options.projects[value];
-    default:                                                                            
-      return value;                                                                     
-    }         
+    default:
+      return value;
+    }
   }
 
   /**
@@ -88,67 +88,67 @@ class SpecimenTab extends Component {
    * @param {array} row - an array of the row values
    * @return {JSX}
    */
-  formatSpecimenColumns(column, value, row) {                                        
-    const {data, options} = this.props;                                              
-    const display = this.mapSpecimenColumns(column, value);                          
-    const candidate = Object.values(options.candidates)                              
-      .find((cand) => cand?.pscid == row['PSCID']);                                  
-    const candidatePermission = candidate !== undefined;                             
-    switch (column) {                                                                
-    case 'Barcode':                                                                  
-      return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;             
-    case 'Parent Specimens':                                                         
-      // TODO: if the user doesn't have access then these shouldn't be hyperlinked   
-      const barcodes = display && display.map((id, key) => {                         
-        return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;          
-      }).reduce((prev, curr) => [prev, ', ', curr]);                                 
-      return <td>{barcodes}</td>;                                                    
-    case 'PSCID':                                                                    
-      if (candidatePermission) {                                                     
-        return (                                                                     
-          <td>                                                                       
-            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>               
-          </td>                                                                      
-        );                                                                           
-      }                                                                              
-      return <td>{display}</td>;                                                     
-    case 'Visit Label':                                                              
-      if (candidatePermission) {                                                     
-        const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+             
-          candidate.id+'&sessionID='+value;                                      
-        return <td><a href={visitLabelURL}>{display}</a></td>;                       
-      }                                                                              
-      return <td>{display}</td>;                                                     
-    case 'Status':                                                                   
-      const style = {};                                                              
-      switch (display) {                                                             
-      case 'Available':                                                              
-        style.color = 'green';                                                       
-        break;                                                                       
-      case 'Reserved':                                                               
-        style.color = 'orange';                                                      
-        break;                                                                       
-      case 'Dispensed':                                                              
-        style.color = 'red';                                                         
-        break;                                                                       
-      case 'Discarded':                                                              
-        style.color = 'red';                                                         
-        break;                                                                       
-      }                                                                              
-      return <td style={style}>{display}</td>;                                       
-    case 'Container Barcode':                                                        
-      // check if container has be queried                                           
-      if (                                                                           
-        Object.values(data.containers)                                               
-          .find((container) => container.barcode == display)                         
-      ) {                                                                            
-        return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;           
-      }                                                                              
-      return <td>{display}</td>;                                                     
-    default:                                                                         
-      return <td>{display}</td>;                                                     
-    }                                                                                
-  }   
+  formatSpecimenColumns(column, value, row) {
+    const {data, options} = this.props;
+    const display = this.mapSpecimenColumns(column, value);
+    const candidate = Object.values(options.candidates)
+      .find((cand) => cand?.pscid == row['PSCID']);
+    const candidatePermission = candidate !== undefined;
+    switch (column) {
+    case 'Barcode':
+      return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
+    case 'Parent Specimens':
+      // TODO: if the user doesn't have access then these shouldn't be hyperlinked
+      const barcodes = display && display.map((id, key) => {
+        return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;
+      }).reduce((prev, curr) => [prev, ', ', curr]);
+      return <td>{barcodes}</td>;
+    case 'PSCID':
+      if (candidatePermission) {
+        return (
+          <td>
+            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>
+          </td>
+        );
+      }
+      return <td>{display}</td>;
+    case 'Visit Label':
+      if (candidatePermission) {
+        const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
+          candidate.id+'&sessionID='+value;
+        return <td><a href={visitLabelURL}>{display}</a></td>;
+      }
+      return <td>{display}</td>;
+    case 'Status':
+      const style = {};
+      switch (display) {
+      case 'Available':
+        style.color = 'green';
+        break;
+      case 'Reserved':
+        style.color = 'orange';
+        break;
+      case 'Dispensed':
+        style.color = 'red';
+        break;
+      case 'Discarded':
+        style.color = 'red';
+        break;
+      }
+      return <td style={style}>{display}</td>;
+    case 'Container Barcode':
+      // check if container has be queried
+      if (
+        Object.values(data.containers)
+          .find((container) => container.barcode == display)
+      ) {
+        return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
+      }
+      return <td>{display}</td>;
+    default:
+      return <td>{display}</td>;
+    }
+  }
 
   /**
    * Render the React component

@@ -2,10 +2,11 @@ import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
-import FilterableDataTable from 'FilterableDataTable';
+import FilterableDataTable from '../../../jsx/FilterableDataTable'; // Temporary CBIGR Override for 26.0
 import {UseShipment} from './Shipment';
 // import Container from './Container';
-import Modal from 'Modal';
+import Modal from '../../../jsx/Modal'; // Temporary CBIGR Override for 26.0
+import TriggerableModal from '../../../jsx/TriggerableModal'; // Temporary CBIGR Override for 26.0
 
 import {
   StaticElement,
@@ -14,10 +15,10 @@ import {
   DateElement,
   TimeElement,
   TextareaElement,
-  TagsElement,
-} from 'jsx/Form';
+  CTA,
+} from '../../../jsx/Form'; // Temporary CBIGR Override for 26.0
 
-import {get} from './helpers.js';
+import {get, mapFormOptions} from './helpers.js';
 
 
 /**
@@ -291,12 +292,8 @@ function ShipmentInformation({
           text={log.temperature}
         />
         <StaticElement
-          label='Date'
-          text={log.date}
-        />
-        <StaticElement
-          label='Time'
-          text={log.time}
+          label='Date & Time'
+          text={log.time.date.substring[0, 15]}
         />
         <StaticElement
           label='User'
@@ -394,6 +391,7 @@ function CreateShipment({
   updateShipments,
   setData,
 }) {
+  const [containerId, setContainerId] = useState(null);
   const logIndex = 0;
   const handler = new UseShipment();
   const shipment = handler.getShipment();
@@ -431,6 +429,8 @@ function CreateShipment({
     }
   }, [shipment.containerIds]);
 
+  const containers = mapFormOptions(data.containers, 'barcode');
+
   return (
     <Modal
       show={show}
@@ -461,13 +461,12 @@ function CreateShipment({
         errorMessage={errors.type}
         required={true}
       />
-      <TagsElement
+      <InputList
         name='barcode'
         label="Container"
         items={shipment.containerIds}
-        handleAdd={handler.setContainerIds}
+        setItems={handler.setContainerIds}
         options={data.containers}
-        useSearch={true}
         errorMessage={errors.containerIds}
       />
       <SelectElement
@@ -613,7 +612,7 @@ ReceiveShipment.propTypes = {
  * @return {JSX}
  */
 function ShipmentLogForm({
-  log,
+  log = {},
   setLog,
   errors = {},
   users,
@@ -690,6 +689,218 @@ ShipmentLogForm.propTypes = {
 
   // Users prop: Array of users
   users: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+// The following code needs to eventually be extracted to Form.js
+
+/**
+ * Form Header component.
+ * Renders a header (h1-h6) with a horizontal rule below it.
+ *
+ * @param {object} props - The parameters for the FormHeader component.
+ * @param {number} [props.level=4] - The heading level (1-6) for the header tag (e.g., 1 for <h1>). Defaults to 4.
+ * @param {string} [props.header=''] - The text content to display within the header tag. Defaults to an empty string.
+ * @return {JSX.Element} The rendered header and horizontal rule.
+ */
+function FormHeader({level = 4, header = ''}) {
+  const Tag = 'h' + level;
+  return (
+    <>
+      <Tag>{header}</Tag>
+      <HorizontalRule/>
+    </>
+  );
+}
+
+FormHeader.propTypes = {
+  /**
+   * The heading level (1-6) for the header tag (e.g., 1 for <h1>).
+   * Defaults to 4 if not provided.
+   */
+  level: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
+  /**
+   * The text content to display within the header tag.
+   * Defaults to an empty string if not provided.
+   */
+  header: PropTypes.string,
+};
+
+/**
+ * Horizontal Rule component.
+ * Renders a styled horizontal line for visual separation.
+ *
+ * @return {JSX.Element} The rendered div element with a horizontal line style.
+ */
+function HorizontalRule() {
+  const lineStyle = {
+    borderTop: '1.5px solid #DDDDDD',
+    paddingTop: 15,
+    marginTop: 0,
+  };
+  return <div style={lineStyle}/>;
+}
+
+HorizontalRule.propTypes = {
+  // This component does not accept any props, so propTypes is an empty object.
+  // If you wanted to explicitly ensure no props are passed, you could use:
+  // children: PropTypes.node // if you wanted to allow children but nothing else
+  // or simply leave it as an empty object if no props are expected at all.
+};
+
+/**
+ * Input List component.
+ * Renders an input field to add items to a list, displays the current list,
+ * and allows items to be removed.
+ *
+ * @param {object} props - The parameters for the InputList component.
+ * @param {string} props.name - The HTML `name` attribute for the underlying textbox element.
+ * @param {string} props.label - The label text to display for the input and list headers.
+ * @param {Array<string>} props.items - An array of item keys (strings) currently in the list.
+ * @param {function(Array<string>): void} props.setItems - A callback function to update the list of items.
+ * @param {string|Array<string>} [props.errorMessage] - An optional error message or array of messages to display for the input.
+ * @param {object} props.options - An object mapping item keys to their full data objects.
+ * Each data object must contain a property matching `props.name`
+ * to display the item correctly.
+ * @return {JSX.Element} The rendered input list component.
+ */
+function InputList({
+  name,
+  label,
+  items,
+  setItems,
+  errorMessage,
+  options,
+}) {
+  const [item, setItem] = useState('');
+
+  const removeItem = (index) => setItems(items.filter((item, i) => index != i));
+  const addItem = () => {
+    const match = Object.keys(options)
+      .find((key) => options[key][name] == item);
+    // if entry is in list of options and does not already exist in the list.
+    if (match && !items.includes(match)) {
+      setItems([...items, match]);
+      setItem('');
+    }
+  };
+
+  const listStyle = {
+    border: '1px solid #DDD',
+    borderRadius: '10px',
+    minHeight: '85px',
+    padding: '5px',
+    marginBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const listItemStyle = {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  };
+
+  const itemsDisplay = items.map((item, i) => {
+    const style = {
+      color: '#DDDDDD',
+      marginLeft: 10,
+      cursor: 'pointer',
+    };
+    return (
+      <div key={i} style={listItemStyle}>
+        <div>{options[item][name]}</div>
+        <div
+          className='glyphicon glyphicon-remove'
+          onClick={() => removeItem(i)}
+          style={style}
+        />
+      </div>
+    );
+  });
+
+  const error = errorMessage instanceof Array ?
+    errorMessage.join(' ') : errorMessage;
+  return (
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' Input'}/>
+        <InlineField weights={[1, 0]}>
+          <TextboxElement
+            name={name}
+            onUserInput={(name, value) => setItem(value)}
+            value={item}
+            errorMessage={error}
+          />
+          <CTA
+            label='Add'
+            onUserInput={addItem}
+          />
+        </InlineField>
+      </div>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' List'}/>
+        <div style={listStyle}>
+          {itemsDisplay}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+InputList.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(PropTypes.string).isRequired,
+  setItems: PropTypes.func.isRequired,
+  errorMessage: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
+  options: PropTypes.objectOf(
+    PropTypes.shape({
+      [PropTypes.PropTypes.string]: PropTypes.string, // This is a placeholder, actual key is dynamic (props.name)
+    }).isRequired
+  ).isRequired,
+};
+
+/**
+ * Inline Field component.
+ * A layout component that arranges its children horizontally using flexbox.
+ * It can distribute space among children based on provided `weights`.
+ *
+ * @param {object} props - The parameters for the InlineField component.
+ * @param {React.ReactNode} props.children - The child React elements to be rendered inline.
+ * @param {string} [props.label=''] - An optional label for the inline field (though not directly rendered by this component). Defaults to an empty string.
+ * @param {Array<number>} [props.weights=[]] - An optional array of numbers specifying the flex-grow weights for each child element. The index of the weight corresponds to the child's index. Defaults to an empty array (meaning children will not grow by default).
+ * @return {JSX.Element} The rendered container with inline fields.
+ */
+function InlineField({children, label = '', weights = []}) {
+  const fields = React.Children.map(children, (child, i) => {
+    return (
+      <div style={{flex: weights[i] || 0}}>
+        {child}
+      </div>
+    );
+  });
+
+  const inlineStyle = {
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'spaceBetween',
+  };
+  return (
+    <div style={inlineStyle}>
+      {fields}
+    </div>
+  );
+}
+
+InlineField.propTypes = {
+  children: PropTypes.node.isRequired,
+  label: PropTypes.string,
+  weights: PropTypes.arrayOf(PropTypes.number),
 };
 
 export default ShipmentTab;

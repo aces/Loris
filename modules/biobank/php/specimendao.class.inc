@@ -389,30 +389,30 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                 USING (SpecimenAttributeID)
             ORDER BY bsp.SpecimenProtocolID, bspa.OrderIndex
         ";
-    
+
         $result = $this->db->pselect($query, []);
         $protocolAttributes = [];
-    
+
         foreach ($result as $row) {
             $protocolId = $row['protocolId'];
             // Ensure the protocol exists in the array
             if (!isset($protocolAttributes[$protocolId])) {
                 $protocolAttributes[$protocolId] = [];
             }
-    
+
             // Add the attribute data, keeping the order intact
             $protocolAttributes[$protocolId][] = [
-                'id'               => $row['attributeId'],
-                'label'            => $row['label'],
-                'datatypeId'       => $row['datatypeId'],
-                'required'         => (int) $row['required'],
-                'showInDataTable'  => (int) $row['showInDataTable'],
-                'orderIndex'       => (int) $row['orderIndex'],
+                'id'              => $row['attributeId'],
+                'label'           => $row['label'],
+                'datatypeId'      => $row['datatypeId'],
+                'required'        => (int) $row['required'],
+                'showInDataTable' => (int) $row['showInDataTable'],
+                'orderIndex'      => (int) $row['orderIndex'],
             ];
         }
-    
+
         return $protocolAttributes;
-    }    
+    }
 
     /**
      * Queries all rows from the biobank_specimen_protocol_attribute_rel table

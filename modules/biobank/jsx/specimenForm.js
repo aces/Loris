@@ -16,7 +16,7 @@ import {
 
 const initialState = {
   list: {},
-  current: {container: {}, sessionId: null, candidateId: null},  
+  current: {container: {}, sessionId: null, candidateId: null},
   printBarcodes: false,
   errors: {specimen: {}, container: {}, list: {}},
 };
@@ -110,13 +110,13 @@ class SpecimenForm extends React.Component {
    * @param {object} session
    * @param {number} sessionId
    */
-  setSession(session, sessionId) {                                                      
-    const {current} = clone(this.state);                                                
-    current.centerId = this.props.options.sessions[sessionId].centerId;                 
-    current.originId = current.centerId;                                                
-    current.sessionId = sessionId;                                                      
-    this.setState({current});                                                           
-  }    
+  setSession(session, sessionId) {
+    const {current} = clone(this.state);
+    current.centerId = this.props.options.sessions[sessionId].centerId;
+    current.originId = current.centerId;
+    current.sessionId = sessionId;
+    this.setState({current});
+  }
 
   /**
    * Fetch Barcodes from the backend.
@@ -205,69 +205,69 @@ class SpecimenForm extends React.Component {
       }
     };
 
-    const renderGlobalFields = () => {                                               
-      const { sessionId, candidateId } = current                         
-      if (parent && candidateId && sessionId) {                                      
-        const parentBarcodes = Object.values(parent).map(                            
-          (item) => item.container.barcode                                           
-        );                                                                           
-        const parentBarcodesString = parentBarcodes.join(', ');                      
-        return (                                                                     
-          <>                                                                         
-            <StaticElement                                                           
-              label="Parent Specimen(s)"                                             
-              text={parentBarcodesString}                                            
-            />                                                                       
-            <StaticElement                                                           
-              label="PSCID"                                                          
-              text={options.candidates[candidateId].pscid}                           
-            />                                                                       
-            <StaticElement                                                           
-              label="Visit Label"                                                    
-              text={options.sessions[sessionId].label}                               
-            />                                                                       
-          </>                                                                        
-        );                                                                           
-      } else {                                                                       
-        const sessionsObject = current.candidateId                                   
+    const renderGlobalFields = () => {
+      const {sessionId, candidateId} = current;
+      if (parent && candidateId && sessionId) {
+        const parentBarcodes = Object.values(parent).map(
+          (item) => item.container.barcode
+        );
+        const parentBarcodesString = parentBarcodes.join(', ');
+        return (
+          <>
+            <StaticElement
+              label="Parent Specimen(s)"
+              text={parentBarcodesString}
+            />
+            <StaticElement
+              label="PSCID"
+              text={options.candidates[candidateId].pscid}
+            />
+            <StaticElement
+              label="Visit Label"
+              text={options.sessions[sessionId].label}
+            />
+          </>
+        );
+      } else {
+        const sessionsObject = current.candidateId
           ? options.candidates[current.candidateId].sessionIds.reduce((acc, sessionId) => {
-              if (options.sessions[sessionId]) {                                     
-                acc[sessionId] = options.sessions[sessionId];                        
-              }                                                                      
-              return acc;                                                            
-            }, {})                                                                   
-          : {};                                                                      
-        const mappedSessions = mapFormOptions(sessionsObject, 'label');              
-        const candidates = mapFormOptions(                                           
-          this.props.options.candidates, 'pscid'                                     
-        );                                                                           
-        return (                                                                     
-          <>                                                                         
-            <SearchableDropdown                                                      
-              name="candidateId"                                                     
-              label="PSCID"                                                          
-              options={candidates}                                                   
-              onUserInput={this.setCurrent}                                          
-              required={true}                                                        
-              value={candidateId}                                                    
-              placeHolder='Search for a PSCID'                                       
-              errorMessage={errors.specimen.candidateId}                             
-            />                                                                       
-            <SelectElement                                                           
-              name='sessionId'                                                       
-              label='Visit Label'                                                    
-              options={mappedSessions}                                               
-              onUserInput={this.setSession}                                          
-              required={true}                                                        
-              value={sessionId}                                                      
-              disabled={candidateId ? false : true}                                  
-              errorMessage={errors.specimen.sessionId}                               
-              autoSelect={true}                                                      
-            />                                                                       
-          </>                                                                        
-        );                                                                           
-      }                                                                              
-    };      
+            if (options.sessions[sessionId]) {
+              acc[sessionId] = options.sessions[sessionId];
+            }
+            return acc;
+          }, {})
+          : {};
+        const mappedSessions = mapFormOptions(sessionsObject, 'label');
+        const candidates = mapFormOptions(
+          this.props.options.candidates, 'pscid'
+        );
+        return (
+          <>
+            <SearchableDropdown
+              name="candidateId"
+              label="PSCID"
+              options={candidates}
+              onUserInput={this.setCurrent}
+              required={true}
+              value={candidateId}
+              placeHolder='Search for a PSCID'
+              errorMessage={errors.specimen.candidateId}
+            />
+            <SelectElement
+              name='sessionId'
+              label='Visit Label'
+              options={mappedSessions}
+              onUserInput={this.setSession}
+              required={true}
+              value={sessionId}
+              disabled={candidateId ? false : true}
+              errorMessage={errors.specimen.sessionId}
+              autoSelect={true}
+            />
+          </>
+        );
+      }
+    };
 
     const renderRemainingQuantityFields = () => {
       if (parent) {

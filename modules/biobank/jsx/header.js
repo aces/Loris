@@ -264,7 +264,7 @@ function ContainerCheckout(props) {
     const container = clone(props.container);
     container.parentContainerId = null;
     container.coordinate = null;
-    props.updateContainer(container);    
+    props.updateContainer(container);
   };
 
   return (loris.userHasPermission('biobank_container_update') &&

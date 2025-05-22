@@ -310,21 +310,21 @@ class BatchEditForm extends React.PureComponent {
           text={options.specimen.protocols[collection.protocolId].label}
         />
         <SpecimenProcessForm
-           edit={true}
-           errors={errors.specimen.collection || {}}
-           options={options}
-           process={collection}
-           processStage="collection"
-           setParent={this.setProcess}
-           setCurrent={this.setCurrent}
-           typeId={current.typeId}
-           hideProtocol={true}
-           render={(elements) => (
-             <EditForm>
-               {elements}
-             </EditForm>
-           )}
-         />         
+          edit={true}
+          errors={errors.specimen.collection || {}}
+          options={options}
+          process={collection}
+          processStage="collection"
+          setParent={this.setProcess}
+          setCurrent={this.setCurrent}
+          typeId={current.typeId}
+          hideProtocol={true}
+          render={(elements) => (
+            <EditForm>
+              {elements}
+            </EditForm>
+          )}
+        />
       </div>
     ) : null;
 
@@ -663,13 +663,14 @@ BarcodeInput.propTypes = {
  * Adds a checkbox to all the children components.
  *
  * @param {object} props
+ * @param props.children
  * @return {JSX}
  */
-function EditForm({ children }) {
-   return React.Children.map(children, (child) => {
-     if (!React.isValidElement(child) || typeof child.type !== 'function') {
-       return child;
-     }    
+function EditForm({children}) {
+  return React.Children.map(children, (child) => {
+    if (!React.isValidElement(child) || typeof child.type !== 'function') {
+      return child;
+    }
     const handleClick = (name, value) => {
       if (!value) {
         child.props.onUserInput(name, null);
@@ -679,12 +680,12 @@ function EditForm({ children }) {
       }
     };
 
-    return (      
+    return (
       <div className="row">
         <div className="col-xs-12">
           <div className="row">
             <div className="col-xs-10">
-              {React.cloneElement(child, { required: false })}
+              {React.cloneElement(child, {required: false})}
             </div>
             <div className="col-xs-2">
               <CheckboxElement
