@@ -1,15 +1,28 @@
+# Introduction to LORIS Study Variables
 
-# Study Variables Setup
+## Identifiers
 
-### Overview
-This page covers how to set up LORIS with basic parameters for research data. 
+In LORIS, and indeed in all of its instances (CBIG, CCNA, xxx, yyy, etc), the names of participants is anonymized by assigning numeric and alphanumeric ID's to them. In this way, the data of a participant is protected from connection to their name or personal identifying information ("PII"). 
 
-Most configuration settings are managed via LORIS's front-end Configuration Module 
-(accessible via the Admin menu item). These configuration settings are stored and 
-loaded from the Database `Config` and `ConfigSettings` tables. Some other 
-configuration settings are also found in the file `project/config.xml`. Finally, 
-some configurations require direct database access and insertions through SQL queries.
+The IDs in LORIS have different purposes:
 
-  > Note: Settings found in _config.xml_ take precedence over the 
-  _Configuration Module_.  Older projects should ensure there is no overlap in 
-  settings between this file and the _ConfigSettings_ table.
+- [CandID](CandID.md)
+
+- Cardinality: One per participant per project
+- Purpose: Internal database operations
+
+- [PSCID](PscID.md)
+
+- Cardinality: One per participant per project
+- Main participant identifier
+
+- [ExteralID]
+
+- Cardinality: Multiple per participant
+- Data dissemination
+
+- [Projects]
+- [Sites]
+- [Cohorts]
+- [Timepoints]
+- [Configurations]
