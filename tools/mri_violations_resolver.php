@@ -62,9 +62,9 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
             LEFT JOIN candidate c
-            ON (mri_protocol_violated_scans.CandID = c.CandID)
+            ON (mri_protocol_violated_scans.CandidateID = c.ID)
             LEFT JOIN session s
-            ON (mri_protocol_violated_scans.CandID = s.CandID)
+            ON (mri_protocol_violated_scans.CandidateID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
@@ -72,7 +72,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 s.ProjectID as Project,
                 s.CohortID as Cohort,
                 MincFile,
-                mri_scan_type.MriScanTypeName as ScanType,
+                mst.MriScanTypeName as ScanType,
                 'Protocol Violation',
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
@@ -86,9 +86,9 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
             ON (violations_resolved.ExtID=mri_violations_log.LogID
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
-            ON (mri_violations_log.CandID=c.CandID)
+            ON (mri_violations_log.CandidateID=c.ID)
             LEFT JOIN session s
-            ON (mri_violations_log.CandID = s.CandID)
+            ON (mri_violations_log.CandidateID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
@@ -110,7 +110,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
             LEFT JOIN candidate c
             ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
             LEFT JOIN session s
-            ON (c.CandID = s.CandID)
+            ON (c.CandID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL)

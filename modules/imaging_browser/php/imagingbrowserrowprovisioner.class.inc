@@ -35,9 +35,12 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      * Create an ImagingBrowserRowProvisioner, which gets rows for
      * the imaging browser menu table.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     *
      * @throws \ConfigurationException
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $config = \NDB_Config::singleton();
         $DB     = \NDB_Factory::singleton()->database();
@@ -183,6 +186,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // Final query
         // =================================================
         parent::__construct(
+            $loris,
             "SELECT
               p.Name as Site,
               c.PSCID as PSCID,
@@ -204,7 +208,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               s.ProjectID
             FROM psc AS p
               JOIN session s ON (s.CenterID=p.CenterID)
-              JOIN candidate c ON (c.CandID=s.CandID)
+              JOIN candidate c ON (c.ID=s.CandidateID)
               LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID)
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)

@@ -14,14 +14,17 @@ class ProtocolCheckViolationProvisioner
     /**
      * Create a ProtocolCheckViolationProvisioner
      *
-     * @param string $seriesUID the SeriesUID with violations
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param string               $seriesUID the SeriesUID with violations
      */
-    function __construct(string $seriesUID)
+    function __construct(protected \LORIS\LorisInstance $loris, string $seriesUID)
     {
         parent::__construct(
+            $loris,
             "SELECT
                 l.PatientName,
-                l.CandID,
+                c.CandID,
                 l.Visit_label,
                 mst.MriScanTypeName AS ScanType,
                 mpcg.Name,
@@ -33,9 +36,9 @@ class ProtocolCheckViolationProvisioner
                 LEFT JOIN mri_scan_type mst ON (mst.MriScanTypeID=l.MriScanTypeID)
                 LEFT JOIN mri_protocol_checks_group mpcg
                     ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
-                LEFT JOIN candidate c ON (l.CandID=c.CandID)
+                LEFT JOIN candidate c ON (l.CandidateID=c.ID)
                 LEFT JOIN session s ON (
-                  l.Visit_label = s.Visit_label AND l.CandID=s.CandID
+                  l.Visit_label = s.Visit_label AND l.CandidateID=s.CandidateID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
             WHERE l.SeriesUID=:sid",

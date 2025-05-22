@@ -48,7 +48,7 @@ class QueryDataProvisioner extends ProvisionerInstance
      */
     public function getAllInstances() : \Traversable
     {
-        $candidates = $this->QueryRun->getCandidates();
+        $candidates = $this->QueryRun->getCandidates($this->user);
 
         $dataiterators = [];
         $fields        = [];

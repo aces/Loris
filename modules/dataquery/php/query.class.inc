@@ -366,7 +366,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 'Name'    => $name,
             ]
         );
-
     }
 
     /**
@@ -492,7 +491,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param string $name The name that the admin thinks should be
      *                     used for the query
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -517,7 +516,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Remove this query from the list of queries pinned by an admin.
      *
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -545,11 +544,17 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         $criteria = $this->getCriteria();
 
         if ($criteria) {
+            \Profiler::checkpoint("Matching with criteria");
             $candidates = $this->_candidateMatches($criteria);
         } else {
+            \Profiler::checkpoint("Matching all candidates");
             $candidates = $this->_allCandidates();
         }
-        return $this->_filterInaccessibleCandidates($candidates, $user);
+        return \Candidate::filterInaccessibleCandIDs(
+            $this->loris,
+            $candidates,
+            $user
+        );
     }
 
     /**
@@ -564,6 +569,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         array $candIDs,
         \User $user,
     ) : iterable {
+        \Profiler::checkpoint("Filtering inaccessible candidates");
         if (count($candIDs) == 0) {
             return [];
         }
@@ -640,6 +646,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 yield $canddata->CandID;
             }
         }
+        \Profiler::checkpoint("Finished filtering candidates");
     }
 
     /**
@@ -678,7 +685,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         foreach ($criteria['group'] as $crit) {
+            \Profiler::checkpoint("Checking groups");
             if (isset($crit['group'])) {
+                \Profiler::checkpoint("Subgroup");
                 $subresults = $this->_candidateMatches($crit);
                 if (is_array($subresults)) {
                     $results[] = $subresults;
@@ -747,12 +756,14 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $visitlist = $query['visits'];
             }
 
+            \Profiler::checkpoint("Calling engine get matches");
             $matches = $engine->getCandidateMatches($term, $visitlist);
             if (is_array($matches)) {
                 $results[] = $matches;
             } else {
                 $results[] = iterator_to_array($matches);
             }
+            \Profiler::checkpoint("Done group");
         }
         $combinedresult = [];
         if (count($results) == 1) {

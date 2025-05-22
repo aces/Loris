@@ -52,7 +52,62 @@ class ViewDetails extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('dicom_archive_view_allsites');
+        // Permission of access to this page needs to match the module's filters
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useAdvancedPermissions'
+        );
+        $DB  = $this->loris->getDatabaseConnection();
+        $row = $DB->pselectRow(
+            "SELECT CenterID, ProjectID, SessionID, CreatingUser
+            FROM tarchive t 
+                JOIN session s ON s.ID = t.SessionID 
+            WHERE TarchiveID = :ID",
+            ['ID' => $_REQUEST['tarchiveID']]
+        );
+
+        $hasCenterAccess    = false;
+        $hasNoSessionAccess = false;
+        $hasProjectAccess   = false;
+        $isCreator          = false;
+
+        if (isset($row['CenterID'])) {
+            $hasCenterAccess = $user->hasCenter(
+                \CenterID::singleton(intval($row['CenterID']))
+            );
+        }
+        if (!isset($row['SessionID'])) {
+            $hasNoSessionAccess = $user->hasPermission("dicom_archive_nosessionid");
+        }
+        if (isset($row['ProjectID'])) {
+            $hasProjectAccess = $user->hasProject(
+                \ProjectID::singleton(intval($row['ProjectID']))
+            );
+        }
+        if (isset($row['CreatingUser'])) {
+            $isCreator = $row['CreatingUser'] === $user->getUsername();
+        }
+
+        // Assume project match is turned off first (as module filter does)
+        // User site match
+        // OR resource has no session but user has the no session permission
+        // OR user has access to all sites data
+        $access = $hasCenterAccess || $hasNoSessionAccess
+            || ($user->hasPermission('dicom_archive_view_allsites'));
+
+        // If the site project permissions are enabled
+        if ($siteprojectperms === 'true') {
+            // User has basic center access
+            // AND
+            // Either User has the project
+            // OR resource has no session but user has the no session permission
+            $access = $access && ($hasProjectAccess || $hasNoSessionAccess);
+        }
+
+        // User is the creator of the data
+        $access = $access || $isCreator;
+
+        return $access;
     }
 
     /**
