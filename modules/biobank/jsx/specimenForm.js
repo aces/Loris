@@ -231,13 +231,13 @@ class SpecimenForm extends React.Component {
       } else {
         const sessionsObject = current.candidateId
           ? options.candidates[current.candidateId].sessionIds
-          .reduce((acc, sessionId) => {
-            if (options.sessions[sessionId]) {
-              acc[sessionId] = options.sessions[sessionId];
-            }
-            return acc;
-          }, {})
-          : {};
+            .reduce((acc, sessionId) => {
+              if (options.sessions[sessionId]) {
+                acc[sessionId] = options.sessions[sessionId];
+              }
+              return acc;
+            }, {})
+            : {};
         const mappedSessions = mapFormOptions(sessionsObject, 'label');
         const candidates = mapFormOptions(
           this.props.options.candidates, 'pscid'
