@@ -165,7 +165,7 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
-    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2)
+    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2),
     ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
     ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Create', '2'),
     ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Edit', '2'),
