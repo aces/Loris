@@ -249,7 +249,7 @@ class Signup extends \NDB_Page implements ETagCalculator
                 $studyName = $config->getSetting('title');
                 $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
-                    'saagar.arya@mcin.ca',
+                    $row['Email'],
                     'request_account.tpl',
                     [
                         'Study'     => $studyName,
