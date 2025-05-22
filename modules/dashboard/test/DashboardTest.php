@@ -626,8 +626,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * Make sure there is no recruitment target set in the configuration
-     * module. Check that an incentive to define a recruitment target is
-     * displayed in recruitment panel.
+     * module, and then confirm that the overall recruitment is still shown.
      *
      * @return void
      */
@@ -639,7 +638,7 @@ class DashboardTest extends LorisIntegrationTest
             WebDriverBy::Id("overall-recruitment")
         )->getText();
         $this->assertStringContainsString(
-            "Please add a recruitment target for Overall Recruitment.",
+            "Overall Recruitment",
             $testText
         );
         $this->restoreConfigSetting("recruitmentTarget");
