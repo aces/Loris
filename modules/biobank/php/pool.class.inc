@@ -332,7 +332,7 @@ class Pool implements
     /**
      * Sets the Project ID of the constituent specimens
      *
-     * @param array $projectId Project ID of the pool
+     * @param \ProjectID $projectId Project ID of the pool
      *
      * @return void
      */
