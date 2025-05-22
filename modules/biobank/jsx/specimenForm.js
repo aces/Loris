@@ -237,7 +237,7 @@ class SpecimenForm extends React.Component {
               }
               return acc;
             }, {})
-            : {};
+          : {};
         const mappedSessions = mapFormOptions(sessionsObject, 'label');
         const candidates = mapFormOptions(
           this.props.options.candidates, 'pscid'
