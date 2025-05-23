@@ -69,41 +69,36 @@ $redcapInstrumentEventMap = [];
 
 
 // --------------------------------------
-// TODO: arg parse.
+// ARGS PARSE
+$options = getopt(
+    "",
+    [
+        "loris-url:",
+        "redcap-username:",
+        "force-update",
+        "verbose",
+    ]
+);
+$opts = checkOptions($options);
 
-// verbose
-$verbose = true;
+// args mapping
+$lorisURL       = $opts['lorisURL'];
+$redcapUsername = $opts['redcapUsername'];
+$forceUpdate    = $opts['forceUpdate'];
+$verbose        = $opts['verbose'];
 
-// force even complete instrument?
-$forceUpdate = false;
-
-// the name that will be used in the redcap notification
-$redcapUsername = "bulk_import";
-
-// --------------------------------------
 // arg display
+fprintf(STDOUT, "[args:loris_url] {$lorisURL}\n");
 $verboseMsg = $verbose ? 'enabled' : 'disabled';
 fprintf(STDOUT, "[args:verbose] {$verboseMsg}\n");
 $forceUpdateMsg = $forceUpdate ? 'enabled' : 'disabled';
-fprintf(STDOUT, "[args:force_update_instruments] {$forceUpdateMsg}\n");
-
+fprintf(STDOUT, "[args:force_update] {$forceUpdateMsg}\n");
+fprintf(STDOUT, "[args:redcap_username] {$redcapUsername}\n");
 
 // --------------------------------------
-// LORIS URL
-try {
-    $lorisURL = $lorisInstance->getConfiguration()->getSetting('baseURL');
-} catch (\Throwable $th) {
-    $lorisURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-}
-if (empty($lorisURL)) {
-    fprintf(STDERR, "[loris:config:base_url] no LORIS base URL.\n");
-    exit(1);
-}
-fprintf(STDOUT, "[loris:url] LORIS instance used: {$lorisURL}\n");
-
 // init LORIS client
 $lorisClient = new Client(
-    ['base_uri' => "$lorisURL/redcap/notifications"]
+    ['base_uri' => "{$lorisURL}/redcap/notifications"]
 );
 
 // Load all LORIS importable instruments (across all REDCap instances)
@@ -567,3 +562,62 @@ function getTargetedEventInstrument(
     }
     return $selectedRedcapProject;
 };
+
+// --------------------------------------
+// Utility
+
+/**
+ * Check arguments passed to this script.
+ *
+ * @param array $options the arguments
+ *
+ * @return array clean and valid version.
+ */
+function checkOptions(array $options) {
+    // loris URL, mandatory
+    if (!isset($options['loris-url'])) {
+        error_log("[error] Required parameter: 'loris-path'.");
+        showHelp();
+        exit(1);
+    }
+    $lorisURL = rtrim($options['loris-url'], '/');
+
+    // redcap-username
+    $redcapUsername = $options['redcap-username'] ?? 'bulk_import';
+
+    // force-update
+    $forceUpdate = isset($options['force-update']);
+
+    // verbose
+    $verbose = isset($options['verbose']);
+
+    // clean
+    return [
+        'lorisURL'       => $lorisURL,
+        'redcapUsername' => $redcapUsername,
+        'forceUpdate'    => $forceUpdate,
+        'verbose'        => $verbose,
+    ];
+}
+
+/**
+ * Displays help for this script.
+ *
+ * @return void
+ */
+function showHelp() : void {
+    fprintf(
+        STDERR,
+        "Usage:\n"
+        . "  php redcap_bulk_importer.php \n"
+        . "    {--loris-url=LORISURL}\n"
+        . "    [--redcap-username=USER]\n"
+        . "    [--force-update]\n"
+        . "    [--verbose]\n\n"
+        . "Notes:\n"
+        . "  - required, '--loris-url=LORISURL'   the loris URL\n"
+        . "  - optional, '--redcap-username=USER' the text that will be in all redcap notification as the REDCap username. (default: 'bulk_import')\n"
+        . "  - optional, '--force-update'         needs to force update on complete instrument? (default: false)\n"
+        . "  - optional, '--verbose'              verbose mode? (default: false)\n\n"
+    );
+}
