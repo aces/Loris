@@ -30,6 +30,7 @@ try {
 use \GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
+use LORIS\Database\Query;
 use LORIS\StudyEntities\Candidate\CandID;
 
 use LORIS\redcap\config\RedcapConfigLorisId;
@@ -115,13 +116,14 @@ $lorisDataToImport = getLORISInstrumentToImport(
     $redcapAllowedInstruments,
     $forceUpdate
 );
-if (empty($lorisDataToImport)) {
+
+$cLorisData = $lorisDataToImport->count();
+if ($cLorisData === 0) {
     fprintf(STDERR, "[loris:data] no data to import.\n");
     exit(0);
 }
 
-$cLorisData = count($lorisDataToImport);
-$forceMsg   = $forceUpdate
+$forceMsg = $forceUpdate
     ? "(already 'Complete' instruments too)"
     : "('In Progress' instruments)";
 fprintf(
@@ -181,13 +183,12 @@ initREDCapInstrumentEventMap(
     $redcapInstrumentEventMap
 );
 
-error_log(
-    print_r(
-        $redcapInstrumentEventMap['https://redcap.iths.org/'][98505],
-        true
-    )
-);
-
+// error_log(
+//     print_r(
+//         $redcapInstrumentEventMap['https://redcap.iths.org/'][98505],
+//         true
+//     )
+// );
 
 // iterating over all records
 fprintf(STDERR, "[loris:redcap_endpoint] triggering notifications and import...\n");
@@ -438,13 +439,13 @@ function initREDCapInstrumentEventMap(
  * @param array    $allowedRedcapInstruments authorized redcap instruments
  * @param bool     $forceUpdate              do force update?
  *
- * @return array
+ * @return Query
  */
 function getLORISInstrumentToImport(
     \Database $db,
     array $allowedRedcapInstruments,
     bool $forceUpdate = false
-): array {
+): Query {
     // importable redcap instruments
     $selectedInstruments = "('"
         . implode("','", $allowedRedcapInstruments)
@@ -461,7 +462,7 @@ function getLORISInstrumentToImport(
     }
 
     //
-    return iterator_to_array($db->pselect(
+    return $db->pselect(
         "SELECT c.PSCID as pscid,
             c.CandID as candid,
             s.Visit_label as visitLabel,
@@ -479,7 +480,7 @@ function getLORISInstrumentToImport(
             AND f.test_name IN {$selectedInstruments}
         ",
         []
-    ));
+    );
 }
 
 /**
