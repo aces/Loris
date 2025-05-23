@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * This script will try to import data that are in REDCap and not in LORIS.
  *
@@ -40,24 +41,28 @@ use LORIS\redcap\client\RedcapHttpClient;
 
 /**
  * All REDCap connections (http client) for each REDCap instance/project.
+ *
  * @var mixed
  */
 $redcapConnections = [];
 
 // /**
 //  * All REDCap unique event names (event + arm) for each REDCap instance/project.
+//  *
 //  * @var mixed
 //  */
 // $redcapEventMap = [];
 
 // /**
 //  * All REDCap instruments for each REDCap instance/project.
+//  *
 //  * @var mixed
 //  */
 // $redcapInstrumentMap = [];
 
 /**
  * All REDCap instrument-event map for each REDCap instance/project.
+ *
  * @var mixed
  */
 $redcapInstrumentEventMap = [];
@@ -65,9 +70,15 @@ $redcapInstrumentEventMap = [];
 
 // --------------------------------------
 // TODO: arg parse.
-$verbose        = true;
-$forceUpdate    = false;         // force even complete instrument?
-$redcapUsername = "bulk_import"; // the name that will be used in the redcap notification
+
+// verbose
+$verbose = true;
+
+// force even complete instrument?
+$forceUpdate = false;
+
+// the name that will be used in the redcap notification
+$redcapUsername = "bulk_import";
 
 // --------------------------------------
 // arg display
@@ -115,8 +126,13 @@ if (empty($lorisDataToImport)) {
 }
 
 $cLorisData = count($lorisDataToImport);
-$forceMsg   = $forceUpdate ? " (already 'Complete' instruments too)" : " ('In Progress' instruments)";
-fprintf(STDOUT, "[loris:data] records to import from REDCap{$forceMsg}: {$cLorisData}\n");
+$forceMsg   = $forceUpdate
+    ? "(already 'Complete' instruments too)"
+    : "('In Progress' instruments)";
+fprintf(
+    STDOUT,
+    "[loris:data] records to import from REDCap {$forceMsg}: {$cLorisData}\n"
+);
 
 // Load REDCap configuration
 fprintf(STDOUT, "[redcap:configuration] getting REDCap configurations...\n");
@@ -126,16 +142,13 @@ try {
     fprintf(STDERR, "[redcap:configuration] {$th->getMessage()}.\n");
     exit(3);
 }
-// 
+//
 if ($redcapConfiguration === null) {
     fprintf(STDERR, "[redcap:configuration] no REDCap configuration in 'config.xml'.\n");
     exit(3);
 }
 
-// error_log(print_r(array_keys($redcapConfiguration['https://redcap.iths.org/']), true));
-// error_log(print_r($redcapConfiguration['https://redcap.iths.org/'][98505], true));
-
-# Load REDCap connections 
+// Load REDCap connections
 fprintf(STDOUT, "[redcap:connections] building REDCap connections...\n");
 initREDCapConnections(
     $redcapConfiguration,
@@ -170,12 +183,15 @@ initREDCapInstrumentEventMap(
     $redcapInstrumentEventMap
 );
 
-// error_log(print_r($redcapInstrumentEventMap['https://redcap.iths.org/'][98505], true));
+error_log(print_r(
+    $redcapInstrumentEventMap['https://redcap.iths.org/'][98505],
+    true
+));
 
 
 // iterating over all records
 fprintf(STDERR, "[loris:redcap_endpoint] triggering notifications and import...\n");
-foreach($lorisDataToImport as $index => $instrumentToQuery) {
+foreach ($lorisDataToImport as $index => $instrumentToQuery) {
     // LORIS param
     $pscid          = $instrumentToQuery['pscid'];
     $candid         = $instrumentToQuery['candid'];
@@ -190,14 +206,16 @@ foreach($lorisDataToImport as $index => $instrumentToQuery) {
     fprintf(STDOUT, "[{$index}][pscid:{$pscid}|candid:{$candid}][visit:{$visitLabel}][instrument:{$instrumentName}] \n");
 
     // select REDCap instances and projects that have this instrument
-    // [redcap instance URL => [redcap project ID => RedcapInstrumentEventMap object]]
+    // [redcap instance URL =>
+    //   [redcap project ID => RedcapInstrumentEventMap object]
+    // ]
     // ideally, there should only be one instance and one project selected
     // target event-instrument mapping from REDCap based on instrument name
     $redcapTargetedEventInstrument = getTargetedEventInstrument(
         $redcapInstrumentEventMap,
         $instrumentName
     );
-    
+
     // count number of selected event-instrument mappings across instances
     $nbProjects = array_reduce(
         $redcapTargetedEventInstrument,
@@ -210,18 +228,26 @@ foreach($lorisDataToImport as $index => $instrumentToQuery) {
     }
     if ($nbProjects > 1) {
         // TODO: what if an instrument name is in different instances/projects?
-        // TODO: logic needs to be implemented more largely in the rest of the codebase.
-        fprintf(STDERR, "  - multiple REDCap instances/projects with that instrument.\n");
+        // TODO: logic needs to be implemented more largely in the rest of the
+        // TODO: codebase.
+        fprintf(
+            STDERR,
+            "  - multiple REDCap instances/projects with that instrument.\n"
+        );
         continue;
     }
 
     // explicit values
     $redcapInstanceURL     = array_keys($redcapTargetedEventInstrument)[0];
-    $redcapProjectID       = array_keys($redcapTargetedEventInstrument[$redcapInstanceURL])[0];
-    $redcapEventInstrument = $redcapTargetedEventInstrument[$redcapInstanceURL][$redcapProjectID];
-    
-    fprintf(STDOUT, " - instrument found in '{$redcapInstanceURL}', pid:{$redcapProjectID}\n");
-    
+    $instanceData          = $redcapTargetedEventInstrument[$redcapInstanceURL];
+    $redcapProjectID       = array_keys($instanceData)[0];
+    $redcapEventInstrument = $instanceData[$redcapProjectID];
+
+    fprintf(
+        STDOUT,
+        " - instrument found in '{$redcapInstanceURL}', pid:{$redcapProjectID}\n"
+    );
+
     // get this instance/project configuration
     // TODO: which candidate ID? PSCID/CANDID?
     // TODO: which participant ID? RecordID/surveyID?
@@ -245,7 +271,7 @@ foreach($lorisDataToImport as $index => $instrumentToQuery) {
         $redcapEventInstrument->unique_event_name,
         $redcapUsername
     );
-    
+
     //
     $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
     fprintf(STDERR, "  - {$responseStatusMsg}\n");
@@ -256,9 +282,9 @@ foreach($lorisDataToImport as $index => $instrumentToQuery) {
 /**
  * Initialize REDCap connections based on the given configuration.
  *
- * @param array $redcapConfig     
- * @param array $redcapConnections
- * @param bool  $verbose
+ * @param array $redcapConfig      REDCap configuration structure
+ * @param array $redcapConnections REDCap connection structure to fill
+ * @param bool  $verbose           Verbose mode
  *
  * @return void
  */
@@ -285,7 +311,7 @@ function initREDCapConnections(
 /**
  * Test all REDCap connections based on a given connection structure.
  *
- * @param array $redcapConnections
+ * @param array $redcapConnections REDCap connection structure
  *
  * @return void
  */
@@ -364,9 +390,9 @@ function testREDCapConnections(
 /**
  * Initialize REDCap instrument-event based on the given connection.
  *
- * @param array $redcapConnections
- * @param array $redcapAllowedInstruments
- * @param array $redcapInstrumentMap
+ * @param array $redcapConnections        REDCap connections structure
+ * @param array $redcapAllowedInstruments Allowed instruments
+ * @param array $redcapInstrumentEventMap REDCAp event-instrument mapping
  *
  * @return void
  */
@@ -404,9 +430,9 @@ function initREDCapInstrumentEventMap(
 /**
  * Get the list of all instrument records to import from REDCap.
  *
- * @param Database $db
- * @param array    $allowedRedcapInstruments
- * @param bool     $forceUpdate
+ * @param Database $db                       database object
+ * @param array    $allowedRedcapInstruments authorized redcap instruments
+ * @param bool     $forceUpdate              do force update?
  *
  * @return array
  */
@@ -454,7 +480,7 @@ function getLORISInstrumentToImport(
 
 /**
  * Send a REDCap notification to LORIS.
- * 
+ *
  * @param GuzzleHttp\Client $lorisClient           LORIS client
  * @param string            $redcapAPIURL          the REDCap API URL to use
  * @param int               $redcapProjectID       the REDCap project ID
@@ -474,19 +500,7 @@ function sendNotification(
     string $redcapUniqueEventName,
     string $redcapUsername
 ): ResponseInterface {
-    // From REDCap doc - Data Entry Trigger composition.
-    // - project_id - The unique ID number of the REDCap project (i.e. the 'pid' value found in the URL when accessing the project in REDCap).
-    // - username - The username of the REDCap user that is triggering the Data Entry Trigger. Note: If it is triggered by a survey page (as opposed to a data entry form), then the username that will be reported will be '[survey respondent]'.
-    // - instrument - The unique name of the current data collection instrument (all your project's unique instrument names can be found in column B in the data dictionary).
-    // - record - The name of the record being created or modified, which is the record's value for the project's first field.
-    // - redcap_event_name - The unique event name of the event for which the record was modified (for longitudinal projects only).
-    // - redcap_data_access_group - The unique group name of the Data Access Group to which the record belongs (if the record belongs to a group).
-    // - [instrument]_complete - The status of the record for this particular data collection instrument, in which the value will be 0, 1, or 2. For data entry forms, 0=Incomplete, 1=Unverified, 2=Complete. For surveys, 0=partial survey response and 2=completed survey response. This parameter's name will be the variable name of this particular instrument's status field, which is the name of the instrument + '_complete'.
-    // - redcap_repeat_instance - The repeat instance number of the current instance of a repeating event OR repeating instrument. Note: This parameter is only sent in the request if the project contains repeating events/instruments *and* is currently saving a repeating event/instrument.
-    // - redcap_repeat_instrument - The unique instrument name of the current repeating instrument being saved. Note: This parameter is only sent in the request if the project contains repeating instruments *and* is currently saving a repeating instrument. Also, this parameter will not be sent for repeating events (as opposed to repeating instruments).
-    // - redcap_url - The base web address to REDCap (URL of REDCap's home page). e.g., https://redcap.iths.org/
-    // - project_url - The base web address to the current REDCap project (URL of its Project Home page). e.g., https://redcap.iths.org/redcap_v15.1.2/index.php?pid=XXXX
-
+    // data to send
     $data = [
         "redcap_url"                       => $redcapAPIURL,
         "project_id"                       => $redcapProjectID,
@@ -511,18 +525,18 @@ function sendNotification(
 
 /**
  * Get a targeted event-instrument mapping.
- * This returns a structure 
+ * This returns a structure
  * [redcap instance URL => [redcap project ID => RedcapInstrumentEventMap object]]
  * when the given instrument is found in any redcap event-instrument mapping.
- * 
- * @param mixed $redcapInstrumentEventMap
- * @param mixed $instrumentName
- * 
+ *
+ * @param array  $redcapInstrumentEventMap the event-instrument mapping
+ * @param string $instrumentName           the searched instrument name
+ *
  * @return array[]
  */
 function getTargetedEventInstrument(
-    $redcapInstrumentEventMap,
-    $instrumentName
+    array $redcapInstrumentEventMap,
+    string $instrumentName
 ): array {
     $selectedRedcapProject = [];
     foreach ($redcapInstrumentEventMap as $redcapURL => $redcapInstance) {
