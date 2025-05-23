@@ -1481,6 +1481,18 @@ CREATE TABLE `server_processes` (
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_upload_server_processes_rel` (
+  `UploadID` int(10) unsigned NOT NULL,
+  `ProcessID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UploadID`,`ProcessID`),
+  CONSTRAINT `UK_mri_upload_server_processes_rel_ProcessID`
+    UNIQUE KEY `ProcessID` (`ProcessID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_UploadID`
+    FOREIGN KEY (`UploadID`) REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_ProcessID`
+    FOREIGN KEY (`ProcessID`) REFERENCES `server_processes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `media` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` int(10) unsigned NOT NULL,
