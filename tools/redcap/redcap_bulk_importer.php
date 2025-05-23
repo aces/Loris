@@ -200,7 +200,7 @@ foreach ($lorisDataToImport as $index => $instrumentToQuery) {
     $commentID      = $instrumentToQuery['commentID'];
 
     // candidate
-    $candidate = \Candidate::singleton(new CandID($candid));
+    $candidate = \Candidate::singleton(new CandID("{$candid}"));
 
     // log
     $log  = "[{$index}]";
