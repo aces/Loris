@@ -479,7 +479,9 @@ class RedcapConfigParser
         // instances, must at least have one
         $redcapInstances = $rawRedcapConfig['instance'] ?? null;
         if ($redcapInstances === null || empty($redcapInstances)) {
-            throw new \LorisException("No REDCap instance defined in configuration file.");
+            throw new \LorisException(
+                "No REDCap instance defined in configuration file."
+            );
         }
 
         // only one instance, wrap it in an array to be able to iterate
