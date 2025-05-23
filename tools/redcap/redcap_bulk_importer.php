@@ -144,7 +144,10 @@ try {
 }
 //
 if ($redcapConfiguration === null) {
-    fprintf(STDERR, "[redcap:configuration] no REDCap configuration in 'config.xml'.\n");
+    fprintf(
+        STDERR,
+        "[redcap:configuration] no REDCap configuration in 'config.xml'.\n"
+    );
     exit(3);
 }
 
@@ -183,10 +186,12 @@ initREDCapInstrumentEventMap(
     $redcapInstrumentEventMap
 );
 
-error_log(print_r(
-    $redcapInstrumentEventMap['https://redcap.iths.org/'][98505],
-    true
-));
+error_log(
+    print_r(
+        $redcapInstrumentEventMap['https://redcap.iths.org/'][98505],
+        true
+    )
+);
 
 
 // iterating over all records
@@ -203,7 +208,11 @@ foreach ($lorisDataToImport as $index => $instrumentToQuery) {
     $candidate = \Candidate::singleton(new CandID($candid));
 
     // log
-    fprintf(STDOUT, "[{$index}][pscid:{$pscid}|candid:{$candid}][visit:{$visitLabel}][instrument:{$instrumentName}] \n");
+    $log  = "[{$index}]";
+    $log .= "[pscid:{$pscid}|candid:{$candid}]";
+    $log .= "[visit:{$visitLabel}]";
+    $log .= "[instrument:{$instrumentName}]";
+    fprintf(STDOUT, "{$log} \n");
 
     // select REDCap instances and projects that have this instrument
     // [redcap instance URL =>
