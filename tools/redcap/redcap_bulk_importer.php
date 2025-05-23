@@ -80,6 +80,8 @@ $options = getopt(
         "verbose",
     ]
 );
+
+//
 $opts = checkOptions($options);
 
 // args mapping
@@ -574,7 +576,8 @@ function getTargetedEventInstrument(
  *
  * @return array clean and valid version.
  */
-function checkOptions(array $options) {
+function checkOptions(array $options): array
+{
     // loris URL, mandatory
     if (!isset($options['loris-url'])) {
         error_log("[error] Required parameter: 'loris-path'.");
@@ -606,7 +609,8 @@ function checkOptions(array $options) {
  *
  * @return void
  */
-function showHelp() : void {
+function showHelp() : void
+{
     fprintf(
         STDERR,
         "Usage:\n"
@@ -616,9 +620,13 @@ function showHelp() : void {
         . "    [--force-update]\n"
         . "    [--verbose]\n\n"
         . "Notes:\n"
-        . "  - required, '--loris-url=LORISURL'   the loris URL\n"
-        . "  - optional, '--redcap-username=USER' the text that will be in all redcap notification as the REDCap username. (default: 'bulk_import')\n"
-        . "  - optional, '--force-update'         needs to force update on complete instrument? (default: false)\n"
+        . "  - required, '--loris-url=LORISURL'   "
+        . "the loris URL\n"
+        . "  - optional, '--redcap-username=USER' "
+        . "the text that will be in all redcap notification as the REDCap "
+        . "username. (default: 'bulk_import')\n"
+        . "  - optional, '--force-update'         needs to force update on "
+        . "complete instrument? (default: false)\n"
         . "  - optional, '--verbose'              verbose mode? (default: false)\n\n"
     );
 }
