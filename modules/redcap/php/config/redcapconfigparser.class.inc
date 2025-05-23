@@ -448,4 +448,83 @@ class RedcapConfigParser
             . " (redcap-project-id: {$this->_redcap_project_id}): $message"
         );
     }
+
+    /**
+     * Get the full REDCap configuration as described in 'config.xml' file.
+     * Returns a struct ordered by REDCap instance and project.
+     * Expected structure is:
+     * [REDCap instance URL => [REDCap Project ID => REDCapConfig object]]
+     * else null if no configurations are found.
+     *
+     * @param \LORIS\LorisInstance $loris the loris instance
+     *
+     * @throws \LorisException
+     *
+     * @return array<mixed|RedcapConfig|null>[] a REDCap configuration with the form
+     * [REDCap instance URL => [REDCap Project ID => REDCapConfig object]]
+     * else null
+     */
+    public static function getConfiguration(
+        \LORIS\LorisInstance $loris
+    ): array {
+        // final REDCap configuration struct
+        $redcapConfig = [];
+
+        // list of REDCap instances and projects
+        $rawRedcapConfig = $loris->getConfiguration()->getSetting('redcap');
+        if ($rawRedcapConfig === null || empty($rawRedcapConfig)) {
+            throw new \LorisException("No REDCap configuration.");
+        }
+
+        // instances, must at least have one
+        $redcapInstances = $rawRedcapConfig['instance'] ?? null;
+        if ($redcapInstances === null || empty($redcapInstances)) {
+            throw new \LorisException("No REDCap instance defined in configuration file.");
+        }
+
+        // only one instance, wrap it in an array to be able to iterate
+        if (!array_key_exists(0, $redcapInstances)) {
+            $redcapInstances = [$redcapInstances];
+        }
+
+        // going throught REDCap defined instances
+        foreach ($redcapInstances as $instanceStruct) {
+            // instance URL
+            $redcapInstanceURL = $instanceStruct['redcap-url'];
+
+            // project of this instance
+            $redcapProjects = $instanceStruct['project'] ?? null;
+            if ($redcapProjects === null || empty($redcapProjects)) {
+                // no project for that instance, next REDCap instance
+                continue;
+            }
+
+            // only one project, wrap it in an array to be able to iterate
+            if (!array_key_exists(0, $redcapProjects)) {
+                $redcapProjects = [$redcapProjects];
+            }
+
+            // add REDCap configuration
+            foreach ($redcapProjects as $redcapProject) {
+                // project ID
+                $redcapProjectID = $redcapProject['redcap-project-id'];
+
+                // parser object
+                $configParser = new RedcapConfigParser(
+                    $loris,
+                    $redcapInstanceURL,
+                    $redcapProjectID
+                );
+
+                // add the parsed REDCap configuration to the final struct
+                $redcapConfig[$redcapInstanceURL] = [
+                    ...$redcapConfig[$redcapInstanceURL] ?? [],
+                    $redcapProjectID => $configParser->parse()
+                ];
+            }
+        }
+
+        // return struct
+        return empty($redcapConfig) ? null : $redcapConfig;
+    }
 }
