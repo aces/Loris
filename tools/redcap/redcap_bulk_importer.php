@@ -461,7 +461,7 @@ function getLORISInstrumentToImport(
     }
 
     //
-    return $db->pselect(
+    return iterator_to_array($db->pselect(
         "SELECT c.PSCID as pscid,
             c.CandID as candid,
             s.Visit_label as visitLabel,
@@ -479,7 +479,7 @@ function getLORISInstrumentToImport(
             AND f.test_name IN {$selectedInstruments}
         ",
         []
-    );
+    ));
 }
 
 /**
