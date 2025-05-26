@@ -296,7 +296,8 @@ class CouchDBDemographicsImporter
                     JOIN diagnosis_evolution de USING (DxEvolutionID)
                     JOIN candidate c ON c.ID=cde.CandidateID
                     JOIN (
-                        SELECT c.ID as CandidateID, c.CandID, MAX(OrderNumber) AS OrderNumber
+                        SELECT c.ID as CandidateID, c.CandID, 
+                        MAX(OrderNumber) AS OrderNumber
                         FROM diagnosis_evolution de2
                         JOIN candidate_diagnosis_evolution_rel cde2
                         USING (DxEvolutionID)
