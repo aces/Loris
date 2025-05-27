@@ -62,5 +62,5 @@ $lorisInstance = new \LORIS\LorisInstance(
 );
 // Register S3 stream wrapper if configured
 if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-    (new \LORIS\AWS\Client($lorisInstance))->registerStreamWrapper();
+//    (new \LORIS\AWS\Client($lorisInstance))->registerStreamWrapper();
 }
