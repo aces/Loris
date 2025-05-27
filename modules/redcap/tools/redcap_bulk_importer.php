@@ -17,7 +17,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . "/../../tools/generic_includes.php";
+require_once __DIR__ . "/../../../tools/generic_includes.php";
 
 // load redcap module
 try {
@@ -203,7 +203,8 @@ foreach ($lorisDataToImport as $index => $instrumentToQuery) {
     $commentID      = $instrumentToQuery['commentID'];
 
     // candidate
-    $candidate = \Candidate::singleton(new CandID("{$candid}"));
+    $candidObj = new CandID("{$candid}");
+    $candidate = \Candidate::singleton($candidObj);
 
     // log
     $log  = "[{$index}]";
