@@ -70,22 +70,22 @@ $accessQuery = "SELECT *
 $accessWhere = " WHERE (mu.UploadedBy='$username' OR 1=1 ";
 if (!$user->hasPermission('imaging_uploader_allsites')) {
     // Create where clause for sites
-    $where = $where . " AND s.CenterID IN ('$centerString') ";
+    $accessWhere = $accessWhere . " AND s.CenterID IN ('$centerString') ";
 }
 
 if ($advancedperms === 'true') {
     // If config setting is enabled, check the user's sites and projects
     // site/project match + user's own uploads
-    $where = $where . " AND s.ProjectID IN ('$projectString')";
+    $accessWhere = $accessWhere . " AND s.ProjectID IN ('$projectString')";
 }
 
 if ($user->hasPermission('imaging_uploader_nosessionid')) {
     // clause for accessing null session data
-    $where = $where . " OR mu.SessionID IS NULL ";
+    $accessWhere = $accessWhere . " OR mu.SessionID IS NULL ";
 }
 
 // Wrap entire access logic in parentheses and add AND clause for specific upload ID
-$where = $where . ") AND UploadId =:uploadId";
+$accessWhere = $accessWhere . ") AND UploadId =:uploadId";
 
 $accessData = $DB->pselectRow(
     $accessQuery.$accessWhere,
