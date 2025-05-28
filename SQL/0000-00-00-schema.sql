@@ -2503,7 +2503,7 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-CREATE TABLE Login_Summary_Statistics (
+CREATE TABLE login_summary_statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
