@@ -35,17 +35,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
-        $md5String = md5("bmi");
-        $this->DB->insert(
-            "help",
-            [
-                'helpID'  => '999999',
-                'hash'    => $md5String,
-                'topic'   => 'Test Topic',
-                'content' => 'This is a test content.',
-                'created' => '2013-04-05 00:00:00',
-            ]
-        );
     }
     /**
      * Delete testing data from database
@@ -55,7 +44,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("help", ['helpID' => '999999']);
     }
 
     /**
@@ -149,12 +137,12 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/help_editor/");
         $this->safeFindElement(
             WebDriverBy::Name("topic")
-        )->sendKeys("Test Topic");
+        )->sendKeys("bmi");
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
-        $this->assertStringContainsString("test", $bodyText);
+        $this->assertStringContainsString("bmi", $bodyText);
     }
     /**
      * Tests that help editor does not load with the permission
@@ -166,12 +154,12 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/help_editor/");
         $this->safeFindElement(
             WebDriverBy::Name("content")
-        )->sendKeys("test");
+        )->sendKeys("BMI");
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
-        $this->assertStringContainsString("test", $bodyText);
+        $this->assertStringContainsString("BMI", $bodyText);
     }
 
 }
