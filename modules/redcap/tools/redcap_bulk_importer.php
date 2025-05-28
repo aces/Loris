@@ -204,7 +204,6 @@ initREDCapInstrumentEventMap(
 // iterating over all records
 fprintf(STDERR, "[loris:redcap_endpoint] triggering notifications and import...\n");
 triggerNotifications(
-    $lorisInstance,
     $lorisClient,
     $lorisDataToImport,
     $redcapInstrumentEventMap,
@@ -226,7 +225,6 @@ triggerNotifications(
  * @return void
  */
 function triggerNotifications(
-    \LORIS\LorisInstance $loris, // override
     GuzzleHttp\Client $lorisClient,
     LORIS\Database\Query $lorisDataToImport,
     array $redcapInstrumentEventMap,
