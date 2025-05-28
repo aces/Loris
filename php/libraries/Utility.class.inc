@@ -775,15 +775,15 @@ class Utility
         string $moduleName,
         string $policyName ='',
         bool $headerButton = false
-    )
-    {
+    ) {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        // If no policy name is given, then we return the latest policy for the module
+        // If no policy name is given, we return the latest policy for the module
         if (!empty($policyName)) {
             $policyName = 'AND p.Name = '. $DB->quote($policyName);
         }
-        // If we want just a policy that goes in the header, then we need HeaderButton = 'Y'
+        // If we want just a policy that goes in the header,
+        // then we need HeaderButton = 'Y'
         if ($headerButton == true) {
             $headerWhere = "('Y')";
         } else {
@@ -835,8 +835,8 @@ class Utility
     static function getLatestPolicyDecision(
         string $moduleName,
         string $policyName = '',
-        int $userID = null)
-    {
+        int $userID = null
+    ) {
         $client    = new NDB_Client();
         $anonymous = ($client->initialize() === false);
         if ($anonymous) {
@@ -876,7 +876,8 @@ class Utility
         if ($decision && $policyInfo['PolicyRenewalTime'] > 0) {
             $decisionDate = new \DateTime($decision['DecisionDate']);
             $interval     = new \DateInterval(
-                "P{$policyInfo['PolicyRenewalTime']}{$policyInfo['PolicyRenewalTimeUnit']}"
+                "P{$policyInfo['PolicyRenewalTime']}".
+                "{$policyInfo['PolicyRenewalTimeUnit']}"
             );
             $renewalDate  = $decisionDate->add($interval);
             if ($renewalDate > new \DateTime()) {
@@ -891,10 +892,10 @@ class Utility
 
     /**
      * Save a User's Policy decision
-     * 
+     *
      * @param string $ModuleName The Module Name
      * @param string $PolicyName The Policy Name
-     * @param string $decision The decision made by the current user
+     * @param string $decision   The decision made by the current user
      *
      * @return void
      * @throws \DatabaseException
@@ -903,8 +904,7 @@ class Utility
         string $ModuleName,
         string $PolicyName,
         string $decision
-    )
-    {
+    ) {
         $user = User::singleton();
         $db   = \NDB_Factory::singleton()->database();
 
