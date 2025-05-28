@@ -151,7 +151,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("topic")
         )->sendKeys("Test Topic");
 
-	$bodyText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
         $this->assertStringContainsString("test", $bodyText);
@@ -168,7 +168,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("content")
         )->sendKeys("test");
 
-	$bodyText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
         $this->assertStringContainsString("test", $bodyText);
