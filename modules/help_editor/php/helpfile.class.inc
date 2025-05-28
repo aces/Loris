@@ -67,22 +67,21 @@ class HelpFile
             "SELECT helpID, hash, topic, content,
              created, updated FROM help WHERE helpID = :HID",
             ['HID' => $helpID]
-	);
+        );
 
-	// get instrument  test_name
+        // get instrument  test_name
         $instruments = $DB->pselect("SELECT * FROM test_names", []);
         foreach ($instruments as $item) {
-		if (md5($item['Test_name']) === $result['hash']) {
-			$result['instrument_full_name'] = $item['Full_name'];
-			$result['instrument'] = $item['Test_name'];
-			break;
-		}	
+            if (md5($item['Test_name']) === $result['hash']) {
+                $result['instrument_full_name'] = $item['Full_name'];
+                $result['instrument']           = $item['Test_name'];
+                break;
+            }
         }
-        
 
         // set the help file
         $obj->data = $result ?? [];
-                error_log(print_r($result ,true));
+                error_log(print_r($result, true));
 
         return $obj;
     }
@@ -132,12 +131,12 @@ class HelpFile
      */
     function toArray()
     {
-        $data            = $this->data;
-	$data['topic'] = stripslashes($this->data['topic'] ?? '');
+        $data          = $this->data;
+        $data['topic'] = stripslashes($this->data['topic'] ?? '');
 
         $data['content'] = stripslashes($this->data['content'] ?? '');
 
-	$data['instrument'] = stripslashes($this->data['instrument'] ?? '');
+        $data['instrument'] = stripslashes($this->data['instrument'] ?? '');
 
         return $data;
     }
