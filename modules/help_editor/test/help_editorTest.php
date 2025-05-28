@@ -150,14 +150,8 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("topic")
         )->sendKeys("Test Topic");
-         //click the [show data] button
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable>tbody:nth-child(2)>".
-                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
-            )
-        );
-        $bodyText = $this->safeFindElement(
+
+	$bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
         $this->assertStringContainsString("test", $bodyText);
@@ -173,13 +167,8 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("content")
         )->sendKeys("test");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable>tbody:nth-child(2)>".
-                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
-            )
-        );
-        $bodyText = $this->safeFindElement(
+
+	$bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
         $this->assertStringContainsString("test", $bodyText);

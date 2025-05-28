@@ -72,7 +72,8 @@ class HelpFile
         // get instrument  test_name
         $instruments = $DB->pselect("SELECT * FROM test_names", []);
         foreach ($instruments as $item) {
-            if (md5($item['Test_name']) === $result['hash']) {
+            if ($result !== null && md5($item['Test_name']) === $result['hash']) {
+
                 $result['instrument_full_name'] = $item['Full_name'];
                 $result['instrument']           = $item['Test_name'];
                 break;
