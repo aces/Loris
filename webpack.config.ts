@@ -347,6 +347,7 @@ configs.push({
     StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
+    PolicyButton: './jsx/PolicyButton.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
     ...getModulesEntries(),
