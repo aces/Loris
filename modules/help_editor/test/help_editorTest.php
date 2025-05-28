@@ -35,7 +35,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
-        $md5String = md5("TestTestTest");
+        $md5String = md5("bmi");
         $this->DB->insert(
             "help",
             [

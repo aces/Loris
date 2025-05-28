@@ -14,7 +14,6 @@ import {SelectElement} from 'jsx/Form';
  * component page on load.
  *
  * Renders Help Editor form page
- *
  * @author LORIS Team
  * @version 1.0.0
  */
@@ -22,7 +21,7 @@ import {SelectElement} from 'jsx/Form';
 const HelpEditorForm = (props) => {
   const [title, setTitle] = useState(props.title ?? '');
   const [content, setContent] = useState(props.content ?? '');
-  const [instrument, setInstrument] = useState(props.instrument ?? '');	
+  const [instrument, setInstrument] = useState(props.instrument ?? '');
   const helpPreview = [];
   const helpContainers = document.getElementsByClassName('help-container');
 
@@ -50,7 +49,7 @@ const HelpEditorForm = (props) => {
       break;
     case 'instrument':
       setInstrument(value);
-      break;		    
+      break;
     }
   };
 
@@ -64,7 +63,6 @@ const HelpEditorForm = (props) => {
     formData.append('section', props.section ?? '');
     formData.append('subsection', props.subsection ?? '');
     formData.append('helpID', props.helpid ?? '');
-    formData.append('instrumentslist', props.instrumentslist ?? '');	  
     if (!props.helpid) {
       formData.append('new', 'true');
       formData.append('instrument', instrument ?? '');
@@ -73,15 +71,16 @@ const HelpEditorForm = (props) => {
       method: 'POST',
       body: formData,
     }).then((response) => {
- console.log(response);
+      console.log(response);
 
       if (response.status !== 200) {
-	            swal.fire({
-        title: 'Content update unsuccessful.',
-        text: 'Help content cannot be added to an instrument that has already been registered.',
-        type: 'error',
-        confirmButtonText: 'Try again',
-      });
+        swal.fire({
+          title: 'Content update unsuccessful.',
+          text: 'Help content cannot be added to an instrument '
+           + 'that has already been registered.',
+          type: 'error',
+          confirmButtonText: 'Try again',
+        });
         console.error(response.status);
         return;
       }
@@ -90,21 +89,19 @@ const HelpEditorForm = (props) => {
         type: 'success',
         confirmButtonText: 'Close',
       });
-      	    
     }).catch((error) => {
       console.error(error);
       swal.fire({
         title: 'Content update unsuccessful.',
         text: 'Something went wrong',
         type: 'error',
-        confirmButtonText: 'Try again',	      
+        confirmButtonText: 'Try again',
       });
     });
   };
 
   /**
    * Renders the React component.
-   *
    * @return {JSX} - React markup for the component
    */
   return (
@@ -113,15 +110,15 @@ const HelpEditorForm = (props) => {
         <div className="row">
           <div className="col-sm-9">
 
-          <SelectElement
-            name='instrument'
-            label='Instrument'
-            emptyOption={true}
-            options={props.instrumentslist}
-	    onUserInput={onUserInput}
-            value={instrument}
-	    disabled={props.helpid !== null}  // disables if helpid is null
-          />	  
+            <SelectElement
+              name='instrument'
+              label='Instrument'
+              emptyOption={true}
+              options={props.instrumentslist}
+              onUserInput={onUserInput}
+              value={instrument}
+              disabled={props.helpid !== null}
+            />
             <TextboxElement
               label='Title'
               name='title'
@@ -163,6 +160,8 @@ HelpEditorForm.propTypes = {
   subsection: PropTypes.string,
   helpid: PropTypes.string,
   url: PropTypes.string,
+  instrument: PropTypes.string,
+  instrumentslist: PropTypes.objectOf(PropTypes.string),
 };
 
 window.RHelpEditorForm = React.createFactory(HelpEditorForm);
