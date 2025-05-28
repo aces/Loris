@@ -203,98 +203,126 @@ initREDCapInstrumentEventMap(
 
 // iterating over all records
 fprintf(STDERR, "[loris:redcap_endpoint] triggering notifications and import...\n");
-foreach ($lorisDataToImport as $index => $instrumentToQuery) {
-    // LORIS param
-    $pscid          = $instrumentToQuery['pscid'];
-    $candid         = $instrumentToQuery['candid'];
-    $visitLabel     = $instrumentToQuery['visitLabel'];
-    $instrumentName = $instrumentToQuery['instrument'];
-    $commentID      = $instrumentToQuery['commentID'];
-
-    // candidate
-    $candidObj = new CandID("{$candid}");
-    $candidate = \Candidate::singleton($candidObj);
-
-    // log
-    $log  = "[{$index}]";
-    $log .= "[pscid:{$pscid}|candid:{$candid}]";
-    $log .= "[visit:{$visitLabel}]";
-    $log .= "[instrument:{$instrumentName}]";
-    fprintf(STDOUT, "{$log} \n");
-
-    // select REDCap instances and projects that have this instrument
-    // [redcap instance URL =>
-    //   [redcap project ID => RedcapInstrumentEventMap object]
-    // ]
-    // ideally, there should only be one instance and one project selected
-    // target event-instrument mapping from REDCap based on instrument name
-    $redcapTargetedEventInstrument = getTargetedEventInstrument(
-        $redcapInstrumentEventMap,
-        $instrumentName
-    );
-
-    // count number of selected event-instrument mappings across instances
-    $nbProjects = array_reduce(
-        $redcapTargetedEventInstrument,
-        fn($c, $i) => $c + count($i),
-        0
-    );
-    if ($nbProjects === 0) {
-        fprintf(STDERR, "  - no REDCap instances/projects for that instrument.\n");
-        continue;
-    }
-    if ($nbProjects > 1) {
-        // TODO: what if an instrument name is in different instances/projects?
-        // TODO: logic needs to be implemented more largely in the rest of the
-        // TODO: codebase.
-        fprintf(
-            STDERR,
-            "  - multiple REDCap instances/projects with that instrument.\n"
-        );
-        continue;
-    }
-
-    // explicit values
-    $redcapInstanceURL     = array_keys($redcapTargetedEventInstrument)[0];
-    $instanceData          = $redcapTargetedEventInstrument[$redcapInstanceURL];
-    $redcapProjectID       = array_keys($instanceData)[0];
-    $redcapEventInstrument = $instanceData[$redcapProjectID];
-
-    fprintf(
-        STDOUT,
-        " - instrument found in '{$redcapInstanceURL}', pid:{$redcapProjectID}\n"
-    );
-
-    // get this instance/project configuration
-    // TODO: which candidate ID? PSCID/CANDID?
-    // TODO: which participant ID? RecordID/surveyID?
-    // TODO: which visit? visit mapping in config.
-    $redcapConfig = $redcapConfiguration[$redcapInstanceURL][$redcapProjectID];
-
-    // candidate ID to use
-    // TODO: maybe some change here depending on the REDCap way of naming
-    $redcapRecordID = match ($redcapConfig->candidate_id) {
-        RedcapConfigLorisId::PscId  => $candidate->getPSCID(),
-        RedcapConfigLorisId::CandId => $candidate->getCandID(),
-    };
-
-    // send POST request to LORIS mimicing REDCap notification
-    $response = sendNotification(
-        $lorisClient,
-        "{$redcapInstanceURL}/api/",
-        $redcapProjectID,
-        $instrumentName,
-        $redcapRecordID,
-        $redcapEventInstrument->unique_event_name,
-        $redcapUsername
-    );
-
-    //
-    $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
-    fprintf(STDERR, "  - {$responseStatusMsg}\n");
-}
+triggerNotifications(
+    $lorisInstance,
+    $lorisClient,
+    $lorisDataToImport,
+    $redcapInstrumentEventMap,
+    $redcapConfiguration,
+    $redcapUsername
+);
 
 // --------------------------------------
+
+/**
+ * Trigger the selected set of notification to import data in LORIS.
+ *
+ * @param GuzzleHttp\Client    $lorisClient              the loris client
+ * @param LORIS\Database\Query $lorisDataToImport        the list of data to import
+ * @param array                $redcapInstrumentEventMap the instrument-event map
+ * @param array                $redcapConfiguration      the REDCap conf
+ * @param string               $redcapUsername           the text to pass
+ *
+ * @return void
+ */
+function triggerNotifications(
+    \LORIS\LorisInstance $loris, // override
+    GuzzleHttp\Client $lorisClient,
+    LORIS\Database\Query $lorisDataToImport,
+    array $redcapInstrumentEventMap,
+    array $redcapConfiguration,
+    string $redcapUsername
+): void {
+    foreach ($lorisDataToImport as $index => $instrumentToQuery) {
+        // LORIS param
+        $pscid          = $instrumentToQuery['pscid'];
+        $candid         = $instrumentToQuery['candid'];
+        $visitLabel     = $instrumentToQuery['visitLabel'];
+        $instrumentName = $instrumentToQuery['instrument'];
+        $commentID      = $instrumentToQuery['commentID'];
+
+        // candidate
+        $candidate = \Candidate::singleton(new CandID("{$candid}"));
+
+        // log
+        $log  = "[{$index}]";
+        $log .= "[pscid:{$pscid}|candid:{$candid}]";
+        $log .= "[visit:{$visitLabel}]";
+        $log .= "[instrument:{$instrumentName}]";
+        fprintf(STDOUT, "{$log} \n");
+
+        // select REDCap instances and projects that have this instrument
+        // [redcap instance URL =>
+        //   [redcap project ID => RedcapInstrumentEventMap object]
+        // ]
+        // ideally, there should only be one instance and one project selected
+        // target event-instrument mapping from REDCap based on instrument name
+        $redcapTargetedEventInstrument = getTargetedEventInstrument(
+            $redcapInstrumentEventMap,
+            $instrumentName
+        );
+
+        // count number of selected event-instrument mappings across instances
+        $nbProjects = array_reduce(
+            $redcapTargetedEventInstrument,
+            fn($c, $i) => $c + count($i),
+            0
+        );
+        if ($nbProjects === 0) {
+            fprintf(STDERR, "  - no REDCap instances/projects for that instrument.\n");
+            continue;
+        }
+        if ($nbProjects > 1) {
+            // TODO: what if an instrument name is in different instances/projects?
+            // TODO: logic needs to be implemented more largely in the rest of the
+            // TODO: codebase.
+            fprintf(
+                STDERR,
+                "  - multiple REDCap instances/projects with that instrument.\n"
+            );
+            continue;
+        }
+
+        // explicit values
+        $redcapInstanceURL     = array_keys($redcapTargetedEventInstrument)[0];
+        $instanceData          = $redcapTargetedEventInstrument[$redcapInstanceURL];
+        $redcapProjectID       = array_keys($instanceData)[0];
+        $redcapEventInstrument = $instanceData[$redcapProjectID];
+
+        fprintf(
+            STDOUT,
+            " - instrument found in '{$redcapInstanceURL}', pid:{$redcapProjectID}\n"
+        );
+
+        // get this instance/project configuration
+        // TODO: which candidate ID? PSCID/CANDID?
+        // TODO: which participant ID? RecordID/surveyID?
+        // TODO: which visit? visit mapping in config.
+        $redcapConfig = $redcapConfiguration[$redcapInstanceURL][$redcapProjectID];
+
+        // candidate ID to use
+        // TODO: maybe some change here depending on the REDCap way of naming
+        $redcapRecordID = match ($redcapConfig->candidate_id) {
+            RedcapConfigLorisId::PscId  => $candidate->getPSCID(),
+            RedcapConfigLorisId::CandId => $candidate->getCandID(),
+        };
+
+        // send POST request to LORIS mimicing REDCap notification
+        $response = sendNotification(
+            $lorisClient,
+            "{$redcapInstanceURL}/api/",
+            $redcapProjectID,
+            $instrumentName,
+            $redcapRecordID,
+            $redcapEventInstrument->unique_event_name,
+            $redcapUsername
+        );
+
+        //
+        $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
+        fprintf(STDERR, "  - {$responseStatusMsg}\n");
+    }
+}
 
 /**
  * Initialize REDCap connections based on the given configuration.
