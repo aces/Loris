@@ -762,14 +762,21 @@ class Utility
      * Get latest Policy for the given Modile Name and Policy Name
      * This is the CCNA Version for now, the LORIS Core version will
      * likely return more fields.
-     * 
-     * @param string $moduleName The module name
-     * @param string $policyName The policy name
-     * 
+     *
+     * @param string $moduleName   The module name
+     * @param string $policyName   The policy name
+     * @param bool   $headerButton If true, only return policies that are
+     *                             have HeaderButton = 'Y'
+     *
      * @return array The policy details
      * @throws \DatabaseException
      */
-    static function getPolicy(string $moduleName, string $policyName ='', bool $headerButton = false) {
+    static function getPolicy(
+        string $moduleName,
+        string $policyName ='',
+        bool $headerButton = false
+    )
+    {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // If no policy name is given, then we return the latest policy for the module
@@ -816,15 +823,20 @@ class Utility
     }
 
     /**
-     * Get a User's latest decision for a Policy, and whether or not they need to renew.
-     * 
-     * @param string $moduleName The module name
-     * @param string $policyName The policy name
-     * 
+     * Get a User's latest policy decision, and whether or not they need to renew.
+     *
+     * @param string   $moduleName The module name
+     * @param string   $policyName The policy name
+     * @param int|null $userID     The user ID, or current user if null
+     *
      * @return array The decision details
      * @throws \DatabaseException
      */
-    static function getLatestPolicyDecision(string $moduleName, string $policyName ='', int $userID = null) {
+    static function getLatestPolicyDecision(
+        string $moduleName,
+        string $policyName = '',
+        int $userID = null)
+    {
         $client    = new NDB_Client();
         $anonymous = ($client->initialize() === false);
         if ($anonymous) {
@@ -834,9 +846,9 @@ class Utility
 
         $userID = $userID ?? User::singleton()->getID();
 
-        $factory      = \NDB_Factory::singleton();
-        $DB           = $factory->database();
-        
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
         $policyInfo = self::getPolicy($moduleName, $policyName, false) ?? [];
         if (empty($policyInfo)) {
             return [];
@@ -856,17 +868,17 @@ class Utility
                 )    
             ",
             [
-                'uid'     => $userID,
-                'policyID'=> $policyInfo['PolicyID']
+                'uid'      => $userID,
+                'policyID' => $policyInfo['PolicyID']
             ]
         ) ?? [];
-        error_log(print_r($decision, true));
         $needsRenewal = true;
         if ($decision && $policyInfo['PolicyRenewalTime'] > 0) {
             $decisionDate = new \DateTime($decision['DecisionDate']);
-            $interval = new \DateInterval("P{$policyInfo['PolicyRenewalTime']}{$policyInfo['PolicyRenewalTimeUnit']}");
-            $renewalDate = $decisionDate->add($interval);
-            error_log("Renewal Date: " . $renewalDate->format('Y-m-d H:i:s'));
+            $interval     = new \DateInterval(
+                "P{$policyInfo['PolicyRenewalTime']}{$policyInfo['PolicyRenewalTimeUnit']}"
+            );
+            $renewalDate  = $decisionDate->add($interval);
             if ($renewalDate > new \DateTime()) {
                 $needsRenewal = false;
             }
@@ -883,20 +895,24 @@ class Utility
      * @param string $ModuleName The Module Name
      * @param string $PolicyName The Policy Name
      * @param string $decision The decision made by the current user
-     * 
+     *
      * @return void
      * @throws \DatabaseException
-     * 
      */
-    static function saveUserPolicyDecision(string $ModuleName, string $PolicyName, string $decision) {
+    static function saveUserPolicyDecision(
+        string $ModuleName,
+        string $PolicyName,
+        string $decision
+    )
+    {
         $user = User::singleton();
-        $db = \NDB_Factory::singleton()->database();
+        $db   = \NDB_Factory::singleton()->database();
 
         $policy = self::getPolicy($ModuleName, $PolicyName, false);
         $db->insert(
             'user_policy_decision',
             [
-                'UserID' => $user->getId(),
+                'UserID'   => $user->getId(),
                 'PolicyID' => $policy['PolicyID'],
                 'Decision' => $decision,
             ]

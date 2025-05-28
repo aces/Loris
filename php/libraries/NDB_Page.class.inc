@@ -939,8 +939,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 
     /**
      * Returns the latest Policy for this page with a HeaderButton
+     *
+     * @return array
      */
-    public function getHeaderPolicy(): array {
+    public function getHeaderPolicy(): array
+    {
         return \Utility::getPolicy(
             $this->Module->getName(),
             '',
@@ -950,8 +953,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 
     /**
      * Returns the latest Policy for this page that the user needs to renew
+     *
+     * @return array
      */
-    public function getPolicyThatNeedsRenewal(): array {
+    public function getPolicyThatNeedsRenewal(): array
+    {
         return \Utility::getLatestPolicyDecision(
             $this->Module->getName(),
             '',
