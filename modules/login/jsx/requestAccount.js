@@ -11,6 +11,7 @@ import {
   CheckboxElement,
   ButtonElement,
 } from 'jsx/Form';
+import {PolicyButton} from '../../../jsx/PolicyButton';
 
 /**
  * Request account form.
@@ -45,8 +46,10 @@ class RequestAccount extends Component {
           ? this.props.data.captcha
           : '',
         error: '',
+        viewedPolicy: false,
       },
       request: false,
+      policy: this.props.data.policy || null,
     };
     this.setForm = this.setForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -75,7 +78,16 @@ class RequestAccount extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
+    if (this.props.data.policy && !this.state.form.viewedPolicy) {
+      let title = this.props.data.policy.SwalTitle;
+      swal.fire({
+        title: title + ' not accepted',
+        text: 'You must accept the ' + title + ' before requesting an account.',
+        icon: 'error',
+      });
+      e.stopPropagation();
+      return;
+    }
     const state = JSON.parse(JSON.stringify(this.state));
     fetch(
       window.location.origin + '/login/Signup', {
@@ -156,6 +168,26 @@ class RequestAccount extends Component {
         </span>
       </div>
     ) : null;
+    const policy = this.state.policy ? (
+      <>
+        <PolicyButton
+          onClickPolicy={this.state.policy}
+          anon={true}
+          buttonText={
+            'Click here to view the ' + this.state.policy.SwalTitle
+          }
+          callback={(decision) => {
+            this.setState({
+              form: {
+                ...this.state.form,
+                viewedPolicy: true,
+              },
+            });
+          }}
+        />
+        <br /><br />
+      </>
+    ) : null;
     const request = !this.state.request ? (
       <div>
         <FormElement
@@ -231,6 +263,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             offset={'col-sm-offset-2'}
           />
+          {policy}
           {captcha}
           <ButtonElement
             label={'Request Account'}

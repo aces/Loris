@@ -14,6 +14,7 @@ import {
   PasswordElement,
   ButtonElement,
 } from 'jsx/Form';
+import {PolicyButton} from 'jsx/PolicyButton';
 import SummaryStatistics from './summaryStatistics';
 
 /**
@@ -210,6 +211,16 @@ class Login extends Component {
           class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
         />
       ) : null;
+      const policy = this.state.component.requestAccount
+        ? <>
+          <br />
+          <PolicyButton
+            onClickPolicy={
+              this.state.component.requestAccount.policy
+            }
+            anon={true}
+          />
+        </> : null;
       const oidc = this.state.oidc ? this.getOIDCLinks() : '';
       const login = (
         <div>
@@ -257,6 +268,8 @@ class Login extends Component {
             <br/>
             <a onClick={() => this.setMode('request')}
               style={{cursor: 'pointer'}}>Request Account</a>
+            <br />
+            {policy}
           </div>
           {oidc}
           <div className={'help-text'}>

@@ -861,6 +861,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
+            $baseurl . '/js/components/HeaderPolicyButton.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Help.js',
         ];
@@ -933,6 +934,27 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($this->Module->getLongName(), "/$this->name"),
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
+        );
+    }
+
+    /**
+     * Returns the latest Policy for this page with a HeaderButton
+     */
+    public function getHeaderPolicy(): array {
+        return \Utility::getPolicy(
+            $this->Module->getName(),
+            '',
+            true
+        ) ?? [];
+    }
+
+    /**
+     * Returns the latest Policy for this page that the user needs to renew
+     */
+    public function getPolicyThatNeedsRenewal(): array {
+        return \Utility::getLatestPolicyDecision(
+            $this->Module->getName(),
+            '',
         );
     }
 

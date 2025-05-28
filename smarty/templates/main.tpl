@@ -73,6 +73,16 @@
                 toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
+
+            headerPolicyRoot = ReactDOM.createRoot(
+                document.getElementById("headerPolicyButton")
+            );
+            headerPolicyRoot.render(
+                React.createElement(PolicyButton, {
+                    onClickPolicy: {$header_policy|json_encode},
+                    popUpPolicy: {$pop_up_policy|json_encode},
+                })
+            );
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -142,6 +152,9 @@
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
                             </li>
+                            {/if}
+                            {if $header_policy}
+                                <li class="hidden-xs hidden-sm" id="headerPolicyButton"></li>
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>

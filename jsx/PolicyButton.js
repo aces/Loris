@@ -26,8 +26,8 @@ const PolicyButton = ({
   popUpPolicy,
   buttonStyle,
   buttonText,
-  anon,
-  callback,
+  anon=false,
+  callback=() => {},
 }) => {
   if (popUpPolicy && popUpPolicy.needsRenewal) {
     fireSwal(popUpPolicy);
