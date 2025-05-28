@@ -1421,6 +1421,38 @@ CREATE TABLE `user_account_history` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version VARCHAR(50) NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms Of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms Of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT '',
+    DeclineButtonText VARCHAR(255) DEFAULT '',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- ********************************
 -- user_login_history tables
 -- ********************************

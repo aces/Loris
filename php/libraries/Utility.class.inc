@@ -759,6 +759,151 @@ class Utility
     }
 
     /**
+     * Get latest Policy for the given Modile Name and Policy Name
+     * This is the CCNA Version for now, the LORIS Core version will
+     * likely return more fields.
+     * 
+     * @param string $moduleName The module name
+     * @param string $policyName The policy name
+     * 
+     * @return array The policy details
+     * @throws \DatabaseException
+     */
+    static function getPolicy(string $moduleName, string $policyName ='', bool $headerButton = false) {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        // If no policy name is given, then we return the latest policy for the module
+        if (!empty($policyName)) {
+            $policyName = 'AND p.Name = '. $DB->quote($policyName);
+        }
+        // If we want just a policy that goes in the header, then we need HeaderButton = 'Y'
+        if ($headerButton == true) {
+            $headerWhere = "('Y')";
+        } else {
+            $headerWhere = "('Y', 'N')";
+        }
+        return $DB->pselectRow(
+            "SELECT
+                p.Name as PolicyName,
+                Version,
+                Content,
+                SwalTitle,
+                HeaderButtonText,
+                AcceptButtonText,
+                DeclineButtonText,
+                m.Name as ModuleName,
+                PolicyID,
+                PolicyRenewalTime,
+                PolicyRenewalTimeUnit
+            FROM policies p
+            JOIN modules m ON m.ID = p.ModuleID
+            WHERE m.Name = :moduleName
+                $policyName
+                AND p.Active = 'Y'
+                AND p.HeaderButton IN $headerWhere
+                AND Version = (
+                    SELECT MAX(Version)
+                    FROM policies
+                    WHERE ModuleID = m.ID
+                        AND Name = p.Name
+                        AND p.HeaderButton IN $headerWhere
+                )
+            ",
+            [
+                'moduleName' => $moduleName
+            ]
+        );
+    }
+
+    /**
+     * Get a User's latest decision for a Policy, and whether or not they need to renew.
+     * 
+     * @param string $moduleName The module name
+     * @param string $policyName The policy name
+     * 
+     * @return array The decision details
+     * @throws \DatabaseException
+     */
+    static function getLatestPolicyDecision(string $moduleName, string $policyName ='', int $userID = null) {
+        $client    = new NDB_Client();
+        $anonymous = ($client->initialize() === false);
+        if ($anonymous) {
+            // If the user is anonymous, we cannot get their decision
+            return [];
+        }
+
+        $userID = $userID ?? User::singleton()->getID();
+
+        $factory      = \NDB_Factory::singleton();
+        $DB           = $factory->database();
+        
+        $policyInfo = self::getPolicy($moduleName, $policyName, false) ?? [];
+        if (empty($policyInfo)) {
+            return [];
+        }
+        $decision = $DB->pselectRow(
+            "SELECT Decision, DecisionDate
+            FROM user_policy_decision
+            WHERE
+                UserID = :uid
+                AND PolicyID=:policyID
+                AND DecisionDate = (
+                    SELECT MAX(DecisionDate)
+                    FROM user_policy_decision
+                    WHERE
+                        UserID = :uid
+                        AND PolicyID=:policyID
+                )    
+            ",
+            [
+                'uid'     => $userID,
+                'policyID'=> $policyInfo['PolicyID']
+            ]
+        ) ?? [];
+        error_log(print_r($decision, true));
+        $needsRenewal = true;
+        if ($decision && $policyInfo['PolicyRenewalTime'] > 0) {
+            $decisionDate = new \DateTime($decision['DecisionDate']);
+            $interval = new \DateInterval("P{$policyInfo['PolicyRenewalTime']}{$policyInfo['PolicyRenewalTimeUnit']}");
+            $renewalDate = $decisionDate->add($interval);
+            error_log("Renewal Date: " . $renewalDate->format('Y-m-d H:i:s'));
+            if ($renewalDate > new \DateTime()) {
+                $needsRenewal = false;
+            }
+        }
+        return [
+            ...$policyInfo,
+            'needsRenewal' => $needsRenewal,
+        ];
+    }
+
+    /**
+     * Save a User's Policy decision
+     * 
+     * @param string $ModuleName The Module Name
+     * @param string $PolicyName The Policy Name
+     * @param string $decision The decision made by the current user
+     * 
+     * @return void
+     * @throws \DatabaseException
+     * 
+     */
+    static function saveUserPolicyDecision(string $ModuleName, string $PolicyName, string $decision) {
+        $user = User::singleton();
+        $db = \NDB_Factory::singleton()->database();
+
+        $policy = self::getPolicy($ModuleName, $PolicyName, false);
+        $db->insert(
+            'user_policy_decision',
+            [
+                'UserID' => $user->getId(),
+                'PolicyID' => $policy['PolicyID'],
+                'Decision' => $decision,
+            ]
+        );
+    }
+
+    /**
      * Get all the instruments which currently exist for a given visit label
      * in the database.
      *

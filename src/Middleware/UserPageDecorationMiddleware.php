@@ -272,6 +272,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         if ($page instanceof \NDB_Page) {
             $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+            $tpl_data['header_policy'] = $page->getHeaderPolicy();
+            $tpl_data['pop_up_policy'] = $page->getPolicyThatNeedsRenewal();
         }
 
         // Assign the console template variable as the very, very last thing.
