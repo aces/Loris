@@ -819,7 +819,7 @@ class Utility
             [
                 'moduleName' => $moduleName
             ]
-        );
+        ) ?? [];
     }
 
     /**
@@ -835,7 +835,7 @@ class Utility
     static function getLatestPolicyDecision(
         string $moduleName,
         string $policyName = '',
-        int $userID = null
+        int $userID
     ) {
         $client    = new NDB_Client();
         $anonymous = ($client->initialize() === false);

@@ -26,7 +26,7 @@ $client    = new NDB_Client();
 $anonymous = ($client->initialize() === false);
 if ($anonymous) {
     // If the user is not logged in, we cannot save the policy decision.
-    exit;
+    exit(0);
 }
 
 \Utility::saveUserPolicyDecision(
