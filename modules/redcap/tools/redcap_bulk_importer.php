@@ -36,6 +36,7 @@ use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\redcap\config\RedcapConfigLorisId;
 use LORIS\redcap\config\RedcapConfigParser;
 use LORIS\redcap\client\RedcapHttpClient;
+use LORIS\redcap\Queries;
 
 
 // --------------------------------------
@@ -68,6 +69,13 @@ $redcapConnections = [];
  */
 $redcapInstrumentEventMap = [];
 
+/**
+ * REDCap related queries.
+ *
+ * @var Queries
+ */
+$queries = new Queries($lorisInstance);
+
 
 // --------------------------------------
 // ARGS PARSE
@@ -99,6 +107,8 @@ fprintf(STDOUT, "[args:force_update] {$forceUpdateMsg}\n");
 fprintf(STDOUT, "[args:redcap_username] {$redcapUsername}\n");
 
 // --------------------------------------
+// Main process
+
 // init LORIS client
 $lorisClient = new Client(
     ['base_uri' => "{$lorisURL}/redcap/notifications"]
@@ -113,8 +123,7 @@ if (empty($redcapAllowedInstruments)) {
 
 // Get LORIS data to import
 fprintf(STDOUT, "[loris:data] getting data to import...\n");
-$lorisDataToImport = getLORISInstrumentToImport(
-    $lorisInstance->getDatabaseConnection(),
+$lorisDataToImport = $queries->getLORISInstrumentToImport(
     $redcapAllowedInstruments,
     $forceUpdate
 );
