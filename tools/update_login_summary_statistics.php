@@ -66,7 +66,7 @@ $pinnedqueries = $DB->pselectWithIndexKey(
 );
 $user          = (new \User())->factory('admin');
 $data          = ['All Projects' => []];
-$DB->run("DELETE FROM Login_Summary_Statistics", []);
+$DB->run("DELETE FROM login_summary_statistics", []);
 foreach ($projects as $project) {
     $data[$project] = [];
 }
@@ -155,7 +155,7 @@ print_r($data);
 foreach ($data as $project => $values) {
     foreach ($values as $title => $value) {
         $DB->insertOnDuplicateUpdate(
-            'Login_Summary_Statistics',
+            'login_summary_statistics',
             [
                 'Project'    => $project,
                 'Title'      => $title,
