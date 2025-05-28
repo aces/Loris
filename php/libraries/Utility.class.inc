@@ -853,7 +853,7 @@ class Utility
         if (empty($policyInfo)) {
             return [];
         }
-        $decision = $DB->pselectRow(
+        $decision     = $DB->pselectRow(
             "SELECT Decision, DecisionDate
             FROM user_policy_decision
             WHERE
