@@ -271,7 +271,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['FormAction'] = $page->FormAction ?? '';
 
         if ($page instanceof \NDB_Page) {
-            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+            $tpl_data['breadcrumbs']   = $page->getBreadcrumbs();
             $tpl_data['header_policy'] = $page->getHeaderPolicy();
             $tpl_data['pop_up_policy'] = $page->getPolicyThatNeedsRenewal();
         }
