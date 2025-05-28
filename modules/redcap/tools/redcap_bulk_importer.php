@@ -445,57 +445,6 @@ function initREDCapInstrumentEventMap(
 }
 
 /**
- * Get the list of all instrument records to import from REDCap.
- *
- * @param Database $db                       database object
- * @param array    $allowedRedcapInstruments authorized redcap instruments
- * @param bool     $forceUpdate              do force update?
- *
- * @return Query
- */
-function getLORISInstrumentToImport(
-    \Database $db,
-    array $allowedRedcapInstruments,
-    bool $forceUpdate = false
-): Query {
-    // importable redcap instruments
-    $selectedInstruments = "('"
-        . implode("','", $allowedRedcapInstruments)
-        . "')";
-
-    // if forced, then we do not filter out administration/data entry already
-    // set up, they will be overridden
-    $forceUpdateCondition = "";
-    if (!$forceUpdate) {
-        $forceUpdateCondition = "
-            AND (f.Data_entry = 'In Progress' OR f.Data_entry IS NULL)
-            AND f.Administration IS NULL
-        ";
-    }
-
-    //
-    return $db->pselect(
-        "SELECT c.PSCID as pscid,
-            c.CandID as candid,
-            s.Visit_label as visitLabel,
-            f.test_name as instrument,
-            f.CommentID as commentID,
-            f.Data_entry as dataEntry,
-            f.Administration as administration
-        FROM flag f
-            JOIN session s ON (s.ID = f.sessionID)
-            JOIN candidate c ON (c.candid = s.candid)
-        WHERE s.Active = 'Y'
-            AND c.Active = 'Y'
-            AND f.CommentID NOT LIKE 'DDE%'
-            {$forceUpdateCondition}
-            AND f.test_name IN {$selectedInstruments}
-        ",
-        []
-    );
-}
-
-/**
  * Send a REDCap notification to LORIS.
  *
  * @param GuzzleHttp\Client $lorisClient           LORIS client
