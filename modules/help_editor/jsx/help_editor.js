@@ -104,7 +104,7 @@ class HelpEditor extends React.Component {
       );
     };
     const actions = [
-      {label: 'Add a new help content for instrument', action: addHelp},
+      {label: 'Adding help content for a specific instrument', action: addHelp},
     ];	  
     /**
      * XXX: Currently, the order of these fields MUST match the order of the
