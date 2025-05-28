@@ -834,7 +834,7 @@ class Utility
      */
     static function getLatestPolicyDecision(
         string $moduleName,
-        string $policyName = '',
+        string $policyName,
         int $userID
     ) {
         $client    = new NDB_Client();
