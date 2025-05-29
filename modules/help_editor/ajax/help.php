@@ -24,7 +24,6 @@ try {
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
-    echo $_REQUEST;
     $help = [
         'content'  => $m->getHelp($subpageName ?? $moduleName),
         'source'   => 'helpfile',
