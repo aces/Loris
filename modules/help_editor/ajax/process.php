@@ -81,7 +81,6 @@ if (!empty($_POST['helpID'])
 
 }
 
-    error_log(print_r($_POST, true));
 if ($_POST['new'] == true) {
     // insert the help file
     HelpFile::insert(
