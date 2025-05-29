@@ -82,7 +82,6 @@ class HelpFile
 
         // set the help file
         $obj->data = $result ?? [];
-                error_log(print_r($result, true));
 
         return $obj;
     }
