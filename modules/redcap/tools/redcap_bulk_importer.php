@@ -507,7 +507,7 @@ function sendNotification(
     // send
     return $lorisClient->request(
         'POST',
-        '',
+        '/redcap/notifications',
         [
             'form_params' => $data,
             'debug'       => false
