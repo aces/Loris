@@ -306,18 +306,27 @@ function triggerNotifications(
         };
 
         // send POST request to LORIS mimicing REDCap notification
-        $response = sendNotification(
-            $lorisClient,
-            "{$redcapInstanceURL}/api/",
-            $redcapProjectID,
-            $instrumentName,
-            $redcapRecordID,
-            $redcapEventInstrument->unique_event_name,
-            $redcapUsername
-        );
+        try {
+            $response = sendNotification(
+                $lorisClient,
+                $redcapInstanceURL,
+                $redcapProjectID,
+                $instrumentName,
+                $redcapRecordID,
+                $redcapEventInstrument->unique_event_name,
+                $redcapUsername
+            );
+            $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
+        } catch (GuzzleHttp\Exception\ServerException $ex) { // 500-level
+            $msg = $ex->getResponse()->getBody()->getContents();
+            error_log($msg);
+            $responseStatusMsg = "[5xx] failed";
+        } catch (GuzzleHttp\Exception\ClientException $ex) { // 400-level
+            $msg = $ex->getResponse()->getBody()->getContents();
+            error_log($msg);
+            $responseStatusMsg = "[4xx] failed";
+        }
 
-        //
-        $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
         fprintf(STDERR, "  - {$responseStatusMsg}\n");
     }
 }
