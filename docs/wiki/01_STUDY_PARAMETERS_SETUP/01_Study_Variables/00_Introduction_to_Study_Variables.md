@@ -2,7 +2,7 @@
 
 ## Identifiers
 
-In LORIS, and indeed in all of its instances (CBIG, CCNA, xxx, yyy, etc), the names of participants is anonymized by assigning numeric and alphanumeric ID's to them. In this way, the data of a participant is protected from connection to their name or personal identifying information ("PII"). 
+In LORIS, and indeed in all of its instances, the presonal information of participant is anonymized by assigning numeric and alphanumeric ID's to them. Loris is not designed to store personal identifying information ("PII"). Rather, these identifiers are used for internal operations, like, for example,  querying data that is linked to a specific participant's ID.
 
 The IDs in LORIS have different purposes:
 
@@ -16,13 +16,12 @@ The IDs in LORIS have different purposes:
 - Cardinality: One per participant per project
 - Main participant identifier
 
-- [ExteralID]
+- [ExternalID]
 
-- Cardinality: Multiple per participant
+- Cardinality: One per participant
 - Data dissemination
 
-- [Projects]
-- [Sites]
-- [Cohorts]
-- [Timepoints]
-- [Configurations]
+- [Projects](02_Projects.md)
+- [Sites](03_Sites.md)
+- [Cohorts](04_Cohorts.md)
+- [Timepoints](05_Timepoints.md)
