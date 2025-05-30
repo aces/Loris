@@ -146,7 +146,18 @@ INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALU
     ('imaging_uploader_ownsites', 'Imaging Scans - Own Sites', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'), 'View', '2'),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2'),
-    ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2')
+    ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'), 'View', '2'),
+    ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
+    ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Create', '2'),
+    ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Edit', '2'),
+    ('biobank_specimen_alter','Edit Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), 'Edit', '2'),
+    ('biobank_container_view','View Container Data',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
+    ('biobank_container_create','Create Containers',(SELECT ID FROM modules WHERE Name='biobank'), 'Create', '2'),
+    ('biobank_container_update','Edit Container Data',(SELECT ID FROM modules WHERE Name='biobank'), 'Edit', '2'),
+    ('biobank_pool_view','View Pool Data',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
+    ('biobank_pool_create','Create Pools',(SELECT ID FROM modules WHERE Name='biobank'), 'Create', '2'),
+    ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
+    ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2')
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)
