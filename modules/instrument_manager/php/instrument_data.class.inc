@@ -18,7 +18,7 @@ class Instrument_Data extends \NDB_Page
         'instrument_manager_read'
     ];
 
-    const MAX_FILE_BYTES = 1024 * 1024 * 512;  // 512 MB -- TODO: Config?
+    const MAX_FILE_BYTES = 1000 * 1000 * 512;  // 512 MB -- TODO: Config?
 
     /**
      * Checking permissions

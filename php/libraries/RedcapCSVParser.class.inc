@@ -20,7 +20,7 @@ use SplFileInfo;
 use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 
 /**
- * This class is used to parse instrument data
+ * This class is used to parse redcap data
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -62,8 +62,6 @@ class RedcapCSVParser extends CSVParser
     {
         try {
             $expectedHeaders = RedcapDictionaryRecord::getHeaders();
-
-            error_log(json_encode($expectedHeaders));
             return $this->parse(
                 [],
                 -1,
@@ -75,7 +73,7 @@ class RedcapCSVParser extends CSVParser
                         !in_array($instrumentName, $this->importableInstruments, true)
                     ) {
                         $msg = " -> instrument not importable '$instrumentName', skipped.\n";
-                        fwrite(STDERR, $msg);
+                        error_log($msg);
                         return true;
                     }
 
@@ -90,7 +88,7 @@ class RedcapCSVParser extends CSVParser
                     } catch (\LorisException $le) {
                         if ($this->trimInstrumentName) {
                             // print error but continue with non-trimmed
-                            fprintf(STDERR, $le->getMessage());
+                            error_log($le->getMessage());
                             return new RedcapDictionaryRecord(
                                 array_combine($expectedHeaders, $row)
                             );
@@ -109,16 +107,13 @@ class RedcapCSVParser extends CSVParser
     }
 
     /**
-     * Convert array of RedcapDictionaryRecord to LINST file
+     * Separate parsed array of RedcapDictionaryRecord to LINST instruments
      *
      * @param RedcapDictionaryRecord[] $dataDict Data dictionary
-     * @param string $outputFolder               Location of output LINST file
      *
-     * @return void
+     * @return array[]
      */
-    public static function convertParsedCSVRecordsToLINST(
-        array $parsedCSV, string $outputFolder
-    ): void
+    public static function convertParsedCSVRecordsToLINST(array $parsedCSV): array
     {
         $instruments = [];
         foreach ($parsedCSV as $dictionaryRecord) {
@@ -127,19 +122,33 @@ class RedcapCSVParser extends CSVParser
                 $instruments[$dictionaryRecord->form_name][] = $linst;
             }
         }
+        return $instruments;
+    }
 
-        fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
-
+    /**
+     * Convert array of RedcapDictionaryRecord to LINST file
+     *
+     * @param array[] $instruments          LINST instruments
+     * @param string $outputFolder          Instrument output folder
+     * @param string $instrumentTitleMap    Instrument name map
+     *
+     * @return void
+     */
+    public static function createLINSTFiles(
+        array $instruments, string $outputFolder, $instrumentTitleMap = []
+    ): void
+    {
         // write instrument
         foreach ($instruments as $instrumentName => $instrument) {
             self::createLINSTFile(
                 $outputFolder,
                 $instrumentName,
-                $instrumentName, // Intead of $redcap_intruments_map[$instrument_name]
+                in_array($instrumentName, $instrumentTitleMap)
+                    ? $instrumentTitleMap[$instrumentName]
+                    : $instrumentName,
                 $instrument
             );
         }
-        fwrite(STDOUT, "\n-- end\n");
     }
 
 
@@ -159,8 +168,6 @@ class RedcapCSVParser extends CSVParser
         string $instrument_title,
         array $instrument
     ): void {
-        fwrite(STDERR, " -> writing '$instrument_name'\n");
-        //
         $fp = fopen("$output_dir/$instrument_name.linst", "w");
         fwrite($fp, "{-@-}testname{@}$instrument_name\n");
         fwrite($fp, "table{@}$instrument_name\n");
@@ -198,6 +205,8 @@ class RedcapCSVParser extends CSVParser
         fwrite($fp_meta, "table{@}$instrument_name\n");
         fwrite($fp_meta, "jsondata{@}true\n");
         fwrite($fp_meta, "norules{@}true");
+        fwrite($fp_meta, "redcap{@}true");
+
         fclose($fp_meta);
     }
 
