@@ -128,9 +128,6 @@ class CSVParser
           return $csvHeaders;
         }
 
-        error_log('the ones');
-        error_log(json_encode($csvHeaders));
-
         // Validate expected headers, if provided
         if (count($expectedHeaders) > 0) {
             if (!$this->_validateHeaders($csvHeaders, $expectedHeaders)) {

@@ -28,6 +28,7 @@ $lorisInstance->getModule('redcap')->registerAutoloader();
 use LORIS\redcap\client\RedcapHttpClient;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use LORIS\redcap\config\RedcapConfigParser;
+use LORIS\RedcapCSVParser;
 
 // options
 $opts = getopt(
@@ -60,22 +61,11 @@ if ($options['inputType'] === 'api') {
 } else {
     // file stream to REDCap Dictionary Record
     fwrite(STDOUT, "\n-- Getting metadata from input file.\n");
-    $dict = getDictionaryCSVStream(
-        $options['file'],
-        $imp_instrument,
-        $options['trimInstrumentName']
-    );
+    $redcapCSV = new SplFileInfo($options['file']);
+    $redcapParser = new RedcapCSVParser($redcapCSV, $imp_instrument, $options['trimInstrumentName']);
+    $dict = $redcapParser->parseCSV($lorisInstance);
 }
 
-// create LINST lines by instrument
-fwrite(STDOUT, "\n-- Parsing records...\n");
-$instruments = [];
-foreach ($dict as $dict_record) {
-    $linst = $dict_record->toLINST();
-    if (!empty($linst)) {
-        $instruments[$dict_record->getFormName()][] = $linst;
-    }
-}
 
 // output directory
 $output_dir = $options['outputDir'];
@@ -85,189 +75,10 @@ $redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 
-// write instrument
-foreach ($instruments as $instrument_name => $instrument) {
-    writeLINSTFile(
-        $options['outputDir'],
-        $instrument_name,
-        $redcap_intruments_map[$instrument_name],
-        $instrument
-    );
-}
+RedcapCSVParser::convertParsedCSVRecordsToLINST($dict, $output_dir, $redcap_intruments_map);
 
 fwrite(STDOUT, "\n-- end\n");
 
-
-// ------------ Functions
-
-/**
- * Get the dictionary from a CSV file.
- *
- * @param string $input_file             a file path
- * @param array  $importable_instruments a list of importable instruments
- * @param bool   $trim_name              should the instrument name be trimmed?
- *
- * @return RedcapDictionaryRecord[] dictionary
- */
-function getDictionaryCSVStream(
-    string $input_file,
-    array $importable_instruments,
-    bool $trim_name,
-): array {
-    if (empty($input_file)) {
-        fprintf(STDERR, "Required a REDCap dictionary file.\n");
-        exit(1);
-    }
-
-    // If a local input file was specified just open it
-    $fp = fopen($input_file, "r");
-    if ($fp === false) {
-        fprintf(STDERR, "Could not open file $input_file\n");
-        exit(1);
-    }
-
-    // first line = headers, skip them
-    fgetcsv($fp);
-    // use know one instead
-    $headers = RedcapDictionaryRecord::getHeaders();
-
-    // read file
-    $dictionary        = [];
-    $badMap            = 0;
-    $mapped            = 0;
-    $last_redcap_error = '';
-    while ($row = fgetcsv($fp)) {
-        $inst = $row[1];
-        // skip non importable instruments
-        if (!in_array($inst, $importable_instruments, true)) {
-            $msg = " -> instrument not importable '$inst', skipped.\n";
-            // to avoid repeating same msg
-            if ($last_redcap_error !== $msg) {
-                $last_redcap_error = $msg;
-                fwrite(STDERR, $msg);
-            }
-            continue;
-        }
-
-        // metadata
-        $metadata = $row;
-
-        // do not trim
-        if (!$trim_name) {
-            $dd = new RedcapDictionaryRecord(zip($headers, $metadata));
-            $mapped++;
-        } else {
-            // try to trim form name
-            try {
-                $dd = new RedcapDictionaryRecord(zip($headers, $metadata), true);
-                $mapped++;
-            } catch (\LorisException $le) {
-                // print error but continue with non trimmed
-                fprintf(STDERR, $le->getMessage());
-                $dd = new RedcapDictionaryRecord(zip($headers, $metadata));
-                $badMap++;
-            }
-        }
-
-        // add to dictionary
-        $dictionary[] = $dd;
-    }
-    fclose($fp);
-
-    // bad map
-    if ($trim_name) {
-        fwrite(STDERR, "\nCould not map $badMap fields\nMapped $mapped fields\n");
-    }
-
-    return $dictionary;
-}
-
-/**
- * Zips values from the first array as keys with the values from the second
- * array as values. Such as:
- * ```
- * # input
- * $a1 = [0 => 'a', 1 => 'b', 2 => 'c']
- * $a2 = [0 => 'yes', 1 => 'no', 2 => 'maybe']
- * # result
- * $zipped = ['a' => 'yes', 'b' => 'no', 'c' => 'maybe']
- * ```
- * Both arrays must have the same length.
- *
- * @param array $headers  the key array
- * @param array $metadata the value array.
- *
- * @return array a zipped array.
- */
-function zip(array &$headers, array &$metadata): array
-{
-    if (count($headers) !== count($metadata)) {
-        fwrite(STDERR, "Cannot zip headers with metadata.\n");
-    }
-    $zipped = [];
-    foreach ($headers as $i => $h) {
-        $zipped[$h] = $metadata[$i];
-    }
-    return $zipped;
-}
-
-/**
- * Write LINST file and its associated META file.
- *
- * @param string $output_dir       the output directory
- * @param string $instrument_name  the instrument name
- * @param string $instrument_title the instrument title/label
- * @param array  $instrument       the instrument data
- *
- * @return void
- */
-function writeLINSTFile(
-    string $output_dir,
-    string $instrument_name,
-    string $instrument_title,
-    array $instrument
-): void {
-    fwrite(STDERR, " -> writing '$instrument_name'\n");
-    //
-    $fp = fopen("$output_dir/$instrument_name.linst", "w");
-    fwrite($fp, "{-@-}testname{@}$instrument_name\n");
-    fwrite($fp, "table{@}$instrument_name\n");
-    fwrite($fp, "title{@}$instrument_title\n");
-
-    // Standard LORIS metadata fields that the instrument builder adds
-    // and LINST class automatically adds to instruments.
-    fwrite($fp, "date{@}Date_taken{@}Date of Administration{@}{@}\n");
-    fwrite($fp, "static{@}Candidate_Age{@}Candidate Age (Years)\n");
-    fwrite($fp, "static{@}gestational_age{@}Gestational Age (Days)\n");
-    fwrite($fp, "static{@}Window_Difference{@}Window Difference (+/- Days)\n");
-    fwrite($fp, "select{@}Examiner{@}Examiner{@}NULL=>''\n");
-
-    foreach ($instrument as $field) {
-        // avoid 'timestamp_start', changed in 'static' instead of 'text'
-        if (str_contains($field, "{@}timestamp_start{@}")) {
-            // transform timestamp start to static
-            fwrite($fp, "static{@}timestamp_start{@}Start time (server)\n");
-
-            // add 'timestamp_stop' and 'Duration' fields after 'timestamp_start'
-            fwrite($fp, "static{@}timestamp_stop{@}Stop time (server)\n");
-            fwrite($fp, "static{@}Duration{@}Duration (server) (in seconds)\n");
-
-        } else {
-            // write field line
-            fwrite($fp, "$field\n");
-
-        }
-    }
-    fclose($fp);
-
-    // META file
-    $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
-    fwrite($fp_meta, "testname{@}$instrument_name\n");
-    fwrite($fp_meta, "table{@}$instrument_name\n");
-    fwrite($fp_meta, "jsondata{@}true\n");
-    fwrite($fp_meta, "norules{@}true");
-    fclose($fp_meta);
-}
 
 /**
  * Prints usage instruction to stderr

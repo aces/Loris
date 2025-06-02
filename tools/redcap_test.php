@@ -13,4 +13,6 @@ global $lorisInstance;
 $redcapCSV = new SplFileInfo('redcap.csv');
 $redcapParser = new \LORIS\RedcapCSVParser($redcapCSV);
 $parsedCSV = $redcapParser->parseCSV($lorisInstance);
-$redcapParser::convertParsedCSVRecordsToLINST($parsedCSV, '.');
+$instruments = $redcapParser::convertParsedCSVRecordsToLINST($parsedCSV);
+$redcapParser::createLINSTFiles($instruments, '.');
+
