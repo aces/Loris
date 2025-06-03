@@ -96,54 +96,93 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $cohortOptions      = [];
         $visitOptions       = [];
         $recruitmentCohorts = [];
-        foreach ($projects as $projectID) {
-            // Set project recruitment data
-            $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
-            if (is_null($projectInfo)) {
-                throw new \LorisException(
-                    'No project settings exist in the Database for ' .
-                    'project ID ' . intval(strval($projectID))
-                );
-            }
-            $recruitment[intval(strval($projectID))]
-                = $this->_createProjectProgressBar(
-                    strval($projectID),
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject(
-                        $recruitmentRaw,
-                        $projectID
-                    ),
-                    $recruitmentRaw
-                );
+        $centerIDs          = $user->getCenterIDs();
+        $sites = \Utility::getSiteList();
 
-            // Set cohort recruitment data
-            $project = \Project::getProjectFromID($projectID);
-            $cohorts = $project->getCohorts();
+        $modules = $this->loris->getActiveModules();
 
-            $projectOptions[strval($projectID)] = $project->getName();
-            foreach ($cohorts AS $sp) {
-                $cohortOptions[$sp["cohortId"]]      = $sp["title"];
-                $recruitmentCohorts[$sp["cohortId"]]
-                    = $this->_createCohortProgressBar(
-                        $sp["cohortId"],
-                        $sp["title"],
-                        $sp["recruitmentTarget"],
-                        $db
-                    );
-                $cohortVisits = \Utility::getVisitsForCohort(
-                    intval($sp["cohortId"])
-                );
-                foreach ($cohortVisits as $visit) {
-                    $visitOptions[$visit] = $cohortVisits[$visit];
+        $studyWidgets = [];
+        foreach ($modules as $module) {
+            $mwidget = $module->getWidgets(
+                'study-progression',
+                $user,
+                []
+            );
+            foreach ($mwidget as $mwidget) {
+                if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
+                    $studyWidgets[$mwidget->label()] = $mwidget->data();
+                    if (!$module->hasAccess($user)) {
+                        foreach (
+                            $studyWidgets[$mwidget->label()] as $key => $value
+                        ) {
+                            if (isset($value['url'])) {
+                                $studyWidgets[$mwidget->label()][$key]['url'] = null;
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        $sites       = \Utility::getSiteList();
-        $userCenters = $user->getCenterIDs();
-
-        $siteOptions = array_intersect_key($sites, $userCenters);
+        $studyProgressionProjects = [];
+        foreach ($projects as $pid) {
+            // Set project recruitment data
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval(strval($pid))
+                );
+            }
+            $recruitment[intval(strval($pid))] = $this->_createProjectProgressBar(
+                strval($pid),
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject(
+                    $recruitmentRaw,
+                    $pid
+                ),
+                $recruitmentRaw
+            );
+            $studyProgressionProjects[$projectInfo['Name']]
+                = $this->_createProjectSummary(
+                    strval($pid),
+                    $studyWidgets
+                );
+            // Set cohort recruitment data
+            $centerList  = "'" . implode("','", $centerIDs) . "'";
+            $projectList = "'" . implode("','", $projects) . "'";
+            $cohortsRaw  = $db->pselectWithIndexKey(
+                "SELECT
+                COUNT(DISTINCT s.CandidateID) as Count,
+                s.CohortID, co.Title, co.RecruitmentTarget
+                FROM session s JOIN candidate c
+                        ON (s.CandidateID=c.ID)
+                JOIN cohort co ON (s.CohortID=co.CohortID)
+                WHERE s.CenterID IN ({$centerList})
+                AND s.ProjectID IN ({$projectList})
+                AND c.RegistrationCenterID <> 1
+                GROUP BY s.CohortID",
+                [],
+                'CohortID'
+            );
+            foreach ($cohortsRaw AS $sp) {
+                $cohortOptions[$sp["CohortID"]]      = $sp["Title"];
+                $recruitmentCohorts[$sp["CohortID"]]
+                    = $this->_createCohortProgressBar(
+                        $sp["CohortID"],
+                        $sp["Title"],
+                        $sp["RecruitmentTarget"],
+                        $db,
+                        $sp["Count"]
+                    );
+            }
+        }
+        $siteOptions = [];
+        foreach ($centerIDs as $center) {
+            if (array_key_exists($center->__toString(), $sites)) {
+                $siteOptions[$center->__toString()] = $sites[$center->__toString()];
+            }
+        }
 
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
@@ -153,15 +192,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
             'cohorts'           => $cohortOptions,
             'sites'             => $siteOptions,
             'visits'            => $visitOptions,
-            'participantStatus' => $participantStatusOptions
+            'participantStatus' => $participantStatusOptions,
         ];
         $values  = [];
         // Used for the react widget recruitment.js
         $values['recruitment'] = $recruitment;
         // Used for the react widget studyprogression.js
         $values['studyprogression']   = [
-            'total_scans' => $totalScans,
-            'recruitment' => $recruitment
+            'total_scans'     => $totalScans,
+            'recruitment'     => $recruitment,
+            'progressionData' => $studyProgressionProjects,
         ];
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
@@ -178,7 +218,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *                           created.
      * @param $title             The title to add to the template variables.
      * @param $recruitmentTarget The target for this recruitment type.
-     * @param \Database $db                The database connection to get data from.
+     * @param $db                The database connection to get data from.
+     * @param $totalRecruitment  The total number of candidates of all
      *
      * @return array Smarty template data
      */
@@ -186,28 +227,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $ID,
         $title,
         $recruitmentTarget,
-        \Database $db
+        \Database $db,
+        $totalRecruitment
     ) {
-
-        $user        = \User::singleton();
-        $projectIDs  = $user->getProjectIDs();
-        $projectList = "'" . implode("','", $projectIDs) . "'";
-        $centerIDs   = $user->getCenterIDs();
-        $centerList  = "'" . implode("','", $centerIDs) . "'";
-
-        $totalRecruitment = intval(
-            $db->pselectOne(
-                "SELECT COUNT(DISTINCT s.CandidateID)
-                FROM session s JOIN candidate c
-                     ON (s.CandidateID=c.ID)
-                WHERE s.CohortID=:sid
-                AND s.CenterID IN ({$centerList})
-                AND s.ProjectID IN ({$projectList})
-                AND c.RegistrationCenterID <> 1",
-                ['sid' => $ID]
-            )
-        );
-
         $rv = [
             'total_recruitment' => $totalRecruitment,
             'title'             => $title,
@@ -236,17 +258,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $rv['male_percent']   = $recruitmentTarget ?
             round($totalMales / $recruitmentTarget * 100) :
             null;
-        if ($totalRecruitment > $recruitmentTarget) {
+        if ($totalRecruitment >= $recruitmentTarget) {
             $rv['surpassed_recruitment'] = "true";
-
-            $rv['female_full_percent'] = $totalRecruitment ?
-                round($totalFemales / $totalRecruitment * 100) :
-                null;
-
-            $rv['male_full_percent'] = $totalRecruitment ?
-                round($totalMales / $totalRecruitment * 100) :
-                null;
         }
+        $rv['female_full_percent'] = $totalRecruitment ?
+            round($totalFemales / $totalRecruitment * 100) :
+            null;
+
+        $rv['male_full_percent'] = $totalRecruitment ?
+            round($totalMales / $totalRecruitment * 100) :
+            null;
         return $rv;
     }
 
@@ -369,6 +390,35 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 = round($totalMales / $totalRecruitment * 100);
         }
         return $rv;
+    }
+
+    /**
+     * Generates the template data for a project summary.
+     *
+     * @param string $ID      The name of the progress bar being created.
+     * @param array  $widgets The raw data from the database
+     *
+     * @return array data for the project summary
+     */
+    private function _createProjectSummary(
+        $ID,
+        $widgets
+    ): array {
+        $projectData = [];
+        foreach ($widgets as $name => $widget) {
+            foreach ($widget as $projectID => $data) {
+                if ($projectID == $ID) {
+                    $projectData[] = [
+                        'title'  => $name,
+                        'url'    => $data['url'],
+                        'colour' => $data['colour'],
+                        'count'  => $data['count']
+                    ];
+                }
+            }
+        }
+
+        return $projectData;
     }
 
     /**
