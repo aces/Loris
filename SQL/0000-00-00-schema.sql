@@ -2508,7 +2508,7 @@ CREATE TABLE login_summary_statistics (
     Project VARCHAR(255),
     Value INT,
     QueryOrder INT,
-     PRIMARY KEY (Title, Project)
+    PRIMARY KEY (Title, Project)
 );
 
 CREATE TABLE dataquery_queries (
