@@ -188,7 +188,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_instrument->validate($data);
         } catch (\LorisException $th) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $th->getMessage()
+                "Could not update. {$th->getMessage()}"
             );
         }
 
@@ -234,9 +234,12 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        // validate given data against the instrument
+        try {
+            $this->_instrument->validate($data);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
             );
         }
 
