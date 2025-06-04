@@ -199,6 +199,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $selectMultipleElements = [];
 
     /**
+     * Array containing all metadata elements in an instrument.
+     *
+     * @var array
+     *
+     * @access protected
+     */
+    protected array $metadataElements = [
+        "Date_taken",
+        "Examiner",
+        "Window_Difference",
+        "Candidate_Age",
+    ];
+
+    /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
