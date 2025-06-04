@@ -61,7 +61,7 @@ class Genomicfile
         if (!isset($files['file'])
             || empty($files['file']->getStream()->getMetadata('uri'))
         ) {
-            return false;
+            return [];
         }
         $this->_user   = $user;
         $this->_bytes  = $files['file']->getSize();

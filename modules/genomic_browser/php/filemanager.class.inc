@@ -132,6 +132,9 @@ class FileManager extends \NDB_Page implements ETagCalculator
             $request->getUploadedFiles(), // file data
             $values // post request values.
         );
+        if (empty($response)) {
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
 
         // Send file upload status.
         return new \LORIS\Http\Response\JsonResponse(
