@@ -3014,7 +3014,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
         if (!empty($additionalKeys)) {
             $i = implode(",", $additionalKeys);
-            error_log("[instrument:validation] Additional keys will be ignored: {$i}.");
+            error_log(
+                "[instrument:validation] Additional keys will be ignored: {$i}."
+            );
         }
     }
 
@@ -3037,10 +3039,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dateFormat  = $config->getSetting('dateDisplayFormat');
 
         // define all check fn - primitive
-        $isString   = fn($f) => is_string($f) && "{$f}" === $f;
-        $isBoolean  = fn($f) => is_bool($f) && (bool)$f === $f;
-        $isInteger  = fn($f) => is_integer($f) && (int)$f === $f;
-        $isFloat    = fn($f) => is_float($f) && (float)$f === $f;
+        $isString  = fn($f) => is_string($f) && "{$f}" === $f;
+        $isBoolean = fn($f) => is_bool($f) && (bool)$f === $f;
+        $isInteger = fn($f) => is_integer($f) && (int)$f === $f;
+        $isFloat   = fn($f) => is_float($f) && (float)$f === $f;
 
         // define all check fn - duration fn
         $isDuration = fn($f) => $isInteger($f) && $f >= 0;

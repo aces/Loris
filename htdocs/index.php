@@ -36,7 +36,7 @@ if (version_compare(PHP_VERSION, '8.4', '<')) {
     // phpcs:ignore
     function array_all(array $array, callable $callable): bool {
         foreach ($array as $key => $value) {
-            if (! $callable($value, $key))
+            if (!$callable($value, $key))
                 return false;
         }
         return true;
