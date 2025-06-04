@@ -63,15 +63,15 @@ class Genomicfile
         ) {
             return false;
         }
-        $this->_user         = $user;
-        $this->_bytes        = $files['file']->getSize();
-        $this->_values       = $values;
+        $this->_user   = $user;
+        $this->_bytes  = $files['file']->getSize();
+        $this->_values = $values;
+        $uri           = $files['file']->getStream()->getMetadata('uri');
         $this->_fileToUpload
             = (object) [
                 'file_type'         => $files['file']->getClientMediaType(),
                 'file_name'         => $files['file']->getClientFilename(),
-                'tmp_name'          => $files['file']
-                    ->getStream()->getMetadata('uri'),
+                'tmp_name'          => $uri,
                 'size'              => round($this->_bytes / 1048576, 0),
                 'inserted_by'       => $this->_user->getData('UserID'),
                 'genomic_file_type' => empty($this->_values['fileType']) ?
