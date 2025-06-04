@@ -171,6 +171,8 @@ abstract class LorisIntegrationTest extends TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
+        // It is sometimes useful to uncomment this to debug GitHub Actions
+        // var_dump($this->webDriver->getPageSource());
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
