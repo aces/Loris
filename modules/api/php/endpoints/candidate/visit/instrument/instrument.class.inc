@@ -183,12 +183,16 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        // validate given data against the instrument
+        try {
+            $this->_instrument->validate($data);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $th->getMessage()
             );
         }
 
+        // update values
         try {
             $this->_instrument->clearInstrument();
             $version = $request->getAttribute('LORIS-API-Version');
