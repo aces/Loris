@@ -169,9 +169,11 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Invalid request'
             );
         }
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        try {
+            $this->_instrument->validate($data);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
             );
         }
 
@@ -242,9 +244,11 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        try {
+            $this->_instrument->validate($data);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
             );
         }
 
