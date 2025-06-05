@@ -252,10 +252,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
          * @phan-suppress-next-line PhanParamSpecial1 */
             . join('),(', $candidates)
             . ')';
-
+        if (is_array($candidates) && !empty($candidates)) {
         $q = $DB->prepare($insertstmt);
-        $q->execute([]);
-
+        $q->execute([]);        
+        }
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f
 		JOIN test_names tn ON (f.TestID=tn.ID)
