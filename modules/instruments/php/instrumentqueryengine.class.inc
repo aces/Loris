@@ -243,7 +243,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS querycandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE querycandidates (
-                 CandID int(10),
+                 CandID int(10) UNSIGNED,
                  PRIMARY KEY (CandID)
             );"
         );
