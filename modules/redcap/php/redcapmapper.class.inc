@@ -16,6 +16,7 @@ use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigLorisId;
 use \LORIS\redcap\config\RedcapConfigRedcapId;
+use \LORIS\redcap\config\RedcapConfigVisit;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\client\models\RedcapEvent;
 
@@ -71,16 +72,46 @@ class RedcapMapper
     }
 
     /**
+     * Get the visit label of the session associated with a REDCap event. If the
+     * session does not already exist, this function either creates it if automatic
+     * session creation is enabled for that visit in the REDCap module
+     * configuration, or throws an error if it is not.
+     *
+     * @param \Candidate $candidate         The LORIS candidate associated with the
+     *                                      REDCap event.
+     * @param string     $unique_event_name The unique event name of the REDCap
+     *                                      event.
+     *
+     * @return string The visit label of the relevant session.
+     */
+    public function getVisitLabel(
+        \Candidate $candidate,
+        string $unique_event_name,
+    ): string {
+        $visit_config = $this->getVisitConfig($unique_event_name);
+
+        // If no visit mappings are defined in the configuration, use the REDCap
+        // unique event name as the visit label directly.
+        if ($visit_config === null) {
+            return $unique_event_name;
+        }
+
+        $this->checkOrCreateSession($candidate, $visit_config);
+
+        return $visit_config->visit_label;
+    }
+
+    /**
      * Get the LORIS visit label associated with a REDCap unique event name
      * based on the REDCap module configuration.
      *
      * @param string $unique_event_name The REDCap unique event name.
      *
-     * @return ?string The LORIS visit label associated with the REDCap
+     * @return ?RedcapConfigVisit The LORIS visit label associated with the REDCap
      *                 notification, or `null` if no corresponding visit label is
      *                 found.
      */
-    public function getVisitLabel(string $unique_event_name): ?string
+    public function getVisitConfig(string $unique_event_name): ?RedcapConfigVisit
     {
         // Get the list of all the REDCap events for this REDCap project.
         $redcap_events = $this->_redcap_client->getEvents();
@@ -104,7 +135,7 @@ class RedcapMapper
         // If there are no visit mappings in the REDCap module configuration, simply
         // use the REDCap event name as the LORIS vist name.
         if ($this->_config->visits === null) {
-            return $redcap_event->name;
+            return null;
         }
 
         $event_name = $redcap_event->name;
@@ -147,7 +178,94 @@ class RedcapMapper
         }
 
         // Return the LORIS visit label associated with the matching visit mapping.
-        return reset($visit_mappings)->visit_label;
+        $visit_mapping = reset($visit_mappings);
+        return $visit_mapping ? $visit_mapping : null;
+    }
+
+    /**
+     *  Check that a session exists or create it using the REDCap module automatic
+     *  session creation configuration. Throw an exception if the session does not
+     *  exist and automatic session creation is not enabled for that visit.
+     *
+     * @param \Candidate        $candidate     The LORIS candidate associated with
+     *                                         a REDCap event.
+     * @param RedcapConfigVisit $visit_mapping The REDCap module visit configuration
+     *                                         associated with that REDCap event.
+     *
+     * @return void
+     */
+    public function checkOrCreateSession(
+        \Candidate $candidate,
+        RedcapConfigVisit $visit_mapping,
+    ) {
+        // Get the ID of the session associated with the candidate and visit label.
+        $session_id = array_search(
+            $visit_mapping->visit_label,
+            $candidate->getListOfVisitLabels()
+        );
+
+        // If the session exists, simply return the visit label of that session.
+        if ($session_id) {
+            return $visit_mapping->visit_label;
+        }
+
+        // Throw an exception if the session does not exist and there is no
+        // session creation configuration for that visit, hence skipping the
+        // notification.
+        if ($visit_mapping->create_session === null) {
+            $psc_id      = $candidate->getPSCID();
+            $visit_label = $visit_mapping->visit_label;
+            throw new \LorisException(
+                "[redcap] No session found for candidate '$psc_id' and visit label"
+                . " '$visit_label', skipping notification."
+            );
+        }
+
+        // Get the LORIS site, project, and cohort from the database using the
+        // information provided by the session creation configuration.
+
+        $site_name = $visit_mapping->create_session->site_name;
+        $site_id   = array_search($site_name, \Utility::getSiteList());
+
+        $project_name = $visit_mapping->create_session->site_name;
+        $project_id   = array_search($project_name, \Utility::getProjectList());
+
+        $cohort_name = $visit_mapping->create_session->site_name;
+        $cohort_id   = array_search($cohort_name, \Utility::getCohortList());
+
+        // Throw an exception if any of the site, project, or cohort could not be
+        // obtained from the database, which means that the information present in
+        // the session creation configuration was incorrect.
+
+        if (!$site_id) {
+            throw new \LorisException(
+                "[redcap] Error: No LORIS site found for site name '$site_name',"
+                . " the REDCap module configuration is incorrect."
+            );
+        }
+
+        if (!$project_id) {
+            throw new \LorisException(
+                "[redcap] Error: No LORIS project found for site name"
+                . " '$project_name', the REDCap module configuration is incorrect."
+            );
+        }
+
+        if (!$cohort_id) {
+            throw new \LorisException(
+                "[redcap] Error: No LORIS cohort found for site name"
+                . " '$cohort_name', the REDCap module configuration is incorrect."
+            );
+        }
+
+        // Create the session.
+        \TimePoint::createNew(
+            $candidate,
+            $cohort_id,
+            $visit_mapping->visit_label,
+            \Site::singleton(new \CenterID(strval($site_id))),
+            \Project::getProjectFromID(new \ProjectID($project_id)),
+        );
     }
 
     /**
