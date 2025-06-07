@@ -156,11 +156,12 @@ class RedcapNotificationHandler
             $candidate_identifier
         );
 
-        $psc_id = $candidate->getPSCID();
-
         $visit_label = $this->_mapper->getVisitLabel(
+            $candidate,
             $this->_redcap_notif->unique_event_name,
         );
+
+        $psc_id = $candidate->getPSCID();
 
         // Track which instruments are updated and not updated.
         $instruments_not_updated = [];
