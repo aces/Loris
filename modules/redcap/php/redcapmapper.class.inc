@@ -1,0 +1,280 @@
+<?php declare(strict_types=1);
+
+/**
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
+namespace LORIS\redcap;
+
+use \LORIS\redcap\RedcapQueries;
+use \LORIS\redcap\config\RedcapConfig;
+use \LORIS\redcap\config\RedcapConfigLorisId;
+use \LORIS\redcap\config\RedcapConfigRedcapId;
+use \LORIS\redcap\client\RedcapHttpClient;
+use \LORIS\redcap\client\models\RedcapEvent;
+
+/**
+ * Mapping methods to match REDCap and LORIS identifiers in the REDCap module.
+ *
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class RedcapMapper
+{
+    /**
+     * The REDCap HTTP client.
+     *
+     * @var RedcapHttpClient
+     */
+    private RedcapHttpClient $_redcap_client;
+
+    /**
+     * The REDCap module configuration.
+     *
+     * @var RedcapConfig
+     */
+    private RedcapConfig $_config;
+
+    /**
+     * The REDCap module database queries.
+     *
+     * @var RedcapQueries
+     */
+    private RedcapQueries $_queries;
+
+    /**
+     * Constructor.
+     *
+     * @param RedcapHttpClient $redcap_client The REDCap HTTP client.
+     * @param RedcapConfig     $config        The REDCap module configuration.
+     * @param RedcapQueries    $queries       The REDCap module database queries.
+     */
+    public function __construct(
+        RedcapHttpClient $redcap_client,
+        RedcapConfig $config,
+        RedcapQueries $queries,
+    ) {
+        $this->_redcap_client = $redcap_client;
+        $this->_config        = $config;
+        $this->_queries       = $queries;
+    }
+
+    /**
+     * Get the LORIS visit label associated with a REDCap unique event name
+     * based on the REDCap module configuration.
+     *
+     * @param string $unique_event_name The REDCap unique event name.
+     *
+     * @return ?string The LORIS visit label associated with the REDCap
+     *                 notification, or `null` if no corresponding visit label is
+     *                 found.
+     */
+    public function getVisitLabel(string $unique_event_name): ?string
+    {
+        // Get the list of all the REDCap events for this REDCap project.
+        $redcap_events = $this->_redcap_client->getEvents();
+
+        // Find the REDCap event that matches the REDCap notification event.
+        $redcap_event = array_find(
+            $redcap_events,
+            fn($redcap_event) => $unique_event_name === $redcap_event->unique_name,
+        );
+
+        // There should always be a REDCap event that matches the REDCap
+        // notification event, but since this is an external API, check this
+        // assumption nonetheless.
+        if ($redcap_event === null) {
+            throw new \LorisException(
+                "[redcap] Error: No REDCap event found for unique event name"
+                . " '{$unique_event_name}'."
+            );
+        }
+
+        // If there are no visit mappings in the REDCap module configuration, simply
+        // use the REDCap event name as the LORIS vist name.
+        if ($this->_config->visits === null) {
+            return $redcap_event->name;
+        }
+
+        $event_name = $redcap_event->name;
+        $arm_name   = $this->_getRedcapEventArmName($redcap_event);
+
+        // Look for the REDCap module configuration visit mappings that match the
+        // REDCap notification event, using the event name and arm name.
+        $visit_mappings = array_filter(
+            $this->_config->visits,
+            function ($visit_config) use ($event_name, $arm_name) {
+                if ($visit_config->redcap_event_name !== null
+                    && $visit_config->redcap_event_name !== $event_name
+                ) {
+                    return false;
+                }
+
+                if ($visit_config->redcap_arm_name !== null
+                    && $visit_config->redcap_arm_name !== $arm_name
+                ) {
+                    return false;
+                }
+
+                return true;
+            },
+        );
+
+        // If there is no visit mapping that match the REDCap notification event,
+        // return `null` and ignore this notification.
+        if (count($visit_mappings) === 0) {
+            return null;
+        }
+
+        // If there are several visit mappings that match the REDCap notification
+        // event, raise an error.
+        if (count($visit_mappings) !== 1) {
+            throw new \LorisException(
+                "[redcap] Error: Multiple visits selectable for event name"
+                . " '$event_name' and arm name '$arm_name'."
+            );
+        }
+
+        // Return the LORIS visit label associated with the matching visit mapping.
+        return reset($visit_mappings)->visit_label;
+    }
+
+    /**
+     * Get the LORIS candidate identifier (CandID or PSCID) that matches a REDCap
+     * record ID, instrument name, and unique event named based on the REDCap module
+     * configuration.
+     *
+     * @param string $record_id         The REDCap record ID.
+     * @param string $instrument_name   The REDCap instrument name.
+     * @param string $unique_event_name The REDCap unique event name.
+     *
+     * @return string The LORIS candidate identifier.
+     */
+    public function getCandidateIdentifier(
+        string $record_id,
+        string $instrument_name,
+        string $unique_event_name,
+    ): string {
+        // If the REDCap module configuration is to use the REDCap record ID, simply
+        // return the REDCap notification record ID.
+        $condition = $this->_config->redcap_participant_id
+            === RedcapConfigRedcapId::RecordId;
+
+        if ($condition) {
+            return $record_id;
+        }
+
+        // Get the list of all REDCap survey participants for the notification
+        // instrument and event.
+        $participants = $this->_redcap_client->getSurveyParticipants(
+            $instrument_name,
+            $unique_event_name,
+        );
+
+        // Find the survey participant matching the notification record.
+        $participant = array_find(
+            $participants,
+            fn($participant) => $participant->record === $record_id
+        );
+
+        // If no survey participant is found for that record, raise an error. This
+        // can happen because even with surveys enabled in REDCap, there is no
+        // requirement for all records to be linked to survey participants.
+        if ($participant === null) {
+            throw new \LorisException(
+                "[redcap] Error: No survey participant found for record ID"
+                . " '$record_id'."
+            );
+        }
+
+        // If the REDCap survey participant does not have a custom identifier, raise
+        // an error. This can happen because the survey participant identifier must
+        // be set manually in REDCap and is optional.
+        if ($participant->identifier === null) {
+            throw new \LorisException(
+                "[redcap] Error: Survey participant has no identifier for"
+                . " record ID '$record_id'."
+            );
+        }
+
+        // Return the identifier of the survey participant.
+        return $participant->identifier;
+    }
+
+    /**
+     * Get the LORIS candidate that matches a candidate identifier (CandID or PSCID)
+     * based on the REDCap module configuration.
+     *
+     * @param string $candidate_identifier The candidate identifier obtained from
+     *                                     REDCap.
+     *
+     * @return \Candidate The LORIS candidate.
+     */
+    public function getCandidateWithIdentifier(
+        string $candidate_identifier,
+    ): \Candidate {
+        // Get the candidate using the REDCap participant identifier as a CandID or
+        // PSCID depending on the REDCap module configuration.
+        $candidate = match ($this->_config->candidate_id) {
+            RedcapConfigLorisId::CandId =>
+                $this->_queries->tryGetCandidateWithCandId($candidate_identifier),
+            RedcapConfigLorisId::PscId =>
+                $this->_queries->tryGetCandidateWithPscId($candidate_identifier),
+        };
+
+        // If no candidate matches the REDCap participant identifier, raise an
+        // error.
+        if ($candidate === null) {
+            throw new \LorisException(
+                "[redcap] Error: No LORIS candidate found for candidate identifier"
+                . " '$candidate_identifier'."
+            );
+        }
+
+        // Return the candidate.
+        return $candidate;
+    }
+
+    /**
+     * Get the REDCap arm name of a REDCap event.
+     *
+     * @param RedcapEvent $redcap_event The REDCap event.
+     *
+     * @return string The REDCap event arm name.
+     */
+    private function _getRedcapEventArmName(RedcapEvent $redcap_event): string
+    {
+        // Get the list of all the REDCap arms for this REDCap project.
+        $redcap_arms = $this->_redcap_client->getArms();
+
+        // Find the REDCap arm that matches the REDCap event.
+        $redcap_arm = array_find(
+            $redcap_arms,
+            fn($redcap_arm) => $redcap_arm->number === $redcap_event->arm_number,
+        );
+
+        // There should always be a REDCap arm that matches the REDCap event arm,
+        // but since this is an external API, check this
+        // assumption nonetheless.
+        if ($redcap_arm === null) {
+            throw new \LorisException(
+                "[redcap] Error: No REDCap arm found for event arm number"
+                . " '{$redcap_event->arm_number}'."
+            );
+        }
+
+        // Return the name of the REDCap arm.
+        return $redcap_arm->name;
+    }
+}

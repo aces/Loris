@@ -29,7 +29,7 @@ class RedcapNotification
     public readonly string $project_id;
     public readonly string $instrument_name;
     public readonly string $record_id;
-    public readonly string $event_name;
+    public readonly string $unique_event_name;
     public readonly string $username;
     public readonly string $complete;
 
@@ -75,7 +75,7 @@ class RedcapNotification
         $this->project_id        = $props['project_id'];
         $this->project_url       = $props['project_url'];
         $this->record_id         = $props['record'];
-        $this->event_name        = $props['redcap_event_name'];
+        $this->unique_event_name = $props['redcap_event_name'];
         $this->instance_url      = $props['redcap_url'];
         $this->complete          = $props[$complete_key] ?? '';
         $this->username          = $props['username'];
@@ -104,7 +104,7 @@ class RedcapNotification
             'project_url'       => $this->project_url,
             'received_dt'       => $this->received_datetime->format('Y-m-d H:i:s'),
             'record'            => $this->record_id,
-            'redcap_event_name' => $this->event_name,
+            'redcap_event_name' => $this->unique_event_name,
             'redcap_url'        => $this->instance_url,
             'complete'          => $this->complete,
             'username'          => $this->username,
