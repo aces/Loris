@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Imaging_uploader automated integration tests
  *
@@ -173,7 +174,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingUploaderLoadWithPermission()
     {
-        $this->setupPermissions(["imaging_uploader"]);
+        $this->setupPermissions(["imaging_uploader_allsites"]);
         $this->safeGet($this->url . '/imaging_uploader/');
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * AcknowledgementsIntegrationTest automated integration tests
  *
@@ -11,7 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverSelect;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -199,45 +199,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             "31"
         );
     }
-    /**
-     * Tests that, adding a new record, then this record appears on the page.
-     *
-     * @return void
-     */
-    function testAddNewRecord()
-    {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
-        )->click();
-        //insert ordering
-        $this->safeFindElement(
-            WebDriverBy::Name("addOrdering")
-        )->sendKeys(self::$newData['ordering']);
-        //insert Full name
-        $this->safeFindElement(
-            WebDriverBy::Name("addFullName")
-        )->sendKeys(self::$newData['full_name']);
-        //insert Citation name
-        $this->safeFindElement(
-            WebDriverBy::Name("addCitationName")
-        )->sendKeys(self::$newData['citation_name']);
-        $this->safeFindElement(
-            WebDriverBy::Name("addStartDate")
-        )->sendKeys(self::$newData['start_date']);
-        $el_dropdown = new WebDriverSelect(
-            $this->safeFindElement(WebDriverBy::Name("addPresent"))
-        );
-        $el_dropdown->selectByVisibleText("Yes");
-        //expecting to find the value,after clicking save button
-        $this->safeFindElement(
-            WebDriverBy::cssSelector('button[name="fire_away"]')
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
-        )->getText();
-        $this->assertStringContainsString("Success!", $bodyText);
-    }
 
     /**
      * Tests that, can't find Add Acknowledgement button on the page if
@@ -254,48 +215,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringNotContainsString("Add Acknowledgement", $pagetext);
 
-    }
-    /**
-     * Tests that, adding a new record, then this record appears on the page.
-     *
-     * @return void
-     */
-    function testCancelAddNewRecord()
-    {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(".panel-body .btn-primary:nth-child(1)")
-        )->click();
-        //insert ordering
-        $this->safeFindElement(
-            WebDriverBy::Name("addOrdering")
-        )->sendKeys(self::$newData['ordering']);
-        //insert Full name
-        $this->safeFindElement(
-            WebDriverBy::Name("addFullName")
-        )->sendKeys(self::$newData['full_name']);
-        //insert Citation name
-        $this->safeFindElement(
-            WebDriverBy::Name("addCitationName")
-        )->sendKeys(self::$newData['citation_name']);
-        $this->safeFindElement(
-            WebDriverBy::Name("addStartDate")
-        )->sendKeys(self::$newData['start_date']);
-        $el_dropdown = new WebDriverSelect(
-            $this->safeFindElement(WebDriverBy::Name("addPresent"))
-        );
-        $el_dropdown->selectByVisibleText("Yes");
-        //expecting to find the value,after clicking save button
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                '#lorisworkspace > div > div:nth-child(2)'.
-                ' > div > div:nth-child(1) > span'
-            )
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
-        )->getText();
-        $this->assertStringContainsString("Are You Sure?", $bodyText);
     }
     /**
      * Tests that, can't find Add Acknowledgement button on the page if

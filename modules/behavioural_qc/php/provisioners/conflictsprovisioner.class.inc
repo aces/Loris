@@ -25,7 +25,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         parent::__construct(
             "
             SELECT DISTINCT
-  	          s.CandID AS _candID,
+  	          ca.CandID AS _candID,
   	          ca.PSCID AS _pscID,
   	          c.FieldName AS _fieldName,
   	          c.TestName AS _testName,
@@ -41,8 +41,8 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 	          conflicts_unresolved c
 	          LEFT JOIN flag f ON (c.CommentId1 = f.CommentID)
 	          LEFT JOIN session s ON (f.SessionID = s.ID)
-	          LEFT JOIN candidate ca ON (ca.CandID = s.CandID)
-	          JOIN test_names t ON (t.test_name = f.test_name)
+	          LEFT JOIN candidate ca ON (ca.ID = s.CandidateID)
+	          JOIN test_names t ON (t.ID = f.TestID)
 	          JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE
 	          ca.Active = 'Y'

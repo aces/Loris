@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -121,7 +122,9 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         if ($_REQUEST['BehaviouralProject'] ?? '') {
-            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
+            $currentProject = \ProjectID::singleton(
+                intval($_REQUEST['BehaviouralProject'])
+            );
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
@@ -130,7 +133,12 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
-                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+                = htmlspecialchars(
+                    $_REQUEST['BehaviouralProject'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
         } elseif (!empty($userProjectsIDs)) {
             $currentProject = null;
             $paramProjects  = [];
@@ -218,8 +226,8 @@ class Stats_Behavioural extends \NDB_Form
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
                     s.visit_label as VLabel,
-                    COUNT(s.CandID) as val
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                    COUNT(s.CandidateID) as val
+                FROM session s JOIN candidate c ON (s.CandidateID=c.ID)
                     JOIN flag f ON (f.SessionID=s.ID)
                 WHERE
                     s.Active='Y' AND c.Active='Y'
@@ -301,9 +309,9 @@ class Stats_Behavioural extends \NDB_Form
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
                     s.visit_label as VLabel,
-                    COUNT(s.CandID) as val
+                    COUNT(s.CandidateID) as val
                 FROM session as s
-                    JOIN candidate as c ON(s.CandID=c.CandID)
+                    JOIN candidate as c ON(s.CandidateID=c.ID)
                     JOIN flag as f ON(f.SessionID=s.ID)
                 WHERE s.Active = 'Y'
                     AND s.Current_stage <> 'Recycling Bin'

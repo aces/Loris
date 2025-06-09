@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script deletes the specified candidate information.
@@ -162,7 +162,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     // Find candidate...
     $candidate = new Candidate();
     // find the candidate with the given CandID
-    $candidate->select(new CandID($CandID));
+    $candidate->select($CandID);
 
     // Passing argument to delete session script
     $outputType ="";
@@ -184,111 +184,164 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             $subOutputType = $outputType;
         }
         foreach ($sessions as $sid) {
-            $out = shell_exec(
+            $out    = null;
+            $retVal = null;
+            exec(
                 "php ".__DIR__."/delete_timepoint.php delete_timepoint".
-                " $CandID $PSCID $sid $subOutputType"
+                " $CandID $PSCID $sid $subOutputType",
+                $out,
+                $retVal
             );
-            //echo $out;
-            $match    = [];
-            $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
-            if ($nbDelete > 0) {
-                for ($i=0; $i < $nbDelete; $i++) {
-                    $output .= $match[0][$i];
+            if ($retVal != 0) {
+                echo "Error deleting session $sid for CandID: $CandID\n";
+                echo "Output: ".implode("\n", $out)."\n";
+                exit;
+            }
+            $match = [];
+            foreach ($out as $line) {
+                if (strpos($line, "DELETE FROM") != false) {
+                    $output .= $line;
                     $output .= "\n";
                 }
             }
         }
     }
 
+    $CandidateID = $candidate->getID();
+
     // Print participant_status
     echo "\nParticipant Status\n";
     echo "--------------------\n";
     $result = $DB->pselect(
-        'SELECT * FROM participant_status WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM participant_status ps WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print participant_status_history
     echo "\nParticipant Status History\n";
     echo "----------------------------\n";
     $result = $DB->pselect(
-        'SELECT * FROM participant_status_history WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM participant_status_history WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print candidate_consent_rel
     echo "\nCandidate Consent\n";
     echo "-------------------\n";
     $result = $DB->pselect(
         'SELECT * FROM candidate_consent_rel WHERE CandidateID=:cid',
-        ['cid' => $CandID]
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print parameter_candidate
     echo "\nParameter Candidate\n";
     echo "---------------------\n";
     $result = $DB->pselect(
-        'SELECT * FROM parameter_candidate WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM parameter_candidate WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print SNP_candidate_rel
     echo "\nSNP_candidate_rel\n";
     echo "-----------\n";
     $result = $DB->pselect(
-        'SELECT * FROM SNP_candidate_rel WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM SNP_candidate_rel WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print CNV
     echo "\nCNV\n";
     echo "-----------\n";
     $result = $DB->pselect(
-        'SELECT * FROM CNV WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM CNV WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print genomic_candidate_files_rel
     echo "\nGenomic Candidate Files Relation\n";
     echo "-----------\n";
     $result = $DB->pselect(
-        'SELECT * FROM genomic_candidate_files_rel WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM genomic_candidate_files_rel WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print genomic_sample_candidate_rel
     echo "\nGenomic Sample Candidate Relation\n";
     echo "-----------\n";
     $result = $DB->pselect(
-        'SELECT * FROM genomic_sample_candidate_rel WHERE CandID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM genomic_sample_candidate_rel WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
 
     // Print issues
     echo "\nIssues\n";
     echo "-----------\n";
     $result = $DB->pselect(
-        'SELECT * FROM issues WHERE candID=:cid',
-        ['cid' => $CandID]
+        'SELECT * FROM issues WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
     );
-    print_r($result);
+    print_r(iterator_to_array($result));
+
+    // Print feedback_bvl_thread
+    echo "\nfeedback_bvl_thread\n";
+    echo "-----------\n";
+    $feedback_threads = $DB->pselect(
+        'SELECT * FROM feedback_bvl_thread WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    $feedback_threads = iterator_to_array($feedback_threads);
+    print_r($feedback_threads);
+
+    foreach ($feedback_threads as $feedback) {
+        // print_feedback_bvl_entry
+        echo "\nfeedback_bvl_entry\n";
+        echo "-----------\n";
+        $result = $DB->pselect(
+            'SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid',
+            ['fid' => $feedback['FeedbackID']]
+        );
+        print_r(iterator_to_array($result));
+    }
+
+    // Print family
+    echo "\Family\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM family WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
+
+    // Print dataquery_run_results
+    echo "\Dataquery Run Results\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM dataquery_run_results WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
+
+    // Print mri_protocol_violated_scans
+    echo "\MRI Protocol Violated Scans\n";
+    echo "-----------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM mri_protocol_violated_scans WHERE CandidateID=:cid',
+        ['cid' => $CandidateID]
+    );
+    print_r(iterator_to_array($result));
 
     // Print candidate
     echo "\nCandidate\n";
     echo "-----------\n";
-    $result = $DB->pselect(
-        'SELECT * FROM candidate WHERE CandID=:cid',
-        ['cid' => $CandID]
-    );
-    print_r($result);
+    print_r($candidate->getData());
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
@@ -297,40 +350,60 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             $PSCID . "\n";
 
         //delete from the participant_status table
-        $DB->delete("participant_status", ["CandID" => $CandID]);
+        $DB->delete("participant_status", ["CandidateID" => $CandidateID]);
 
         //delete from the participant_status_history table
-        $DB->delete("participant_status_history", ["CandID" => $CandID]);
+        $DB->delete("participant_status_history", ["CandidateID" => $CandidateID]);
 
         //delete from the candidate_consent_rel table
-        $DB->delete("candidate_consent_rel", ["CandidateID" => $CandID]);
+        $DB->delete("candidate_consent_rel", ["CandidateID" => $CandidateID]);
 
         //delete from parameter_candidate
-        $DB->delete("parameter_candidate", ["CandID" => $CandID]);
+        $DB->delete("parameter_candidate", ["CandidateID" => $CandidateID]);
 
         //delete from SNP_candidate_rel
-        $DB->delete("SNP_candidate_rel", ["CandID" => $CandID]);
+        $DB->delete("SNP_candidate_rel", ["CandidateID" => $CandidateID]);
 
         //delete from CNV
-        $DB->delete("CNV", ["CandID" => $CandID]);
+        $DB->delete("CNV", ["CandidateID" => $CandidateID]);
 
         //delete from genomic_candidate_files_rel
         $DB->delete(
             "genomic_candidate_files_rel",
-            ["CandID" => $CandID]
+            ["CandidateID" => $CandidateID]
         );
 
         //delete from genomic_sample_candidate_rel
         $DB->delete(
             "genomic_sample_candidate_rel",
-            ["CandID" => $CandID]
+            ["CandidateID" => $CandidateID]
         );
 
         //delete from issues
-        $DB->delete("issues", ["candID" => $CandID]);
+        $DB->delete("issues", ["CandidateID" => $CandidateID]);
+
+        //delete from feedback_bvl_entry
+        foreach ($feedback_threads as $feedback) {
+            $DB->delete(
+                "feedback_bvl_entry",
+                ["FeedbackID" => $feedback['FeedbackID']]
+            );
+        }
+
+        //delete from feedback_bvl_thread
+        $DB->delete("feedback_bvl_thread", ["CandidateID" => $CandidateID]);
+
+        //delete from family
+        $DB->delete("family", ["CandidateID" => $CandidateID]);
+
+        //delete from dataquery_run_results
+        $DB->delete("dataquery_run_results", ["CandidateID" => $CandidateID]);
+
+        //delete from mri_protocol_violated_scans
+        $DB->delete("mri_protocol_violated_scans", ["CandidateID" => $CandidateID]);
 
         //delete from candidate
-        $DB->delete("candidate", ["CandID" => $CandID]);
+        $DB->delete("candidate", ["ID" => $CandidateID]);
     } elseif ($printToSQL) {
         echo "Generating all DELETE statements for CandID: " . $CandID
             . " And PSCID: " .
@@ -339,7 +412,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the participant_status table
         _printResultsSQL(
             "participant_status",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
@@ -347,7 +420,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the participant_status_history table
         _printResultsSQL(
             "participant_status_history",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
@@ -355,7 +428,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the candidate_consent_rel table
         _printResultsSQL(
             "candidate_consent_rel",
-            ["CandidateID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
@@ -363,7 +436,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from parameter_candidate
         _printResultsSQL(
             "parameter_candidate",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
@@ -371,18 +444,18 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from SNP_candidate_rel
         _printResultsSQL(
             "SNP_candidate_rel",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
 
         //delete from CNV
-        _printResultsSQL("CNV", ["CandID" => $CandID], $output, $DB);
+        _printResultsSQL("CNV", ["CandidateID" => $CandidateID], $output, $DB);
 
         //delete from genomic_candidate_files_rel
         _printResultsSQL(
             "genomic_candidate_files_rel",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
@@ -390,16 +463,16 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from genomic_sample_candidate_rel
         _printResultsSQL(
             "genomic_sample_candidate_rel",
-            ["CandID" => $CandID],
+            ["CandidateID" => $CandidateID],
             $output,
             $DB
         );
 
         //delete from issues
-        _printResultsSQL("issues", ["candID" => $CandID], $output, $DB);
+        _printResultsSQL("issues", ["CandidateID" => $CandidateID], $output, $DB);
 
         //delete from candidate
-        _printResultsSQL("candidate", ["CandID" => $CandID], $output, $DB);
+        _printResultsSQL("candidate", ["CandidateID" => $CandidateID], $output, $DB);
 
         _exportSQL($output, $CandID);
     }
@@ -436,7 +509,8 @@ function _printResultsSQL($table, $where, &$output, $DB)
 function _exportSQL($output, $CandID)
 {
     //export file
-    $filename = __DIR__ . "/../project/tables_sql/DELETE_candidate_$CandID.sql";
+    $filename = __DIR__
+        . "/../../../project/tables_sql/DELETE_candidate_$CandID.sql";
     $fp       = fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);

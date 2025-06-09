@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LORIS\genomic_browser\Models;
 
@@ -26,16 +25,16 @@ class CnvDTO implements DataInstance, SiteHaver
     /**
      * The centerID
      *
-     * @var string
+     * @var int
      */
-    private $_centerID = "";
+    private $_centerID;
 
     /**
      * The projectID
      *
-     * @var string
+     * @var int
      */
-    private $_projectID = "";
+    private $_projectID;
 
     /**
      * The PSC
@@ -71,13 +70,6 @@ class CnvDTO implements DataInstance, SiteHaver
      * @var string
      */
     private $_Cohort = "";
-
-    /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
 
     /**
      * The ExternalID
@@ -225,7 +217,6 @@ class CnvDTO implements DataInstance, SiteHaver
             'PSCID'             => $this->_PSCID,
             'Sex'               => $this->_Sex,
             'Cohort'            => $this->_Cohort,
-            'DoB'               => $this->_DoB,
             'ExternalID'        => $this->_ExternalID,
             'Chromosome'        => $this->_Chromosome,
             'Strand'            => $this->_Strand,
@@ -255,7 +246,7 @@ class CnvDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_centerID));
+        return \CenterID::singleton($this->_centerID);
     }
 
     /**
@@ -265,6 +256,6 @@ class CnvDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_projectID));
+        return \ProjectID::singleton($this->_projectID);
     }
 }

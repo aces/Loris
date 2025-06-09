@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\datadict;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -22,8 +23,22 @@ class Fields extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
+        $cohort_options = [];
+        foreach (array_values($cohorts) as $name) {
+            $cohort_options[$name] = $name;
+        }
         return new \LORIS\Http\Response\JSON\OK(
-            ['sourceFrom' => \Utility::getAllInstruments()]
+            [
+                'sourceFrom' =>
+                \NDB_BVL_Instrument::getInstrumentNamesList($this->loris),
+                'cohort'     => $cohort_options
+            ]
         );
     }
 }

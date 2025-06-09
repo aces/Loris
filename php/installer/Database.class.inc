@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The Installer Database class is like the LORIS database class, except it
  * at the time of the installer the config.xml doesn't exist, so it can't

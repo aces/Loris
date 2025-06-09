@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the projects/$projectname/instruments endpoint.
@@ -34,10 +35,14 @@ class ProjectInstrumentsRowProvisioner extends DBRowProvisioner
     /**
      * Create a RowProvisioner, which gets rows for projects/$projectname/instruments
      * endpoint.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $this->loris,
             '
              SELECT
                tn.Test_name as shortname,

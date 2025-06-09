@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all images
  * of a visit.
@@ -33,9 +34,10 @@ class TimepointImagesRowProvisioner extends DBRowProvisioner
      *
      * @param \Timepoint $timepoint The requested timepoint
      */
-    public function __construct(\Timepoint $timepoint)
+    public function __construct(protected \LORIS\LorisInstance $loris, \Timepoint $timepoint)
     {
         parent::__construct(
+            $loris,
             '
              SELECT
                FileID as fileid
@@ -44,7 +46,7 @@ class TimepointImagesRowProvisioner extends DBRowProvisioner
              JOIN session s
                ON (s.ID=f.SessionID)
              JOIN candidate c
-               ON (s.CandID=c.CandID)
+               ON (s.CandidateID=c.ID)
              WHERE
                s.ID=:v_sessionid AND
                c.Active=\'Y\' AND

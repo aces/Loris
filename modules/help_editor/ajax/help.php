@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file retrieves content for specific help section
  * and returns a json object
@@ -32,7 +33,7 @@ try {
     if (ob_get_level() > 0) {
         ob_end_flush();
     }
-    exit;
+    exit(0);
 } catch (Exception $e) {
 
     // Wasn't a module, so fall back on the old style of DB lookup.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible tests
  * for the battery_manager menu page.
@@ -30,17 +31,15 @@ namespace LORIS\battery_manager;
  */
 class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-    private \LORIS\LorisInstance $loris;
-
     /**
      * Create a Test Instance, which get rows from the test_battery table.
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance with the battery
      */
-    public function __construct(\LORIS\LorisInstance $loris)
+    public function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $this->loris = $loris;
         parent::__construct(
+            $this->loris,
             "SELECT b.id,
                t.Test_name as testName,
                b.AgeMinDays as ageMinDays,
@@ -50,6 +49,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                b.Visit_label as visitLabel,
                p.CenterID as centerId,
                b.firstVisit,
+               b.DoubleDataEntryEnabled,
                b.instr_order as instrumentOrder,
                b.Active as active
         FROM test_battery b
@@ -73,7 +73,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         return new Test(
             $this->loris,
             isset($row['centerId'])
-                ? new \CenterID($row['centerId'])
+                ? \CenterID::singleton($row['centerId'])
                 : null,
             $row
         );

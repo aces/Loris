@@ -1,202 +1,208 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import Panel from 'jsx/Panel';
+import Panel from 'Panel';
+import {QueryChartForm} from './helpers/queryChartForm';
+import {progressBarBuilder} from './helpers/progressbarBuilder';
+
+import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
- *
- * @param {object} props
+ * @param  {object} props
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
   const [loading, setLoading] = useState(true);
-  const [overall, setOverall] = useState({});
-  const [siteBreakdown, setSiteBreakdown] = useState({});
-  const [projectBreakdown, setProjectBreakdown] = useState({});
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
 
-  /**
-   * useEffect - modified to run when props.data updates.
-   */
-  useEffect(() => {
-    const json = props.data;
-    if (json && Object.keys(json).length !== 0) {
-      const overallData = (
-        <div className='recruitment-panel' id='overall-recruitment'>
-          {progressBarBuilder(json['recruitment']['overall'])}
-        </div>
-      );
-      let siteBreakdownData;
-      if (json['recruitment']['overall'] &&
-        json['recruitment']['overall']['total_recruitment'] > 0
-      ) {
-        siteBreakdownData = (
-          <>
-            <div className='col-lg-4 col-md-4 col-sm-4'>
-              <h5 className='chart-title'>
-                Total recruitment per site
-              </h5>
-              <div id='recruitmentPieChart'/>
-            </div>
-            <div className='col-lg-8 col-md-8 col-sm-8'>
-              <h5 className='chart-title'>
-                Biological sex breakdown by site
-              </h5>
-              <div id='recruitmentBarChart'/>
-            </div>
-          </>
-        );
-      } else {
-        siteBreakdownData = (
-          <p>There have been no candidates registered yet.</p>
-        );
-      }
-      let projectBreakdownData = [];
-      for (const [key, value] of Object.entries(json['recruitment'])) {
-        if (key !== 'overall') {
-          projectBreakdownData.push(
-            <div key={`projectBreakdown_${key}`}>
-              {progressBarBuilder(value)}
-            </div>
-          );
-        }
-      }
-      setProjectBreakdown(projectBreakdownData);
-      setOverall(overallData);
-      setSiteBreakdown(siteBreakdownData);
-      setLoading(false);
-    }
-  }, [props.data]);
+  let json = props.data;
 
-  /**
-   * progressBarBuilder - generates the graph content.
-   *
-   * @param {object} data - data needed to generate the graph content.
-   * @return {JSX.Element} the charts to render to the widget panel.
-   */
-  const progressBarBuilder = (data) => {
-    let title;
-    let content;
-    if (data['recruitment_target']) {
-      title = <h5>
-        {data['title']}
-      </h5>;
-      if (data['surpassed_recruitment']) {
-        content = (
-          <div>
-            <p>
-              The recruitment target (
-              {data['recruitment_target']}
-              ) has been passed.
-            </p>
-            <div className='progress'>
-              <div className='progress-bar progress-bar-female'
-                   role='progressbar'
-                   style={{width: `${data['female_full_percent']}%`}}
-                   data-toggle='tooltip'
-                   data-placement='bottom'
-                   title={`${data['female_full_percent']}%`}>
-                <p>
-                  {data['female_total']}<br/>Females
-                </p>
-              </div>
-              <div className='progress-bar progress-bar-male'
-                   data-toggle='tooltip'
-                   data-placement='bottom'
-                   role='progressbar'
-                   style={{width: `${data['male_full_percent']}%`}}
-                   title={`${data['male_full_percent']}%`}>
-                <p>
-                  {data['male_total']}<br/>Males
-                </p>
-              </div>
-              <p className='pull-right small target'>
-                Target: {data['recruitment_target']}
-              </p>
-            </div>
-          </div>
-        );
-      } else {
-        content = (
-          <div className='progress'>
-            <div className='progress-bar progress-bar-female'
-                 role='progressbar'
-                 style={{width: `${data['female_percent']}%`}}
-                 data-toggle='tooltip'
-                 data-placement='bottom'
-                 title={`${data['female_percent']}%`}>
-              <p>
-                {data['female_total']}<br/>Females
-              </p>
-            </div>
-            <div className='progress-bar progress-bar-male'
-                 data-toggle='tooltip'
-                 data-placement='bottom'
-                 role='progressbar'
-                 style={{width: `${data['male_percent']}%`}}
-                 title={`${data['male_percent']}%`}>
-              <p>
-                {data['male_total']}<br/>Males
-              </p>
-            </div>
-            <p className='pull-right small target'>
-              Target: {data['recruitment_target']}
-            </p>
-          </div>
-        );
-      }
-    } else {
-      content = (
-        <div>
-          Please add a recruitment target for {data['title']}.
-        </div>
-      );
+  const [chartDetails, setChartDetails] = useState(
+    {
+      'siteBreakdown': {
+        'agerecruitment_pie': {
+          title: 'Total recruitment by Age',
+          filters: '',
+          chartType: 'pie',
+          dataType: 'pie',
+          label: 'Age (Years)',
+          options: {pie: 'pie', bar: 'bar'},
+          legend: 'under',
+        },
+        'ethnicity_pie': {
+          title: 'Ethnicity at Screening',
+          filters: '',
+          chartType: 'pie',
+          dataType: 'pie',
+          label: 'Ethnicity',
+          options: {pie: 'pie', bar: 'bar'},
+          legend: 'under',
+        },
+        'siterecruitment_pie': {
+          title: 'Total Recruitment per Site',
+          filters: '',
+          chartType: 'pie',
+          dataType: 'pie',
+          label: 'Participants',
+          legend: '',
+          options: {pie: 'pie', bar: 'bar'},
+        },
+        'siterecruitment_bysex': {
+          title: 'Biological sex breakdown by site',
+          filters: '',
+          chartType: 'bar',
+          dataType: 'bar',
+          legend: 'under',
+          options: {bar: 'bar', pie: 'pie'},
+        },
+      },
     }
-    return (
-      <>
-        {title}
-        {content}
-      </>
-    );
+  );
+
+  const showChart = (section, chartID) => {
+    return props.showChart(section, chartID, chartDetails, setChartDetails);
   };
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX.Element} - React markup for component.
-   */
-  return loading ? <Panel title='Recruitment'><Loader/></Panel> : (
-    <Panel
-      title='Recruitment'
-      id='statistics_recruitment'
-      views={[
-        {
-          content:
-            <>
-              {overall}
-            </>,
-          title: 'Recruitment - overall',
-        },
-        {
-          content:
-            <>
-              {siteBreakdown}
-            </>,
-          title: 'Recruitment - site breakdown',
-        },
-        {
-          content:
-            <>
-              {projectBreakdown}
-            </>,
-          title: 'Recruitment - project breakdown',
-        },
-      ]}
-    />
+  const updateFilters = (formDataObj, section) => {
+    props.updateFilters(formDataObj,
+      section,
+      chartDetails,
+      setChartDetails);
+  };
+
+  useEffect(
+    () => {
+      if (json && Object.keys(json).length !== 0) {
+        setupCharts(false, chartDetails).then(
+          (data) => {
+            setChartDetails(data);
+          }
+        );
+        json = props.data;
+        setLoading(false);
+      }
+    },
+    [props.data]
+  );
+
+  return loading ? <Panel title ='Recruitment'><Loader/></Panel> : (
+    <>
+      <Panel
+        title ='Recruitment'
+        id ='statistics_recruitment'
+        onChangeView ={(index) => {
+          setupCharts(false, chartDetails);
+        }}
+        views ={[
+          {
+            content:
+            <div className ='recruitment-panel' id='overall-recruitment'>
+              {progressBarBuilder(json['recruitment']['overall'])}
+            </div>,
+            title: 'Recruitment - overall',
+          },
+          {
+            content:
+              json['recruitment']['overall'] &&
+              json['recruitment']['overall']['total_recruitment'] > 0 ? (
+                  <>
+                    <div className="btn-group" style={{marginBottom: '10px'}}>
+                      <button
+                        type="button"
+                        className="btn btn-default btn-xs"
+                        onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                      >
+                        {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                      </button>
+                    </div>
+                    {showFiltersBreakdown && (
+                      <div style={{marginTop: '15px'}}>
+                        <QueryChartForm
+                          Module={'statistics'}
+                          name={'recruitment'}
+                          id={'recruitmentSiteBreakdownForm'}
+                          data={json}
+                          callback={(formDataObj) => {
+                            updateFilters(formDataObj, 'siteBreakdown');
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className={'site-breakdown-grid'}
+                      id={Object.keys(json.options.sites).length > 15
+                        ? 'site-breakdown-grid-one-column'
+                        : undefined
+                      }>
+                      {Object
+                        .keys(chartDetails['siteBreakdown'])
+                        .map((chartID) => (
+                          <React.Fragment key={chartID}>
+                            {showChart('siteBreakdown', chartID)}
+                          </React.Fragment>
+                        ))}
+                    </div>
+                  </>
+                ) : (
+                  <p>There have been no candidates registered yet.</p>
+                ),
+            title: 'Recruitment - site breakdown',
+            onToggleFilters: () => {
+              setShowFiltersBreakdown((prev) => !prev);
+            },
+          },
+          {
+            content:
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'scroll',
+                  overflowX: 'hidden',
+                }}
+              >
+                {Object.entries(json['recruitment']).map(
+                  ([key, value]) => {
+                    if (key !== 'overall') {
+                      return <div key ={`projectBreakdown_${key}`}>
+                        {progressBarBuilder(value)}
+                      </div>;
+                    }
+                  }
+                )}
+              </div>,
+            title: 'Recruitment - project breakdown',
+          },
+          {
+            content:
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'scroll',
+                  overflowX: 'hidden',
+                }}
+              >
+                {Object.entries(json['recruitmentcohorts'])
+                  .map(
+                    ([key, value]) => {
+                      return <div key ={`cohortBreakdown_${key}`}>
+                        {progressBarBuilder(value)}
+                      </div>;
+                    }
+                  )}
+              </div>,
+            title: 'Recruitment - cohort breakdown',
+          },
+        ]}
+      />
+    </>
   );
 };
+
 Recruitment.propTypes = {
   data: PropTypes.object,
+  baseURL: PropTypes.string,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 Recruitment.defaultProps = {
   data: {},

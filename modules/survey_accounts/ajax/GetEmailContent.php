@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is used by the Loris survey module to retrieve the email
  * template for the current instrument. It is used in the survey_accounts
@@ -16,7 +17,7 @@
 $user = \User::singleton();
 if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");

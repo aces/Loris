@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\brainbrowser;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -197,7 +198,7 @@ class ImageInfo extends \NDB_Page
                                      f.FileID as FileID
                              FROM files f
                                 JOIN session s ON (f.SessionID=s.ID)
-                                JOIN candidate c ON (s.CandID=c.CandID)
+                                JOIN candidate c ON (s.CandidateID=c.ID)
                             WHERE FileID IN (" . join(",", $params) .  ")";
                 break;
             case 'ProtocolViolation':

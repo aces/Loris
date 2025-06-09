@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
@@ -36,8 +37,9 @@ class Module extends \Module
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
                 [
-                    'issue_tracker_reporter',
-                    'issue_tracker_developer'
+                    'issue_tracker_all_issue',
+                    'issue_tracker_own_issue',
+                    'issue_tracker_site_issue',
                 ]
             );
     }
@@ -110,13 +112,14 @@ class Module extends \Module
                 "SELECT i.issueID as ID,
                         i.title as Title,
                         COUNT(DISTINCT ic.issueCommentID) as comments
-                 FROM issues i
+                FROM issues i
                     LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
-                 WHERE status != 'closed' AND CandID=:cid
-                 GROUP BY i.issueID, i.Title",
+                    JOIN candidate c ON c.ID=i.CandidateID
+                WHERE status != 'closed' AND c.CandID=:cid
+                GROUP BY i.issueID, i.Title",
                 [ 'cid' => $candidate->getCandID() ],
             );
-            if (empty($issues)) {
+            if (count($issues) === 0) {
                 return [];
             }
             return [
@@ -125,7 +128,7 @@ class Module extends \Module
                     $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
                     "lorisjs.issue_tracker.CandidateIssuesWidget.default",
                     [
-                        'Issues' => $issues,
+                        'Issues' => iterator_to_array($issues),
                     ],
                     1,
                     1,

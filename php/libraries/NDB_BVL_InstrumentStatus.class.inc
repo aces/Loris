@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Class for managing the status of instrument flags
  *
@@ -104,7 +105,7 @@ class NDB_BVL_InstrumentStatus
         // set the _commentID property
         $this->_commentID = $commentID;
 
-        $db = \NDB_Factory::singleton()->database();
+        $db = $this->loris->getDatabaseConnection();
 
         // get candidate data from database
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion
@@ -194,7 +195,8 @@ class NDB_BVL_InstrumentStatus
             throw new Exception('Invalid data entry status');
         }
 
-        $GLOBALS['DB']->update(
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->update(
             'flag',
             ['Data_entry' => $status],
             ['CommentID' => $this->_commentID]
@@ -210,7 +212,7 @@ class NDB_BVL_InstrumentStatus
             );
             $DDECommentId       = 'DDE_' . $principalCommentId;
 
-            $query = $GLOBALS['DB']->pselect(
+            $query = $DB->pselect(
                 "SELECT Data_entry FROM flag
                 WHERE CommentID=:PCID OR CommentID=:DDECID",
                 [
@@ -240,6 +242,12 @@ class NDB_BVL_InstrumentStatus
                     ConflictDetector::recordUnresolvedConflicts($diff);
                 }
             }
+
+            $DB->update(
+                'participant_accounts',
+                ['Status' => $status],
+                ['CommentID' => $this->_commentID]
+            );
         }
 
         // Remove conflicts for SDE & DDE form from the
@@ -247,10 +255,9 @@ class NDB_BVL_InstrumentStatus
         if ($this->getDataEntryStatus() != null && $status == 'In Progress') {
             $deleteWhere1 = ['CommentId1' => $this->_commentID];
             $deleteWhere2 = ['CommentId2' => $this->_commentID];
-            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);
-            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere2);
+            $DB->delete('conflicts_unresolved', $deleteWhere1);
+            $DB->delete('conflicts_unresolved', $deleteWhere2);
         }
-
     }
 
     /**
@@ -271,7 +278,8 @@ class NDB_BVL_InstrumentStatus
             throw new Exception('Invalid administration status');
         }
 
-        $GLOBALS['DB']->update(
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->update(
             'flag',
             ['Administration' => $status],
             ['CommentID' => $this->_commentID]
@@ -297,7 +305,8 @@ class NDB_BVL_InstrumentStatus
             throw new Exception('Invalid administration status');
         }
 
-        $GLOBALS['DB']->update(
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->update(
             'flag',
             ['Validity' => $status],
             ['CommentID' => $this->_commentID]
@@ -322,7 +331,8 @@ class NDB_BVL_InstrumentStatus
             throw new Exception('Invalid exclusion status');
         }
 
-        $GLOBALS['DB']->update(
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->update(
             'flag',
             ['Exclusion' => $status],
             ['CommentID' => $this->_commentID]

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Images page class under Project
  *
@@ -41,10 +42,14 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \LORIS\LorisInstance $loris   The LORIS instance to retrieve data
+     *                                      from.
+     * @param \Project             $project The requested project
      */
-    public function __construct(\Project $project)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Project $project
+    ) {
         $this->_project = $project;
     }
 
@@ -123,6 +128,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $provisioner = new \LORIS\api\Provisioners\ProjectImagesRowProvisioner(
+            $this->loris,
             $this->_project,
             $since
         );

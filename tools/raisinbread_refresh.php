@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * This script is intended for developers working with test data. It DROPs all
  * LORIS core tables as well as "Raisinbread" test instrument tables.
@@ -172,9 +173,11 @@ array_walk($coreTables, 'runPatch');
 // Create instrument tables
 printHeader('Creating instrument tables...');
 
-$rbInstrumentTables = glob(
-    __DIR__ . "/../raisinbread/instruments/instrument_sql/*.sql"
+$rbInstrumentTables = array_merge(
+    glob(__DIR__ . "/../raisinbread/instruments/instrument_sql/*.sql"),
+    glob(__DIR__ . "/../raisinbread/instruments/instrument_sql/Meta/*.sql")
 );
+
 array_walk($rbInstrumentTables, 'runPatch');
 
 // Import Raisinbread data

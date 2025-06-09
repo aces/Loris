@@ -5,10 +5,10 @@ import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    SelectElement,
-    StaticElement,
-    ButtonElement,
+  FormElement,
+  SelectElement,
+  StaticElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -134,6 +134,9 @@ class CreateTimepoint extends React.Component {
           if (data.psc) {
             state.form.options.psc = data.psc;
             state.form.display.psc = true;
+            if (data.defaultpsc) {
+              state.form.value.psc = data.defaultpsc;
+            }
           }
           // Populate the select options for project.
           if (data.project) {
@@ -187,7 +190,7 @@ class CreateTimepoint extends React.Component {
       const errorMessage = `No cohorts defined for project: ${
         this.state.form.options.project[
           this.state.form.value.project
-      ]}`;
+        ]}`;
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
       state.form.options.cohort = {};
@@ -216,20 +219,20 @@ class CreateTimepoint extends React.Component {
   handleVisitLabel() {
     const state = Object.assign({}, this.state);
     if (state.storage.visit[
-        state.form.value.project
-      ] !== undefined) {
+      state.form.value.project
+    ] !== undefined) {
       if (Array.isArray(state.storage.visit[
         state.form.value.project][state.form.value.cohort])
       ) {
         const errorMessage = `No visit labels defined for
         combination of project: ${
-          this.state.form.options.project[
-            this.state.form.value.project
-          ]
-        } and cohort: ${
-          this.state.form.options.cohort[
-            this.state.form.value.cohort
-        ]}`;
+  this.state.form.options.project[
+    this.state.form.value.project
+  ]
+} and cohort: ${
+  this.state.form.options.cohort[
+    this.state.form.value.cohort
+  ]}`;
         state.messages = [errorMessage];
         swal.fire(errorMessage, '', 'error');
         state.form.options.visit = {};

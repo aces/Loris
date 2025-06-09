@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * A LogSetting object provides a higher level interface for
  * accessing current LORIS log settings.
@@ -49,5 +50,15 @@ class LogSettings
     function getExceptionLogLevel() : string
     {
         return $this->levels['exception_log_level']  ?? "none";
+    }
+
+    /**
+     * Get the current verbosity level for performance profile logging
+     *
+     * @return string
+     */
+    function getProfilerLogLevel() : string
+    {
+        return $this->levels['profiler_log_level']  ?? "none";
     }
 }

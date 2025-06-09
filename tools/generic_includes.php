@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script contains useful generic stuff to include
@@ -18,6 +18,33 @@ set_include_path(
     __DIR__."/../php/libraries:"
 );
 
+// TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
+if (version_compare(PHP_VERSION, '8.4', '<')) {
+    // phpcs:ignore
+    function array_any(array $array, callable $callback): bool
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // phpcs:ignore
+    function array_find(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+}
+
 require_once __DIR__ . "/../vendor/autoload.php";
 $configFile = __DIR__."/../project/config.xml";
 $client     = new NDB_Client();
@@ -33,3 +60,7 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
+// Register S3 stream wrapper if configured
+if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+    (new \LORIS\AWS\Client($lorisInstance))->registerStreamWrapper();
+}

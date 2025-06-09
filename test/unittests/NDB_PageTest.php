@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Unit tests for NDB_Page class
  *
@@ -242,7 +243,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is not set. Since
-     * dateOptions is not set, the options array should remain empty.
+     * dateOptions is not set, the options array should have the default maxYear.
      *
      * @covers NDB_Page::addBasicDate
      * @return void
@@ -255,7 +256,9 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => []
+                'options' => [
+                    'maxYear' => '9999'
+                ]
             ],
             $this->_page->form->form['test_name']
         );
@@ -264,21 +267,27 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is set. Since
-     * dateOptions is set, the options array should have information in it.
+     * dateOptions is set, the options array should have that information in it
      *
      * @covers NDB_Page::addBasicDate
      * @return void
      */
     public function testAddBasicDateWithDateOptionsSet()
     {
-        $this->_page->dateOptions = ['someOption' => 'true'];
+        $this->_page->dateOptions = [
+            'someOption' => 'true',
+            'maxYear'    => '2028'
+        ];
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
             ['name'    => 'test_name',
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => ['someOption' => 'true']
+                'options' => [
+                    'someOption' => 'true',
+                    'maxYear'    => '2028'
+                ]
             ],
             $this->_page->form->form['test_name']
         );
@@ -602,7 +611,9 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => null
+                'options' => [
+                    'maxYear' => '9999'
+                ]
             ],
             $this->_page->createDate("test_field", "test_label")
         );

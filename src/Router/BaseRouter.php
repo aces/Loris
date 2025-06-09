@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements BaseRouter, a Router to handle the base of a LORIS
  * install.
@@ -30,28 +31,17 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $loris;
-    protected $user;
-
     /**
      * Construct a BaseRouter
      *
-     * @param \User  $user       The user accessing LORIS. (May be an AnonymousUser
-     *                           instance).
-     * @param string $projectdir The base of the LORIS project directory.
-     * @param string $moduledir  The base of the LORIS modules directory.
+     * @param \LORIS\LorisInstance $loris The LORIS instance being routed
+     * @param \User                $user  The user accessing LORIS. (May be an
+     *                                    AnonymousUser instance).
      */
-    public function __construct(\User $user, string $projectdir, string $moduledir)
-    {
-        $this->user  = $user;
-        $this->loris = new \LORIS\LorisInstance(
-            \NDB_Factory::singleton()->database(),
-            \NDB_Factory::singleton()->config(),
-            [
-             $projectdir . "/modules",
-             $moduledir,
-            ]
-        );
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        protected \User $user
+    ) {
     }
 
     /**
@@ -110,8 +100,13 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $suburi = $this->stripPrefix($modulename, $uri);
 
             // Calculate the base path by stripping off the module from the original.
-            $path    = $uri->getPath();
-            $baseurl = substr($path, 0, strpos($path, $modulename));
+            $path     = $uri->getPath();
+            $pathstrt =strpos($path, $modulename);
+            if ($pathstrt !== false) {
+                $baseurl = substr($path, 0, $pathstrt);
+            } else {
+                $baseurl = '';
+            }
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
@@ -134,7 +129,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
-        if (preg_match("/^([0-9]{6})$/", $components[0])) {
+        if (preg_match("/^([0-9]{6,10})$/", $components[0])) {
             $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL((string )$baseurl);

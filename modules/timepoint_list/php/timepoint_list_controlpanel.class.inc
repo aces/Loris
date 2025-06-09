@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Time Point List control panel class
  *
@@ -39,7 +40,7 @@ Class TimePoint_List_ControlPanel extends \Candidate
      * Fill the candidateInfo and listOfTimePoints variables using the
      * select function provide by the Candidate class.
      *
-     * @param CandID $candID A 6 digit Loris CandID that matches
+     * @param CandID $candID A 6-10 digit identifier that matches
      *                       a candidate in the candidate table
      *
      * @return void

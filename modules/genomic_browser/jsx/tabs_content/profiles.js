@@ -82,44 +82,44 @@ class Profiles extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'PSCID': {
-        const url = `${this.props.baseURL}/${rowData.DCCID}/`;
-        reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      }
-      case 'File':
-        if (cell === 'Y') {
-          reactElement = <td>
-            <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-              'genomic_browser/viewGenomicFile/',
-              {candID: rowData[1]}
-            )}>{cell}</a>
-          </td>;
-        } else {
-          reactElement = <td>{cell}</td>;
-        }
-        break;
-      case 'CNV':
-      case 'CPG':
-      case 'SNP':
-        if (cell === 'Y') {
-          reactElement = <td>
-              <span
-                style={{cursor: 'pointer'}}
-                onClick={loris.loadFilteredMenuClickHandler(
-                  'genomic_browser/' + column.toLowerCase() + '_browser/',
-                  {DCCID: rowData[1]}
-                )}
-              >
-                {cell}
-              </span>
-            </td>;
-        } else {
-          reactElement = <td>{cell}</td>;
-        }
-        break;
-      default:
+    case 'PSCID': {
+      const url = `${this.props.baseURL}/${rowData.DCCID}/`;
+      reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
+      break;
+    }
+    case 'File':
+      if (cell === 'Y') {
+        reactElement = <td>
+          <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+            'genomic_browser/viewGenomicFile/',
+            {candID: rowData[1]}
+          )}>{cell}</a>
+        </td>;
+      } else {
         reactElement = <td>{cell}</td>;
+      }
+      break;
+    case 'CNV':
+    case 'CPG':
+    case 'SNP':
+      if (cell === 'Y') {
+        reactElement = <td>
+          <span
+            style={{cursor: 'pointer'}}
+            onClick={loris.loadFilteredMenuClickHandler(
+              'genomic_browser/' + column.toLowerCase() + '_browser/',
+              {DCCID: rowData[1]}
+            )}
+          >
+            {cell}
+          </span>
+        </td>;
+      } else {
+        reactElement = <td>{cell}</td>;
+      }
+      break;
+    default:
+      reactElement = <td>{cell}</td>;
     }
     return reactElement;
   }
@@ -179,10 +179,6 @@ class Profiles extends Component {
           type: 'select',
           options: options.Cohorts,
         },
-      },
-      {
-        label: 'Date of Birth',
-        show: false,
       },
       {
         label: 'External ID',

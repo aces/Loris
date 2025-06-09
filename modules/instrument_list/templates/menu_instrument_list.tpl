@@ -5,13 +5,11 @@
   <tr class="info">
     {assign var="DoB" value=$candidate->getDisplayDoB()}
     <th>
-      {$DoB['label']}
+      Derived Age
     </th>
-    {if $display.EDC!=""}
-      <th>
-        EDC
-      </th>
-    {/if}
+    <th>
+        EDC Age
+    </th>
     <th>
       Biological Sex
     </th>
@@ -69,13 +67,11 @@
   <tbody>
   <tr>
     <td>
-      {$DoB['value']}
+      {$dob_age}
     </td>
-    {if $display.EDC!=""}
-      <td>
-        {$display.EDC}
-      </td>
-    {/if}
+    <td>
+        {$edc_age}
+    </td>
     <td>
       {$display.Sex}
     </td>

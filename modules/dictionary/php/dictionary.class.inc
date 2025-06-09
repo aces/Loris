@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LORIS\dictionary;
 
@@ -53,9 +52,25 @@ class Dictionary extends \DataFrameworkMenu
         foreach ($this->modules as $module) {
             $amodules[$module->getName()] = $module->getLongName();
         }
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
+        $cohort_options = [];
+        foreach (array_values($cohorts) as $name) {
+            $cohort_options[$name] = $name;
+        }
+        $visit_options = [];
+        foreach (\Utility::getVisitList() as $visit) {
+            $visit_options[$visit] = $visit;
+        }
         return [
             'modules'    => $amodules,
             'categories' => $this->categories,
+            'visits'     => $visit_options,
+            'cohorts'    => $cohort_options,
         ];
     }
 

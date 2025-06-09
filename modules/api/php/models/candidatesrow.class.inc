@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 7
  *
@@ -40,17 +41,17 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(array $row)
     {
-        $this->_candid      = $row['CandID'] ?? null;
+        $this->_candid      = strval($row['CandID']) ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
-            $this->_projectid = new \ProjectID($row['ProjectID']);
+            $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));
         }
         $this->_pscid    = $row['PSCID'] ?? null;
         $this->_sitename = $row['SiteName'] ?? null;
         $this->_edc      = $row['EDC'] ?? null;
         $this->_dob      = $row['DoB'] ?? null;
         $this->_sex      = $row['Sex'] ?? null;
-        $this->_centerid = new \CenterID($row['CenterID']);
+        $this->_centerid = \CenterID::singleton(intval($row['CenterID']));
     }
 
     /**

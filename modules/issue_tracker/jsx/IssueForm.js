@@ -4,7 +4,6 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -52,7 +51,7 @@ class IssueForm extends Component {
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
     this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
-                                      .bind(this);
+      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
@@ -116,7 +115,6 @@ class IssueForm extends Component {
     let lastUpdatedByValue;
     let dateCreated;
     let submitButtonValue;
-    let commentLabel;
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
@@ -132,7 +130,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = 'No-one!';
       dateCreated = 'Sometime Soon!';
       submitButtonValue = 'Submit Issue';
-      commentLabel = 'Description';
       attachmentFileElement = (
         <FileElement
           name='file'
@@ -148,7 +145,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
-      commentLabel = 'New Comment';
       attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
@@ -159,10 +155,10 @@ class IssueForm extends Component {
 
     const fileCollection = this.state.isNewIssue || (
       <AttachmentsList issue={this.props.issue}
-                       baseURL={this.props.baseURL}
-                       attachments={this.state.issueData['attachments']}
-                       userHasPermission={this.props.userHasPermission}
-                       whoami={this.state.issueData.whoami}
+        baseURL={this.props.baseURL}
+        attachments={this.state.issueData['attachments']}
+        userHasPermission={this.props.userHasPermission}
+        whoami={this.state.issueData.whoami}
       />
     );
 
@@ -171,7 +167,6 @@ class IssueForm extends Component {
     );
 
     let header;
-    let description;
     if (!this.state.isNewIssue) {
       header = (
         <div className='row'>
@@ -209,16 +204,6 @@ class IssueForm extends Component {
           </div>
         </div>
       );
-
-      const descr = <Markdown content={this.state.issueData.desc} />;
-      description = (
-        <StaticElement
-          name='description'
-          label='Description'
-          ref='description'
-          text={descr}
-        />
-      );
     }
 
     return (
@@ -247,7 +232,14 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             required={true}
           />
-          {description}
+          <TextareaElement
+            name='description'
+            label='Description'
+            onUserInput={this.setFormData}
+            value={this.state.formData.description}
+            disabled={!hasEditPermission}
+            required={false}
+          />
           <SelectElement
             name='assignee'
             label='Assignee'
@@ -277,8 +269,8 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-                                               // different if the user doesn't have
-                                               // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'
@@ -290,6 +282,15 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
             sortByValue={false}
+          />
+          <SelectElement
+            name='instrument'
+            label='Instrument'
+            emptyOption={true}
+            options={this.state.Data.instruments}
+            onUserInput={this.setFormData}
+            disabled={!hasEditPermission}
+            value={this.state.formData.instrument}
           />
           <SelectElement
             name='category'
@@ -341,12 +342,16 @@ class IssueForm extends Component {
             multiple={true}
             value={this.state.formData.othersWatching}
           />
-          <TextareaElement
-            name='comment'
-            label={commentLabel}
-            onUserInput={this.setFormData}
-            value={this.state.formData.comment}
-          />
+          {!this.state.isNewIssue ?
+            <TextareaElement
+              name='comment'
+              hidden={true}
+              label='New Comment'
+              onUserInput={this.setFormData}
+              value={this.state.formData.comment}
+            />
+            :null
+          }
           {attachmentFileElement}
           <ButtonElement label={submitButtonValue}/>
           {attachmentUploadBtn}
@@ -392,6 +397,10 @@ class IssueForm extends Component {
             // a NULL centerID (= All Sites) is converted to the ALL Sites option
             if (formData.centerID == null) {
               formData.centerID = 'all';
+            }
+
+            if (formData.instrument_name) {
+              formData.instrument = formData.instrument_name;
             }
           }
 
@@ -519,7 +528,7 @@ class IssueForm extends Component {
       if (formDataToCheck[field]) {
         requiredFields[field] = formDataToCheck[field];
       } else if (formRefs[field]) {
-        formRefs[field].props.hasError = true;
+        formRefs[field].props.errorMessage = 'This field is required';
         isValidForm = false;
       }
     });

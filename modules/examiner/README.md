@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Examiner module displays the list of examiners in the study and allows 
+The Examiner module displays the list of active examiners in the study and allows 
 for additions and removal of certifications for each examiner listed.
 
 ## Intended Users

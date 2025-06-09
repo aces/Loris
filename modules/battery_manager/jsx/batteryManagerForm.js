@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    ButtonElement,
-    FormElement,
-    StaticElement,
-    SelectElement,
-    NumericElement,
+  ButtonElement,
+  FormElement,
+  StaticElement,
+  SelectElement,
+  NumericElement,
 } from 'jsx/Form';
 
 /**
@@ -43,7 +43,7 @@ class BatteryManagerForm extends Component {
              entry.<br/>
              If the duplicate entry is inactive, you will be given the option
              to active it.
-             <br/>
+            <br/>
             <br/>
           </span>
         );
@@ -68,7 +68,6 @@ class BatteryManagerForm extends Component {
           required={true}
           value={test.testName}
           errorMessage={errors.testName}
-          hasError={errors.testName}
         />
         <NumericElement
           name="ageMinDays"
@@ -79,7 +78,6 @@ class BatteryManagerForm extends Component {
           required={true}
           value={test.ageMinDays}
           errorMessage={errors.ageMinDays}
-          hasError={errors.ageMinDays}
         />
         <NumericElement
           name="ageMaxDays"
@@ -90,7 +88,6 @@ class BatteryManagerForm extends Component {
           required={true}
           value={test.ageMaxDays}
           errorMessage={errors.ageMaxDays}
-          hasError={errors.ageMaxDays}
         />
         <SelectElement
           name="stage"
@@ -100,7 +97,6 @@ class BatteryManagerForm extends Component {
           required={true}
           value={test.stage}
           errorMessage={errors.stage}
-          hasError={errors.stage}
         />
         <SelectElement
           name="cohort"
@@ -145,7 +141,16 @@ class BatteryManagerForm extends Component {
           max={127} // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
         />
-         <ButtonElement
+        <SelectElement
+          name="DoubleDataEntryEnabled"
+          label="Enable Double Data Entry"
+          options={options.DoubleDataEntryEnabled}
+          onUserInput={setTest}
+          required={true}
+          value={test.DoubleDataEntryEnabled}
+          emptyOption={false}
+        />
+        <ButtonElement
           label="Submit"
         />
       </FormElement>

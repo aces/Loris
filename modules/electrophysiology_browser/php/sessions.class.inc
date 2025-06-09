@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class features the code for the menu portion of the LORIS
  * electrophysiology browser module.
@@ -157,7 +158,7 @@ class Sessions extends \NDB_Page
                 DISTINCT(pf.SessionID)
               FROM physiological_file pf
                 LEFT JOIN session s ON (s.ID=pf.SessionID)
-                LEFT JOIN candidate c USING (CandID)
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                 LEFT JOIN psc ON (s.CenterID=psc.CenterID)
                 LEFT JOIN physiological_output_type pot
                   USING (PhysiologicalOutputTypeID)
@@ -170,7 +171,10 @@ class Sessions extends \NDB_Page
         $response = [];
 
         $sessions            = $db->pselect($query, []);
-        $sessions            = array_column($sessions, 'SessionID');
+        $sessions            = array_column(
+            iterator_to_array($sessions),
+            'SessionID'
+        );
         $response['patient'] = $this->getSubjectData($outputType);
         $response['database']    = array_values(
             $this->getFilesData($outputType)
@@ -508,7 +512,7 @@ class Sessions extends \NDB_Page
             []
         );
 
-        $fileSummary['hedSchema'] = $hedSchema;
+        $fileSummary['hedSchema'] = iterator_to_array($hedSchema);
 
         return $fileSummary;
     }

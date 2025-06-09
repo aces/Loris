@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the Schedule Module class.
  *
@@ -95,7 +96,7 @@ class Schedule_Module extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ScheduleModuleProvisioner();
+        return new ScheduleModuleProvisioner($this->loris);
     }
 
     /**

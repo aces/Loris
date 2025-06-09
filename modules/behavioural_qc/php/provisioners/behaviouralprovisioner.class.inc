@@ -26,7 +26,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
             "
             SELECT
                 tn.Full_name AS _instrument,
-                fb.CandID AS _candID,
+                ca.CandID AS _candID,
                 ca.PSCID AS _pscID,
                 s.Visit_label AS _visit,
                 COALESCE(s.ProjectID, ca.RegistrationProjectID) AS _project,
@@ -36,17 +36,17 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
 	            fb.SessionID AS _sessionID,
 	            fb.CommentID AS _commentID,
                 fb.Feedback_level AS _feedback_level,
-                f.Test_name AS _test_name,
+                tn.Test_name AS _test_name,
                 fb.FieldName AS _field_name,
                 fb.Status as _feedback_status
             FROM
                 feedback_bvl_thread AS fb
-                JOIN candidate ca ON (ca.CandID = fb.CandID)
+                JOIN candidate ca ON (ca.ID = fb.CandidateID)
                 LEFT JOIN session s ON (s.ID = fb.SessionID)
                 LEFT JOIN psc ON (s.CenterID = psc.CenterID)
                 LEFT JOIN psc psc2 ON (ca.RegistrationCenterID=psc2.CenterID)
                 LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
-                LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
+                LEFT JOIN test_names tn ON (tn.ID = f.TestID)
             WHERE
                 fb.Public = 'Y'
                 AND fb.Status = 'opened'

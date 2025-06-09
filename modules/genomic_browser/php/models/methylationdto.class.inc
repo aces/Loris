@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace LORIS\genomic_browser\Models;
 
@@ -26,16 +25,16 @@ class MethylationDTO implements DataInstance, SiteHaver
     /**
      * The centerID
      *
-     * @var string
+     * @var int
      */
-    private $_centerID = "";
+    private $_centerID;
 
     /**
      * The projectID
      *
-     * @var string
+     * @var int
      */
-    private $_projectID = "";
+    private $_projectID;
 
     /**
      * The PSC
@@ -71,13 +70,6 @@ class MethylationDTO implements DataInstance, SiteHaver
      * @var string
      */
     private $_Cohort = "";
-
-    /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
 
     /**
      * The Sample
@@ -281,7 +273,6 @@ class MethylationDTO implements DataInstance, SiteHaver
             'PSCID'            => $this->_PSCID,
             'Sex'              => $this->_Sex,
             'Cohort'           => $this->_Cohort,
-            'DoB'              => $this->_DoB,
             'Sample'           => $this->_Sample,
             'cpg_name'         => $this->_cpg_name,
             'Beta_value'       => $this->_Beta_value,
@@ -319,7 +310,7 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_centerID));
+        return \CenterID::singleton($this->_centerID);
     }
 
     /**
@@ -329,6 +320,6 @@ class MethylationDTO implements DataInstance, SiteHaver
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_projectID));
+        return \ProjectID::singleton($this->_projectID);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Form_imaging_browser class file
@@ -163,7 +163,7 @@ class ViewSession extends \NDB_Form
                 $extra_where_string .= " AND OutputType='native'";
             } elseif ($outputType=="skull_mask") {
                 $extra_where_string .= " AND (OutputType='skull_mask'
-                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
+                    OR  (OutputType='native' AND MriScanTypeID='44') )";
             } else {
                 $extra_where_string .= " AND (OutputType=:outputType
                     OR OutputType='linreg')";
@@ -175,11 +175,11 @@ class ViewSession extends \NDB_Form
             "SELECT files.FileID, files.ScannerID FROM files
              LEFT JOIN files_qcstatus as sel
              on (files.FileID=sel.FileID)
-            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL
-            OR AcquisitionProtocolID not in (1, 2, 3, 52))
+            WHERE SessionID=:SID AND (MriScanTypeID IS NULL
+            OR MriScanTypeID not in (1, 2, 3, 52))
             $extra_where_string
             ORDER BY files.OutputType,
-                     files.AcquisitionProtocolID,
+                     files.MriScanTypeID,
                      files.File",
             $args
         );
@@ -303,7 +303,7 @@ class ViewSession extends \NDB_Form
             $JsonFile    = $FileObj->getParameter('bids_json_file');
             $OtherTimepoints = $this->_getFilesAcrossTimepoints(
                 (int)$FileObj->getParameter('SessionID'),
-                (int)$FileObj->getParameter('AcquisitionProtocolID')
+                (int)$FileObj->getParameter('MriScanTypeID')
             );
 
             $manualCaveatViolationsResolvedID
@@ -417,7 +417,7 @@ class ViewSession extends \NDB_Form
             AND mvl.Header NOT LIKE 'Manual Caveat Set by %';
         ";
 
-        return $this->_DB->pselect($query, ['fileID' => $fileID]);
+        return iterator_to_array($this->_DB->pselect($query, ['fileID' => $fileID]));
     }
 
     /**
@@ -574,21 +574,25 @@ class ViewSession extends \NDB_Form
                     $insertSet['PhaseEncodingDirection'] = $file->getParameter(
                         'PhaseEncodingDirection'
                     );
-                    $insertSet['EchoTime']    = $file->getParameter('echo_time');
-                    $insertSet['EchoNumber']  = $file->getParameter('echo_numbers');
-                    $insertSet['TarchiveID']  = $file->getParameter(
+                    $insertSet['EchoTime']      = $file->getParameter('echo_time');
+                    $insertSet['EchoNumber']    = $file->getParameter(
+                        'echo_numbers'
+                    );
+                    $insertSet['TarchiveID']    = $file->getParameter(
                         'TarchiveSource'
                     );
-                    $insertSet['MincFile']    = $file->getParameter('File');
-                    $insertSet['PatientName'] = $file->getParameter('patient_name');
-                    $insertSet['CandID']      = $candid;
-                    $insertSet['Visit_label'] = $visit_label;
-                    $insertSet['CheckID']     = null;
-                    $insertSet['Scan_type']   = $file->getParameter(
-                        'AcquisitionProtocolID'
+                    $insertSet['MincFile']      = $file->getParameter('File');
+                    $insertSet['PatientName']   = $file->getParameter(
+                        'patient_name'
                     );
-                    $insertSet['Severity']    = 'warning';
-                    $insertSet['Header']      = 'Manual Caveat Set by '
+                    $insertSet['CandID']        = $candid;
+                    $insertSet['Visit_label']   = $visit_label;
+                    $insertSet['CheckID']       = null;
+                    $insertSet['MriScanTypeID'] = $file->getParameter(
+                        'MriScanTypeID'
+                    );
+                    $insertSet['Severity']      = 'warning';
+                    $insertSet['Header']        = 'Manual Caveat Set by '
                         . $user->getUsername();
 
                     // The TimeRun column is really the time at which the
@@ -847,9 +851,9 @@ class ViewSession extends \NDB_Form
 
         $selectResults = $this->_DB->pselect(
             "SELECT FileID FROM files ".
-            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "WHERE MriScanTypeID =:initialFileAcquisitionID ".
             "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
-            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            "ON s1.CandidateID = s2.CandidateID WHERE s1.ID =:initialFileID)",
             [
                 'initialFileAcquisitionID' => $initialFileAcquisitionID,
                 'initialFileID'            => $initialFileID,

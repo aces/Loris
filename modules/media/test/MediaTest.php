@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Media module automated integration tests
  *
@@ -60,10 +61,6 @@ class MediaTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
         );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > thead > tr")
-        )->getText();
-        $this->assertStringNotContainsString("Edit Metadata", $bodyText);
 
         $this->resetPermissions();
     }
@@ -88,10 +85,6 @@ class MediaTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
         );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > thead > tr")
-        )->getText();
-        $this->assertStringContainsString("Edit Metadata", $bodyText);
         $this->resetPermissions();
     }
     /**

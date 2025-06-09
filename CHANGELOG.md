@@ -54,6 +54,7 @@ changes in the following format: PR #1234***
   - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
   - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
 - Help and help editor reactification (PR #8309)
+- In document repository: Add Upload / edit permission, add "Edit Categories" tab, create category permission (PR #7103)
 
 #### Bug Fixes
 - Fix a Fatal error on the Genomic Browser tabs (PR #8468)

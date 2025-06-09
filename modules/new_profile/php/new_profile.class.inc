@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\new_profile;
 
 /**
@@ -21,7 +22,7 @@ class New_Profile extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
+        if ($user->hasStudySite() || $user->hasCenter(\CenterID::singleton(1))) {
             return $user->hasPermission('data_entry');
         }
 

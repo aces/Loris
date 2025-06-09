@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Behavioural_QC automated integration tests
  *
@@ -73,6 +74,59 @@ class Behavioural_QCTest extends LorisIntegrationTest
             '/behavioural_qc/',
             ['behavioural_quality_control_view'],
             "Behavioural Quality Control"
+        );
+    }
+    /**
+     * Tests that link to correct directions
+     *
+     * @return void
+     */
+    public function testlinks(): void
+    {
+        $this->safeGet($this->url . "/behavioural_qc/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(2) > a"
+            )
+        )->getAttribute('href');
+        // check     Instrument link
+        $this->assertStringContainsString(
+            "radiology_review/?candID=300001",
+            $bodyText
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(4) > a"
+            )
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "300001",
+            $bodyText
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(4) > a"
+            )
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "300001",
+            $bodyText
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                " #dynamictable >".
+                " tbody > tr:nth-child(1) > td:nth-child(6) > a"
+            )
+        )->getAttribute('href');
+        // check        Instrument link
+        $this->assertStringContainsString(
+            "instrument_list/?candID=300001",
+            $bodyText
         );
     }
 }

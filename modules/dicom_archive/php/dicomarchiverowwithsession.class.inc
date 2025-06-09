@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class implements a data Instance which represents a single
  * row in the dicom archive menu table.
@@ -30,6 +31,9 @@ class DICOMArchiveRowWithSession implements \LORIS\Data\DataInstance,
 {
     protected $DBRow;
     protected $CenterID;
+    protected $ProjectID;
+    protected $SessionID;
+    protected $CreatedBy;
 
     /**
      * Create a new DICOMArchiveRowWithSession.
@@ -37,14 +41,25 @@ class DICOMArchiveRowWithSession implements \LORIS\Data\DataInstance,
      * This DataInstance type represents rows that have a session associated
      * with them (and hence are able to return a CenterID for the row.)
      *
-     * @param array     $row The row (in the same format as \Database::pselectRow
-     *                       returns)
-     * @param \CenterID $cid The centerID affiliated with this row.
+     * @param array      $row     The row (in the same format as
+     *                            \Database::pselectRow returns)
+     * @param \CenterID  $cid     The centerID affiliated with this row.
+     * @param \ProjectID $pid     The ProjectID affiliated with this row.
+     * @param \SessionID $sid     The SessionID affiliated with this row.
+     * @param \User      $creator The user who created this row
      */
-    public function __construct(array $row, \CenterID $cid)
-    {
-        $this->DBRow    = $row;
-        $this->CenterID = $cid;
+    public function __construct(
+        array $row,
+        \CenterID $cid,
+        \ProjectID $pid,
+        \SessionID $sid,
+        \User $creator,
+    ) {
+        $this->DBRow     = $row;
+        $this->CenterID  = $cid;
+        $this->ProjectID = $pid;
+        $this->SessionID = $sid;
+        $this->CreatedBy = $creator;
     }
 
     /**
@@ -66,5 +81,36 @@ class DICOMArchiveRowWithSession implements \LORIS\Data\DataInstance,
     public function getCenterID() : \CenterID
     {
         return $this->CenterID;
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match again.
+     *
+     * @return \ProjectID The ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        return $this->ProjectID;
+    }
+
+    /**
+     * Returns the SessionID for this row.
+     *
+     * @return \SessionID The SessionID
+     */
+    public function getSessionID(): \SessionID
+    {
+        return $this->SessionID;
+    }
+
+    /**
+     * Return the User who created this row.
+     *
+     * @return \User The user who created this row
+     */
+    public function createdBy() : \User
+    {
+        return $this->CreatedBy;
     }
 }

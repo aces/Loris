@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is used by the survey accounts module to validate inputs
  * before the email message popup appears
@@ -15,7 +16,7 @@
 $user = \User::singleton();
 if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
@@ -33,8 +34,8 @@ $db = \NDB_Factory::singleton()->database();
 
 
 $numCandidates = $db->pselectOne(
-    "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+    "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
     [
         'v_PSCID'  => $_REQUEST['pscid'],
@@ -46,14 +47,15 @@ if ($numCandidates != 1) {
     echo json_encode(
         ['error_msg' => $error_msg]
     );
-    exit;
+    exit(0);
 }
 
 $numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
-            AND Active='Y'",
+    "SELECT COUNT(*) FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE c.CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
+            AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],
@@ -67,21 +69,23 @@ if ($numSessions != 1) {
                              " does not exist for given candidate",
         ]
     );
-    exit;
+    exit(0);
 }
 
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         ['error_msg' => 'Please choose an instrument']
     );
-    exit;
+    exit(0);
 }
 
 $instrument_list = $db->pselect(
-    "SELECT f.Test_name FROM flag f
+    "SELECT tn.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             JOIN candidate c ON c.ID = s.CandidateID
+             JOIN test_names tn ON tn.ID = f.TestID
+             WHERE c.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
@@ -96,7 +100,7 @@ foreach ($instrument_list as $instrument) {
                 " already exists for given candidate for visit ". $_REQUEST['VL'],
             ]
         );
-        exit;
+        exit(0);
     }
 }
 
@@ -105,7 +109,7 @@ if (!empty($_REQUEST['Email']) ) {
         echo json_encode(
             ['error_msg' => 'The email address is not valid.']
         );
-        exit;
+        exit(0);
     }
 }
 

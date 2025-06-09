@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Timepoint_list automated integration tests
  *
@@ -46,6 +47,12 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      * Candidate ID for candidate TST0001.
      */
     private static $_TST0001_CANDID = 900000;
+
+    /**
+     * ID for candidate TST0001.
+     */
+    private static $_TST0001_CANDIDATEID = 1;
+
 
     /**
      * Tests that, when loading the timepoint_list module, some
@@ -120,6 +127,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 2,
                 'CandID'                => '900001',
                 'PSCID'                 => 'TST0002',
                 'RegistrationCenterID'  => 1,
@@ -135,7 +143,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             'session',
             [
                 'ID'          => '999998',
-                'CandID'      => '900001',
+                'CandidateID' => 2,
                 'Visit_label' => 'Test',
                 'CenterID'    => 1,
                 'ProjectID'   => 1,
@@ -148,7 +156,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             'session',
             [
                 'ID'          => '999997',
-                'CandID'      => self::$_TST0001_CANDID,
+                'CandidateID' => 1,
                 'Visit_label' => 'Test2',
                 'CenterID'    => 1,
                 'ProjectID'   => 1,

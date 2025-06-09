@@ -1,4 +1,5 @@
 <?php declare (strict_types=1);
+
 /**
  * Unit tests for the User and UserPermissions class
  *
@@ -91,10 +92,12 @@ class UserTest extends TestCase
      * @var array
      */
     private $_projectInfo = [0 => ['ProjectID' => '1',
-        'Name'      => 'project_test'
+        'Name'      => 'project_test',
+        'Alias'     => 'TST1',
     ],
         1 => ['ProjectID' => '3',
-            'Name'      => 'project_test2'
+            'Name'      => 'project_test2',
+            'Alias'     => 'TST2',
         ]
     ];
 
@@ -306,6 +309,7 @@ class UserTest extends TestCase
         ];
         $this->_userInfoComplete['CenterIDs']  = ['1', '4'];
         $this->_userInfoComplete['ProjectIDs'] = ['1', '3'];
+        $this->_userInfoComplete['Projects']   = 'project_test;project_test2';
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();

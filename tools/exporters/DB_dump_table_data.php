@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * This script generates data-only dumps for all tables
  * in the currently active database.
@@ -86,6 +87,19 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
  */
 
 
+// Check MySQL version
+$mysqlVersionOutput = shell_exec(
+    'mysql -u '.escapeshellarg($adminUser).' -p'.escapeshellarg($adminPassword).
+    ' -h '.escapeshellarg($dbHost).' -e "SELECT VERSION();" 2>/dev/null'
+);
+
+preg_match('/\d+\.\d+\.\d+/', $mysqlVersionOutput, $matches);
+$mysqlVersion = $matches[0] ?? '0.0.0';
+
+// Determine whether --column-statistics=0 is needed
+$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '<=') ?
+ '--column-statistics=0 ' : '';
+
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
     $paths    = \NDB_Config::singleton()->getSetting('paths');
@@ -94,7 +108,7 @@ foreach ($tableNames as $tableName) {
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
-        '--column-statistics=0 '.
+        $columnStatisticsFlag.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This class features the code for the menu portion of the Loris imaging
@@ -162,7 +162,7 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new ImagingBrowserRowProvisioner();
+        return new ImagingBrowserRowProvisioner($this->loris);
     }
 
     /**

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file is used by the Configuration module to update
  * or insert values into the Config table.
@@ -52,7 +53,12 @@ foreach ($_POST as $key => $value) {
                 // input.
                 if (!validPath($value)) {
                     $err = 'Directory `'
-                        . htmlspecialchars($value, ENT_QUOTES)
+                        . htmlspecialchars(
+                            $value,
+                            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                            'UTF-8',
+                            false
+                        )
                         . '` is invalid';
                     // Set response code and display error message.
                     displayError(400, $err);
@@ -92,15 +98,25 @@ foreach ($_POST as $key => $value) {
                 displayError(
                     400,
                     "Duplicate value submitted: "
-                    . htmlspecialchars($value, ENT_QUOTES)
+                    . htmlspecialchars(
+                        $value,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    )
                 );
-                exit;
+                exit(0);
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
             $pathIDs = getPathIDs('ConfigSettings');
             if (in_array($ConfigSettingsID, $pathIDs)) {
                 if (!validPath($value)) {
-                    $err = 'Directory `' . htmlspecialchars($value, ENT_QUOTES)
+                    $err = 'Directory `' . htmlspecialchars(
+                        $value,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    )
                         . '` is invalid';
                     // Set response code and display error message.
                     displayError(400, $err);

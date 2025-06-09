@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publication file upload & editing handler
  *
@@ -20,7 +21,7 @@ if (isset($_REQUEST['action'])) {
         editProject();
     } else {
         http_response_code(400);
-        exit;
+        exit(0);
     }
 }
 
@@ -603,11 +604,41 @@ function editProject() : void
     if ($pubData['link'] !== $link) {
         $toUpdate['link'] = $link;
     }
-    if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
-        $leadInvToUpdate['Name'] = $leadInvestigator;
-    }
+    $leadInvToUpdate['Name'] = $leadInvestigator;
+
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
+        // check if email exists in database
+        $cid = $db->pselectOne(
+            'SELECT PublicationCollaboratorID '.
+            'FROM publication_collaborator '.
+            'WHERE Email=:email',
+            ['email' => $leadInvestigatorEmail]
+        );
         $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
+
+        // if email exists in database, update new email association to name & cid
+        if ($cid) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $cid]
+            );
+             $toUpdate['LeadInvestigatorID'] = $cid;
+        } else {
+            // otherwise, create new collaborator with a new id
+            $db->insert(
+                'publication_collaborator',
+                $leadInvToUpdate
+            );
+            $toUpdate['LeadInvestigatorID'] = $db->getLastInsertId();
+        }
+        // if only name is updated, update name associated to the email
+    } else if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
+        $db->update(
+            'publication_collaborator',
+            $leadInvToUpdate,
+            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+        );
     }
 
     editEditors($id);
@@ -628,13 +659,6 @@ function editProject() : void
             'publication',
             $toUpdate,
             ['PublicationID' => $id]
-        );
-    }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
 }
@@ -730,12 +754,14 @@ function editCollaborators($id) : void
         }
     }
     // update emails if any have changed
-    $currentCollabs = $db->pselect(
-        'SELECT Name, Email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
+    $currentCollabs = iterator_to_array(
+        $db->pselect(
+            'SELECT Name, Email FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
+            'WHERE pcr.PublicationID=:pid',
+            ['pid' => $id]
+        )
     );
 
     $currCollabEmails      = array_column($currentCollabs, 'email');
@@ -911,10 +937,22 @@ function editUploads($id) : void
         $cit = $_POST[$citationIndex] ?? null;
         $ver = $_POST[$versionIndex] ?? null;
 
-        if (htmlspecialchars($cit) !== $data['Citation']) {
+        if (htmlspecialchars(
+            $cit,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Citation']
+        ) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
-        if (htmlspecialchars($ver) !== $data['Version']) {
+        if (htmlspecialchars(
+            $ver,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Version']
+        ) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }
@@ -945,5 +983,7 @@ function showPublicationError($message, $code = 500) : void
 
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    exit(json_encode(['message' => $message]));
+
+    print(json_encode(['message' => $message]));
+    exit(0);
 }

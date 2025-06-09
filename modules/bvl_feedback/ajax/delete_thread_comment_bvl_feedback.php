@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Used to delete an entry on a specific thread via the bvl feedback
  * panel.
@@ -23,4 +24,4 @@ $db->delete('feedback_bvl_entry', ["ID" => $_POST['entryID']]);
 
 print json_encode('success');
 
-exit();
+exit(0);

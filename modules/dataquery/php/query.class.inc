@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\dataquery;
 use \LORIS\StudyEntities\Candidate\CandID;
 use \LORIS\Data\Query\QueryTerm;
@@ -365,7 +366,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 'Name'    => $name,
             ]
         );
-
     }
 
     /**
@@ -491,7 +491,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param string $name The name that the admin thinks should be
      *                     used for the query
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -516,7 +516,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Remove this query from the list of queries pinned by an admin.
      *
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -537,18 +537,24 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @param \User $user The user running the query.
      *
-     * @return CandID[]
+     * @return iterable
      */
     public function matchCandidates(\User $user) : iterable
     {
         $criteria = $this->getCriteria();
 
         if ($criteria) {
+            \Profiler::checkpoint("Matching with criteria");
             $candidates = $this->_candidateMatches($criteria);
         } else {
+            \Profiler::checkpoint("Matching all candidates");
             $candidates = $this->_allCandidates();
         }
-        return $this->_filterInaccessibleCandidates($candidates, $user);
+        return \Candidate::filterInaccessibleCandIDs(
+            $this->loris,
+            $candidates,
+            $user
+        );
     }
 
     /**
@@ -557,16 +563,18 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param CandID[] $candIDs The CandIDs to be filtered
      * @param \User    $user    The user whose access should check.
      *
-     * @return CandID[]
+     * @return iterable
      */
     private function _filterInaccessibleCandidates(
         array $candIDs,
         \User $user,
     ) : iterable {
+        \Profiler::checkpoint("Filtering inaccessible candidates");
         if (count($candIDs) == 0) {
             return [];
         }
-        $DB = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
 
         // Put candidates into a temporary table so that it can be used in a join
         // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
@@ -574,7 +582,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE accesscandidates(
-            CandID int(6)
+	    CandID int(6) NOT NULL,
+	    PRIMARY KEY(CandID)
         );"
         );
         $insertstmt = "INSERT INTO accesscandidates VALUES"
@@ -593,57 +602,51 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             ORDER BY c.CandID",
             []
         );
-        $organized = [];
+        $curCandID = '';
+        $canddata  = null;
 
         // Foreach CandID, create the TimePointData object for all timepoints
         // that were returned.
         foreach ($rows as $row) {
-            $candid = $row['CandID'];
-            if (!isset($organized[$candid])) {
-                $organized[$candid] = [
-                    'CandID'              => new CandID($row['CandID']),
-                    'RegistrationProject' => $row['RegistrationProjectID'],
-                    'RegistrationCenter'  => $row['RegistrationCenterID'],
-                    'Timepoints'          => [],
-                ];
+            if ($curCandID != $row['CandID']) {
+                if ($canddata !== null) {
+                     $candidate = new \Candidate($canddata);
+                    if ($candidate->isAccessibleBy($user)) {
+                        yield $canddata->CandID;
+                    }
+                }
+                $canddata  = new \CandidateData(
+                    candID: new CandID(strval($row['CandID'])),
+                    registrationProjectID: $row['RegistrationProjectID'] !== null
+                    ? \ProjectID::singleton($row['RegistrationProjectID'])
+                    : null,
+                    registrationCenterID: $row['RegistrationCenterID'] !== null
+                    ? \CenterID::singleton($row['RegistrationCenterID'])
+                    : null,
+                    timepoints: [],
+                );
+                $curCandID = $row['CandID'];
             }
-
             if ($row['sessionID'] !== null) {
-                $organized[$candid]['Timepoints'][] = new \TimePoint(
+                $canddata->timepoints[] = new \TimePoint(
                     new \TimePointData(
-                        new \SessionID($row['sessionID']),
-                        new \ProjectID($row['SProjectID']),
-                        new \CenterID($row['SCenterID']),
+                        new \SessionID(strval($row['sessionID'])),
+                        \ProjectID::singleton($row['SProjectID']),
+                        \CenterID::singleton($row['SCenterID']),
                     )
                 );
             }
         }
 
-        // Remove inaccessible candidates from the temp table
-        foreach ($organized as $vals) {
-            $canddata  = new \CandidateData(
-                candID: $vals['CandID'],
-                registrationProjectID: new \ProjectID($vals['RegistrationProject']),
-                registrationCenterID: new \CenterID($vals['RegistrationCenter']),
-                timepoints: $vals['Timepoints']
-            );
+        // check the last candidate that wouldn't have entered the check in the
+        // loop
+        if ($canddata !== null) {
             $candidate = new \Candidate($canddata);
-
-            if (!$candidate->isAccessibleBy($user)) {
-                // Not accessible, so delete from accesscandidates
-                $DB->delete("accesscandidates", ['CandID' => $vals['CandID']]);
-                continue;
+            if ($candidate->isAccessibleBy($user)) {
+                yield $canddata->CandID;
             }
         }
-
-        $candidates = $DB->pselectCol("SELECT CandID from accesscandidates", []);
-        $DB->run("DROP TEMPORARY TABLE accesscandidates");
-        return array_map(
-            function ($row) {
-                return new CandID($row);
-            },
-            $candidates
-        );
+        \Profiler::checkpoint("Finished filtering candidates");
     }
 
     /**
@@ -661,7 +664,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
         return array_map(
             function ($row) {
-                return new CandID($row);
+                return new CandID(strval($row));
             },
             $results
         );
@@ -682,7 +685,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         foreach ($criteria['group'] as $crit) {
+            \Profiler::checkpoint("Checking groups");
             if (isset($crit['group'])) {
+                \Profiler::checkpoint("Subgroup");
                 $subresults = $this->_candidateMatches($crit);
                 if (is_array($subresults)) {
                     $results[] = $subresults;
@@ -751,12 +756,14 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $visitlist = $query['visits'];
             }
 
+            \Profiler::checkpoint("Calling engine get matches");
             $matches = $engine->getCandidateMatches($term, $visitlist);
             if (is_array($matches)) {
                 $results[] = $matches;
             } else {
                 $results[] = iterator_to_array($matches);
             }
+            \Profiler::checkpoint("Done group");
         }
         $combinedresult = [];
         if (count($results) == 1) {

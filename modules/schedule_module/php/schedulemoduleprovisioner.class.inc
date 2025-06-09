@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to the schedule_module menu page.
  *
@@ -31,10 +32,14 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     /**
      * Create a ScheduleModuleProvisioner, which gets modules for the
      * Schedule Module menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             $this->getQuery(),
             []
         );
@@ -56,13 +61,13 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     public function getQuery() : string
     {
         $subquery = "SELECT
-    appointment.AppointmentID, 
+    appointment.AppointmentID,
     appointment.SessionID,
-    appointment.AppointmentTypeID, 
+    appointment.AppointmentTypeID,
     date(appointment.StartsAt) as day,
     time(appointment.StartsAt) as time,
-    candidate.PSCID, 
-    session.CandID AS DCCID,
+    candidate.PSCID,
+    candidate.CandID AS DCCID,
     session.Visit_label,
     session.CenterID,
     session.CohortID,
@@ -86,7 +91,7 @@ ON
 JOIN
     candidate
 ON
-    session.CandID = candidate.CandID
+    session.CandidateID = candidate.ID
 JOIN
     Project
 ON
@@ -119,8 +124,8 @@ ON
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = new \CenterID($row['RegistrationCenterID']);
-        $pid = new \ProjectID($row['RegistrationProjectID']);
+        $cid = \CenterID::singleton(intval($row['RegistrationCenterID']));
+        $pid = \ProjectID::singleton(intval($row['RegistrationProjectID']));
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new ScheduleRow($row, $cid, $pid);

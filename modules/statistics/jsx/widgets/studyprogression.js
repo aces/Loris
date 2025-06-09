@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import Panel from 'jsx/Panel';
+import Panel from 'Panel';
+import {QueryChartForm} from './helpers/queryChartForm';
+import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
@@ -11,78 +13,165 @@ import Panel from 'jsx/Panel';
  */
 const StudyProgression = (props) => {
   const [loading, setLoading] = useState(true);
-  const [siteScans, setSiteScans] = useState({});
-  const [siteRecruitments, setSiteRecruitments] = useState({});
+  const [showFiltersScans, setShowFiltersScans] = useState(false);
+  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
+  const [activeView, setActiveView] = useState(0);
+
+  let json = props.data;
+
+  const [chartDetails, setChartDetails] = useState({
+    'total_scans': {
+      'scans_bymonth': {
+        sizing: 11,
+        title: 'Scan sessions per site',
+        filters: '',
+        chartType: 'line',
+        dataType: 'line',
+        label: 'Scans',
+        legend: 'under',
+        options: {line: 'line'},
+      },
+    },
+    'total_recruitment': {
+      'siterecruitment_line': {
+        sizing: 11,
+        title: 'Recruitment per site',
+        filters: '',
+        chartType: 'line',
+        dataType: 'line',
+        legend: '',
+        options: {line: 'line'},
+      },
+    },
+  });
+
+  const showChart = ((section, chartID) => {
+    return props.showChart(section, chartID,
+      chartDetails, setChartDetails);
+  });
 
   /**
    * useEffect - modified to run when props.data updates.
    */
   useEffect(() => {
-    const json = props.data;
     if (json && Object.keys(json).length !== 0) {
-      setSiteScans(
-        json['studyprogression']['total_scans'] > 0
-          ? <div className='row'>
-            <h5 className="chart-title col-xs-12">Scan sessions per site</h5>
-            <div id='scanChart' className='col-xs-10'/>
-            <div className='scanChartLegend legend-container col-xs-2'/>
-            <small className='col-xs-12'>
-              <i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
-          </div>
-          : <p>There have been no scans yet.</p>
-      );
-      setSiteRecruitments(
-        json['studyprogression']['recruitment']['overall']
-          ['total_recruitment'] > 0
-          ? <div className='row'>
-            <h5 className='chart-title col-xs-12'>Recruitment per site</h5>
-            <div id='recruitmentChart' className='col-xs-10'/>
-            <div className={
-              'recruitmentChartLegend legend-container col-xs-2'
-            }/>
-            <small>
-              <i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
-          </div>
-          : <p>There have been no candidates registered yet.</p>
-      );
+      setupCharts(false, chartDetails).then((data) => {
+        setChartDetails(data);
+      });
+      json = props.data;
       setLoading(false);
     }
   }, [props.data]);
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX.Element} - React markup for component.
-   */
+  const updateFilters = (formDataObj, section) => {
+    props.updateFilters(formDataObj, section,
+      chartDetails, setChartDetails);
+  };
+
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
-    <Panel
-      title='Study Progression'
-      id='statistics_studyprogression'
-      views={[
-        {
-          content: <>
-            {siteScans}
-          </>,
-          title: 'Study Progression - site scans',
-        },
-        {
-          content: <>
-            {siteRecruitments}
-          </>,
-          title: 'Study Progression - site recruitment',
-        },
-      ]}
-    />
+    <>
+      <Panel
+        title='Study Progression'
+        id='statistics_studyprogression'
+        activeView={activeView}
+        onChangeView={(index) => {
+          setActiveView(index);
+          setupCharts(false, chartDetails);
+
+          // reset filters when switching views
+          if (index === 0) {
+            setShowFiltersScans(false);
+          } else if (index === 1) {
+            setShowFiltersRecruitment(false);
+          }
+        }}
+        views={[
+          {
+            content: json['studyprogression']['total_scans'] > 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div className="btn-group" style={{marginBottom: '10px'}}>
+                  <button
+                    type="button"
+                    className="btn btn-default btn-xs"
+                    onClick={() => setShowFiltersScans((prev) => !prev)}
+                  >
+                    {showFiltersScans ? 'Hide Filters' : 'Show Filters'}
+                  </button>
+                </div>
+                {showFiltersScans && (
+                  <QueryChartForm
+                    Module={'statistics'}
+                    name={'studyprogression'}
+                    id={'studyprogressionSiteScansForm'}
+                    data={props.data}
+                    callback={(formDataObj) => {
+                      updateFilters(formDataObj, 'total_scans');
+                    }}
+                  />
+                )}
+                {showChart('total_scans', 'scans_bymonth')}
+              </div>
+            ) : (
+              <p>There have been no scans yet.</p>
+            ),
+            title: 'Study Progression - site scans',
+            onToggleFilters: () => setShowFiltersScans((prev) => !prev),
+          },
+          {
+            content: json['studyprogression']['recruitment']['overall'][
+              'total_recruitment'
+            ] > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersRecruitment((prev) => !prev)}
+                    >
+                      {showFiltersRecruitment ? 'Hide Filters' : 'Show Filters'}
+                    </button>
+                  </div>
+                  {showFiltersRecruitment && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionSiteRecruitmentForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'total_recruitment');
+                      }}
+                    />
+                  )}
+                  {showChart('total_recruitment', 'siterecruitment_line')}
+                </div>
+              ) : (
+                <p>There have been no candidates registered yet.</p>
+              ),
+            title: 'Study Progression - site recruitment',
+            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
+          },
+        ]}
+      />
+    </>
   );
 };
 StudyProgression.propTypes = {
   data: PropTypes.object,
+  baseURL: PropTypes.string,
+  updateFilters: PropTypes.function,
+  showChart: PropTypes.function,
 };
 StudyProgression.defaultProps = {
   data: {},

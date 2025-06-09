@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Visit endpoint class under Candidates/$candid
  *
@@ -45,11 +46,17 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Candidate  $candidate The requested candidate
-     * @param ?\Timepoint $visit     The requested visit; can be null in PUT requests
+     * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
+     *                                        from.
+     * @param \Candidate           $candidate The requested candidate.
+     * @param ?\Timepoint          $visit     The requested visit; can be null
+     *                                        in PUT requests
      */
-    public function __construct(\Candidate $candidate, ?\Timepoint $visit)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Candidate $candidate,
+        ?\Timepoint $visit
+    ) {
         $this->_candidate = $candidate;
         $this->_visit     = $visit;
     }
@@ -129,16 +136,16 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Instruments($this->_visit);
             break;
         case 'images':
-            $handler = new Images($this->_visit);
+            $handler = new Images($this->loris, $this->_visit);
             break;
         case 'qc':
             $handler = new Qc($this->_visit);
             break;
         case 'dicoms':
-            $handler = new Dicoms($this->_visit);
+            $handler = new Dicoms($this->loris, $this->_visit);
             break;
         case 'recordings':
-            $handler = new Recordings($this->_visit);
+            $handler = new Recordings($this->loris, $this->_visit);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -212,7 +219,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
+        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()->__toString()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID does not match this candidate'
             );
@@ -227,7 +234,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if ($centerid === false
-            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
+            || !in_array(\CenterID::singleton($centerid), $user->getCenterIDs())
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 "You can't create or modify candidates visit for the site " .
@@ -237,7 +244,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // \Utility::getSiteList key was a string. Now that the
         // validation is done, convert to an object.
-        $centerid = new \CenterID("$centerid");
+        $centerid = \CenterID::singleton($centerid);
 
         $cohortid = array_search(
             $visitinfo['Battery'],

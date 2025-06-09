@@ -27,7 +27,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
     protected $base_uri;
     protected $originalJwtKey;
     protected $configIdJwt;
- 
+
     /**
      * Overrides LorisIntegrationTest::setUp() to store the current JWT key
      * and replaces it for an acceptable one.
@@ -42,7 +42,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->_version = 'v0.0.3';
 
         // store the original JWT key for restoring it later
-        $jwtConfig = $this->DB->pselect(
+        $jwtConfig = $this->DB->pselectRow(
             '
             SELECT
               Value, ConfigID
@@ -53,7 +53,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")
             ',
             []
-        )[0] ?? null;
+        );
 
         if ($jwtConfig === null) {
             throw new \LorisException('There is no Config for "JWTKey"');
@@ -80,6 +80,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -87,14 +88,32 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex'                   => 'Female'
+                'Sex'                   => 'Female',
+                'ExternalID'            => null,
+                'DoB'                   => '2003-10-31',
+                'DoD'                   => null,
+                'EDC'                   => '2003-11-30',
+                'Sex'                   => 'Male',
+                'Ethnicity'             => null,
+                'Active'                => 'Y',
+                'Date_active'           => '2016-01-23',
+                'RegisteredBy'          => null,
+                'Date_registered'       => '2016-01-23',
+                'flagged_caveatemptor'  => 'false',
+                'flagged_reason'        => null,
+                'flagged_other'         => null,
+                'flagged_other_status'  => null,
+                'Testdate'              => '2019-06-20 12:10:04',
+                'Entity_type'           => 'Human',
+                'ProbandSex'            => null,
+                'ProbandDoB'            => null
             ]
         );
         $this->DB->insert(
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -105,7 +124,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             'test_names',
             [
                 'ID'        => '999999',
-                'Test_name' => 'testtest',
+		'Test_name' => 'testtest',
                 'Full_name' => 'Test Test',
                 'Sub_group' => 1,
             ]
@@ -115,7 +134,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-                'Test_name' => 'testtest',
+		'TestID'    => '999999',
                 'CommentID' => '11111111111111111',
             ]
         );
@@ -124,7 +143,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             [
                 'ID'        => '999999',
                 'SessionID' => '999999',
-                'Test_name' => 'testtest',
+		'TestID'    => '999999',
                 'CommentID' => 'DDE_11111111111111111',
             ]
         );
@@ -236,8 +255,8 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             ],
         );
 
-        $this->DB->delete("session", ['CandID' => '900000']);
-        $this->DB->delete("candidate", ['CandID' => '900000']);
+        $this->DB->delete("session", ['ID' => '999999']);
+        $this->DB->delete("candidate", ['ID' => 1]);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
 

@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * The script generate_tables_sql_and_testNames.php takes
@@ -54,7 +54,12 @@ foreach ($instruments as $instrument) {
 
         case "page":
             if (array_key_exists(2, $bits)) {
-                $pages[] = htmlspecialchars($bits[2]);
+                $pages[] = htmlspecialchars(
+                    $bits[2],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
             }
             continue 2;
 
@@ -87,6 +92,11 @@ foreach ($instruments as $instrument) {
                 $bits[0] = "varchar(255)";
             } elseif ($bits[0] == "static") {
                 $bits[0] = "varchar(255)";
+            } elseif ($bits[0] == "numeric") {
+                // without this option, default MySQL is simply numeric
+                // which is traduced to "decimal(10,0)"
+                // which truncates the floating point part.
+                $bits[0] = "decimal(14,4)";
             }
 
             $output .= "`$bits[1]` $bits[0] default NULL,\n";

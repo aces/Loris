@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Electrophysiology_uploader automated integration tests
  *
@@ -29,7 +30,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = [
         [
-            "label"    => "Site",
+            "label"    => "Affiliations",
             "selector" => "body",
         ]
     ];

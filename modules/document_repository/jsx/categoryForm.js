@@ -2,18 +2,18 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    SelectElement,
-    ButtonElement,
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  SelectElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
- * Document Upload Form
+ * Category Creation Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to upload a doc file
+ * to create a category
  *
  * @author Shen Wang
  * @version 1.0.0
@@ -70,11 +70,18 @@ class DocCategoryForm extends React.Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (<Loader/>);
+    }
+
+    let disabled = true;
+    let addButton = null;
+    if (loris.userHasPermission('document_repository_categories')) {
+      disabled = false;
+      addButton = <ButtonElement label="Add Category"/>;
     }
 
     return (
@@ -91,6 +98,7 @@ class DocCategoryForm extends React.Component {
               label="Category Name"
               onUserInput={this.setFormData}
               required={true}
+              disabled={disabled}
               value={this.state.formData.categoryName}
             />
             <SelectElement
@@ -98,16 +106,17 @@ class DocCategoryForm extends React.Component {
               label="Parent"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
-              hasError={false}
+              disabled={disabled}
               value={this.state.formData.parentId}
             />
             <TextareaElement
               name="comments"
               label="Comments"
               onUserInput={this.setFormData}
+              disabled={disabled}
               value={this.state.formData.comments}
             />
-            <ButtonElement label="Add Category"/>
+            {addButton}
           </FormElement>
         </div>
       </div>
@@ -149,29 +158,29 @@ class DocCategoryForm extends React.Component {
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => {
-      if (resp.ok) {
-        this.props.refreshPage();
-        this.fetchData();
-        // refresh the upload page
-        this.props.newCategoryState();
-        this.setState({
-          formData: {}, // reset form data after successful file upload
-        });
-        swal.fire('Category Successfully Added!', '', 'success');
-      } else {
-        resp.json().then((data) => {
-          swal.fire('Could not add category!', data.error, 'error');
-        }).catch((error) => {
-          console.error(error);
-          swal.fire(
-            'Unknown Error!',
-            'Please report the issue or contact your administrator.',
-            'error'
-          );
-        });
-      }
-    });
+      .then((resp) => {
+        if (resp.ok) {
+          this.props.refreshPage();
+          this.fetchData();
+          // refresh the upload page
+          this.props.newCategoryState();
+          this.setState({
+            formData: {}, // reset form data after successful file upload
+          });
+          swal.fire('Category Successfully Added!', '', 'success');
+        } else {
+          resp.json().then((data) => {
+            swal.fire('Could not add category!', data.error, 'error');
+          }).catch((error) => {
+            console.error(error);
+            swal.fire(
+              'Unknown Error!',
+              'Please report the issue or contact your administrator.',
+              'error'
+            );
+          });
+        }
+      });
   }
 
   /**

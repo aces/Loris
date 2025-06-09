@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the datadict menu page.
@@ -33,10 +34,14 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
+            $loris,
             "SELECT DISTINCT
                 pt.sourceFrom as source_from,
                 pt.name as name,
@@ -46,11 +51,15 @@ class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
                     WHEN pto.name IS NOT NULL THEN 'Modified'
                     WHEN pto.name IS NULL THEN 'Unchanged'
-                END as description_status
+                END as description_status,
+                GROUP_CONCAT(DISTINCT c.title) AS Cohort
             FROM parameter_type pt
             LEFT JOIN parameter_type_override pto USING (Name)
+            LEFT JOIN test_battery tb ON pt.sourceFrom=tb.Test_name
+            LEFT JOIN cohort c ON tb.CohortID=c.CohortID
             WHERE pt.Queryable=1
-            ",
+            GROUP BY pt.sourceFrom, pt.name, pt.sourceField,
+            description, description_status",
             []
         );
     }

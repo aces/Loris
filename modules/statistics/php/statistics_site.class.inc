@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -64,7 +65,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                new \CenterID($_REQUEST['CenterID'])
+                \CenterID::singleton(intval($_REQUEST['CenterID']))
             );
         } else {
             // For the short term the user we'll be granted access
@@ -101,7 +102,7 @@ class Statistics_Site extends \NDB_Menu
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        if (!empty($centerID) && $user->hasCenter($centerID)) {
+        if ($centerID !== null && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -130,7 +131,7 @@ class Statistics_Site extends \NDB_Menu
 
         // PROJECTS
 
-        if (!empty($projectID) && $user->hasProject($projectID)) {
+        if ($projectID !== null && $user->hasProject($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
@@ -192,11 +193,12 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
-            "SELECT COUNT(DISTINCT s.CandID)  FROM 
+            "SELECT COUNT(DISTINCT s.CandidateID)  FROM
                 flag f
                     JOIN session s ON (s.ID=f.SessionID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE 
+                    JOIN candidate c ON (c.ID=s.CandidateID)
+                    JOIN test_names tn ON tn.ID = f.TestID
+                WHERE
                     s.Active='Y' AND s.CenterID <> '1'
                     AND c.Active='Y'
                     $this->query_criteria
@@ -204,7 +206,7 @@ class Statistics_Site extends \NDB_Menu
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.Administration='All'
                     AND f.CommentID NOT LIKE 'DDE%'
-                    AND f.Test_name=:instrument",
+                    AND tn.Test_name=:instrument",
             ['instrument' => $instrument, ...$this->query_vars]
         );
         return $count;
@@ -227,25 +229,26 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
-            "SELECT DISTINCT s.CandID,
+            "SELECT DISTINCT s.CandidateID,
                 f.SessionID,
                 f.CommentID,
                 c.PSCID,
                 s.Visit_label
                 FROM flag f
                     JOIN session s ON (s.ID=f.SessionID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN test_names tn ON tn.ID = f.TestID
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y'
                     AND s.CenterID <> '1'
                     AND s.Current_stage <> 'Recycling Bin'
                     $this->query_criteria
-                    AND f.Test_name=:instrument
+                    AND tn.Test_name=:instrument
                     AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
                     AND f.CommentID NOT LIKE 'DDE%'
                 ORDER BY s.Visit_label, c.PSCID",
             ['instrument'=>$instrument, ...$this->query_vars]
         );
-        return $result;
+        return iterator_to_array($result);
     }
     /**
      * Setup function
@@ -263,14 +266,14 @@ class Statistics_Site extends \NDB_Menu
                 ['cid' => $_REQUEST['CenterID']]
             );
 
-            $centerID = new \CenterID($center['ID'] ?? '');
+            $centerID = \CenterID::singleton(intval($_REQUEST['CenterID']));
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
             $centerID = null;
         }
         if (!empty($_REQUEST['ProjectID'])) {
-            $projectID = new \ProjectID($_REQUEST['ProjectID']);
+            $projectID = \ProjectID::singleton(intval($_REQUEST['ProjectID']));
         } else {
             $projectID = null;
         }

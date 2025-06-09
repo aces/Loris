@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dataquery\endpoints\queries\query;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -57,9 +58,12 @@ class Count extends \LORIS\Http\Endpoint
     public function countResults(\User $user, int $queryID) : ResponseInterface
     {
         try {
+            \Profiler::checkpoint("Creating query");
             $query = new \LORIS\dataquery\Query($this->loris, $queryID);
 
-            $candidates = $query->matchCandidates($user);
+            \Profiler::checkpoint("Matching candidates");
+            $candidates = \iterator_to_array($query->matchCandidates($user));
+            \Profiler::checkpoint("Returning count");
             return new \LORIS\Http\Response\JSON\OK(
                 [
                     'count' => count($candidates),

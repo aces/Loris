@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\imaging_browser;
 use \LORIS\candidate_profile\CandidateWidget;
 
@@ -74,7 +75,7 @@ class Module extends \Module
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f
                          LEFT JOIN session s ON (s.ID=f.SessionID)
-                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                         LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                      WHERE (MRIQCStatus='' OR MRIQCPending='Y')
                          AND s.Active='Y' AND c.Active='Y'
                          AND s.CenterID <> 1",
@@ -93,20 +94,22 @@ class Module extends \Module
 
             $scansummary = $DB->pselect(
                 "SELECT s.Visit_label,
-                    mst.Scan_type,
+                    mst.MriScanTypeName as ScanType,
                     COALESCE(fqc.QCStatus, '') as QC,
                     COUNT(*) as nfiles
-                 FROM files f JOIN session s ON (s.ID=f.sessionID)
-                    JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
+                FROM files f JOIN session s ON (s.ID=f.sessionID)
+                    JOIN candidate c ON c.ID=s.CandidateID
+                    JOIN mri_scan_type mst ON (f.MriScanTypeID=mst.MriScanTypeID)
                     LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-                WHERE CandID=:cid AND f.OutputType='native'
-                GROUP BY s.Visit_label, mst.Scan_type, QC",
+                WHERE c.CandID=:cid AND f.OutputType='native'
+                GROUP BY s.Visit_label, mst.MriScanTypeName, QC",
                 ['cid' => $candidate->getCandID()],
             );
-            if (empty($scansummary)) {
+
+            if (count($scansummary) === 0) {
                 return [];
             }
-            foreach ($scansummary as &$summary) {
+            foreach ($scansummary as $summary) {
                 $summary['nfiles'] = (int )$summary['nfiles'];
             }
             return [
@@ -114,7 +117,7 @@ class Module extends \Module
                     "Imaging QC Summary",
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
-                    [ 'Files' => $scansummary],
+                    [ 'Files' => iterator_to_array($scansummary)],
                     2,
                     1,
                 )

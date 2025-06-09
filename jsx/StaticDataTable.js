@@ -233,8 +233,8 @@ class StaticDataTable extends Component {
     let useKeyword = false;
     let filterMatchCount = 0;
     let filterValuesCount = (this.props.Filter ?
-        Object.keys(this.props.Filter).length :
-        0
+      Object.keys(this.props.Filter).length :
+      0
     );
     let tableData = this.props.Data;
     let headersData = this.props.Headers;
@@ -513,7 +513,7 @@ class StaticDataTable extends Component {
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                onClick={this.setSortColumn(i).bind(this)}>
+              onClick={this.setSortColumn(i).bind(this)}>
               {this.props.Headers[i]}
             </th>
           );
@@ -545,8 +545,8 @@ class StaticDataTable extends Component {
 
     // Push rows to data table
     for (let i = 0;
-         (i < this.props.Data.length) && (rows.length < rowsPerPage);
-         i++
+      (i < this.props.Data.length) && (rows.length < rowsPerPage);
+      i++
     ) {
       curRow = [];
 
@@ -612,7 +612,7 @@ class StaticDataTable extends Component {
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
           const rowCell = this.state.Hide.defaultColumn !== true ?
-              <td>{rowIndex}</td> : null;
+            <td>{rowIndex}</td> : null;
 
           rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>

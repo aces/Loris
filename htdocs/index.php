@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the entry point for a LORIS PSR15-based router.
  * The entrypoint constructs a ServerRequestInterface PSR7 object
@@ -29,14 +30,45 @@ session_cache_limiter("");
 // See: https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
 ini_set('session.use_strict_mode', '1');
 
+// TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
+if (version_compare(PHP_VERSION, '8.4', '<')) {
+    // @phan-file-suppress PhanRedefineFunctionInternal
+
+    // phpcs:ignore
+    function array_any(array $array, callable $callback): bool
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // phpcs:ignore
+    function array_find(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+}
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();
 
+Profiler::checkpoint("Profiler started");
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
 $middlewarechain = (new \LORIS\Middleware\ContentLength())
+    ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
@@ -63,13 +95,23 @@ $serverrequest = $serverrequest->withUri($uri->withQuery($query));
 $factory = \NDB_Factory::singleton();
 $user    = $factory->user();
 
-$entrypoint = new \LORIS\Router\BaseRouter(
-    $user,
-    __DIR__ . "/../project/",
-    __DIR__ . "/../modules/"
+$lorisInstance = new \LORIS\LorisInstance(
+    $factory->database(),
+    $factory->config(),
+    [
+        __DIR__ . "/../project/",
+        __DIR__ . "/../modules/"
+    ]
 );
+$entrypoint    = new \LORIS\Router\BaseRouter(
+    $lorisInstance,
+    $user,
+);
+$serverrequest = $serverrequest->withAttribute("user", $user)
+    ->withAttribute("loris", $lorisInstance);
 
 // Now handle the request.
+//
 $response = $middlewarechain->process($serverrequest, $entrypoint);
 
 // Add the HTTP header line.

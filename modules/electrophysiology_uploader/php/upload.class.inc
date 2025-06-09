@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\electrophysiology_uploader;
 
@@ -164,10 +164,11 @@ class Upload extends \NDB_Page
 
         $session = $db->pselectRow(
             "
-            SELECT ID, Active
-            FROM session
-            WHERE Visit_label = :visit
-            AND CandID = :candID
+            SELECT s.ID, s.Active
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE s.Visit_label = :visit
+            AND c.CandID = :candID
             ",
             [
                 'visit'  => $visitLabel,

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
@@ -38,7 +39,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasPermission('dicom_archive_view_allsites');
+            $user->hasAnyPermission(
+                [
+                    'dicom_archive_view_allsites',
+                    'dicom_archive_view_ownsites',
+                ]
+            );
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains the Loris user class
  *
@@ -100,32 +101,49 @@ class User extends UserPermissions implements
         $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = new \CenterID($val['CenterID']);
+            $user_cid[$key] = \CenterID::singleton($val['CenterID']);
             $sitenames[]    = $val['Name'];
         }
         $row['Sites'] = implode(';', $sitenames);
 
-        $user_pid = $DB->pselectCol(
-            "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
-            ['uid' => $row['ID']]
+        // ------------------- Extract User Projects -------------------
+
+        $user_projects_query = $DB->pselect(
+            "
+             SELECT upr.ProjectID, p.Name
+             FROM user_project_rel upr
+             LEFT JOIN Project p ON (upr.ProjectID = p.ProjectID)
+             WHERE upr.UserID = :UID
+            ",
+            ['UID' => $row['ID']]
         );
-        foreach ($user_pid as $k=>$pid) {
-            $user_pid[$k] = new ProjectID($pid);
+
+        $user_pid      = [];
+        $project_names = [];
+
+        foreach ($user_projects_query as $key => $val) {
+            // Convert ProjectID to ProjectID object, ensuring it's a string
+            $user_pid[$key]  = \ProjectID::singleton($val['ProjectID']);
+            $project_names[] = $val['Name'];
         }
 
-        // Get examiner information
+        // Assign ProjectIDs and concatenated project names to userInfo
+        $row['ProjectIDs'] = $user_pid;
+        $row['Projects']   = implode(';', $project_names);
+
+        // ------------------- Extract Examiner Information -------------------
         $examiner_check = $DB->pselect(
             "SELECT e.full_name,
                     epr.centerID,
                     e.radiologist,
                     epr.active,
                     epr.pending_approval
-                  FROM examiners e
-                  JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.userID=:uid
-                    AND (epr.active='Y'
-                          OR (epr.active='N' AND epr.pending_approval='Y')
-                        )",
+              FROM examiners e
+              JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+              WHERE e.userID=:uid
+                AND (epr.active='Y'
+                      OR (epr.active='N' AND epr.pending_approval='Y'))
+            ",
             [
                 "uid" => $row['ID'],
             ]
@@ -148,6 +166,7 @@ class User extends UserPermissions implements
         $row['CenterIDs']  = $user_cid;
         $row['ProjectIDs'] = $user_pid;
         $obj->userInfo     = $row;
+
         return $obj;
     }
 
@@ -164,10 +183,19 @@ class User extends UserPermissions implements
      */
     public static function &singleton(?string $username = null): \User
     {
-        static $instance;
-        if (is_null($instance)) {
-            $instance = User::factory($username);
+        static $currentuser = null;
+        static $allusers    = [];
+        if ($username === null && $currentuser !== null) {
+            return $currentuser;
         }
+        if ($username !== null && isset($allusers[$username])) {
+            return $allusers[$username];
+        }
+        $instance = User::factory($username);
+        if ($currentuser === null) {
+            $currentuser = $instance;
+        }
+        $allusers[$username ?? ''] = $instance;
         return $instance;
     }
 
@@ -211,7 +239,7 @@ class User extends UserPermissions implements
      * @param string $var Name of variable to get
      *
      * @note   Call without any arguments to get the entire user data array
-     * @return array<array|string>|string
+     * @return array<array|string>|string|null
      * @access public
      * @throws LorisException
      */
@@ -221,15 +249,13 @@ class User extends UserPermissions implements
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
-                "The function getData('CenterID')
-                                        is deprecated and is replaced
-                                        with getData('CenterIDs')"
+                "The function getData('CenterID') is deprecated and is
+                replaced with getData('CenterIDs')"
             );
         } elseif ($var === 'Site') {
             throw new \LorisException(
-                "The function getData('Site')
-                                        is deprecated and is replaced
-                                        with getData('Sites')"
+                "The function getData('Site') is deprecated and is
+                replaced with getData('Sites')"
             );
         } else {
             return $this->userInfo[$var];
@@ -291,7 +317,21 @@ class User extends UserPermissions implements
          * CONCATs the site names together in a string using semi-colons.
          * Therefore this string must be split and returned as an array.
          */
-        return explode(';', $this->userInfo['Sites']);
+        return explode(';', $this->userInfo['Sites'] ?? '');
+    }
+
+    /**
+     * Get the user's sites' ID numbers
+     *
+     * @return array
+     */
+    public function getProjectNames(): array
+    {
+        $projects = $this->userInfo['Projects'] ?? '';
+        if ($projects === '') {
+            return [];
+        }
+        return explode(';', $projects);
     }
 
     /**
@@ -301,7 +341,7 @@ class User extends UserPermissions implements
      */
     function getCenterIDs(): array
     {
-        return $this->userInfo['CenterIDs'];
+        return $this->userInfo['CenterIDs'] ?? [];
     }
 
     /**
@@ -311,8 +351,9 @@ class User extends UserPermissions implements
      */
     function getProjectIDs(): array
     {
-        return $this->userInfo['ProjectIDs'];
+        return $this->userInfo['ProjectIDs'] ?? [];
     }
+
 
     /**
      * Get the user's projects
@@ -334,9 +375,8 @@ class User extends UserPermissions implements
      */
     function getLanguagePreference(): ?int
     {
-        return $this->userInfo['language_preference'];
+        return $this->userInfo['language_preference'] ?? null;
     }
-
 
     /**
      * Returns all sites where Examiner is active
@@ -345,7 +385,7 @@ class User extends UserPermissions implements
      */
     function getExaminerSites(): array
     {
-        $site_list = $this->userInfo['examiner'];
+        $site_list = $this->userInfo['examiner'] ?? [];
         unset($site_list['pending']);
         ksort($site_list);
         return $site_list;
@@ -367,8 +407,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites in associative
-     * array (CenterID => CenterName)
+     * Returns all user's sites in an associative array (CenterID => CenterName)
      *
      * @return array
      */
@@ -451,7 +490,7 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
+        return (in_array(\CenterID::singleton(1), $this->getCenterIDs()));
     }
 
     /**

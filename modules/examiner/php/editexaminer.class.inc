@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Examiner module: Form used to update examiner certification status
  *
@@ -181,16 +182,18 @@ class EditExaminer extends \NDB_Form
             } else { // update to a test certification for the examiner
 
                 //select history events
-                $oldVals = $DB->pselect(
-                    "SELECT ch.new, ch.new_date
+                $oldVals = iterator_to_array(
+                    $DB->pselect(
+                        "SELECT ch.new, ch.new_date
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
                      ORDER BY changeDate DESC LIMIT 1",
-                    [
-                        'EID' => $examinerID,
-                        'TID' => $testID,
-                    ]
+                        [
+                            'EID' => $examinerID,
+                            'TID' => $testID,
+                        ]
+                    )
                 );
 
                 $oldVal  = null;
@@ -291,7 +294,9 @@ class EditExaminer extends \NDB_Form
             ['EID' => $this->identifier]
         );
 
-        $this->tpl_data['certification_history'] = $certification_history;
+        $this->tpl_data['certification_history'] = \iterator_to_array(
+            $certification_history
+        );
 
         $config = \NDB_Config::singleton();
 
@@ -356,7 +361,12 @@ class EditExaminer extends \NDB_Form
         if (is_null($row)) {
             throw new \LorisException(
                 'No full name found in Database for examiner with ID ' .
-                htmlspecialchars($this->identifier)
+                htmlspecialchars(
+                    $this->identifier,
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
             );
         }
         // Get identifier, to be added to the Reset button href

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
@@ -27,6 +28,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -34,14 +36,31 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex'                   => 'Female'
+                'ExternalID'            => null,
+                'DoB'                   => '2003-10-31',
+                'DoD'                   => null,
+                'EDC'                   => '2003-11-30',
+                'Sex'                   => 'Male',
+                'Ethnicity'             => null,
+                'Active'                => 'Y',
+                'Date_active'           => '2016-01-23',
+                'RegisteredBy'          => null,
+                'Date_registered'       => '2016-01-23',
+                'flagged_caveatemptor'  => 'false',
+                'flagged_reason'        => null,
+                'flagged_other'         => null,
+                'flagged_other_status'  => null,
+                'Testdate'              => '2019-06-20 12:10:04',
+                'Entity_type'           => 'Human',
+                'ProbandSex'            => null,
+                'ProbandDoB'            => null
             ]
         );
         $this->DB->insert(
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -63,8 +82,17 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'ID'         => '999999',
                 'SessionID'  => '999999',
                 'Data_entry' => 'In Progress',
-                'Test_name'  => 'testtest',
+                'TestID'     => '999999',
                 'CommentID'  => '11111111111111111',
+            ]
+        );
+        $this->DB->insert(
+            'participant_accounts',
+            [
+                'ID'        => '999999',
+                'Test_name' => 'testtest',
+                'SessionID' => '999999',
+                'Status'    => 'Created',
             ]
         );
         // Set up database wrapper and config
@@ -77,10 +105,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("session", ['ID' => '999999']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
+        $this->DB->delete("participant_accounts", ['ID' => '999999']);
         parent::tearDown();
     }
 
@@ -94,7 +123,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     private function _testContent($content)
     {
         $this->_landing();
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#page"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
@@ -151,8 +180,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('Test Text successful', $data);
     }
@@ -172,8 +203,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"testCheckbox":"1"', $data);
     }
@@ -199,8 +232,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"yes"', $data);
 
@@ -218,8 +253,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         )->click();
 
         $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999',
-            []
+            'SELECT Data FROM flag
+                    JOIN instrument_data ON (instrument_data.ID=flag.DataID)
+                where SessionID = 999999',
+            [],
         );
         $this->assertStringContainsString('"consent":"no"', $data);
 
@@ -239,4 +276,3 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         );
     }
 }
-
