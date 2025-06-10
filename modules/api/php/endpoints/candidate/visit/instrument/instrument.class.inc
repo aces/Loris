@@ -241,9 +241,16 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // validate given data against the instrument
+        $instrumentName = $this->_instrument->testName;
         try {
-            $instrumentName = $this->_instrument->testName;
-            $this->_instrument->validate($data[$instrumentName] ?? []);
+            // extract data according to LORIS API version
+            $version = $request->getAttribute('LORIS-API-Version');
+            $instrumentData = $version == 'v0.0.3'
+                ? ($data[$instrumentName] ?? [])
+                : ($data['Data'] ?? []);
+
+            // validate
+            $this->_instrument->validate($instrumentData);
         } catch (\LorisException $th) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 "Could not update. {$th->getMessage()}"
@@ -256,13 +263,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $version = $request->getAttribute('LORIS-API-Version');
-            if ($version == 'v0.0.3') {
-                $instrumentname = $this->_instrument->testName;
-                $this->_instrument->_saveValues($data[$instrumentname]);
-            } else {
-                $this->_instrument->_saveValues($data['Data']);
-            }
+            $this->_instrument->_saveValues($instrumentData);
             $this->_instrument->score();
             $this->_instrument->updateRequiredElementsCompletedFlag();
         } catch (\Throwable $e) {
