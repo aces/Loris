@@ -94,7 +94,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $assignee_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 WHERE (FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC))
                  AND Active='Y' AND Pending_approval='N'",
                 [
                     'CenterID' => $CenterID,
@@ -142,36 +142,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // can't set to closed if no any of the persmissions.
-        $reporter         = $db->pselectOne(
-            "SELECT reporter FROM issues WHERE IssueID=:issueID",
-            ['issueID' => $values['issueID']]
-        );
-        $hasPartialAccess = $user->hasAnyPermission(
-            [
-                'issue_tracker_close_site_issue',
-                'issue_tracker_close_all_issue',
-            ]
-        ) || $reporter == $user->getUsername();
-        if ($hasPartialAccess) {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-                'closed'       => 'Closed',
-            ];
-        } else {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-            ];
-        }
-
         $priorities = [
             'low'       => 'Low',
             'normal'    => 'Normal',
@@ -202,12 +172,16 @@ class Edit extends \NDB_Page implements ETagCalculator
         $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
 
         // Now get issue values
-        $issueData = $this->getIssueData(null, $user);
+        $issueData  = $this->getIssueData(null, $user);
+        $isOwnIssue = $issueData['reporter'] == $user->getUsername();
         if (!empty($values['issueID'])
             && $values['issueID'] != "new"
         ) { // if an existing issue
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID, $user);
+
+            // Re-set isOwnIssue variable if not a new issue
+            $isOwnIssue = $issueData['reporter'] == $user->getUsername();
 
             $provisioner = (new AttachmentProvisioner($issueID));
             $attachments = (new \LORIS\Data\Table())
@@ -273,8 +247,25 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
         $issueData['comment'] = null;
 
-        $isOwnIssue = $issueData['reporter']
-            == $this->formatUserInformation($user->getUsername());
+        $statuses = [
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'assigned'     => 'Assigned',
+            'feedback'     => 'Feedback',
+            'resolved'     => 'Resolved',
+        ];
+
+        // Give "close" option if user has site close permissions and the issue
+        // is at a user site, or if the user has close permissions for all sites,
+        // or it is the user's own permission
+        if ($user->hasPermission('issue_tracker_close_all_issue')
+            || ($user->hasPermission('issue_tracker_close_site_issue')
+            && in_array($issueData['centerID'], $user->getCenterIDs()))
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $isOwnIssue)
+        ) {
+            $statuses['closed'] = 'Closed';
+        }
 
         $result = [
             'assignees'         => $assignees,
