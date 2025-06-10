@@ -2973,6 +2973,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Validate the given array keys against the instrument default structure.
+     * Strictly checks against "required" fields.
+     * Additional fields are not allowed.
      * Throw a LorisException if any check does not pass.
      *
      * @param array $instrumentData instrument data to check
@@ -3003,20 +3005,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             )
         );
 
-        // missing keys
-        $missingKeys = array_diff($defaultDataKeys, $dataKeys);
+        // also select all required elements only
+        $defaultRequiredElements = array_values(
+            array_filter(
+                $defaultDataKeys,
+                fn($k) => in_array(
+                    $k,
+                    $this->_requiredElements,
+                    true
+                )
+            )
+        );
+
+        // missing required fields
+        $missingKeys = array_diff($defaultRequiredElements, $dataKeys);
         if (!empty($missingKeys)) {
             $i = implode(",", $missingKeys);
-            throw new \LorisException("Missing keys: {$i}.");
+            throw new \LorisException("Missing required field(s): {$i}.");
         }
 
-        // additional keys: only warn
+        // additional fields: fields outside instrument fields
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
         if (!empty($additionalKeys)) {
-            $i = implode(",", $additionalKeys);
-            error_log(
-                "[instrument:validation] Additional keys will be ignored: {$i}."
-            );
+            $i = implode(",", $missingKeys);
+            throw new \LorisException("Additional field(s) not permitted: {$i}.");
         }
     }
 
