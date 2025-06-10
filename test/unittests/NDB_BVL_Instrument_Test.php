@@ -1721,7 +1721,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
         $this->expectException("LorisException");
         $this->expectExceptionMessage("No data provided.");
@@ -1740,32 +1740,32 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
         // data - complete keys + empty values
         $instrumentQuestions = [
             // p1
-            "arthritis" => null, // required
-            "arthritis_age" => null,
-            "pulmonary_issues" => null,
-            "pulmonary_issues_specific" => null,
+            "arthritis"                       => null, // required
+            "arthritis_age"                   => null,
+            "pulmonary_issues"                => null,
+            "pulmonary_issues_specific"       => null,
             // p2
-            "hypertension" => null, // required
-            "hypertension_while_pregnant" => null,
+            "hypertension"                    => null, // required
+            "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
             // p3
-            "concussion_or_head_trauma" => null, // required
-            "concussion_1_description" => null,
-            "concussion_1_hospitalized" => null,
-            "concussion_1_age" => null,
-            "concussion_2_description" => null,
-            "concussion_2_hospitalized" => null,
-            "concussion_2_age" => null,
-            "concussion_3_description" => null,
-            "concussion_3_hospitalized" => null,
-            "concussion_3_age" => null,
-            "current_concussion_symptoms" => null,
+            "concussion_or_head_trauma"       => null, // required
+            "concussion_1_description"        => null,
+            "concussion_1_hospitalized"       => null,
+            "concussion_1_age"                => null,
+            "concussion_2_description"        => null,
+            "concussion_2_hospitalized"       => null,
+            "concussion_2_age"                => null,
+            "concussion_3_description"        => null,
+            "concussion_3_hospitalized"       => null,
+            "concussion_3_age"                => null,
+            "current_concussion_symptoms"     => null,
         ];
 
         // missing keys, removing two required element
@@ -1773,7 +1773,9 @@ class NDB_BVL_Instrument_Test extends TestCase
         unset($missingFields["arthritis"]);
         unset($missingFields["hypertension"]);
         $this->expectException("LorisException");
-        $this->expectExceptionMessage("Missing required field(s): arthritis,hypertension.");
+        $this->expectExceptionMessage(
+            "Missing required field(s): arthritis,hypertension."
+        );
         $this->_instrument->validate($missingFields);
     }
 
@@ -1789,36 +1791,36 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
         // data - complete keys + empty values
         $instrumentQuestions = [
             // p1
-            "arthritis" => null, // required
-            "arthritis_age" => null,
-            "pulmonary_issues" => null,
-            "pulmonary_issues_specific" => null,
+            "arthritis"                       => null, // required
+            "arthritis_age"                   => null,
+            "pulmonary_issues"                => null,
+            "pulmonary_issues_specific"       => null,
             // p2
-            "hypertension" => null, // required
-            "hypertension_while_pregnant" => null,
+            "hypertension"                    => null, // required
+            "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
             // p3
-            "concussion_or_head_trauma" => null, // required
-            "concussion_1_description" => null,
-            "concussion_1_hospitalized" => null,
-            "concussion_1_age" => null,
-            "concussion_2_description" => null,
-            "concussion_2_hospitalized" => null,
-            "concussion_2_age" => null,
-            "concussion_3_description" => null,
-            "concussion_3_hospitalized" => null,
-            "concussion_3_age" => null,
-            "current_concussion_symptoms" => null,
+            "concussion_or_head_trauma"       => null, // required
+            "concussion_1_description"        => null,
+            "concussion_1_hospitalized"       => null,
+            "concussion_1_age"                => null,
+            "concussion_2_description"        => null,
+            "concussion_2_hospitalized"       => null,
+            "concussion_2_age"                => null,
+            "concussion_3_description"        => null,
+            "concussion_3_hospitalized"       => null,
+            "concussion_3_age"                => null,
+            "current_concussion_symptoms"     => null,
         ];
 
         // additional keys, adding two new unexpected keys
-        $additionalFields = $instrumentQuestions;
+        $additionalFields        = $instrumentQuestions;
         $additionalFields["aaa"] = 123;
         $additionalFields["bbb"] = "a text";
         $this->expectException("LorisException");
@@ -1838,32 +1840,32 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
         // data - complete keys + empty values
         $instrumentQuestions = [
             // p1
-            "arthritis" => null, // required
-            "arthritis_age" => null,
-            "pulmonary_issues" => null,
-            "pulmonary_issues_specific" => null,
+            "arthritis"                       => null, // required
+            "arthritis_age"                   => null,
+            "pulmonary_issues"                => null,
+            "pulmonary_issues_specific"       => null,
             // p2
-            "hypertension" => null, // required
-            "hypertension_while_pregnant" => null,
+            "hypertension"                    => null, // required
+            "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
             // p3
-            "concussion_or_head_trauma" => null, // required
-            "concussion_1_description" => null,
-            "concussion_1_hospitalized" => null,
-            "concussion_1_age" => null,
-            "concussion_2_description" => null,
-            "concussion_2_hospitalized" => null,
-            "concussion_2_age" => null,
-            "concussion_3_description" => null,
-            "concussion_3_hospitalized" => null,
-            "concussion_3_age" => null,
-            "current_concussion_symptoms" => null,
+            "concussion_or_head_trauma"       => null, // required
+            "concussion_1_description"        => null,
+            "concussion_1_hospitalized"       => null,
+            "concussion_1_age"                => null,
+            "concussion_2_description"        => null,
+            "concussion_2_hospitalized"       => null,
+            "concussion_2_age"                => null,
+            "concussion_3_description"        => null,
+            "concussion_3_hospitalized"       => null,
+            "concussion_3_age"                => null,
+            "current_concussion_symptoms"     => null,
         ];
 
         // all required elements are null/yes/no options.
@@ -1882,32 +1884,32 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
         // data - complete keys + empty values
         $instrumentQuestions = [
             // p1
-            "arthritis" => null, // required
-            "arthritis_age" => null,
-            "pulmonary_issues" => null,
-            "pulmonary_issues_specific" => null,
+            "arthritis"                       => null, // required
+            "arthritis_age"                   => null,
+            "pulmonary_issues"                => null,
+            "pulmonary_issues_specific"       => null,
             // p2
-            "hypertension" => null, // required
-            "hypertension_while_pregnant" => null,
+            "hypertension"                    => null, // required
+            "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
             // p3
-            "concussion_or_head_trauma" => null, // required
-            "concussion_1_description" => null,
-            "concussion_1_hospitalized" => null,
-            "concussion_1_age" => null,
-            "concussion_2_description" => null,
-            "concussion_2_hospitalized" => null,
-            "concussion_2_age" => null,
-            "concussion_3_description" => null,
-            "concussion_3_hospitalized" => null,
-            "concussion_3_age" => null,
-            "current_concussion_symptoms" => null,
+            "concussion_or_head_trauma"       => null, // required
+            "concussion_1_description"        => null,
+            "concussion_1_hospitalized"       => null,
+            "concussion_1_age"                => null,
+            "concussion_2_description"        => null,
+            "concussion_2_hospitalized"       => null,
+            "concussion_2_age"                => null,
+            "concussion_3_description"        => null,
+            "concussion_3_hospitalized"       => null,
+            "concussion_3_age"                => null,
+            "current_concussion_symptoms"     => null,
         ];
     }
 
