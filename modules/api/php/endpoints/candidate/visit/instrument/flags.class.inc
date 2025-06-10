@@ -170,7 +170,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
         try {
-            $this->_instrument->validate($data);
+            $instrumentName = $this->_instrument->testName;
+            $this->_instrument->validate($data[$instrumentName] ?? []);
         } catch (\LorisException $th) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 "Could not update. {$th->getMessage()}"
@@ -250,7 +251,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_instrument->validate($data);
+            $instrumentName = $this->_instrument->testName;
+            $this->_instrument->validate($data[$instrumentName] ?? []);
         } catch (\LorisException $th) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 "Could not update. {$th->getMessage()}"
