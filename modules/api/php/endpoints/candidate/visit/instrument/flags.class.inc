@@ -163,28 +163,18 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
-
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
             );
         }
-        try {
-            $instrumentName = $this->_instrument->testName;
-            $this->_instrument->validate($data[$instrumentName] ?? []);
-        } catch (\LorisException $th) {
+        if (!array_key_exists('Flags', $data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Could not update. {$th->getMessage()}"
-            );
-        } catch (\Throwable $th) {
-            error_log($th->getMessage());
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                "Could not update."
+                "Invalid request. 'Flags' missing."
             );
         }
 
         try {
-
             $requiredfields = [
                 'Data_entry',
                 'Administration',
@@ -249,18 +239,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Invalid request'
             );
         }
-
-        try {
-            $instrumentName = $this->_instrument->testName;
-            $this->_instrument->validate($data[$instrumentName] ?? []);
-        } catch (\LorisException $th) {
+        if (!array_key_exists('Flags', $data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Could not update. {$th->getMessage()}"
-            );
-        } catch (\Throwable $th) {
-            error_log($th->getMessage());
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                "Could not update."
+                "Invalid request. 'Flags' missing."
             );
         }
 
