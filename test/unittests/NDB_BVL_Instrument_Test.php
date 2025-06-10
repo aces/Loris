@@ -1692,24 +1692,223 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     /**
      * Test that determineDataEntryAllowed returns true if the Data_entry is anything
-     * but 'Complete' and returns false if Data_entry is 'Complete. Test that
-     * validate simply calls determineDataEntryAllowed and has the same output.
+     * but 'Complete' and returns false if Data_entry is 'Complete.
      *
      * @covers NDB_BVL_Instrument::determineDataEntryAllowed
-     * @covers NDB_BVL_Instrument::validate
+     *
      * @return void
      */
-    function testDetermineDataEntryAllowed()
+    public function testDetermineDataEntryAllowed()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertTrue($this->_instrument->determineDataEntryAllowed());
-        $this->assertTrue($this->_instrument->validate(['value1']));
         $this->_instrument->commentID = 'commentID2';
         $this->assertFalse($this->_instrument->determineDataEntryAllowed());
-        $this->assertFalse($this->_instrument->validate(['value1']));
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Empty array parameter case.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateEmptyParameter(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+        $this->expectException("LorisException");
+        $this->expectExceptionMessage("No data provided.");
+        $this->_instrument->validate([]);
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Keys validation case - missing keys
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateMissingKeys(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        // data - complete keys + empty values
+        $instrumentQuestions = [
+            // p1
+            "arthritis" => null, // required
+            "arthritis_age" => null,
+            "pulmonary_issues" => null,
+            "pulmonary_issues_specific" => null,
+            // p2
+            "hypertension" => null, // required
+            "hypertension_while_pregnant" => null,
+            "hypertension_while_pregnant_age" => null,
+            // p3
+            "concussion_or_head_trauma" => null, // required
+            "concussion_1_description" => null,
+            "concussion_1_hospitalized" => null,
+            "concussion_1_age" => null,
+            "concussion_2_description" => null,
+            "concussion_2_hospitalized" => null,
+            "concussion_2_age" => null,
+            "concussion_3_description" => null,
+            "concussion_3_hospitalized" => null,
+            "concussion_3_age" => null,
+            "current_concussion_symptoms" => null,
+        ];
+
+        // missing keys, removing two required element
+        $missingFields = $instrumentQuestions;
+        unset($missingFields["arthritis"]);
+        unset($missingFields["hypertension"]);
+        $this->expectException("LorisException");
+        $this->expectExceptionMessage("Missing required field(s): arthritis,hypertension.");
+        $this->_instrument->validate($missingFields);
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Keys validation case - additional keys.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateAdditionalKeys(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        // data - complete keys + empty values
+        $instrumentQuestions = [
+            // p1
+            "arthritis" => null, // required
+            "arthritis_age" => null,
+            "pulmonary_issues" => null,
+            "pulmonary_issues_specific" => null,
+            // p2
+            "hypertension" => null, // required
+            "hypertension_while_pregnant" => null,
+            "hypertension_while_pregnant_age" => null,
+            // p3
+            "concussion_or_head_trauma" => null, // required
+            "concussion_1_description" => null,
+            "concussion_1_hospitalized" => null,
+            "concussion_1_age" => null,
+            "concussion_2_description" => null,
+            "concussion_2_hospitalized" => null,
+            "concussion_2_age" => null,
+            "concussion_3_description" => null,
+            "concussion_3_hospitalized" => null,
+            "concussion_3_age" => null,
+            "current_concussion_symptoms" => null,
+        ];
+
+        // additional keys, adding two new unexpected keys
+        $additionalFields = $instrumentQuestions;
+        $additionalFields["aaa"] = 123;
+        $additionalFields["bbb"] = "a text";
+        $this->expectException("LorisException");
+        $this->expectExceptionMessage("Additional field(s) not permitted: aaa,bbb.");
+        $this->_instrument->validate($additionalFields);
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Keys validation case - nominal case.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateKeysNominal(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        // data - complete keys + empty values
+        $instrumentQuestions = [
+            // p1
+            "arthritis" => null, // required
+            "arthritis_age" => null,
+            "pulmonary_issues" => null,
+            "pulmonary_issues_specific" => null,
+            // p2
+            "hypertension" => null, // required
+            "hypertension_while_pregnant" => null,
+            "hypertension_while_pregnant_age" => null,
+            // p3
+            "concussion_or_head_trauma" => null, // required
+            "concussion_1_description" => null,
+            "concussion_1_hospitalized" => null,
+            "concussion_1_age" => null,
+            "concussion_2_description" => null,
+            "concussion_2_hospitalized" => null,
+            "concussion_2_age" => null,
+            "concussion_3_description" => null,
+            "concussion_3_hospitalized" => null,
+            "concussion_3_age" => null,
+            "current_concussion_symptoms" => null,
+        ];
+
+        // all required elements are null/yes/no options.
+        $this->_instrument->validate($instrumentQuestions);
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Values validation case.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateValues(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        // data - complete keys + empty values
+        $instrumentQuestions = [
+            // p1
+            "arthritis" => null, // required
+            "arthritis_age" => null,
+            "pulmonary_issues" => null,
+            "pulmonary_issues_specific" => null,
+            // p2
+            "hypertension" => null, // required
+            "hypertension_while_pregnant" => null,
+            "hypertension_while_pregnant_age" => null,
+            // p3
+            "concussion_or_head_trauma" => null, // required
+            "concussion_1_description" => null,
+            "concussion_1_hospitalized" => null,
+            "concussion_1_age" => null,
+            "concussion_2_description" => null,
+            "concussion_2_hospitalized" => null,
+            "concussion_2_age" => null,
+            "concussion_3_description" => null,
+            "concussion_3_hospitalized" => null,
+            "concussion_3_age" => null,
+            "current_concussion_symptoms" => null,
+        ];
     }
 
     /**
