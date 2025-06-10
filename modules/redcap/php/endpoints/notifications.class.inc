@@ -12,10 +12,6 @@
 
 namespace LORIS\redcap\Endpoints;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
