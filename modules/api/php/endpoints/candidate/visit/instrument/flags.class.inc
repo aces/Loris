@@ -163,20 +163,18 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
-
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
             );
         }
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        if (!array_key_exists('Flags', $data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Invalid request. 'Flags' missing."
             );
         }
 
         try {
-
             $requiredfields = [
                 'Data_entry',
                 'Administration',
@@ -241,10 +239,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Invalid request'
             );
         }
-
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        if (!array_key_exists('Flags', $data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Invalid request. 'Flags' missing."
             );
         }
 
