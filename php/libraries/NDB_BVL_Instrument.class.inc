@@ -3155,12 +3155,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    public function validate(array $values): void
+    public function validate(array $dataToCheck): void
     {
         // data to check even exist
-        $dataToCheck = $values[$this->testName] ?? null;
-        if ($dataToCheck === null) {
-            throw new \LorisException("No instrument key provided.");
+        if (empty($dataToCheck)) {
+            throw new \LorisException("No data provided.");
         }
 
         // validate the keys against the instrument dictionary entries
