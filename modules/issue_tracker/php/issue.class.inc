@@ -111,7 +111,7 @@ class Issue extends \NDB_Form
         $centerIDs  = $user->getCenterIDs();
         $centerList = implode(",", $centerIDs);
         $centerList = explode(',', $centerList);
-        $isOwnIssue = $issueData['reporter'] == $user->getUsername();
+        $isOwnIssue = ($issueData['reporter'] ?? null) == $user->getUsername();
 
         return (is_null($issueData)
             || ($user->hasPermission('issue_tracker_site_issue') &&
