@@ -39,9 +39,18 @@ class Categories extends \NDB_Page
 
         $modulesassoc = [];
 
-        foreach ($modulesandcats['Modules'] as $module) {
+	foreach ($modulesandcats['Modules'] as $module) {
             $modulesassoc[$module->getName()] = $module->getLongName();
-        }
+	}
+           if (!$user->hasAnyPermission(
+                [
+                    'acknowledgements_view',
+                    'acknowledgements_edit'
+                ]
+	   ) || !$user->hasPermission('superuser')) {
+	           unset($modulesassoc['candidate_parameters']);
+        unset($modulesandcats['Categories']['candidate_parameters']); 
+	   }
 
         return new \LORIS\Http\Response\JSON\OK(
             [
