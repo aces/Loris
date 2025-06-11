@@ -253,8 +253,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             . join('),(', $candidates)
             . ')';
         if (is_array($candidates) && !empty($candidates)) {
-        $q = $DB->prepare($insertstmt);
-        $q->execute([]);        
+            $q = $DB->prepare($insertstmt);
+            $q->execute([]);
         }
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f
