@@ -145,14 +145,14 @@ class InstrumentDataParser extends CSVParser
      *
      * @return array    Returns array of column names as strings
      */
-    public function validateData(
+    public static function validateData(
         array $instrumentData, array $injectedColumns
     ): array {
         $errors = [];
         foreach ($instrumentData as &$dataRow) {
             try {
                 // Validate Session
-                $sessionID            = $this->obtainSessionID(
+                $sessionID            = self::obtainSessionID(
                     $dataRow['PSCID'],
                     $dataRow['Visit_label']
                 );
@@ -181,7 +181,7 @@ class InstrumentDataParser extends CSVParser
      * @return int                  Returns SessionID
      * @throws RuntimeException
      */
-    public function obtainSessionID(string $pscID, string $visitLabel): int
+    public static function obtainSessionID(string $pscID, string $visitLabel): int
     {
         $db = NDB_Factory::singleton()->database();
 
@@ -217,15 +217,18 @@ class InstrumentDataParser extends CSVParser
      * @return array    Returns insertion results
      * @throws NotFound
      */
-    public function insertInstrumentData(
-        LorisInstance $loris, array $instrumentData
+    public static function insertInstrumentData(
+        LorisInstance $loris, array $instrumentData, string $instrumentName, string $csvFilename
     ): array {
         $db = NDB_Factory::singleton()->database();
-        $instrumentHeaders = $this->getInstrumentHeaders(
+        $instrumentHeaders = self::getInstrumentHeaders(
             $loris,
-            $this->instrumentName,
+            $instrumentName
         );
-        // TODO: Handle unexisting players
+        // TODO: Handle unexisting ????s
+
+        error_log('instrdata');
+        error_log(json_encode($instrumentData));
 
         $errors = [];
         try {
@@ -233,10 +236,15 @@ class InstrumentDataParser extends CSVParser
             try {
                 foreach ($instrumentData as $data) {
                     try {
+                        error_log('data');
+                        error_log(json_encode($data));
+                        error_log(json_encode($instrumentHeaders));
+
                         // Prepare row data
                         $rowData = array_reduce(
                             $instrumentHeaders,
                             function ($columns, $columnName) use ($data) {
+                                error_log("colname: $columnName");
                                 $columns[$columnName]
                                     = strlen($data[$columnName]) > 0
                                     ? $data[$columnName]
@@ -249,7 +257,7 @@ class InstrumentDataParser extends CSVParser
                         // Create generic instrument
                         $instrument = \NDB_BVL_Instrument::factory(
                             $loris,
-                            $this->instrumentName,
+                            $instrumentName,
                             '',
                             '',
                             false
@@ -276,7 +284,7 @@ class InstrumentDataParser extends CSVParser
                           );
                           $commentID = $battery->addInstrument(
                             $loris,
-                            $this->instrumentName
+                            $instrumentName
                           );
                           $instrument->commentID = $commentID;
 
@@ -310,7 +318,7 @@ class InstrumentDataParser extends CSVParser
                             $db->update(
                                 'instrument_data_files',
                                 ['DataID'   => $dataID],
-                                ['FilePath' => $this->csvFile->getFilename()]
+                                ['FilePath' => $csvFilename]
                             );
                         }
                     } catch (\Exception $e) {
@@ -354,25 +362,6 @@ class InstrumentDataParser extends CSVParser
                 'message' => "DB Error: {$e->getMessage()}"
             ];
         }
-    }
-
-    /**
-     * Create .linst file from csv
-     *
-     * @param LorisInstance $loris Loris instance
-     *
-     * @return array    Returns array of column names as strings
-     * @throws RuntimeException
-     */
-    public function createLINST(): array
-    {
-      try {
-        return $this->parse();
-      } catch (\Exception $e) {
-        throw new RuntimeException(
-          "An error occurred while parsing: {$e->getMessage()}"
-        );
-      }
     }
 }
 

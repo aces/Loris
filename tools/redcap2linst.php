@@ -85,8 +85,6 @@ $redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 
-
-
 // write instrument
 foreach ($instruments as $instrument_name => $instrument) {
     writeLINSTFile(
