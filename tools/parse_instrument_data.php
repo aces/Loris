@@ -19,21 +19,21 @@ if (count($argv) != 5) {
     exit(1);
 }
 
-$instrument   = $argv[1];
-$fileLocation = $argv[2];
-$userID       = $argv[3];
-$examinerID   = $argv[4];
+$instrumentName = $argv[1];
+$fileLocation   = $argv[2];
+$userID         = $argv[3];
+$examinerID     = $argv[4];
 
 $result = [];
 
 try {
     $fileInfo   = new SplFileInfo($fileLocation);
     $dataParser = new InstrumentDataParser(
-        $instrument,
+        $instrumentName,
         $fileInfo,
     );
     $data       = $dataParser->parseCSV($lorisInstance);
-    $validData  = $dataParser->validateData(
+    $validData  = $dataParser::validateData(
         $data,
         [
             'UserID'   => $userID,
@@ -46,9 +46,11 @@ try {
         exit(2);    // Invalid Data Error(s)
     }
 
-    $result = $dataParser->insertInstrumentData(
+    $result = $dataParser::insertInstrumentData(
         $lorisInstance,
-        $validData['data']
+        $validData['data'],
+        $instrumentName,
+        $fileInfo->getFilename()
     );
 } catch (\Exception $e) {
     echo $e->getMessage();

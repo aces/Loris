@@ -2,11 +2,13 @@
 
 namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
+use LORIS\RedcapCSVParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
 use LORIS\server_processes_manager as SP;
 
+require_once 'RedcapCSVParser.class.inc';
 /**
  * Upload instrument data
  *
@@ -117,8 +119,8 @@ class Instrument_Data extends \NDB_Page
         $requestBody = (array) $request->getParsedBody();
 
         if (isset($requestBody['instrument'])) {
-            $instrument = $requestBody['instrument'];
-            if ($this->instrumentExists($instrument)) {
+            $instrumentName = $requestBody['instrument'];
+            if ($this->instrumentExists($instrumentName)) {
                 $dataFile = $request->getUploadedFiles()['data_file'];
                 $userID   = $request->getAttribute('user')->getUsername();
 
@@ -136,7 +138,7 @@ class Instrument_Data extends \NDB_Page
                     // Run as background task
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->parseInstrumentData(
-                        $instrument,
+                        $instrumentName,
                         $fileLocation,
                     );
 
@@ -154,10 +156,11 @@ class Instrument_Data extends \NDB_Page
                 // Parse
                 try {
                     $dataParser = new InstrumentDataParser(
-                        $instrument,
+                        $instrumentName,
                         $fileInfo,
                     );
                     $data       = $dataParser->parseCSV($this->loris);
+
                     $validData  = $dataParser->validateData(
                         $data,
                         [
@@ -174,10 +177,13 @@ class Instrument_Data extends \NDB_Page
                         );
                     }
 
-                    $result = $dataParser->insertInstrumentData(
+                    $result = InstrumentDataParser::insertInstrumentData(
                         $this->loris,
-                        $validData['data']
+                        $validData['data'],
+                        $instrumentName,
+                        $fileInfo->getFilename()
                     );
+//                    $result = ['result' => $result];
 
                     return new \LORIS\Http\Response\JSON\Created($result);
                 } catch (\Exception $e) {
@@ -192,6 +198,11 @@ class Instrument_Data extends \NDB_Page
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Instrument does not exist'
             );
+        } else if (isset($requestBody['multi-instrument'])) {
+            $dataParser = new RedcapCSVParser(
+                $fileInfo,
+            );
+            $result       = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
@@ -202,15 +213,15 @@ class Instrument_Data extends \NDB_Page
     /**
      * Checks the test_names table for the existence of the instrument
      *
-     * @param string $instrument The instrument name
+     * @param string $instrumentName The instrument name
      *
      * @return bool True if the name is found in the table
      */
-    protected function instrumentExists(string $instrument): bool
+    protected function instrumentExists(string $instrumentName): bool
     {
         $count = $this->loris->getDatabaseConnection()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
-            [':v_instrument' => $instrument]
+            [':v_instrument' => $instrumentName]
         );
         return $count > 0;
     }

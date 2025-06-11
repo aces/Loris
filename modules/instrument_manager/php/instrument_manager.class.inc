@@ -151,8 +151,8 @@ class Instrument_Manager extends \DataFrameworkMenu
             $csvPath = $targetdir->getRealPath() . "/$filename";
             $redcapCSV = new SplFileInfo($csvPath);
             $redcapParser = new RedcapCSVParser($redcapCSV);
-            $parsedCSV = $redcapParser->parseCSV($this->loris);
-            $instruments = $redcapParser::convertParsedCSVRecordsToLINST($parsedCSV);
+            $parsedCSV = $redcapParser->parseDictionaryCSV($this->loris);
+            $instruments = $redcapParser::convertDictionaryCSVToLINST($parsedCSV);
 
             // Require all instruments not to exist before proceeding
             $existingInstruments = [];

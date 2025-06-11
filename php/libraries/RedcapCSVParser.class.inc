@@ -51,14 +51,14 @@ class RedcapCSVParser extends CSVParser
     }
 
     /**
-     * Parse the csv file
+     * Parse the Data Dictionary csv file
      *
      * @param LorisInstance $loris      Loris instance
      *
      * @return RedcapDictionaryRecord[] Returns array RedcapDictionaryRecord
      * @throws RuntimeException
      */
-    public function parseCSV(LorisInstance $loris): array
+    public function parseDictionaryCSV(LorisInstance $loris): array
     {
         try {
             $expectedHeaders = RedcapDictionaryRecord::getHeaders();
@@ -113,7 +113,7 @@ class RedcapCSVParser extends CSVParser
      *
      * @return array[]
      */
-    public static function convertParsedCSVRecordsToLINST(array $parsedCSV): array
+    public static function convertDictionaryCSVToLINST(array $parsedCSV): array
     {
         $instruments = [];
         foreach ($parsedCSV as $dictionaryRecord) {
@@ -210,4 +210,63 @@ class RedcapCSVParser extends CSVParser
         fclose($fp_meta);
     }
 
+    /**
+     * Parse the Instrument Data csv file
+     *
+     * @param LorisInstance $loris      Loris instance
+     *
+     * @return RedcapDictionaryRecord[] Returns array RedcapDictionaryRecord
+     * @throws RuntimeException
+     */
+    public function parseDataCSV(LorisInstance $loris, array $instrumentNames, string $userID): array
+    {
+        $results = [];
+        try {
+            $expectedHeaders = [];
+            $parsedCSV = $this->parse($expectedHeaders);
+
+            foreach ($instrumentNames as $instrumentName) {
+                $instrumentHeaders = InstrumentDataParser::getCSVHeaders(
+                    $loris,
+                    $instrumentName,
+                );
+
+                $instrumentData = array_map(
+                    function($csvRow) use ($instrumentHeaders) {
+                        return array_filter(
+                            $csvRow,
+                            function($data, $header) use ($csvRow, $instrumentHeaders) {
+                                return in_array($header, $instrumentHeaders);
+                            },
+                            ARRAY_FILTER_USE_BOTH
+                        );
+                    },
+                    $parsedCSV
+                );
+
+                $validData  = InstrumentDataParser::validateData(
+                    $instrumentData,
+                    [
+                        'UserID'   => $userID,
+                        'Examiner' => $userID
+                    ]
+                );
+
+                // TODO: Check for errors in above paylaod ($validData['errors'])
+
+                $result = InstrumentDataParser::insertInstrumentData(
+                    $loris,
+                    $validData['data'],
+                    $instrumentName,
+                    $this->csvFile->getFilename()
+                );
+                $results[] = [...$result, 'instrument' => $instrumentName];
+            }
+            return $results;
+        } catch (\Exception $e) {
+            throw new RuntimeException(
+                "An error occurred while parsing: {$e->getMessage()}"
+            );
+        }
+    }
 }

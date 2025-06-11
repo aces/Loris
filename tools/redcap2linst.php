@@ -63,7 +63,7 @@ if ($options['inputType'] === 'api') {
     fwrite(STDOUT, "\n-- Getting metadata from input file.\n");
     $redcapCSV = new SplFileInfo($options['file']);
     $redcapParser = new RedcapCSVParser($redcapCSV, $imp_instrument, $options['trimInstrumentName']);
-    $dict = $redcapParser->parseCSV($lorisInstance);
+    $dict = $redcapParser->parseDictionaryCSV($lorisInstance);
 }
 
 
@@ -75,7 +75,7 @@ $redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 
-RedcapCSVParser::convertParsedCSVRecordsToLINST($dict, $output_dir, $redcap_intruments_map);
+RedcapCSVParser::convertDictionaryCSVToLINST($dict, $output_dir, $redcap_intruments_map);
 
 fwrite(STDOUT, "\n-- end\n");
 
