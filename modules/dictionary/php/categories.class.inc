@@ -44,8 +44,8 @@ class Categories extends \NDB_Page
         }
         if (!$user->hasAnyPermission(
             [
-                'acknowledgements_view',
-                'acknowledgements_edit'
+                'candidate_parameter_view',
+                'candidate_parameter_edit'
             ]
         ) || !$user->hasPermission('superuser')
         ) {
