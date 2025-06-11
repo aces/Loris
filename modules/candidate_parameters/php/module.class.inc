@@ -21,9 +21,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-		$user->hasAnyPermission(['candidate_parameter_view',
-		       	'candidate_parameter_edit']);
-    }	
+        $user->hasAnyPermission(
+            ['candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+    }
     /**
      * {@inheritDoc}
      *
