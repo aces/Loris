@@ -48,9 +48,9 @@ type useQueryReturnType = [
  */
 function useQuery(): useQueryReturnType {
   const [fields, setFields] = useState<APIQueryField[]>([{
-      'module': 'candidate_parameters',
-      'category': 'Identifiers',
-      'field': 'PSCID'
+    'module': 'candidate_parameters',
+    'category': 'Identifiers',
+    'field': 'PSCID'
   }]);
   const [criteria, setCriteria] = useState<QueryGroup>(new QueryGroup('and'));
 
