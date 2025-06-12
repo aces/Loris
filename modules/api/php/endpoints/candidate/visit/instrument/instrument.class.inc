@@ -243,8 +243,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // validate given data against the instrument
         $instrumentName = $this->_instrument->testName;
         try {
-            // extract data according to LORIS API version
             $version = $request->getAttribute('LORIS-API-Version');
+
+            // extract data according to LORIS API version
             $instrumentData = $version == 'v0.0.3'
                 ? ($data[$instrumentName] ?? [])
                 : ($data['Data'] ?? []);
