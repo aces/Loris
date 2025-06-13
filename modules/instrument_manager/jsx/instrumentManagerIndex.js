@@ -38,6 +38,8 @@ class InstrumentManagerIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
+    this.setSelectedDataFile = this.setSelectedDataFile.bind(this);
   }
 
   /**
@@ -61,6 +63,17 @@ class InstrumentManagerIndex extends Component {
   }
 
   /**
+   * setSelectedDataFile
+   *
+   * @param {string} file
+   */
+  setSelectedDataFile(file) {
+    this.setState({
+      selectedDataFile: file,
+    });
+  }
+
+  /**
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
@@ -73,6 +86,63 @@ class InstrumentManagerIndex extends Component {
       .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
+      });
+  }
+
+
+  /**
+   * Upload instrument data
+   *
+   * @param instrument  Instrument name
+   */
+  uploadInstrumentData(instrument) {  // TODO: Move (back) to InstrumentDataUploadModal
+    const data = new FormData();
+    data.append('instrument', instrument);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
+
+    return new Promise(
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              text: data.message,
+            });
+          } else {
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
+          }
+          resolve();
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
+        });
       });
   }
 
@@ -134,8 +204,22 @@ class InstrumentManagerIndex extends Component {
           <TriggerableModal
             label={'Upload Data'}
             title={'Upload Instrument Data'}
+            onClose={() => {
+              this.setState({
+                selectedDataFile: null,
+              });
+            }}
+            onSubmit={(e) => {
+              if (this.state.selectedDataFile === null) {
+                e.preventDefault();
+                return;
+              }
+              console.log('submitting');
+              return this.uploadInstrumentData(row.Instrument);
+            }}
           >
             <InstrumentDataUploadModal
+              setSelectedDataFile={this.setSelectedDataFile}
               instrumentList={[row.Instrument]}
             />
           </TriggerableModal>
