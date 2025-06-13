@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
-import TriggerableModal from "../../../jsx/TriggerableModal";
 
 /**
  * Instrument Upload Form component
@@ -38,6 +37,7 @@ class InstrumentDataUploadModal extends Component {
     this.setState({
       selectedDataFile: file,
     });
+    this.props.setSelectedDataFile(file);
   }
 
 
@@ -112,7 +112,7 @@ class InstrumentDataUploadModal extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    console.log('multi: ', this.isMultiInstrument);
+    // console.log('multi: ', this.isMultiInstrument);
     return (
       <div id={this.containerID}>
         <div
@@ -148,12 +148,13 @@ class InstrumentDataUploadModal extends Component {
           <a
             className="btn btn-default"
             href={
-              `${this.props.BaseURL}/instrument_manager/instrument_data?` +
-              (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
-                ? `instrument=${this.state.selectedInstruments[0]}`
-                : this.state.selectedInstruments.map(
-                    instrumentName => `instruments=${instrumentName}`
-                  ).join('&') // TODO: Reconsider. Can potentially be too long for max length
+              loris.BaseURL.concat('/instrument_manager/instrument_data/?') + (
+                (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
+                  ? `instrument=${this.state.selectedInstruments[0]}`
+                  : this.state.selectedInstruments.map(
+                      instrumentName => `instruments=${instrumentName}`
+                    ).join('&') // TODO: Reconsider. Can potentially be too long for max length
+              )
             }
             target={'_blank'}
           >
@@ -162,52 +163,52 @@ class InstrumentDataUploadModal extends Component {
           </a>
         </div>
 
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <button
-            className='btn btn-primary'
-            style={{marginTop: '5px'}}
-            disabled={
-              this.state.submitted ||
-              this.state.selectedDataFile === null ||
-              this.state.selectedInstruments.length === 0
-            }
-            onClick={() => {
-              // if (
-              //   this.state.selectedDataFile === null ||
-              //   this.state.selectedInstruments.length === 0
-              // ) {
-              //   e.preventDefault();
-              //   return;
-              // }
-              this.setState({
-                submitted: true
-              });
+        {/*<div style={{display: 'flex', justifyContent: 'center'}}>*/}
+        {/*  <button*/}
+        {/*    className='btn btn-primary'*/}
+        {/*    style={{marginTop: '5px'}}*/}
+        {/*    disabled={*/}
+        {/*      this.state.submitted ||*/}
+        {/*      this.state.selectedDataFile === null ||*/}
+        {/*      this.state.selectedInstruments.length === 0*/}
+        {/*    }*/}
+        {/*    onClick={() => {*/}
+        {/*      // if (*/}
+        {/*      //   this.state.selectedDataFile === null ||*/}
+        {/*      //   this.state.selectedInstruments.length === 0*/}
+        {/*      // ) {*/}
+        {/*      //   e.preventDefault();*/}
+        {/*      //   return;*/}
+        {/*      // }*/}
+        {/*      this.setState({*/}
+        {/*        submitted: true*/}
+        {/*      });*/}
 
-              if (!this.isMultiInstrument || this.state.selectedInstruments.length === 1) {
-                this.uploadInstrumentData(this.state.selectedInstruments[0])
-                  .then(() => {
-                    // this.setState({
-                    //   selectedDataFile: null,
-                    // });
-                    // document.getElementById(this.containerID).parentElement.remove();
-                  })
-                  .finally(() => {
-                    this.setState({
-                      submitted: false,
-                    });
-                    document.getElementById(this.containerID)
-                      .parentElement.parentElement.parentElement.parentElement
-                      .remove();
+        {/*      if (!this.isMultiInstrument || this.state.selectedInstruments.length === 1) {*/}
+        {/*        this.uploadInstrumentData(this.state.selectedInstruments[0])*/}
+        {/*          .then(() => {*/}
+        {/*            // this.setState({*/}
+        {/*            //   selectedDataFile: null,*/}
+        {/*            // });*/}
+        {/*            // document.getElementById(this.containerID).parentElement.remove();*/}
+        {/*          })*/}
+        {/*          .finally(() => {*/}
+        {/*            this.setState({*/}
+        {/*              submitted: false,*/}
+        {/*            });*/}
+        {/*            document.getElementById(this.containerID)*/}
+        {/*              .parentElement.parentElement.parentElement.parentElement*/}
+        {/*              .remove();*/}
 
-                  });
-              } else {
-                console.error('Multi instrument not defined');
-              }
-            }}
-          >
-            Submit
-          </button>
-        </div>
+        {/*          });*/}
+        {/*      } else {*/}
+        {/*        console.error('Multi instrument not yet implemented');*/}
+        {/*      }*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    Submit*/}
+        {/*  </button>*/}
+        {/*</div>*/}
       </div>
     );
   }
@@ -219,6 +220,7 @@ InstrumentDataUploadModal.defaultProps = {
 
 InstrumentDataUploadModal.propTypes = {
   instrumentList: PropTypes.array.isRequired,
+  setSelectedDataFile: PropTypes.func,
 };
 
 export default InstrumentDataUploadModal;

@@ -183,7 +183,6 @@ class Instrument_Data extends \NDB_Page
                         $instrumentName,
                         $fileInfo->getFilename()
                     );
-//                    $result = ['result' => $result];
 
                     return new \LORIS\Http\Response\JSON\Created($result);
                 } catch (\Exception $e) {
@@ -199,10 +198,13 @@ class Instrument_Data extends \NDB_Page
                 'Instrument does not exist'
             );
         } else if (isset($requestBody['multi-instrument'])) {
-            $dataParser = new RedcapCSVParser(
-                $fileInfo,
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Multi-instrument not yet implemented'
             );
-            $result       = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
+//            $dataParser = new RedcapCSVParser(
+//                $fileInfo,
+//            );
+//            $result       = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
