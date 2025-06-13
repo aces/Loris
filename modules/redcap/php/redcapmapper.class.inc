@@ -12,6 +12,7 @@
 
 namespace LORIS\redcap;
 
+use \LORIS\LorisInstance;
 use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigLorisId;
@@ -19,6 +20,7 @@ use \LORIS\redcap\config\RedcapConfigRedcapId;
 use \LORIS\redcap\config\RedcapConfigVisit;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\client\models\RedcapEvent;
+use \LORIS\redcap\client\models\RedcapNotification;
 
 /**
  * Mapping methods to match REDCap and LORIS identifiers in the REDCap module.
@@ -33,6 +35,13 @@ use \LORIS\redcap\client\models\RedcapEvent;
  */
 class RedcapMapper
 {
+    /**
+     * THe LORIS instance.
+     *
+     * @var LorisInstance
+     */
+    private LorisInstance $_loris;
+
     /**
      * The REDCap HTTP client.
      *
@@ -57,18 +66,19 @@ class RedcapMapper
     /**
      * Constructor.
      *
+     * @param LorisInstance    $loris         The LORIS instance.
      * @param RedcapHttpClient $redcap_client The REDCap HTTP client.
      * @param RedcapConfig     $config        The REDCap module configuration.
-     * @param RedcapQueries    $queries       The REDCap module database queries.
      */
     public function __construct(
+        LorisInstance $loris,
         RedcapHttpClient $redcap_client,
         RedcapConfig $config,
-        RedcapQueries $queries,
     ) {
+        $this->_loris         = $loris;
         $this->_redcap_client = $redcap_client;
         $this->_config        = $config;
-        $this->_queries       = $queries;
+        $this->_queries       = new RedcapQueries($loris);
     }
 
     /**
@@ -77,26 +87,26 @@ class RedcapMapper
      * session creation is enabled for that visit in the REDCap module
      * configuration, or throws an error if it is not.
      *
-     * @param \Candidate $candidate         The LORIS candidate associated with the
-     *                                      REDCap event.
-     * @param string     $unique_event_name The unique event name of the REDCap
-     *                                      event.
+     * @param RedcapNotification $redcap_notif The REDCap notification of the
+     *                                         event.
+     * @param \Candidate         $candidate    The LORIS candidate associated with
+     *                                         the REDCap event.
      *
      * @return string The visit label of the relevant session.
      */
     public function getVisitLabel(
+        RedcapNotification $redcap_notif,
         \Candidate $candidate,
-        string $unique_event_name,
     ): string {
-        $visit_config = $this->getVisitConfig($unique_event_name);
+        $visit_config = $this->getVisitConfig($redcap_notif->unique_event_name);
 
         // If no visit mappings are defined in the configuration, use the REDCap
         // unique event name as the visit label directly.
         if ($visit_config === null) {
-            return $unique_event_name;
+            return $redcap_notif->unique_event_name;
         }
 
-        $this->checkOrCreateSession($candidate, $visit_config);
+        $this->checkOrCreateSession($redcap_notif, $visit_config, $candidate);
 
         return $visit_config->visit_label;
     }
@@ -187,16 +197,20 @@ class RedcapMapper
      *  session creation configuration. Throw an exception if the session does not
      *  exist and automatic session creation is not enabled for that visit.
      *
-     * @param \Candidate        $candidate     The LORIS candidate associated with
-     *                                         a REDCap event.
-     * @param RedcapConfigVisit $visit_mapping The REDCap module visit configuration
-     *                                         associated with that REDCap event.
+     * @param RedcapNotification $redcap_notif  The REDCap notification of the
+     *                                          event.
+     * @param RedcapConfigVisit  $visit_mapping The REDCap module visit
+     *                                          configuration associated with that
+     *                                          REDCap event.
+     * @param \Candidate         $candidate     The LORIS candidate associated with
+     *                                          a REDCap event.     *
      *
      * @return void
      */
     public function checkOrCreateSession(
-        \Candidate $candidate,
+        RedcapNotification $redcap_notif,
         RedcapConfigVisit $visit_mapping,
+        \Candidate $candidate,
     ) {
         // Get the ID of the session associated with the candidate and visit label.
         $session_id = array_search(
@@ -204,9 +218,9 @@ class RedcapMapper
             $candidate->getListOfVisitLabels()
         );
 
-        // If the session exists, simply return the visit label of that session.
+        // If the session already exists, no need to create it.
         if ($session_id) {
-            return $visit_mapping->visit_label;
+            return;
         }
 
         // Throw an exception if the session does not exist and there is no
@@ -227,10 +241,10 @@ class RedcapMapper
         $site_name = $visit_mapping->create_session->site_name;
         $site_id   = array_search($site_name, \Utility::getSiteList());
 
-        $project_name = $visit_mapping->create_session->site_name;
+        $project_name = $visit_mapping->create_session->project_name;
         $project_id   = array_search($project_name, \Utility::getProjectList());
 
-        $cohort_name = $visit_mapping->create_session->site_name;
+        $cohort_name = $visit_mapping->create_session->cohort_name;
         $cohort_id   = array_search($cohort_name, \Utility::getCohortList());
 
         // Throw an exception if any of the site, project, or cohort could not be
@@ -258,13 +272,68 @@ class RedcapMapper
             );
         }
 
-        // Create the session.
+        // Since the REDCap module is called by the REDCap API or from a script,
+        // there is usually no logged in user. As such, manually set the user to be
+        // the REDCap issue assignee to create the session.
+
+        $user = $this->_queries->getRedcapIssueAssignee();
+
+        $state = \State::singleton();
+        $state->setUsername($user->getUsername());
+        $_SESSION['State'] =& $state;
+
+        // Create the session that corresponds to this mapping.
         \TimePoint::createNew(
             $candidate,
             $cohort_id,
             $visit_mapping->visit_label,
             \Site::singleton(new \CenterID(strval($site_id))),
-            \Project::getProjectFromID(new \ProjectID($project_id)),
+            \Project::getProjectFromID(new \ProjectID(strval($project_id))),
+        );
+
+        // Get the session again now that it been created.
+
+        $session_id = array_search(
+            $visit_mapping->visit_label,
+            $candidate->getListOfVisitLabels()
+        );
+
+        $session = \TimePoint::singleton(new \SessionID(strval($session_id)));
+
+        // Start the session next stage, so that it can receive instrument data.
+
+        $new_stage = $session->getNextStage();
+        $session->startStage($new_stage);
+        // TODO: Ideally, we should use the REDCap record date instead of the REDCap
+        // notification date.
+        $date_string = $redcap_notif->received_datetime->format('Y-m-d');
+        $session->setData(
+            [
+                "Date_{$new_stage}" => $date_string,
+            ]
+        );
+
+        // Add the test batteries to the session.
+
+        $battery = new \NDB_BVL_Battery;
+
+        $first_visit_label = $candidate->getFirstVisit();
+        if ($first_visit_label == $session->getVisitLabel()) {
+            $first_visit = true;
+        } else {
+            $first_visit = false;
+        }
+
+        $battery->selectBattery($session->getSessionID());
+
+        // add instruments to the time point (lower case stage)
+        $battery->createBattery(
+            $this->_loris,
+            $session->getCohortID(),
+            $new_stage,
+            $session->getVisitLabel(),
+            $session->getCenterID(),
+            $first_visit,
         );
     }
 
