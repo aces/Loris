@@ -382,7 +382,7 @@ class RedcapConfigParser
      *
      * @param array $visit_node The REDCap configuration visit mapping XML node.
      *
-     * @return RedcapConfigCreateSession The REDCap session creation configuration.
+     * @return ?RedcapConfigCreateSession The REDCap session creation configuration.
      */
     private function _parseCreateSession(
         array $visit_node,
