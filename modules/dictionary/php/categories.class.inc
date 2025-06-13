@@ -47,7 +47,7 @@ class Categories extends \NDB_Page
                 'candidate_parameter_view',
                 'candidate_parameter_edit'
             ]
-        ) || !$user->hasPermission('superuser')
+        ) && !$user->hasPermission('superuser')
         ) {
                unset($modulesassoc['candidate_parameters']);
             unset($modulesandcats['Categories']['candidate_parameters']);
