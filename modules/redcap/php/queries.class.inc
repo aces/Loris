@@ -16,6 +16,7 @@
 namespace LORIS\redcap;
 
 use \LORIS\LorisInstance;
+use \LORIS\Database\Query;
 use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
@@ -282,5 +283,63 @@ class Queries
     public function releaseNotificationLock()
     {
         $this->_db->run("UNLOCK TABLES");
+    }
+
+    /**
+     * Get the list of all instrument records to import from REDCap.
+     *
+     * @param array $allowedRedcapInstruments authorized redcap instruments
+     * @param bool  $forceUpdate              do force update?
+     *
+     * @return Query
+     */
+    public function getLORISInstrumentToImport(
+        array $allowedRedcapInstruments,
+        bool $forceUpdate = false
+    ): Query {
+        // extract first importable instrument name
+        $firstInstrumentName     = $allowedRedcapInstruments[0];
+        $allOtherInstrumentNames = array_slice($allowedRedcapInstruments, 1);
+
+        // build query for exact instrument name match
+        $selectedInstruments  = "AND (";
+        $selectedInstruments .= " BINARY f.test_name = '{$firstInstrumentName}'";
+        foreach ($allOtherInstrumentNames as $instrumentName) {
+            $selectedInstruments .= " OR BINARY f.test_name = '{$instrumentName}'";
+        }
+        $selectedInstruments .= ")";
+
+        // if forced, then we do not filter out administration/data entry already
+        // set up, they will be overridden
+        $forceUpdateCondition = "";
+        if (!$forceUpdate) {
+            $forceUpdateCondition = "
+                AND (f.Data_entry = 'In Progress' OR f.Data_entry IS NULL)
+                AND f.Administration IS NULL
+            ";
+        }
+
+        $query = "SELECT c.PSCID as pscid,
+            c.CandID as candid,
+            s.Visit_label as visitLabel,
+            f.test_name as instrument,
+            f.CommentID as commentID,
+            f.Data_entry as dataEntry,
+            f.Administration as administration
+        FROM flag f
+            JOIN session s ON (s.ID = f.sessionID)
+            JOIN candidate c ON (c.candid = s.candid)
+        WHERE s.Active = 'Y'
+            AND c.Active = 'Y'
+            AND f.CommentID NOT LIKE 'DDE%'
+            {$forceUpdateCondition}
+            {$selectedInstruments}
+        ";
+
+        //
+        return $this->_db->pselect(
+            $query,
+            []
+        );
     }
 }
