@@ -61,11 +61,11 @@ class RedcapInstrumentEventMap implements IRedcapInstrumentEvent
     }
 
     /**
-     * Get the REDCap event name.
+     * Get the REDCap unique event name.
      *
      * @return string
      */
-    public function getEventName(): string
+    public function getUniqueEventName(): string
     {
         return $this->unique_event_name;
     }

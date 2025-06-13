@@ -301,6 +301,7 @@ class RedcapHttpClient
             $eventData = array_map(fn($e) => new RedcapEvent($e), $events);
             $this->_updateCache('event', $eventData);
         }
+
         return $this->_cache['event'];
     }
 
@@ -316,6 +317,7 @@ class RedcapHttpClient
         $data = [
             'content' => 'instrument',
         ];
+
         // update cache if first use
         if (empty($this->_cache['instrument'])) {
             $instruments = json_decode($this->_sendRequest($data), true);
@@ -399,46 +401,53 @@ class RedcapHttpClient
      *
      * Note: this method does not cache data.
      *
-     * @param string  $recordId       a record id
-     * @param string  $instrument     an instrument/form name
-     * @param ?string $event          an event
-     * @param ?string $repeatInstance a repeat instance index if any
+     * @param string  $instrument_name   A REDCap instrument name.
+     * @param ?string $unique_event_name A REDCap unique event name, if any.
+     * @param string  $record_id         A REDCap record ID.
+     * @param ?string $repeat_instance   A repeat instance index, if any.
      *
-     * @return ?string a link if found, else null
+     * @return ?string The corresponding REDCap survery link if found, else null.
      */
     public function getSurveyLink(
-        string $recordId,
-        string $instrument,
-        ?string $event,
-        ?string $repeatInstance
+        string $instrument_name,
+        ?string $unique_event_name,
+        string $record_id,
+        ?string $repeat_instance
     ): ?string {
-        if (empty($instrument)) {
+        if (empty($instrument_name)) {
             throw new \LorisException("[redcap] Error: 'instrument' null or empty.");
         }
-        if (empty($recordId)) {
-            throw new \LorisException("[redcap] Error: 'recordId' null or empty.");
+
+        if (empty($record_id)) {
+            throw new \LorisException("[redcap] Error: 'record_id' null or empty.");
         }
-        $event          = empty($event) ? null : $event;
-        $repeatInstance = empty($repeatInstance) ? null : $repeatInstance;
+
+        $unique_event_name = empty($unique_event_name) ? null : $unique_event_name;
+        $repeat_instance   = empty($repeat_instance) ? null : $repeat_instance;
 
         // check mapping exists
-        if (!$this->hasMappingInstrumentEvent($instrument, $event)) {
+        $mapping_instrument_event_exists = $this->hasMappingInstrumentEvent(
+            $instrument_name,
+            $unique_event_name
+        );
+
+        if (!$mapping_instrument_event_exists) {
             throw new \LorisException(
-                "[redcap] Error: mapping '$instrument'"
-                ."/'$event' does not exist"
+                "[redcap] Error: mapping '$instrument_name'"
+                ."/'$unique_event_name' does not exist"
             );
         }
 
         // data to send
         $data = [
             'content'    => 'surveyLink',
-            'instrument' => $instrument,
-            'event'      => $event,
-            'record'     => $recordId,
+            'instrument' => $instrument_name,
+            'event'      => $unique_event_name,
+            'record'     => $record_id,
         ];
 
-        if ($repeatInstance !== null) {
-            $data['repeat_instance'] = $repeatInstance;
+        if ($repeat_instance !== null) {
+            $data['repeat_instance'] = $repeat_instance;
         }
 
         // send request
@@ -448,19 +457,19 @@ class RedcapHttpClient
     /**
      * Get survey participants.
      *
-     * @param string $instrument_name The REDCap instrument name.
-     * @param string $event_name      The REDCap event name.
+     * @param string $instrument_name   The REDCap instrument name.
+     * @param string $unique_event_name The REDCap unique event name.
      *
      * @return RedcapSurveyParticipant[] all events.
      */
     public function getSurveyParticipants(
         string $instrument_name,
-        string $event_name,
+        string $unique_event_name,
     ): array {
         $data = [
             'content'    => 'participantList',
             'instrument' => $instrument_name,
-            'event'      => $event_name,
+            'event'      => $unique_event_name,
         ];
 
         $participants = json_decode($this->_sendRequest($data), true);
@@ -473,61 +482,61 @@ class RedcapHttpClient
     /**
      * Check if the instrument/event mapping exists.
      *
-     * @param string $instrument_name an instrument name
-     * @param string $event_name      an event name
+     * @param string $instrument_name   A REDCap instrument name.
+     * @param string $unique_event_name A REDCap unique event name.
      *
      * @return bool true if couple is found, else false
      */
     public function hasMappingInstrumentEvent(
         string $instrument_name,
-        string $event_name,
+        string $unique_event_name,
     ): bool {
         $map = $this->getInstrumentEventMapping();
         return $this->_hasMappingElement(
             $map,
             $instrument_name,
-            $event_name,
+            $unique_event_name,
         );
     }
 
     /**
      * Check if the repeating-instrument/event mapping exists.
      *
-     * @param string $instrument_name an repeating instrument name
-     * @param string $event_name      an event name
+     * @param string $instrument_name   A REDCap repeating instrument name.
+     * @param string $unique_event_name A REDCap unique event name.
      *
      * @return bool true if couple is found, else false
      */
     public function hasRepeatingInstrumentEvent(
         string $instrument_name,
-        string $event_name,
+        string $unique_event_name,
     ): bool {
         $map = $this->getRepeatingInstrumentsAndEvents();
         return $this->_hasMappingElement(
             $map,
             $instrument_name,
-            $event_name,
+            $unique_event_name,
         );
     }
 
     /**
      * Check if the instrument/event mapping exists in an arbitrary mapping array.
      *
-     * @param array  $instrument_event_mappings a mapping array
-     * @param string $instrument_name           an instrument name
-     * @param string $event_name                an event name
+     * @param array  $instrument_event_mappings A mapping array.
+     * @param string $instrument_name           A REDCap instrument name.
+     * @param string $unique_event_name         A REDCap unique event name.
      *
      * @return bool true if couple is found in the array, else false
      */
     private function _hasMappingElement(
         array &$instrument_event_mappings,
         string $instrument_name,
-        string $event_name
+        string $unique_event_name,
     ): bool {
         return array_any(
             $instrument_event_mappings,
             fn($mapping) => (
-                $mapping->getEventName() === $event_name
+                $mapping->getUniqueEventName() === $unique_event_name
                     && $mapping->getFormName() === $instrument_name
             )
         );
@@ -538,19 +547,19 @@ class RedcapHttpClient
      *
      * Note: this method does not cache data.
      *
-     * @param string $recordId a record ID
+     * @param string $record_id a record ID
      *
      * @return ?string a link if found, else null
      */
-    public function getSurveyQueueLink(string $recordId)
+    public function getSurveyQueueLink(string $record_id)
     {
-        if (empty($recordId)) {
-            throw new \LorisException("[redcap] Error: 'recordId' null or empty.");
+        if (empty($record_id)) {
+            throw new \LorisException("[redcap] Error: 'record_id' null or empty.");
         }
 
         $data = [
             'content' => 'surveyQueueLink',
-            'record'  => $recordId
+            'record'  => $record_id
         ];
 
         return $this->_sendRequest($data);
@@ -637,57 +646,66 @@ class RedcapHttpClient
     /**
      * Get all records for an single instrument.
      *
-     * @param string $instrument           an instrument name
-     * @param string $event                an event name
-     * @param string $recordId             a record ID
-     * @param bool   $completedRecordsOnly only consider complete records?
+     * @param string $instrument_name        A REDCap instrument name.
+     * @param string $unique_event_name      A REDCap unique event name.
+     * @param string $record_id              A REDCAp record ID.
+     * @param bool   $completed_records_only Only return completed records.
      *
      * @throws \LorisException
      *
      * @return IRedcapRecord[] an array of records
      */
     public function getInstrumentRecord(
-        string $instrument,
-        string $event,
-        string $recordId,
-        bool $completedRecordsOnly = true
+        string $instrument_name,
+        string $unique_event_name,
+        string $record_id,
+        bool $completed_records_only = true
     ): array {
-        if (empty($instrument)) {
-            throw new \LorisException("[redcap] Error: required 'instrument'.");
+        if (empty($instrument_name)) {
+            throw new \LorisException(
+                "[redcap] Error: required 'instrument_name'."
+            );
         }
-        if (empty($event)) {
-            throw new \LorisException("[redcap] Error: required 'event'.");
+
+        if (empty($unique_event_name)) {
+            throw new \LorisException(
+                "[redcap] Error: required 'unique_event_name'."
+            );
         }
-        if (empty($recordId)) {
-            throw new \LorisException("[redcap] Error: required 'recordId'.");
+
+        if (empty($record_id)) {
+            throw new \LorisException("[redcap] Error: required 'record_id'.");
         }
 
         // mapping check
-        if (!$this->hasMappingInstrumentEvent($instrument, $event)) {
+        $mapping_instrument_event_exists = $this->hasMappingInstrumentEvent(
+            $instrument_name,
+            $unique_event_name,
+        );
+
+        if (!$mapping_instrument_event_exists) {
             throw new \LorisException(
-                "[redcap] Error: mapping '$instrument'/"
-                . "'$event' does not exist in REDCap"
+                "[redcap] Error: mapping '$instrument_name'/"
+                . "'$unique_event_name' does not exist in REDCap"
             );
         }
 
         // request
-        $r = $this->_getRecords(
-            [$instrument],
-            [$event],
-            [$recordId]
+        $records = $this->_getRecords(
+            [$instrument_name],
+            [$unique_event_name],
+            [$record_id]
         );
 
-        if (empty($r)) {
+        if (empty($records)) {
             throw new \LorisException("[redcap] Error: no data found.");
         }
 
         // Only keep complete records
-        if ($completedRecordsOnly) {
+        if ($completed_records_only) {
             $completed = array_filter(
-                $r,
-                function ($record) use ($instrument) {
-                    return $record["{$instrument}_complete"] == 2;
-                }
+                $records,
+                fn ($record) => $record["{$instrument_name}_complete"] == 2
             );
 
             if (count($completed) === 0) {
@@ -697,14 +715,14 @@ class RedcapHttpClient
             }
         } else {
             // if not only completed records
-            $completed = $r;
+            $completed = $records;
         }
 
         // Order the records by ${instrument_name}_dtt field value
         usort(
             $completed,
-            function ($a, $b) use ($instrument) {
-                $dttField = "{$instrument}_dtt";
+            function ($a, $b) use ($instrument_name) {
+                $dttField = "{$instrument_name}_dtt";
                 $a_date   = new \DateTimeImmutable($a[$dttField]);
                 $b_date   = new \DateTimeImmutable($b[$dttField]);
                 return $a_date <=> $b_date;
@@ -714,19 +732,23 @@ class RedcapHttpClient
         // is a repeating instrument?
         $final = [];
         if ($this->getProjectInfo()->has_repeating_instruments
-            && $this->hasRepeatingInstrumentEvent($instrument, $event)
+            && $this->hasRepeatingInstrumentEvent(
+                $instrument_name,
+                $unique_event_name
+            )
         ) {
             foreach ($completed as $index => $record) {
                 $final[] = new RedcapRepeatingRecord(
-                    $instrument,
+                    $instrument_name,
                     $record,
                     $index + 1
                 );
             }
         } else {
             // return the only record
-            $final[] = new RedcapRecord($instrument, $completed[0]);
+            $final[] = new RedcapRecord($instrument_name, $completed[0]);
         }
+
         return $final;
     }
 
@@ -735,19 +757,22 @@ class RedcapHttpClient
      * Cannot return all values. At least one of the three parameters needs to
      * be filled with one value, else an exception will be generated.
      *
-     * @param array $instruments instrument names
-     * @param array $events      event names
-     * @param array $records     records IDs
+     * @param array $instrument_names   A list of REDCap instrument names.
+     * @param array $unique_event_names A list of REDCap unique event names.
+     * @param array $record_ids         A list of REDCap records IDs.
      *
      * @return array an array of records (array of [field name => field values])
      */
     private function _getRecords(
-        array $instruments = [],
-        array $events = [],
-        array $records = []
+        array $instrument_names = [],
+        array $unique_event_names = [],
+        array $record_ids = []
     ): array {
         // security, do not get all records
-        if (empty($instruments) && empty($events) && empty($records)) {
+        if (empty($instrument_names)
+            && empty($unique_event_names)
+            && empty($record_ids)
+        ) {
             throw new \LorisException(
                 "[redcap] Error: get all recrods forbidden without arguments."
             );
@@ -759,10 +784,10 @@ class RedcapHttpClient
             'action'                 => 'export',
             'type'                   => 'flat',
             'csvDelimiter'           => '',
-            'forms'                  => $instruments,
+            'forms'                  => $instrument_names,
             'fields'                 => [],
-            'events'                 => $events,
-            'records'                => $records,
+            'events'                 => $unique_event_names,
+            'records'                => $record_ids,
             'rawOrLabel'             => 'raw',
             'rawOrLabelHeaders'      => 'raw',
             'exportCheckboxLabel'    => true,
