@@ -295,9 +295,9 @@ class UserTest extends TestCase
         $this->_mockConfig = $mockconfig;
 
         $this->_userInfoComplete       = $this->_userInfo;
-        $this->_userInfoComplete['ID'] = '1';
-        $this->_userInfoComplete['Privilege']           = '1';
-        $this->_userInfoComplete['language_preference'] = '2';
+        $this->_userInfoComplete['ID'] = 1;
+        $this->_userInfoComplete['Privilege']           = 1;
+        $this->_userInfoComplete['language_preference'] = 2;
         $this->_userInfoComplete['Sites']      = 'psc_test;psc_test2';
         $this->_userInfoComplete['examiner']   = ['pending' => 'N',
             '1'       => ['Y',
@@ -313,6 +313,7 @@ class UserTest extends TestCase
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();
+        $this->_userInfoComplete['language_code'] = null;
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
