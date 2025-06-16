@@ -143,7 +143,6 @@ class CSVParser
         while ($row = $fileObject->fgetcsv($separator, $enclosure, $escape)) {
             if (is_callable($excludeRow)) {
                 if ($excludeRow($row)) {
-//                    error_log('callable');
                     continue;
                 }
             }
