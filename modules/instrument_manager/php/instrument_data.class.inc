@@ -64,13 +64,15 @@ class Instrument_Data extends \NDB_Page
     protected function handleGET(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
-        if (isset($params['instrument'])) {
+        if (isset($params['instrument']) && isset($params['action'])) {
             $instrument = $params['instrument'];
+            $action = $params['action'];
 
             if ($this->instrumentExists($instrument)) {
                 $headers = InstrumentDataParser::getCSVHeaders(
                     $this->loris,
-                    $instrument
+                    $instrument,
+                    $action === 'CREATE_SESSIONS'
                 );
 
                 $fileName   = "{$instrument}_headers.csv";
@@ -118,6 +120,15 @@ class Instrument_Data extends \NDB_Page
 
         $requestBody = (array) $request->getParsedBody();
 
+        if (
+            !isset($requestBody['action']) ||
+            !in_array($requestBody['action'], ['VALIDATE_SESSIONS', 'CREATE_SESSIONS'])
+        ) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'You must select an action'
+            );
+        }
+
         if (isset($requestBody['instrument'])) {
             $instrumentName = $requestBody['instrument'];
             if ($this->instrumentExists($instrumentName)) {
@@ -135,7 +146,7 @@ class Instrument_Data extends \NDB_Page
                 $this->_insertCSVFileEntry($fileInfo->getFilename());
 
                 if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
-                    // Run as background task
+                    // Run as background task TODO: ADD ACTION HERE
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->parseInstrumentData(
                         $instrumentName,
@@ -166,7 +177,8 @@ class Instrument_Data extends \NDB_Page
                         [
                             'UserID'   => $userID,
                             'Examiner' => $userID
-                        ]
+                        ],
+                        $requestBody['action'] === 'CREATE_SESSIONS'
                     );
 
                     if (count($validData['errors']) > 0) {

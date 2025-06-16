@@ -196,7 +196,6 @@ class Instrument_Manager extends \DataFrameworkMenu
     public function createInstrumentEntry($instrument, $targetDir, $createMetaFile = true) : ?bool
     {
         try {
-
             // Parse csv and iterate via this
             $inst = \NDB_BVL_Instrument::factory(
                 $this->loris,
@@ -211,7 +210,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                 [
                     'test_name' => $instrument,
                     'Full_name' => $inst->getFullName(),
-                    'Sub_group' => 1,       // TODO: Create new subgroup for redcap?
+                    'Sub_group' => 1,       // TODO: Create new subgroup for redcap battery?
                 ]
             );
             if ($createMetaFile) {

@@ -34,12 +34,15 @@ class InstrumentManagerIndex extends Component {
       isLoaded: false,
       modifyPermissions: false,
       selectedDataFile: null,
+      action: null,
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
     this.setSelectedDataFile = this.setSelectedDataFile.bind(this);
+    this.setAction = this.setAction.bind(this);
+    this.triggerValidityReport = this.triggerValidityReport.bind(this);
   }
 
   /**
@@ -74,6 +77,17 @@ class InstrumentManagerIndex extends Component {
   }
 
   /**
+   * setAction
+   *
+   * @param {string} action
+   */
+  setAction(action) {
+    this.setState({
+      action: action,
+    });
+  }
+
+  /**
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
@@ -89,6 +103,16 @@ class InstrumentManagerIndex extends Component {
       });
   }
 
+  /**
+   * Trigger reportValidity() for form elements
+   *
+   * @return {void}
+   */
+  triggerValidityReport() {
+    document.querySelector('[name="create_participants"]').reportValidity();
+    document.querySelector('[name="instrument_data_file"]').reportValidity();
+  }
+
 
   /**
    * Upload instrument data
@@ -98,6 +122,7 @@ class InstrumentManagerIndex extends Component {
   uploadInstrumentData(instrument) {  // TODO: Move (back) to InstrumentDataUploadModal
     const data = new FormData();
     data.append('instrument', instrument);
+    data.append('action', this.state.action);
     data.append('data_file', this.state.selectedDataFile);
 
     const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
@@ -198,6 +223,8 @@ class InstrumentManagerIndex extends Component {
     }
 
 
+
+
     if (column === 'Upload') {
       return (
         <td style={{verticalAlign: 'middle'}}>
@@ -210,16 +237,20 @@ class InstrumentManagerIndex extends Component {
               });
             }}
             onSubmit={(e) => {
-              if (this.state.selectedDataFile === null) {
+              if (
+                this.state.selectedDataFile === null ||
+                this.state.action === null
+              ) {
+                this.triggerValidityReport();
                 e.preventDefault();
                 return;
               }
-              console.log('submitting');
               return this.uploadInstrumentData(row.Instrument);
             }}
           >
             <InstrumentDataUploadModal
               setSelectedDataFile={this.setSelectedDataFile}
+              setAction={this.setAction}
               instrumentList={[row.Instrument]}
             />
           </TriggerableModal>

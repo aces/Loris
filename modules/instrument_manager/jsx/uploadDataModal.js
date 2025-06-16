@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
+import {RadioElement} from "../../../jsx/Form";
 
 /**
  * Instrument Upload Form component
@@ -20,9 +21,11 @@ class InstrumentDataUploadModal extends Component {
       selectedDataFile: null,
       selectedInstruments: this.isMultiInstrument ? [] : this.props.instrumentList,
       submitted: false,
+      createParticipants: null,
     };
 
     this.dataFileSelected = this.dataFileSelected.bind(this);
+    this.handleRadioChange = this.handleRadioChange.bind(this);
     this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
     this.displayResponse = this.displayResponse.bind(this);
   }
@@ -38,6 +41,20 @@ class InstrumentDataUploadModal extends Component {
       selectedDataFile: file,
     });
     this.props.setSelectedDataFile(file);
+  }
+
+
+  /**
+   * Update selectedDataFile on file selection
+   *
+   * @param {string} element - Element name
+   * @param {string} file
+   */
+  handleRadioChange(element, option) {
+    this.setState({
+      createParticipants: option,
+    });
+    this.props.setAction(option);
   }
 
 
@@ -123,7 +140,7 @@ class InstrumentDataUploadModal extends Component {
           }}>
           <div className='col-sm-11'>
             <FileElement
-              name='instrument_data_file'
+              name={'instrument_data_file'}
               label={
                 (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
                   ? `Upload csv file for ${this.state.selectedInstruments[0]}`
@@ -131,22 +148,39 @@ class InstrumentDataUploadModal extends Component {
               }
               onUserInput={this.dataFileSelected}
               value={this.state.selectedDataFile}
+              required={true}
             />
           </div>
         </div>
 
-        {
-          this.isMultiInstrument && (
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-              Select instruments
-            </div>
-          )
-        }
+        {/*{*/}
+        {/*  this.isMultiInstrument && (*/}
+        {/*    <div style={{display: 'flex', justifyContent: 'center'}}>*/}
+        {/*      Select instruments*/}
+        {/*    </div>*/}
+        {/*  )*/}
+        {/*}*/}
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <RadioElement
+            name={'create_participants'}
+            label={'Form action'}
+            options={{
+              VALIDATE_SESSIONS: 'All participants and visits exist',
+              CREATE_SESSIONS: 'Some participants or visits may not exist',
+            }}
+            checked={this.state.createParticipants}
+            onUserInput={this.handleRadioChange}
+            verticalOptions={false}
+            noWrap={true}
+            required={true}
+          />
+        </div>
 
 
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <a
-            className="btn btn-default"
+            className={`btn btn-default${this.state.createParticipants === null ? ' disabled' : ''}`}
             href={
               loris.BaseURL.concat('/instrument_manager/instrument_data/?') + (
                 (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
@@ -154,7 +188,8 @@ class InstrumentDataUploadModal extends Component {
                   : this.state.selectedInstruments.map(
                       instrumentName => `instruments=${instrumentName}`
                     ).join('&') // TODO: Reconsider. Can potentially be too long for max length
-              )
+              ) +
+              `&action=${this.state.createParticipants}`
             }
             target={'_blank'}
           >
@@ -162,6 +197,7 @@ class InstrumentDataUploadModal extends Component {
             &nbsp;Download Expected Template
           </a>
         </div>
+
 
         {/*<div style={{display: 'flex', justifyContent: 'center'}}>*/}
         {/*  <button*/}
@@ -221,6 +257,7 @@ InstrumentDataUploadModal.defaultProps = {
 InstrumentDataUploadModal.propTypes = {
   instrumentList: PropTypes.array.isRequired,
   setSelectedDataFile: PropTypes.func,
+  setAction: PropTypes.func,
 };
 
 export default InstrumentDataUploadModal;

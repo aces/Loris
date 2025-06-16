@@ -11,7 +11,9 @@ namespace LORIS;
 require_once 'NDB_Factory.class.inc';
 require_once 'CSVParser.class.inc';
 
+use _PHPStan_ce0aaf2bf\Nette\Neon\Exception;
 use DatabaseException;
+use LorisException;
 use RuntimeException;
 use NDB_Factory;
 use NotFound;
@@ -64,17 +66,23 @@ class InstrumentDataParser extends CSVParser
     /**
      * Get expected csv columns for an instrument
      *
-     * @param LorisInstance $loris          Loris instance
-     * @param string        $instrumentName Instrument name
+     * @param LorisInstance $loris                      Loris instance
+     * @param string        $instrumentName             Instrument name
+     * @param bool          $includeCreationColumns     Whether to include columns for
+     *                                                  creating participants and sessions
      *
      * @return array    Returns array of column names as strings
      * @throws NotFound
      */
     public static function getCSVHeaders(
-        LorisInstance $loris, string $instrumentName
+        LorisInstance $loris,
+        string $instrumentName,
+        bool $includeCreationColumns = false
     ): array {
         return array_merge(
-            ['PSCID', 'Visit_label'],   // SessionID
+            ($includeCreationColumns
+                ? [/*'StudyID'*/'PSCID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort']    // Required fields to create new
+                : ['PSCID', 'Visit_label']),                                         // SessionID
             self::getInstrumentHeaders(
                 $loris,
                 $instrumentName,
@@ -140,23 +148,175 @@ class InstrumentDataParser extends CSVParser
     /**
      * Validate Instrument data
      *
-     * @param array $instrumentData  Instrument data from csv row
+     * @param array $instrumentData Instrument data from csv row
      * @param array $injectedColumns Columns to inject to every row
+     * @param bool $createNonexistent Whether to create nonexistent participants/visits
      *
      * @return array    Returns array of column names as strings
+     * @throws Exception
      */
     public static function validateData(
-        array $instrumentData, array $injectedColumns
+        array $instrumentData,
+        array $injectedColumns,
+        bool $createNonexistent = false,
     ): array {
         $errors = [];
         foreach ($instrumentData as &$dataRow) {
             try {
-                // Validate Session
-                $sessionID            = self::obtainSessionID(
-                    $dataRow['PSCID'],
-                    $dataRow['Visit_label']
-                );
+                $sessionID = null;
+                try {
+                    // Validate that session exists
+                    $sessionID            = self::obtainSessionID(
+                        $dataRow['PSCID'],
+                        $dataRow['Visit_label']
+                    );
+                } catch (\LorisException $e) {
+                    if (!$createNonexistent) {
+                        throw new Exception($e->getMessage());
+                    }
+
+                    $db = NDB_Factory::singleton()->database();
+
+                    // Ensure non-candidate fields exists (TODO: convert to method)
+                    $projectID = $db->pselectOneInt(
+                        "SELECT ProjectID
+                        FROM Project
+                        WHERE Name = :rowProject
+                        OR Alias = :rowProject",
+                        ['rowProject' => $dataRow['Project']]
+                    );
+                    if (is_null($projectID)) {
+                        throw new Exception(
+                            "Project: {$dataRow['Project']} does not exist"
+                        );
+                    }
+
+                    $centerID = $db->pselectOneInt(
+                        "SELECT CenterID
+                        FROM psc
+                        WHERE Name = :rowSite
+                        OR Alias = :rowSite",
+                        ['rowSite' => $dataRow['Site']]
+                    );
+                    if (is_null($centerID)) {
+                        throw new Exception(
+                            "Site: {$dataRow['Site']} does not exist"
+                        );
+                    }
+
+                    $cohortID = $db->pselectOneInt(
+                        "SELECT CohortID
+                        FROM cohort
+                        WHERE title = :rowCohort",
+                        ['rowCohort' => $dataRow['Cohort']]
+                    );
+                    if (is_null($cohortID)) {
+                        throw new Exception(
+                            "Cohort: {$dataRow['Cohort']} does not exist"
+                        );
+                    }
+
+
+                    // Ensure Cohort belongs to Project
+                    $projectCohortRelID = $db->pselectOneInt(
+                        "SELECT ProjectCohortRelID
+                        FROM project_cohort_rel
+                        WHERE ProjectID = :projectID
+                        AND CohortID = :cohortID",
+                        [
+                            'projectID' => $projectID,
+                            'cohortID' => $cohortID,
+                        ]
+                    );
+                    if (is_null($projectCohortRelID)) {
+                        throw new Exception(
+                            "Cohort: {$dataRow['Cohort']} is not part of Project: {$dataRow['Project']}"
+                        );
+                    }
+
+                    // Check if Visit_label exists
+                    $visitID = $db->pselectOneInt(
+                        "SELECT VisitID
+                        FROM visit
+                        WHERE VisitLabel = :rowVisitLabel",
+                        ['rowVisitLabel' => $dataRow['Visit_label']]
+                    );
+                    $visitProjectCohortRelID = null;
+                    if (is_null($visitID)) {
+                        throw new Exception(
+                            "Visit_label: {$dataRow['Visit_label']} does not exist"
+                        );
+                        // OR CREATE -- TODO: SETTLE
+                        // IF CREATE -- CREATE `visit_project_cohort_rel` and reassign $visitID and $visitProjectCohortRelID
+                    }
+
+//                    if (is_null($visitProjectCohortRelID)) {
+//                          BELOW
+//                    }
+
+                    // Ensure visit belongs to project/cohort
+                    $visitProjectCohortRelID = $db->pselectOneInt(
+                        "SELECT VisitProjectCohortRelID
+                        FROM visit_project_cohort_rel
+                        WHERE VisitID = :visitID
+                        AND ProjectCohortRelID = :projectCohortRelID",
+                        [
+                            'visitID' =>            $visitID,
+                            'projectCohortRelID' => $projectCohortRelID
+                        ]
+                    );
+                    if (is_null($visitProjectCohortRelID)) {
+                        throw new Exception(
+                            "Visit_label: {$dataRow['Visit_label']} does not belong to Project|Cohort: {$dataRow['Project']}|{$dataRow['Cohort']}"
+                        );
+                        // OR CREATE -- TODO: SETTLE
+                    }
+
+                    // Check if candidate exists
+                    $candID = $db->pselectOneInt(
+                        "SELECT CandID
+                        FROM candidate
+                        WHERE PSCID = :rowPSCID",
+                        ['rowPSCID' => $dataRow['PSCID']]
+                    );
+
+                    if (is_null($candID)) {
+                        // Create candidate
+                        $candID = \Candidate::createNew(
+                            \CenterID::singleton($centerID),
+                            $dataRow['DOB'],
+                            $dataRow['DOB'],   // estimated date of confinement?
+                            new \LORIS\StudyEntities\Candidate\Sex($dataRow['Sex'] ?? 'Other'),
+                            $dataRow['PSCID'],
+                            \ProjectID::singleton($projectID)
+                        );
+                    }
+
+                    $candidate = \Candidate::singleton($candID);
+
+                    // Create timepoint
+                    \TimePoint::createNew(
+                        $candidate,
+                        $cohortID,
+                        $dataRow['Visit_label'],
+                        \Site::singleton(\CenterID::singleton($centerID)),
+                        \Project::getProjectFromID(\ProjectID::singleton($projectID)),
+                    );
+
+                    // Validate that session exists
+                    $sessionID = self::obtainSessionID(
+                        $dataRow['PSCID'],
+                        $dataRow['Visit_label']
+                    );
+                }
+
                 $dataRow['SessionID'] = $sessionID;
+
+                // TODO: Delete some columns?
+                unset($dataRow['DOB']);
+                unset($dataRow['Project']);
+                unset($dataRow['Site']);
+                unset($dataRow['Cohort']);
 
                 // Inject columns
                 $dataRow = array_merge($dataRow, $injectedColumns);
@@ -175,11 +335,11 @@ class InstrumentDataParser extends CSVParser
     /**
      * Get the session ID from PSCID and Visit_label
      *
-     * @param string $pscID      candidate PSCID
+     * @param string $pscID candidate PSCID
      * @param string $visitLabel session Visit_label
      *
      * @return int                  Returns SessionID
-     * @throws RuntimeException
+     * @throws LorisException
      */
     public static function obtainSessionID(string $pscID, string $visitLabel): int
     {
@@ -200,7 +360,7 @@ class InstrumentDataParser extends CSVParser
         );
 
         if (is_null($sessionID)) {
-            throw new RuntimeException(
+            throw new \LorisException(
                 "Session not found for PSCID: $pscID" .
                 " and Visit_label: $visitLabel"
             );
@@ -225,10 +385,6 @@ class InstrumentDataParser extends CSVParser
             $loris,
             $instrumentName
         );
-        // TODO: Handle unexisting ????s
-
-        error_log('instrdata');
-        error_log(json_encode($instrumentData));
 
         $errors = [];
         try {
@@ -236,15 +392,10 @@ class InstrumentDataParser extends CSVParser
             try {
                 foreach ($instrumentData as $data) {
                     try {
-                        error_log('data');
-                        error_log(json_encode($data));
-                        error_log(json_encode($instrumentHeaders));
-
                         // Prepare row data
                         $rowData = array_reduce(
                             $instrumentHeaders,
                             function ($columns, $columnName) use ($data) {
-                                error_log("colname: $columnName");
                                 $columns[$columnName]
                                     = strlen($data[$columnName]) > 0
                                     ? $data[$columnName]
