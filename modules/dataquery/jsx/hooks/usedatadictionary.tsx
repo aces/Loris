@@ -84,9 +84,9 @@ function useDataDictionary(): DataDictionaryReturnType {
           }
           return resp.json();
         }).then((result) => {
-          setDictionary(prev => ({
+          setDictionary((prev) => ({
             ...prev,
-            [module]: result
+            [module]: result,
           }));
           resolve(result);
         }).catch( (error) => {
