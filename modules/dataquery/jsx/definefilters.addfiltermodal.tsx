@@ -250,28 +250,63 @@ function AddFilterModal(props: {
       resolve(null);
     }
     );
-  return <Modal title="Add criteria"
-    show={true}
-    throwWarning={true}
-    onClose={props.closeModal}
-    onSubmit={submitPromise}>
-    <div style={{width: '100%', padding: '1em'}}>
-      <h3>Field</h3>
-      <div style={{display: 'flex', width: '100%'}}>
-        <div style={{width: '40%'}}>
-          <FilterableSelectGroup groups={props.categories.categories}
-            mapGroupName={(key) => props.categories.modules[key]}
-            onChange={props.onCategoryChange} />
+  return (
+    <Modal title="Add criteria"
+      show={true}
+      throwWarning={true}
+      onClose={props.closeModal}
+      onSubmit={submitPromise}>
+      <div style={{width: '100%', padding: '1em'}}>
+        <h3>Field</h3>
+        <div style={{display: 'flex', width: '100%'}}>
+          <div style={{width: '40%'}}>
+            <FilterableSelectGroup
+              groups={props.categories.categories}
+              mapGroupName={(key) => props.categories.modules[key]}
+              onChange={(module: string, category: string) => {
+                setFieldname(null);
+                setFieldDictionary(null);
+                setOp(null);
+                setValue('');
+                setSelectedVisits(null);
+                props.onCategoryChange(module, category);
+              }}
+            />
+          </div>
+          <div style={{width: '100%'}}>
+            {props.displayedFields && (() => {
+              const options: { Fields: {[key: string]: string}} = {'Fields': {}};
+              for (const [key, value] of Object.entries(props.displayedFields)) {
+                options['Fields'][key] = value.description;
+              }
+              return (
+                <FilterableSelectGroup
+                  key={props.category} // force reset when category changes
+                  groups={options}
+                  onChange={(key, fieldname) => {
+                    const dict = props.displayedFields[fieldname];
+                    setFieldDictionary(dict);
+                    setFieldname(fieldname);
+                    setOp(null);
+                    setValue('');
+                    if (dict.visits) {
+                      setSelectedVisits(dict.visits);
+                    } else {
+                      setSelectedVisits(null);
+                    }
+                  }}
+                  placeholder="Select a field"
+                />
+              );
+            })()}
+          </div>
         </div>
-        <div style={{width: '100%'}}>
-          {fieldSelect}
-        </div>
+        {cardinalityWarning}
+        {criteriaSelect}
+        {visitSelect}
       </div>
-      {cardinalityWarning}
-      {criteriaSelect}
-      {visitSelect}
-    </div>
-  </Modal>;
+    </Modal>
+  );
 }
 
 
