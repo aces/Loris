@@ -2319,7 +2319,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $query = "SELECT CandID,
 		    	SessionID,
                         CommentID,
-                        session.Visit_Label as VisitLabel,
+                        session.Visit_label as VisitLabel,
 			flag.Administration,
 			flag.Data_entry as DataEntry,
 			flag.Validity,
@@ -2395,7 +2395,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $query = "SELECT
                 c.CandID as CandID,
                 t.CommentID as CommentID,
-                s.Visit_Label as VisitLabel,
+                s.Visit_label as VisitLabel,
                 f.Administration,
                 f.Data_entry,
                 f.Validity,
