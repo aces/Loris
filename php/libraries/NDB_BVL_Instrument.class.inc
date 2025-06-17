@@ -2535,7 +2535,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID()->__toString(),
+                'CandidateID'   => $this->getCandidateID(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
@@ -2642,6 +2642,28 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
         return $pscid;
     }
+
+    /**
+     * Get the candidateID.
+     *
+     * @return string|null The candidate's ID.
+     */
+    function getCandidateID(): ?string
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $id = $db->pselectOne(
+            "SELECT c.ID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        return $id;
+    }
+
+
 
     protected ?CandID $candID = null;
     /**
