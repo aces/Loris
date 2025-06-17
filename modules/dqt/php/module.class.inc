@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Reports";
+        return dgettext("loris", "Reports");
     }
 
     /**
@@ -56,6 +56,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool";
+        return dgettext("dqt", "Data Query Tool");
     }
 }

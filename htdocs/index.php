@@ -30,6 +30,10 @@ session_cache_limiter("");
 // See: https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
 ini_set('session.use_strict_mode', '1');
 
+bind_textdomain_codeset("loris", 'UTF-8');
+bindtextdomain("loris", __DIR__ . '/../locale');
+textdomain("loris");
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();
@@ -38,7 +42,8 @@ Profiler::checkpoint("Profiler started");
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
-$middlewarechain = (new \LORIS\Middleware\ContentLength())
+$middlewarechain = (new \LORIS\Middleware\Language())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
@@ -82,7 +87,6 @@ $serverrequest = $serverrequest->withAttribute("user", $user)
     ->withAttribute("loris", $lorisInstance);
 
 // Now handle the request.
-//
 $response = $middlewarechain->process($serverrequest, $entrypoint);
 
 // Add the HTTP header line.

@@ -61,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Timepoint List";
+        return dgettext("timepoint_list", "Timepoint List");
     }
 
     /**

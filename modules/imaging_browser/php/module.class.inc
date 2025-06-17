@@ -37,7 +37,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Imaging";
+        return dgettext("loris", "Imaging");
     }
 
     /**
@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Browser";
+        return dgettext("imaging_browser", "Imaging Browser");
     }
 
     /**

@@ -131,7 +131,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API";
+        return dgettext("api", "API");
     }
 
     /**

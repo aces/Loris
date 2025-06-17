@@ -370,15 +370,16 @@ class Instrument_List extends \NDB_Menu_Filter
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                dgettext("loris", "TimePoint") . " $visitlabel",
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             )
         );

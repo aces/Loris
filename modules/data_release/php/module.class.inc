@@ -53,7 +53,7 @@ class Module extends \Module
      */
     public function getMenuCategory() : string
     {
-        return "Tools";
+        return dgettext("loris", "Tools");
     }
 
     /**
@@ -63,6 +63,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Release";
+        return dgettext("data_release", "Data Release");
     }
 }

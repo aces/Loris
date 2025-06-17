@@ -56,8 +56,8 @@ class Acknowledgements extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $yesNoOptions = [
-            'Yes' => 'Yes',
-            'No'  => 'No',
+            'Yes' => dgettext("loris", 'Yes'),
+            'No'  => dgettext("loris", 'No'),
         ];
 
         return [

@@ -129,7 +129,7 @@ class Candidate_Profile extends \NDB_Page
         if ($this->candidate === null) {
             return new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb(
-                    'Access Profile',
+                    dgettext("candidate_list", 'Access Profile'),
                     '/candidate_list/?betaprofile=1'
                 ),
             );
@@ -139,11 +139,12 @@ class Candidate_Profile extends \NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list/?betaprofile=1'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Dashboard $candid / $pscid",
+                dgettext("candidate_profile", 'Candidate Dashboard')
+                . " $candid / $pscid",
                 "/candidate_profile/$candid"
             )
         );
