@@ -247,6 +247,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             // React is escaping the string in the template
             // This fixes an issue with multiple escaping (#6643)
         }
+        $issueData['comment'] = null;
 
         $statuses = [
             'new'          => 'New',
