@@ -1288,7 +1288,7 @@ class UserTest extends TestCase
     {
         // delete tables
         $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS perm_perm_action_rel");
-        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permission_action");
+        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permissions_action");
         $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permissions");
         $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS user_perm_rel");
 
@@ -1302,7 +1302,7 @@ class UserTest extends TestCase
             $this->_userPermInfo
         );
         $this->_dbMock->setFakeTableData(
-            "permission_action",
+            "permissions_action",
             $this->_permActionInfo
         );
         $this->_dbMock->setFakeTableData(
