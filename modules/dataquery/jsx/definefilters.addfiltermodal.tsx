@@ -108,13 +108,19 @@ function AddFilterModal(props: {
     for (const [key, value] of Object.entries(props.displayedFields)) {
       options['Fields'][key] = value.description;
     }
-    fieldSelect = <FilterableSelectGroup groups={options}
+    fieldSelect = <FilterableSelectGroup
+      key={props.category}
+      groups={options}
       onChange={(key, fieldname) => {
         const dict = props.displayedFields[fieldname];
         setFieldDictionary(dict);
         setFieldname(fieldname);
+        setOp(null);
+        setValue('');
         if (dict.visits) {
           setSelectedVisits(dict.visits);
+        } else {
+          setSelectedVisits(null);
         }
       }}
       placeholder="Select a field" />;
@@ -274,31 +280,7 @@ function AddFilterModal(props: {
             />
           </div>
           <div style={{width: '100%'}}>
-            {props.displayedFields && (() => {
-              const options: { Fields: {[key: string]: string}} = {'Fields': {}};
-              for (const [key, value] of Object.entries(props.displayedFields)) {
-                options['Fields'][key] = value.description;
-              }
-              return (
-                <FilterableSelectGroup
-                  key={props.category} // force reset when category changes
-                  groups={options}
-                  onChange={(key, fieldname) => {
-                    const dict = props.displayedFields[fieldname];
-                    setFieldDictionary(dict);
-                    setFieldname(fieldname);
-                    setOp(null);
-                    setValue('');
-                    if (dict.visits) {
-                      setSelectedVisits(dict.visits);
-                    } else {
-                      setSelectedVisits(null);
-                    }
-                  }}
-                  placeholder="Select a field"
-                />
-              );
-            })()}
+            {fieldSelect}
           </div>
         </div>
         {cardinalityWarning}
