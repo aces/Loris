@@ -900,9 +900,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect(
-          'Examiner',
-          'Examiner',
-          array_merge(['' => ''], $examiners)
+            'Examiner',
+            'Examiner',
+            array_merge(['' => ''], $examiners)
         );
 
         $this->addRule(
