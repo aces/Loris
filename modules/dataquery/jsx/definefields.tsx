@@ -216,20 +216,20 @@ function DefineFields(props: {
       if (Array.isArray(dict.visits)) {
         const newvisits = dict.visits.filter((visit) =>
           props.defaultVisits.includes(visit)
-      );
+        );
 
-      if (JSON.stringify(field.visits) !== JSON.stringify(newvisits)) {
-        field.visits = newvisits;
-        modifiedvisits = true;
+        if (JSON.stringify(field.visits) !== JSON.stringify(newvisits)) {
+          field.visits = newvisits;
+          modifiedvisits = true;
+        }
       }
-    }
-  });
+    });
 
-  if (modifiedvisits) {
-    props.setSelected([...props.selected]);
-  }
-}, [props.selected, props.fulldictionary, props.defaultVisits, syncVisits]);
-const displayed: string[] = Object.keys(
+    if (modifiedvisits) {
+      props.setSelected([...props.selected]);
+    }
+  }, [props.selected, props.fulldictionary, props.defaultVisits, syncVisits]);
+  const displayed: string[] = Object.keys(
     props.displayedFields || {}
   ).filter((value) => {
     if (activeFilter === '') {
