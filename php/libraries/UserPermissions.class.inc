@@ -290,7 +290,7 @@ class UserPermissions
         // create DB object
         $DB = $loris->getDatabaseConnection();
 
-        $select = "SELECT
+        $select     = "SELECT
                 p.permID,
                 p.code,
                 p.description,
@@ -303,9 +303,9 @@ class UserPermissions
                 LEFT JOIN permissions_category pc ON (pc.ID = p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID = m.ID)
         ";
-        $where   = " WHERE m.Active='Y'";
-        $groupBy = " GROUP BY p.permID, p.code, pc.Description, p.moduleID";
-        $orderBy = " ORDER BY p.categoryID, m.Name, p.description";
+        $where      = " WHERE m.Active='Y'";
+        $groupBy    = " GROUP BY p.permID, p.code, pc.Description, p.moduleID";
+        $orderBy    = " ORDER BY p.categoryID, m.Name, p.description";
         $conditions = [];
 
         // additional elements
@@ -314,8 +314,8 @@ class UserPermissions
 
         // If not superuser, get the permissions that the user has
         if (!$this->hasPermission('superuser')) {
-            $additionalJoin  = " JOIN user_perm_rel up ON (p.permID = up.PermID)";
-            $additionalWhere = " AND up.userID = :UID";
+            $additionalJoin    = " JOIN user_perm_rel up ON (p.permID = up.PermID)";
+            $additionalWhere   = " AND up.userID = :UID";
             $conditions["UID"] = $this->userID;
         }
 
