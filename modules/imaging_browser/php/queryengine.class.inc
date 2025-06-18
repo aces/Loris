@@ -466,6 +466,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                   WHERE files2.FileID=files.FileID
                       AND mst.MriScanTypeName='%s'
                 )",
+                $item->getParameterTypeName(),
                 $modality
             );
         }
