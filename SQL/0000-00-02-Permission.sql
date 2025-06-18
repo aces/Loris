@@ -91,7 +91,7 @@ CREATE TABLE `perm_perm_action_rel` (
 
 
 INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
-    ('superuser','Superuser - supersedes all permissions',NULL,NULL,1),
+    ('superuser','Superuser - supersedes all permissions',NULL,1),
     ('user_accounts','User Accounts - Own Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),2),
     ('user_accounts_multisite','User Accounts - All Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),2),
     ('context_help','Help documentation',(SELECT ID FROM modules WHERE Name='help_editor'),2),
