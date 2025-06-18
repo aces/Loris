@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This tool migrate the actions in permission to the relational table
  * perm_perm_action_rel.
@@ -25,14 +26,14 @@ $permissions_action = $DB->pselectColWithIndexKey(
     [],
     "ID"
 );
-$action_map = array_flip($permissions_action);
+$action_map         = array_flip($permissions_action);
 
 // iterate over all current actions
 foreach ($current_permissions as $key => $permission) {
     $permID = $permission['permID'];
     $action = $permission['action'];
 
-    $actions = explode('/', $action);
+    $actions     = explode('/', $action);
     $action_keys = array_map(
         fn($action) => $action_map[$action] ?? null,
         $actions
