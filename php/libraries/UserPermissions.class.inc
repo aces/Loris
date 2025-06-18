@@ -295,7 +295,7 @@ class UserPermissions
                 p.code,
                 p.description,
                 pc.Description as type,
-                GROUP_CONCAT(pa.name) as actions,
+                GROUP_CONCAT(pa.name SEPARATOR '/') as actions,
                 p.moduleID
             FROM permissions p
                 LEFT JOIN perm_perm_action_rel ppar ON (p.permID = ppar.permID)
