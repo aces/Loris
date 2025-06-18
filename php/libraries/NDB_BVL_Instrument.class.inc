@@ -988,11 +988,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
-        if (empty($this->getCommentID())) {
-            return [];
-        }
-
         $db = $this->loris->getDatabaseConnection();
+
+        if (empty($this->getCommentID())) {
+          $results =  $db->pselectWithIndexKey(
+            "SELECT DISTINCT e.examinerID, e.full_name, u.Email
+               FROM examiners e
+               JOIN users u ON u.ID=e.userID
+               WHERE u.Active = 'Y'
+               ORDER BY full_name",
+            [],
+            'examinerID'
+          );
+          return $this->_buildExaminers($results);
+        }
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -1068,30 +1077,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [
-            '' => ''
-        ];
-        if (is_array($results) && !empty($results)) {
-            foreach ($results AS $eid => $row) {
-                $name = $row['full_name'];
-                if (in_array($name, $examiners)) {
-                    // If name already in examiners, set first case of name
-                    // with email (if exists)
-                    $duplicateID    = array_search($name, $examiners);
-                    $duplicateEmail = $results[$duplicateID]['Email'];
-                    $emailString    = empty($duplicateEmail) ? "" :
-                        " ({$duplicateEmail})";
-                    $examiners[$duplicateID] = $name . $emailString;
-                    // Set new case of name with email as well
-                    $emailString     = empty($row['Email']) ? "" :
-                        " ({$row['Email']})";
-                    $examiners[$eid] = $name . $emailString;
-                } else {
-                    $examiners[$eid] = $name;
-                }
-            }
-        }
-        return $examiners;
+      return $this->_buildExaminers($results);
     }
 
 
@@ -3505,4 +3491,34 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         return $this->selectMultipleElements;
     }
+
+  /**
+   * @param array $results
+   * @return string[]
+   */
+  public function _buildExaminers(array $results): array
+  {
+    $examiners = [];
+    if (is_array($results) && !empty($results)) {
+      foreach ($results as $eid => $row) {
+        $name = $row['full_name'];
+        if (in_array($name, $examiners)) {
+          // If name already in examiners, set first case of name
+          // with email (if exists)
+          $duplicateID = array_search($name, $examiners);
+          $duplicateEmail = $results[$duplicateID]['Email'];
+          $emailString = empty($duplicateEmail) ? "" :
+            " ({$duplicateEmail})";
+          $examiners[$duplicateID] = $name . $emailString;
+          // Set new case of name with email as well
+          $emailString = empty($row['Email']) ? "" :
+            " ({$row['Email']})";
+          $examiners[$eid] = $name . $emailString;
+        } else {
+          $examiners[$eid] = $name;
+        }
+      }
+    }
+    return $examiners;
+  }
 }
