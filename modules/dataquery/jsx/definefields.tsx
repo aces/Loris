@@ -202,41 +202,33 @@ function DefineFields(props: {
   const [syncVisits, setSyncVisits] = useState<boolean>(false);
   const [zoomTo, setZoomTo] = useState<string|null>(null);
   useEffect(() => {
-  if (!syncVisits) {
-    return;
-  }
+    if (!syncVisits) return;
+    if (!Array.isArray(props.selected) || props.selected.length === 0) return;
 
-  let modifiedvisits = false;
+    let modifiedvisits = false;
 
-  props.selected.forEach((field: APIQueryField) => {
-    const moduleDict = props.fulldictionary?.[field.module];
-    if (!moduleDict) {
-      return;
-    }
+    props.selected.forEach((field: APIQueryField) => {
+      const category = props.fulldictionary?.[field.module]?.[field.category];
+      const dict = category?.[field.field];
 
-    const categoryDict = moduleDict?.[field.category];
-    if (!categoryDict) {
-      return;
-    }
+      if (!dict || dict.scope === 'candidate') return;
 
-    const dict = categoryDict?.[field.field];
-    if (!dict) {
-      return;
-    }
+      if (Array.isArray(dict.visits)) {
+        const newvisits = dict.visits.filter((visit) =>
+          props.defaultVisits.includes(visit)
+      );
 
-    if (dict.scope === 'candidate') {
-      return;
-    }
-
-    if (Array.isArray(dict.visits)) {
-      const newvisits = dict.visits.filter((visit) => {
-        return props.defaultVisits.includes(visit);
-      });
-      field.visits = newvisits;
-      modifiedvisits = true;
+      if (JSON.stringify(field.visits) !== JSON.stringify(newvisits)) {
+        field.visits = newvisits;
+        modifiedvisits = true;
+      }
     }
   });
-}, [syncVisits, props.selected, props.fulldictionary, props.defaultVisits]);
+
+  if (modifiedvisits) {
+    props.setSelected([...props.selected]);
+  }
+}, [props.selected, props.fulldictionary, props.defaultVisits, syncVisits]);
 const displayed: string[] = Object.keys(
     props.displayedFields || {}
   ).filter((value) => {
