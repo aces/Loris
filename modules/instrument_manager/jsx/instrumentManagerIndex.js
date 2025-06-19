@@ -448,7 +448,7 @@ class InstrumentManagerIndex extends Component {
             name="instrument_manager"
             data={this.state.data.Data}
             fields={fields}
-            actions={actions}
+            actions={[]}
             getFormattedCell={this.formatColumn}
           />
         </TabPane>

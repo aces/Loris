@@ -25,42 +25,51 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
      *
      * @var string
      */
-    public $_instrument;
+    public string $_instrument;
 
     /**
      * Location of the uploaded file.
      *
      * @var string
      */
-    public $_fileLocation;
+    public string $_fileLocation;
+
+    /**
+     * Whether to create participants/visits
+     *
+     * @var bool
+     */
+    public bool $_createNonexistent;
 
 
     /**
      * Builds a new ParseInstrumentDataServerProcess
      *
-     * @param string  $instrument   Instrument name
-     * @param string  $fileLocation Location of the uploaded file
-     * @param ?int    $id           ID of the process in the database.
-     * @param ?int    $pid          PID for this process
-     * @param ?string $stdoutFile   full path of file used to store the process's
-     *                              stdout
-     * @param ?string $stderrFile   full path of file used to store the process's
-     *                              stderr
-     * @param ?string $exitCodeFile full path of file used to store the process's
-     *                              exit code
-     * @param ?int    $exitCode     process's exit code
-     * @param ?string $userid       ID of the user who launched the process
-     * @param ?string $startTime    time at which the process was started
-     * @param ?string $endTime      time at which the process ended
-     * @param ?string $exitText     result of the process in text form
+     * @param string  $instrument        Instrument name
+     * @param string  $fileLocation      Location of the uploaded file
+     * @param bool    $createNonexistent Whether to create participants/visits
+     * @param ?int    $id                ID of the process in the database.
+     * @param ?int    $pid               PID for this process
+     * @param ?string $stdoutFile        Full path of file used to store the
+     *                                   process' stdout
+     * @param ?string $stderrFile        Full path of file used to store the
+     *                                   process' stderr
+     * @param ?string $exitCodeFile      Full path of file used to store the
+     *                                   process' exit code
+     * @param ?int    $exitCode          Process' exit code
+     * @param ?string $userid            ID of the user who launched the process
+     * @param ?string $startTime         Time at which the process was started
+     * @param ?string $endTime           Time at which the process ended
+     * @param ?string $exitText          Result of the process in text form
      */
-    public function __construct($instrument, $fileLocation,
+    public function __construct($instrument, $fileLocation, $createNonexistent,
         $id = null, $pid = null, $stdoutFile = null, $stderrFile = null,
         $exitCodeFile = null, $exitCode = null, $userid = null,
         $startTime = null, $endTime = null, $exitText = null
     ) {
-        $this->_instrument   = $instrument;
-        $this->_fileLocation = $fileLocation;
+        $this->_instrument        = $instrument;
+        $this->_fileLocation      = $fileLocation;
+        $this->_createNonexistent = $createNonexistent;
 
         parent::__construct(
             $id,
@@ -87,7 +96,9 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
         $parseScript  = "php " .
             dirname(__DIR__, 3) .
             "/tools/parse_instrument_data.php ";
-        $parseScript .= "$this->_instrument $this->_fileLocation ";
+        $parseScript .= "$this->_instrument ";
+        $parseScript .= "$this->_fileLocation ";
+        $parseScript .= "$this->_createNonexistent ";
         $parseScript .= "{$this->getUserId()} {$this->getUserId()}";
         return $parseScript;
     }
