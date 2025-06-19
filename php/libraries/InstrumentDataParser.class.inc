@@ -92,8 +92,7 @@ class InstrumentDataParser extends CSVParser
     ): array {
         return array_merge(
             ($includeCreationColumns
-                ? array_merge(
-                    ['StudyID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort'],  // Required fields to create new
+                ? array_merge(['StudyID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort'],  // Required fields to create new
                     $useEDC ? ['EDC'] : []
                 )
                 : ['PSCID', 'Visit_label']),    // SessionID
@@ -175,6 +174,7 @@ class InstrumentDataParser extends CSVParser
         bool $createNonexistent = false,
     ): array {
         $errors = [];
+        // TODO: Rollback on failure? Creations are occurring
         foreach ($instrumentData as &$dataRow) {
             try {
                 $sessionID = null;
@@ -278,19 +278,17 @@ class InstrumentDataParser extends CSVParser
                         );
                     }
 
-                    // Check if candidate exists
-                    // TODO: Implement StudyID -> PSCID mapping for non-CBIG
+                    // Check if candidate exists - NOTE: CBIG ONLY
+                    // TODO: StudyID -> PSCID mapping needed for non-CBIG
                     $candID = $db->pselectOneInt(
                         "SELECT CandID
-                        FROM candidate
-                        WHERE PSCID = :rowPSCID",
-                        ['rowPSCID' => $dataRow['PSCID']]
+                        FROM candidate_project_extid_rel
+                        WHERE ExtStudyID = :rowStudyID",
+                        ['rowStudyID' => $dataRow['StudyID']]
                     );
 
                     if (is_null($candID)) {
-                        // Create candidate
-                        // NOTE: This only makes sense if PSCID generation is "user"
-                        //       In this case,
+                        // Create candidate - NOTE: CBIG ONLY
                         $edc = \NDB_Config::singleton()
                             ->getSetting('useEDC') === 'true'
                             ? $dataRow['EDC'] : null;
@@ -299,9 +297,21 @@ class InstrumentDataParser extends CSVParser
                             \CenterID::singleton($centerID),
                             $dataRow['DOB'],
                             $edc,
-                            new \LORIS\StudyEntities\Candidate\Sex($dataRow['Sex'] ?? 'Other'),
-                            $dataRow['PSCID'],
+                            new \LORIS\StudyEntities\Candidate\Sex(
+                                $dataRow['Sex'] ?? 'Other'
+                            ),
+                            $dataRow['StudyID'], // Matters if generation: "user"
                             \ProjectID::singleton($projectID)
+                        );
+
+                        // Create externalID rel
+                        $db->insert(
+                            'candidate_project_extid_rel',
+                            [
+                                'CandID' => $candID,
+                                'ProjectExternalID' => $projectID,
+                                'ExtStudyID' => $dataRow['StudyID']
+                            ]
                         );
                     }
 
@@ -499,6 +509,7 @@ class InstrumentDataParser extends CSVParser
                 } else {
                     $db->commit();
                     error_log("Saved " . count($instrumentData) . " row(s)");
+
                     return [
                         'success' => true,
                         'message' => "Saved " . count($instrumentData) . " row(s)",

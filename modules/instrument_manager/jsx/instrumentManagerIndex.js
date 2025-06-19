@@ -141,10 +141,20 @@ class InstrumentManagerIndex extends Component {
           return response.json();
         }).then((data) => {
           if (data.success) {
+            let message = data.message;
+
+            if (Object.keys(data).includes('idMapping')) {
+              message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+              message += data.message;
+              message += '<br/><br/>';
+              message += JSON.stringify(data.idMapping);
+              message += '</div>';
+            }
+
             swal.fire({
               title: 'Upload Successful!',
               type: 'success',
-              text: data.message,
+              html: message,
             });
           } else {
             let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
