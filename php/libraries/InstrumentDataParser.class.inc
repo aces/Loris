@@ -51,10 +51,20 @@ class InstrumentDataParser extends CSVParser
      * @return array    Returns array of column names as strings
      * @throws RuntimeException
      */
-    public function parseCSV(LorisInstance $loris): array
+    public function parseCSV(
+        LorisInstance $loris,
+        bool $includeCreationColumns = false
+    ): array
     {
         try {
-            $expectedHeaders = self::getCSVHeaders($loris, $this->instrumentName);
+            $config = \NDB_Config::singleton();
+
+            $expectedHeaders = self::getCSVHeaders(
+                $loris,
+                $this->instrumentName,
+                $includeCreationColumns,
+                $config->getSetting('useEDC') === 'true'
+            );
             return $this->parse($expectedHeaders);
         } catch (\Exception $e) {
             throw new RuntimeException(
@@ -77,12 +87,16 @@ class InstrumentDataParser extends CSVParser
     public static function getCSVHeaders(
         LorisInstance $loris,
         string $instrumentName,
-        bool $includeCreationColumns = false
+        bool $includeCreationColumns = false,
+        bool $useEDC = false
     ): array {
         return array_merge(
             ($includeCreationColumns
-                ? [/*'StudyID'*/'PSCID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort']    // Required fields to create new
-                : ['PSCID', 'Visit_label']),                                         // SessionID
+                ? array_merge(
+                    ['StudyID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort'],  // Required fields to create new
+                    $useEDC ? ['EDC'] : []
+                )
+                : ['PSCID', 'Visit_label']),    // SessionID
             self::getInstrumentHeaders(
                 $loris,
                 $instrumentName,
@@ -177,7 +191,7 @@ class InstrumentDataParser extends CSVParser
 
                     $db = NDB_Factory::singleton()->database();
 
-                    // Ensure non-candidate fields exists (TODO: convert to method)
+                    // Ensure non-candidate fields exists (TODO: convert to method?)
                     $projectID = $db->pselectOneInt(
                         "SELECT ProjectID
                         FROM Project
@@ -241,18 +255,11 @@ class InstrumentDataParser extends CSVParser
                         WHERE VisitLabel = :rowVisitLabel",
                         ['rowVisitLabel' => $dataRow['Visit_label']]
                     );
-                    $visitProjectCohortRelID = null;
                     if (is_null($visitID)) {
                         throw new Exception(
                             "Visit_label: {$dataRow['Visit_label']} does not exist"
                         );
-                        // OR CREATE -- TODO: SETTLE
-                        // IF CREATE -- CREATE `visit_project_cohort_rel` and reassign $visitID and $visitProjectCohortRelID
                     }
-
-//                    if (is_null($visitProjectCohortRelID)) {
-//                          BELOW
-//                    }
 
                     // Ensure visit belongs to project/cohort
                     $visitProjectCohortRelID = $db->pselectOneInt(
@@ -269,10 +276,10 @@ class InstrumentDataParser extends CSVParser
                         throw new Exception(
                             "Visit_label: {$dataRow['Visit_label']} does not belong to Project|Cohort: {$dataRow['Project']}|{$dataRow['Cohort']}"
                         );
-                        // OR CREATE -- TODO: SETTLE
                     }
 
                     // Check if candidate exists
+                    // TODO: Implement StudyID -> PSCID mapping for non-CBIG
                     $candID = $db->pselectOneInt(
                         "SELECT CandID
                         FROM candidate
@@ -282,10 +289,16 @@ class InstrumentDataParser extends CSVParser
 
                     if (is_null($candID)) {
                         // Create candidate
+                        // NOTE: This only makes sense if PSCID generation is "user"
+                        //       In this case,
+                        $edc = \NDB_Config::singleton()
+                            ->getSetting('useEDC') === 'true'
+                            ? $dataRow['EDC'] : null;
+
                         $candID = \Candidate::createNew(
                             \CenterID::singleton($centerID),
                             $dataRow['DOB'],
-                            $dataRow['DOB'],   // estimated date of confinement?
+                            $edc,
                             new \LORIS\StudyEntities\Candidate\Sex($dataRow['Sex'] ?? 'Other'),
                             $dataRow['PSCID'],
                             \ProjectID::singleton($projectID)
@@ -294,8 +307,8 @@ class InstrumentDataParser extends CSVParser
 
                     $candidate = \Candidate::singleton($candID);
 
-                    // Create timepoint
-                    \TimePoint::createNew(
+                    // Create Session
+                    $session = \TimePoint::createNew(
                         $candidate,
                         $cohortID,
                         $dataRow['Visit_label'],
@@ -303,20 +316,20 @@ class InstrumentDataParser extends CSVParser
                         \Project::getProjectFromID(\ProjectID::singleton($projectID)),
                     );
 
-                    // Validate that session exists
-                    $sessionID = self::obtainSessionID(
-                        $dataRow['PSCID'],
-                        $dataRow['Visit_label']
-                    );
+                    $sessionID = $session->getSessionID();
                 }
 
                 $dataRow['SessionID'] = $sessionID;
 
-                // TODO: Delete some columns?
+                // Delete extra (non-instrument) columns
+                unset($dataRow['StudyID']);
                 unset($dataRow['DOB']);
+                unset($dataRow['Age']);
+                unset($dataRow['EDC']);
                 unset($dataRow['Project']);
                 unset($dataRow['Site']);
                 unset($dataRow['Cohort']);
+
 
                 // Inject columns
                 $dataRow = array_merge($dataRow, $injectedColumns);
@@ -414,6 +427,8 @@ class InstrumentDataParser extends CSVParser
                             false
                         );
 
+                        $success = false;
+
                         if (!is_null($instrument)) {
                           // Instrument exists
 
@@ -441,14 +456,7 @@ class InstrumentDataParser extends CSVParser
 
                           // Validate and save
                           $success = $instrument->save();
-                        } else {
-                          // Instrument doesn't exist. Create it
-
-
-                          $success = false;
                         }
-
-
 
                         if (!$success) {
                             throw new RuntimeException(
