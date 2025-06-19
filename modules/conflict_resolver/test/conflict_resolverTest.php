@@ -169,13 +169,13 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url."/conflict_resolver/");
         $this->safeClick(WebDriverBy::cssSelector("#tab-resolved"));
-       /* $this->_filterTest(
+        $this->_filterTest(
             self::$ForSite,
             self::$display,
             self::$clearFilter,
             "Montreal",
             "displayed of 14"
-       );*/
+       );
         $this->_filterTest(
             self::$VisitLabel,
             self::$display,
