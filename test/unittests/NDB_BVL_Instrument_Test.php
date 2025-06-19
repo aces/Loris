@@ -1823,6 +1823,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $additionalFields        = $instrumentQuestions;
         $additionalFields["aaa"] = 123;
         $additionalFields["bbb"] = "a text";
+
+        // expect error on these 2 additional fields
         $this->expectException("LorisException");
         $this->expectExceptionMessage("Additional field(s) not permitted: aaa,bbb.");
         $this->_instrument->validate($additionalFields);
@@ -1836,39 +1838,32 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @return void
      */
-    public function testValidateKeysNominal(): void
+    public function testValidateRequiredKeys(): void
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
-        // data - complete keys + empty values
+        // data - only required fields keys + empty values
         $instrumentQuestions = [
-            // p1
-            "arthritis"                       => null, // required
-            "arthritis_age"                   => null,
-            "pulmonary_issues"                => null,
-            "pulmonary_issues_specific"       => null,
-            // p2
-            "hypertension"                    => null, // required
-            "hypertension_while_pregnant"     => null,
-            "hypertension_while_pregnant_age" => null,
-            // p3
-            "concussion_or_head_trauma"       => null, // required
-            "concussion_1_description"        => null,
-            "concussion_1_hospitalized"       => null,
-            "concussion_1_age"                => null,
-            "concussion_2_description"        => null,
-            "concussion_2_hospitalized"       => null,
-            "concussion_2_age"                => null,
-            "concussion_3_description"        => null,
-            "concussion_3_hospitalized"       => null,
-            "concussion_3_age"                => null,
-            "current_concussion_symptoms"     => null,
+            "arthritis"                 => null,
+            "hypertension"              => null,
+            "concussion_or_head_trauma" => null,
         ];
 
         // all required elements are null/yes/no options.
+        $this->_instrument->validate($instrumentQuestions);
+
+        // removing two required field
+        unset($instrumentQuestions['hypertension']);
+        unset($instrumentQuestions['concussion_or_head_trauma']);
+
+        // expects one error on this missing key
+        $this->expectException("LorisException");
+        $this->expectExceptionMessage(
+            "Missing required field(s): hypertension,concussion_or_head_trauma."
+        );
         $this->_instrument->validate($instrumentQuestions);
     }
 
@@ -1911,6 +1906,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "concussion_3_age"                => null,
             "current_concussion_symptoms"     => null,
         ];
+
+        // all required elements are null/yes/no options.
+        $this->_instrument->validate($instrumentQuestions);
     }
 
     /**
