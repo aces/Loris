@@ -3029,7 +3029,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // but only with instrument having their own table.
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
         if (!empty($additionalKeys)) {
-            $i = implode(",", $missingKeys);
+            $i = implode(",", $additionalKeys);
             throw new \LorisException("Additional field(s) not permitted: {$i}.");
         }
     }
