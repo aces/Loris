@@ -2224,6 +2224,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *                                                 matched instances must
      *                                                 meet to be loaded
      *
+     * @param ?array $visitlist The list of visits that must match
+     *
      * @return Generator<\NDB_BVL_Instrument>
      */
     function bulkLoadInstanceData(
@@ -2416,7 +2418,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     JOIN candidate c ON (s.CandidateID=c.ID)
                      
 		    $where";
-	     error_log(print_r($where,true));
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
             foreach ($data as $row) {
