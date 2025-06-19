@@ -56,8 +56,7 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getQuery() : Query
     {
-	    error_log("this query:");
-	    error_log(print_r($this->query,true));
+
 	    return $this->query;
 	   
     }
