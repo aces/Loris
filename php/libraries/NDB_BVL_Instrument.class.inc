@@ -992,7 +992,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
-        $db = $this->loris->getDatabaseConnection();
+        $db = \NDB_Factory::singleton()->database();
 
         if (empty($this->getCommentID())) {
             $results =  $db->pselectWithIndexKey(
