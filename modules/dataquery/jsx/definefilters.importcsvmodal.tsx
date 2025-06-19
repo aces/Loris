@@ -24,8 +24,17 @@ function ImportCSVModal(props: {
    * Promise for handling modal closing. Always accepts.
    * @returns {Promise} - a stub promise
    */
-  const submitPromise = () =>
-    new Promise((resolve) => {
+ const submitPromise = () =>
+    new Promise((resolve, reject) => {
+      if (!csvFile) {
+        swal.fire({
+          type: 'error',
+          title: 'No CSV Uploaded',
+          text: 'Please upload a CSV file before submitting.',
+        });
+        reject();
+        return;
+      }
       resolve(null);
     }
     );
@@ -44,12 +53,25 @@ function ImportCSVModal(props: {
         title: 'Invalid CSV',
         text: 'Could not parse CSV file',
       });
+      setCSVFile(null); 
+      return;
+    }
+
+    // Check for empty CSV file
+    const startLine = csvHeader ? 1 : 0;
+    if (!value.data || value.data.length <= startLine) {
+      swal.fire({
+        type: 'error',
+        title: 'Empty CSV',
+        text: 'The uploaded CSV file is empty.',
+      });
+      setCSVFile(null); 
+      return;
     }
 
     // If candidates: validate 1 column
     // If sessions: validate 2 columns
     const expectedLength = (csvType === 'session' ? 2 : 1);
-    const startLine = csvHeader ? 1 : 0;
 
     for (let i = startLine; i < value.data.length; i++) {
       if (value.data[i].length != expectedLength) {
@@ -60,6 +82,7 @@ function ImportCSVModal(props: {
                         + ' Got ' + value.data[i].length + ' on line ' +
                         (i+1) + '.',
         });
+        setCSVFile(null);
         return;
       }
       if (idType === 'CandID') {
@@ -71,6 +94,7 @@ function ImportCSVModal(props: {
                             + ') on line '
                             + (i+1) + '.',
           });
+          setCSVFile(null);
           return;
         }
       }
@@ -187,7 +211,7 @@ function ImportCSVModal(props: {
                 // Only 1 column, papaparse can't detect
                 // the delimiter if it's not explicitly
                 // specified.
-                if (csvType == 'candidate') {
+                if (csvType == 'candidate' || csvType == 'session') {
                   papaparseConfig.delimiter = ',';
                 }
                 Papa.parse(file, papaparseConfig);
