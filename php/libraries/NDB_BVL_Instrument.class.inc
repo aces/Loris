@@ -2230,7 +2230,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
         ?\LORIS\Data\Query\QueryTerm $condition = null,
-        $v,
+        $v = null,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
