@@ -122,7 +122,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$clearFilter,
             'Montreal',
             "20 rows displayed of 311"
-      );
+        );
         $this->_filterTest(
             self::$VisitLabel,
             self::$display,
@@ -175,7 +175,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$clearFilter,
             "Montreal",
             "displayed of 14"
-       );
+        );
         $this->_filterTest(
             self::$VisitLabel,
             self::$display,
