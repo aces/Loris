@@ -3161,7 +3161,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Validate whether the data submitted are valid against this instrument.
      * Checks both keys and values. Throws a LorisException if any test fails.
      *
-     * @param array $values an array of values submitted
+     * @param array $dataToCheck an array of values submitted
      *
      * @throws \LorisException
      *
