@@ -11,7 +11,6 @@ namespace LORIS;
 require_once 'NDB_Factory.class.inc';
 require_once 'CSVParser.class.inc';
 
-use _PHPStan_ce0aaf2bf\Nette\Neon\Exception;
 use DatabaseException;
 use LorisException;
 use RuntimeException;
@@ -172,7 +171,7 @@ class InstrumentDataParser extends CSVParser
      * @param bool  $createNonexistent Whether to create participants/visits
      *
      * @return array    Returns array of column names as strings
-     * @throws Exception
+     * @throws \Exception
      */
     public static function validateData(
         array $instrumentData,
@@ -192,7 +191,7 @@ class InstrumentDataParser extends CSVParser
                     );
                 } catch (\LorisException $e) {
                     if (!$createNonexistent) {
-                        throw new Exception($e->getMessage());
+                        throw new \Exception($e->getMessage());
                     }
 
                     $db = NDB_Factory::singleton()->database();
@@ -206,7 +205,7 @@ class InstrumentDataParser extends CSVParser
                         ['rowProject' => $dataRow['Project']]
                     );
                     if (is_null($projectID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Project: {$dataRow['Project']} does not exist"
                         );
                     }
@@ -219,7 +218,7 @@ class InstrumentDataParser extends CSVParser
                         ['rowSite' => $dataRow['Site']]
                     );
                     if (is_null($centerID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Site: {$dataRow['Site']} does not exist"
                         );
                     }
@@ -231,7 +230,7 @@ class InstrumentDataParser extends CSVParser
                         ['rowCohort' => $dataRow['Cohort']]
                     );
                     if (is_null($cohortID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Cohort: {$dataRow['Cohort']} does not exist"
                         );
                     }
@@ -248,7 +247,7 @@ class InstrumentDataParser extends CSVParser
                         ]
                     );
                     if (is_null($projectCohortRelID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Cohort: {$dataRow['Cohort']} is not " .
                             "part of Project: {$dataRow['Project']}"
                         );
@@ -262,7 +261,7 @@ class InstrumentDataParser extends CSVParser
                         ['rowVisitLabel' => $dataRow['Visit_label']]
                     );
                     if (is_null($visitID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Visit_label: {$dataRow['Visit_label']} does not exist"
                         );
                     }
@@ -279,7 +278,7 @@ class InstrumentDataParser extends CSVParser
                         ]
                     );
                     if (is_null($visitProjectCohortRelID)) {
-                        throw new Exception(
+                        throw new \Exception(
                             "Visit: {$dataRow['Visit_label']} does not belong " .
                             "to P|C: {$dataRow['Project']}|{$dataRow['Cohort']}"
                         );

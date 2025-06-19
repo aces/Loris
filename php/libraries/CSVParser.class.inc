@@ -72,32 +72,32 @@ class CSVParser
     /**
      * Parses the csv file
      *
-     * @param array    $expectedHeaders Expected headers. Leave empty to
-     *                                  skip validation
-     * @param int      $numRows         The number of rows to parse. -1 (default)
-     *                                  will parse all rows
-     * @param callable $excludeRow      Function that takes the row and returns
-     *                                  a boolean to determine if row should be
-     *                                  excluded
-     * @param callable $combineRow      Function that takes the headers and the row
-     *                                  and returns the row (default is zip-like
-     *                                  mapping)
-     * @param string   $separator       The field delimiter (one character only).
-     *                                  Defaults as a comma.
-     * @param string   $enclosure       The field enclosure character
-     *                                  (one character only).
-     *                                  Defaults as a double
-     *                                  quotation mark
-     * @param string   $escape          The escape character (one character only).
-     *                                  Defaults as backslash
-     * @param int      $flags           Bit mask of the flags to set.
-     *                                  See SplFileObject constants
-     *                                  for the available flags.
-     *                                  Default is:
-     *                                  SplFileObject::READ_CSV |
-     *                                  SplFileObject::DROP_NEW_LINE
-     *                                  | SplFileObject::SKIP_EMPTY |
-     *                                  SplFileObject::READ_AHEAD
+     * @param array     $expectedHeaders Expected headers. Leave empty to
+     *                                   skip validation
+     * @param int       $numRows         The number of rows to parse. -1 (default)
+     *                                   will parse all rows
+     * @param ?callable $excludeRow      Function that takes the row and returns
+     *                                   a boolean to determine if row should be
+     *                                   excluded
+     * @param ?callable $combineRow      Function that takes the headers and the row
+     *                                   and returns the row (default is zip-like
+     *                                   mapping)
+     * @param string    $separator       The field delimiter (one character only).
+     *                                   Defaults as a comma.
+     * @param string    $enclosure       The field enclosure character
+     *                                   (one character only).
+     *                                   Defaults as a double
+     *                                   quotation mark
+     * @param string    $escape          The escape character (one character only).
+     *                                   Defaults as backslash
+     * @param int       $flags           Bit mask of the flags to set.
+     *                                   See SplFileObject constants
+     *                                   for the available flags.
+     *                                   Default is:
+     *                                   SplFileObject::READ_CSV |
+     *                                   SplFileObject::DROP_NEW_LINE |
+     *                                   SplFileObject::SKIP_EMPTY |
+     *                                   SplFileObject::READ_AHEAD
      *
      * @return array                  Returns array of header->value mapping
      *
@@ -120,7 +120,7 @@ class CSVParser
         string    $enclosure = '"',
         string    $escape = '\\',
         int       $flags = self::DEFAULT_CSV_FLAGS
-    ): array {
+    ): array|false {
         $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
 

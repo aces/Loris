@@ -206,15 +206,15 @@ class Instrument_Manager extends \DataFrameworkMenu
      *
      * @param string      $instrumentName Instrument name
      * @param SplFileInfo $targetDir      Instrument save location
-     * @param bool|string $createMetaFile Whether to create a .meta file
+     * @param bool        $createMetaFile Whether to create a .meta file
      *
-     * @return ?array of site permissions or null
+     * @return bool
      */
     public function createInstrumentEntry(
         string $instrumentName,
         SplFileInfo $targetDir,
         bool $createMetaFile = true
-    ) : ?bool {
+    ) : bool {
         try {
             // Parse csv and iterate via this
             $inst = \NDB_BVL_Instrument::factory(
