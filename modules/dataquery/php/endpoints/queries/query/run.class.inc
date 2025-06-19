@@ -62,6 +62,7 @@ class Run extends \LORIS\Http\Endpoint
     {
         $query = new \LORIS\dataquery\Query($this->loris, $queryID);
         $db = $this->loris->getDatabaseConnection();
+
         // Put the query run in a transaction to make it atomic
         $queryRun = $query->newRun($user);
         $db->beginTransaction();
