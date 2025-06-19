@@ -2238,8 +2238,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $db = $this->loris->getNewDatabaseConnection();
         $db->setBuffering(false);
-	error_log("bulkLoadInstanceData");
-	error_log(print_r($v,true));
+
         $prepValues = [];
 
         if ($commentIDs !== null) {
@@ -2271,7 +2270,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
 	$params = [];
-	error_log("aaaa");
         if ($this->jsonData) {
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
@@ -2279,7 +2277,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
 	    }
-	         error_log("bbbb");
             if ($condition !== null) {
                 $fname = substr(
                     $condition->dictionary->getName(),
@@ -2317,11 +2314,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     )
                     . ' ';
 		}
-		                 error_log("ccc");
 
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
 	    }
-	    error_log("1111111111"); error_log(print_r($condition->criteria));
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
@@ -2399,8 +2394,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
 	    }
-	    error_log("90090909909090");
-	    error_log(print_r($v,true));
 	    if (is_array($v) && !empty($v)) {
     $visitString = "('" . implode("','", $v) . "')";
     $where = 'WHERE ' . join(' AND ', $conditions) . ' AND s.Visit_label IN ' . $visitString;
