@@ -9,6 +9,7 @@ use \SplFileInfo;
 use LORIS\server_processes_manager as SP;
 
 //require_once 'RedcapCSVParser.class.inc';
+
 /**
  * Upload instrument data
  *
@@ -131,8 +132,12 @@ class Instrument_Data extends \NDB_Page
             );
         }
 
+        $createNonexistent
+            = $requestBody['action'] === 'CREATE_SESSIONS';
+
         if (isset($requestBody['instrument'])) {
             $instrumentName = $requestBody['instrument'];
+
             if ($this->instrumentExists($instrumentName)) {
                 $dataFile = $request->getUploadedFiles()['data_file'];
                 $userID   = $request->getAttribute('user')->getUsername();
@@ -153,6 +158,7 @@ class Instrument_Data extends \NDB_Page
                     $serverProcessLauncher->parseInstrumentData(
                         $instrumentName,
                         $fileLocation,
+                        $createNonexistent
                     );
 
                     $result = [
@@ -168,12 +174,10 @@ class Instrument_Data extends \NDB_Page
 
                 // Parse
                 try {
-                    $dataParser        = new InstrumentDataParser(
+                    $dataParser = new InstrumentDataParser(
                         $instrumentName,
                         $fileInfo,
                     );
-                    $createNonexistent
-                        = $requestBody['action'] === 'CREATE_SESSIONS';
 
                     $data = $dataParser->parseCSV($this->loris, $createNonexistent);
 

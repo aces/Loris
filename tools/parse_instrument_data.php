@@ -19,10 +19,11 @@ if (count($argv) != 5) {
     exit(1);
 }
 
-$instrumentName = $argv[1];
-$fileLocation   = $argv[2];
-$userID         = $argv[3];
-$examinerID     = $argv[4];
+$instrumentName    = $argv[1];
+$fileLocation      = $argv[2];
+$createNonexistent = $argv[3];
+$userID            = $argv[4];
+$examinerID        = $argv[5];
 
 $result = [];
 
@@ -32,13 +33,14 @@ try {
         $instrumentName,
         $fileInfo,
     );
-    $data       = $dataParser->parseCSV($lorisInstance);
+    $data       = $dataParser->parseCSV($lorisInstance, $createNonexistent);
     $validData  = $dataParser::validateData(
         $data,
         [
             'UserID'   => $userID,
             'Examiner' => $examinerID,
-        ]
+        ],
+        $createNonexistent
     );
 
     if (count($validData['errors']) > 0) {
