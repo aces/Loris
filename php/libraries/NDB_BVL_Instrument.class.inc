@@ -3133,7 +3133,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     "date"  => " (format: 'YYYY-MM-DD')",
                     "time"  => " (format: 'HH:mm:ss')",
                     "enumeration" => ", possible answers: '"
-                        . implode("','", $optionKeys)
+                        . implode("','", $optionKeys ?? [])
                         . "'",
                     default => "",
                 };
