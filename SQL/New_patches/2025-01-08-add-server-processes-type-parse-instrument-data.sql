@@ -17,6 +17,7 @@ CREATE TABLE `instrument_data_files` (
     `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `DataID` INT(10) unsigned default NULL,
     `FilePath` VARCHAR(255) NOT NULL,
+    `InsertTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `FK_flag_instrument_data_files` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
     PRIMARY KEY (`ID`)
 );
