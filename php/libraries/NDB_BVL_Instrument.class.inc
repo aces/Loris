@@ -2396,7 +2396,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             if (is_array($v) && !empty($v)) {
-                $visitString = "('" . implode("','", $v) . "')";
+                    $vescaped = array_map(
+                        function ($visit) use ($db) {
+                            return $db->quote($visit);
+                        },
+                        $v
+                    );
+
+                    $visitString = '(' . implode(',', $vescaped) . ')';
                 $where       = 'WHERE ' . join(' AND ', $conditions) .
                 ' AND s.Visit_label IN ' . $visitString;
             } else {
