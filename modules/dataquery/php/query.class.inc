@@ -755,8 +755,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             if (isset($crit['visits'])) {
                 $visitlist = $crit['visits'];
             }
-	    error_log("visit");
-	    error_log(print_r($crit['visits'],true));
 
             \Profiler::checkpoint("Calling engine get matches");
             $matches = $engine->getCandidateMatches($term, $visitlist);
