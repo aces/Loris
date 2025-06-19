@@ -174,6 +174,17 @@ class Instrument_Data extends \NDB_Page
 
                     $data       = $dataParser->parseCSV($this->loris, $createNonexistent);
 
+                    $studyIDs   = [];
+                    if ($createNonexistent) {
+                        $studyIDs = array_reduce($data, function ($mapping, $row) {
+                            $studyID = $row['StudyID'];
+                            if (!in_array($studyID, $mapping)) {
+                                $mapping[] = $studyID;
+                            }
+                            return $mapping;
+                        }, []);
+                    }
+
                     $validData  = $dataParser->validateData(
                         $data,
                         [
@@ -197,6 +208,21 @@ class Instrument_Data extends \NDB_Page
                         $instrumentName,
                         $fileInfo->getFilename()
                     );
+
+                    if ($createNonexistent) {
+                        $db = $this->loris->getDatabaseConnection();
+                        $studyIDMapping = $db->pselectWithIndexKey(
+                            "SELECT ExtStudyID, CandID
+                            FROM candidate_project_extid_rel
+                            WHERE ExtStudyID IN (" .
+                            join(',', $studyIDs) .
+                            ")",
+                            [],
+                            'ExtStudyID'
+                        );
+
+                        $result['idMapping'] = $studyIDMapping;
+                    }
 
                     return new \LORIS\Http\Response\JSON\Created($result);
                 } catch (\Exception $e) {
