@@ -150,8 +150,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         \Profiler::checkpoint("After NDB_BVL_Instrument::factory for $testname");
         $values = $inst->bulkLoadInstanceData(
             null,
-	    $term,
-	    $visitlist,
+            $term,
+            $visitlist,
 	);
 
         foreach ($values as $match) {
@@ -219,8 +219,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         // so get the full data dictionary and go through each to see if
         // it's the same as $item
         $field2instMap = [];
-	error_log("getCandidateData:======");
-	error_log(print_r( $visitlist,true));
+
         $fullDictionary = $this->getDataDictionary();
         foreach ($fullDictionary as $category) {
             $instrument = $category->getName();
