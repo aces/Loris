@@ -3,6 +3,7 @@ import {QueryGroup, QueryTerm} from './querydef';
 import {CriteriaTerm} from './criteriaterm';
 import {ButtonElement} from 'jsx/Form';
 import {FullDictionary} from './types';
+import {useEffect} from 'react'; // already present
 
 /**
  * Alternate background colour for a QueryTree
@@ -54,12 +55,18 @@ function QueryTree(props: {
     newItem?: (items: QueryGroup) => void,
     removeQueryGroupItem?: (items: QueryGroup, i: number) => QueryGroup,
     setModalGroup?: (newgroup: QueryGroup) => void,
+    setDeleteItemIndex?: (index: number | null) => void,
     fulldictionary: FullDictionary,
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
 }) {
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
 
+  useEffect(() => {
+    // Reset strikethrough when group is empty or changed
+    setDeleteItemIndex(null);
+  }, [props.items]);
+  
   /**
    * Render a single term of the QueryTree group.
    *
@@ -98,6 +105,9 @@ function QueryTree(props: {
               );
               if (props.setModalGroup) {
                 props.setModalGroup(newquery);
+              }
+              if (props.setDeleteItemIndex) {
+                props.setDeleteItemIndex(null);
               }
             }
           };
@@ -156,7 +166,7 @@ function QueryTree(props: {
                   }
                   subtree={true}
                   fulldictionary={props.fulldictionary}
-
+                  setDeleteItemIndex={props.setDeleteItemIndex}
                 />
               </div>
               <div style={operatorStyle}>{operator}</div>
