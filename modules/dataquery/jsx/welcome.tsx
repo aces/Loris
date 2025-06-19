@@ -86,16 +86,16 @@ function Welcome(props: {
       id: 'p1',
     });
   }
-  panels.push({
-    title: 'Instructions',
-    content: <IntroductionMessage
-      hasStudyQueries={props.topQueries.length > 0}
-      onContinue={props.onContinue}
-    />,
-    alwaysOpen: false,
-    defaultOpen: true,
-    id: 'p2',
-  });
+  // panels.push({
+  //   title: 'Instructions',
+  //   content: <IntroductionMessage
+  //     hasStudyQueries={props.topQueries.length > 0}
+  //     onContinue={props.onContinue}
+  //   />,
+  //   alwaysOpen: false,
+  //   defaultOpen: true,
+  //   id: 'p2',
+  // });
   panels.push({
     title: 'Recent Queries',
     content: (
@@ -1063,61 +1063,61 @@ function NameIcon(props: {
  * @param {boolean} props.hasStudyQueries - Whether or not study queries exist
  * @returns {React.ReactElement} - The React element
  */
-function IntroductionMessage(props: {
-    onContinue: () => void,
-    hasStudyQueries: boolean,
-}): React.ReactElement {
-  const studyQueriesParagraph = props.hasStudyQueries ? (
-    <p>Above, there is also a <code>Study Queries</code> panel. This
-        are a special type of shared queries that have been pinned
-        by a study administer to always display at the top of this
-        page.</p>
-  ) : '';
-  return (
-    <div>
-      <p>The data query tool allows you to query data
-          within LORIS. There are three steps to defining
-          a query:
-      </p>
-      <ol>
-        <li>First, you must select the fields that you're
-                interested in on the <code>Define Fields</code>
-                page.</li>
-        <li>Next, you can optionally define filters on the
-          <code>Define Filters</code> page to restrict
-                the population that is returned.</li>
-        <li>Finally, you view your query results on
-                the <code>View Data</code> page</li>
-      </ol>
-      <p>The <code>Next Steps</code> on the bottom right of your
-             screen always the context-sensitive next steps that you
-             can do to build your query.</p>
-      <p>Your recently run queries will be displayed in the
-        <code>Recent Queries</code> panel below. Instead of building
-             a new query, you can reload a query that you've recently run
-             by clicking on the <LoadIcon /> icon next to the query.</p>
-      <p>Queries can be shared with others by clicking the <ShareIcon />
-             icon. This will cause the query to be shared with all users who
-             have access to the fields used by the query. It will display
-             in a <code>Shared Queries</code> panel below the
-        <code>Recent Queries</code>.</p>
-      <p>You may also give a query a name at any time by clicking the
-        <NameIcon /> icon. This makes it easier to find queries you care
-             about by giving them an easier to remember name that can be used
-             for filtering. When you share a query, the name will be shared
-             along with it.</p>
-      {studyQueriesParagraph}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
-        <ButtonElement
-          columnSize="col-sm-12"
-          onUserInput={props.onContinue}
-          label="Continue to Define Fields" />
-      </div>
-    </div>
-  );
-}
+// function IntroductionMessage(props: {
+//     onContinue: () => void,
+//     hasStudyQueries: boolean,
+// }): React.ReactElement {
+//   const studyQueriesParagraph = props.hasStudyQueries ? (
+//     <p>Above, there is also a <code>Study Queries</code> panel. This
+//         are a special type of shared queries that have been pinned
+//         by a study administer to always display at the top of this
+//         page.</p>
+//   ) : '';
+//   return (
+//     <div>
+//       <p>The data query tool allows you to query data
+//           within LORIS. There are three steps to defining
+//           a query:
+//       </p>
+//       <ol>
+//         <li>First, you must select the fields that you're
+//                 interested in on the <code>Define Fields</code>
+//                 page.</li>
+//         <li>Next, you can optionally define filters on the
+//           <code>Define Filters</code> page to restrict
+//                 the population that is returned.</li>
+//         <li>Finally, you view your query results on
+//                 the <code>View Data</code> page</li>
+//       </ol>
+//       <p>The <code>Next Steps</code> on the bottom right of your
+//              screen always the context-sensitive next steps that you
+//              can do to build your query.</p>
+//       <p>Your recently run queries will be displayed in the
+//         <code>Recent Queries</code> panel below. Instead of building
+//              a new query, you can reload a query that you've recently run
+//              by clicking on the <LoadIcon /> icon next to the query.</p>
+//       <p>Queries can be shared with others by clicking the <ShareIcon />
+//              icon. This will cause the query to be shared with all users who
+//              have access to the fields used by the query. It will display
+//              in a <code>Shared Queries</code> panel below the
+//         <code>Recent Queries</code>.</p>
+//       <p>You may also give a query a name at any time by clicking the
+//         <NameIcon /> icon. This makes it easier to find queries you care
+//              about by giving them an easier to remember name that can be used
+//              for filtering. When you share a query, the name will be shared
+//              along with it.</p>
+//       {studyQueriesParagraph}
+//       <div style={{
+//         display: 'flex',
+//         flexDirection: 'column',
+//         alignItems: 'center',
+//       }}>
+//         <ButtonElement
+//           columnSize="col-sm-12"
+//           onUserInput={props.onContinue}
+//           label="Continue to Define Fields" />
+//       </div>
+//     </div>
+//   );
+// }
 export default Welcome;
