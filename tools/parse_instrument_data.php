@@ -21,7 +21,7 @@ if (count($argv) != 5) {
 
 $instrumentName    = $argv[1];
 $fileLocation      = $argv[2];
-$createNonexistent = $argv[3];
+$createNonexistent = $argv[3] == 'true';
 $userID            = $argv[4];
 $examinerID        = $argv[5];
 

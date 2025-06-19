@@ -98,7 +98,7 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
             "/tools/parse_instrument_data.php ";
         $parseScript .= "$this->_instrument ";
         $parseScript .= "$this->_fileLocation ";
-        $parseScript .= "$this->_createNonexistent ";
+        $parseScript .= $this->_createNonexistent ? 'true ' : 'false ';
         $parseScript .= "{$this->getUserId()} {$this->getUserId()}";
         return $parseScript;
     }
