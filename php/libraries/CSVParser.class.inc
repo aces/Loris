@@ -120,14 +120,14 @@ class CSVParser
         string    $enclosure = '"',
         string    $escape = '\\',
         int       $flags = self::DEFAULT_CSV_FLAGS
-    ): array|false {
+    ): array {
         $fileObject = new SplFileObject($this->csvFile->getRealPath());
         $fileObject->setFlags($flags);
 
         $csvHeaders = $fileObject->fgetcsv($separator, $enclosure, $escape);
 
         if ($numRows === 0) {
-            return $csvHeaders;
+            return $csvHeaders ?: [];
         }
 
         // Validate expected headers, if provided
