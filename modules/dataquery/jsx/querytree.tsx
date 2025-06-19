@@ -66,7 +66,7 @@ function QueryTree(props: {
     // Reset strikethrough when group is empty or changed
     setDeleteItemIndex(null);
   }, [props.items]);
-  
+
   /**
    * Render a single term of the QueryTree group.
    *
