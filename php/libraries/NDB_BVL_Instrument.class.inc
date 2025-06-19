@@ -2223,15 +2223,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param ?\LORIS\Data\Query\QueryTerm $condition  A single QueryTerm that
      *                                                 matched instances must
      *                                                 meet to be loaded
-     *
-     * @param ?array $visitlist The list of visits that must match
+     * @param ?array                       $v          The visits that must match
      *
      * @return Generator<\NDB_BVL_Instrument>
      */
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
-	?\LORIS\Data\Query\QueryTerm $condition = null,
-	$v,
+        ?\LORIS\Data\Query\QueryTerm $condition = null,
+        $v,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
@@ -2271,14 +2270,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
-	$params = [];
+        $params = [];
         if ($this->jsonData) {
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
                 $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
-	    }
+            }
             if ($condition !== null) {
                 $fname = substr(
                     $condition->dictionary->getName(),
@@ -2315,10 +2314,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         $params
                     )
                     . ' ';
-		}
+                }
 
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
-	    }
+            }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
@@ -2359,7 +2358,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             \Profiler::checkpoint("Finished query");
             return;
-	} else {
+        } else {
 
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
@@ -2395,13 +2394,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 )
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
-	    }
-	    if (is_array($v) && !empty($v)) {
-    $visitString = "('" . implode("','", $v) . "')";
-    $where = 'WHERE ' . join(' AND ', $conditions) . ' AND s.Visit_label IN ' . $visitString;
-} else {
-    $where = 'WHERE ' . join(' AND ', $conditions);
-}
+            }
+            if (is_array($v) && !empty($v)) {
+                $visitString = "('" . implode("','", $v) . "')";
+                $where       = 'WHERE ' . join(' AND ', $conditions) .
+                ' AND s.Visit_label IN ' . $visitString;
+            } else {
+                $where = 'WHERE ' . join(' AND ', $conditions);
+            }
 
             $query = "SELECT
                 c.CandID as CandID,

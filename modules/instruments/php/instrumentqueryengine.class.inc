@@ -152,7 +152,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             null,
             $term,
             $visitlist,
-	);
+        );
 
         foreach ($values as $match) {
             yield $match->getCandID();
@@ -280,9 +280,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-		    array_keys($commentID2CandID),
-		    null,
-		    null
+                array_keys($commentID2CandID),
+                null,
+                null
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(
