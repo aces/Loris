@@ -227,19 +227,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Registers a new timepoint into the session table
      *
-     * @param \Candidate   $candidate      The Candidate to create this timepoint for
-     * @param integer      $CohortID       The cohortID of the new timepoint
-     * @param string|null  $nextVisitLabel The visit label of the timepoint
+     * @param \Candidate $candidate The Candidate to create this timepoint for
+     * @param integer $CohortID The cohortID of the new timepoint
+     * @param string|null $nextVisitLabel The visit label of the timepoint
      *                                     being created. If null,
      *                                     consecutive V1, V2, etc will be
      *                                     created.
-     * @param \Site        $psc            The center of the timepoint
-     * @param \Project     $project        The project of the timepoint
-     * @param integer|null $lang           The language id
+     * @param \Site $psc The center of the timepoint
+     * @param \Project $project The project of the timepoint
+     * @param integer|null $lang The language id
+     *
+     * @return Timepoint
+     * @throws Exception
      *
      * @throws DatabaseException
-     *
-     * @return void
      */
     static function createNew(
         \Candidate $candidate,
@@ -248,7 +249,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         \Site $psc,
         \Project $project,
         ?int $lang = null
-    ): void {
+    ): Timepoint {
 
         // insert into session set CandID=$candID,
         // CohortID=$CohortID, VisitNo=nextVisitNumber(),
@@ -300,6 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // insert the data
         $db->insert('session', $insertData);
+
+        return TimePoint::singleton(
+            new SessionID($db->lastInsertID)
+        );
     }
 
     /**

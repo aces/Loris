@@ -170,7 +170,9 @@ class Instrument_Data extends \NDB_Page
                         $instrumentName,
                         $fileInfo,
                     );
-                    $data       = $dataParser->parseCSV($this->loris);
+                    $createNonexistent = $requestBody['action'] === 'CREATE_SESSIONS';
+
+                    $data       = $dataParser->parseCSV($this->loris, $createNonexistent);
 
                     $validData  = $dataParser->validateData(
                         $data,
@@ -178,7 +180,7 @@ class Instrument_Data extends \NDB_Page
                             'UserID'   => $userID,
                             'Examiner' => $userID
                         ],
-                        $requestBody['action'] === 'CREATE_SESSIONS'
+                        $createNonexistent
                     );
 
                     if (count($validData['errors']) > 0) {

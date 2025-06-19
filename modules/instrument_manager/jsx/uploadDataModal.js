@@ -164,7 +164,7 @@ class InstrumentDataUploadModal extends Component {
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <RadioElement
             name={'create_participants'}
-            label={'Form action'}
+            label={'Validation'}
             options={{
               VALIDATE_SESSIONS: 'All participants and visits exist',
               CREATE_SESSIONS: 'Some participants or visits may not exist',
