@@ -24,7 +24,7 @@ function ImportCSVModal(props: {
    * Promise for handling modal closing. Always accepts.
    * @returns {Promise} - a stub promise
    */
- const submitPromise = () =>
+  const submitPromise = () =>
     new Promise((resolve, reject) => {
       if (!csvFile) {
         swal.fire({
@@ -53,7 +53,7 @@ function ImportCSVModal(props: {
         title: 'Invalid CSV',
         text: 'Could not parse CSV file',
       });
-      setCSVFile(null); 
+      setCSVFile(null);
       return;
     }
 
@@ -65,7 +65,7 @@ function ImportCSVModal(props: {
         title: 'Empty CSV',
         text: 'The uploaded CSV file is empty.',
       });
-      setCSVFile(null); 
+      setCSVFile(null);
       return;
     }
 
