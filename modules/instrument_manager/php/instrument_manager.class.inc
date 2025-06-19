@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\instrument_manager;
-use LORIS\RedcapCSVParser;
+//use LORIS\RedcapCSVParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
-require_once 'RedcapCSVParser.class.inc';
+//require_once 'RedcapCSVParser.class.inc';
 
 /**
  * Contains functions used to view and manage instruments installed in LORIS.
@@ -94,15 +94,17 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
 
         $uploadedFile = $request->getUploadedFiles()['install_file'];
-        $filename      = $uploadedFile->getClientFilename();
-        $instrument    = pathinfo($filename)['filename'];
-        $targetdir     = new \SplFileInfo($this->_path . 'project/instruments/');
+        $filename     = $uploadedFile->getClientFilename();
+        $instrument   = pathinfo($filename)['filename'];
+        $targetdir    = new \SplFileInfo($this->_path . 'project/instruments/');
 
-        if (!str_ends_with($filename, 'csv')){
+        if (!str_ends_with($filename, 'csv')) {
             if ($this->instrumentExists($instrument)) {
                 // An instrument with this name already exists in the test_names
                 // table. Abort upload.
-                return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::ALREADY_INSTALLED
+                );
             }
 
             /* Although only .linst files should be uploaded to this module, and
@@ -136,6 +138,11 @@ class Instrument_Manager extends \DataFrameworkMenu
         } else {
             // Assume redcap instrument
 
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Redcap is not supported'
+            );
+
+            /*
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes('text/csv');
             $response = $uploader->handle($request);
@@ -148,11 +155,11 @@ class Instrument_Manager extends \DataFrameworkMenu
                 return $response;
             }
 
-            $csvPath = $targetdir->getRealPath() . "/$filename";
-            $redcapCSV = new SplFileInfo($csvPath);
+            $csvPath      = $targetdir->getRealPath() . "/$filename";
+            $redcapCSV    = new SplFileInfo($csvPath);
             $redcapParser = new RedcapCSVParser($redcapCSV);
-            $parsedCSV = $redcapParser->parseDictionaryCSV($this->loris);
-            $instruments = $redcapParser::convertDictionaryCSVToLINST($parsedCSV);
+            $parsedCSV    = $redcapParser->parseDictionaryCSV($this->loris);
+            $instruments  = $redcapParser::convertDictionaryCSVToLINST($parsedCSV);
 
             // Require all instruments not to exist before proceeding
             $existingInstruments = [];
@@ -173,33 +180,46 @@ class Instrument_Manager extends \DataFrameworkMenu
                 $redcapParser::createLINSTFile(
                     $targetdir->getRealPath(),
                     $instrumentName,
-                    $instrumentName,    // Missing mapped name. Uses csv column prefix
+                    $instrumentName,  // Missing mapped name. Uses csv column prefix
                     $instrument
                 );
-                $this->createInstrumentEntry($instrumentName, $targetdir, false);
+                $this->createInstrumentEntry(
+                    $instrumentName,
+                    $targetdir,
+                    false
+                );
             }
             $created = count($instruments) > 0;
+            */
         }
 
-        if ($created)   // TODO: Improve response message
+        if ($created) {   // TODO: Improve response message
             return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
-        else
+        } else {
             return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
     }
 
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *
+     * @param string      $instrumentName Instrument name
+     * @param SplFileInfo $targetDir      Instrument save location
+     * @param bool|string $createMetaFile Whether to create a .meta file
+     *
      * @return ?array of site permissions or null
      */
-    public function createInstrumentEntry($instrument, $targetDir, $createMetaFile = true) : ?bool
-    {
+    public function createInstrumentEntry(
+        string $instrumentName,
+        SplFileInfo $targetDir,
+        bool $createMetaFile = true
+    ) : ?bool {
         try {
             // Parse csv and iterate via this
             $inst = \NDB_BVL_Instrument::factory(
                 $this->loris,
-                $instrument,
+                $instrumentName,
                 '',
                 '',
             );
@@ -208,9 +228,9 @@ class Instrument_Manager extends \DataFrameworkMenu
             $DB->insert(
                 "test_names",
                 [
-                    'test_name' => $instrument,
+                    'test_name' => $instrumentName,
                     'Full_name' => $inst->getFullName(),
-                    'Sub_group' => 1,       // TODO: Create new subgroup for redcap battery?
+                    'Sub_group' => 1,
                 ]
             );
             if ($createMetaFile) {
@@ -218,11 +238,9 @@ class Instrument_Manager extends \DataFrameworkMenu
                     \Utility::pathJoin(
                         $targetDir->getPath(),
                         $targetDir->getFilename(),
-                        $instrument . ".meta"
+                        $instrumentName . ".meta"
                     ),
                     "jsondata{@}true\n"
-//                    "jsondata{@}true\nredcap{@}false\n"
-
                 );
             }
         } catch (\NotFound $e) {

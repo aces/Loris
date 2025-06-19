@@ -46,7 +46,8 @@ class InstrumentDataParser extends CSVParser
     /**
      * Parse the csv file
      *
-     * @param LorisInstance $loris Loris instance
+     * @param LorisInstance $loris                  Loris instance
+     * @param bool          $includeCreationColumns Include creation columns
      *
      * @return array    Returns array of column names as strings
      * @throws RuntimeException
@@ -54,8 +55,7 @@ class InstrumentDataParser extends CSVParser
     public function parseCSV(
         LorisInstance $loris,
         bool $includeCreationColumns = false
-    ): array
-    {
+    ): array {
         try {
             $config = \NDB_Config::singleton();
 
@@ -76,10 +76,12 @@ class InstrumentDataParser extends CSVParser
     /**
      * Get expected csv columns for an instrument
      *
-     * @param LorisInstance $loris                      Loris instance
-     * @param string        $instrumentName             Instrument name
-     * @param bool          $includeCreationColumns     Whether to include columns for
-     *                                                  creating participants and sessions
+     * @param LorisInstance $loris                  Loris instance
+     * @param string        $instrumentName         Instrument name
+     * @param bool          $includeCreationColumns Whether to include columns for
+     *                                              creating participants and
+     *                                              sessions
+     * @param bool          $useEDC                 Whether to use EDC
      *
      * @return array    Returns array of column names as strings
      * @throws NotFound
@@ -92,7 +94,11 @@ class InstrumentDataParser extends CSVParser
     ): array {
         return array_merge(
             ($includeCreationColumns
-                ? array_merge(['StudyID', 'DOB', 'Sex', 'Project', 'Site', 'Visit_label', 'Cohort'],  // Required fields to create new
+                ? array_merge(
+                    [
+                        'StudyID', 'DOB', 'Sex', 'Project',
+                        'Site', 'Visit_label', 'Cohort'
+                    ],  // Fields to create new participants and/or sessions
                     $useEDC ? ['EDC'] : []
                 )
                 : ['PSCID', 'Visit_label']),    // SessionID
@@ -161,9 +167,9 @@ class InstrumentDataParser extends CSVParser
     /**
      * Validate Instrument data
      *
-     * @param array $instrumentData Instrument data from csv row
-     * @param array $injectedColumns Columns to inject to every row
-     * @param bool $createNonexistent Whether to create nonexistent participants/visits
+     * @param array $instrumentData    Instrument data from csv row
+     * @param array $injectedColumns   Columns to inject to every row
+     * @param bool  $createNonexistent Whether to create participants/visits
      *
      * @return array    Returns array of column names as strings
      * @throws Exception
@@ -180,7 +186,7 @@ class InstrumentDataParser extends CSVParser
                 $sessionID = null;
                 try {
                     // Validate that session exists
-                    $sessionID            = self::obtainSessionID(
+                    $sessionID = self::obtainSessionID(
                         $dataRow['PSCID'],
                         $dataRow['Visit_label']
                     );
@@ -230,7 +236,6 @@ class InstrumentDataParser extends CSVParser
                         );
                     }
 
-
                     // Ensure Cohort belongs to Project
                     $projectCohortRelID = $db->pselectOneInt(
                         "SELECT ProjectCohortRelID
@@ -239,12 +244,13 @@ class InstrumentDataParser extends CSVParser
                         AND CohortID = :cohortID",
                         [
                             'projectID' => $projectID,
-                            'cohortID' => $cohortID,
+                            'cohortID'  => $cohortID,
                         ]
                     );
                     if (is_null($projectCohortRelID)) {
                         throw new Exception(
-                            "Cohort: {$dataRow['Cohort']} is not part of Project: {$dataRow['Project']}"
+                            "Cohort: {$dataRow['Cohort']} is not " .
+                            "part of Project: {$dataRow['Project']}"
                         );
                     }
 
@@ -268,13 +274,14 @@ class InstrumentDataParser extends CSVParser
                         WHERE VisitID = :visitID
                         AND ProjectCohortRelID = :projectCohortRelID",
                         [
-                            'visitID' =>            $visitID,
+                            'visitID'            =>            $visitID,
                             'projectCohortRelID' => $projectCohortRelID
                         ]
                     );
                     if (is_null($visitProjectCohortRelID)) {
                         throw new Exception(
-                            "Visit_label: {$dataRow['Visit_label']} does not belong to Project|Cohort: {$dataRow['Project']}|{$dataRow['Cohort']}"
+                            "Visit: {$dataRow['Visit_label']} does not belong " .
+                            "to P|C: {$dataRow['Project']}|{$dataRow['Cohort']}"
                         );
                     }
 
@@ -308,9 +315,9 @@ class InstrumentDataParser extends CSVParser
                         $db->insert(
                             'candidate_project_extid_rel',
                             [
-                                'CandID' => $candID,
+                                'CandID'            => $candID,
                                 'ProjectExternalID' => $projectID,
-                                'ExtStudyID' => $dataRow['StudyID']
+                                'ExtStudyID'        => $dataRow['StudyID']
                             ]
                         );
                     }
@@ -323,7 +330,9 @@ class InstrumentDataParser extends CSVParser
                         $cohortID,
                         $dataRow['Visit_label'],
                         \Site::singleton(\CenterID::singleton($centerID)),
-                        \Project::getProjectFromID(\ProjectID::singleton($projectID)),
+                        \Project::getProjectFromID(
+                            \ProjectID::singleton($projectID)
+                        ),
                     );
 
                     $sessionID = $session->getSessionID();
@@ -339,7 +348,6 @@ class InstrumentDataParser extends CSVParser
                 unset($dataRow['Project']);
                 unset($dataRow['Site']);
                 unset($dataRow['Cohort']);
-
 
                 // Inject columns
                 $dataRow = array_merge($dataRow, $injectedColumns);
@@ -358,7 +366,7 @@ class InstrumentDataParser extends CSVParser
     /**
      * Get the session ID from PSCID and Visit_label
      *
-     * @param string $pscID candidate PSCID
+     * @param string $pscID      candidate PSCID
      * @param string $visitLabel session Visit_label
      *
      * @return int                  Returns SessionID
@@ -396,12 +404,17 @@ class InstrumentDataParser extends CSVParser
      *
      * @param LorisInstance $loris          Loris instance
      * @param array         $instrumentData Instrument data to insert
+     * @param string        $instrumentName Instrument name
+     * @param string        $csvFilename    CSV file name
      *
      * @return array    Returns insertion results
      * @throws NotFound
      */
     public static function insertInstrumentData(
-        LorisInstance $loris, array $instrumentData, string $instrumentName, string $csvFilename
+        LorisInstance $loris,
+        array $instrumentData,
+        string $instrumentName,
+        string $csvFilename
     ): array {
         $db = NDB_Factory::singleton()->database();
         $instrumentHeaders = self::getInstrumentHeaders(
@@ -440,32 +453,32 @@ class InstrumentDataParser extends CSVParser
                         $success = false;
 
                         if (!is_null($instrument)) {
-                          // Instrument exists
+                            // Instrument exists
 
-                          // Populate instrument with data
-                          // Change below is expected to allow population
-                          $_FILES   = [];
-                          $_REQUEST = $rowData;
-                          $_POST    = $rowData;
+                            // Populate instrument with data
+                            // Change below is expected to allow population
+                            $_FILES   = [];
+                            $_REQUEST = $rowData;
+                            $_POST    = $rowData;
 
-                          $instrument->form->getGroupValues(
-                            array_keys($rowData),
-                            $out
-                          );
+                            $instrument->form->getGroupValues(
+                                array_keys($rowData),
+                                $out
+                            );
 
-                          // Generate CommentID for instrument
-                          $battery = new \NDB_BVL_Battery();
-                          $battery->selectBattery(
-                            new \SessionID(strval($data['SessionID']))
-                          );
-                          $commentID = $battery->addInstrument(
-                            $loris,
-                            $instrumentName
-                          );
-                          $instrument->commentID = $commentID;
+                            // Generate CommentID for instrument
+                            $battery = new \NDB_BVL_Battery();
+                            $battery->selectBattery(
+                                new \SessionID(strval($data['SessionID']))
+                            );
+                            $commentID = $battery->addInstrument(
+                                $loris,
+                                $instrumentName
+                            );
+                            $instrument->commentID = $commentID;
 
-                          // Validate and save
-                          $success = $instrument->save();
+                            // Validate and save
+                            $success = $instrument->save();
                         }
 
                         if (!$success) {

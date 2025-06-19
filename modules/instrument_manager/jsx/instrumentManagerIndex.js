@@ -15,7 +15,7 @@ import TriggerableModal from '../../../jsx/TriggerableModal';
 import Select from 'react-select';
 import swal from 'sweetalert2';
 
-import InstrumentDataUploadModal from "./uploadDataModal";
+import InstrumentDataUploadModal from './uploadDataModal';
 
 /**
  * Instrument Manager Index component
@@ -55,7 +55,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Update selectedDataFile on data file selection
-   *
    * @param {string} element - Element name
    * @param {string} file
    */
@@ -67,7 +66,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * setSelectedDataFile
-   *
    * @param {string} file
    */
   setSelectedDataFile(file) {
@@ -78,7 +76,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * setAction
-   *
    * @param {string} action
    */
   setAction(action) {
@@ -91,7 +88,6 @@ class InstrumentManagerIndex extends Component {
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
-   *
    * @return {object}
    */
   fetchData() {
@@ -105,7 +101,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Trigger reportValidity() for form elements
-   *
    * @return {void}
    */
   triggerValidityReport() {
@@ -116,10 +111,9 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Upload instrument data
-   *
    * @param instrument  Instrument name
    */
-  uploadInstrumentData(instrument) {  // TODO: Move (back) to InstrumentDataUploadModal
+  uploadInstrumentData(instrument) { // TODO: Move (back) to InstrumentDataUploadModal
     const data = new FormData();
     data.append('instrument', instrument);
     data.append('action', this.state.action);
@@ -184,7 +178,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
-   *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
@@ -233,8 +226,6 @@ class InstrumentManagerIndex extends Component {
     }
 
 
-
-
     if (column === 'Upload') {
       return (
         <td style={{verticalAlign: 'middle'}}>
@@ -274,7 +265,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Renders the React component.
-   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -438,16 +428,16 @@ class InstrumentManagerIndex extends Component {
       return content;
     };
 
-    const openMultiInstrumentDataUpload = () => {
-      this.setState({showMultiInstrumentUploadModal: true});
-    }
-    const actions = [
-      // {
-      //   label: 'Multi Upload',
-      //   action: openMultiInstrumentDataUpload,
-      //   show: this.props.hasPermission('instrument_manager_write'),
-      // },
-    ];
+    // const openMultiInstrumentDataUpload = () => {
+    //   this.setState({showMultiInstrumentUploadModal: true});
+    // };
+    // const actions = [
+    //   // {
+    //   //   label: 'Multi Upload',
+    //   //   action: openMultiInstrumentDataUpload,
+    //   //   show: this.props.hasPermission('instrument_manager_write'),
+    //   // },
+    // ];
 
 
     return (
@@ -480,7 +470,6 @@ InstrumentManagerIndex.propTypes = {
 /**
  * Create a componenet to select permissions from a list of available
  * permissions.
- *
  * @param {object} props - react props
  * @return {JSX}
  */

@@ -231,8 +231,8 @@ class RedcapNotificationHandler
         $redcap_event = null;
         foreach ($redcap_events as $redcap_event_element) {
             if (
-                $redcap_event_element->unique_name
-                === $this->_redcap_notif->event_name
+                $redcap_event_element->unique_name ===
+                $this->_redcap_notif->event_name
             ) {
                 $redcap_event = $redcap_event_element;
                 break;

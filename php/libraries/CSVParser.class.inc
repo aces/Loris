@@ -50,7 +50,7 @@ class CSVParser
      *
      * @return bool                        Returns true if headers are valid
      */
-    protected function _validateHeaders(
+    function _validateHeaders(
         array|false $headers, array $expectedHeaders, bool $strict = false
     ): bool {
         if (!$headers || ($strict && count($headers) !== count($expectedHeaders))
@@ -72,30 +72,32 @@ class CSVParser
     /**
      * Parses the csv file
      *
-     * @param array  $expectedHeaders Expected headers. Leave empty to
-     *                                skip validation
-     * @param int $numRows            The number of rows to parse. -1 (default)
-     *                                will parse all rows
-     * @param callable $excludeRow    Function that takes the row and returns
-     *                                a boolean to determine if row should be
-     *                                excluded
-     * @param callable $combineRow    Function that takes the headers and the row
-     *                                and returns the row (default is zip-like mapping)
-     * @param string $separator       The field delimiter (one character only).
-     *                                Defaults as a comma.
-     * @param string $enclosure       The field enclosure character
-     *                                (one character only).
-     *                                Defaults as a double quotation mark
-     * @param string $escape          The escape character (one character only).
-     *                                Defaults as backslash
-     * @param int    $flags           Bit mask of the flags to set.
-     *                                See SplFileObject constants
-     *                                for the available flags.
-     *                                Default is:
-     *                                SplFileObject::READ_CSV |
-     *                                SplFileObject::DROP_NEW_LINE |
-     *                                SplFileObject::SKIP_EMPTY |
-     *                                SplFileObject::READ_AHEAD
+     * @param array    $expectedHeaders Expected headers. Leave empty to
+     *                                  skip validation
+     * @param int      $numRows         The number of rows to parse. -1 (default)
+     *                                  will parse all rows
+     * @param callable $excludeRow      Function that takes the row and returns
+     *                                  a boolean to determine if row should be
+     *                                  excluded
+     * @param callable $combineRow      Function that takes the headers and the row
+     *                                  and returns the row (default is zip-like
+     *                                  mapping)
+     * @param string   $separator       The field delimiter (one character only).
+     *                                  Defaults as a comma.
+     * @param string   $enclosure       The field enclosure character
+     *                                  (one character only).
+     *                                  Defaults as a double
+     *                                  quotation mark
+     * @param string   $escape          The escape character (one character only).
+     *                                  Defaults as backslash
+     * @param int      $flags           Bit mask of the flags to set.
+     *                                  See SplFileObject constants
+     *                                  for the available flags.
+     *                                  Default is:
+     *                                  SplFileObject::READ_CSV |
+     *                                  SplFileObject::DROP_NEW_LINE
+     *                                  | SplFileObject::SKIP_EMPTY |
+     *                                  SplFileObject::READ_AHEAD
      *
      * @return array                  Returns array of header->value mapping
      *
@@ -125,7 +127,7 @@ class CSVParser
         $csvHeaders = $fileObject->fgetcsv($separator, $enclosure, $escape);
 
         if ($numRows === 0) {
-          return $csvHeaders;
+            return $csvHeaders;
         }
 
         // Validate expected headers, if provided
@@ -138,7 +140,7 @@ class CSVParser
         }
 
         // Parse and create header => value mapping
-        $csv = [];
+        $csv      = [];
         $rowCount = 0;
         while ($row = $fileObject->fgetcsv($separator, $enclosure, $escape)) {
             if (is_callable($excludeRow)) {
@@ -150,7 +152,9 @@ class CSVParser
             $csv[] = is_callable($combineRow)
                 ? $combineRow($csvHeaders, $row)
                 : array_combine($csvHeaders, $row);
-            if (++$rowCount === $numRows) break;
+            if (++$rowCount === $numRows) {
+                break;
+            }
         }
         return $csv;
     }

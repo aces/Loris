@@ -2,13 +2,13 @@
 
 namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
-use LORIS\RedcapCSVParser;
+//use LORIS\RedcapCSVParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
 use LORIS\server_processes_manager as SP;
 
-require_once 'RedcapCSVParser.class.inc';
+//require_once 'RedcapCSVParser.class.inc';
 /**
  * Upload instrument data
  *
@@ -66,7 +66,7 @@ class Instrument_Data extends \NDB_Page
         $params = $request->getQueryParams();
         if (isset($params['instrument']) && isset($params['action'])) {
             $instrument = $params['instrument'];
-            $action = $params['action'];
+            $action     = $params['action'];
 
             if ($this->instrumentExists($instrument)) {
                 $headers = InstrumentDataParser::getCSVHeaders(
@@ -120,9 +120,11 @@ class Instrument_Data extends \NDB_Page
 
         $requestBody = (array) $request->getParsedBody();
 
-        if (
-            !isset($requestBody['action']) ||
-            !in_array($requestBody['action'], ['VALIDATE_SESSIONS', 'CREATE_SESSIONS'])
+        if (!isset($requestBody['action'])
+            || !in_array(
+                $requestBody['action'],
+                ['VALIDATE_SESSIONS', 'CREATE_SESSIONS']
+            )
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'You must select an action'
@@ -166,26 +168,31 @@ class Instrument_Data extends \NDB_Page
 
                 // Parse
                 try {
-                    $dataParser = new InstrumentDataParser(
+                    $dataParser        = new InstrumentDataParser(
                         $instrumentName,
                         $fileInfo,
                     );
-                    $createNonexistent = $requestBody['action'] === 'CREATE_SESSIONS';
+                    $createNonexistent
+                        = $requestBody['action'] === 'CREATE_SESSIONS';
 
-                    $data       = $dataParser->parseCSV($this->loris, $createNonexistent);
+                    $data = $dataParser->parseCSV($this->loris, $createNonexistent);
 
-                    $studyIDs   = [];
+                    $studyIDs = [];
                     if ($createNonexistent) {
-                        $studyIDs = array_reduce($data, function ($mapping, $row) {
-                            $studyID = $row['StudyID'];
-                            if (!in_array($studyID, $mapping)) {
-                                $mapping[] = $studyID;
-                            }
-                            return $mapping;
-                        }, []);
+                        $studyIDs = array_reduce(
+                            $data,
+                            function ($mapping, $row) {
+                                $studyID = $row['StudyID'];
+                                if (!in_array($studyID, $mapping)) {
+                                    $mapping[] = $studyID;
+                                }
+                                return $mapping;
+                            },
+                            []
+                        );
                     }
 
-                    $validData  = $dataParser->validateData(
+                    $validData = $dataParser->validateData(
                         $data,
                         [
                             'UserID'   => $userID,
@@ -241,10 +248,10 @@ class Instrument_Data extends \NDB_Page
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Multi-instrument not yet implemented'
             );
-//            $dataParser = new RedcapCSVParser(
-//                $fileInfo,
-//            );
-//            $result       = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
+            // $dataParser = new RedcapCSVParser(
+            //     $fileInfo,
+            // );
+            // $result = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(

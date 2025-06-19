@@ -331,10 +331,10 @@ class Notifications extends Endpoint
         $db->insert(
             'issues_comments',
             [
-                "issueID"       => $issueID,
-                "dateAdded"     => $now,
-                "addedBy"       => 'cbigr+dev@mcin.ca',
-                "issueComment"  => $error . " " . $data
+                "issueID"      => $issueID,
+                "dateAdded"    => $now,
+                "addedBy"      => 'cbigr+dev@mcin.ca',
+                "issueComment" => $error . " " . $data
             ]
         );
 

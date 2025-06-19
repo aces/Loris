@@ -526,9 +526,8 @@ class RedcapHttpClient
     ): bool {
         // REDCap PR diff: Use `array_find` polyfill or upgrade PHP.
         foreach ($instrument_event_mappings as $mapping) {
-            if (
-                $mapping->getEventName() === $event_name
-                    && $mapping->getFormName() === $instrument_name
+            if ($mapping->getEventName() === $event_name
+                && $mapping->getFormName() === $instrument_name
             ) {
                 return true;
             }
