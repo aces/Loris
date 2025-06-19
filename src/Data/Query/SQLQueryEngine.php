@@ -111,6 +111,7 @@ abstract class SQLQueryEngine implements QueryEngine
         \LORIS\Data\Query\QueryTerm $term,
         ?array $visitlist = null
     ) : iterable {
+	    error_log("999999999999");
         $this->resetEngineState();
         $this->addTable('candidate c');
         $this->addWhereClause("c.Active='Y'");

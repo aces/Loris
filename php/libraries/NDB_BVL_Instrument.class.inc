@@ -2228,7 +2228,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
-        ?\LORIS\Data\Query\QueryTerm $condition = null,
+	?\LORIS\Data\Query\QueryTerm $condition = null,
+	$v,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
@@ -2237,7 +2238,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $db = $this->loris->getNewDatabaseConnection();
         $db->setBuffering(false);
-
+	error_log("bulkLoadInstanceData");
+	error_log(print_r($v,true));
         $prepValues = [];
 
         if ($commentIDs !== null) {
@@ -2268,14 +2270,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
-        $params = [];
+	$params = [];
+	error_log("aaaa");
         if ($this->jsonData) {
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
                 $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
-            }
+	    }
+	         error_log("bbbb");
             if ($condition !== null) {
                 $fname = substr(
                     $condition->dictionary->getName(),
@@ -2312,9 +2316,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         $params
                     )
                     . ' ';
-                }
+		}
+		                 error_log("ccc");
+
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
-            }
+	    }
+	    error_log("1111111111"); error_log(print_r($condition->criteria));
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
@@ -2355,7 +2362,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             \Profiler::checkpoint("Finished query");
             return;
-        } else {
+	} else {
+
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
@@ -2390,8 +2398,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 )
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
-            }
-            $where = 'WHERE ' . join(' AND ', $conditions);
+	    }
+	    error_log("90090909909090");
+	    error_log(print_r($v,true));
+	    if (is_array($v) && !empty($v)) {
+    $visitString = "('" . implode("','", $v) . "')";
+    $where = 'WHERE ' . join(' AND ', $conditions) . ' AND s.Visit_label IN ' . $visitString;
+} else {
+    $where = 'WHERE ' . join(' AND ', $conditions);
+}
+
             $query = "SELECT
                 c.CandID as CandID,
                 t.CommentID as CommentID,
@@ -2405,8 +2421,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
-
-		 $where";
+                     
+		    $where";
+	     error_log(print_r($where,true));
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
             foreach ($data as $row) {

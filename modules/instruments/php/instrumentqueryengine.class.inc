@@ -128,7 +128,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         // longest prefix match to find out what the instrument for the fieldname is.
         $DB = $this->loris->getNewDatabaseConnection();
         $DB->setBuffering(false);
-
+	error_log("fdfdsfdlskjfldsaflkfdjlkaf");
+	error_log(print_r($visitlist,true));
         $rows = $DB->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Length(Test_name) DESC",
             []
@@ -150,8 +151,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         \Profiler::checkpoint("After NDB_BVL_Instrument::factory for $testname");
         $values = $inst->bulkLoadInstanceData(
             null,
-            $term,
-        );
+	    $term,
+	    $visitlist,
+	);
+	        error_log("term:");
+
+	error_log(print_r($term,true));
         foreach ($values as $match) {
             yield $match->getCandID();
         }
@@ -217,7 +222,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         // so get the full data dictionary and go through each to see if
         // it's the same as $item
         $field2instMap = [];
-
+	error_log("getCandidateData:======");
+	error_log(print_r( $visitlist,true));
         $fullDictionary = $this->getDataDictionary();
         foreach ($fullDictionary as $category) {
             $instrument = $category->getName();
@@ -278,7 +284,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-                array_keys($commentID2CandID)
+		    array_keys($commentID2CandID),
+		    null,
+		    null
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(

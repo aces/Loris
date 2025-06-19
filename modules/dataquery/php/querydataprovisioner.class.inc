@@ -25,7 +25,9 @@ class QueryDataProvisioner extends ProvisionerInstance
         protected \LORIS\LorisInstance $loris,
         protected QueryRun $QueryRun,
     ) {
-        $this->query = $QueryRun->getQuery();
+	    $this->query = $QueryRun->getQuery();
+	    error_log("=====");
+    error_log(print_r($this->query,true));
     }
 
     /**
@@ -81,8 +83,8 @@ class QueryDataProvisioner extends ProvisionerInstance
 
             $dataiterators[$modulename] = $engine->getCandidateData(
                 $fielddict,
-                $candidates,
-                null
+		$candidates,
+		null
             );
         }
         return $this->_mergeIterators($candidates, $dataiterators, $fieldsarray);
