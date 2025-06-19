@@ -128,8 +128,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         // longest prefix match to find out what the instrument for the fieldname is.
         $DB = $this->loris->getNewDatabaseConnection();
         $DB->setBuffering(false);
-	error_log("fdfdsfdlskjfldsaflkfdjlkaf");
-	error_log(print_r($visitlist,true));
+
         $rows = $DB->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Length(Test_name) DESC",
             []
@@ -154,9 +153,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 	    $term,
 	    $visitlist,
 	);
-	        error_log("term:");
 
-	error_log(print_r($term,true));
         foreach ($values as $match) {
             yield $match->getCandID();
         }
