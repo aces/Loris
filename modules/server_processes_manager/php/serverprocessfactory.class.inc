@@ -57,7 +57,7 @@ class ServerProcessFactory
                 new ParseInstrumentDataServerProcess(
                     '',
                     '',
-                    '',
+                    false,
                     intval($dbRow['id']),
                     intval($dbRow['pid']),
                     $dbRow['stdout_file'],

@@ -441,6 +441,11 @@ class InstrumentDataParser extends CSVParser
                         );
 
                         // Create generic instrument
+                        /**
+                         * Instrument object
+                         *
+                         * @var \NDB_BVL_Instrument $instrument
+                         */
                         $instrument = \NDB_BVL_Instrument::factory(
                             $loris,
                             $instrumentName,
@@ -546,9 +551,3 @@ class InstrumentDataParser extends CSVParser
         }
     }
 }
-
-// TODO: Tech debt
-/*
- * Seems like Examiner can't be put in the csv --
- * so selected in dropdown and one per file
- */

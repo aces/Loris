@@ -153,7 +153,7 @@ class Instrument_Data extends \NDB_Page
                 $this->_insertCSVFileEntry($fileInfo->getFilename());
 
                 if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
-                    // Run as background task TODO: ADD ACTION HERE
+                    // Run as background task
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->parseInstrumentData(
                         $instrumentName,
