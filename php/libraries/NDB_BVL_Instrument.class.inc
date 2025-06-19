@@ -2404,8 +2404,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     );
 
                     $visitString = '(' . implode(',', $vescaped) . ')';
-                $where       = 'WHERE ' . join(' AND ', $conditions) .
-                ' AND s.Visit_label IN ' . $visitString;
+                    $where       = 'WHERE ' . join(' AND ', $conditions) .
+                                   ' AND s.Visit_label IN ' . $visitString;
             } else {
                 $where = 'WHERE ' . join(' AND ', $conditions);
             }
