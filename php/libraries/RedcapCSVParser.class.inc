@@ -32,10 +32,11 @@ class RedcapCSVParser extends CSVParser
     /**
      * Construct parser
      *
-     * @param SplFileInfo $csvFile csv file path
-     * @param bool $trimInstrumentName whether instrument name
-     *                                              should be trimmed from columns
-     * @param array $importableInstruments List of importable Redcaop instruments
+     * @param SplFileInfo $csvFile               csv file path
+     * @param array       $importableInstruments Importable Redcaop instruments
+     * @param bool        $trimInstrumentName    whether instrument name
+     *                                           should be trimmed from
+     *                                           columns
      *
      * @return void
      */
@@ -43,17 +44,16 @@ class RedcapCSVParser extends CSVParser
         SplFileInfo $csvFile,
         array       $importableInstruments = [],
         bool        $trimInstrumentName = false
-    )
-    {
+    ) {
         parent::__construct($csvFile);
-        $this->trimInstrumentName = $trimInstrumentName;
+        $this->trimInstrumentName    = $trimInstrumentName;
         $this->importableInstruments = $importableInstruments;
     }
 
     /**
      * Parse the Data Dictionary csv file
      *
-     * @param LorisInstance $loris      Loris instance
+     * @param LorisInstance $loris Loris instance
      *
      * @return RedcapDictionaryRecord[] Returns array RedcapDictionaryRecord
      * @throws RuntimeException
@@ -68,11 +68,12 @@ class RedcapCSVParser extends CSVParser
                 function ($row) {
                     $instrumentName = $row[1];
 
-                    if (
-                        count($this->importableInstruments) > 0 &&
-                        !in_array($instrumentName, $this->importableInstruments, true)
+                    if (count($this->importableInstruments) > 0
+                        && !in_array(
+                            $instrumentName, $this->importableInstruments, true
+                        )
                     ) {
-                        $msg = " -> instrument not importable '$instrumentName', skipped.\n";
+                        $msg = " -> instrument '$instrumentName' skipped.\n";
                         error_log($msg);
                         return true;
                     }
@@ -109,7 +110,7 @@ class RedcapCSVParser extends CSVParser
     /**
      * Separate parsed array of RedcapDictionaryRecord to LINST instruments
      *
-     * @param RedcapDictionaryRecord[] $dataDict Data dictionary
+     * @param RedcapDictionaryRecord[] $parsedCSV Parsed CSV file
      *
      * @return array[]
      */
@@ -128,16 +129,15 @@ class RedcapCSVParser extends CSVParser
     /**
      * Convert array of RedcapDictionaryRecord to LINST file
      *
-     * @param array[] $instruments          LINST instruments
-     * @param string $outputFolder          Instrument output folder
-     * @param string $instrumentTitleMap    Instrument name map
+     * @param array[] $instruments        LINST instruments
+     * @param string  $outputFolder       Instrument output folder
+     * @param string  $instrumentTitleMap Instrument name map
      *
      * @return void
      */
     public static function createLINSTFiles(
         array $instruments, string $outputFolder, $instrumentTitleMap = []
-    ): void
-    {
+    ): void {
         // write instrument
         foreach ($instruments as $instrumentName => $instrument) {
             self::createLINSTFile(
@@ -213,17 +213,23 @@ class RedcapCSVParser extends CSVParser
     /**
      * Parse the Instrument Data csv file
      *
-     * @param LorisInstance $loris      Loris instance
+     * @param LorisInstance $loris Loris instance
+     * @param array         $instrumentNames List of instrument names
+     * @param string        $userID User ID
      *
      * @return RedcapDictionaryRecord[] Returns array RedcapDictionaryRecord
      * @throws RuntimeException
      */
-    public function parseDataCSV(LorisInstance $loris, array $instrumentNames, string $userID): array
+    public function parseDataCSV(
+        LorisInstance $loris,
+        array $instrumentNames,
+        string $userID
+    ): array
     {
         $results = [];
         try {
             $expectedHeaders = [];
-            $parsedCSV = $this->parse($expectedHeaders);
+            $parsedCSV       = $this->parse($expectedHeaders);
 
             foreach ($instrumentNames as $instrumentName) {
                 $instrumentHeaders = InstrumentDataParser::getCSVHeaders(
@@ -232,10 +238,11 @@ class RedcapCSVParser extends CSVParser
                 );
 
                 $instrumentData = array_map(
-                    function($csvRow) use ($instrumentHeaders) {
+                    function ($csvRow) use ($instrumentHeaders) {
                         return array_filter(
                             $csvRow,
-                            function($data, $header) use ($csvRow, $instrumentHeaders) {
+                            function ($data, $header)
+                            use ($csvRow, $instrumentHeaders) {
                                 return in_array($header, $instrumentHeaders);
                             },
                             ARRAY_FILTER_USE_BOTH
@@ -244,17 +251,17 @@ class RedcapCSVParser extends CSVParser
                     $parsedCSV
                 );
 
-                $validData  = InstrumentDataParser::validateData(
+                $validData = InstrumentDataParser::validateData(
                     $instrumentData,
                     [
                         'UserID'   => $userID,
                         'Examiner' => $userID
                     ]
-                );
+                );c
 
                 // TODO: Check for errors in above paylaod ($validData['errors'])
 
-                $result = InstrumentDataParser::insertInstrumentData(
+                $result    = InstrumentDataParser::insertInstrumentData(
                     $loris,
                     $validData['data'],
                     $instrumentName,

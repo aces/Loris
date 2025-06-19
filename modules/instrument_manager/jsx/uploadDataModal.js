@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
-import {RadioElement} from "../../../jsx/Form";
+import {RadioElement} from '../../../jsx/Form';
 
 /**
  * Instrument Upload Form component
@@ -19,7 +19,9 @@ class InstrumentDataUploadModal extends Component {
     this.isMultiInstrument = this.props.instrumentList.length > 1;
     this.state = {
       selectedDataFile: null,
-      selectedInstruments: this.isMultiInstrument ? [] : this.props.instrumentList,
+      selectedInstruments: this.isMultiInstrument
+        ? []
+        : this.props.instrumentList,
       submitted: false,
       createParticipants: null,
     };
@@ -32,7 +34,6 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Update selectedDataFile on file selection
-   *
    * @param {string} element - Element name
    * @param {string} file
    */
@@ -46,9 +47,9 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Update selectedDataFile on file selection
-   *
    * @param {string} element - Element name
    * @param {string} file
+   * @param option
    */
   handleRadioChange(element, option) {
     this.setState({
@@ -60,7 +61,6 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Upload instrument data
-   *
    * @param instrument  Instrument name
    */
   uploadInstrumentData(instrument) {
@@ -98,7 +98,6 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Display upload response
-   *
    * @param data    Response data
    */
   displayResponse = (data) => {
@@ -125,7 +124,6 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Renders the React component.
-   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -142,7 +140,10 @@ class InstrumentDataUploadModal extends Component {
             <FileElement
               name={'instrument_data_file'}
               label={
-                (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
+                (
+                  !this.isMultiInstrument ||
+                  this.state.selectedInstruments.length === 1
+                )
                   ? `Upload csv file for ${this.state.selectedInstruments[0]}`
                   : 'Upload csv file for any number of instruments'
               }
@@ -153,13 +154,13 @@ class InstrumentDataUploadModal extends Component {
           </div>
         </div>
 
-        {/*{*/}
+        {/* {*/}
         {/*  this.isMultiInstrument && (*/}
         {/*    <div style={{display: 'flex', justifyContent: 'center'}}>*/}
         {/*      Select instruments*/}
         {/*    </div>*/}
         {/*  )*/}
-        {/*}*/}
+        {/* }*/}
 
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <RadioElement
@@ -180,14 +181,20 @@ class InstrumentDataUploadModal extends Component {
 
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <a
-            className={`btn btn-default${this.state.createParticipants === null ? ' disabled' : ''}`}
+            className={`btn btn-default${this.state.createParticipants === null
+              ? ' disabled'
+              : ''
+            }`}
             href={
               loris.BaseURL.concat('/instrument_manager/instrument_data/?') + (
-                (!this.isMultiInstrument || this.state.selectedInstruments.length === 1)
+                (
+                  !this.isMultiInstrument ||
+                  this.state.selectedInstruments.length === 1
+                )
                   ? `instrument=${this.state.selectedInstruments[0]}`
                   : this.state.selectedInstruments.map(
-                      instrumentName => `instruments=${instrumentName}`
-                    ).join('&') // TODO: Reconsider. Can potentially be too long for max length
+                    (instrumentName) => `instruments=${instrumentName}`
+                  ).join('&') // TODO: Reconsider (max URL length)
               ) +
               `&action=${this.state.createParticipants}`
             }
@@ -199,7 +206,7 @@ class InstrumentDataUploadModal extends Component {
         </div>
 
 
-        {/*<div style={{display: 'flex', justifyContent: 'center'}}>*/}
+        {/* <div style={{display: 'flex', justifyContent: 'center'}}>*/}
         {/*  <button*/}
         {/*    className='btn btn-primary'*/}
         {/*    style={{marginTop: '5px'}}*/}
@@ -244,7 +251,7 @@ class InstrumentDataUploadModal extends Component {
         {/*  >*/}
         {/*    Submit*/}
         {/*  </button>*/}
-        {/*</div>*/}
+        {/* </div>*/}
       </div>
     );
   }
