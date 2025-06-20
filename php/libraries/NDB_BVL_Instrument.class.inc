@@ -3026,7 +3026,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // additional fields: fields outside instrument fields
         // Note: additional fields are not an issue with JSON instruments
-        // but only with instrument having their own table.
+        // but only with instruments having their own table.
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
         if (!empty($additionalKeys)) {
             $i = implode(",", $additionalKeys);
