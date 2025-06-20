@@ -1736,7 +1736,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @return void
      */
-    public function testValidateMissingKeys(): void
+    public function testValidateMissingRequiredKeys(): void
     {
         $this->_setUpMockDB();
         $this->_setTableData();
@@ -1746,12 +1746,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         // data - complete keys + empty values
         $instrumentQuestions = [
             // p1
-            "arthritis"                       => null, // required
+            // "arthritis"                       => null, // required
             "arthritis_age"                   => null,
             "pulmonary_issues"                => null,
             "pulmonary_issues_specific"       => null,
             // p2
-            "hypertension"                    => null, // required
+            // "hypertension"                    => null, // required
             "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
             // p3
@@ -1769,14 +1769,13 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
 
         // missing keys, removing two required element
-        $missingFields = $instrumentQuestions;
-        unset($missingFields["arthritis"]);
-        unset($missingFields["hypertension"]);
+        unset($instrumentQuestions["arthritis"]);
+        unset($instrumentQuestions["hypertension"]);
         $this->expectException("LorisException");
         $this->expectExceptionMessage(
             "Missing required field(s): arthritis,hypertension."
         );
-        $this->_instrument->validate($missingFields);
+        $this->_instrument->validate($instrumentQuestions);
     }
 
     /**
@@ -1820,14 +1819,13 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
 
         // additional keys, adding two new unexpected keys
-        $additionalFields        = $instrumentQuestions;
-        $additionalFields["aaa"] = 123;
-        $additionalFields["bbb"] = "a text";
+        $instrumentQuestions["aaa"] = 123;
+        $instrumentQuestions["bbb"] = "a text";
 
         // expect error on these 2 additional fields
         $this->expectException("LorisException");
         $this->expectExceptionMessage("Additional field(s) not permitted: aaa,bbb.");
-        $this->_instrument->validate($additionalFields);
+        $this->_instrument->validate($instrumentQuestions);
     }
 
     /**
