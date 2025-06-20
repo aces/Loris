@@ -186,10 +186,10 @@ class InstrumentDataParser extends CSVParser
                 try {
                     // Validate that session exists
                     $sessionID = self::obtainSessionID(
-                        $dataRow['PSCID'],
+                        $dataRow['PSCID'] ?? $dataRow['StudyID'],
                         $dataRow['Visit_label']
                     );
-                } catch (\LorisException $e) {
+                } catch (\LorisException | \TypeError $e) {
                     if (!$createNonexistent) {
                         throw new \Exception($e->getMessage());
                     }
@@ -311,17 +311,27 @@ class InstrumentDataParser extends CSVParser
                         );
 
                         // Create externalID rel
+                        $projectExternalID = $db->pselectOne(
+                            "SELECT ProjectExternalID
+                            FROM Project_external
+                            JOIN Project USING (Name)
+                            WHERE ProjectID = :projectID",
+                            ['projectID' => $projectID]
+                        );
+
                         $db->insert(
                             'candidate_project_extid_rel',
                             [
                                 'CandID'            => $candID,
-                                'ProjectExternalID' => $projectID,
+                                'ProjectExternalID' => $projectExternalID,
                                 'ExtStudyID'        => $dataRow['StudyID']
                             ]
                         );
                     }
 
-                    $candidate = \Candidate::singleton($candID);
+                    $candidate = \Candidate::singleton(
+                        new \LORIS\StudyEntities\Candidate\CandID(strval($candID))
+                    );
 
                     // Create Session
                     $session = \TimePoint::createNew(
@@ -343,6 +353,7 @@ class InstrumentDataParser extends CSVParser
                 unset($dataRow['StudyID']);
                 unset($dataRow['DOB']);
                 unset($dataRow['Age']);
+                unset($dataRow['Sex']);
                 unset($dataRow['EDC']);
                 unset($dataRow['Project']);
                 unset($dataRow['Site']);
@@ -406,8 +417,9 @@ class InstrumentDataParser extends CSVParser
      * @param string        $instrumentName Instrument name
      * @param string        $csvFilename    CSV file name
      *
-     * @return array    Returns insertion results
-     * @throws NotFound
+     * @return   array    Returns insertion results
+     * @throws   NotFound
+     * @suppress PhanNonClassMethodCall     For getCommentID() on NDB_BVL_Instrument
      */
     public static function insertInstrumentData(
         LorisInstance $loris,

@@ -223,11 +223,19 @@ class Instrument_Data extends \NDB_Page
                     if ($createNonexistent) {
                         $db = $this->loris->getDatabaseConnection();
                         $studyIDMapping = $db->pselectWithIndexKey(
-                            "SELECT ExtStudyID, CandID
+                            'SELECT ExtStudyID, CandID
                             FROM candidate_project_extid_rel
-                            WHERE ExtStudyID IN (" .
-                            join(',', $studyIDs) .
-                            ")",
+                            WHERE ExtStudyID IN (' .
+                            join(
+                                ',',
+                                array_map(
+                                    function ($id) {
+                                        return "'$id'";
+                                    },
+                                    $studyIDs
+                                )
+                            ) .
+                            ')',
                             [],
                             'ExtStudyID'
                         );
