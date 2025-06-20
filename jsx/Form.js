@@ -2479,7 +2479,7 @@ export class RadioElement extends React.Component {
     const styleRow = {
       display: 'flex',
       flexDirection: this.props.vertical ? 'column' : 'row',
-      flexWrap: 'wrap',
+      flexWrap: this.props.noWrap ? 'nowrap' : 'wrap',
       width: '100%',
     };
     const styleColumn = {
@@ -2491,6 +2491,8 @@ export class RadioElement extends React.Component {
     const styleContainer = {
       paddingTop: '7px',
       cursor: 'pointer',
+      display: 'flex',
+      flexDirection: this.props.verticalOptions ? 'column' : 'row',
     };
     const styleLabel = {
       margin: 0,
@@ -2587,6 +2589,8 @@ RadioElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   vertical: PropTypes.bool,
+  noWrap: PropTypes.bool,
+  verticalOptions: PropTypes.bool,
   checked: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
@@ -2596,6 +2600,8 @@ RadioElement.defaultProps = {
   disabled: false,
   required: false,
   vertical: false,
+  noWrap: false,
+  verticalOptions: false,
   errorMessage: null,
   elementClass: 'row form-group',
   onUserInput: function() {
