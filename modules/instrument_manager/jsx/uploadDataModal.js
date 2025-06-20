@@ -28,7 +28,6 @@ class InstrumentDataUploadModal extends Component {
 
     this.dataFileSelected = this.dataFileSelected.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
-    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
     this.displayResponse = this.displayResponse.bind(this);
   }
 
@@ -56,44 +55,6 @@ class InstrumentDataUploadModal extends Component {
       createParticipants: option,
     });
     this.props.setAction(option);
-  }
-
-
-  /**
-   * Upload instrument data
-   * @param instrument  Instrument name
-   */
-  uploadInstrumentData(instrument) {
-    const data = new FormData();
-    data.append('instrument', instrument);
-    data.append('data_file', this.state.selectedDataFile);
-
-    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
-
-    return new Promise(
-      (resolve, reject) => {
-        fetch(url, {
-          method: 'POST',
-          credentials: 'same-origin',
-          body: data,
-        }).then((response) => {
-          if (!response.ok) {
-            console.error(response.status);
-            throw new Error('Unexpected error');
-          }
-          return response.json();
-        }).then((data) => {
-          this.displayResponse(data);
-          resolve();
-        }).catch((e) => {
-          swal.fire({
-            title: 'No data was uploaded',
-            type: 'warning',
-            html: e.message,
-          });
-          reject();
-        });
-      });
   }
 
   /**

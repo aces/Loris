@@ -113,7 +113,7 @@ class InstrumentManagerIndex extends Component {
    * Upload instrument data
    * @param instrument  Instrument name
    */
-  uploadInstrumentData(instrument) { // TODO: Move (back) to InstrumentDataUploadModal
+  uploadInstrumentData(instrument) {
     const data = new FormData();
     data.append('instrument', instrument);
     data.append('action', this.state.action);
