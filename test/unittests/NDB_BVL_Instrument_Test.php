@@ -1746,7 +1746,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // using factory to init the instrument
         // not doing doe snot pass the comparison
         // (not the full list of fields)
-        $instrument = NDB_BVL_Instrument::factory(
+        $instrument = \NDB_BVL_Instrument::factory(
             new \LORIS\LorisInstance(
                 $this->_DB,
                 $this->_config,
@@ -1792,7 +1792,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // using factory to init the instrument
         // not doing doe snot pass the comparison
         // (not the full list of fields)
-        $instrument = NDB_BVL_Instrument::factory(
+        $instrument = \NDB_BVL_Instrument::factory(
             new \LORIS\LorisInstance(
                 $this->_DB,
                 $this->_config,
@@ -1854,7 +1854,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // using factory to init the instrument
         // not doing doe snot pass the comparison
         // (not the full list of fields)
-        $instrument = NDB_BVL_Instrument::factory(
+        $instrument = \NDB_BVL_Instrument::factory(
             new \LORIS\LorisInstance(
                 $this->_DB,
                 $this->_config,
