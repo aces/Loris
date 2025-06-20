@@ -216,8 +216,6 @@ abstract class SQLQueryEngine implements QueryEngine
         $query .= ' ORDER BY c.CandID';
         $rows   = $DB->prepare($query);
 
-        error_log("***** query is $query\n");
-        error_log("***** prepbindings = " . print_r($prepbindings, true));
         $result = $rows->execute($prepbindings);
 
         if ($result === false) {
