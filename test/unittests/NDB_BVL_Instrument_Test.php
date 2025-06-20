@@ -1743,39 +1743,35 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
 
-        // data - complete keys + empty values
+        // using factory to init the instrument
+        // not doing doe snot pass the comparison
+        // (not the full list of fields)
+        $instrument = NDB_BVL_Instrument::factory(
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            ),
+            "medical_history"
+        );
+
+        // simulate data - required field only
         $instrumentQuestions = [
-            // p1
-            // "arthritis"                       => null, // required
-            "arthritis_age"                   => null,
-            "pulmonary_issues"                => null,
-            "pulmonary_issues_specific"       => null,
-            // p2
-            // "hypertension"                    => null, // required
-            "hypertension_while_pregnant"     => null,
-            "hypertension_while_pregnant_age" => null,
-            // p3
-            "concussion_or_head_trauma"       => null, // required
-            "concussion_1_description"        => null,
-            "concussion_1_hospitalized"       => null,
-            "concussion_1_age"                => null,
-            "concussion_2_description"        => null,
-            "concussion_2_hospitalized"       => null,
-            "concussion_2_age"                => null,
-            "concussion_3_description"        => null,
-            "concussion_3_hospitalized"       => null,
-            "concussion_3_age"                => null,
-            "current_concussion_symptoms"     => null,
+            "arthritis"                 => null,
+            "hypertension"              => null,
+            "concussion_or_head_trauma" => null,
         ];
 
         // missing keys, removing two required element
         unset($instrumentQuestions["arthritis"]);
         unset($instrumentQuestions["hypertension"]);
+
+        //
         $this->expectException("LorisException");
         $this->expectExceptionMessage(
             "Missing required field(s): arthritis,hypertension."
         );
-        $this->_instrument->validate($instrumentQuestions);
+        $instrument->validate($instrumentQuestions);
     }
 
     /**
@@ -1792,6 +1788,18 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
+
+        // using factory to init the instrument
+        // not doing doe snot pass the comparison
+        // (not the full list of fields)
+        $instrument = NDB_BVL_Instrument::factory(
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            ),
+            "medical_history"
+        );
 
         // data - complete keys + empty values
         $instrumentQuestions = [
@@ -1825,44 +1833,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // expect error on these 2 additional fields
         $this->expectException("LorisException");
         $this->expectExceptionMessage("Additional field(s) not permitted: aaa,bbb.");
-        $this->_instrument->validate($instrumentQuestions);
-    }
-
-    /**
-     * Test that check validation method with received data.
-     * Keys validation case - nominal case.
-     *
-     * @covers NDB_BVL_Instrument::validate
-     *
-     * @return void
-     */
-    public function testValidateRequiredKeys(): void
-    {
-        $this->_setUpMockDB();
-        $this->_setTableData();
-        $this->_instrument->table     = 'medical_history';
-        $this->_instrument->commentID = 'commentID1';
-
-        // data - only required fields keys + empty values
-        $instrumentQuestions = [
-            "arthritis"                 => null,
-            "hypertension"              => null,
-            "concussion_or_head_trauma" => null,
-        ];
-
-        // all required elements are null/yes/no options.
-        $this->_instrument->validate($instrumentQuestions);
-
-        // removing two required field
-        unset($instrumentQuestions['hypertension']);
-        unset($instrumentQuestions['concussion_or_head_trauma']);
-
-        // expects one error on this missing key
-        $this->expectException("LorisException");
-        $this->expectExceptionMessage(
-            "Missing required field(s): hypertension,concussion_or_head_trauma."
-        );
-        $this->_instrument->validate($instrumentQuestions);
+        $instrument->validate($instrumentQuestions);
     }
 
     /**
@@ -1879,6 +1850,18 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->commentID = 'commentID1';
+
+        // using factory to init the instrument
+        // not doing doe snot pass the comparison
+        // (not the full list of fields)
+        $instrument = NDB_BVL_Instrument::factory(
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            ),
+            "medical_history"
+        );
 
         // data - complete keys + empty values
         $instrumentQuestions = [
@@ -1906,7 +1889,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
 
         // all required elements are null/yes/no options.
-        $this->_instrument->validate($instrumentQuestions);
+        $instrument->validate($instrumentQuestions);
     }
 
     /**
