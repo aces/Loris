@@ -471,13 +471,23 @@ UPDATE parameter_candidate SET CandID=(SELECT ID from candidate c WHERE c.CandID
 ALTER TABLE parameter_candidate CHANGE CandID CandidateID int(10) unsigned NOT NULL;
 ALTER TABLE parameter_candidate ADD CONSTRAINT FK_parameter_candidate_2 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE candidate_diagnosis_evolution_rel DROP CONSTRAINT `PK_candidate_diagnosis_evolution_rel`;
-ALTER TABLE candidate_diagnosis_evolution_rel DROP CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID`;
-UPDATE candidate_diagnosis_evolution_rel SET CandID=(SELECT ID from candidate c WHERE c.CandID=candidate_diagnosis_evolution_rel.CandID);
-ALTER TABLE candidate_diagnosis_evolution_rel CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE candidate_diagnosis_evolution_rel ADD CONSTRAINT PK_candidate_diagnosis_evolution_rel PRIMARY KEY (CandidateID, DxEvolutionID);
-ALTER TABLE candidate_diagnosis_evolution_rel ADD CONSTRAINT FK_candidate_diagnosis_evolution_rel_CandID FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE candidate_diagnosis_evolution_rel DROP FOREIGN KEY FK_candidate_diagnosis_evolution_rel_CandID;
+ALTER TABLE candidate_diagnosis_evolution_rel DROP PRIMARY KEY;
+UPDATE candidate_diagnosis_evolution_rel AS rel
+JOIN candidate AS c ON rel.CandID = c.CandID
+SET rel.CandID = c.ID;
+ALTER TABLE candidate_diagnosis_evolution_rel
+CHANGE CandID CandidateID INT(10) UNSIGNED NOT NULL;
+ALTER TABLE candidate_diagnosis_evolution_rel
+ADD CONSTRAINT PK_candidate_diagnosis_evolution_rel PRIMARY KEY (CandidateID, DxEvolutionID);
+ALTER TABLE candidate_diagnosis_evolution_rel
+ADD CONSTRAINT FK_candidate_diagnosis_evolution_rel_CandID
+FOREIGN KEY (CandidateID) REFERENCES candidate(ID)
+ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Changes references to candidate.CandID that were NOT FK. Add FK
 UPDATE feedback_bvl_thread SET CandID=(SELECT ID from candidate c WHERE c.CandID=feedback_bvl_thread.CandID);
