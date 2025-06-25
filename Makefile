@@ -3,7 +3,7 @@
 all: locales VERSION
 	composer install --no-dev
 	npm ci
-	npm run build
+	NODE_OPTIONS=--max_old_space_size=4096 npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -18,7 +18,7 @@ jsdev:
 	npm ci
 
 fastdev: VERSION
-	npm run compile
+	NODE_OPTIONS=--max_old_space_size=4096 npm run compile
 
 jslatest: clean
 	rm -rf package-lock.json
