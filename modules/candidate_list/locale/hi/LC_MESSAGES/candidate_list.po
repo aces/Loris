@@ -22,12 +22,10 @@ msgid "Access Profile"
 msgstr "प्रोफ़ाइल तक पहुँचें"
 
 
-
 msgid "Visit Count"
 msgstr "आगंतुक गणना"
 
 msgid "Open Profile"
 msgstr "प्रोफ़ाइल खोलें"
-
 
 

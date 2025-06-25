@@ -175,6 +175,10 @@ issue_tracker: modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo
 
 candidate_list: modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
+<<<<<<< HEAD
+=======
+	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
+>>>>>>> 91fe5a52b (Changes to add Hindi)
 	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 

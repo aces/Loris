@@ -26,19 +26,19 @@ msgid "DEV"
 msgstr "डेव"
 
 msgid "Affiliations"
-msgstr "संबद्धता"
+msgstr "अफिलिएशन्स"
 
 msgid "Site Affiliation"
-msgstr "साइट संबद्धता"
+msgstr "साइट अफिलिएशन"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धताएँ"
+msgstr "साइट अफिलिएशन्स"
 
 msgid "Project Affiliation"
-msgstr "परियोजना संबद्धता"
+msgstr "प्रोजेक्ट अफिलिएशन"
 
 msgid "Project Affiliations"
-msgstr "परियोजना संबद्धताएँ"
+msgstr "प्रोजेक्ट अफिलिएशन्स"
 
 msgid "Log Out"
 msgstr "लॉग आउट"
@@ -57,7 +57,6 @@ msgstr "मेरी पसंद"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
-
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -79,7 +78,7 @@ msgstr "उपकरण"
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr "नैदानिक"
+msgstr "क्लिनिकल"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -111,7 +110,7 @@ msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "समय बिंदु"
+msgstr "टाइमपॉइंट"
 
 # Common select option labels
 msgid "Yes"
@@ -130,6 +129,19 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
+# Filters
+msgid "Selection Filter"
+msgstr "सेलेक्शन फ़िल्टर"
+
+msgid "Show Filters"
+msgstr "फ़िल्टर दिखाएँ"
+
+msgid "Hide Filters"
+msgstr "फ़िल्टर छुपाएँ"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -138,7 +150,7 @@ msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr "दौरे का लेबल"
+msgstr "भेंट लेबल"
 
 msgid "Site"
 msgstr "साइट"
