@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
+import i18n from 'I18nSetup';
 
 /**
  * Conflict Resolver class.
@@ -72,6 +73,7 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'conflict_resolver', {});
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(<ConflictResolver />);
