@@ -1740,38 +1740,42 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table     = 'medical_history';
-        $this->_instrument->commentID = 'commentID1';
 
-        // using factory to init the instrument
-        // not doing doe snot pass the comparison
-        // (not the full list of fields)
-        $instrument = \NDB_BVL_Instrument::factory(
-            new \LORIS\LorisInstance(
-                $this->_DB,
-                $this->_config,
-                [],
-            ),
-            "medical_history"
+        $this->_instrument = $this->getMockBuilder(
+            \NDB_BVL_Instrument::class
+        )->disableOriginalConstructor()
+            ->onlyMethods(
+                ["getFullName",
+                    "getSubtestList",
+                    "getDataDictionary"
+                ]
+            )->getMock();
+
+        $this->_instrument->method('getDataDictionary')->willReturn(
+            [
+                (object)['fieldname' => 'arthritis'],
+                (object)['fieldname' => 'hypertension'],
+                (object)['fieldname' => 'concussion_or_head_trauma'],
+            ]
         );
 
-        // simulate data - required field only
-        $instrumentQuestions = [
-            "arthritis"                 => null,
-            "hypertension"              => null,
-            "concussion_or_head_trauma" => null,
-        ];
+        // Stub abstract methods so PHPUnit can instantiate the mock
+        $this->_instrument->method('getFullName')->willReturn('Test Instrument');
+        $this->_instrument->method('getSubtestList')->willReturn([]);
 
-        // missing keys, removing two required element
-        unset($instrumentQuestions["arthritis"]);
-        unset($instrumentQuestions["hypertension"]);
+        $this->_instrument->_requiredElements = ['arthritis', 'hypertension'];
 
-        //
-        $this->expectException("LorisException");
+        // Now call validate with data missing required fields
+        $this->expectException(\LorisException::class);
         $this->expectExceptionMessage(
-            "Missing required field(s): arthritis,hypertension."
+            'Missing required field(s): arthritis,hypertension'
         );
-        $instrument->validate($instrumentQuestions);
+
+        $this->_instrument->validate(
+            [
+                'concussion_or_head_trauma' => null,
+            ]
+        );
     }
 
     /**
@@ -1792,14 +1796,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // using factory to init the instrument
         // not doing doe snot pass the comparison
         // (not the full list of fields)
-        $instrument = \NDB_BVL_Instrument::factory(
-            new \LORIS\LorisInstance(
-                $this->_DB,
-                $this->_config,
-                [],
-            ),
-            "medical_history"
-        );
 
         // data - complete keys + empty values
         $instrumentQuestions = [
@@ -1832,8 +1828,11 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         // expect error on these 2 additional fields
         $this->expectException("LorisException");
-        $this->expectExceptionMessage("Additional field(s) not permitted: aaa,bbb.");
-        $instrument->validate($instrumentQuestions);
+        $this->expectExceptionMessageMatches(
+            '/Additional field\(s\) not permitted:.*aaa,bbb/'
+        );
+
+        $this->_instrument->validate($instrumentQuestions);
     }
 
     /**
@@ -1848,33 +1847,29 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->table     = 'medical_history';
-        $this->_instrument->commentID = 'commentID1';
 
-        // using factory to init the instrument
-        // not doing doe snot pass the comparison
-        // (not the full list of fields)
-        $instrument = \NDB_BVL_Instrument::factory(
-            new \LORIS\LorisInstance(
-                $this->_DB,
-                $this->_config,
-                [],
-            ),
-            "medical_history"
-        );
+        $this->_instrument = $this->getMockBuilder(
+            \NDB_BVL_Instrument::class
+        )
+            ->disableOriginalConstructor()
+            ->onlyMethods(["getFullName", "getSubtestList", "getDataDictionary"])
+            ->getMock();
 
-        // data - complete keys + empty values
+        $this->_instrument->_requiredElements = [
+            'arthritis', 'hypertension', 'concussion_or_head_trauma'
+        ];
+
         $instrumentQuestions = [
-            // p1
+        // p1
             "arthritis"                       => null, // required
             "arthritis_age"                   => null,
             "pulmonary_issues"                => null,
             "pulmonary_issues_specific"       => null,
-            // p2
+        // p2
             "hypertension"                    => null, // required
             "hypertension_while_pregnant"     => null,
             "hypertension_while_pregnant_age" => null,
-            // p3
+        // p3
             "concussion_or_head_trauma"       => null, // required
             "concussion_1_description"        => null,
             "concussion_1_hospitalized"       => null,
@@ -1888,8 +1883,32 @@ class NDB_BVL_Instrument_Test extends TestCase
             "current_concussion_symptoms"     => null,
         ];
 
-        // all required elements are null/yes/no options.
-        $instrument->validate($instrumentQuestions);
+        $this->_instrument->method('getDataDictionary')->willReturn(
+            array_map(
+                fn($field) => (object)[
+                    'fieldname'   => $field, 'getDataType' => fn() => 'text'
+                ],
+                array_keys($instrumentQuestions)
+            )
+        );
+
+        $this->_instrument->table     = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        $mockConfig = $this->createMock(\LORIS\Config::class);
+        $mockConfig->method('getSetting')->with(
+            'dateDisplayFormat'
+        )->willReturn('Y-m-d');
+
+        $mockLoris = $this->createMock(\LORIS\LorisInstance::class);
+        $mockLoris->method('getConfiguration')->willReturn($mockConfig);
+
+        $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue($this->_instrument, $mockLoris);
+
+        $this->_instrument->validate($instrumentQuestions);
+
     }
 
     /**
