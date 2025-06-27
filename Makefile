@@ -120,11 +120,15 @@ locales:
 acknowledgements:
 	target=acknowledgements npm run compile
 
+<<<<<<< HEAD
 data_release:
 	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json 
 	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
 	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+=======
+data_release: 
+>>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
 	target=data_release npm run compile
 
 instrument_manager:
@@ -162,5 +166,8 @@ publication:
 server_processes_manager:
 	target=server_processes_manager npm run compile
 
+<<<<<<< HEAD
 conflict_resolver:
 	target=conflict_resolver npm run compile
+=======
+>>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
