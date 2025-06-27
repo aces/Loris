@@ -1733,6 +1733,9 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @covers NDB_BVL_Instrument::validate
      *
+     * @phan-suppress PhanUndeclaredProperty
+     * @phan-suppress PhanUndeclaredMethod
+     *
      * @return void
      */
     public function testValidateMissingRequiredKeys(): void
@@ -1743,9 +1746,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         /**
           * Phan-var
           *
-          * @phan-var      \NDB_BVL_Instrument $instrument
-          * @phan-suppress PhanUndeclaredProperty
-          * @phan-suppress PhanUndeclaredMethod
+          * @phan-var \NDB_BVL_Instrument $instrument
           */
 
         $instrument = $this->getMockBuilder(
