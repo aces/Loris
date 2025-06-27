@@ -13,6 +13,7 @@
 namespace Loris\Tests;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
+use \LORIS\Config;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -1840,7 +1841,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->expectExceptionMessageMatches(
             '/Additional field\(s\) not permitted:.*aaa,bbb/'
         );
-
+        // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate($instrumentQuestions);
     }
 
@@ -1850,7 +1851,9 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @covers NDB_BVL_Instrument::validate
      *
-     * @return void
+     * @phan-suppress PhanUndeclaredProperty
+     * @phan-suppress PhanUndeclaredMethod
+     * @return        void
      */
     public function testValidateValues(): void
     {
@@ -1863,7 +1866,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods(["getFullName", "getSubtestList", "getDataDictionary"])
             ->getMock();
-
+        // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->_requiredElements = [
             'arthritis', 'hypertension', 'concussion_or_head_trauma'
         ];
