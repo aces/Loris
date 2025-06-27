@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 845246779 (Translate strings from data table / filters so that candidate list module is fully translated)
 # Default LORIS strings to be translated (English).
 # Copy this to a language specific file and add translations to the
 # new file.
@@ -63,9 +68,12 @@ msgstr ""
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+<<<<<<< HEAD
 msgid "Data Dictionary"
 msgstr ""
 
+=======
+>>>>>>> 845246779 (Translate strings from data table / filters so that candidate list module is fully translated)
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -119,6 +127,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Create"
 msgstr ""
 
@@ -151,6 +160,8 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
+=======
+>>>>>>> 845246779 (Translate strings from data table / filters so that candidate list module is fully translated)
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -164,6 +175,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Module"
 msgstr ""
 
@@ -181,6 +193,12 @@ msgid_plural "Cohorts"
 msgstr[0] ""
  
 msgid "Session"
+=======
+msgid "Project"
+msgstr ""
+
+msgid "Cohort"
+>>>>>>> 845246779 (Translate strings from data table / filters so that candidate list module is fully translated)
 msgstr ""
 
 msgid "Date of registration"
@@ -201,6 +219,7 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Stage"
 msgstr ""
 
@@ -331,3 +350,5 @@ msgstr ""
 
 msgid "{{years}} years old"
 msgstr ""
+
+
