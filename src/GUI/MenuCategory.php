@@ -6,6 +6,7 @@ namespace LORIS\GUI;
  * A MenuCategory represents a dropdown group of MenuItems in the LORIS
  * menu (top bar) to be displayed in the GUI.
  */
+/* @phan-suppress-next-line PhanRedefinedInheritedInterface https://github.com/phan/phan/issues/4995 */
 class MenuCategory implements \Stringable
 {
     /**
@@ -45,6 +46,6 @@ class MenuCategory implements \Stringable
 
     public function __toString() : string
     {
-	    return dgettext("loris", $this->name);
+        return dgettext("loris", $this->name);
     }
 }
