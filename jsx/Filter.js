@@ -161,7 +161,7 @@ function Filter(props) {
       {filterPresets()}
       <li>
         <a role='button' name='reset' onClick={props.clearFilters}>
-          {props.t('Clear Filters')}
+	  {props.t('Clear Filters')}
         </a>
       </li>
     </ul>
