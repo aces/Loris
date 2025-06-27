@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Data Table component
@@ -557,6 +558,11 @@ class DataTable extends Component {
 
     const loading = this.props.loading ? 'Loading...' : '';
 
+    // This doesn't feel like a very robust way to handle the dropdown.
+    // It's not clear if there's any good way to structure this for locales that
+    // use RTL languages or prefer a different kind of parenthesis.
+    let changeRowsDropdown = <span>({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})</span>;
+
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
@@ -571,9 +577,12 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredCount}.
-              (Maximum rows per page: {rowsPerPageDropdown})
-              {loading}
+	    {this.props.t('{{rowLength}} rows displayed of {{filteredCount}}.',
+	      {
+		      rowLength: rows.length,
+		      filteredCount,
+	      })}
+	    {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -590,7 +599,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-                Download Table as CSV
+		      {this.props.t('Download Table as CSV')}
                 </button>)
               }
               <PaginationLinks
@@ -619,8 +628,12 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredCount}.
-              (Maximum rows per page: {rowsPerPageDropdown})
+	    {this.props.t('{{rowLength}} rows displayed of {{filteredCount}}.',
+	      {
+		      rowLength: rows.length,
+		      filteredCount,
+	      })}
+	    {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -693,4 +706,4 @@ DataTable.defaultProps = {
   noDynamicTable: false,
 };
 
-export default DataTable;
+export default withTranslation(['loris'])(DataTable);
