@@ -38,7 +38,6 @@ class NDB_BVL_Instrument_Test extends TestCase
      * The instrument (or instrument mock) being tested.
      *
      * @var \PHPUnit\Framework\MockObject\MockObject&\NDB_BVL_Instrument
-     *
      */
     private $_instrument;
 
@@ -1772,8 +1771,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->expectExceptionMessageMatches(
             '/arthritis.*hypertension|hypertension.*arthritis/'
         );
- 
-       // phan-suppress-next-line PhanUndeclaredMethod
+
+        // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate(
             [
                 'concussion_or_head_trauma' => null,
