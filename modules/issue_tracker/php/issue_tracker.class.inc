@@ -105,7 +105,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $user    = $factory->user();
         $db      = $factory->database();
 
-        $hasPartialAcess = !$user->hasAnyPermission(
+        $hasPartialAccess = !$user->hasAnyPermission(
             [
                 'issue_tracker_all_issue',
                 'issue_tracker_site_issue',
@@ -130,7 +130,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                ON(i.reporter=u.UserID)",
             []
         );
-        if ($hasPartialAcess) {
+        if ($hasPartialAccess) {
             $reporter_expanded = $db->pselect(
                 "SELECT DISTINCT u.UserID,
                         u.Real_name

@@ -198,10 +198,10 @@ class SNP extends Component {
         show: false,
       },
       {
-        label: 'Name',
+        label: 'Gene Name',
         show: false,
         filter: {
-          name: 'Name',
+          name: 'Gene Name',
           type: 'text',
         },
       },
@@ -223,10 +223,10 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Name',
+        label: 'SNP Name',
         show: false,
         filter: {
-          name: 'Name',
+          name: 'SNP Name',
           type: 'text',
         },
       },
