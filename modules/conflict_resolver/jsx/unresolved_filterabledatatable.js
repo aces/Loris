@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
+import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
 
@@ -197,4 +198,7 @@ class UnresolvedFilterableDataTable extends Component {
   }
 }
 
-export default UnresolvedFilterableDataTable;
+export default withTranslation(
+  ['conflict_resolver', 'loris'],
+  UnresolvedFilterableDataTable
+);

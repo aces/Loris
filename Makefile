@@ -111,6 +111,9 @@ locales:
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 
+acknowledgements:
+	target=acknowledgements npm run compile
+
 data_release: 
 	target=data_release npm run compile
 
@@ -145,4 +148,7 @@ dashboard:
 
 publication:
 	target=publication npm run compile
+
+server_processes_manager:
+	target=server_processes_manager npm run compile
 
