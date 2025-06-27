@@ -1727,7 +1727,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->expectExceptionMessage("No data provided.");
         $this->_instrument->validate([]);
     }
-
     /**
      * Test that check validation method with received data.
      * Keys validation case - missing keys
@@ -1742,7 +1741,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $this->_instrument = $this->getMockBuilder(
+        $instrument = $this->getMockBuilder(
             \NDB_BVL_Instrument::class
         )->disableOriginalConstructor()
             ->onlyMethods(
@@ -1754,7 +1753,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         '@phan-var  \NDB_BVL_Instrument $_instrument';
 
-        $this->_instrument->method('getDataDictionary')->willReturn(
+        $instrument->method('getDataDictionary')->willReturn(
             [
                 (object)['fieldname' => 'arthritis'],
                 (object)['fieldname' => 'hypertension'],
@@ -1763,10 +1762,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
 
         // Stub abstract methods so PHPUnit can instantiate the mock
-        $this->_instrument->method('getFullName')->willReturn('Test Instrument');
-        $this->_instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getFullName')->willReturn('Test Instrument');
+        $instrument->method('getSubtestList')->willReturn([]);
         // phan-suppress-next-line PhanUndeclaredProperty
-        $this->_instrument->_requiredElements = ['arthritis', 'hypertension'];
+        $instrument->_requiredElements = ['arthritis', 'hypertension'];
 
         // Now call validate with data missing required fields
         $this->expectException(\LorisException::class);
@@ -1775,7 +1774,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
 
         // phan-suppress-next-line PhanUndeclaredMethod
-        $this->_instrument->validate(
+        $instrument->validate(
             [
                 'concussion_or_head_trauma' => null,
             ]
