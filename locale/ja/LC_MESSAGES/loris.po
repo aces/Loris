@@ -165,3 +165,13 @@ msgstr "フィードバック"
 
 msgid "Scans"
 msgstr "スキャン"
+
+# Data table strings
+msgid "{{rowLength}} rows displayed of {{filteredCount}}."
+msgstr "{{filteredCount}}行中{{rowLength}}行を表示"
+
+msgid "Maximum rows per page:"
+msgstr "ページあたりの最大行数:"
+
+msgid "Download Table as CSV"
+msgstr "表をCSVとしてダウンロード"

@@ -568,6 +568,11 @@ class DataTable extends Component {
     // use RTL languages or prefer a different kind of parenthesis.
     let changeRowsDropdown = <span>({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})</span>;
 
+    // This doesn't feel like a very robust way to handle the dropdown.
+    // It's not clear if there's any good way to structure this for locales that
+    // use RTL languages or prefer a different kind of parenthesis.
+    let changeRowsDropdown = <span>({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})</span>;
+
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
