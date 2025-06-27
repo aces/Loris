@@ -423,6 +423,7 @@ function DefineFields(props: {
           {fieldList}
         </div>
         <div style={{
+          width: '20vw',
           padding: '1em',
           position: 'sticky',
           top: 0,

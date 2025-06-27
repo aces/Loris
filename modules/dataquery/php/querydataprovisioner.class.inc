@@ -82,7 +82,7 @@ class QueryDataProvisioner extends ProvisionerInstance
             $dataiterators[$modulename] = $engine->getCandidateData(
                 $fielddict,
                 $candidates,
-                null
+                null,
             );
         }
         return $this->_mergeIterators($candidates, $dataiterators, $fieldsarray);

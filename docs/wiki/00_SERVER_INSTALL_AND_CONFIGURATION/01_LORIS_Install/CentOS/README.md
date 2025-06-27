@@ -10,9 +10,9 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 26.
+* MariaDB 10.3 is supported for LORIS 27.
 
-* PHP 8.2 (or higher) is supported for LORIS 26.
+* PHP 8.3 (or higher) is supported for LORIS 27.
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher  

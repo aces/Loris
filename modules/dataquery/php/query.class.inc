@@ -752,8 +752,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
             // FIXME: Verify visits, test was done with candidate scope data
             $visitlist = null;
-            if (isset($query['visits'])) {
-                $visitlist = $query['visits'];
+            if (isset($crit['visits'])) {
+                $visitlist = $crit['visits'];
             }
 
             \Profiler::checkpoint("Calling engine get matches");

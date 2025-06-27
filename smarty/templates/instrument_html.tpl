@@ -1,5 +1,8 @@
 <script type="text/javascript" src="{$baseurl}/js/instrument_form_control.js"></script>
 <style type="text/css">
+	.table-instrument {
+		white-space: nowrap;
+	}
 	.table-instrument>tbody>tr>th{
 		color: black;
 	}
