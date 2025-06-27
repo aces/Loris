@@ -199,5 +199,6 @@ class UnresolvedFilterableDataTable extends Component {
 }
 
 export default withTranslation(
-  ['conflict_resolver', 'loris']
-)(UnresolvedFilterableDataTable);
+  ['conflict_resolver', 'loris'],
+  UnresolvedFilterableDataTable
+);
