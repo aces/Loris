@@ -1741,6 +1741,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $this->_instrument = $this->getMockBuilder(
             \NDB_BVL_Instrument::class
