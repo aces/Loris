@@ -1740,6 +1740,11 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $_SERVER['REQUEST_METHOD'] = 'POST';
+        /**
+          * Phan-var
+          *
+          * @phan-var \NDB_BVL_Instrument $_instrument
+          */
 
         $instrument = $this->getMockBuilder(
             \NDB_BVL_Instrument::class
