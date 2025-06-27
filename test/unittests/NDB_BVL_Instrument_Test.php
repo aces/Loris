@@ -38,6 +38,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * The instrument (or instrument mock) being tested.
      *
      * @var \NDB_BVL_Instrument
+     * @var \PHPUnit\Framework\MockObject\MockObject&\NDB_BVL_Instrument
      */
     private $_instrument;
 
@@ -1762,7 +1763,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // Stub abstract methods so PHPUnit can instantiate the mock
         $this->_instrument->method('getFullName')->willReturn('Test Instrument');
         $this->_instrument->method('getSubtestList')->willReturn([]);
-
+        // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->_requiredElements = ['arthritis', 'hypertension'];
 
         // Now call validate with data missing required fields
@@ -1770,7 +1771,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->expectExceptionMessage(
             'Missing required field(s): arthritis,hypertension'
         );
-
+        // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate(
             [
                 'concussion_or_head_trauma' => null,
@@ -1891,8 +1892,9 @@ class NDB_BVL_Instrument_Test extends TestCase
                 array_keys($instrumentQuestions)
             )
         );
-
-        $this->_instrument->table     = 'medical_history';
+        // phan-suppress-next-line PhanUndeclaredProperty
+        $this->_instrument->table = 'medical_history';
+        // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->commentID = 'commentID1';
 
         $mockConfig = $this->createMock(\LORIS\Config::class);
@@ -1906,7 +1908,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
         $ref->setAccessible(true);
         $ref->setValue($this->_instrument, $mockLoris);
-
+        // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate($instrumentQuestions);
 
     }
