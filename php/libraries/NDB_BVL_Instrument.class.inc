@@ -3150,7 +3150,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $expectedType instanceof \LORIS\Data\Types\TimeType =>
                     " (format: 'HH:mm:ss')",
                     $expectedType instanceof \LORIS\Data\Types\Enumeration =>
-                    ", possible answers: '".
+                    ", possible answers: '"
                     .implode("','", $optionKeys ?? []) . "'",
                     default => ""
                 };
