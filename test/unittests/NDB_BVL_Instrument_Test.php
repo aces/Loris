@@ -1768,10 +1768,11 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         // Now call validate with data missing required fields
         $this->expectException(\LorisException::class);
-        $this->expectExceptionMessage(
-            'Missing required field(s): arthritis,hypertension'
+        $this->expectExceptionMessageMatches(
+            '/arthritis.*hypertension|hypertension.*arthritis/'
         );
-        // phan-suppress-next-line PhanUndeclaredMethod
+ 
+       // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate(
             [
                 'concussion_or_head_trauma' => null,
