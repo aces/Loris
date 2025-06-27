@@ -91,7 +91,9 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
+                    "issue_tracker",
                     "Your assigned issue",
+                    "Your assigned issues",
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
