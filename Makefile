@@ -144,12 +144,21 @@ locales:
 acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile
 
+<<<<<<< HEAD
 create_timepoint:
 	target=data_release npm run compile
 
 data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.mo
+=======
+<<<<<<< HEAD
+data_release:
+	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
+>>>>>>> da964df49 (Translate strings from data table / filters so that candidate list module is fully translated)
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json 
 	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+=======
+data_release: 
+>>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
 	target=data_release npm run compile
 
 instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
@@ -187,5 +196,8 @@ publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
 server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
 	target=server_processes_manager npm run compile
 
+<<<<<<< HEAD
 conflict_resolver:
 	target=conflict_resolver npm run compile
+=======
+>>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
