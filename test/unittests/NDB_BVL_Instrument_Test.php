@@ -1743,7 +1743,9 @@ class NDB_BVL_Instrument_Test extends TestCase
         /**
           * Phan-var
           *
-          * @phan-var \NDB_BVL_Instrument $_instrument
+          * @phan-var      \NDB_BVL_Instrument $instrument
+          * @phan-suppress PhanUndeclaredProperty
+          * @phan-suppress PhanUndeclaredMethod
           */
 
         $instrument = $this->getMockBuilder(
@@ -1755,8 +1757,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     "getDataDictionary"
                 ]
             )->getMock();
-
-        '@phan-var  \NDB_BVL_Instrument $_instrument';
 
         $instrument->method('getDataDictionary')->willReturn(
             [
