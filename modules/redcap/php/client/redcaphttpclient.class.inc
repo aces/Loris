@@ -648,7 +648,7 @@ class RedcapHttpClient
      *
      * @param string $instrument_name        A REDCap instrument name.
      * @param string $unique_event_name      A REDCap unique event name.
-     * @param string $record_id              A REDCAp record ID.
+     * @param string $record_id              A REDCap record ID.
      * @param bool   $completed_records_only Only return completed records.
      *
      * @throws \LorisException
