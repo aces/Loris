@@ -1894,21 +1894,35 @@ class NDB_BVL_Instrument_Test extends TestCase
             "current_concussion_symptoms"     => 'string',
         ];
 
-$this->_instrument->method('getDataDictionary')->willReturn(
-    array_map(
-        fn($field) => new class($field) {
-            public string $fieldname;
-            public function __construct($field) {
-                $this->fieldname = $field;
-            }
-            public function getDataType() {
-    return new \LORIS\Data\Types\StringType();
-            
-}
-        },
-        array_keys($instrumentQuestions)
-    )
-);
+        $this->_instrument->method('getDataDictionary')->willReturn(
+            array_map(
+                fn($field) => new class($field) {
+                public string $fieldname;
+                /**
+                 * Constructor.
+                 *
+                 * @param {string} $field field
+                 *
+                 * @return void
+                 */
+                public function __construct($field)
+                {
+                                $this->fieldname = $field;
+                }
+                /**
+                 * GetDataType.
+                 *
+                 * @return void
+                 */
+                public function getDataType()
+                {
+                                return new \LORIS\Data\Types\StringType();
+
+                }
+                },
+                array_keys($instrumentQuestions)
+            )
+        );
         // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->table = 'medical_history';
         // phan-suppress-next-line PhanUndeclaredProperty
