@@ -1872,36 +1872,43 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrumentQuestions = [
         // p1
-            "arthritis"                       => null, // required
-            "arthritis_age"                   => null,
-            "pulmonary_issues"                => null,
-            "pulmonary_issues_specific"       => null,
+            "arthritis"                       => 'string', // required
+            "arthritis_age"                   => 'string',
+            "pulmonary_issues"                => 'string',
+            "pulmonary_issues_specific"       => 'string',
         // p2
-            "hypertension"                    => null, // required
-            "hypertension_while_pregnant"     => null,
-            "hypertension_while_pregnant_age" => null,
+            "hypertension"                    => 'string', // required
+            "hypertension_while_pregnant"     => 'string',
+            "hypertension_while_pregnant_age" => 'string',
         // p3
-            "concussion_or_head_trauma"       => null, // required
-            "concussion_1_description"        => null,
-            "concussion_1_hospitalized"       => null,
-            "concussion_1_age"                => null,
-            "concussion_2_description"        => null,
-            "concussion_2_hospitalized"       => null,
-            "concussion_2_age"                => null,
-            "concussion_3_description"        => null,
-            "concussion_3_hospitalized"       => null,
-            "concussion_3_age"                => null,
-            "current_concussion_symptoms"     => null,
+            "concussion_or_head_trauma"       => 'string', // required
+            "concussion_1_description"        => 'string',
+            "concussion_1_hospitalized"       => 'string',
+            "concussion_1_age"                => 'string',
+            "concussion_2_description"        => 'string',
+            "concussion_2_hospitalized"       => 'string',
+            "concussion_2_age"                => 'string',
+            "concussion_3_description"        => 'string',
+            "concussion_3_hospitalized"       => 'string',
+            "concussion_3_age"                => 'string',
+            "current_concussion_symptoms"     => 'string',
         ];
 
-        $this->_instrument->method('getDataDictionary')->willReturn(
-            array_map(
-                fn($field) => (object)[
-                    'fieldname'   => $field, 'getDataType' => fn() => 'text'
-                ],
-                array_keys($instrumentQuestions)
-            )
-        );
+$this->_instrument->method('getDataDictionary')->willReturn(
+    array_map(
+        fn($field) => new class($field) {
+            public string $fieldname;
+            public function __construct($field) {
+                $this->fieldname = $field;
+            }
+            public function getDataType() {
+    return new \LORIS\Data\Types\StringType();
+            
+}
+        },
+        array_keys($instrumentQuestions)
+    )
+);
         // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->table = 'medical_history';
         // phan-suppress-next-line PhanUndeclaredProperty
