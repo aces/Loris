@@ -1912,7 +1912,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 /**
                  * GetDataType.
                  *
-                 * @return void
+                 * @return \LORIS\Data\Types\StringType
                  */
                 public function getDataType()
                 {
