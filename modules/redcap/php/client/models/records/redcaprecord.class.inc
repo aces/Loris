@@ -12,6 +12,8 @@
 
 namespace LORIS\redcap\client\models\records;
 
+use LORIS\redcap\client\RedcapProps;
+
 /**
  * This represents a redcap record.
  *
@@ -23,6 +25,20 @@ namespace LORIS\redcap\client\models\records;
  */
 class RedcapRecord implements IRedcapRecord
 {
+    /**
+     * The date and time at which the record was completed. This is an undocumented
+     * field in the REDCap API.
+     */
+    public readonly \DateTimeImmutable $datetime;
+
+    /**
+     * The record completion status.
+     * 0 = incomplete / partial survey response
+     * 1 = unverified
+     * 2 = complete
+     */
+    public readonly int $complete;
+
     private string $_form_name;
 
     private array $_props;
@@ -37,6 +53,12 @@ class RedcapRecord implements IRedcapRecord
     {
         $this->_form_name = $form_name;
         $this->_props     = $props;
+
+        $props = new RedcapProps('record', $props);
+
+        $datetime_string = $props->getString("{$form_name}_timestamp");
+        $this->datetime  = new \DateTimeImmutable($datetime_string);
+        $this->complete  = $props->getInt("{$form_name}_complete");
     }
 
     /**
