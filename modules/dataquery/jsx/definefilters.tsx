@@ -343,6 +343,7 @@ function DefineFilters(props: {
             backgroundColour='rgb(240, 240, 240)'
             newGroup={props.addNewQueryGroup}
             fulldictionary={props.fulldictionary}
+            setDeleteItemIndex={setDeleteItemIndex}
           />
         </fieldset>
       </form>

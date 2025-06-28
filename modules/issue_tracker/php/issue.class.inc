@@ -105,16 +105,23 @@ class Issue extends \NDB_Form
             return true;
         }
         $issueData  = \NDB_Factory::singleton()->database()->pselectRow(
-            "SELECT centerID FROM issues WHERE issueID=:issueID",
+            "SELECT centerID, reporter FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
         $centerIDs  = $user->getCenterIDs();
         $centerList = implode(",", $centerIDs);
         $centerList = explode(',', $centerList);
+        $isOwnIssue = ($issueData['reporter'] ?? null) == $user->getUsername();
+
         return (is_null($issueData)
-            || in_array($issueData['centerID'], $centerList)
+            || ($user->hasPermission('issue_tracker_site_issue') &&
+                (
+                    in_array($issueData['centerID'], $centerList) ||
+                    empty($issueData['centerID'])
+                )
+            )
+            || ($user->hasPermission('issue_tracker_own_issue') && $isOwnIssue)
             || ($user->hasPermission('issue_tracker_all_issue'))
-            || (empty($issueData['centerID']))
         );
     }
 

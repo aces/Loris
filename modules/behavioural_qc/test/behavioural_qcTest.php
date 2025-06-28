@@ -98,7 +98,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 " #dynamictable >".
-                " tbody > tr:nth-child(1) > td:nth-child(3) > a"
+                " tbody > tr:nth-child(1) > td:nth-child(4) > a"
             )
         )->getAttribute('href');
         // check        Instrument link
@@ -120,7 +120,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 " #dynamictable >".
-                " tbody > tr:nth-child(1) > td:nth-child(5) > a"
+                " tbody > tr:nth-child(1) > td:nth-child(6) > a"
             )
         )->getAttribute('href');
         // check        Instrument link

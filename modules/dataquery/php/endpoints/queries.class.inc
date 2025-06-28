@@ -125,13 +125,16 @@ class Queries extends \LORIS\Http\Endpoint
         );
         if ($queryID === null) {
             // Dealing with JSON need to use the unsafe wrapper
+            $oldTrackChanges   = $DB->_trackChanges;
+            $DB->_trackChanges = false;
             $DB->unsafeInsert(
                 'dataquery_queries',
                 [
                     'Query'  => $requestjson,
                 ],
             );
-            $queryID = $DB->getLastInsertId();
+            $DB->_trackChanges = $oldTrackChanges;
+            $queryID           = $DB->getLastInsertId();
         }
         return intval($queryID);
     }

@@ -57,7 +57,7 @@ class FileManager extends \NDB_Page implements ETagCalculator
         // Parse GET query params.
         $values = $request->getQueryParams();
         // GET request for downloading file by ID.
-        if ($values['filename']) {
+        if ($values['filename'] ?? false) {
             $factory  = \NDB_Factory::singleton();
             $config   = $factory->config();
             $filesDir = \Utility::appendForwardSlash(
@@ -129,9 +129,12 @@ class FileManager extends \NDB_Page implements ETagCalculator
         // handles upload process - returns status of file upload.
         $response = $genomicFile->setupUploading(
             $request->getAttribute('user'), // user
-            $_FILES, // file data
+            $request->getUploadedFiles(), // file data
             $values // post request values.
         );
+        if (empty($response)) {
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
 
         // Send file upload status.
         return new \LORIS\Http\Response\JsonResponse(
