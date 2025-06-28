@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 
 /**
- * This serves as a hint to LORIS that this module is a real module.
- * It does nothing but implement the module class in the module's namespace.
- *
  * PHP Version 8
  *
  * @category REDCap
@@ -29,7 +26,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Queries
+class RedcapQueries
 {
     /**
      * The LORIS database.
@@ -49,11 +46,60 @@ class Queries
     }
 
     /**
+     * Get the REDCap issue assignee from the configuration tables.
+     *
+     * @return \User The REDCap issue assignee user.
+     */
+    public function getRedcapIssueAssignee(): \User
+    {
+        $assignee_user_id = $this->_db->pselectOne(
+            "SELECT c.Value
+            FROM Config c
+                JOIN ConfigSettings cs ON (cs.ID = c.ConfigID)
+            WHERE cs.Name = 'redcap_issue_assignee'
+            ",
+            []
+        );
+
+        if ($assignee_user_id === null) {
+            throw new \LorisException(
+                "no REDCap issue assignee in configuration, missing"
+                . " 'redcap_issue_assignee'."
+            );
+        }
+
+        $assignee = $this->_db->pselectOne(
+            "SELECT DISTINCT u.userID
+            FROM users u
+                JOIN user_perm_rel upr ON (upr.userid = u.id)
+                JOIN permissions p ON (p.permid = upr.permid)
+            WHERE u.userID = :usid
+                AND u.Active = 'Y'
+                AND u.Pending_approval = 'N'
+                AND (
+                    p.code = 'issue_tracker_developer'
+                    OR p.code = 'superuser'
+                )
+            ",
+            ['usid' => $assignee_user_id]
+        );
+
+        if ($assignee === null) {
+            throw new \LorisException(
+                "REDCap issue assignee '$assignee_user_id' does not exist or does"
+                . " not have enough privileges."
+            );
+        }
+
+        return \User::factory($assignee_user_id);
+    }
+
+    /**
      * Get a candidate from the database using a given PSCID.
      *
      * @param string $psc_id A potential PSCID.
      *
-     * @return ?\Candidate A LORIS candidate, or `NULL` if no candidate matches the
+     * @return ?\Candidate A LORIS candidate, or `null` if no candidate matches the
      *                     given PSCID.
      */
     public function tryGetCandidateWithPscId(string $psc_id): ?\Candidate
@@ -75,7 +121,7 @@ class Queries
      *
      * @param string $cand_id A potential CandID.
      *
-     * @return ?\Candidate A LORIS candidate, or `NULL` if no candidate matches the
+     * @return ?\Candidate A LORIS candidate, or `null` if no candidate matches the
      *                     given CandID.
      */
     public function tryGetCandidateWithCandId(string $cand_id): ?\Candidate
@@ -98,7 +144,7 @@ class Queries
      *
      * @param string $full_name A potential examiner full name, case-insensitive.
      *
-     * @return ?string The examiner ID, or `NULL` if no examiner matches the given
+     * @return ?string The examiner ID, or `null` if no examiner matches the given
      *                 full name.
      */
     public function getExaminerIdWithFullName(string $full_name): ?string
@@ -120,7 +166,7 @@ class Queries
      *                                              received.
      * @param string             $project_id        The REDCap project ID.
      * @param string             $record_id         The REDCap record ID.
-     * @param string             $event_name        The REDCap event name.
+     * @param string             $unique_event_name The REDCap unique event name.
      * @param string             $instrument_name   The REDCap instrument name.
      *
      * @return array The list of unhandled notification IDs.
@@ -129,7 +175,7 @@ class Queries
         \DatetimeImmutable $received_datetime,
         string $project_id,
         string $record_id,
-        string $event_name,
+        string $unique_event_name,
         string $instrument_name,
     ): array {
         $query = "SELECT id
@@ -148,7 +194,7 @@ class Queries
             'v_received_dt'       => $received_datetime,
             'v_project_id'        => $project_id,
             'v_record'            => $record_id,
-            'v_redcap_event_name' => $event_name,
+            'v_redcap_event_name' => $unique_event_name,
             'v_instrument'        => $instrument_name,
         ];
 
@@ -164,8 +210,8 @@ class Queries
      *                                              ID.
      * @param string             $record_id         The REDCap notification record
      *                                              ID.
-     * @param string             $event_name        The REDCap notification event
-     *                                              name.
+     * @param string             $unique_event_name The REDCap notification unique
+     *                                              event name.
      * @param string             $instrument_name   The instrument name of the
      *                                              REDCap notification.
      * @param \DateTimeImmutable $received_datetime The time at which the REDCap
@@ -178,7 +224,7 @@ class Queries
     public function markRedcapNotifAsHandled(
         string $project_id,
         string $record_id,
-        string $event_name,
+        string $unique_event_name,
         string $instrument_name,
         \DateTimeImmutable $received_datetime,
         \DateTimeImmutable $handled_datetime,
@@ -201,7 +247,7 @@ class Queries
             'v_received_dt'       => $received_datetime,
             'v_project_id'        => $project_id,
             'v_record'            => $record_id,
-            'v_redcap_event_name' => $event_name,
+            'v_redcap_event_name' => $unique_event_name,
             'v_instrument'        => $instrument_name,
             'handled_dt'          => $handled_datetime,
         ];
