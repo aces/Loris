@@ -156,18 +156,23 @@ class RedcapNotificationHandler
             $candidate_identifier
         );
 
-        $visit_label = $this->_mapper->getVisitLabel(
-            $this->_redcap_notif,
-            $candidate,
-        );
-
         $psc_id = $candidate->getPSCID();
+
+        // The visit label is populated using record information.
+        $visit_label = null;
 
         // Track which instruments are updated and not updated.
         $instruments_not_updated = [];
 
-        //
+        // Import each REDCap record into LORIS.
         foreach ($records as $record) {
+            // Get the LORIS visit label associated with the REDCap record.
+            $visit_label = $this->_mapper->getVisitLabel(
+                $record,
+                $this->_redcap_notif->unique_event_name,
+                $candidate,
+            );
+
             // if repeating instrument, contains the repeat index
             $instrument_name = $record->getInstrumentName();
 

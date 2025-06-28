@@ -20,7 +20,7 @@ use \LORIS\redcap\config\RedcapConfigRedcapId;
 use \LORIS\redcap\config\RedcapConfigVisit;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\client\models\RedcapEvent;
-use \LORIS\redcap\client\models\RedcapNotification;
+use \LORIS\redcap\client\models\records\RedcapRecord;
 
 /**
  * Mapping methods to match REDCap and LORIS identifiers in the REDCap module.
@@ -82,31 +82,33 @@ class RedcapMapper
     }
 
     /**
-     * Get the visit label of the session associated with a REDCap event. If the
+     * Get the visit label of the session associated with a REDCap record. If the
      * session does not already exist, this function either creates it if automatic
      * session creation is enabled for that visit in the REDCap module
      * configuration, or throws an error if it is not.
      *
-     * @param RedcapNotification $redcap_notif The REDCap notification of the
-     *                                         event.
-     * @param \Candidate         $candidate    The LORIS candidate associated with
-     *                                         the REDCap event.
+     * @param RedcapRecord $redcap_record     The REDCap record.
+     * @param string       $unique_event_name The unique event name associated with
+     *                                        that REDCap record.
+     * @param \Candidate   $candidate         The LORIS candidate associated with
+     *                                        that REDCap record.
      *
      * @return string The visit label of the relevant session.
      */
     public function getVisitLabel(
-        RedcapNotification $redcap_notif,
+        RedcapRecord $redcap_record,
+        string $unique_event_name,
         \Candidate $candidate,
     ): string {
-        $visit_config = $this->getVisitConfig($redcap_notif->unique_event_name);
+        $visit_config = $this->getVisitConfig($unique_event_name);
 
         // If no visit mappings are defined in the configuration, use the REDCap
         // unique event name as the visit label directly.
         if ($visit_config === null) {
-            return $redcap_notif->unique_event_name;
+            return $unique_event_name;
         }
 
-        $this->checkOrCreateSession($redcap_notif, $visit_config, $candidate);
+        $this->checkOrCreateSession($redcap_record, $visit_config, $candidate);
 
         return $visit_config->visit_label;
     }
@@ -197,18 +199,17 @@ class RedcapMapper
      *  session creation configuration. Throw an exception if the session does not
      *  exist and automatic session creation is not enabled for that visit.
      *
-     * @param RedcapNotification $redcap_notif  The REDCap notification of the
-     *                                          event.
-     * @param RedcapConfigVisit  $visit_mapping The REDCap module visit
-     *                                          configuration associated with that
-     *                                          REDCap event.
-     * @param \Candidate         $candidate     The LORIS candidate associated with
-     *                                          a REDCap event.     *
+     * @param RedcapRecord      $redcap_record The REDCap record.
+     * @param RedcapConfigVisit $visit_mapping The REDCap module visit
+     *                                         configuration associated with that
+     *                                         REDCap record.
+     * @param \Candidate        $candidate     The LORIS candidate associated with
+     *                                         that REDCap record.
      *
      * @return void
      */
     public function checkOrCreateSession(
-        RedcapNotification $redcap_notif,
+        RedcapRecord $redcap_record,
         RedcapConfigVisit $visit_mapping,
         \Candidate $candidate,
     ) {
@@ -304,12 +305,9 @@ class RedcapMapper
 
         $new_stage = $session->getNextStage();
         $session->startStage($new_stage);
-        // TODO: Ideally, we should use the REDCap record date instead of the REDCap
-        // notification date.
-        $date_string = $redcap_notif->received_datetime->format('Y-m-d');
         $session->setData(
             [
-                "Date_{$new_stage}" => $date_string,
+                "Date_{$new_stage}" => $redcap_record->datetime->format('Y-m-d'),
             ]
         );
 
