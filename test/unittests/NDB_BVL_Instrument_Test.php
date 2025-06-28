@@ -1906,7 +1906,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->table = 'medical_history';
         // phan-suppress-next-line PhanUndeclaredProperty
         $this->_instrument->commentID = 'commentID1';
-        '@phan-var \NDB_Config $mockConfig';
 
         $mockConfig = $this->createMock(\NDB_Config::class);
         $mockConfig->method('getSetting')->with(
