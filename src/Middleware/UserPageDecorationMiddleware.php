@@ -227,6 +227,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             [
              'username' => $user->getUsername(),
              'id'       => $user->getId(),
+             'langpref' => $user->getLanguageCode(),
             ]
         );
         // Display the footer links, as specified in the config file

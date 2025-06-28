@@ -6,6 +6,8 @@ import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 import ProgressBar from 'jsx/ProgressBar';
 
+import {withTranslation} from 'react-i18next';
+
 /**
  * FilterableDataTable component.
  * A wrapper for all datatables that handles filtering.
@@ -141,6 +143,7 @@ class FilterableDataTable extends Component {
         id={this.props.name + '_filter'}
         columns={this.props.columns}
         filters={filters}
+        title={this.props.t('Selection Filter')}
         filterPresets={this.props.filterPresets}
         fields={this.props.fields}
         addFilter={this.addFilter}
@@ -202,4 +205,4 @@ FilterableDataTable.propTypes = {
   children: PropTypes.node,
 };
 
-export default FilterableDataTable;
+export default withTranslation(['loris'])(FilterableDataTable);
