@@ -183,12 +183,22 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
+        // validate given data against the instrument
+        try {
+            $instrumentName = $this->_instrument->testName;
+            $this->_instrument->validate($data[$instrumentName] ?? []);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
+            );
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                "Could not update."
             );
         }
 
+        // update values
         try {
             $this->_instrument->clearInstrument();
             $version = $request->getAttribute('LORIS-API-Version');
@@ -224,26 +234,39 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
+        // validate given data against the instrument
+        $instrumentName = $this->_instrument->testName;
+        try {
+            $version = $request->getAttribute('LORIS-API-Version');
+
+            // extract data according to LORIS API version
+            $instrumentData = $version == 'v0.0.3'
+                ? ($data[$instrumentName] ?? [])
+                : ($data['Data'] ?? []);
+
+            // validate
+
+            $this->_instrument->validate($instrumentData);
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
+            );
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                "Could not update."
             );
         }
 
         try {
-            $version = $request->getAttribute('LORIS-API-Version');
-            if ($version == 'v0.0.3') {
-                $instrumentname = $this->_instrument->testName;
-                $this->_instrument->_saveValues($data[$instrumentname]);
-            } else {
-                $this->_instrument->_saveValues($data['Data']);
-            }
+            $this->_instrument->_saveValues($instrumentData);
             $this->_instrument->score();
             $this->_instrument->updateRequiredElementsCompletedFlag();
         } catch (\Throwable $e) {
