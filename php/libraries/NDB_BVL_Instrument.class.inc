@@ -3028,11 +3028,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Note: additional fields are not an issue with JSON instruments
         // but only with instruments having their own table.
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
-        error_log(print_r("11111111111111", true));
-        error_log(print_r($dataKeys, true));
-        error_log(print_r($defaultDataKeys, true));
-        error_log(print_r($additionalKeys, true));
-        error_log(print_r("22222222222222", true));
 
         if (!empty($additionalKeys)) {
             $i = implode(",", $additionalKeys);
@@ -3184,8 +3179,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function validate(array $dataToCheck): void
     {
-        error_log("========");
-        error_log(print_r($dataToCheck, true));
         // data to check even exist
         if (empty($dataToCheck)) {
             throw new \LorisException("No data provided.");
