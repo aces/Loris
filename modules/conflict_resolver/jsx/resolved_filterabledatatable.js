@@ -208,6 +208,5 @@ class ResolvedFilterableDataTable extends Component {
 }
 
 export default withTranslation(
-  ['conflict_resolver', 'loris'],
-  ResolvedFilterableDataTable
-);
+  ['conflict_resolver', 'loris']
+)(ResolvedFilterableDataTable);
