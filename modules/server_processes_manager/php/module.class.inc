@@ -27,7 +27,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-    const ERR_MSG_CONFIG_MISSING = 'Required configuration settings for Server '
+    const ERR_MSG_CONFIG_MISSING = 'Required configuration setting for Server '
         . 'Processes Manager are missing. Cannot continue.';
 
     /**

@@ -1,5 +1,9 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -199,10 +203,14 @@ ImagingBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'imaging_browser', {});
+  const Index = withTranslation(
+    ['imaging_browser', 'loris']
+  )(ImagingBrowserIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ImagingBrowserIndex
+    <Index
       dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
     />
   );

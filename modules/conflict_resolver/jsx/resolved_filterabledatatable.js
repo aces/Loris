@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -206,4 +207,6 @@ class ResolvedFilterableDataTable extends Component {
   }
 }
 
-export default ResolvedFilterableDataTable;
+export default withTranslation(
+  ['conflict_resolver', 'loris']
+)(ResolvedFilterableDataTable);

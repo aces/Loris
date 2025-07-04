@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -189,9 +192,13 @@ DicomArchive.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dicom_archive', {});
+  const Index = withTranslation(
+    ['dicom_archive', 'loris']
+  )(DicomArchive);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
+    <Index dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
   );
 });
