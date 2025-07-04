@@ -11,7 +11,6 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
-import {withTranslation} from 'react-i18next';
 
 /**
  * Filter component
@@ -161,7 +160,7 @@ function Filter(props) {
       {filterPresets()}
       <li>
         <a role='button' name='reset' onClick={props.clearFilters}>
-	  {props.t('Clear Filters')}
+          Clear Filter
         </a>
       </li>
     </ul>
@@ -207,4 +206,4 @@ Filter.propTypes = {
   t: PropTypes.func,
 };
 
-export default withTranslation(['loris'])(Filter);
+export default Filter;
