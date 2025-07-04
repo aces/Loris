@@ -164,4 +164,3 @@ msgstr ""
 
 msgid "Download Table as CSV"
 msgstr ""
->>>>>>> 60594236d (Translate strings from data table / filters so that candidate list module is fully translated)
