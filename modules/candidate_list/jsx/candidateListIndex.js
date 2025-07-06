@@ -408,7 +408,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
 
   const CLIndex = withTranslation(
-    ['candidate_list', 'loris']
+    ['new_profile', 'loris']
   )(CandidateListIndex);
   createRoot(
     document.getElementById('lorisworkspace')
