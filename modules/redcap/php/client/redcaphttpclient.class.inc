@@ -786,7 +786,9 @@ class RedcapHttpClient
             'type'                   => 'flat',
             'csvDelimiter'           => '',
             'forms'                  => $instrument_names,
-            'fields'                 => [],
+            // The 'record_id' parameter adds both the 'record_id' and
+            // 'redcap_event_name' fields to the REDCap records.
+            'fields'                 => ['record_id'],
             'events'                 => $unique_event_names,
             'records'                => $record_ids,
             'rawOrLabel'             => 'raw',
