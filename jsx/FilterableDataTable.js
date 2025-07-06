@@ -203,6 +203,9 @@ FilterableDataTable.propTypes = {
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
   children: PropTypes.node,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 export default withTranslation(['loris'])(FilterableDataTable);

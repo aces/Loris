@@ -13,6 +13,7 @@ import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 class IssueTrackerIndex extends Component {
   /**
    * @constructor
+   *
    * @param {object} props - React Component properties
    */
   constructor(props) {
@@ -40,6 +41,7 @@ class IssueTrackerIndex extends Component {
 
   /**
    * Called by React when the component updates.
+   *
    * @param {object} prevProps - Previous props
    * @param {object} prevState - Previous state
    */

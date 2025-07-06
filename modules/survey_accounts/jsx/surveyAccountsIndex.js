@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -144,10 +147,14 @@ SurveyAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'survey_accounts', {});
+  const Index = withTranslation(
+    ['survey_accounts', 'loris']
+  )(SurveyAccountsIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <SurveyAccountsIndex
+    <Index
       dataURL={`${loris.BaseURL}/survey_accounts/?format=json`}
     />
   );
