@@ -123,7 +123,7 @@ class CandidateListIndex extends Component {
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
-   * 
+   *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
