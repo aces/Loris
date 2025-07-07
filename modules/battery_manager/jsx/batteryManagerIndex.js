@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
@@ -512,10 +515,14 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'battery_manager', {});
+  const Index = withTranslation(
+    ['battery_manager', 'loris']
+  )(BatteryManagerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <BatteryManagerIndex
+    <Index
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
       hasPermission={loris.userHasPermission}

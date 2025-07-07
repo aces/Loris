@@ -197,15 +197,15 @@ const WidgetIndex = (props) => {
   };
 
   /**
-     * Similar to componentDidMount and componentDidUpdate.
-     */
+   * Similar to componentDidMount and componentDidUpdate.
+   */
   useEffect(
     () => {
       /**
-          * setup - fetch recruitment and study progression data.
-          *
-          * @return {Promise<void>}
-          */
+       * setup - fetch recruitment and study progression data.
+       *
+       * @return {Promise<void>}
+       */
       const setup = async () => {
         const data = await fetchData(
           `${props.baseURL}/Widgets`

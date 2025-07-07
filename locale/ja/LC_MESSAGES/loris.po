@@ -167,8 +167,8 @@ msgid "Scans"
 msgstr "スキャン"
 
 # Data table strings
-msgid "{{rowLength}} rows displayed of {{filteredCount}}."
-msgstr "{{filteredCount}}行中{{rowLength}}行を表示"
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{totalCount}}行中{{pageCount}}行を表示"
 
 msgid "Maximum rows per page:"
 msgstr "ページあたりの最大行数:"

@@ -556,7 +556,12 @@ class DataTable extends Component {
       </select>
     );
 
-    const loading = this.props.loading ? 'Loading...' : '';
+    // This doesn't feel like a very robust way to handle the dropdown.
+    // It's not clear if there's any good way to structure this for locales that
+    // use RTL languages or prefer a different kind of parenthesis.
+    let changeRowsDropdown = <span>
+       ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
+    </span>;
 
     // This doesn't feel like a very robust way to handle the dropdown.
     // It's not clear if there's any good way to structure this for locales that
@@ -577,12 +582,14 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-	    {this.props.t('{{rowLength}} rows displayed of {{filteredCount}}.',
-	      {
-		      rowLength: rows.length,
-		      filteredCount,
-	      })}
-	    {changeRowsDropdown}
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}.',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
+              {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -599,7 +606,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-		      {this.props.t('Download Table as CSV')}
+                  {this.props.t('Download Table as CSV')}
                 </button>)
               }
               <PaginationLinks
@@ -628,12 +635,14 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-	    {this.props.t('{{rowLength}} rows displayed of {{filteredCount}}.',
-	      {
-		      rowLength: rows.length,
-		      filteredCount,
-	      })}
-	    {changeRowsDropdown}
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}.',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
+              {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -691,6 +700,9 @@ DataTable.propTypes = {
   freezeColumn: PropTypes.string,
   loading: PropTypes.element,
   folder: PropTypes.element,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 DataTable.defaultProps = {
   headers: [],

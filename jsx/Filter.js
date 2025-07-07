@@ -161,7 +161,7 @@ function Filter(props) {
       {filterPresets()}
       <li>
         <a role='button' name='reset' onClick={props.clearFilters}>
-	  {props.t('Clear Filters')}
+          {props.t('Clear Filters')}
         </a>
       </li>
     </ul>
@@ -203,6 +203,8 @@ Filter.propTypes = {
   filterPresets: PropTypes.array,
   updateFilters: PropTypes.func,
   clearFilters: PropTypes.func,
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 export default withTranslation(['loris'])(Filter);
