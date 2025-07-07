@@ -1,0 +1,21 @@
+{
+    "New Profile": "नई प्रोफ़ाइल",
+    "Create a New Profile": "नई प्रोफ़ाइल बनाएं",
+    "Date of Birth*": "जन्म तिथि*",
+    "Date of Birth Confirm*": "जन्म तिथि की पुष्टि करें*",
+    "Sex*": "लिंग*",
+    "Site*": "साइट*",
+    "Project*": "परियोजना*",
+    "Date of Birth fields must match": "जन्म तिथि फ़ील्ड मेल खाना चाहिए",
+    "EDC fields must match": "ईडीसी फ़ील्ड मेल खाना चाहिए",
+    "New Candidate Created": "नया उम्मीदवार बनाया गया",
+    "Expected Date of Confinement": "प्रसव की अपेक्षित तिथि",
+    "Confirm EDC": "ईडीसी की पुष्टि करें",
+    "Recruit another candidate": "एक और उम्मीदवार जोड़ें",
+    "An error occured while loading the page.": "पृष्ठ लोड करते समय एक त्रुटि हुई।",
+    "Error!": "त्रुटि!",
+    "DCCID:": "डीसीसीआईडी:",
+    "PSCID:": "पीएससीआईडी:",
+    "Access Profile": "प्रोफ़ाइल देखें",
+    "Create": "बनाएं"
+}

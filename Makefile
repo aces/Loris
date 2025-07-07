@@ -1,9 +1,9 @@
-.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev
+.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev locales
 
-all: VERSION
+all: locales VERSION
 	composer install --no-dev
 	npm ci
-	npm run build
+	NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -12,13 +12,13 @@ VERSION: .
 phpdev:
 	composer install
 
-dev: phpdev jsdev fastdev 
+dev: locales phpdev jsdev fastdev
 
 jsdev:
 	npm ci
 
 fastdev: VERSION
-	npm run compile
+	NODE_OPTIONS="--max-old-space-size=4096" npm run compile
 
 jslatest: clean
 	rm -rf package-lock.json
@@ -59,7 +59,11 @@ testdata:
 
 locales: 
 	msgfmt -o locale/ja/LC_MESSAGES/loris.mo locale/ja/LC_MESSAGES/loris.po
+	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
+	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
+	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
+	npx i18next-conv -l hi -s modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po -t modules/new_profile/locale/hi/LC_MESSAGES/new_profile.json
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
@@ -67,6 +71,7 @@ locales:
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
 	msgfmt -o modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po
 	msgfmt -o modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
@@ -109,6 +114,9 @@ locales:
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 
+acknowledgements:
+	target=acknowledgements npm run compile
+
 data_release: 
 	target=data_release npm run compile
 
@@ -131,6 +139,8 @@ issue_tracker:
 	target=issue_tracker npm run compile
 
 candidate_list:
+	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
 candidate_parameters:
@@ -142,3 +152,8 @@ dashboard:
 publication:
 	target=publication npm run compile
 
+server_processes_manager:
+	target=server_processes_manager npm run compile
+
+conflict_resolver:
+	target=conflict_resolver npm run compile
