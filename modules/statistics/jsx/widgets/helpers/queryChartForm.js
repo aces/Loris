@@ -89,10 +89,12 @@ const QueryChartForm = (props) => {
   };
 
   /**
-     * Renders the React component.
-     *
-     * @return {JSX.Element} - React markup for component.
-     */
+   * Renders the React component.
+   *
+   * @param name
+   * @param value
+   * @return {JSX.Element} - React markup for component.
+   */
   return (
     <FormElement
       Module ={props.Module}

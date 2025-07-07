@@ -116,3 +116,62 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+# Filters
+msgid "Selection Filter"
+msgstr "'選択フィルター"
+
+msgid "Show Filters"
+msgstr "フィルターを表示"
+
+msgid "Hide Filters"
+msgstr "フィルターを非表示"
+
+msgid "Clear Filters"
+msgstr "フィルターをクリア"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "プロジェクト識別子"
+
+msgid "DCCID"
+msgstr "候補者識別子"
+
+msgid "Visit Label"
+msgstr "ラベルを訪問"
+
+msgid "Site"
+msgstr "サイト"
+
+msgid "Project"
+msgstr "プロジェクト"
+
+msgid "Cohort"
+msgstr "コホート"
+
+msgid "Date of registration"
+msgstr "入学日"
+
+msgid "Participant Status"
+msgstr "参加者ステータス"
+
+msgid "DoB"
+msgstr "生年月日"
+
+msgid "Sex"
+msgstr "性別"
+
+msgid "Feedback"
+msgstr "フィードバック"
+
+msgid "Scans"
+msgstr "スキャン"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{totalCount}}行中{{pageCount}}行を表示"
+
+msgid "Maximum rows per page:"
+msgstr "ページあたりの最大行数:"
+
+msgid "Download Table as CSV"
+msgstr "表をCSVとしてダウンロード"
