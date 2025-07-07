@@ -148,6 +148,8 @@ issue_tracker:
 candidate_list:
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
+	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
 candidate_parameters:
