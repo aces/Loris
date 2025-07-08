@@ -744,7 +744,7 @@ function SingleQueryDisplay(props: {
 
   if (query.Starred) {
     starredIcon = <span
-      style={{cursor: 'pointer'}}
+      style={{cursor: 'default'}}
       onClick={
         () => props.unstarQuery(query.QueryID)
       }
@@ -761,7 +761,7 @@ function SingleQueryDisplay(props: {
     </span>;
   } else {
     starredIcon = <span
-      style={{cursor: 'pointer'}}
+      style={{cursor: 'default'}}
       title="Star"
       onClick={
         () => props.starQuery(query.QueryID)
@@ -1023,7 +1023,7 @@ function LoadIcon(props: {
 }) {
   return <span onClick={props.onClick}
     title="Reload query"
-    style={{cursor: 'pointer'}}
+    style={{cursor: 'default'}}
     className="fa-stack">
     <i className="fas fa-sync fa-stack-1x"></i>
   </span>;
@@ -1044,7 +1044,7 @@ function ShareIcon(props: {
     isShared?: boolean,
 }) {
   return <span className="fa-stack"
-    style={{cursor: 'pointer'}}
+    style={{cursor: 'default'}}
     title={props.title}
     onClick={props.onClick}>
     <i style={props.isShared ? {color: 'blue'} : {}}
@@ -1063,7 +1063,7 @@ function NameIcon(props: {
     onClick?: () => void
 }): React.ReactElement {
   return (<span title="Name query"
-    style={{cursor: 'pointer'}}
+    style={{cursor: 'default'}}
     className="fa-stack"
     onClick={props.onClick}
   >
