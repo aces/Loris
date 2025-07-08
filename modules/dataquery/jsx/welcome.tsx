@@ -79,8 +79,8 @@ function Welcome(props: {
         <div>
           <ul>
             <li>Click on the Star icon to mark your query as 'starred'</li>
-            <li>Click on <ShareIcon /> to share your query with all users who have 
-            access to the fields in it.</li>
+            <li>Click on <ShareIcon /> to share your query with all users who
+            have access to the fields in it.</li>
             <li>Click on <LoadIcon /> to load your query.</li>
             <li>Click on <NameIcon /> to names (or rename) your query.</li>
             <li>Click on the the pin icon to display your query on the Loris 
@@ -88,28 +88,28 @@ function Welcome(props: {
             <li>Use Filter to find your query or queries by name.</li>
             <li>Use the checkboxes to customize your queries.</li>
           </ul>
-        </div>  
-      <div>
-        <QueryRunList
-          queryruns={props.recentQueries}
-          loadQuery={props.loadQuery}
-          defaultCollapsed={false}
-          starQuery={props.starQuery}
-          unstarQuery={props.unstarQuery}
+        </div>
+        <div>
+          <QueryRunList
+            queryruns={props.recentQueries}
+            loadQuery={props.loadQuery}
+            defaultCollapsed={false}
+            starQuery={props.starQuery}
+            unstarQuery={props.unstarQuery}
 
-          shareQuery={props.shareQuery}
-          unshareQuery={props.unshareQuery}
+            shareQuery={props.shareQuery}
+            unshareQuery={props.unshareQuery}
 
-          reloadQueries={props.reloadQueries}
+            reloadQueries={props.reloadQueries}
 
-          getModuleFields={props.getModuleFields}
-          mapModuleName={props.mapModuleName}
-          mapCategoryName={props.mapCategoryName}
-          fulldictionary={props.fulldictionary}
-          queryAdmin={props.queryAdmin}
-        />
+            getModuleFields={props.getModuleFields}
+            mapModuleName={props.mapModuleName}
+            mapCategoryName={props.mapCategoryName}
+            fulldictionary={props.fulldictionary}
+            queryAdmin={props.queryAdmin}
+          />
+        </div>
       </div>
-    </div>
     ),
     alwaysOpen: false,
     defaultOpen: true,
@@ -1092,15 +1092,15 @@ function IntroductionMessage(props: {
   return (
     <div>
       <p>The data query tool allows you to query data
-          within LORIS. 
+          within LORIS.
       </p>
       <ul>
-        <li>Click <code>Define Fields</code> to select what you are looking 
+        <li>Click <code>Define Fields</code> to select what you are looking
         for.</li>
         <li>Click <code>Add Filters</code> to filter what you have 
         selected.</li>
         <li>Click <code>Run Query</code> to view the results.</li>
-      {/* <li><code>Recent Queries</code> stores the queries you have run.</li> */}
+        {/* <li><code>Recent Queries</code> stores the queries you have run.</li> */}
       </ul>
       {/* <p>Click <ShareIcon /> to share your queries with all users who have access
       to the fields in your query.
