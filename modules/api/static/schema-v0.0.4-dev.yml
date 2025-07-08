@@ -1327,6 +1327,7 @@ paths:
       responses:
         '204':
           description: Qc value updated
+
   '/candidates/{id}/{visit}/dicoms':
     get:
       tags:
@@ -1356,6 +1357,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dicoms'
+    post:
+      tags:
+        - Dicoms
+      summary: Upload dicoms for that timepoint
+      parameters:
+        - name: id
+          in: path
+          description: ID of the candidate. Either PSCID or CandID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File:
+                  type: string
+                  format: binary
+                Json:
+                  type: object
+                  properties:
+                    CandID:
+                      type: string
+                    PSCID:
+                      type: string
+                    VisitLabel:
+                      type: string
+                    IsPhantom:
+                      type: boolean
+                    Overwrite:
+                      type: boolean
+                  required:
+                    - CandID
+                    - PSCID
+                    - VisitLabel
+                    - IsPhantom
+              required:
+                - File
+                - Json
+      responses:
+        '303':
+          description: Route to the processes list of the new upload
 
   '/candidates/{id}/{visit}/dicoms/{tarname}':
     get:
@@ -1381,7 +1437,7 @@ paths:
             type: string
         - name: tarname
           in: path
-          description: The dicom filename
+          description: The DICOM tar name
           required: true
           style: simple
           explode: false
@@ -1396,8 +1452,140 @@ paths:
                 type: string
                 format: binary
 
+  '/candidates/{id}/{visit}/dicoms/{tarname}/processes':
+    get:
+      tags:
+        - Dicoms
+      summary: Get the processes associated with a DICOM tar
+      parameters:
+        - name: id
+          in: path
+          description: Either PSCID or CandID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The DICOM tar name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The processes associated with the DICOM tar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DicomProcesses'
+    post:
+      tags:
+        - Dicoms
+      summary: Get the processes associated with a DICOM tar
+      parameters:
+        - name: id
+          in: path
+          description: Either PSCID or CandID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The DICOM tar name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ProcessType:
+                  type: string
+                  enum:
+                    - mri_upload
+                MriUploadID:
+                  type: integer
+              required:
+                - ProcessType
+                - MriUploadID
+      responses:
+        '202':
+          description: The location of the new process
+
+  '/candidates/{id}/{visit}/dicoms/{tarname}/processes/{process_id}':
+    get:
+      tags:
+        - Dicoms
+      summary: Get the processes associated with a DICOM tar
+      parameters:
+        - name: id
+          in: path
+          description: Either PSCID or CandID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The DICOM tar name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: process_id
+          in: path
+          description: The process ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The processes associated with the DICOM tar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DicomProcess'
+
   '/candidates/{id}/{visit}/recordings':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get the recording files for that visit
@@ -1420,13 +1608,14 @@ paths:
             type: string
       responses:
         '200':
-          description: Recordings which have been acquired for that visit
+          description: The process information
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recordings'
+
   '/candidates/{id}/{visit}/recordings/{filename}':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file
@@ -1458,7 +1647,7 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/metadata':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file metadata
@@ -1489,10 +1678,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingMetadata'
   '/candidates/{id}/{visit}/recordings/{filename}/metadata/{headername}':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a specific metadata from a recording file 
+      summary: Get a specific metadata from a recording file
       parameters:
         - name: id
           in: path
@@ -1526,7 +1715,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingMetadataSpecific'
   '/candidates/{id}/{visit}/recordings/{filename}/channels':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file channels
@@ -1557,7 +1746,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingChannels'
   '/candidates/{id}/{visit}/recordings/{filename}/electrodes':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file electrodes
@@ -1588,7 +1777,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingElectrodes'
   '/candidates/{id}/{visit}/recordings/{filename}/events':
-    get:  
+    get:
       tags:
         - Electrophysiology
       summary: Get a recording file events
@@ -1619,10 +1808,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/RecordingEvents'
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/archive':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording archive with all associated files 
+      summary: Get a recording archive with all associated files
       parameters:
         - name: id
           in: path
@@ -1651,10 +1840,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/channels':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording channels in BIDS format 
+      summary: Get a recording channels in BIDS format
       parameters:
         - name: id
           in: path
@@ -1683,10 +1872,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/electrodes':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording electrodes in BIDS format 
+      summary: Get a recording electrodes in BIDS format
       parameters:
         - name: id
           in: path
@@ -1715,10 +1904,10 @@ paths:
                 type: string
                 format: binary
   '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/events':
-    get:  
+    get:
       tags:
         - Electrophysiology
-      summary: Get a recording events in BIDS format 
+      summary: Get a recording events in BIDS format
       parameters:
         - name: id
           in: path
@@ -2263,7 +2452,7 @@ components:
           $ref: '#/components/schemas/inline_response_200_5_Meta'
         Value:
           type: string
- 
+
     Project_Meta:
       type: object
       properties:
@@ -2390,6 +2579,48 @@ components:
           type: string
         Visit:
           type: string
+    DicomProcesses:
+      type: object
+      properties:
+        MriUploads:
+          type: array
+          items:
+            type: object
+            properties:
+              MriUploadID:
+                type: integer
+              Processes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    END_TIME:
+                      type: string
+                    EXIT_CODE:
+                      type: string
+                    ID:
+                      type: string
+                    PID:
+                      type: string
+                    PROGRESS:
+                      type: string
+                    STATE:
+                      type: string
+    DicomProcess:
+      type: object
+      properties:
+        END_TIME:
+          type: string
+        EXIT_CODE:
+          type: string
+        ID:
+          type: string
+        PID:
+          type: string
+        PROGRESS:
+          type: string
+        STATE:
+          type: string
     inline_response_200_5_Meta:
       type: object
       properties:
@@ -2484,7 +2715,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingElectrode'
-            
+
     RecordingElectrode:
       type: object
       properties:
@@ -2504,7 +2735,7 @@ components:
           type: string
         ElectrodeFilePath:
           type: string
-          
+
     RecordingEvents:
       type: object
       properties:
@@ -2514,7 +2745,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingTaskEvent'
-            
+
     RecordingTaskEvent:
       type: object
       properties:
