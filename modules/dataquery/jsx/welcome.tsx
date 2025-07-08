@@ -59,6 +59,62 @@ function Welcome(props: {
         defaultOpen: boolean,
         id: string,
     }[] = [];
+  panels.push({
+    title: 'Instructions',
+    content: <IntroductionMessage
+      hasStudyQueries={props.topQueries.length > 0}
+      onContinue={props.onContinue}
+    />,
+    alwaysOpen: false,
+    defaultOpen: true,
+    id: 'p1',
+  });
+  panels.push({
+    title: 'Recent Queries',
+    content: (
+      <div>
+        <div>
+        Recent Queries stores the queries you have run.
+        </div>
+        <div>
+          <ul>
+            <li>Click on the Star icon to mark your query as 'starred'</li>
+            <li>Click on <ShareIcon /> to share your query with all users who have 
+            access to the fields in it.</li>
+            <li>Click on <LoadIcon /> to load your query.</li>
+            <li>Click on <NameIcon /> to names (or rename) your query.</li>
+            <li>Click on the the pin icon to display your query on the Loris 
+              welcome page.</li>
+            <li>Use Filter to find your query or queries by name.</li>
+            <li>Use the checkboxes to customize your queries.</li>
+          </ul>
+        </div>  
+      <div>
+        <QueryRunList
+          queryruns={props.recentQueries}
+          loadQuery={props.loadQuery}
+          defaultCollapsed={false}
+          starQuery={props.starQuery}
+          unstarQuery={props.unstarQuery}
+
+          shareQuery={props.shareQuery}
+          unshareQuery={props.unshareQuery}
+
+          reloadQueries={props.reloadQueries}
+
+          getModuleFields={props.getModuleFields}
+          mapModuleName={props.mapModuleName}
+          mapCategoryName={props.mapCategoryName}
+          fulldictionary={props.fulldictionary}
+          queryAdmin={props.queryAdmin}
+        />
+      </div>
+    </div>
+    ),
+    alwaysOpen: false,
+    defaultOpen: true,
+    id: 'p2',
+  });
   if (props.topQueries.length > 0) {
     panels.push({
       title: 'Study Queries',
@@ -83,49 +139,9 @@ function Welcome(props: {
       ),
       alwaysOpen: false,
       defaultOpen: true,
-      id: 'p1',
+      id: 'p3',
     });
   }
-  // panels.push({
-  //   title: 'Instructions',
-  //   content: <IntroductionMessage
-  //     hasStudyQueries={props.topQueries.length > 0}
-  //     onContinue={props.onContinue}
-  //   />,
-  //   alwaysOpen: false,
-  //   defaultOpen: true,
-  //   id: 'p2',
-  // });
-  panels.push({
-    title: 'Recent Queries',
-    content: (
-      <div>
-        <QueryRunList
-          queryruns={props.recentQueries}
-          loadQuery={props.loadQuery}
-          defaultCollapsed={false}
-
-          starQuery={props.starQuery}
-          unstarQuery={props.unstarQuery}
-
-          shareQuery={props.shareQuery}
-          unshareQuery={props.unshareQuery}
-
-          reloadQueries={props.reloadQueries}
-
-          getModuleFields={props.getModuleFields}
-          mapModuleName={props.mapModuleName}
-          mapCategoryName={props.mapCategoryName}
-          fulldictionary={props.fulldictionary}
-          queryAdmin={props.queryAdmin}
-        />
-      </div>
-    ),
-    alwaysOpen: false,
-    defaultOpen: true,
-    id: 'p3',
-  });
-
   if (props.sharedQueries.length > 0) {
     panels.push({
       title: 'Shared Queries',
@@ -510,7 +526,7 @@ function QueryList(props: {
     // query list
   const duplicateFilter = props.shareQuery ?
     <CheckboxElement name='noduplicate'
-      label='No run times (eliminate duplicates)'
+      label='Remove date'
       value={noDuplicates}
       offset=''
       onUserInput={
@@ -1063,61 +1079,46 @@ function NameIcon(props: {
  * @param {boolean} props.hasStudyQueries - Whether or not study queries exist
  * @returns {React.ReactElement} - The React element
  */
-// function IntroductionMessage(props: {
-//     onContinue: () => void,
-//     hasStudyQueries: boolean,
-// }): React.ReactElement {
-//   const studyQueriesParagraph = props.hasStudyQueries ? (
-//     <p>Above, there is also a <code>Study Queries</code> panel. This
-//         are a special type of shared queries that have been pinned
-//         by a study administer to always display at the top of this
-//         page.</p>
-//   ) : '';
-//   return (
-//     <div>
-//       <p>The data query tool allows you to query data
-//           within LORIS. There are three steps to defining
-//           a query:
-//       </p>
-//       <ol>
-//         <li>First, you must select the fields that you're
-//                 interested in on the <code>Define Fields</code>
-//                 page.</li>
-//         <li>Next, you can optionally define filters on the
-//           <code>Define Filters</code> page to restrict
-//                 the population that is returned.</li>
-//         <li>Finally, you view your query results on
-//                 the <code>View Data</code> page</li>
-//       </ol>
-//       <p>The <code>Next Steps</code> on the bottom right of your
-//              screen always the context-sensitive next steps that you
-//              can do to build your query.</p>
-//       <p>Your recently run queries will be displayed in the
-//         <code>Recent Queries</code> panel below. Instead of building
-//              a new query, you can reload a query that you've recently run
-//              by clicking on the <LoadIcon /> icon next to the query.</p>
-//       <p>Queries can be shared with others by clicking the <ShareIcon />
-//              icon. This will cause the query to be shared with all users who
-//              have access to the fields used by the query. It will display
-//              in a <code>Shared Queries</code> panel below the
-//         <code>Recent Queries</code>.</p>
-//       <p>You may also give a query a name at any time by clicking the
-//         <NameIcon /> icon. This makes it easier to find queries you care
-//              about by giving them an easier to remember name that can be used
-//              for filtering. When you share a query, the name will be shared
-//              along with it.</p>
-//       {studyQueriesParagraph}
-//       <div style={{
-//         display: 'flex',
-//         flexDirection: 'column',
-//         alignItems: 'center',
-//       }}>
-//         <ButtonElement
-//           columnSize="col-sm-12"
-//           onUserInput={props.onContinue}
-//           label="Continue to Define Fields" />
-//       </div>
-//     </div>
-//   );
-// }
+function IntroductionMessage(props: {
+    onContinue: () => void,
+    hasStudyQueries: boolean,
+}): React.ReactElement {
+  const studyQueriesParagraph = props.hasStudyQueries ? (
+    <p>Above, there is also a <code>Study Queries</code> panel. This
+        are a special type of shared queries that have been pinned
+        by a study administer to always display at the top of this
+        page.</p>
+  ) : '';
+  return (
+    <div>
+      <p>The data query tool allows you to query data
+          within LORIS. 
+      </p>
+      <ul>
+        <li>Click <code>Define Fields</code> to select what you are looking 
+        for.</li>
+        <li>Click <code>Add Filters</code> to filter what you have 
+        selected.</li>
+        <li>Click <code>Run Query</code> to view the results.</li>
+      {/* <li><code>Recent Queries</code> stores the queries you have run.</li> */}
+      </ul>
+      {/* <p>Click <ShareIcon /> to share your queries with all users who have access
+      to the fields in your query.
+        <code>Recent Queries</code>.</p>
+      <p>Rename your query by clicking the
+        <NameIcon /> icon.</p> */}
+      {/* {studyQueriesParagraph}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <ButtonElement
+          columnSize="col-sm-12"
+          onUserInput={props.onContinue}
+          label="Continue to Define Fields" />
+      </div> */}
+    </div>
+  );
+}
 export default Welcome;
