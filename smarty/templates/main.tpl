@@ -129,7 +129,7 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$menus[category].Category}<b class="caret"></b>
                                         <ul class="dropdown-menu">
                                             {section name=item loop=$menus[category].Items}
-                                            <li><a href="{$menuitems[itemloop]->link}">{$menus[category].Items[item]->label}</a></li>
+                                            <li><a href="{$menus[category].Items[item]->link}">{$menus[category].Items[item]->label}</a></li>
                                             {/section}
                                         </ul>
                                     </a>
