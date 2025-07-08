@@ -67,38 +67,37 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
             if (!empty($items)) {
                 foreach ($items as $menuitem) {
-                    $menu[$menuitem->getCategory() ?? 'Other'][] = $menuitem;
+                    if (isset($menu[$menuitem->category->name])) {
+                        $menu[$menuitem->category->name]['Items'][] = $menuitem;
+                    } else {
+                        $menu[$menuitem->category->name] = [
+                                                            'Category' => $menuitem->category,
+                                                            'Items'    => [ $menuitem ],
+                                                           ];
+                    }
                 }
             }
         }
 
-        // The order of the menu categories is currently unsorted. We sort them
-        // alphabetically by key to impose an order. As a hack to avoid reordering
-        // menu for users of existing LORIS instances, we move the 'Admin' category
-        // to the end even though it's alphabetically first (we do this by removing
-        // the key before sorting and then adding it back afterwards.)
-        //
-        // Coincidentally, this almost-alphabetic sorting results in the exact same
-        // order that LORIS previously had.
-        $adminmenu = $menu['Admin'] ?? [];
-        unset($menu['Admin']);
-        ksort($menu);
-        if (!empty($adminmenu)) {
-            $menu['Admin'] = $adminmenu;
-        }
+    // Sort the menu categories by the database defined ordering
+        usort(
+            $menu,
+            function ($a, $b) {
+                return $a['Category']->order <=> $b['Category']->order;
+            }
+        );
 
-        // We unconditionally sort within each section because the within-menu
-        // order has never been stable in LORIS, and sorting adds some consistency.
-        foreach ($menu as $cat => $val) {
-            $val = $val ?? [];
+    // Sort within categories alphabetically because we don't have
+    // a better way of determining order
+        foreach ($menu as &$val) {
             usort(
-                $val,
+                $val['Items'],
                 function ($a, $b) {
-                    return strcmp($a->getLabel(), $b->getLabel());
+                    return strcmp($a->label, $b->label);
                 }
             );
-            $menu[$cat] = $val;
         }
+
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
