@@ -9,6 +9,7 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
+ *
  * @param  {object} props
  * @return {JSX.Element}
  */

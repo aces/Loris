@@ -150,6 +150,7 @@ const resolve: webpack.ResolveOptions = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
+    I18nSetup: path.resolve(__dirname, './jsx/I18nSetup'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
