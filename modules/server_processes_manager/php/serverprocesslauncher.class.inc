@@ -143,20 +143,29 @@ class ServerProcessLauncher
     /**
      * Launch an MRI upload process
      *
-     * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
-     * @param string $sourceLocation location of the MRI file
+     * @param int    $upload_id       ID of the MRI upload in the mri_upload table.
+     * @param string $source_location location of the MRI file
      *
      * @return ?int ID (in the database) of the launched process or null
      *             if the process could not be run
      */
-    public function mriUpload($mriUploadId, $sourceLocation)
+    public function mriUpload($upload_id, $source_location)
     {
-        $mriUploadProcess = new MriUploadServerProcess(
-            $mriUploadId,
-            $sourceLocation
+        $upload_process = new MriUploadServerProcess(
+            $upload_id,
+            $source_location
         );
-        return $this->_launch($mriUploadProcess);
+
+        $process_id = $this->_launch($upload_process);
+
+        $this->getDatabaseProvider()->getDatabase()->insert(
+            'mri_upload_server_processes_rel',
+            [
+                'UploadID'  => $upload_id,
+                'ProcessID' => $process_id,
+            ]
+        );
+
+        return $process_id;
     }
 }
-
-

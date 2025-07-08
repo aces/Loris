@@ -2223,12 +2223,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param ?\LORIS\Data\Query\QueryTerm $condition  A single QueryTerm that
      *                                                 matched instances must
      *                                                 meet to be loaded
+     * @param ?array                       $v          The visits that must match
      *
      * @return Generator<\NDB_BVL_Instrument>
      */
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
         ?\LORIS\Data\Query\QueryTerm $condition = null,
+        $v = null,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
@@ -2313,13 +2315,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     )
                     . ' ';
                 }
+
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
                         CommentID,
-                        session.Visit_Label as VisitLabel,
+                        session.Visit_label as VisitLabel,
 			flag.Administration,
 			flag.Data_entry as DataEntry,
 			flag.Validity,
@@ -2356,6 +2359,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             \Profiler::checkpoint("Finished query");
             return;
         } else {
+
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
@@ -2391,11 +2395,25 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . ' ';
                 $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
-            $where = 'WHERE ' . join(' AND ', $conditions);
+            if (is_array($v) && !empty($v)) {
+                    $vescaped = array_map(
+                        function ($visit) use ($db) {
+                            return $db->quote($visit);
+                        },
+                        $v
+                    );
+
+                    $visitString = '(' . implode(',', $vescaped) . ')';
+                    $where       = 'WHERE ' . join(' AND ', $conditions) .
+                                   ' AND s.Visit_label IN ' . $visitString;
+            } else {
+                $where = 'WHERE ' . join(' AND ', $conditions);
+            }
+
             $query = "SELECT
                 c.CandID as CandID,
                 t.CommentID as CommentID,
-                s.Visit_Label as VisitLabel,
+                s.Visit_label as VisitLabel,
                 f.Administration,
                 f.Data_entry,
                 f.Validity,
@@ -2405,8 +2423,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
-
-		 $where";
+                     
+		    $where";
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
             foreach ($data as $row) {
@@ -2535,7 +2553,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID()->__toString(),
+                'CandidateID'   => $this->getCandidateID(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
@@ -2642,6 +2660,28 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
         return $pscid;
     }
+
+    /**
+     * Get the candidateID.
+     *
+     * @return string|null The candidate's ID.
+     */
+    function getCandidateID(): ?string
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $id = $db->pselectOne(
+            "SELECT c.ID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        return $id;
+    }
+
+
 
     protected ?CandID $candID = null;
     /**

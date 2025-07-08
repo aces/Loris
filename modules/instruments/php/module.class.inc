@@ -38,7 +38,9 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('data_entry');
+        return parent::hasAccess($user) && $user->hasAnyPermission(
+            ['data_entry','view_instrument_data']
+        );
     }
 
     /**
@@ -104,7 +106,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Instruments";
+        return dgettext("instruments", "Instruments");
     }
 
     /**

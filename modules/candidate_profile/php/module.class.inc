@@ -52,7 +52,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Candidate Profile";
+        return dgettext("candidate_profile", "Candidate Profile");
     }
 
     /**
@@ -91,7 +91,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Candidate Info",
+                    dgettext("candidate_profile", "Candidate Info"),
                     $baseurl . "/candidate_profile/js/CandidateInfo.js",
                     "lorisjs.candidate_profile.CandidateInfo.CandidateInfo",
                     ['ExtraCandidateInfo' => $params],

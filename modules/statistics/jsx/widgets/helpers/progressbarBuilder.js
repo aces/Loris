@@ -1,5 +1,6 @@
 /**
  * progressBarBuilder - generates the graph content.
+ *
  * @param  {object} data - data needed to generate the graph content.
  * @return {JSX.Element} the charts to render to the widget panel.
  */

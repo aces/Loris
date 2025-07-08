@@ -95,7 +95,9 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         //These variable are only for checking the permissions.
-        return $user->hasPermission('access_all_profiles')
+        return $user->hasAnyPermission(
+            ['access_all_profiles', 'view_instrument_data']
+        )
             || $this->timePoint->isAccessibleBy($user);
     }
 
@@ -370,15 +372,16 @@ class Instrument_List extends \NDB_Menu_Filter
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                dgettext("loris", "TimePoint") . " $visitlabel",
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             )
         );

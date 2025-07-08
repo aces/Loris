@@ -99,6 +99,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
+<<<<<<< HEAD
         $modules = $this->loris->getActiveModules();
 
         $studyWidgets = [];
@@ -125,6 +126,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         }
         $studyProgressionProjects = [];
         foreach ($projects as $pid) {
+=======
+        foreach ($projects as $projectID) {
+>>>>>>> aces/main
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($pid)));
             if (is_null($projectInfo)) {
