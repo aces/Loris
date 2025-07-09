@@ -60,7 +60,7 @@ function Welcome(props: {
         id: string,
     }[] = [];
   panels.push({
-    title: 'Instructions',
+    title: 'How to Start',
     content: <IntroductionMessage
       hasStudyQueries={props.topQueries.length > 0}
       onContinue={props.onContinue}
@@ -70,21 +70,21 @@ function Welcome(props: {
     id: 'p1',
   });
   panels.push({
-    title: 'Recent Queries',
+    title: 'Query History',
     content: (
       <div>
         <div>
-        Recent Queries stores the queries you have run.
+        <p>Query History stores the queries you have run.</p>
         </div>
         <div>
-          <ul>
+          <ul style ={{lineHeight: 2.0}}>
             <li>Click on the Star icon to mark your query as 'starred'</li>
             <li>Click on <ShareIcon /> to share your query with all users who
             have access to the fields in it.</li>
             <li>Click on <LoadIcon /> to load your query.</li>
             <li>Click on <NameIcon /> to name (or rename) your query.</li>
             <li>Click on the the pin icon to display your query on the Loris
-              welcome page.</li>
+              welcome page and in the 'Important Queries' pane.</li>
             <li>Use Filter to find your query or queries by name.</li>
             <li>Use the checkboxes to customize your queries.</li>
           </ul>
@@ -112,7 +112,7 @@ function Welcome(props: {
       </div>
     ),
     alwaysOpen: false,
-    defaultOpen: true,
+    defaultOpen: false,
     id: 'p2',
   });
   if (props.topQueries.length > 0) {
@@ -120,8 +120,10 @@ function Welcome(props: {
       title: 'Important Queries',
       content: (
         <div>
-          <div> Important Queries is a list of queries that your administrator
-            has selected for other users to view</div>
+          <div>
+            <p> Important Queries is a list of queries that your administrator
+              has marked as important.</p>
+          </div>
           <QueryList
             useAdminName={true}
 
@@ -140,7 +142,7 @@ function Welcome(props: {
         </div>
       ),
       alwaysOpen: false,
-      defaultOpen: true,
+      defaultOpen: false,
       id: 'p3',
     });
   }
@@ -165,7 +167,7 @@ function Welcome(props: {
           />
         </div>
       ),
-      alwaysOpen: false,
+      alwaysOpen: true,
       defaultOpen: true,
       id: 'p4',
     });
@@ -1085,18 +1087,18 @@ function IntroductionMessage(props: {
     onContinue: () => void,
     hasStudyQueries: boolean,
 }): React.ReactElement {
-  const studyQueriesParagraph = props.hasStudyQueries ? (
-    <p>Above, there is also a <code>Study Queries</code> panel. This
-        are a special type of shared queries that have been pinned
-        by a study administer to always display at the top of this
-        page.</p>
-  ) : '';
+  // const studyQueriesParagraph = props.hasStudyQueries ? (
+  //   <p>Above, there is also a <code>Study Queries</code> panel. This
+  //       are a special type of shared queries that have been pinned
+  //       by a study administer to always display at the top of this
+  //       page.</p>
+  // ) : '';
   return (
     <div>
       <p>The data query tool allows you to query data
-          within LORIS.
-      </p>
-      <ul>
+          within LORIS. Start with <code>Next Steps</code> at the
+          bottom right of your browser window.</p>
+      <ul style ={{lineHeight: 2.0}}>
         <li>Click <code>Define Fields</code> to select what you are looking
         for.</li>
         <li>Click <code>Add Filters</code> to filter what you have
