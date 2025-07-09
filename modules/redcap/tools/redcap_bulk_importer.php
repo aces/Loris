@@ -267,7 +267,10 @@ function triggerNotifications(
             0
         );
         if ($nbProjects === 0) {
-            fprintf(STDERR, "  - no REDCap instances/projects for that instrument.\n");
+            fprintf(
+                STDERR,
+                "  - no REDCap instances/projects for that instrument.\n"
+            );
             continue;
         }
         if ($nbProjects > 1) {
@@ -316,6 +319,8 @@ function triggerNotifications(
                 $redcapEventInstrument->unique_event_name,
                 $redcapUsername
             );
+
+            // get status message
             $responseStatusMsg = $response->getStatusCode() != 200 ? "failed" : "ok";
         } catch (GuzzleHttp\Exception\ServerException $ex) { // 500-level
             $msg = $ex->getResponse()->getBody()->getContents();
