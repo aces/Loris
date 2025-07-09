@@ -123,7 +123,7 @@ if (empty($redcapAllowedInstruments)) {
 
 // Get LORIS data to import
 fprintf(STDOUT, "[loris:data] getting data to import...\n");
-$lorisDataToImport = $queries->getLORISInstrumentToImport(
+$lorisDataToImport = $queries->getLORISInstrumentsToImport(
     $redcapAllowedInstruments,
     $forceUpdate
 );

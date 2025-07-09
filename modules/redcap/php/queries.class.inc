@@ -288,18 +288,21 @@ class Queries
     /**
      * Get the list of all instrument records to import from REDCap.
      *
-     * @param array $allowedRedcapInstruments authorized redcap instruments
-     * @param bool  $forceUpdate              do force update?
+     * @param array $allowedRedcapInstrumentNames authorized redcap instruments
+     * @param bool  $forceUpdate                  do force update?
      *
      * @return Query
      */
-    public function getLORISInstrumentToImport(
-        array $allowedRedcapInstruments,
+    public function getLORISInstrumentsToImport(
+        array $allowedRedcapInstrumentNames,
         bool $forceUpdate = false
     ): Query {
         // extract first importable instrument name
-        $firstInstrumentName     = $allowedRedcapInstruments[0];
-        $allOtherInstrumentNames = array_slice($allowedRedcapInstruments, 1);
+        $firstInstrumentName     = $allowedRedcapInstrumentNames[0];
+        $allOtherInstrumentNames = array_slice(
+            $allowedRedcapInstrumentNames,
+            1
+        );
 
         // build query for exact instrument name match
         $selectedInstruments  = "AND (";
