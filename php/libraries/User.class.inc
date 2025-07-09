@@ -341,6 +341,33 @@ class User extends UserPermissions implements
         return explode(';', $projects);
     }
 
+    /*
+    * Get the visits the User has access to
+    * through their projects and their cohorts.
+    *
+    * @return array of study visits in the format array('VL' => 'VL')
+    *         where VL is the visit label
+    */
+    public function getVisits(): array {
+        $visit_labels = [];
+        $list_of_projects = $this->getProjectIDs();
+        foreach ($list_of_projects as $projectID) {
+            $cohorts = \Utility::getCohortList($projectID);
+            foreach ($cohorts as $cohortID => $cohortTitle) {
+                $visits  = \Utility::getVisitsForProjectCohort(
+                    $projectID,
+                    $cohortID
+                );
+                foreach ($visits as $_ => $visitLabel) {
+                    if (!in_array($visitLabel, $visit_labels)) {
+                        $visit_labels[$visitLabel] = $visitLabel;
+                    }
+                }
+            }
+        }
+        return $visit_labels;
+    }
+
     /**
      * Get the user's sites' ID numbers
      *
