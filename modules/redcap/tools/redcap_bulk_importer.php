@@ -115,8 +115,8 @@ $lorisClient = new Client(
 );
 
 // Load all LORIS importable instruments (across all REDCap instances)
-$redcapAllowedInstruments = $config->getSetting('redcap_importable_instrument');
-if (empty($redcapAllowedInstruments)) {
+$redcapAllowedInstrumentNames = $config->getSetting('redcap_importable_instrument');
+if (empty($redcapAllowedInstrumentNames)) {
     fprintf(STDERR, "[redcap:configuration] no instrument authorized.\n");
     exit(3);
 }
@@ -124,7 +124,7 @@ if (empty($redcapAllowedInstruments)) {
 // Get LORIS data to import
 fprintf(STDOUT, "[loris:data] getting data to import...\n");
 $lorisDataToImport = $queries->getLORISInstrumentsToImport(
-    $redcapAllowedInstruments,
+    $redcapAllowedInstrumentNames,
     $forceUpdate
 );
 
@@ -182,7 +182,7 @@ testREDCapConnections($redcapConnections);
 // fprintf(STDOUT, "[redcap:connections] loading REDCap instruments...\n");
 // initREDCapInstrumentMap(
 //     $redcapConnections,
-//     $redcapAllowedInstruments,
+//     $redcapAllowedInstrumentNames,
 //     $redcapInstrumentMap
 // );
 
@@ -190,7 +190,7 @@ testREDCapConnections($redcapConnections);
 fprintf(STDOUT, "[redcap:connections] loading REDCap instrument-event mapping...\n");
 initREDCapInstrumentEventMap(
     $redcapConnections,
-    $redcapAllowedInstruments,
+    $redcapAllowedInstrumentNames,
     $redcapInstrumentEventMap
 );
 
@@ -408,14 +408,14 @@ function testREDCapConnections(
 //  * Initialize REDCap instruments based on the given connection.
 //  *
 //  * @param array $redcapConnections
-//  * @param array $redcapAllowedInstruments
+//  * @param array $redcapAllowedInstrumentNames
 //  * @param array $redcapInstrumentMap
 //  *
 //  * @return void
 //  */
 // function initREDCapInstrumentMap(
 //     array $redcapConnections,
-//     array $redcapAllowedInstruments,
+//     array $redcapAllowedInstrumentNames,
 //     array &$redcapInstrumentMap
 // ): void {
 //     foreach ($redcapConnections as $redcapURL => $redcapInstance) {
@@ -428,7 +428,7 @@ function testREDCapConnections(
 //                 $instruments,
 //                 fn($i) => in_array(
 //                     $i->name,
-//                     $redcapAllowedInstruments,
+//                     $redcapAllowedInstrumentNames,
 //                     true
 //                 )
 //             );
@@ -448,14 +448,14 @@ function testREDCapConnections(
  * Initialize REDCap instrument-event based on the given connection.
  *
  * @param array $redcapConnections        REDCap connections structure
- * @param array $redcapAllowedInstruments Allowed instruments
- * @param array $redcapInstrumentEventMap REDCAp event-instrument mapping
+ * @param array $redcapAllowedInstrumentNames Allowed instruments
+ * @param array<string, array<int, RedcapInstrumentEventMap>> $redcapInstrumentEventMap REDCap event-instrument mapping
  *
  * @return void
  */
 function initREDCapInstrumentEventMap(
     array $redcapConnections,
-    array $redcapAllowedInstruments,
+    array $redcapAllowedInstrumentNames,
     array &$redcapInstrumentEventMap
 ): void {
     foreach ($redcapConnections as $redcapURL => $redcapInstance) {
@@ -468,7 +468,7 @@ function initREDCapInstrumentEventMap(
                 $instrumentEventMap,
                 fn($i) => in_array(
                     $i->form_name,
-                    $redcapAllowedInstruments,
+                    $redcapAllowedInstrumentNames,
                     true
                 )
             );
