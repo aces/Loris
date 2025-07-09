@@ -90,7 +90,7 @@ class Module extends \Module
         $categoryitems = [];
 
         // Get the instruments that the user has access to based on their Projects
-        $userVisits = $user->getVisits();
+        $userVisits  = $user->getVisits();
         $instruments = [];
         foreach ($userVisits as $visitLabel => $_) {
             $visitInstruments = \Utility::getVisitInstruments($visitLabel);
@@ -116,9 +116,8 @@ class Module extends \Module
                 $categories[$mname] = [];
 
                 foreach ($mdict as $cat) {
-                    if (
-                        $mname === 'instruments' &&
-                        !isset($instruments[$cat->getName()])
+                    if ($mname === 'instruments'
+                        && !isset($instruments[$cat->getName()])
                     ) {
                         continue;
                     }

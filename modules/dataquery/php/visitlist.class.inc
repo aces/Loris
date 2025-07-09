@@ -61,7 +61,7 @@ class VisitList extends \NDB_Page
         \User $user,
         ServerRequestInterface $request,
     ) : void {
-        $this->user = $user;
+        $this->user  = $user;
         $queryparams = $request->getQueryParams();
         if (!isset($queryparams['module']) || !isset($queryparams['item'])) {
             return;
