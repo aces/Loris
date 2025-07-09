@@ -70,7 +70,8 @@ class Candidate_List extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
-        // To modify the field options, you must edit getFieldOptions in options.class.inc
+        // To modify the field options,
+        // you must edit getFieldOptions in options.class.inc
         return [];
     }
 
