@@ -264,7 +264,8 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_ownsites'),1),
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_nosessionid'),1),
-  ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1);
+  ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1),
+  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1);
 
 
 -- permissions for each notification module
