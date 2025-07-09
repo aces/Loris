@@ -83,7 +83,7 @@ function Welcome(props: {
             have access to the fields in it.</li>
             <li>Click on <LoadIcon /> to load your query.</li>
             <li>Click on <NameIcon /> to names (or rename) your query.</li>
-            <li>Click on the the pin icon to display your query on the Loris 
+            <li>Click on the the pin icon to display your query on the Loris
               welcome page.</li>
             <li>Use Filter to find your query or queries by name.</li>
             <li>Use the checkboxes to customize your queries.</li>
@@ -1097,7 +1097,7 @@ function IntroductionMessage(props: {
       <ul>
         <li>Click <code>Define Fields</code> to select what you are looking
         for.</li>
-        <li>Click <code>Add Filters</code> to filter what you have 
+        <li>Click <code>Add Filters</code> to filter what you have
         selected.</li>
         <li>Click <code>Run Query</code> to view the results.</li>
         {/* <li><code>Recent Queries</code> stores the queries you have run.</li> */}
