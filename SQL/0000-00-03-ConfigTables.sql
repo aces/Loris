@@ -181,6 +181,11 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, Or
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGS3DataPath', 'EEG S3 data path for assembly data', 1, 0, 'text', ID, 'EEG S3 data path', 15 FROM ConfigSettings WHERE Name = 'eeg_pipeline';
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="eeg_pipeline";
 
+-- REDCap settings
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('redcap', 'Settings related to REDCap interoperability', 1, 0, 'REDCap', 16);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'redcap_issue_assignee', 'REDCap main issue assignee in issue tracker', 1, 0, 'text', parent_config.ID, 'Main issue assignee', 1 FROM ConfigSettings parent_config LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent) WHERE parent_config.Name = 'redcap';
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'redcap_importable_instrument', 'REDCap instrument names from which data should be imported in LORIS', 1, 1, 'text', parent_config.ID, 'Importable instrument names', 2 FROM ConfigSettings parent_config LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent) WHERE parent_config.Name = 'redcap';
+
 --
 -- Filling Config table with default values
 --
@@ -293,3 +298,19 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings WHERE Nam
 INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings WHERE Name='bids_acknowledgments_text';
 INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings WHERE Name='bids_readme_text';
 INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings WHERE Name='bids_validator_options_to_ignore';
+
+CREATE TABLE menu_categories (
+	name varchar(255) NOT NULL PRIMARY KEY,
+	orderby integer unsigned default 1
+);
+
+INSERT INTO menu_categories (name, orderby) VALUES
+('Candidate', 1),
+('Clinical', 2),
+('Electrophysiology', 3),
+('Genomics', 4),
+('Imaging', 5),
+('Reports', 6),
+('Tools', 7),
+('Admin', 8);
+

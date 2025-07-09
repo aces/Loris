@@ -145,10 +145,10 @@ class DocEditForm extends React.Component {
                 (<SelectElement
                   name="hiddenFile"
                   label="Restrict access to the file?"
-                  options={this.state.data.hiddenFile}
+                  options={this.state.data.hiddenVideo}
                   sortByValue={false}
                   onUserInput={this.setFormData}
-                  value={this.state.docData.hiddenFile}
+                  value={this.state.docData.hiddenVideo}
                 />)
           }
           <TextboxElement

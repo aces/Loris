@@ -164,7 +164,8 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_uploader_ownsites', 'Imaging Scans - Own Sites', (SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
-    ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2)
+    ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
+    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2)
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)

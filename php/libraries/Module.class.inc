@@ -359,12 +359,11 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Unless overridden, this defaults to the empty string (which
      * results in the module not being added to the LORIS menu.)
      *
-     * @return string The category (dropdown) of the LORIS menu to add
-     *                this module to.
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "";
+        return null;
     }
 
 
@@ -388,10 +387,11 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         $category = $this->getMenuCategory();
         $name     = $this->getLongName();
-        if ($category !== "" && $name !== "") {
+        if ($category !== null && $name !== "") {
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             $url     = $baseURL . '/' . $this->getName() . '/';
+
             return [
                 new \LORIS\GUI\MenuItem($category, $name, $url)
             ];

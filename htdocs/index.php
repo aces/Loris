@@ -34,6 +34,35 @@ bind_textdomain_codeset("loris", 'UTF-8');
 bindtextdomain("loris", __DIR__ . '/../locale');
 textdomain("loris");
 
+// TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
+if (version_compare(PHP_VERSION, '8.4', '<')) {
+    // @phan-file-suppress PhanRedefineFunctionInternal
+
+    // phpcs:ignore
+    function array_any(array $array, callable $callback): bool
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // phpcs:ignore
+    function array_find(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+}
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();
@@ -43,6 +72,8 @@ Profiler::checkpoint("Profiler started");
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
 $middlewarechain = (new \LORIS\Middleware\Language())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
+    ->withMiddleware(new \LORIS\Middleware\LorisMenu())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
