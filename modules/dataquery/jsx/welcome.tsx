@@ -82,7 +82,7 @@ function Welcome(props: {
             <li>Click on <ShareIcon /> to share your query with all users who
             have access to the fields in it.</li>
             <li>Click on <LoadIcon /> to load your query.</li>
-            <li>Click on <NameIcon /> to names (or rename) your query.</li>
+            <li>Click on <NameIcon /> to name (or rename) your query.</li>
             <li>Click on the the pin icon to display your query on the Loris
               welcome page.</li>
             <li>Use Filter to find your query or queries by name.</li>
@@ -117,9 +117,11 @@ function Welcome(props: {
   });
   if (props.topQueries.length > 0) {
     panels.push({
-      title: 'Study Queries',
+      title: 'Important Queries',
       content: (
         <div>
+          <div> Important Queries is a list of queries that your administrator
+            has selected for other users to view</div>
           <QueryList
             useAdminName={true}
 
