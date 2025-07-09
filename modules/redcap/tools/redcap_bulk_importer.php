@@ -30,9 +30,9 @@ try {
 use \GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
-use LORIS\Database\Query;
 use LORIS\StudyEntities\Candidate\CandID;
 
+use LORIS\redcap\client\models\mappings\RedcapInstrumentEventMap;
 use LORIS\redcap\config\RedcapConfigLorisId;
 use LORIS\redcap\config\RedcapConfigParser;
 use LORIS\redcap\client\RedcapHttpClient;
@@ -44,7 +44,7 @@ use LORIS\redcap\Queries;
 /**
  * All REDCap connections (http client) for each REDCap instance/project.
  *
- * @var mixed
+ * @var array<int, RedcapHttpClient>
  */
 $redcapConnections = [];
 
@@ -65,7 +65,7 @@ $redcapConnections = [];
 /**
  * All REDCap instrument-event map for each REDCap instance/project.
  *
- * @var mixed
+ * @var array<string, array<int, RedcapInstrumentEventMap>>
  */
 $redcapInstrumentEventMap = [];
 
@@ -216,11 +216,11 @@ triggerNotifications(
 /**
  * Trigger the selected set of notification to import data in LORIS.
  *
- * @param GuzzleHttp\Client    $lorisClient              the loris client
- * @param LORIS\Database\Query $lorisDataToImport        the list of data to import
- * @param array                $redcapInstrumentEventMap the instrument-event map
- * @param array                $redcapConfiguration      the REDCap conf
- * @param string               $redcapUsername           the text to pass
+ * @param GuzzleHttp\Client                                   $lorisClient              the loris client
+ * @param LORIS\Database\Query                                $lorisDataToImport        the list of data to import
+ * @param array<string, array<int, RedcapInstrumentEventMap>> $redcapInstrumentEventMap the instrument-event map
+ * @param array<mixed|RedcapConfig|null>[]                    $redcapConfiguration      the REDCap conf
+ * @param string                                              $redcapUsername           the text to pass
  *
  * @return void
  */
@@ -339,9 +339,9 @@ function triggerNotifications(
 /**
  * Initialize REDCap connections based on the given configuration.
  *
- * @param array $redcapConfig      REDCap configuration structure
- * @param array $redcapConnections REDCap connection structure to fill
- * @param bool  $verbose           Verbose mode
+ * @param array<mixed|RedcapConfig|null>[] $redcapConfig      REDCap configuration structure
+ * @param array<int, RedcapHttpClient>     $redcapConnections REDCap connection structure to fill
+ * @param bool                             $verbose           Verbose mode
  *
  * @return void
  */
@@ -368,7 +368,7 @@ function initREDCapConnections(
 /**
  * Test all REDCap connections based on a given connection structure.
  *
- * @param array $redcapConnections REDCap connection structure
+ * @param array<int, RedcapHttpClient> $redcapConnections REDCap connection structure
  *
  * @return void
  */
@@ -447,9 +447,9 @@ function testREDCapConnections(
 /**
  * Initialize REDCap instrument-event based on the given connection.
  *
- * @param array $redcapConnections        REDCap connections structure
- * @param array $redcapAllowedInstrumentNames Allowed instruments
- * @param array<string, array<int, RedcapInstrumentEventMap>> $redcapInstrumentEventMap REDCap event-instrument mapping
+ * @param array<int, RedcapHttpClient>                        $redcapConnections            REDCap connections structure
+ * @param array<string>                                       $redcapAllowedInstrumentNames Allowed instruments
+ * @param array<string, array<int, RedcapInstrumentEventMap>> $redcapInstrumentEventMap     REDCap event-instrument mapping
  *
  * @return void
  */
@@ -538,7 +538,7 @@ function sendNotification(
  * @param array  $redcapInstrumentEventMap the event-instrument mapping
  * @param string $instrumentName           the searched instrument name
  *
- * @return array[]
+ * @return array<string, array<int, RedcapInstrumentEventMap>> an array
  */
 function getTargetedEventInstrument(
     array $redcapInstrumentEventMap,
@@ -573,7 +573,12 @@ function getTargetedEventInstrument(
  *
  * @param array $options the arguments
  *
- * @return array clean and valid version.
+ * @return array{
+ *   lorisURL: string,
+ *   redcapUsername: string,
+ *   forceUpdate: bool,
+ *   verbose: bool
+ * } clean and valid options.
  */
 function checkOptions(array $options): array
 {
