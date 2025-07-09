@@ -221,12 +221,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus($loris);
         $this->_instrumentStatus->select($this->_instrument->commentID);
 
-        if (!$this->_instrument->determineDataEntryAllowed()) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
-            );
-        }
-
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
