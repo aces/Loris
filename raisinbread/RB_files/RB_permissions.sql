@@ -77,5 +77,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (83,'dicom_archive_nosessionid','DICOMs with no session ID',15,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (84,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (85,'view_instrument_data','Data',26,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (86,'data_release_hide','Hide data release files',12,NULL,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (87,'data_release_delete','Delete data release files',12,NULL,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
