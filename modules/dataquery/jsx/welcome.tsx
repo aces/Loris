@@ -74,7 +74,7 @@ function Welcome(props: {
     content: (
       <div>
         <div>
-        <p>Query History stores the queries you have run.</p>
+          <p>Query History stores the queries you have run.</p>
         </div>
         <div>
           <ul style ={{lineHeight: 2.0}}>
@@ -86,14 +86,14 @@ function Welcome(props: {
             <li>Click on the the pin icon to display your query on the Loris
               welcome page and in the 'Important Queries' pane.</li>
             <li>Use Filter to find your query or queries by name.</li>
-            <li>Use the checkboxes to customize your queries.</li>
+            <li>Use the checkboxes to customize your query history.</li>
           </ul>
         </div>
         <div>
           <QueryRunList
             queryruns={props.recentQueries}
             loadQuery={props.loadQuery}
-            defaultCollapsed={false}
+            defaultCollapsed={true}
             starQuery={props.starQuery}
             unstarQuery={props.unstarQuery}
 
@@ -121,7 +121,7 @@ function Welcome(props: {
       content: (
         <div>
           <div>
-            <p> Important Queries is a list of queries that your administrator
+            <p>Important Queries is a list of queries that your administrator
               has marked as important.</p>
           </div>
           <QueryList
@@ -167,8 +167,8 @@ function Welcome(props: {
           />
         </div>
       ),
-      alwaysOpen: true,
-      defaultOpen: true,
+      alwaysOpen: false,
+      defaultOpen: false,
       id: 'p4',
     });
   }
@@ -530,7 +530,7 @@ function QueryList(props: {
     // query list
   const duplicateFilter = props.shareQuery ?
     <CheckboxElement name='noduplicate'
-      label='Remove date'
+      label='Hide Duplicates'
       value={noDuplicates}
       offset=''
       onUserInput={
@@ -892,7 +892,7 @@ function SingleQueryDisplay(props: {
   } else {
     console.error('Invalid query. Neither shared nor recent', query);
   }
-
+  // console.log('showFullQuery:',showFullQuery, 'will render:', !showFullQuery ? 'empty div' : 'full details');
   const queryDisplay = !showFullQuery ? <div /> :
     <div style={{display: 'flex', flexWrap: 'wrap'}}>
       <div>
