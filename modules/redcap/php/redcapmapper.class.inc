@@ -140,7 +140,7 @@ class RedcapMapper
         // Find the REDCap event that matches the REDCap notification event.
         $redcap_event = array_find(
             $redcap_events,
-            fn($redcap_event) => $unique_event_name === $redcap_event->unique_name,
+            fn($redcap_event) => $redcap_event->unique_name === $unique_event_name,
         );
 
         // There should always be a REDCap event that matches the REDCap
