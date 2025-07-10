@@ -816,6 +816,7 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
+                '/js/components/PolicyButton.js',
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
             ],
