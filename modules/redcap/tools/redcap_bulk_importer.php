@@ -447,12 +447,20 @@ function testREDCapConnections(
 /**
  * Initialize REDCap instrument-event based on the given connection.
  *
- * @param array<int, RedcapHttpClient> \
- *      $redcapConnections            REDCap connections structure
- * @param array<string> \
- *      $redcapAllowedInstrumentNames Allowed instruments
- * @param array<string, array<int, RedcapInstrumentEventMap>> \
- *      $redcapInstrumentEventMap     REDCap event-instrument mapping
+ * @param array{
+ *   int,
+ *   RedcapHttpClient
+ * } $redcapConnections REDCap connections structure
+ * @param array{
+ *   string
+ * } $redcapAllowedInstrumentNames Allowed instruments
+ * @param array{
+ *   string,
+ *   array{
+ *     int,
+ *     RedcapInstrumentEventMap
+ *   }
+ * } $redcapInstrumentEventMap REDCap event-instrument mapping
  *
  * @return void
  */
