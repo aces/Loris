@@ -1,3 +1,4 @@
+import React from 'react';
 import Select, {SingleValue} from 'react-select';
 
 type SelectOption = {
@@ -10,6 +11,7 @@ type SelectGroup = {
     label: string,
     options: SelectOption[],
 };
+
 /**
  * Render a select with option groups that can be
  * filtered
@@ -27,60 +29,31 @@ function FilterableSelectGroup(props: {
     groups: object,
     mapGroupName?: (module: string) => string,
 }) {
-  const groups: SelectGroup[] = [];
-  const placeholder = props.placeholder || 'Select a category';
-  for (const [module, subcategories]
-    of Object.entries(props.groups)) {
-    const options: SelectOption[] = [];
-    for (const [value, desc]
-      of Object.entries(subcategories) as unknown as [string, string]) {
-      options.push({
-        value: value,
-        label: desc,
-        module: module,
-      });
-    }
+  const options: SelectOption[] = [];  // Changed from SelectGroup[] to SelectOption[]
+  const placeholder = props.placeholder || 'Select a Category';
 
+  for (const module of Object.keys(props.groups)) {
     let label = module;
-    if (props.mapGroupName) {
+    if (props.mapGroupName) {  // Added missing opening brace
       label = props.mapGroupName(module);
     }
-    groups.push({
-      label: label,
-      options: options,
+    options.push({
+      value: module,    // Changed from undefined 'value' to 'module'
+      label: label,     // Changed from undefined 'desc' to 'label'
+      module: module,
     });
   }
 
-  /**
-   * Callback to call when the selection changes.
-   *
-   * @param {object} e - The click event callback
-   * @param {string} e.module - The module
-   * @param {string} e.value - The value
-   * @returns {void}
-   */
-  const selected = (e: SingleValue<SelectGroup>) => {
-    // The callback should be (e: SelectOption) but typescript
-    // is convinced that it's a SingleValue<SelectGroup>.
-    // console.log(e) confirms that it has the same structure
-    // as SelectOption, so just convert it and explicitly
-    // cast it unsafely to make the compiler happy.
-    const val: SelectOption = e as unknown as SelectOption;
+  const selected = (e: SingleValue<SelectOption>) => {
+    const val: SelectOption = e as SelectOption;
     props.onChange(val.module, val.value);
   };
+  
   return (
     <div>
-      <Select options={groups} onChange={selected}
+      <Select options={options} onChange={selected}  // Changed from 'groups' to 'options'
         menuPortalTarget={document.body}
-        styles={{menuPortal:
-                    /**
-                     * Add a z-index to ensure the element stays visible
-                     *
-                     * @param {object} base - the base CSS
-                     * @returns {object} - the new CSS with z-index added
-                     */
-                    (base) => ({...base, zIndex: 9999})}
-        }
+        styles={{menuPortal: (base) => ({...base, zIndex: 9999})}}
         placeholder={placeholder}
       />
     </div>

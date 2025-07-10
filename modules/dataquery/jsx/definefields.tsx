@@ -6,6 +6,8 @@ import {CheckboxElement} from 'jsx/Form';
 import {FullDictionary, FieldDictionary, DictionaryCategory} from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {APIQueryField, VisitOption} from './types';
+import CategoryFields from './components/categoryFields';
+
 
 
 /**
@@ -131,6 +133,9 @@ function QueryField(props: {
         cursor: 'pointer',
         display: 'flex',
         justifyContent: 'space-between',
+        textAlign: 'left',
+        padding: '5px 10px',
+        minHeight: 'auto'
       }}
       onClick={() => props.onFieldToggle(
         props.module,
@@ -138,8 +143,13 @@ function QueryField(props: {
         item,
         selectedVisits,
       )}>
-      <dl>
-        <dt>{item}</dt>
+      <dl style={{
+        marginTop:'5px',
+        marginBottom:'5px',
+        paddingLeft:'15px',
+        paddingRight:'15px'
+      }}>
+        {/* <dt>{item}</dt> */}
         <dd>{value.description} {download}</dd>
       </dl>
       {visits}
@@ -370,20 +380,20 @@ function DefineFields(props: {
     }
 
     fieldList = (<div>
-      <div style={{display: 'flex', flexWrap: 'wrap',
+      {/* <div style={{display: 'flex', flexWrap: 'wrap',
         justifyContent: 'space-between'}}>
-        <h2>{cname} fields</h2>
+        <h3>{cname} fields</h3>
         <div style={{marginTop: '1em',
           display: 'flex',
           flexWrap: 'nowrap',
           flexDirection: 'column',
-        }}>
-          {defaultVisits}
+        }}> */}
+          {/* {defaultVisits} */}
           <div className="input-group">
             <input onChange={setFilter}
               className='form-control'
               type="text"
-              placeholder="Filter within category"
+              placeholder="Type a field name here"
               aria-describedby="input-filter-addon"
               value={activeFilter} />
             <span className="input-group-addon">
@@ -405,30 +415,69 @@ function DefineFields(props: {
                             Remove all
             </button>
           </div>
-        </div>
-      </div>
-      <div className="list-group">{fields}</div>
+        {/* </div>
+      </div> */}
+      <div className="list-group" style={{
+        maxHeight: '30vh',
+        overflowY: 'auto',
+        border: '1px solid #ddd'
+      }}>
+        {fields}
+    </div>
     </div>);
   }
 
   return (
     <div>
       <div style={{display: 'flex', flexWrap: 'nowrap'}}>
-        <div style={{width: '80vw', padding: '1em'}}>
-          <h1>Available Fields</h1>
+        <div style={{width: '50vw', padding: '4em'}}>
+
+          {/*Categories Section*/}
+          <div style={{marginBottom: '20px'}}>
+          <h3>Categories</h3>
+          <div style={{
+            maxHeight: '200px',
+            overflowY: 'auto',
+            border: '1px solid #ddd',
+            padding: '10px',
+            marginBottom: '20px'
+          }}>
+            
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
           />
-          {fieldList}
         </div>
+      </div>
+
+      <div style={{marginBottom: '20px'}}>
+        <h3>Available Fields</h3>
         <div style={{
-          width: '20vw',
-          padding: '1em',
+          maxHeight: '40vh',
+          overflowY: 'auto',
+          border: '1px solid #ddd',
+          padding: '10px',
+          marginBottom: '20px'
+        }}>
+          <CategoryFields
+            selectedModule={props.module}
+            selectedCategory={props.category}
+            fields={props.displayedFields}
+            selectedFields={props.selected}
+            onFieldToggle={props.onFieldToggle}
+            defaultVisits={props.defaultVisits}
+          />
+        </div>
+      </div>
+
+      </div>
+        <div style={{
+          width: '50vw',
+          padding: '4em',
           position: 'sticky',
           top: 0,
           maxHeight: '90vh',
-          overflow: 'auto',
+          overflowY: 'auto',
         }}>
           <div>
             <div style={{
@@ -437,11 +486,11 @@ function DefineFields(props: {
               alignItems: 'flex-end',
               marginBottom: '1em',
             }}>
-              <h2>Selected Fields</h2>
+              <h3>Selected Fields</h3>
               <div>
-                <button type="button" className="btn btn-primary"
+                {/* <button type="button" className="btn btn-primary"
                   style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>Clear</button>
+                  onClick={props.onClearAll}>Clear</button> */}
               </div>
             </div>
             <SelectedFieldList
@@ -527,7 +576,8 @@ function SelectedFieldList(props: {
     const style: React.CSSProperties = {display: 'flex',
       flexWrap: 'nowrap' as const,
       cursor: 'grab',
-      justifyContent: 'space-between'};
+      justifyContent: 'space-between',
+      marginBottom: '14px'};
     if (removingIdx === i) {
       style.textDecoration = 'line-through' as const;
     }
@@ -572,7 +622,7 @@ function SelectedFieldList(props: {
       onDrop={() => moveSelected()}
     >
       <div>
-        <dt>{item.field}</dt>
+        {/* <dt>{item.field}</dt> */}
         <dd style={{marginLeft: 20}}>{getDictionaryDescription(
           item.module,
           item.category,
