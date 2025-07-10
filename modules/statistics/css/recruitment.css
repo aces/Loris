@@ -86,6 +86,10 @@
   box-sizing: border-box;
 }
 
+#site-breakdown-grid-one-column {
+  grid-template-columns: 1fr;
+}
+
 /* Chart Card */
 .site-breakdown-card {
   background-color: #ffffff;

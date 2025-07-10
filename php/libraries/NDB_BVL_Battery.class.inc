@@ -203,8 +203,8 @@ class NDB_BVL_Battery
             throw new \LorisException("Invalid instrument");
         }
 
-        // get SessionID, UserID, Visit_label
-        $query = "SELECT ID as SessionID, UserID, Visit_label
+        // get SessionID, UserID, Visit_label, CohortID
+        $query = "SELECT ID as SessionID, UserID, Visit_label, CohortID
                   FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {

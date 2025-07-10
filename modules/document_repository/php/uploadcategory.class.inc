@@ -96,7 +96,7 @@ class UploadCategory extends \NDB_Page
         $parent_id     = isset($req['parentId']) ? $req['parentId'] : 0;
         $comments      = isset($req['comments']) ? $req['comments'] : null;
         //check duplicate name category
-        if ($this->existCategoryName($category_name, $parent_id)) {
+        if ($this->existCategoryName($category_name, intval($parent_id))) {
             return false;
         }
         $DB->insert(
