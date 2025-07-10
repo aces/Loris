@@ -3,4 +3,5 @@ parameters:
         - %currentWorkingDirectory%/modules/*/ajax/*
         - %currentWorkingDirectory%/modules/*/test/*
     scanDirectories:
-        - %currentWorkingDirectory%/modules/redcap/php/**
+        - %currentWorkingDirectory%/modules/redcap/php/client/*
+        - %currentWorkingDirectory%/modules/redcap/php/config/*
