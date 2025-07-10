@@ -216,11 +216,11 @@ triggerNotifications(
 /**
  * Trigger the selected set of notification to import data in LORIS.
  *
- * @param GuzzleHttp\Client                                   $lorisClient              the loris client
- * @param LORIS\Database\Query                                $lorisDataToImport        the list of data to import
- * @param array<string, array<int, RedcapInstrumentEventMap>> $redcapInstrumentEventMap the instrument-event map
- * @param array<mixed|RedcapConfig|null>[]                    $redcapConfiguration      the REDCap conf
- * @param string                                              $redcapUsername           the text to pass
+ * @param GuzzleHttp\Client    $lorisClient              the loris client
+ * @param LORIS\Database\Query $lorisDataToImport        the list of data to import
+ * @param mixed[]              $redcapInstrumentEventMap the instrument-event map
+ * @param mixed[]              $redcapConfiguration      the REDCap conf
+ * @param string               $redcapUsername           the text to pass
  *
  * @return void
  */
@@ -339,9 +339,11 @@ function triggerNotifications(
 /**
  * Initialize REDCap connections based on the given configuration.
  *
- * @param array<mixed|RedcapConfig|null>[] $redcapConfig      REDCap configuration structure
- * @param array<int, RedcapHttpClient>     $redcapConnections REDCap connection structure to fill
- * @param bool                             $verbose           Verbose mode
+ * @param mixed[]                      $redcapConfig      REDCap configuration
+ *                                                        structure
+ * @param array<int, RedcapHttpClient> $redcapConnections REDCap connection
+ *                                                        structure to fill
+ * @param bool                         $verbose           Verbose mode
  *
  * @return void
  */
@@ -447,20 +449,14 @@ function testREDCapConnections(
 /**
  * Initialize REDCap instrument-event based on the given connection.
  *
- * @param array{
- *   int,
- *   RedcapHttpClient
- * } $redcapConnections REDCap connections structure
- * @param array{
- *   string
- * } $redcapAllowedInstrumentNames Allowed instruments
- * @param array{
- *   string,
- *   array{
- *     int,
- *     RedcapInstrumentEventMap
- *   }
- * } $redcapInstrumentEventMap REDCap event-instrument mapping
+ * @param array<int,RedcapHttpClient> $redcapConnections            REDCap
+ *                                                                  connections
+ *                                                                  structure
+ * @param array<string>               $redcapAllowedInstrumentNames Allowed
+ *                                                                  instruments
+ * @param mixed[]                     $redcapInstrumentEventMap     REDCap
+ *                                                                  event-instrument
+ *                                                                  mapping
  *
  * @return void
  */
