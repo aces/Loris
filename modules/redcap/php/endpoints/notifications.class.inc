@@ -16,6 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
 use \LORIS\redcap\RedcapNotificationHandler;
+use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\config\RedcapConfigParser;
 use \LORIS\redcap\client\RedcapHttpClient;
@@ -97,7 +98,8 @@ class Notifications extends Endpoint
      */
     private function _handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        $db = $this->loris->getDatabaseConnection();
+        $db      = $this->loris->getDatabaseConnection();
+        $queries = new RedcapQueries($this->loris);
 
         // Try url-encoded first
         $data = $request->getParsedBody();
@@ -109,26 +111,27 @@ class Notifications extends Endpoint
         try {
             $received_datetime = new \DateTimeImmutable();
 
-            $notification = new RedcapNotification($data, $received_datetime);
+            $redcap_notif = new RedcapNotification($data, $received_datetime);
+
+            $this->_issue_assignee = $queries->getRedcapIssueAssignee();
 
             $config_parser = new RedcapConfigParser(
                 $this->loris,
-                $notification->instance_url,
-                $notification->project_id,
+                $redcap_notif->instance_url,
+                $redcap_notif->project_id,
             );
 
             $config = $config_parser->parse();
-            $this->_issue_assignee = $config->issue_assignee;
 
             // should the notification be ignored?
-            if ($this->_ignoreNotification($notification, $config)) {
+            if ($this->_ignoreNotification($redcap_notif, $config)) {
                 return new \LORIS\Http\Response();
             }
 
             // Add to the database
             $db->insert(
                 'redcap_notification',
-                $notification->toDatabaseArray()
+                $redcap_notif->toDatabaseArray()
             );
         } catch (\UnexpectedValueException $e) {
             $body = (string) $request->getBody();
@@ -159,15 +162,15 @@ class Notifications extends Endpoint
         // get a new redcap client based on the notification info
         try {
             $redcap_client = new RedcapHttpClient(
-                "{$config->redcap_instance_url}/api/",
+                $config->redcap_instance_url,
                 $config->redcap_api_token,
             );
 
             $notification_handler = new RedcapNotificationHandler(
                 $this->loris,
-                $config,
                 $redcap_client,
-                $notification,
+                $redcap_notif,
+                $config,
             );
         } catch (\LorisException $le) {
             $this->_createIssue(
@@ -182,9 +185,9 @@ class Notifications extends Endpoint
             $notification_handler->handle();
         } catch (\DatabaseException $e) {
             $rec = "[redcap] Error: "
-                . "PSCID: " . $notification->record_id
-                . "Visit: " . $notification->event_name
-                . "instrument: " . $notification->instrument_name;
+                . "PSCID: " . $redcap_notif->record_id
+                . "Visit: " . $redcap_notif->unique_event_name
+                . "instrument: " . $redcap_notif->instrument_name;
             $this->_createIssue(
                 'Instrument data not updated - Database exception',
                 $e->getMessage(),
@@ -193,9 +196,9 @@ class Notifications extends Endpoint
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\DomainException $e) {
             $rec = "[redcap] Error: "
-                . "PSCID: " . $notification->record_id
-                . "Visit: " . $notification->event_name
-                . "instrument: " . $notification->instrument_name;
+                . "PSCID: " . $redcap_notif->record_id
+                . "Visit: " . $redcap_notif->unique_event_name
+                . "instrument: " . $redcap_notif->instrument_name;
             $this->_createIssue(
                 'Instrument data not updated - Domain exception',
                 $e->getMessage(),
@@ -206,14 +209,14 @@ class Notifications extends Endpoint
             $this->_createIssue(
                 'Instrument data not updated - Configuration/Permission exception',
                 $ce->getMessage(),
-                json_encode($notification->toDatabaseArray())
+                json_encode($redcap_notif->toDatabaseArray())
             );
             return new \LORIS\Http\Response\JSON\InternalServerError();
         } catch (\Throwable $e) {
             $this->_createIssue(
                 'Instrument data not updated',
                 $e->getMessage(),
-                json_encode($notification->toDatabaseArray())
+                json_encode($redcap_notif->toDatabaseArray())
             );
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
@@ -226,18 +229,18 @@ class Notifications extends Endpoint
      * Ignored notifications will not trigger any issue creation.
      * Optionally prints an error in log on a case by case basis.
      *
-     * @param RedcapNotification $notif         The REDCap notification.
-     * @param ?RedcapConfig      $redcap_config The REDCap module configuration.
+     * @param RedcapNotification $redcap_notif The REDCap notification.
+     * @param ?RedcapConfig      $config       The REDCap module configuration.
      *
      * @return bool if the notification should be ignored, else false.
      */
     private function _ignoreNotification(
-        RedcapNotification $notif,
-        ?RedcapConfig $redcap_config,
+        RedcapNotification $redcap_notif,
+        ?RedcapConfig $config,
     ): bool {
-        $notif_data = json_encode($notif->toDatabaseArray());
+        $notif_data = json_encode($redcap_notif->toDatabaseArray());
 
-        if ($redcap_config === null) {
+        if ($config === null) {
             error_log(
                 "[redcap][notification:skip] unknown source/project: $notif_data"
             );
@@ -249,7 +252,7 @@ class Notifications extends Endpoint
         $authInstr = $config->getSetting('redcap_importable_instrument');
 
         // ignore instruments that are not in the authorized list
-        if (!in_array($notif->instrument_name, $authInstr, true)) {
+        if (!in_array($redcap_notif->instrument_name, $authInstr, true)) {
             error_log(
                 "[redcap][notification:skip] unauthorized instrument: $notif_data"
             );
@@ -257,7 +260,7 @@ class Notifications extends Endpoint
         }
 
         // ignore notifications that are not 'complete'
-        if (!$notif->isComplete()) {
+        if (!$redcap_notif->isComplete()) {
             error_log(
                 "[redcap][notification:skip] instrument not complete: $notif_data"
             );
