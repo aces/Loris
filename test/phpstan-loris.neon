@@ -2,3 +2,5 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/modules/*/ajax/*
         - %currentWorkingDirectory%/modules/*/test/*
+    scanDirectories:
+        - %currentWorkingDirectory%/modules/redcap/
