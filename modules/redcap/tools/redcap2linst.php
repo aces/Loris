@@ -405,7 +405,7 @@ function showHelp()
 /**
  * Check options and return a clean version.
  *
- * @param LORIS\LorisInstance $loris  a loris instance
+ * @param LORIS\LorisInstance $loris   a loris instance
  * @param array<mixed>        $options options
  *
  * @return array{
