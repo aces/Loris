@@ -53,6 +53,16 @@ class Module extends \Module
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return ?\LORIS\GUI\MenuCategory The menu category for this module
+     */
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
+    {
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
+    }
+
+    /**
      * Perform routing for this module's endpoints.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request

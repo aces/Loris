@@ -77,5 +77,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (83,'dicom_archive_nosessionid','DICOMs with no session ID',15,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (84,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (85,'view_instrument_data','Data',26,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (86,'redcap_ui_view','REDCap GUI - View',51,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

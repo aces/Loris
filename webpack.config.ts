@@ -83,6 +83,12 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  redcap: [
+    'redcapIndex',
+    'tabs/dictionaryViewer',
+    'tabs/notificationViewer',
+    'tabs/issuesViewer',
+  ],
 };
 
 /*

@@ -165,7 +165,8 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
-    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2)
+    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2),
+    ('redcap_ui_view','REDCap GUI - View',(SELECT ID FROM modules WHERE Name ='redcap'),2)
     ;
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -265,7 +266,9 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1),
-  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1);
+  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
+  ((SELECT permID FROM permissions WHERE code = 'redcap_ui_view'),1)
+  ;
 
 
 -- permissions for each notification module
