@@ -32,6 +32,7 @@ try {
 
 use LORIS\redcap\client\RedcapHttpClient;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
+use LORIS\redcap\client\models\RedcapInstrument;
 use LORIS\redcap\config\RedcapConfigParser;
 use LORIS\redcap\Queries;
 
@@ -312,12 +313,17 @@ function getDictionaryCSVStream(
 function writeLINSTFile(
     string $output_dir,
     string $instrument_name,
-    string $instrument_title,
+    RedcapInstrument $instrumentObject,
     array $instrument
 ): void {
     fwrite(STDOUT, " -> writing '{$instrument_name}'\n");
     //
     $fp = fopen("{$output_dir}/{$instrument_name}.linst", "w");
+
+    if ($fp === false) {
+        throw new \LorisException("Cannot open path: {$output_dir}/{$instrument_name}.linst");
+    }
+
     fwrite($fp, "{-@-}testname{@}{$instrument_name}\n");
     fwrite($fp, "table{@}{$instrument_name}\n");
     fwrite($fp, "title{@}{$instrument_title}\n");
@@ -396,6 +402,23 @@ function showHelp()
  *
  * @return array
  */
+
+/**
+ * Check options and return a clean version.
+ *
+ * @param LORIS\LorisInstance $loris  a loris instance
+ * @param array<mixed>        $options options
+ *
+ * @return array{
+ *   file: mixed,
+ *   inputType: mixed,
+ *   outputDir: mixed,
+ *   redcapConnection: RedcapHttpClient,
+ *   redcapInstance: mixed,
+ *   redcapProject: mixed,
+ *   trimInstrumentName: bool
+ * }
+ */
 function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
 {
     // ouput dir
@@ -473,7 +496,7 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
     );
 
     // trim instrument name
-    $trim_name = isset($options['t']) || isset($options['trim-formname']) || false;
+    $trim_name = isset($options['trim-formname']) || false;
 
     // checked and clean options
     return [
