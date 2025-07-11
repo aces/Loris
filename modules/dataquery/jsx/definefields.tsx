@@ -7,7 +7,7 @@ import {FullDictionary, FieldDictionary, DictionaryCategory} from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {APIQueryField, VisitOption} from './types';
 import CategoryFields from './components/categoryFields';
-
+import subcategorySelector from './components/subCategorySelector';
 
 
 /**
@@ -445,13 +445,34 @@ function DefineFields(props: {
             
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
-            onChange={props.onCategoryChange}
-          />
-        </div>
+            onChange={(module, value) => {
+              setSelectedModule(module);
+            }}
+
+      {/* Level 2: Subcategories */}
+    <div style={{marginBottom: '20px'}}>
+      <h3>Subcategories</h3>
+      <div style={{
+        maxHeight: '2000px',
+        overflowY: 'auto',
+        border: '1px solid #ddd',
+        padding: '10px',
+        marginBottom: '20px'
+      }}>
+        <SubcategorySelector
+          selectedModule={selectedModule}
+          subcategories={props.allCategories.categories[selectedModule] || {}}
+          onChange={(module, subcategory) => {
+            // This will trigger showing fields for this subcategory
+            props.onCategoryChange(module, subcategory);
+          }}
+        />
       </div>
+    </div>
+  
 
       <div style={{marginBottom: '20px'}}>
-        <h3>Available Fields</h3>
+        <h3>Fields</h3>
         <div style={{
           maxHeight: '40vh',
           overflowY: 'auto',
@@ -459,56 +480,30 @@ function DefineFields(props: {
           padding: '10px',
           marginBottom: '20px'
         }}>
-          <CategoryFields
-            selectedModule={props.module}
-            selectedCategory={props.category}
-            fields={props.displayedFields}
-            selectedFields={props.selected}
-            onFieldToggle={props.onFieldToggle}
-            defaultVisits={props.defaultVisits}
+            <CategoryFields
+              selectedModule={props.module}
+              selectedCategory={props.category}
+              fields={props.displayedFields}
+              selectedFields={props.selected}
+              onFieldToggle={props.onFieldToggle}
           />
         </div>
       </div>
+    ,</div>
 
-      </div>
+      {/* Level 3: Fields */}
+      <div style={{marginBottom: '10px'}}>
+        <h4>Fields</h4>
         <div style={{
-          width: '50vw',
-          padding: '4em',
-          position: 'sticky',
-          top: 0,
-          maxHeight: '90vh',
+          maxHeight: '200px',
           overflowY: 'auto',
+          border: '1px solid #ddd',
+          padding: '10px'
         }}>
-          <div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: '1em',
-            }}>
-              <h3>Selected Fields</h3>
-              <div>
-                {/* <button type="button" className="btn btn-primary"
-                  style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>Clear</button> */}
-              </div>
-            </div>
-            <SelectedFieldList
-              selected={props.selected}
-              removeField={props.removeField}
-              fulldictionary={props.fulldictionary}
-              setSelected={props.setSelected}
-              snapToView={
-                (module: string, category: string, item: string) => {
-                  setZoomTo(item);
-                  props.onCategoryChange(module, category);
-                }}
-            />
-          </div>
+          <CategoryFields ... />
         </div>
       </div>
-    </div>);
-}
+    </div>
 
 /**
  * Render the selected fields
@@ -666,4 +661,4 @@ function SelectedFieldList(props: {
 }
 
 
-export default DefineFields;
+export default defineFields;
