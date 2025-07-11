@@ -434,6 +434,10 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
         showHelp();
         exit(1);
     }
+    if (!is_string($output_dir)) {
+        fprintf(STDERR, "Output directory '{$output_dir}' must be a path.\n");
+        exit(1);
+    }
     if (!is_dir($output_dir)) {
         fprintf(STDERR, "Output directory '{$output_dir}' does not exist.\n");
         exit(1);
