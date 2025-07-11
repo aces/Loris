@@ -416,12 +416,12 @@ function showHelp()
  * @param array<mixed>        $options options
  *
  * @return array{
- *   file: mixed,
- *   inputType: mixed,
- *   outputDir: mixed,
+ *   file: string,
+ *   inputType: string,
+ *   outputDir: string,
  *   redcapConnection: RedcapHttpClient,
- *   redcapInstance: mixed,
- *   redcapProject: mixed,
+ *   redcapInstance: string,
+ *   redcapProject: string,
  *   trimInstrumentName: bool
  * }
  */
