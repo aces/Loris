@@ -354,6 +354,13 @@ function writeLINSTFile(
 
     // META file
     $fp_meta = fopen("{$output_dir}/{$instrument->name}.meta", "w");
+
+    if ($fp_meta === false) {
+        throw new \LorisException(
+            "Cannot open path: {$output_dir}/{$instrument->name}.meta"
+        );
+    }
+
     fwrite($fp_meta, "testname{@}{$instrument->name}\n");
     fwrite($fp_meta, "table{@}{$instrument->name}\n");
     fwrite($fp_meta, "jsondata{@}true\n");
