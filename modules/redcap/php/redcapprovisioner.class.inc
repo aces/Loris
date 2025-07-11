@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class implements a data provisioner to get all possible rows
  * for the REDCap menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Tools
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\redcap;
@@ -20,16 +20,18 @@ namespace LORIS\redcap;
  *
  * PHP Version 8
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Tools
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class REDCapProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a REDCapProvisioner.
+     *
+     * @param \LORIS\LorisInstance $loris the loris instance
      */
     public function __construct(\LORIS\LorisInstance $loris)
     {

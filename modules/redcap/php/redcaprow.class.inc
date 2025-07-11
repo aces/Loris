@@ -1,14 +1,27 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * This class implements a data provisioner to get all possible rows
+ * for the REDCap menu page.
+ *
+ * PHP Version 8
+ *
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 namespace LORIS\redcap;
 
 /**
  * An REDCap row represents a row in the REDCap menu table.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Tools
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @category REDCap
+ * @package  Main
+ * @author   Regis Ongaro-Carcy <regis.ongaro-carcy@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RedcapRow implements \LORIS\Data\DataInstance
 {
@@ -20,7 +33,7 @@ class RedcapRow implements \LORIS\Data\DataInstance
      * Create a new redcap row
      *
      * @param array $row The row (in the same format as \Database::pselectRow
-     *  returns.)
+     *                   returns.)
      */
     public function __construct(array $row)
     {

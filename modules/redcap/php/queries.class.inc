@@ -390,7 +390,7 @@ class Queries
             'redcap_dictionary',
             $dictionary_entry->toDatabaseArray(),
             [
-                "FormName" => $dictionary_entry->form_name,
+                "FormName"  => $dictionary_entry->form_name,
                 "FieldName" => $dictionary_entry->field_name
             ]
         );

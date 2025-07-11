@@ -16,19 +16,19 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
- require_once __DIR__ . "/../../../tools/generic_includes.php";
+require_once __DIR__ . "/../../../tools/generic_includes.php";
 
  // load redcap module
- try {
-     $lorisInstance->getModule('redcap')->registerAutoloader();
- } catch (\LorisNoSuchModuleException $th) {
-     error_log("[error] no 'redcap' module found.");
-     exit(1);
- }
+try {
+    $lorisInstance->getModule('redcap')->registerAutoloader();
+} catch (\LorisNoSuchModuleException $th) {
+    error_log("[error] no 'redcap' module found.");
+    exit(1);
+}
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 use LORIS\redcap\client\RedcapHttpClient;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
@@ -81,7 +81,7 @@ foreach ($dict as $dict_record) {
     $linst = $dict_record->toLINST();
     if (!empty($linst)) {
         $instruments[$dict_record->form_name][] = $linst;
-        $dictionary[$dict_record->form_name][] = $dict_record;
+        $dictionary[$dict_record->form_name][]  = $dict_record;
     }
 }
 
@@ -104,7 +104,7 @@ foreach ($instruments as $instrument_name => $instrument) {
 
 // update the db redcap_dictionary table per instrument
 fwrite(STDOUT, "\n-- Writing entries to database 'redcap_dictionary' table.\n\n");
-$queries = new Queries($lorisInstance);
+$queries        = new Queries($lorisInstance);
 $nbEntriesCount = [
     'created'   => 0,
     'updated'   => 0,
@@ -118,8 +118,8 @@ foreach ($dictionary as $instrument_name => $dictionary_entry) {
     );
 
     // update count
-    $nbEntriesCount['created'] += $nbEntries['created'];
-    $nbEntriesCount['updated'] += $nbEntries['updated'];
+    $nbEntriesCount['created']   += $nbEntries['created'];
+    $nbEntriesCount['updated']   += $nbEntries['updated'];
     $nbEntriesCount['untouched'] += $nbEntries['untouched'];
 }
 
@@ -152,7 +152,7 @@ function updateREDCapDictionaryInstrumentEntries(
     $instrumentExists = $queries->instrumentExistsInREDCapDictionary(
         $instrument_name
     );
-    $updateMsg = $instrumentExists ? "updating" : "creating";
+    $updateMsg        = $instrumentExists ? "updating" : "creating";
     fwrite(STDOUT, " -> {$updateMsg} '{$instrument_name}'\n");
 
     // count
@@ -179,12 +179,16 @@ function updateREDCapDictionaryInstrumentEntries(
 
         // escape HTML from this entry to compare
         // same method use in Database class -> update
-        $escaped_props = array_map(fn($v) => is_string($v) ? htmlspecialchars(
-            $v,
-            ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
-            'UTF-8',
-            false
-        ) : $v, $redcap_dictionary_entry->toArray());
+        $escaped_props        = array_map(
+            fn($v) => is_string($v)
+                ? htmlspecialchars(
+                    $v,
+                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                : $v,
+            $redcap_dictionary_entry->toArray());
         $redcap_escaped_entry = new RedcapDictionaryRecord(
             array_combine(
                 RedcapDictionaryRecord::getHeaders(),
