@@ -16,18 +16,24 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/generic_includes.php";
+ require_once __DIR__ . "/../../../tools/generic_includes.php";
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+ // load redcap module
+ try {
+     $lorisInstance->getModule('redcap')->registerAutoloader();
+ } catch (\LorisNoSuchModuleException $th) {
+     error_log("[error] no 'redcap' module found.");
+     exit(1);
+ }
 
-// load redcap module to use the client
-$lorisInstance->getModule('redcap')->registerAutoloader();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use LORIS\redcap\client\RedcapHttpClient;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use LORIS\redcap\config\RedcapConfigParser;
+use LORIS\redcap\Queries;
 
 // options
 $opts = getopt(
@@ -70,10 +76,12 @@ if ($options['inputType'] === 'api') {
 // create LINST lines by instrument
 fwrite(STDOUT, "\n-- Parsing records...\n");
 $instruments = [];
+$dictionary  = [];
 foreach ($dict as $dict_record) {
     $linst = $dict_record->toLINST();
     if (!empty($linst)) {
         $instruments[$dict_record->form_name][] = $linst;
+        $dictionary[$dict_record->form_name][] = $dict_record;
     }
 }
 
@@ -83,9 +91,8 @@ $output_dir = $options['outputDir'];
 // back-end name/title instrument mapping
 $redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
-fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
-
 // write instrument
+fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 foreach ($instruments as $instrument_name => $instrument) {
     writeLINSTFile(
         $options['outputDir'],
@@ -95,10 +102,109 @@ foreach ($instruments as $instrument_name => $instrument) {
     );
 }
 
+// update the db redcap_dictionary table per instrument
+fwrite(STDOUT, "\n-- Writing entries to database 'redcap_dictionary' table.\n\n");
+$queries = new Queries($lorisInstance);
+$nbEntriesCount = [
+    'created'   => 0,
+    'updated'   => 0,
+    'untouched' => 0
+];
+foreach ($dictionary as $instrument_name => $dictionary_entry) {
+    $nbEntries = updateREDCapDictionaryInstrumentEntries(
+        $queries,
+        $instrument_name,
+        $dictionary_entry
+    );
+
+    // update count
+    $nbEntriesCount['created'] += $nbEntries['created'];
+    $nbEntriesCount['updated'] += $nbEntries['updated'];
+    $nbEntriesCount['untouched'] += $nbEntries['untouched'];
+}
+
+// db log
+fwrite(STDOUT, "\n -> 'redcap_dictionary' table changes:");
+fwrite(STDOUT, "\n    - fields created: {$nbEntriesCount['created']}");
+fwrite(STDOUT, "\n    - fields updated: {$nbEntriesCount['updated']}");
+fwrite(STDOUT, "\n    - fields untouched: {$nbEntriesCount['untouched']}\n");
+
 fwrite(STDOUT, "\n-- end\n");
 
 
 // ------------ Functions
+
+/**
+ * Updates the redcap_diciotnary table in db.
+ *
+ * @param LORIS\redcap\Queries     $queries           queries object
+ * @param string                   $instrument_name   the instrument name to update
+ * @param RedcapDictionaryRecord[] $redcap_dictionary the redcap dictionary
+ *
+ * @return int[] an array of #created and #updated entries for this instrument
+ */
+function updateREDCapDictionaryInstrumentEntries(
+    Queries $queries,
+    string $instrument_name,
+    array $redcap_dictionary
+): array {
+    // updating or creating new entry?
+    $instrumentExists = $queries->instrumentExistsInREDCapDictionary(
+        $instrument_name
+    );
+    $updateMsg = $instrumentExists ? "updating" : "creating";
+    fwrite(STDOUT, " -> {$updateMsg} '{$instrument_name}'\n");
+
+    // count
+    $nbEntriesCount = [
+        'created'   => 0,
+        'updated'   => 0,
+        'untouched' => 0
+    ];
+
+    // go through entries for this instrument
+    foreach ($redcap_dictionary as $redcap_dictionary_entry) {
+        // get the db correspoding field name
+        $db_dictionary_field = $queries->getDictionaryEntry(
+            $redcap_dictionary_entry->form_name,
+            $redcap_dictionary_entry->field_name
+        );
+
+        // new entry => insert
+        if ($db_dictionary_field === null) {
+            $queries->insertREDCapDictionaryEntry($redcap_dictionary_entry);
+            $nbEntriesCount['created'] += 1;
+            continue;
+        }
+
+        // escape HTML from this entry to compare
+        // same method use in Database class -> update
+        $escaped_props = array_map(fn($v) => is_string($v) ? htmlspecialchars(
+            $v,
+            ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        ) : $v, $redcap_dictionary_entry->toArray());
+        $redcap_escaped_entry = new RedcapDictionaryRecord(
+            array_combine(
+                RedcapDictionaryRecord::getHeaders(),
+                array_values($escaped_props)
+            )
+        );
+
+        // same entry, nothing to do
+        if ($db_dictionary_field == $redcap_escaped_entry) {
+            $nbEntriesCount['untouched'] += 1;
+            continue;
+        }
+
+        // different entry => update
+        $queries->updateREDCapDictionaryEntry($redcap_dictionary_entry);
+        $nbEntriesCount['updated'] += 1;
+    }
+
+    return $nbEntriesCount;
+}
 
 /**
  * Get the dictionary from a CSV file.
@@ -152,19 +258,22 @@ function getDictionaryCSVStream(
         // metadata
         $metadata = $row;
 
+        // combine headers/data
+        $payload = array_combine($headers, $metadata);
+
         // do not trim
         if (!$trim_name) {
-            $dd = new RedcapDictionaryRecord(zip($headers, $metadata));
+            $dd = new RedcapDictionaryRecord($payload);
             $mapped++;
         } else {
             // try to trim form name
             try {
-                $dd = new RedcapDictionaryRecord(zip($headers, $metadata), true);
+                $dd = new RedcapDictionaryRecord($payload, true);
                 $mapped++;
             } catch (\LorisException $le) {
                 // print error but continue with non trimmed
                 fprintf(STDERR, $le->getMessage());
-                $dd = new RedcapDictionaryRecord(zip($headers, $metadata));
+                $dd = new RedcapDictionaryRecord($payload);
                 $badMap++;
             }
         }
@@ -183,35 +292,6 @@ function getDictionaryCSVStream(
 }
 
 /**
- * Zips values from the first array as keys with the values from the second
- * array as values. Such as:
- * ```
- * # input
- * $a1 = [0 => 'a', 1 => 'b', 2 => 'c']
- * $a2 = [0 => 'yes', 1 => 'no', 2 => 'maybe']
- * # result
- * $zipped = ['a' => 'yes', 'b' => 'no', 'c' => 'maybe']
- * ```
- * Both arrays must have the same length.
- *
- * @param array $headers  the key array
- * @param array $metadata the value array.
- *
- * @return array a zipped array.
- */
-function zip(array &$headers, array &$metadata): array
-{
-    if (count($headers) !== count($metadata)) {
-        fwrite(STDERR, "Cannot zip headers with metadata.\n");
-    }
-    $zipped = [];
-    foreach ($headers as $i => $h) {
-        $zipped[$h] = $metadata[$i];
-    }
-    return $zipped;
-}
-
-/**
  * Write LINST file and its associated META file.
  *
  * @param string $output_dir       the output directory
@@ -227,12 +307,12 @@ function writeLINSTFile(
     string $instrument_title,
     array $instrument
 ): void {
-    fwrite(STDERR, " -> writing '$instrument_name'\n");
+    fwrite(STDOUT, " -> writing '{$instrument_name}'\n");
     //
-    $fp = fopen("$output_dir/$instrument_name.linst", "w");
-    fwrite($fp, "{-@-}testname{@}$instrument_name\n");
-    fwrite($fp, "table{@}$instrument_name\n");
-    fwrite($fp, "title{@}$instrument_title\n");
+    $fp = fopen("{$output_dir}/{$instrument_name}.linst", "w");
+    fwrite($fp, "{-@-}testname{@}{$instrument_name}\n");
+    fwrite($fp, "table{@}{$instrument_name}\n");
+    fwrite($fp, "title{@}{$instrument_title}\n");
 
     // Standard LORIS metadata fields that the instrument builder adds
     // and LINST class automatically adds to instruments.
@@ -255,15 +335,14 @@ function writeLINSTFile(
         } else {
             // write field line
             fwrite($fp, "$field\n");
-
         }
     }
     fclose($fp);
 
     // META file
-    $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
-    fwrite($fp_meta, "testname{@}$instrument_name\n");
-    fwrite($fp_meta, "table{@}$instrument_name\n");
+    $fp_meta = fopen("{$output_dir}/{$instrument_name}.meta", "w");
+    fwrite($fp_meta, "testname{@}{$instrument_name}\n");
+    fwrite($fp_meta, "table{@}{$instrument_name}\n");
     fwrite($fp_meta, "jsondata{@}true\n");
     fwrite($fp_meta, "norules{@}true");
     fclose($fp_meta);
@@ -279,7 +358,7 @@ function showHelp()
     global $argv;
     fprintf(
         STDERR,
-        "\nUsage: $argv[0]\n\n"
+        "\nUsage: {$argv[0]}\n\n"
         . "Creates LINST files based on an input file"
         . " or directly from a REDCap connection.\n"
         . "A valid REDCap connection is required to get the instruments back-end"
@@ -319,11 +398,11 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
         exit(1);
     }
     if (!is_dir($output_dir)) {
-        fprintf(STDERR, "Output directory '$output_dir' does not exist.\n");
+        fprintf(STDERR, "Output directory '{$output_dir}' does not exist.\n");
         exit(1);
     }
     if (!is_writeable($output_dir)) {
-        fprintf(STDERR, "Output directory '$output_dir' is not writeable.\n");
+        fprintf(STDERR, "Output directory '{$output_dir}' is not writeable.\n");
         exit(1);
     }
 
@@ -351,7 +430,7 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
         if (!is_file($input_file)) {
             fprintf(
                 STDERR,
-                "Input file '$input_file' does not exist or is not readable.\n"
+                "Input file '{$input_file}' does not exist or is not readable.\n"
             );
             exit(1);
         }
