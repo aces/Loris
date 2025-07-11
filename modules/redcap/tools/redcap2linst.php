@@ -179,16 +179,17 @@ function updateREDCapDictionaryInstrumentEntries(
 
         // escape HTML from this entry to compare
         // same method use in Database class -> update
+        $cleanHTML = fn($v) => is_string($v)
+            ? htmlspecialchars(
+                $v,
+                ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            )
+            : $v;
         $escaped_props        = array_map(
-            fn($v) => is_string($v)
-                ? htmlspecialchars(
-                    $v,
-                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
-                    'UTF-8',
-                    false
-                )
-                : $v,
-        $redcap_dictionary_entry->toArray()
+            $cleanHTML,
+            $redcap_dictionary_entry->toArray()
         );
         $redcap_escaped_entry = new RedcapDictionaryRecord(
             array_combine(
