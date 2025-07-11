@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -113,7 +114,7 @@ class Dictionary extends \NDB_Page
         return new \LORIS\Http\Response\JSON\OK(
             array_map(
                 fn($v) => array_values($v),
-            iterator_to_array($dictionary->getIterator())
+                iterator_to_array($dictionary->getIterator())
             )
         );
     }

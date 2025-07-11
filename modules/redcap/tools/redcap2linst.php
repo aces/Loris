@@ -188,7 +188,8 @@ function updateREDCapDictionaryInstrumentEntries(
                     false
                 )
                 : $v,
-            $redcap_dictionary_entry->toArray());
+        $redcap_dictionary_entry->toArray()
+        );
         $redcap_escaped_entry = new RedcapDictionaryRecord(
             array_combine(
                 RedcapDictionaryRecord::getHeaders(),

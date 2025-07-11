@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This class implements a data provisioner to get all possible rows
  * for the REDCap menu page.

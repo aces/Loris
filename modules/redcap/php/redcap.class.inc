@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -29,7 +30,7 @@ class REDCap extends \DataFrameworkMenu
      *
      * @return bool true if the user is permitted to see violated scans
      */
-    public function _hasAccess(\User $user) : bool
+    function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
