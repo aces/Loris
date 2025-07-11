@@ -94,12 +94,11 @@ $redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
 
 // write instrument
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
-foreach ($instruments as $instrument_name => $instrument) {
+foreach ($instruments as $instrument_name => $fields) {
     writeLINSTFile(
         $options['outputDir'],
-        $instrument_name,
         $redcap_intruments_map[$instrument_name],
-        $instrument
+        $fields
     );
 }
 
@@ -303,30 +302,30 @@ function getDictionaryCSVStream(
 /**
  * Write LINST file and its associated META file.
  *
- * @param string $output_dir       the output directory
- * @param string $instrument_name  the instrument name
- * @param string $instrument_title the instrument title/label
- * @param array  $instrument       the instrument data
+ * @param string           $output_dir the output directory
+ * @param RedcapInstrument $instrument the instrument object
+ * @param array            $fields     the instrument data
  *
  * @return void
  */
 function writeLINSTFile(
     string $output_dir,
-    string $instrument_name,
-    RedcapInstrument $instrumentObject,
-    array $instrument
+    RedcapInstrument $instrument,
+    array $fields
 ): void {
-    fwrite(STDOUT, " -> writing '{$instrument_name}'\n");
+    fwrite(STDOUT, " -> writing '{$instrument->name}'\n");
     //
-    $fp = fopen("{$output_dir}/{$instrument_name}.linst", "w");
+    $fp = fopen("{$output_dir}/{$instrument->name}.linst", "w");
 
     if ($fp === false) {
-        throw new \LorisException("Cannot open path: {$output_dir}/{$instrument_name}.linst");
+        throw new \LorisException(
+            "Cannot open path: {$output_dir}/{$instrument->name}.linst"
+        );
     }
 
-    fwrite($fp, "{-@-}testname{@}{$instrument_name}\n");
-    fwrite($fp, "table{@}{$instrument_name}\n");
-    fwrite($fp, "title{@}{$instrument_title}\n");
+    fwrite($fp, "{-@-}testname{@}{$instrument->name}\n");
+    fwrite($fp, "table{@}{$instrument->name}\n");
+    fwrite($fp, "title{@}{$instrument->label}\n");
 
     // Standard LORIS metadata fields that the instrument builder adds
     // and LINST class automatically adds to instruments.
@@ -336,7 +335,7 @@ function writeLINSTFile(
     fwrite($fp, "static{@}Window_Difference{@}Window Difference (+/- Days)\n");
     fwrite($fp, "select{@}Examiner{@}Examiner{@}NULL=>''\n");
 
-    foreach ($instrument as $field) {
+    foreach ($fields as $field) {
         // avoid 'timestamp_start', changed in 'static' instead of 'text'
         if (str_contains($field, "{@}timestamp_start{@}")) {
             // transform timestamp start to static
@@ -354,9 +353,9 @@ function writeLINSTFile(
     fclose($fp);
 
     // META file
-    $fp_meta = fopen("{$output_dir}/{$instrument_name}.meta", "w");
-    fwrite($fp_meta, "testname{@}{$instrument_name}\n");
-    fwrite($fp_meta, "table{@}{$instrument_name}\n");
+    $fp_meta = fopen("{$output_dir}/{$instrument->name}.meta", "w");
+    fwrite($fp_meta, "testname{@}{$instrument->name}\n");
+    fwrite($fp_meta, "table{@}{$instrument->name}\n");
     fwrite($fp_meta, "jsondata{@}true\n");
     fwrite($fp_meta, "norules{@}true");
     fclose($fp_meta);
