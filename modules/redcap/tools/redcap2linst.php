@@ -416,8 +416,8 @@ function showHelp()
  * @param array<mixed>        $options options
  *
  * @return array{
- *   file: string,
- *   inputType: string,
+ *   file: string|null,
+ *   inputType: 'api'|'file',
  *   outputDir: string,
  *   redcapConnection: RedcapHttpClient,
  *   redcapInstance: string,
@@ -429,7 +429,7 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
 {
     // ouput dir
     $output_dir = $options['o'] ?? $options['output-dir'] ?? null;
-    if (empty($output_dir)) {
+    if ($output_dir === null || empty($output_dir)) {
         fprintf(STDERR, "Output directory required.\n");
         showHelp();
         exit(1);
@@ -477,12 +477,12 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
     $redcap_instance = $options['r'] ?? $options['redcap-instance'] ?? null;
     $redcap_project  = $options['p'] ?? $options['redcap-project'] ?? null;
 
-    if (empty($redcap_instance)) {
+    if ($redcap_instance === null || empty($redcap_instance)) {
         fprintf(STDERR, "REDCap instance name required.\n");
         showHelp();
         exit(1);
     }
-    if (empty($redcap_project)) {
+    if ($redcap_project === null || empty($redcap_project)) {
         fprintf(STDERR, "REDCap project ID required.\n");
         showHelp();
         exit(1);
