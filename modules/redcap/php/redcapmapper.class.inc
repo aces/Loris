@@ -21,6 +21,8 @@ use \LORIS\redcap\config\RedcapConfigVisit;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\client\models\RedcapEvent;
 use \LORIS\redcap\client\models\records\RedcapRecord;
+use \Candidate;
+use \TimePoint;
 
 /**
  * Mapping methods to match REDCap and LORIS identifiers in the REDCap module.
@@ -108,7 +110,14 @@ class RedcapMapper
             return $unique_event_name;
         }
 
-        $this->checkOrCreateSession($redcap_record, $visit_config, $candidate);
+        $session = $this->checkOrCreateSession($candidate, $visit_config);
+
+        $this->checkOrStartSessionStage(
+            $candidate,
+            $session,
+            $visit_config,
+            $redcap_record,
+        );
 
         return $visit_config->visit_label;
     }
@@ -190,8 +199,8 @@ class RedcapMapper
         }
 
         // Return the LORIS visit label associated with the matching visit mapping.
-        $visit_mapping = reset($visit_mappings);
-        return $visit_mapping ? $visit_mapping : null;
+        $visit_config = reset($visit_mappings);
+        return $visit_config ? $visit_config : null;
     }
 
     /**
@@ -199,37 +208,34 @@ class RedcapMapper
      *  session creation configuration. Throw an exception if the session does not
      *  exist and automatic session creation is not enabled for that visit.
      *
-     * @param RedcapRecord      $redcap_record The REDCap record.
-     * @param RedcapConfigVisit $visit_mapping The REDCap module visit
-     *                                         configuration associated with that
-     *                                         REDCap record.
-     * @param \Candidate        $candidate     The LORIS candidate associated with
-     *                                         that REDCap record.
+     * @param \Candidate        $candidate    The LORIS candidate associated with
+     *                                        that REDCap record.
+     * @param RedcapConfigVisit $visit_config The REDCap module visit configuration
+     *                                        associated with that REDCap record.
      *
-     * @return void
+     * @return TimePoint
      */
     public function checkOrCreateSession(
-        RedcapRecord $redcap_record,
-        RedcapConfigVisit $visit_mapping,
         \Candidate $candidate,
-    ) {
+        RedcapConfigVisit $visit_config,
+    ): TimePoint {
         // Get the ID of the session associated with the candidate and visit label.
         $session_id = array_search(
-            $visit_mapping->visit_label,
+            $visit_config->visit_label,
             $candidate->getListOfVisitLabels()
         );
 
         // If the session already exists, no need to create it.
         if ($session_id) {
-            return;
+            return TimePoint::singleton(new \SessionID(strval($session_id)));;
         }
 
         // Throw an exception if the session does not exist and there is no
         // session creation configuration for that visit, hence skipping the
         // notification.
-        if ($visit_mapping->create_session === null) {
+        if ($visit_config->create_session === null) {
             $psc_id      = $candidate->getPSCID();
-            $visit_label = $visit_mapping->visit_label;
+            $visit_label = $visit_config->visit_label;
             throw new \LorisException(
                 "[redcap] No session found for candidate '$psc_id' and visit label"
                 . " '$visit_label', skipping notification."
@@ -239,13 +245,13 @@ class RedcapMapper
         // Get the LORIS site, project, and cohort from the database using the
         // information provided by the session creation configuration.
 
-        $site_name = $visit_mapping->create_session->site_name;
+        $site_name = $visit_config->create_session->site_name;
         $site_id   = array_search($site_name, \Utility::getSiteList());
 
-        $project_name = $visit_mapping->create_session->project_name;
+        $project_name = $visit_config->create_session->project_name;
         $project_id   = array_search($project_name, \Utility::getProjectList());
 
-        $cohort_name = $visit_mapping->create_session->cohort_name;
+        $cohort_name = $visit_config->create_session->cohort_name;
         $cohort_id   = array_search($cohort_name, \Utility::getCohortList());
 
         // Throw an exception if any of the site, project, or cohort could not be
@@ -284,10 +290,13 @@ class RedcapMapper
         $_SESSION['State'] =& $state;
 
         // Create the session that corresponds to this mapping.
-        \TimePoint::createNew(
+
+        // TODO: Return directly once `TimePoint::createNew` has been modified to
+        // return the session.
+        TimePoint::createNew(
             $candidate,
             $cohort_id,
-            $visit_mapping->visit_label,
+            $visit_config->visit_label,
             \Site::singleton(new \CenterID(strval($site_id))),
             \Project::getProjectFromID(new \ProjectID(strval($project_id))),
         );
@@ -295,11 +304,48 @@ class RedcapMapper
         // Get the session again now that it been created.
 
         $session_id = array_search(
-            $visit_mapping->visit_label,
+            $visit_config->visit_label,
             $candidate->getListOfVisitLabels()
         );
 
-        $session = \TimePoint::singleton(new \SessionID(strval($session_id)));
+        return TimePoint::singleton(new \SessionID(strval($session_id)));
+    }
+
+    /**
+     * Start the session if it is not already started and the automatic session
+     * creation is enabled.
+     *
+     * @param Candidate         $candidate     The LORIS candidate associated with
+     *                                         the REDCap record.
+     * @param TimePoint         $session       The LORIS session associated with the
+     *                                         REDCap record.
+     * @param RedcapConfigVisit $visit_config  The REDCap module visit configuration
+     *                                         associated with that REDCap record.
+     * @param RedcapRecord      $redcap_record The REDCap record.
+     *
+     * @return void
+     */
+    function checkOrStartSessionStage(
+        Candidate $candidate,
+        TimePoint $session,
+        RedcapConfigVisit $visit_config,
+        RedcapRecord $redcap_record,
+    ) {
+        // If the session is not startable, do not start it.
+        if ($session->getCurrentStage() !== 'Not Started') {
+            return;
+        }
+
+        // Throw an exception if the automatic session creation is not enabled for
+        // that visit, hence skipping the notification.
+        if ($visit_config->create_session === null) {
+            $psc_id      = $candidate->getPSCID();
+            $visit_label = $visit_config->visit_label;
+            throw new \LorisException(
+                "[redcap] Session for candidate '$psc_id' and visit label"
+                . " '$visit_label' is not started, skipping notification."
+            );
+        }
 
         // Start the session next stage, so that it can receive instrument data.
 
