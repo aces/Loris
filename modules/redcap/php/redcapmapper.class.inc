@@ -351,9 +351,19 @@ class RedcapMapper
 
         $new_stage = $session->getNextStage();
         $session->startStage($new_stage);
+
+        // Use the record completion date if it is present, or fall back to the
+        // current date otherwise.
+        // TODO: Factorize the "get record date" operation.
+        if ($redcap_record->datetime !== null) {
+            $datetime = $redcap_record->datetime;
+        } else {
+            $datetime = new \DateTimeImmutable();
+        }
+
         $session->setData(
             [
-                "Date_{$new_stage}" => $redcap_record->datetime->format('Y-m-d'),
+                "Date_{$new_stage}" => $datetime->format('Y-m-d'),
             ]
         );
 
