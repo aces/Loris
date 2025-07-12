@@ -26,10 +26,10 @@ use LORIS\redcap\client\RedcapProps;
 class RedcapRecord implements IRedcapRecord
 {
     /**
-     * The date and time at which the record was completed. This is an undocumented
-     * field in the REDCap API.
+     * The date at which the record was completed if it was completed using a
+     * survey.
      */
-    public readonly \DateTimeImmutable $datetime;
+    public readonly ?\DateTimeImmutable $datetime;
 
     /**
      * The record completion status.
@@ -56,9 +56,15 @@ class RedcapRecord implements IRedcapRecord
 
         $props = new RedcapProps('record', $props);
 
-        $datetime_string = $props->getString("{$form_name}_timestamp");
-        $this->datetime  = new \DateTimeImmutable($datetime_string);
-        $this->complete  = $props->getInt("{$form_name}_complete");
+        $datetime_string = $props->getStringNullable("{$form_name}_timestamp");
+        if ($datetime_string !== null) {
+            $datetime = new \DateTimeImmutable($datetime_string);
+        } else {
+            $datetime = null;
+        }
+
+        $this->datetime = $datetime;
+        $this->complete = $props->getInt("{$form_name}_complete");
     }
 
     /**
