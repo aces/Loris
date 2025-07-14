@@ -3,7 +3,7 @@
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use GuzzleHttp\Client;
-
+use PHPUnit\Framework\Attributes\Test;
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
  * endpoints of the api module and look at the response content, status code and

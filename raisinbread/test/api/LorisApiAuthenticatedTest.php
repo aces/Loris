@@ -2,6 +2,7 @@
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+LorisApiAuthenticated_v0_0_3_Test.php  
 use GuzzleHttp\Client;
 
 /**
