@@ -14,6 +14,8 @@
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
 use \Loris\StudyEntities\Candidate\CandID;
+use PHPUnit\Framework\MockObject\MockObject;
+use LORIS\Database\Query;
 
 /**
  * Unit tests for Utility class.
@@ -1139,30 +1141,29 @@ class UtilityTest extends TestCase
      * @covers Utility::getScanTypeList
      * @return void
      */
-    public function testGetScanTypeList()
-    {
-        $this->_dbMock->expects($this->once())->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "JOIN files f ON (f.MriScanTypeID=mri.ID)"
-                )
-            )
-            ->willReturn(
-                [
-                    0 => [
-                        'ID'   => 123,
-                        'Name' => 'scan 1'
-                    ],
-                    1 => [
-                        'ID'   => 234,
-                        'Name' => 'scan 2'
-                    ]
-                ]
-            );
-        $expected = [123 => 'scan 1', 234 => 'scan 2'];
-        $this->assertEquals($expected, Utility::getScanTypeList());
-    }
+/**
+ * @covers Utility::getScanTypeList
+ */
+public function testGetScanTypeList(): void
+{
+    /** @var Query&MockObject $queryMock */
+    $queryMock = $this->createMock(Query::class);
 
+    $queryMock->method('getIterator')->willReturn(new \ArrayIterator([
+        ['MriScanTypeID' => 123, 'MriScanTypeName' => 'scan 1'],
+        ['MriScanTypeID' => 234, 'MriScanTypeName' => 'scan 2']
+    ]));
+
+    $this->_dbMock->expects($this->once())
+        ->method('pselect')
+        ->with(
+            $this->stringContains("JOIN files USING (MriScanTypeID)")
+        )
+        ->willReturn($queryMock);
+
+    $expected = [123 => 'scan 1', 234 => 'scan 2'];
+    $this->assertEquals($expected, Utility::getScanTypeList());
+}
     /**
      * Test that appendForwardSlash appends a forward slash to the given path.
      * Also asserts that if the path already has a forward slash, it does nothing.

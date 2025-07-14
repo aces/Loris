@@ -469,17 +469,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
-     *
-     * @covers Candidate::getCandidateEthnicity
-     * @return void
-     */
-    public function testGetCandidateEthnicity()
-    {
-        $this->markTestSkipped("getCandidateEthnicity is a deprecated function");
-    }
-
-    /**
      * Test isActive returns the correct string for the candidate
      *
      * @covers Candidate::isActive
