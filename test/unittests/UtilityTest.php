@@ -1141,29 +1141,29 @@ class UtilityTest extends TestCase
      * @covers Utility::getScanTypeList
      * @return void
      */
-/**
- * @covers Utility::getScanTypeList
- */
-public function testGetScanTypeList(): void
-{
-    /** @var Query&MockObject $queryMock */
-    $queryMock = $this->createMock(Query::class);
+    public function testGetScanTypeList(): void
+    {
+        $queryMock = $this->createMock(Query::class);
 
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator([
-        ['MriScanTypeID' => 123, 'MriScanTypeName' => 'scan 1'],
-        ['MriScanTypeID' => 234, 'MriScanTypeName' => 'scan 2']
-    ]));
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator(
+                [
+                    ['MriScanTypeID' => 123, 'MriScanTypeName' => 'scan 1'],
+                    ['MriScanTypeID' => 234, 'MriScanTypeName' => 'scan 2']
+                ]
+            )
+        );
 
-    $this->_dbMock->expects($this->once())
-        ->method('pselect')
-        ->with(
-            $this->stringContains("JOIN files USING (MriScanTypeID)")
-        )
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->once())
+            ->method('pselect')
+            ->with(
+                $this->stringContains("JOIN files USING (MriScanTypeID)")
+            )
+            ->willReturn($queryMock);
 
-    $expected = [123 => 'scan 1', 234 => 'scan 2'];
-    $this->assertEquals($expected, Utility::getScanTypeList());
-}
+        $expected = [123 => 'scan 1', 234 => 'scan 2'];
+        $this->assertEquals($expected, Utility::getScanTypeList());
+    }
     /**
      * Test that appendForwardSlash appends a forward slash to the given path.
      * Also asserts that if the path already has a forward slash, it does nothing.
