@@ -201,7 +201,7 @@ jobs:
 
     - name: Run Test Suite
       run: |
-          vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisAPITests --group api-${{ matrix.apiversion }}
+          vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisAPITests --group api-${{ matrix.apiversion }} --debug
 
     - name: Print Error Logs
       if: always()
