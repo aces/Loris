@@ -1,8 +1,9 @@
-import Loader from 'Loader';
-import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import Loader from 'Loader';
+import swal from 'sweetalert2';
 import {
   SelectElement,
   DateElement,
@@ -12,19 +13,15 @@ import {
   FieldsetElement,
 } from 'jsx/Form';
 
-/**
- * New Profile Form
- *
- * Create a new profile form
- *
- * @author  Shen Wang
- * @version 1.0.0
- */
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
+
+// Register Hindi translations for this namespace
+
+
 class NewProfileIndex extends React.Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
     this.state = {
@@ -39,55 +36,40 @@ class NewProfileIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Retrieve data from the provided URL and save it in state
-   *
-   * @return {object}
-   */
   fetchData() {
     return fetch(this.props.dataURL,
       {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({configData: data.fieldOptions}))
-      .catch((error) => {
+      .catch(() => {
         this.setState({error: true});
       });
   }
-  /**
-   * It checks the date of birth and Expected Date of Confinement,
-   * the date fields must match.
-   * If match, this function will return true.
-   *
-   * @return {boolean}
-   */
+
   validateMatchDate() {
     let validate = false;
     const formData = this.state.formData;
+
     if (formData.dobDate !== formData.dobDateConfirm) {
-      swal.fire('Error!', 'Date of Birth fields must match', 'error');
+      swal.fire(this.props.t('Error!', {ns: 'new_profile'}),
+        this.props.t('Date of Birth fields must match',
+          {ns: 'new_profile'}), 'error');
     } else if (this.state.configData['edc'] === 'true' &&
          (formData.edcDate !== formData.edcDateConfirm)
     ) {
-      swal.fire('Error!', 'EDC fields must match', 'error');
+      swal.fire(this.props.t('Error!', {ns: 'new_profile'}),
+        this.props.t('EDC fields must match', {ns: 'new_profile'}), 'error');
     } else {
       validate = true;
     }
     return validate;
   }
 
-  /**
-   * Handles form submission
-   *
-   * @param {event} e - Form submission event
-   */
   handleSubmit(e) {
     e.preventDefault();
     const match = this.validateMatchDate();
@@ -100,8 +82,6 @@ class NewProfileIndex extends React.Component {
     let candidateObject = {
       'Candidate': {
         'Project': formData.project,
-        // 'PSCID' : conditionally included below
-        // 'EDC' : conditionally included below
         'DoB': formData.dobDate,
         'Sex': formData.sex,
         'Site': configData.site[formData.site],
@@ -115,7 +95,6 @@ class NewProfileIndex extends React.Component {
       candidateObject.Candidate.PSCID = formData.pscid;
     }
 
-    // disable button to prevent form resubmission.
     this.setState({submitDisabled: true});
 
     fetch(this.props.submitURL, {
@@ -128,43 +107,42 @@ class NewProfileIndex extends React.Component {
         if (resp.ok && resp.status === 201) {
           resp.json().then((data) => {
             swal.fire({
-              type: 'success',
-              title: 'New Candidate Created',
-              html: 'DCCID: ' + data.CandID + ' '
-                  + 'PSCID: ' + data.PSCID + ' ',
-              confirmButtonText: 'Access Profile',
-              // Repurpose "cancel" as "recruit another candidate".
-              // Use the same colour for both buttons, since one
-              // isn't more "right" than the other.
+              icon: 'success',
+              title: this.props.t('New Candidate Created',
+                {ns: 'new_profile'}),
+              html: this.props.t('DCCID:',
+                {ns: 'new_profile'}) + ' ' + data.CandID + ' '
+                  + this.props.t('PSCID:',
+                    {ns: 'new_profile'}) + ' ' + data.PSCID + ' ',
+              confirmButtonText: this.props.t('Access Profile',
+                {ns: 'new_profile'}),
               showCancelButton: true,
               cancelButtonColor: '#3085d6',
-              cancelButtonText: 'Recruit another candidate',
+              cancelButtonText: this.props.t('Recruit another candidate',
+                {ns: 'new_profile'}),
             }).then((result) => {
-            // Go to the candidate profile or reload the page, depending
-            // on whether the user clicked on 'Access Profile' or
-            // 'Recruit another candidate' respectively
               window.location.href = result.value === true
                 ? '/' + data.CandID
                 : window.location.href;
             });
-          } )
+          })
             .catch((error) => {
               swal.fire({
-                type: 'error',
-                title: 'Error!',
+                icon: 'error',
+                title: this.props.t('Error!', {ns: 'new_profile'}),
                 text: error,
               });
               console.error(error);
             });
         } else {
           resp.json().then((message) => {
-          // enable button for form resubmission.
             this.setState({submitDisabled: false});
-            swal.fire('Error!', message.error, 'error');
+            swal.fire(this.props.t('Error!',
+              {ns: 'new_profile'}), message.error, 'error');
           }).catch((error) => {
             swal.fire({
-              type: 'error',
-              title: 'Error!',
+              icon: 'error',
+              title: this.props.t('Error!', {ns: 'new_profile'}),
               text: error,
             });
             console.error(error);
@@ -173,20 +151,14 @@ class NewProfileIndex extends React.Component {
       })
       .catch((error) => {
         swal.fire({
-          type: 'error',
-          title: 'Error!',
+          icon: 'error',
+          title: this.props.t('Error!', {ns: 'new_profile'}),
           text: error,
         });
         console.error(error);
       });
   }
 
-  /**
-   * Set the form data based on state values of child elements/components
-   *
-   * @param {string} formElement - name of the selected element
-   * @param {string} value - selected value for corresponding form element
-   */
   setFormData(formElement, value) {
     let formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
@@ -194,21 +166,16 @@ class NewProfileIndex extends React.Component {
     this.setState({formData: formData});
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
   render() {
-    // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{this.props.t('An error occured while loading the page.',
+        {ns: 'new_profile'})}</h3>;
     }
 
-    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+
     let edc = null;
     let pscid = null;
     let site = null;
@@ -227,7 +194,8 @@ class NewProfileIndex extends React.Component {
         <div>
           <DateElement
             name = "edcDate"
-            label = "Expected Date of Confinement"
+            label = {this.props.t('Expected Date of Confinement',
+              {ns: 'new_profile'})}
             minYear = {minYear}
             maxYear = {this.state.configData.maxYear}
             dateFormat = {dateFormat}
@@ -237,7 +205,7 @@ class NewProfileIndex extends React.Component {
           />
           <DateElement
             name = "edcDateConfirm"
-            label = "Confirm EDC"
+            label = {this.props.t('Confirm EDC', {ns: 'new_profile'})}
             minYear = {minYear}
             maxYear = {this.state.configData.maxYear}
             dateFormat = {dateFormat}
@@ -251,7 +219,7 @@ class NewProfileIndex extends React.Component {
       pscid =
         <TextboxElement
           name = "pscid"
-          label = "PSCID"
+          label = {this.props.t('PSCID', {ns: 'new_profile'})}
           onUserInput = {this.setFormData}
           value = {this.state.formData.pscid}
           required = {true}
@@ -261,86 +229,126 @@ class NewProfileIndex extends React.Component {
       site =
         <SelectElement
           name = "site"
-          label = "Site"
+          label = {this.props.t('Site*', {ns: 'new_profile'})}
           options = {this.state.configData.site}
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
           required = {true}
         />;
     }
-    const profile = (
-      <FormElement
-        name = "newProfileForm"
-        onSubmit = {this.handleSubmit}
-      >
-        <DateElement
-          name = "dobDate"
-          label = "Date of Birth"
-          minYear = {minYear}
-          maxYear = {dobMaxYear}
-          dateFormat = {dateFormat}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.dobDate}
-          required = {requireBirthDate}
-        />
-        <DateElement
-          name = "dobDateConfirm"
-          label = "Date of Birth Confirm"
-          minYear = {minYear}
-          maxYear = {dobMaxYear}
-          dateFormat = {dateFormat}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.dobDateConfirm}
-          required = {requireBirthDate}
-        />
-        {edc}
-        <SelectElement
-          name = "sex"
-          label = "Sex"
-          options = {this.state.configData.sex}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.sex}
-          required = {true}
-        />
-        {site}
-        {pscid}
-        <SelectElement
-          name = "project"
-          label = "Project"
-          options = {this.state.configData.project}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.project}
-          required = {true}
-        />
-        <ButtonElement
-          name = "fire_away"
-          label = "Create"
-          id = "button"
-          type = "submit"
-          disabled={this.state.submitDisabled}
-        />
-      </FormElement>
-    );
+    const fields = [
+      {
+        label: this.props.t('Date of Birth*', {ns: 'new_profile'}),
+        element: (
+          <DateElement
+            name = "dobDate"
+            label = {this.props.t('Date of Birth*', {ns: 'new_profile'})}
+            minYear = {minYear}
+            maxYear = {dobMaxYear}
+            dateFormat = {dateFormat}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.dobDate}
+            required = {requireBirthDate}
+          />
+        ),
+      },
+      {
+        label: this.props.t('Date of Birth Confirm*', {ns: 'new_profile'}),
+        element: (
+          <DateElement
+            name = "dobDateConfirm"
+            label = {this.props.t('Date of Birth Confirm*',
+              {ns: 'new_profile'})}
+            minYear = {minYear}
+            maxYear = {dobMaxYear}
+            dateFormat = {dateFormat}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.dobDateConfirm}
+            required = {requireBirthDate}
+          />
+        ),
+      },
+      {
+        label: this.props.t('Sex*', {ns: 'new_profile'}),
+        element: (
+          <SelectElement
+            name = "sex"
+            label = {this.props.t('Sex*', {ns: 'new_profile'})}
+            options = {this.state.configData.sex}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.sex}
+            required = {true}
+          />
+        ),
+      },
+      {
+        label: this.props.t('Site*', {ns: 'new_profile'}),
+        element: site,
+      },
+      {
+        label: this.props.t('Project*', {ns: 'new_profile'}),
+        element: (
+          <SelectElement
+            name = "project"
+            label = {this.props.t('Project*', {ns: 'new_profile'})}
+            options = {this.state.configData.project}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.project}
+            required = {true}
+          />
+        ),
+      },
+      {
+        label: this.props.t('PSCID', {ns: 'new_profile'}),
+        element: pscid,
+      },
+      {
+        label: this.props.t('Expected Date of Confinement',
+          {ns: 'new_profile'}),
+        element: edc,
+      },
+    ];
+
     return (
-      <FieldsetElement legend={'Create a New Profile'}>
-        {profile}
+      <FieldsetElement legend=
+        {this.props.t('Create a New Profile', {ns: 'new_profile'})}>
+        <FormElement
+          name = "newProfileForm"
+          onSubmit = {this.handleSubmit}
+        >
+          {fields.map((field, idx) => field.element)}
+          <ButtonElement
+            name = "fire_away"
+            label = {this.props.t('Create', {ns: 'new_profile'})}
+            id = "button"
+            type = "submit"
+            disabled={this.state.submitDisabled}
+          />
+        </FormElement>
       </FieldsetElement>
     );
   }
 }
+
 NewProfileIndex.propTypes = {
-  dataURL: PropTypes.string,
-  submitURL: PropTypes.string,
+  dataURL: PropTypes.string.isRequired,
+  submitURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'new_profile', hiStrings);
+
+  const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <NewProfileIndex
+    <NPIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
       submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );
 });
+
+export default withTranslation(['new_profile'])(NewProfileIndex);

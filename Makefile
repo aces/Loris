@@ -1,7 +1,9 @@
 .PHONY: clean dev all check checkstatic unittests jslatest testdata locales
 
-all: node_modules locales VERSION vendor
-	npm run build
+all: locales VERSION
+	composer install --no-dev
+	npm ci
+	NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -19,8 +21,8 @@ vendor: composer.lock
 node_modules: package-lock.json
 	npm ci
 
-dev: node_modules locales vendor/bin/phan VERSION vendor
-	npm run compile
+fastdev: VERSION
+	NODE_OPTIONS="--max-old-space-size=4096" npm run compile
 
 jslatest: clean
 	rm -rf package-lock.json
@@ -67,6 +69,7 @@ locales:
 	msgfmt -o locale/es/LC_MESSAGES/loris.mo locale/es/LC_MESSAGES/loris.po
 	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
+	npx i18next-conv -l hi -s modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po -t modules/new_profile/locale/hi/LC_MESSAGES/new_profile.json
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
