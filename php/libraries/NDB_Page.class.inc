@@ -938,29 +938,171 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     }
 
     /**
+     * Get latest Policy for this module with an optional Policy Name
+     *
+     * @param \LORIS\LorisInstance $loris        The LORIS instance
+     * @param string               $policyName   The policy name
+     * @param bool                 $headerButton If true, only return policies that
+     *                                           have HeaderButton = 'Y'
+     *
+     * @return array The policy details
+     * @throws \DatabaseException
+     */
+    function getPolicy(
+        \LORIS\LorisInstance $loris,
+        string $policyName ='',
+        bool $headerButton = false
+    ) {
+        $moduleName = $this->Module->getName();
+        $DB         = $loris->getDatabaseConnection();
+        // If no policy name is given, we return the latest policy for the module
+        if (!empty($policyName)) {
+            $policyName = 'AND p.Name = '. $DB->quote($policyName);
+        }
+        // If we want just a policy that goes in the header,
+        // then we need HeaderButton = 'Y'
+        if ($headerButton == true) {
+            $headerWhere = "('Y')";
+        } else {
+            $headerWhere = "('Y', 'N')";
+        }
+        return $DB->pselectRow(
+            "SELECT
+                p.Name as PolicyName,
+                Version,
+                Content,
+                SwalTitle,
+                HeaderButtonText,
+                AcceptButtonText,
+                DeclineButtonText,
+                m.Name as ModuleName,
+                PolicyID,
+                PolicyRenewalTime,
+                PolicyRenewalTimeUnit
+            FROM policies p
+            JOIN modules m ON m.ID = p.ModuleID
+            WHERE m.Name = :moduleName
+                $policyName
+                AND p.Active = 'Y'
+                AND p.HeaderButton IN $headerWhere
+                AND Version = (
+                    SELECT MAX(Version)
+                    FROM policies
+                    WHERE ModuleID = m.ID
+                        AND Name = p.Name
+                        AND p.HeaderButton IN $headerWhere
+                )
+            ",
+            [
+                'moduleName' => $moduleName
+            ]
+        ) ?? [];
+    }
+
+    /**
      * Returns the latest Policy for this page with a HeaderButton
+     *
+     *  @param \LORIS\LorisInstance $loris The LORIS instance
      *
      * @return array
      */
-    public function getHeaderPolicy(): array
-    {
-        return \Utility::getPolicy(
-            $this->Module->getName(),
+    public function getHeaderPolicy(
+        \LORIS\LorisInstance $loris
+    ): array {
+        return $this->getPolicy(
+            $loris,
             '',
             true
         ) ?? [];
     }
 
     /**
-     * Returns the latest Policy for this page that the user needs to renew
+     * Get a User's latest policy decision, and whether or not they need to renew.
      *
-     * @return array
+     * @param \LORIS\LorisInstance $loris      The LORIS instance
+     * @param string               $policyName The policy name
+     * @param int|null             $userID     The user ID, or current user if null
+     *
+     * @return array The decision details
+     * @throws \DatabaseException
+     * @access public
      */
-    public function getPolicyThatNeedsRenewal(): array
-    {
-        return \Utility::getLatestPolicyDecision(
-            $this->Module->getName(),
-            '',
+    public function getLatestPolicyDecision(
+        \LORIS\LorisInstance $loris,
+        string $policyName,
+        int $userID
+    ) {
+        $client = new NDB_Client();
+        $userID = $userID ?? User::singleton()->getID();
+        $DB     = $loris->getDatabaseConnection();
+
+        $policyInfo = $this->getPolicy($loris, $policyName, false) ?? [];
+        if (empty($policyInfo)) {
+            return [];
+        }
+        $decision     = $DB->pselectRow(
+            "SELECT Decision, DecisionDate
+            FROM user_policy_decision
+            WHERE
+                UserID = :uid
+                AND PolicyID=:policyID
+                AND DecisionDate = (
+                    SELECT MAX(DecisionDate)
+                    FROM user_policy_decision
+                    WHERE
+                        UserID = :uid
+                        AND PolicyID=:policyID
+                )    
+            ",
+            [
+                'uid'      => $userID,
+                'policyID' => $policyInfo['PolicyID']
+            ]
+        ) ?? [];
+        $needsRenewal = true;
+        if ($decision && $policyInfo['PolicyRenewalTime'] > 0) {
+            $decisionDate = new \DateTime($decision['DecisionDate']);
+            $interval     = new \DateInterval(
+                "P{$policyInfo['PolicyRenewalTime']}".
+                "{$policyInfo['PolicyRenewalTimeUnit']}"
+            );
+            $renewalDate  = $decisionDate->add($interval);
+            if ($renewalDate > new \DateTime()) {
+                $needsRenewal = false;
+            }
+        }
+        return [
+            ...$policyInfo,
+            'needsRenewal' => $needsRenewal,
+        ];
+    }
+
+    /**
+     * Save a User's Policy decision
+     *
+     * @param \LORIS\LorisInstance $loris      The LORIS instance
+     * @param string               $PolicyName The Policy Name
+     * @param string               $decision   The decision made by the current user
+     *
+     * @return void
+     * @throws \DatabaseException
+     */
+    function saveUserPolicyDecision(
+        \LORIS\LorisInstance $loris,
+        string $PolicyName,
+        string $decision
+    ) {
+        $user = User::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
+
+        $policy = $this->getPolicy($loris, $PolicyName, false);
+        $DB->insert(
+            'user_policy_decision',
+            [
+                'UserID'   => $user->getId(),
+                'PolicyID' => $policy['PolicyID'],
+                'Decision' => $decision,
+            ]
         );
     }
 

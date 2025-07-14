@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 
 /**
  * PolicyButton Component
+ *
  * @param {object} props - The component props.
  * @param {object} props.onClickPolicy - The policy object containing title
  *                 and content that should appear when the button is pressed.
@@ -60,14 +61,20 @@ const fireSwal = (policy, anon, callback) => {
       callback(decision);
     }
     if (!anon) {
-      $.ajax(loris.BaseURL+'/PolicyDecision.php', {
-        method: 'POST',
-        data: {
-          ...policy,
-          decision: decision.value == true ? 'Accepted' : 'Declined',
-        },
-        dataType: 'json',
-      });
+      fetch(
+        loris.BaseURL +
+        '/policy_tracker/policies',
+        {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            ...policy,
+            decision: decision.value == true ? 'Accepted' : 'Declined',
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
       if (decision.value != true) {
         window.location.href = loris.BaseURL;
       }

@@ -130,8 +130,9 @@ class Authentication extends \NDB_Page implements ETagCalculator
         }
         $requestAccountData['site']    = \Utility::getSiteList();
         $requestAccountData['project'] = \Utility::getProjectList();
-        $requestAccountData['policy']  = $this->getHeaderPolicy();
-        $values['requestAccount']      = $requestAccountData;
+        $loris = $request->getAttribute("loris");
+        $requestAccountData['policy'] = $this->getHeaderPolicy($loris);
+        $values['requestAccount']     = $requestAccountData;
 
         if ($this->loris->hasModule('oidc')) {
             $DB        = $this->loris->getDatabaseConnection();

@@ -11,7 +11,7 @@ import {
   CheckboxElement,
   ButtonElement,
 } from 'jsx/Form';
-import {PolicyButton} from '../../../jsx/PolicyButton';
+import PolicyButton from 'jsx/PolicyButton';
 
 /**
  * Request account form.
@@ -169,24 +169,21 @@ class RequestAccount extends Component {
       </div>
     ) : null;
     const policy = this.state.policy ? (
-      <>
-        <PolicyButton
-          onClickPolicy={this.state.policy}
-          anon={true}
-          buttonText={
-            'Click here to view the ' + this.state.policy.SwalTitle
-          }
-          callback={(decision) => {
-            this.setState({
-              form: {
-                ...this.state.form,
-                viewedPolicy: true,
-              },
-            });
-          }}
-        />
-        <br /><br />
-      </>
+      <PolicyButton
+        onClickPolicy={this.state.policy}
+        popUpPolicy={this.state.policy}
+        buttonStyle={{marginTop: '10px'}}
+        buttonText={'View ' + this.state.policy.HeaderButtonText}
+        anon={true}
+        callback={() => {
+          this.setState({
+            form: {
+              ...this.state.form,
+              viewedPolicy: true,
+            },
+          });
+        }}
+      />
     ) : null;
     const request = !this.state.request ? (
       <div>
