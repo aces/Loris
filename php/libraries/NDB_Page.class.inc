@@ -1002,7 +1002,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     /**
      * Returns the latest Policy for this page with a HeaderButton
      *
-     *  @param \LORIS\LorisInstance $loris The LORIS instance
+     * @param \LORIS\LorisInstance $loris The LORIS instance
      *
      * @return array
      */
