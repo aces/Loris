@@ -24,11 +24,11 @@ namespace LORIS\redcap\client\models\mappings;
 interface IRedcapInstrumentEvent
 {
     /**
-     * Get the REDCap event name.
+     * Get the REDCap unique event name.
      *
      * @return string
      */
-    public function getEventName(): string;
+    public function getUniqueEventName(): string;
 
     /**
      * Get the REDCap form name.
