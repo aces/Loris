@@ -770,7 +770,8 @@ class Utility
      */
     static function getVisitInstruments(string $visit_label): array
     {
-        $db = $lorisInstance->getDatabaseConnection();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $test_names = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT t.Test_name, t.Full_name

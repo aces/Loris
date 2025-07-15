@@ -44,7 +44,7 @@ class Module extends \Module
         $body = json_decode($request->getBody()->getContents(), true);
         switch ($request->getMethod()) {
         case 'POST':
-            $module = $this->loris->getModule($body['ModuleName']);
+            $module = $this->loris->getModule($body['ModuleName'] ?? '');
             $page   = new \NDB_Page(
                 $this->loris,
                 $module,
@@ -54,8 +54,8 @@ class Module extends \Module
             );
             $page->saveUserPolicyDecision(
                 $this->loris,
-                $body['PolicyName'],
-                $body['decision']
+                $body['PolicyName'] ?? '',
+                $body['decision'] ?? ''
             );
             return new \LORIS\Http\Response\JSON\OK(
                 ['message' => 'Policy decision saved successfully']

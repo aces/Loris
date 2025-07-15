@@ -1030,9 +1030,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     public function getLatestPolicyDecision(
         \LORIS\LorisInstance $loris,
         string $policyName,
-        int $userID
+        int|null $userID
     ) {
-        $client = new NDB_Client();
         $userID = $userID ?? User::singleton()->getID();
         $DB     = $loris->getDatabaseConnection();
 
