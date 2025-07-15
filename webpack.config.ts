@@ -33,7 +33,6 @@ const lorisModules: Record<string, string[]> = {
   datadict: ['dataDictIndex'],
   dataquery: ['index'],
   data_release: ['dataReleaseIndex'],
-  policy_tracker: ['policyTrackerIndex'],
   dictionary: ['dataDictIndex'],
   dqt: [
     'components/expansionpanels',
