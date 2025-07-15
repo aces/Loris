@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -328,10 +331,14 @@ ExaminerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'examiner', {});
+  const Index = withTranslation(
+    ['examiner', 'loris']
+  )(ExaminerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ExaminerIndex
+    <Index
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
       submitURL={`${loris.BaseURL}/examiner/addExaminer`}
       hasPermission={loris.userHasPermission}
