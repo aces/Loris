@@ -516,10 +516,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $this->testName.'_Examiner',
                                     'Examiner',
                                     $scope,
-                                    // This should be an enum of examiners, but
-                                    // getExaminerNames currently returns an empty
-                                    // array if CommentID is not set.
-                                    new StringType(255),
+                                    new Enumeration(
+                                        ...array_map(
+                                            function ($e) {
+                                                return $e['full_name'];
+                                            },
+                                            array_values($this->_getExaminerNames())
+                                        )
+                                    ),
                                     new Cardinality(Cardinality::SINGLE),
                                     'Examiner',
                                 ),
