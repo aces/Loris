@@ -9,7 +9,6 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
- *
  * @param  {object} props
  * @return {JSX.Element}
  */
@@ -163,7 +162,7 @@ const Recruitment = (props) => {
               >
                 {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
-                    if (key !== 'overall') {
+                    if (key !== 'overall' && value['total_recruitment'] > 0) {
                       return <div key ={`projectBreakdown_${key}`}>
                         {progressBarBuilder(value)}
                       </div>;
