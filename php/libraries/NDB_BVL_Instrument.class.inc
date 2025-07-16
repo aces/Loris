@@ -904,7 +904,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Examiner',
             'Examiner',
             array_merge(
-                [null => ''],
+                ['' => ''],
                 array_column($examiners, 'examinerID', 'full_name')
             )
         );
@@ -2431,6 +2431,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
+
 		    $where";
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
