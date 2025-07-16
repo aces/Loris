@@ -24,7 +24,6 @@ use LORIS\redcap\client\models\RedcapProject;
 use LORIS\redcap\client\models\RedcapSurveyParticipant;
 use LORIS\redcap\client\models\mappings\RedcapRepeatingInstrumentEvent;
 use LORIS\redcap\client\models\mappings\RedcapInstrumentEventMap;
-use LORIS\redcap\client\models\records\IRedcapRecord;
 use LORIS\redcap\client\models\records\RedcapRecord;
 use LORIS\redcap\client\models\records\RedcapRepeatingRecord;
 
@@ -653,7 +652,7 @@ class RedcapHttpClient
      *
      * @throws \LorisException
      *
-     * @return IRedcapRecord[] an array of records
+     * @return RedcapRecord[] an array of records
      */
     public function getInstrumentRecord(
         string $instrument_name,
