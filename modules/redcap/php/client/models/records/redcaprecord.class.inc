@@ -58,7 +58,11 @@ class RedcapRecord implements IRedcapRecord
 
         $datetime_string = $props->getStringNullable("{$form_name}_timestamp");
         if ($datetime_string !== null) {
-            $datetime = new \DateTimeImmutable($datetime_string);
+            try {
+                $datetime = new \DateTimeImmutable($datetime_string);
+            } catch (\DateMalformedStringException) {
+                $datetime = null;
+            }
         } else {
             $datetime = null;
         }
