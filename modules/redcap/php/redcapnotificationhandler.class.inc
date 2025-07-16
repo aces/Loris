@@ -16,8 +16,8 @@ use \LORIS\LorisInstance;
 use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\config\RedcapConfig;
-use \LORIS\redcap\client\models\records\IRedcapRecord;
 use \LORIS\redcap\client\models\RedcapNotification;
+use \LORIS\redcap\client\models\records\RedcapRecord;
 
 /**
  * This represents a REDCap notification handler.
@@ -234,7 +234,7 @@ class RedcapNotificationHandler
      * Check that the REDCap and LORIS dictionaries of an instrument match.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument object
-     * @param IRedcapRecord       $record     a REDCap instrument record
+     * @param RedcapRecord        $record     a REDCap instrument record
      *
      * @throws \LorisException if a REDCap field not in LORIS instrument
      *
@@ -242,7 +242,7 @@ class RedcapNotificationHandler
      */
     private function _assertDictionaryMatches(
         \NDB_BVL_Instrument $instrument,
-        IRedcapRecord $record
+        RedcapRecord $record
     ): void {
         // var
         $instrument_name  = $instrument->testName;
@@ -393,13 +393,13 @@ class RedcapNotificationHandler
      * Update a LORIS instrument data with a REDCap record data.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument instance
-     * @param IRedcapRecord       $record     a REDCap record
+     * @param RedcapRecord        $record     a REDCap record
      *
      * @return void
      */
     private function _updateInstrument(
         \NDB_BVL_Instrument $instrument,
-        IRedcapRecord $record
+        RedcapRecord $record
     ): void {
         // var
         $instrument_name   = $record->getFormName();

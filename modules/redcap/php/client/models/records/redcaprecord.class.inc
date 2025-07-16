@@ -21,7 +21,7 @@ namespace LORIS\redcap\client\models\records;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapRecord implements IRedcapRecord
+class RedcapRecord
 {
     private string $_form_name;
 
