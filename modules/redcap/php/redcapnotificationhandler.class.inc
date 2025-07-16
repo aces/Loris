@@ -168,7 +168,7 @@ class RedcapNotificationHandler
         //
         foreach ($records as $record) {
             // if repeating instrument, contains the repeat index
-            $instrument_name = $record->getInstrumentName();
+            $instrument_name = $record->getLorisInstrumentName();
 
             // get the comment ID for that instrument
             $comment_id = $this->_getCommentId(

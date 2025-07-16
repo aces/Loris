@@ -50,11 +50,11 @@ class RedcapRepeatingRecord extends RedcapRecord
     }
 
     /**
-     * Get the instrument name.
+     * Get the LORIS instrument name.
      *
      * @return string
      */
-    public function getInstrumentName(): string
+    public function getLorisInstrumentName(): string
     {
         return $this->getFormName() . '_' . $this->_repeat_index;
     }

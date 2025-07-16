@@ -50,11 +50,11 @@ class RedcapRecord
     }
 
     /**
-     * Get the instrument name
+     * Get the LORIS instrument name.
      *
      * @return string
      */
-    public function getInstrumentName(): string
+    public function getLorisInstrumentName(): string
     {
         return $this->_form_name;
     }
