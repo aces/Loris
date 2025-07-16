@@ -10,9 +10,12 @@ import InstrumentUploadForm from './uploadForm';
 
 import Modal from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
+import TriggerableModal from '../../../jsx/TriggerableModal';
 
 import Select from 'react-select';
 import swal from 'sweetalert2';
+
+import InstrumentDataUploadModal from './uploadDataModal';
 
 /**
  * Instrument Manager Index component
@@ -30,10 +33,16 @@ class InstrumentManagerIndex extends Component {
       error: false,
       isLoaded: false,
       modifyPermissions: false,
+      selectedDataFile: null,
+      action: null,
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
+    this.setSelectedDataFile = this.setSelectedDataFile.bind(this);
+    this.setAction = this.setAction.bind(this);
+    this.triggerValidityReport = this.triggerValidityReport.bind(this);
   }
 
   /**
@@ -45,10 +54,40 @@ class InstrumentManagerIndex extends Component {
   }
 
   /**
+   * Update selectedDataFile on data file selection
+   * @param {string} element - Element name
+   * @param {string} file
+   */
+  dataFileSelected(element, file) {
+    this.setState({
+      selectedDataFile: file,
+    });
+  }
+
+  /**
+   * setSelectedDataFile
+   * @param {string} file
+   */
+  setSelectedDataFile(file) {
+    this.setState({
+      selectedDataFile: file,
+    });
+  }
+
+  /**
+   * setAction
+   * @param {string} action
+   */
+  setAction(action) {
+    this.setState({
+      action: action,
+    });
+  }
+
+  /**
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
-   *
    * @return {object}
    */
   fetchData() {
@@ -61,8 +100,84 @@ class InstrumentManagerIndex extends Component {
   }
 
   /**
+   * Trigger reportValidity() for form elements
+   * @return {void}
+   */
+  triggerValidityReport() {
+    document.querySelector('[name="create_participants"]').reportValidity();
+    document.querySelector('[name="instrument_data_file"]').reportValidity();
+  }
+
+
+  /**
+   * Upload instrument data
+   * @param instrument  Instrument name
+   */
+  uploadInstrumentData(instrument) {
+    const data = new FormData();
+    data.append('instrument', instrument);
+    data.append('action', this.state.action);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
+
+    return new Promise(
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            let message = data.message;
+
+            if (Object.keys(data).includes('idMapping')) {
+              message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+              message += data.message;
+              message += '<br/><br/>';
+              message += JSON.stringify(data.idMapping);
+              message += '</div>';
+            }
+
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              html: message,
+            });
+          } else {
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
+          }
+          resolve();
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
+        });
+      });
+  }
+
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
-   *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
@@ -109,6 +224,40 @@ class InstrumentManagerIndex extends Component {
         </td>
       );
     }
+
+
+    if (column === 'Upload') {
+      return (
+        <td style={{verticalAlign: 'middle'}}>
+          <TriggerableModal
+            label={'Upload Data'}
+            title={'Upload Instrument Data'}
+            onClose={() => {
+              this.setState({
+                selectedDataFile: null,
+              });
+            }}
+            onSubmit={(e) => {
+              if (
+                this.state.selectedDataFile === null ||
+                this.state.action === null
+              ) {
+                this.triggerValidityReport();
+                e.preventDefault();
+                return;
+              }
+              return this.uploadInstrumentData(row.Instrument);
+            }}
+          >
+            <InstrumentDataUploadModal
+              setSelectedDataFile={this.setSelectedDataFile}
+              setAction={this.setAction}
+              instrumentList={[row.Instrument]}
+            />
+          </TriggerableModal>
+        </td>
+      );
+    }
     return (
       <td>{cell}</td>
     );
@@ -116,7 +265,6 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Renders the React component.
-   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -165,6 +313,7 @@ class InstrumentManagerIndex extends Component {
         name: 'permissionsRequired',
         type: 'text',
       }},
+      {label: 'Upload', show: true, filter: {}},
     ];
 
     const tabs = [
@@ -266,7 +415,7 @@ class InstrumentManagerIndex extends Component {
       } else if (this.state.data.fieldOptions.writable) {
         let url = loris.BaseURL.concat('/instrument_manager/');
         content = (
-          <InstrumentUploadForm action={url}/>
+          <InstrumentUploadForm action={url} data={this.state.data} />
         );
       } else {
         content = (
@@ -279,6 +428,18 @@ class InstrumentManagerIndex extends Component {
       return content;
     };
 
+    // const openMultiInstrumentDataUpload = () => {
+    //   this.setState({showMultiInstrumentUploadModal: true});
+    // };
+    // const actions = [
+    //   // {
+    //   //   label: 'Multi Upload',
+    //   //   action: openMultiInstrumentDataUpload,
+    //   //   show: this.props.hasPermission('instrument_manager_write'),
+    //   // },
+    // ];
+
+
     return (
       <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabs[0].id}>
@@ -287,6 +448,7 @@ class InstrumentManagerIndex extends Component {
             name="instrument_manager"
             data={this.state.data.Data}
             fields={fields}
+            actions={[]}
             getFormattedCell={this.formatColumn}
           />
         </TabPane>
@@ -308,7 +470,6 @@ InstrumentManagerIndex.propTypes = {
 /**
  * Create a componenet to select permissions from a list of available
  * permissions.
- *
  * @param {object} props - react props
  * @return {JSX}
  */
