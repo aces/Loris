@@ -1034,23 +1034,24 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         if (empty($policyInfo)) {
             return [];
         }
-        $decision     = iterator_to_array($DB->pselect(
-            "SELECT Decision, DecisionDate
-            FROM user_policy_decision
-            WHERE
-                UserID = :uid
-                AND PolicyID=:policyID
-            ORDER BY DecisionDate DESC
-            LIMIT 1
-            ",
-            [
-                'uid'      => $userID,
-                'policyID' => $policyInfo['PolicyID']
-            ]
-        ))[0] ?? [];
+        $decision     = iterator_to_array(
+            $DB->pselect(
+                "SELECT Decision, DecisionDate
+                FROM user_policy_decision
+                WHERE
+                    UserID = :uid
+                    AND PolicyID=:policyID
+                ORDER BY DecisionDate DESC
+                LIMIT 1
+                ",
+                [
+                    'uid'      => $userID,
+                    'policyID' => $policyInfo['PolicyID']
+                ]
+            )
+        )[0] ?? [];
         $needsRenewal = true;
-        if (
-            $decision
+        if ($decision
             && $decision['Decision'] == 'Accepted'
             && $policyInfo['PolicyRenewalTime'] > 0
         ) {
