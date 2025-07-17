@@ -5,3 +5,7 @@ executed successfully. The scripts in this directory do not get removed
 unless they have been converted to a data_integrity tool or are 
 completely deprecated in which case they get moved into the appropriate 
 directory before removal.
+
+Single use tools should start with the LORIS Core version that they are
+targeted to. For example, a tool that is meant to be used when upgrading
+to LORIS Core v27, should be prefixed with `27_`.
