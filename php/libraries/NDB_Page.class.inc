@@ -966,7 +966,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         } else {
             $headerWhere = "('Y', 'N')";
         }
-        return $DB->pselectRow(
+        return iterator_to_array($DB->pselect(
             "SELECT
                 p.Name as PolicyName,
                 Version,
@@ -985,18 +985,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
                 $policyName
                 AND p.Active = 'Y'
                 AND p.HeaderButton IN $headerWhere
-                AND Version = (
-                    SELECT MAX(Version)
-                    FROM policies
-                    WHERE ModuleID = m.ID
-                        AND Name = p.Name
-                        AND p.HeaderButton IN $headerWhere
-                )
+            ORDER BY p.Version DESC
+            LIMIT 1
             ",
             [
                 'moduleName' => $moduleName
             ]
-        ) ?? [];
+        ))[0] ?? [];
     }
 
     /**
@@ -1039,27 +1034,26 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         if (empty($policyInfo)) {
             return [];
         }
-        $decision     = $DB->pselectRow(
+        $decision     = iterator_to_array($DB->pselect(
             "SELECT Decision, DecisionDate
             FROM user_policy_decision
             WHERE
                 UserID = :uid
                 AND PolicyID=:policyID
-                AND DecisionDate = (
-                    SELECT MAX(DecisionDate)
-                    FROM user_policy_decision
-                    WHERE
-                        UserID = :uid
-                        AND PolicyID=:policyID
-                )    
+            ORDER BY DecisionDate DESC
+            LIMIT 1
             ",
             [
                 'uid'      => $userID,
                 'policyID' => $policyInfo['PolicyID']
             ]
-        ) ?? [];
+        ))[0] ?? [];
         $needsRenewal = true;
-        if ($decision && $policyInfo['PolicyRenewalTime'] > 0) {
+        if (
+            $decision
+            && $decision['Decision'] == 'Accepted'
+            && $policyInfo['PolicyRenewalTime'] > 0
+        ) {
             $decisionDate = new \DateTime($decision['DecisionDate']);
             $interval     = new \DateInterval(
                 "P{$policyInfo['PolicyRenewalTime']}".

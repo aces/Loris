@@ -1434,17 +1434,17 @@ CREATE TABLE `user_account_history` (
 CREATE TABLE policies (
     PolicyID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
-    Version VARCHAR(50) NOT NULL,
+    Version INT NOT NULL,
     ModuleID INT NOT NULL,
     PolicyRenewalTime INT DEFAULT 7,
     PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
     Content TEXT NULL,
-    SwalTitle VARCHAR(255) DEFAULT 'Terms Of Use',
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
     HeaderButton enum('Y','N') DEFAULT 'Y',
-    HeaderButtonText VARCHAR(255) DEFAULT 'Terms Of Use',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
     Active enum('Y','N') DEFAULT 'Y',
-    AcceptButtonText VARCHAR(255) DEFAULT '',
-    DeclineButtonText VARCHAR(255) DEFAULT '',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
