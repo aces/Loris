@@ -966,32 +966,34 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         } else {
             $headerWhere = "('Y', 'N')";
         }
-        return iterator_to_array($DB->pselect(
-            "SELECT
-                p.Name as PolicyName,
-                Version,
-                Content,
-                SwalTitle,
-                HeaderButtonText,
-                AcceptButtonText,
-                DeclineButtonText,
-                m.Name as ModuleName,
-                PolicyID,
-                PolicyRenewalTime,
-                PolicyRenewalTimeUnit
-            FROM policies p
-            JOIN modules m ON m.ID = p.ModuleID
-            WHERE m.Name = :moduleName
-                $policyName
-                AND p.Active = 'Y'
-                AND p.HeaderButton IN $headerWhere
-            ORDER BY p.Version DESC
-            LIMIT 1
-            ",
-            [
-                'moduleName' => $moduleName
-            ]
-        ))[0] ?? [];
+        return iterator_to_array(
+            $DB->pselect(
+                "SELECT
+                    p.Name as PolicyName,
+                    Version,
+                    Content,
+                    SwalTitle,
+                    HeaderButtonText,
+                    AcceptButtonText,
+                    DeclineButtonText,
+                    m.Name as ModuleName,
+                    PolicyID,
+                    PolicyRenewalTime,
+                    PolicyRenewalTimeUnit
+                FROM policies p
+                JOIN modules m ON m.ID = p.ModuleID
+                WHERE m.Name = :moduleName
+                    $policyName
+                    AND p.Active = 'Y'
+                    AND p.HeaderButton IN $headerWhere
+                ORDER BY p.Version DESC
+                LIMIT 1
+                ",
+                [
+                    'moduleName' => $moduleName
+                ]
+            )
+        )[0] ?? [];
     }
 
     /**
