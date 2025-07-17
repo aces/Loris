@@ -1,0 +1,42 @@
+{
+	"en-CA" : {
+		"title" : "BMI Calculator",
+		"unit_classification" : "Choose unit of measurement",
+		"metric" : "Metric",
+		"imperial" : "Imperial",
+		"height_feet" : "Your height (feet) :",
+		"not_answered" : "Not Answered",
+		"height_inches" : "Your height (inches) :",
+		"weight_lbs" : "Your weight (lbs) :",
+		"height_cms" : "Your height (cms) :",
+		"weight_kgs" : "Your weight (kgs) :",
+		"bmi" : "Your BMI",
+		"bmi_category" : "Your BMI Classification",
+		"enter_in_imperial_or_metric" : "Note: Please enter measurements in Imperial OR Metric units",
+		"imperial" : "Imperial",
+		"metric" : "Metric",
+		"imperial_units" : "Imperial units",
+		"metric_units" : "Metric Units",
+		"results" : "Results"
+	},
+	"fr-CA" : {
+		"title": "Calculateur d'IMC",
+		"unit_classification": "Choisissez l'unité de mesure",
+		"metric": "Métrique",
+		"imperial": "Impérial",
+		"height_feet": "Votre taille (pieds) :",
+		"not_answered": "Non répondu",
+		"height_inches": "Votre taille (pouces) :",
+		"weight_lbs": "Votre poids (lbs) :",
+		"height_cms": "Votre taille (cm) :",
+		"weight_kgs": "Votre poids (kg) :",
+		"bmi": "Votre IMC",
+		"bmi_category": "Votre classification IMC",
+		"enter_in_imperial_or_metric": "Remarque : Veuillez entrer les mesures en unités impériales OU métriques",
+		"imperial" : "Impériales",
+		"metric" : "Métriques",
+		"imperial_units": "Unités impériales",
+		"metric_units": "Unités métriques",
+		"results": "Résultats"
+	}
+}
