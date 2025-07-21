@@ -2,13 +2,13 @@
 SELECT `ID` FROM `modules` WHERE modules.Name = 'dqt' INTO @dqtID;
 SELECT `ID` FROM `modules` WHERE modules.Name = 'dataquery' INTO @dataqueryID;
 
--- Duplicate current dataquery_view permission to dqt_view (for old)
+-- Duplicate current dataquery_view permission to dqt_view (for legacy)
 INSERT INTO `permissions` (code, description, moduleID, categoryID)
 SELECT 'dqt_view', CONCAT(`description`, ' (legacy)'), @dqtID, `categoryID`
 FROM `permissions`
 WHERE permissions.code = 'dataquery_view';
 
--- Update noduleID for previous permission
+-- Update moduleID for previous permission
 UPDATE `permissions` SET moduleID = @dataqueryID
 WHERE permissions.code = 'dataquery_view';
 
