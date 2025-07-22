@@ -8,7 +8,7 @@ import NameQueryModal from './welcome.namequerymodal';
 import AdminQueryModal from './welcome.adminquerymodal';
 import getDictionaryDescription from './getdictionarydescription';
 import PaginationLinks from 'jsx/PaginationLinks';
-import {ButtonElement, CheckboxElement, TextboxElement} from 'jsx/Form';
+import {CheckboxElement, TextboxElement} from 'jsx/Form';
 import {APIQueryField} from './types';
 import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
@@ -60,7 +60,7 @@ function Welcome(props: {
         id: string,
     }[] = [];
   panels.push({
-    title: 'How to Start',
+    title: 'Getting Started',
     content: <IntroductionMessage
       hasStudyQueries={props.topQueries.length > 0}
       onContinue={props.onContinue}
@@ -74,19 +74,19 @@ function Welcome(props: {
     content: (
       <div>
         <div>
-        <p>Query History stores the queries you have run.</p>
+          <p>Query History stores the queries you have run.</p>
         </div>
         <div>
           <ul style ={{lineHeight: 2.0}}>
-            <li>Click on the Star icon to mark your query as 'starred'</li>
-            <li>Click on <ShareIcon /> to share your query with all users who
+            <li>Click on the <strong>Star</strong> icon to mark your query as 'starred'</li>
+            <li>Click on <ShareIcon /> to <strong>share</strong> your query with all users who
             have access to the fields in it.</li>
-            <li>Click on <LoadIcon /> to load your query.</li>
-            <li>Click on <NameIcon /> to name (or rename) your query.</li>
-            <li>Click on the the pin icon to display your query on the Loris
+            <li>Click on <LoadIcon /> to <strong>load</strong> your query.</li>
+            <li>Click on <NameIcon /> to <strong>name</strong> (or rename) your query.</li>
+            <li>Click on the the pin icon to <strong>display</strong> your query on the Loris
               welcome page and in the 'Important Queries' pane.</li>
-            <li>Use Filter to find your query or queries by name.</li>
-            <li>Use the checkboxes to customize your queries.</li>
+            <li>Use Filter to <strong>find</strong> your query or queries by name.</li>
+            <li>Use the checkboxes to customize your query</li>
           </ul>
         </div>
         <div>
@@ -1083,7 +1083,7 @@ function NameIcon(props: {
  * @param {boolean} props.hasStudyQueries - Whether or not study queries exist
  * @returns {React.ReactElement} - The React element
  */
-function IntroductionMessage(props: {
+function IntroductionMessage(_props: {
     onContinue: () => void,
     hasStudyQueries: boolean,
 }): React.ReactElement {
@@ -1095,9 +1095,6 @@ function IntroductionMessage(props: {
   // ) : '';
   return (
     <div>
-      <p>The data query tool allows you to query data
-          within LORIS. Start with <code>Next Steps</code> at the
-          bottom right of your browser window.</p>
       <ul style ={{lineHeight: 2.0}}>
         <li>Click <code>Define Fields</code> to select what you are looking
         for.</li>
