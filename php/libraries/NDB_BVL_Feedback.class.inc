@@ -460,8 +460,8 @@ class NDB_BVL_Feedback
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query = "SELECT c.CandID as CandID,
-                    c.PSCID as PSCID,
-                    c.Ethnicity,
+                    MAX(c.PSCID) as PSCID,
+                    MAX(c.Ethnicity) as Ethnicity,
                     c.Sex,
                     s.ID as SessionID,
                     s.Visit_label as Visit,
@@ -513,7 +513,13 @@ class NDB_BVL_Feedback
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
-        $query .= " GROUP BY c.CandID, ft.Feedback_level, ft.SessionID";
+        $query .= " GROUP BY 
+    c.CandID,
+    ft.Feedback_level,
+    ft.SessionID,
+    c.Sex,
+    s.ID,
+    s.Visit_label";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
         }
