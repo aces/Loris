@@ -238,6 +238,34 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     }
 
     /**
+     * Tests the HTTP PUT request for the
+     * endpoint /candidates/{candid}/{visit}/instruments/{instrument}
+     *
+     * @return void
+     */
+    public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
+    {
+        $json = [
+            'Data' => [
+                'height_cms' => 2
+            ]
+        ];
+        $response   = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+    }
+
+    /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/instruments/{instruments}/flags
      *
