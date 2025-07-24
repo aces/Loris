@@ -219,7 +219,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'height_cms' => 2
+                'UserID' => "2"
             ]
         ];
         $response = $this->client->request(
@@ -247,7 +247,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'height_cms' => 2
+                'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
@@ -470,7 +470,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Data' => [
-                'height_cms' => 2
+                'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
