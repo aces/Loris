@@ -1,11 +1,12 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\instrument_manager;
-//use LORIS\RedcapCSVParser;
+use LORIS\RedcapCSVParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
-//require_once 'RedcapCSVParser.class.inc';
+
+require_once 'RedcapCSVParser.class.inc';
 
 /**
  * Contains functions used to view and manage instruments installed in LORIS.
@@ -138,11 +139,11 @@ class Instrument_Manager extends \DataFrameworkMenu
         } else {
             // Assume redcap instrument
 
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Redcap is not supported'
-            );
+//            return new \LORIS\Http\Response\JSON\BadRequest(
+//                'Redcap is not supported'
+//            );
 
-            /*
+            // TODO: Rename file. Affix timestamp
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes('text/csv');
             $response = $uploader->handle($request);
@@ -161,7 +162,7 @@ class Instrument_Manager extends \DataFrameworkMenu
             $parsedCSV    = $redcapParser->parseDictionaryCSV($this->loris);
             $instruments  = $redcapParser::convertDictionaryCSVToLINST($parsedCSV);
 
-            // Require all instruments not to exist before proceeding
+            // Require that ALL instruments NOT EXIST before proceeding
             $existingInstruments = [];
             foreach ($instruments as $instrumentName => $instrument) {
                 if ($this->instrumentExists($instrumentName)) {
@@ -190,7 +191,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                 );
             }
             $created = count($instruments) > 0;
-            */
+
         }
 
         if ($created) {   // TODO: Improve response message

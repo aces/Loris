@@ -2,13 +2,13 @@
 
 namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
-//use LORIS\RedcapCSVParser;
+use LORIS\RedcapCSVParser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
 use LORIS\server_processes_manager as SP;
 
-//require_once 'RedcapCSVParser.class.inc';
+require_once 'RedcapCSVParser.class.inc';
 
 /**
  * Upload instrument data

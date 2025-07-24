@@ -10,7 +10,7 @@ import InstrumentUploadForm from './uploadForm';
 
 import Modal from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
-import TriggerableModal from '../../../jsx/TriggerableModal';
+import TriggerableModal from 'jsx/TriggerableModal';
 
 import Select from 'react-select';
 import swal from 'sweetalert2';
