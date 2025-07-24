@@ -52,9 +52,8 @@ class NDB_Client
         // Load the config file.
         $factory = NDB_Factory::singleton();
 
-        $config = $factory->config($configFile);
-
-        $DB = $factory->database();
+        // Load config file into factory as a side-effect
+        $factory->config($configFile);
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {

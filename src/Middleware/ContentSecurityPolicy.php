@@ -4,7 +4,6 @@ namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
@@ -33,7 +32,6 @@ class ContentSecurityPolicy implements MiddlewareChainer
     ) : ResponseInterface {
         $loris  = $request->getAttribute("loris");
         $config = $loris->getConfiguration();
-        $DB     = $loris->getDatabaseConnection();
 
         $config_additions = $config->getSetting("CSPAdditionalHeaders");
         $CaptchaDomains   ="";
