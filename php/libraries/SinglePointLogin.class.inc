@@ -34,6 +34,11 @@ class SinglePointLogin
     var $_isLoggedIn = false;
 
     /**
+     * Whether the user has already provided the an MFA token
+     */
+    var $_passedMFA = false;
+
+    /**
      * Internally held copy of username
      */
     var $_username = null;
@@ -599,5 +604,9 @@ class SinglePointLogin
         $this->_username = $user->getUsername();
         $this->setState();
         $_SESSION['State']->setProperty('login', $this);
+    }
+
+    function passedMFA() : bool {
+	    return $this->_passedMFA;
     }
 }

@@ -63,6 +63,13 @@
             <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
+    {if $mfa_secret == ""}
+    <div class="row form-group">
+         <button>Enable MFA</button>
+    </div>
+    {else}
+otpauth://totp/{urlencode($study_title)}:{urlencode($form.UserID.html)}?secret={$mfa_secret}&amp;period=30&amp;digits=6&amp;issuer={urlencode($study_title)}
+    {/if}
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.language_preference.label}

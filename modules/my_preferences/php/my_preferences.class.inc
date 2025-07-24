@@ -384,6 +384,9 @@ class My_Preferences extends \NDB_Form
                 unset($nGroup);
             }
         }
+	$this->tpl_data['mfa_secret'] = $user->getMFASecret();
+        $config = \NDB_Factory::singleton()->config();
+        $this->tpl_data['study_title'] = $config->getSetting("title");
         $this->tpl_data['notification_rows'] = $notification_rows;
         //------------------------------------------------------------
 
