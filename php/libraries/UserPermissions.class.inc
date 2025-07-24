@@ -381,5 +381,9 @@ class UserPermissions
             ]
         );
     }
+
+    function getMFASecret() : string {
+	    return "x";
+    }
 }
 
