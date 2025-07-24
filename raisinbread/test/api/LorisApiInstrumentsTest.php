@@ -219,7 +219,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test text',
+                'testCheckbox' => 'true'
             ]
         ];
         $response = $this->client->request(
@@ -247,7 +249,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test text',
+                'testCheckbox' => 'true'
             ]
         ];
         $response   = $this->client->request(
@@ -470,7 +474,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Data' => [
-                'UserID' => "2"
+                'conset' => "yes"
             ]
         ];
         $response   = $this->client->request(
