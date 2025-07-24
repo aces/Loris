@@ -517,4 +517,116 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
     }
 
+    /**
+     * Tests the HTTP PATCH request for the
+     * endpoint /candidates/{candid}/{visit}/instruments/{instrument}/flag
+     *
+     * @return void
+     */
+    public function testPatchCandidVisitInstrumentsInstrumentDdeFlags(): void
+    {
+        $json       = [
+            'Meta'  => [
+                'Candidate'  => $this->candidTest,
+                'Visit'      => $this->visitTest,
+                'DDE'        => false,
+                'Instrument' => $this->instrumentTest
+            ],
+            'Flags' => [
+                'Data_entry'     => 'Complete',
+                'Administration' => 'All',
+                'Validity'       => 'Valid'
+            ]
+        ];
+        $response   = $this->client->request(
+            'PATCH',
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde/flags",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        // This will test that it should be forbidden to modify an instrument that is flagged as Complete
+        $json = [
+            $this->instrumentTest => [
+                'UserID' => "2"
+            ]
+        ];
+        $response   = $this->client->request(
+            'PATCH',
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            [
+                'headers' => $this->headers,
+                'json'    => $json,
+                'http_errors' => false
+            ]
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+    }
+
+    /**
+     * Tests the HTTP PUT request for the
+     * endpoint /candidates/{candid}/{visit}/instruments/{instrument}
+     *
+     * @return void
+     */
+    public function testPutCandidVisitInstrumentsInstrumentDdeFlags(): void
+    {
+        $json       = [
+            'Meta'  => [
+                'Candidate'  => $this->candidTest,
+                'Visit'      => $this->visitTest,
+                'DDE'        => false,
+                'Instrument' => $this->instrumentTest
+            ],
+            'Flags' => [
+                'Data_entry'     => 'Complete',
+                'Administration' => 'All',
+                'Validity'       => 'Valid'
+            ]
+        ];
+        $response   = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde/flags",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        // This will test that it should be forbidden to modify an instrument that is flagged as Complete
+        $json = [
+            $this->instrumentTest => [
+                'UserID' => "2"
+            ]
+        ];
+        $response   = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            [
+                'headers' => $this->headers,
+                'json'    => $json,
+                'http_errors' => false
+            ]
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+
+    }
+
 }
