@@ -3019,7 +3019,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // missing required fields
         $missingKeys = array_diff($defaultRequiredElements, $dataKeys);
-        if (!empty($missingKeys) && $_SERVER['REQUEST_METHOD'] !== 'PATCH') {
+        if (!empty($missingKeys)) {
             $i = implode(",", $missingKeys);
             throw new \LorisException("Missing required field(s): {$i}.");
         }
@@ -3028,7 +3028,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Note: additional fields are not an issue with JSON instruments
         // but only with instruments having their own table.
         $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
-
         if (!empty($additionalKeys)) {
             $i = implode(",", $additionalKeys);
             throw new \LorisException("Additional field(s) not permitted: {$i}.");
@@ -3040,13 +3039,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Throw a LorisException if any check does not pass.
      *
      * @param array $instrumentData instrument data to check
+     * @param bool  $checkAllValues tells if all instrument field values should
+     *                              be checked (PUT) instead of part of them
+     *                              (PATCH)
      *
      * @throws \LorisException
      *
      * @return void
      */
-    private function _validateValues(array $instrumentData): void
-    {
+    private function _validateValues(
+        array $instrumentData,
+        bool $checkAllValues = false
+    ): void {
         // Get date format from system configuration
         $config     = $this->loris->getConfiguration();
         $dateFormat = $config->getSetting('dateDisplayFormat');
@@ -3081,7 +3085,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $fieldName = $dictionaryItem->fieldname;
 
             // Skip fields that are not present in PATCH input
-            if (!array_key_exists($fieldName, $instrumentData)) {
+            if (!$checkAllValues && !array_key_exists($fieldName, $instrumentData)) {
                 continue;
             }
 
@@ -3171,14 +3175,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Validate whether the data submitted are valid against this instrument.
      * Checks both keys and values. Throws a LorisException if any test fails.
      *
-     * @param array $dataToCheck an array of values submitted
+     * @param array $dataToCheck    an array of values submitted
+     * @param bool  $checkAllValues tells if all instrument field values should
+     *                              be checked (PUT) instead of part of them
+     *                              (PATCH)
      *
      * @throws \LorisException
      *
      * @return void
      */
-    public function validate(array $dataToCheck): void
-    {
+    public function validate(
+        array $dataToCheck,
+        bool $checkAllValues = false
+    ): void {
         // data to check even exist
         if (empty($dataToCheck)) {
             throw new \LorisException("No data provided.");
@@ -3188,7 +3197,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->_validateKeys($dataToCheck);
 
         // validate the values against the instrument dictionary entries
-        $this->_validateValues($dataToCheck);
+        $this->_validateValues($dataToCheck, $checkAllValues);
     }
 
     /**
