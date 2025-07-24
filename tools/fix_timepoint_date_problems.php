@@ -52,17 +52,7 @@
  */
 use LORIS\StudyEntities\Candidate\CandID;
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// path to config file
-$configFile = dirname(__FILE__) . "/../project/config.xml";
-
 require_once __DIR__ . "/generic_includes.php";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize($configFile);
-
-$db = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
