@@ -312,7 +312,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Invalid' 
+                'Validity'       => 'Invalid'
             ]
         ];
         $response   = $this->client->request(
@@ -387,7 +387,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'Partial',
-                'Validity'       => 'Questionable' 
+                'Validity'       => 'Questionable'
             ]
         ];
         $response   = $this->client->request(
