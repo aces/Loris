@@ -474,7 +474,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Data' => [
-                'conset' => "yes"
+                'consent' => "yes"
             ]
         ];
         $response   = $this->client->request(
