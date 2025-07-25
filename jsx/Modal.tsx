@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import Loader from './Loader';
 import {
   ButtonElement,
+  FormElement,
 } from 'jsx/Form';
 
 export type ModalProps = PropsWithChildren<{
@@ -88,11 +89,7 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return (
-        <div style={submitStyle}>
-          <ButtonElement onUserInput={handleSubmit}/>
-        </div>
-      );
+      return <div style={submitStyle}><ButtonElement/></div>;
     }
   };
 
