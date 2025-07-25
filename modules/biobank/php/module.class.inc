@@ -136,7 +136,7 @@ class Module extends \Module
      *
      * @return string The menu category for this module
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
         return "Biobank";
     }
