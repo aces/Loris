@@ -134,11 +134,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
     public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Biobank";
+        return \LORIS\GUI\MenuCategory::singleton("Biobank");
     }
 
     /**
