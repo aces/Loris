@@ -1,11 +1,15 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
 import {Tabs, TabPane} from 'Tabs';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import IssueTrackerBatchMode from './IssueTrackerBatchMode';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Issue Tracker Index component
@@ -181,10 +185,12 @@ class IssueTrackerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const { t } = this.props;
+
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.', {ns: 'issue_tracker'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -198,79 +204,79 @@ class IssueTrackerIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Issue ID', show: true, filter: {
+      {label: t('Issue ID', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'issueID',
         type: 'text',
       }},
-      {label: 'Title', show: true, filter: {
+      {label: t('Title', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'title',
         type: 'text',
       }},
-      {label: 'Module', show: true, filter: {
+      {label: t('Module', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'module',
         type: 'select',
         options: options.modules,
       }},
-      {label: 'Category', show: true, filter: {
+      {label: t('Category', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'category',
         type: 'select',
         options: options.categories,
       }},
-      {label: 'Reporter', show: true, filter: {
+      {label: t('Reporter', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'reporter',
         type: 'select',
         options: options.reporters,
       }},
-      {label: 'Assignee', show: true, filter: {
+      {label: t('Assignee', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'assignee',
         type: 'select',
         options: options.assignees,
       }},
-      {label: 'Status', show: true, filter: {
+      {label: t('Status', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'status',
         type: 'multiselect',
         options: options.statuses,
       }},
-      {label: 'Priority', show: true, filter: {
+      {label: t('Priority', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'priority',
         type: 'select',
         sortByValue: false,
         options: options.priorities,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'visitLabel',
         type: 'text',
       }},
-      {label: 'Date Created', show: false, filter: {
+      {label: t('Date Created', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'dateCreated',
         type: 'date',
       }},
-      {label: 'Last Update', show: true},
-      {label: 'SessionID', show: false},
-      {label: 'CandID', show: false},
-      {label: 'Watching', show: false, filter: {
+      {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
+      {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
+      {label: t('CandID', {ns: 'issue_tracker'}), show: false},
+      {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',
         type: 'checkbox',
       }},
     ];
 
     const filterPresets = [
-      {label: 'All Issues', filter: {}},
-      {label: 'Active Issues', filter: {
+      {label: t('All Issues', {ns: 'issue_tracker'}), filter: {}},
+      {label: t('Active Issues', {ns: 'issue_tracker'}), filter: {
         status: {
           value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
         },
       }},
-      {label: 'Closed Issues', filter: {
+      {label: t('Closed Issues', {ns: 'issue_tracker'}), filter: {
         status: {value: ['closed'], exactMatch: true},
       }},
     ];
@@ -278,7 +284,7 @@ class IssueTrackerIndex extends Component {
     // Add "My Issues" filter only if user has any issues
     if (this.state.data.userIssueCount > 0) {
       filterPresets.push({
-        label: 'My Issues',
+        label: t('My Issues', {ns: 'issue_tracker'}),
         filter: {
           assignee: {
             value: this.state.data.fieldOptions.userID, exactMatch: true,
@@ -296,13 +302,13 @@ class IssueTrackerIndex extends Component {
       );
     };
     const actions = [
-      {label: 'New Issue', action: addIssue},
+      {label: t('New Issue', {ns: 'issue_tracker'}), action: addIssue},
     ];
 
     const tabList = [
       {
         id: 'browse',
-        label: 'Browse Issues',
+        label: t('Browse Issues', {ns: 'issue_tracker'}),
       },
     ];
 
@@ -310,7 +316,7 @@ class IssueTrackerIndex extends Component {
     if (this.props.hasPermission('issue_tracker_all_issue')) {
       tabList.push({
         id: 'batch',
-        label: 'Batch Edit',
+        label: t('Batch Edit', {ns: 'issue_tracker'}),
       });
     }
 
@@ -350,13 +356,19 @@ class IssueTrackerIndex extends Component {
 IssueTrackerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
+
+  const IssueTrackerIndexWithTranslation = withTranslation(
+    ['issue_tracker', 'loris']
+  )(IssueTrackerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <IssueTrackerIndex
+    <IssueTrackerIndexWithTranslation
       dataURL={`${loris.BaseURL}/issue_tracker/?format=json`}
       hasPermission={loris.userHasPermission}
     />

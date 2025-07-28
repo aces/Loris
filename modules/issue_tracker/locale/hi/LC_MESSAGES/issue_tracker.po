@@ -13,101 +13,95 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Issue Tracker"
-msgstr ""
-
-msgid "Your assigned issue"
-msgstr ""
-
-msgid "Your assigned issues"
-msgstr ""
+msgstr "समस्या ट्रैकर"
 
 msgid "Issue ID"
-msgstr ""
+msgstr "समस्या आईडी"
 
 msgid "Title"
-msgstr ""
+msgstr "शीर्षक"
 
 msgid "Module"
-msgstr ""
+msgstr "मॉड्यूल"
 
 msgid "Category"
-msgstr ""
+msgstr "श्रेणी"
 
 msgid "Reporter"
-msgstr ""
+msgstr "रिपोर्टर"
 
 msgid "Assignee"
-msgstr ""
+msgstr "असाइन किए गए"
 
 msgid "Status"
-msgstr ""
+msgstr "स्थिति"
 
 msgid "Priority"
-msgstr ""
+msgstr "प्राथमिकता"
 
 msgid "Date Created"
-msgstr ""
+msgstr "निर्माण तिथि"
 
 msgid "Last Update"
-msgstr ""
+msgstr "अंतिम अपडेट"
 
 msgid "SessionID"
-msgstr ""
+msgstr "सत्र आईडी"
 
 msgid "CandID"
-msgstr ""
+msgstr "उम्मीदवार आईडी"
 
 msgid "Watching"
-msgstr ""
+msgstr "देख रहे हैं"
 
 msgid "Normal"
-msgstr ""
+msgstr "सामान्य"
 
 msgid "High"
-msgstr ""
+msgstr "उच्च"
 
 msgid "Urgent"
-msgstr ""
+msgstr "अत्यावश्यक"
 
 msgid "Immediate"
-msgstr ""
+msgstr "तत्काल"
 
 msgid "Low"
-msgstr ""
+msgstr "निम्न"
 
 msgid "None"
-msgstr ""
+msgstr "कोई नहीं"
 
 msgid "All Sites"
-msgstr ""
+msgstr "सभी साइटें"
 
 msgid "All Issues"
-msgstr ""
+msgstr "सभी समस्याएँ"
 
 msgid "Active Issues"
-msgstr ""
+msgstr "सक्रिय समस्याएँ"
 
 msgid "Closed Issues"
-msgstr ""
+msgstr "बंद समस्याएँ"
 
 msgid "My Issues"
-msgstr ""
+msgstr "मेरी समस्याएँ"
 
 msgid "New Issue"
-msgstr ""
+msgstr "नई समस्या"
 
 msgid "Browse Issues"
-msgstr ""
+msgstr "समस्याएँ ब्राउज़ करें"
 
 msgid "Batch Edit"
-msgstr ""
+msgstr "बैच संपादन"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
