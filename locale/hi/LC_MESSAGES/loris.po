@@ -13,7 +13,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: hi\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,68 +49,34 @@ msgstr "मेरी पसंद"
 
 # Auto extracted strings from PHP
 # Menu categories
-#: modules/configuration/php/module.class.inc:50
-#: modules/help_editor/php/module.class.inc:47
-#: modules/instrument_manager/php/module.class.inc:53
-#: modules/module_manager/php/module.class.inc:50
-#: modules/server_processes_manager/php/module.class.inc:104
-#: modules/survey_accounts/php/module.class.inc:48
-#: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
 
-#: modules/acknowledgements/php/module.class.inc:54
-#: modules/api_docs/php/module.class.inc:66
-#: modules/battery_manager/php/module.class.inc:55
-#: modules/datadict/php/module.class.inc:49
-#: modules/data_release/php/module.class.inc:56
-#: modules/dictionary/php/module.class.inc:49
 msgid "Data Dictionary"
 msgstr "डेटा शब्दकोश"
 
-#: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
-#: modules/issue_tracker/php/module.class.inc:54
-#: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
 msgstr "उपकरण"
 
-#: modules/behavioural_qc/php/module.class.inc:51
-#: modules/conflict_resolver/php/module.class.inc:83
-#: modules/examiner/php/module.class.inc:50
-#: modules/media/php/module.class.inc:33
 msgid "Clinical"
 msgstr "नैदानिक"
 
-#: modules/dicom_archive/php/module.class.inc:115
-#: modules/imaging_browser/php/module.class.inc:40
-#: modules/imaging_qc/php/module.class.inc:50
-#: modules/imaging_uploader/php/module.class.inc:54
-#: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
 msgstr "इमेजिंग"
 
-#: modules/candidate_list/php/module.class.inc:76
-#: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
 msgstr "उम्मीदवार"
 
-#: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
 msgstr "जीनोमिक्स"
 
-#: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr "इलेक्ट्रोफिजियोलॉजी"
 
-#: modules/dataquery/php/module.class.inc:33
-#: modules/dqt/php/module.class.inc:49
-#: modules/publication/php/module.class.inc:55
-#: modules/statistics/php/module.class.inc:49
 msgid "Reports"
 msgstr "रिपोर्ट्स"
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
@@ -203,12 +169,10 @@ msgid "Email"
 msgstr "ईमेल"
 
 msgid "Site"
-msgid_plural "Sites"
 msgstr[0] "साइट"
 msgstr[1] "साइट्स"
 
 msgid "Project"
-msgid_plural "Projects"
 msgstr[0] "परियोजना"
 msgstr[1] "प्रोजेक्ट्"
 
@@ -219,8 +183,8 @@ msgid "Timepoint Project"
 msgstr "समय बिंदु परियोजना"
 
 msgid "Cohort"
-msgid_plural "Cohorts"
 msgstr[0] "समूह"
+msgstr[1] "समूह"
 
 msgid "Session"
 msgstr "सत्र"
@@ -258,6 +222,12 @@ msgstr "डीसीसी को भेजना रद्द करें"
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
 
+msgid "Acknowledgement added."
+msgstr "स्वीकृति जोड़ी गई।"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
 msgid "Visits"
 msgstr "भ्रमण"
 
@@ -289,7 +259,6 @@ msgstr "प्रति पृष्ठ अधिकतम पंक्तिय
 msgid "Download Data as CSV"
 msgstr "डेटा को CSV के रूप में डाउनलोड करें"
 
-#: php/libraries/Password.class.inc
 msgid "The password is too short"
 msgstr "पासवर्ड बहुत छोटा है"
 
@@ -319,7 +288,7 @@ msgstr "अद्यतन किया गया"
 msgid "Uploaded"
 msgstr "अपलोड किया गया"
 
-# User Account related
+# User Account strings
 msgid "Password Rules"
 msgstr "पासवर्ड नियम"
 
@@ -356,6 +325,9 @@ msgstr "ईमेल पता आवश्यक है"
 msgid "Email address cannot contain any of the following characters: <, >, &, and \""
 msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
 
+msgid "Download Table as CSV"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+
 msgid "The password must be at least 8 characters long."
 msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
 
@@ -373,9 +345,6 @@ msgstr "हम सुझाव देते हैं कि आपके लि
 
 msgid "Total"
 msgstr "कुल"
-
-msgid "Error!"
-msgstr "त्रुटि!"
 
 msgid "Date"
 msgstr "दिनांक"
@@ -415,7 +384,6 @@ msgid "Complete"
 msgstr "पूर्ण"
 
 msgid "Instrument"
-msgid_plural "Instruments"
 msgstr[0] "उपकरण"
 msgstr[1] "उपकरण"
 

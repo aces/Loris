@@ -21,3 +21,72 @@ msgstr ""
 msgid "Battery Manager"
 msgstr ""
 
+msgid "Submission successful!"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "Minimum Age"
+msgstr ""
+
+msgid "Maximum Age"
+msgstr ""
+
+msgid "Stage"
+msgstr ""
+
+msgid "First Visit"
+msgstr ""
+
+msgid "Instrument Order"
+msgstr ""
+
+msgid "Double Data Entry Enabled"
+msgstr ""
+
+msgid "Change Status"
+msgstr ""
+
+msgid "Edit Metadata"
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "New Test"
+msgstr ""
+
+msgid "Edit Test"
+msgstr ""
+
+msgid "Add New Test"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "This field must be 0 or greater"
+msgstr ""
+
+msgid "Minimum age must be lesser than maximum age."
+msgstr ""
+
+msgid "Maximum age must be greater than minimum age."
+msgstr ""
+
+msgid "Test Duplicate"
+msgstr ""
+
+msgid "The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?"
+msgstr ""
+
+msgid "You cannot duplicate an active test"
+msgstr ""
+
