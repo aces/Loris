@@ -1,0 +1,92 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Battery Manager"
+msgstr "बैटरी प्रबंधक"
+
+msgid "Submission successful!"
+msgstr "प्रस्तुति सफल रही!"
+
+msgid "Instrument"
+msgstr "उपकरण"
+
+msgid "Minimum Age"
+msgstr "न्यूनतम आयु"
+
+msgid "Maximum Age"
+msgstr "अधिकतम आयु"
+
+msgid "Stage"
+msgstr "चरण"
+
+msgid "First Visit"
+msgstr "पहला दौरा"
+
+msgid "Instrument Order"
+msgstr "उपकरण क्रम"
+
+msgid "Double Data Entry Enabled"
+msgstr "डबल डेटा प्रविष्टि सक्षम"
+
+msgid "Change Status"
+msgstr "स्थिति बदलें"
+
+msgid "Edit Metadata"
+msgstr "मेटाडेटा संपादित करें"
+
+msgid "Deactivate"
+msgstr "निष्क्रिय करें"
+
+msgid "Activate"
+msgstr "सक्रिय करें"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "New Test"
+msgstr "नया परीक्षण"
+
+msgid "Edit Test"
+msgstr "परीक्षण संपादित करें"
+
+msgid "Add New Test"
+msgstr "नया परीक्षण जोड़ें"
+
+msgid "This field is required"
+msgstr "यह फ़ील्ड आवश्यक है"
+
+msgid "This field must be 0 or greater"
+msgstr "यह फ़ील्ड 0 या उससे अधिक होना चाहिए"
+
+msgid "Minimum age must be lesser than maximum age."
+msgstr "न्यूनतम आयु अधिकतम आयु से कम होनी चाहिए।"
+
+msgid "Maximum age must be greater than minimum age."
+msgstr "अधिकतम आयु न्यूनतम आयु से अधिक होनी चाहिए।"
+
+msgid "Test Duplicate"
+msgstr "परीक्षण डुप्लिकेट"
+
+msgid "The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?"
+msgstr "प्रदान की गई जानकारी सिस्टम में पहले से मौजूद एक निष्क्रिय परीक्षण से मेल खाती है। क्या आप उस परीक्षण को सक्रिय करना चाहेंगे?"
+
+msgid "You cannot duplicate an active test"
+msgstr "आप एक सक्रिय परीक्षण की प्रतिलिपि नहीं बना सकते"
+
