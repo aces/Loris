@@ -88,10 +88,5 @@ window.addEventListener('load', () => {
   ).render(<Index />);
 });
 
-ConflictResolver.propTypes = {
-  t: PropTypes.func,
-};
-
-export default withTranslation(
-  ['conflict_resolver', 'loris'])(ConflictResolver);
+export default withTranslation(['conflict_resolver', 'loris'])(ConflictResolver);
 
