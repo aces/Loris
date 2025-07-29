@@ -88,6 +88,8 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l ja -s modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po
@@ -191,6 +193,8 @@ server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES
 <<<<<<< HEAD
 <<<<<<< HEAD
 conflict_resolver:
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	target=conflict_resolver npm run compile
 =======
 >>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
