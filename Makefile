@@ -200,5 +200,7 @@ conflict_resolver:
 >>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
 =======
 conflict_resolver:
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	target=conflict_resolver npm run compile
 >>>>>>> d56f08bf9 (Add withTranslation for conflict_resolver)
