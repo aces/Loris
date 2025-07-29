@@ -260,16 +260,18 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Give "close" option if user has site close permissions and the issue
         // is at a user site, or if the user has close permissions for all sites,
         // or it is the user's own permission
-        $userHasSite = $user->hasPermission('issue_tracker_close_site_issue') &&
+        if ($values['issueID'] != "new") {
+            $userHasSite = $user->hasPermission('issue_tracker_close_site_issue') &&
             $issueData['centerID'] ?
                 $user->hasCenter(new \CenterID((string)$issueData['centerID'])) :
                 false;
-        if ($user->hasPermission('issue_tracker_close_all_issue')
-            || $userHasSite
-            || ($user->hasPermission('issue_tracker_own_issue')
-            && $isOwnIssue)
-        ) {
-            $statuses['closed'] = 'Closed';
+            if ($user->hasPermission('issue_tracker_close_all_issue')
+                || $userHasSite
+                || ($user->hasPermission('issue_tracker_own_issue')
+                && $isOwnIssue)
+            ) {
+                $statuses['closed'] = 'Closed';
+            }
         }
 
         // Give edit permission if they are able to see all issues, site issues,
