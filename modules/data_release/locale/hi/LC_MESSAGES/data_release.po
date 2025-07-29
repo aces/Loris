@@ -13,41 +13,41 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Data Release"
-msgstr ""
+msgstr "डेटा रिलीज़"
 
 msgid "File Name"
-msgstr ""
+msgstr "फ़ाइल नाम"
 
 msgid "Version"
-msgstr ""
+msgstr "संस्करण"
 
 msgid "Upload Date"
-msgstr ""
+msgstr "अपलोड तिथि"
 
 msgid "Project Name"
-msgstr ""
+msgstr "परियोजना नाम"
 
 msgid "Data Release ID"
-msgstr ""
+msgstr "डेटा रिलीज़ आईडी"
 
 msgid "Upload File"
-msgstr ""
+msgstr "फ़ाइल अपलोड करें"
 
 msgid "Upload a New File"
-msgstr ""
+msgstr "नई फ़ाइल अपलोड करें"
 
 msgid "Add Permission"
-msgstr ""
+msgstr "अनुमति जोड़ें"
 
 msgid "Manage Permissions"
-msgstr ""
+msgstr "अनुमतियाँ प्रबंधित करें"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
