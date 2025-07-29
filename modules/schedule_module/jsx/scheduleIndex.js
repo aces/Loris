@@ -1,5 +1,5 @@
-/* eslint-disable */
 import React, {Component} from 'react';
+import {createRoot} from 'react-dom/client';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Modal from 'Modal';
@@ -12,16 +12,15 @@ import {
     StaticElement,
     ButtonElement,
     DateElement,
-	TimeElement,
-	TextboxElement
+    TimeElement,
+    TextboxElement
 } from 'jsx/Form';
-/**
- * Schedule Module
- *
- * Main module component rendering the data release module
- *
- * @author Shen Wang
- */
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
+
 class ScheduleIndex extends Component {
   constructor(props) {
     super(props);
@@ -69,12 +68,7 @@ class ScheduleIndex extends Component {
     this.fetchData();
   }
 
-  /**
-   * Retrieve data from the provided URL and save it in state
-   *
-   * @return {object}
-   */
-    fetchData() {
+  fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => {
          if (resp.ok) {
@@ -94,7 +88,7 @@ class ScheduleIndex extends Component {
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
-	window.location.reload();
+        window.location.reload();
       });
   }
 
@@ -119,49 +113,34 @@ class ScheduleIndex extends Component {
         console.error(error);
       });
   }
-  /**
-   * Updates filter state
-   *
-   * @param {object} filter passed from FilterForm
-   */
+
   updateFilter(filter) {
     this.setState({filter});
   }
 
-  /**
-   * Sets Filter to empty object
-   */
   clearFilter() {
     this.updateFilter({});
     history.replaceState({}, '', '?');
   }
-  /**
-   * Store the value of the element in this.state.formData
-   *
-   * @param {string} formElement - name of the form element
-   * @param {string} value - value of the form element
-   */
+
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
     if (formElement === 'DCCID') {
-    formData['PSCID'] = null;
-    this.fetchDataForm('DCCID', formData['DCCID']);
+      formData['PSCID'] = null;
+      this.fetchDataForm('DCCID', formData['DCCID']);
     }
     if (formElement === 'PSCID') {
-    formData['DCCID'] = null;
-    this.fetchDataForm('PSCID', formData['PSCID']);
+      formData['DCCID'] = null;
+      this.fetchDataForm('PSCID', formData['PSCID']);
     }
     this.setState({
       formData: formData,
     });
   }
-  /**
-   * Handles the submission of the Add Schedule form
-   *
-   * @param {event} e - event of the form
-   */
+
   handleSubmit(e) {
+    const { t } = this.props;
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -179,8 +158,8 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        const msg = this.state.editModal ? 'Appointment modified.' : 'Appointment added.';
-        swal.fire('Success!', msg, 'success').then((result) => {
+        const msg = this.state.editModal ? t('Appointment modified.', {ns: 'schedule_module'}) : t('Appointment added.', {ns: 'schedule_module'});
+        swal.fire(t('Success!', {ns: 'schedule_module'}), msg, 'success').then((result) => {
           if (result.value) {
             this.fetchData();
             this.closeModal();
@@ -188,7 +167,7 @@ class ScheduleIndex extends Component {
         });
       } else {
         resp.json().then((message) => {
-          swal.fire('No changes were made!', message.error, 'error');
+          swal.fire(t('No changes were made!', {ns: 'schedule_module'}), message.error, 'error');
         });
       }
     })
@@ -196,36 +175,33 @@ class ScheduleIndex extends Component {
       console.error(error);
     });
   }
-    mapColumn(column, cell) {
-          return cell;
+
+  mapColumn(column, cell) {
+    return cell;
   }
-  /**
-   * Handles the delete a Schedule
-   *
-   * @param {string} id - appointment id
-   */
 
- deleteConfirm(id) {
-   swal.fire({
-  title: 'Are you sure?',
-  text: 'You won\'t be able to revert this!',
-  type: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Yes, delete it!',
-  cancelButtonText: 'No, cancel it!',
-}).then((result) => {
-  if (result.value) {
-    swal.fire(
-      'Deleted!',
-      'Your appointment has been deleted.',
-      'success',
-    );
-    this.deleteid(id);
-   }
-   });
-   }
+  deleteConfirm(id) {
+    const { t } = this.props;
+    swal.fire({
+      title: t('Are you sure?', {ns: 'schedule_module'}),
+      text: t('You won\'t be able to revert this!', {ns: 'schedule_module'}),
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: t('Yes, delete it!', {ns: 'schedule_module'}),
+      cancelButtonText: t('No, cancel it!', {ns: 'schedule_module'}),
+    }).then((result) => {
+      if (result.value) {
+        swal.fire(
+          t('Deleted!', {ns: 'schedule_module'}),
+          t('Your appointment has been deleted.', {ns: 'schedule_module'}),
+          'success',
+        );
+        this.deleteid(id);
+      }
+    });
+  }
 
- deleteid(id) {
+  deleteid(id) {
     let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
     fetch(deleteurl, {
       method: 'DELETE',
@@ -234,10 +210,10 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok) {
-	      if (this.state.data.Data.length == 1) {
-                 window.location.reload();
-	      }
-            this.fetchData();
+        if (this.state.data.Data.length == 1) {
+          window.location.reload();
+        }
+        this.fetchData();
       } else {
         resp.text().then((message) => {
           swal.fire('Error!', message, 'error');
@@ -247,35 +223,32 @@ class ScheduleIndex extends Component {
     .catch((error) => {
       console.error(error);
     });
- }
-  /**
-   * Handles the edit a Schedule
-   *
-   * @param {string} row - appointment row
-   */
- edit(row) {
-   this.openModal();
-   this.setState({editModal: true});
-   const sessionID = row['Edit'];
-   const visit = row['Visit Label'];
-   const sessionObj = {[sessionID]: visit};
-   const rowObj = {
-        AppointmentID: row.Delete,
-        StartsAt: row['Starts At'],
-        DCCID: row.DCCID,
-        PSCID: row.PSCID,
-        Session: sessionID,
-        AppointmentDate: row.Date,
-        AppointmentTime: row.Time,
-        AppointmentType: row['Appointment Type'],
-        SessionFieldOptions: sessionObj,
-   };
-   this.setState({formData: rowObj});
- // ready setup edit form
-}
+  }
+
+  edit(row) {
+    this.openModal();
+    this.setState({editModal: true});
+    const sessionID = row['Edit'];
+    const visit = row['Visit Label'];
+    const sessionObj = {[sessionID]: visit};
+    const rowObj = {
+      AppointmentID: row.Delete,
+      StartsAt: row['Starts At'],
+      DCCID: row.DCCID,
+      PSCID: row.PSCID,
+      Session: sessionID,
+      AppointmentDate: row.Date,
+      AppointmentTime: row.Time,
+      AppointmentType: row['Appointment Type'],
+      SessionFieldOptions: sessionObj,
+    };
+    this.setState({formData: rowObj});
+  }
+
   openModal() {
     this.setState({showModal: true});
   }
+
   closeModal() {
     this.setState({
       formData: {},
@@ -283,74 +256,69 @@ class ScheduleIndex extends Component {
       editModal: false,
     });
   }
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
-   *
-   * @return {*} a formated table cell for a given column
-   */
+
   formatColumn(column, cell, row) {
+    const { t } = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'PSCID':
+    case t('PSCID', {ns: 'schedule_module'}):
       let url = loris.BaseURL + '/' + row['DCCID'] + '/';
       result = <td><a href ={url}>{cell}</a></td>;
       break;
-    case 'Visit Label':
+    case t('Visit Label', {ns: 'schedule_module'}):
       let visit = loris.BaseURL + '/instrument_list/?candID=' + row['DCCID'] + '&sessionID=' + row['Edit'];
       result = <td><a href ={visit}>{cell}</a></td>;
       break;
-    case 'Edit':
-      result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> Edit</button></td>;
+    case t('Edit', {ns: 'schedule_module'}):
+      result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> {t('Edit', {ns: 'schedule_module'})}</button></td>;
       break;
-    case 'Delete':
-      result = <td><button className="btn btn-default" onClick={() => this.deleteConfirm(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> Delete</button></td>;
+    case t('Delete', {ns: 'schedule_module'}):
+      result = <td><button className="btn btn-default" onClick={() => this.deleteConfirm(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> {t('Delete', {ns: 'schedule_module'})}</button></td>;
       break;
-    case 'Data Entry Status':
+    case t('Data Entry Status', {ns: 'schedule_module'}):
       let css='label label-default';
-      if (cell==='Complete' ) {
+      if (cell===t('Complete', {ns: 'schedule_module'})) {
         css='label label-success';
-       }
-      if (cell==='No Data Found' ) {
+      }
+      if (cell===t('No Data Found', {ns: 'schedule_module'})) {
         css='label label-danger';
-       }
-      if (cell==='In Progress' || cell==='Not Started') {
+      }
+      if (cell===t('In Progress', {ns: 'schedule_module'}) || cell===t('Not Started', {ns: 'schedule_module'})) {
         css='label label-warning';
-       }
+      }
       result = <td><span className={css}>{cell}</span></td>;
       break;
-    case 'Appointment Type':
+    case t('Appointment Type', {ns: 'schedule_module'}):
       result = <td>{row['AppointmentTypeName']}</td>;
       break;
     }
     return result;
-}
+  }
+
   renderScheduleFormButton() {
-   if (this.state.editModal) {
-     return (<ButtonElement
-            name="edit"
-            label="Edit Appointment"
-            type="submit"
-            buttonClass="btn btn-sm btn-success"
-           />
-     );
+    const { t } = this.props;
+    if (this.state.editModal) {
+      return (<ButtonElement
+        name="edit"
+        label={t("Edit Appointment", {ns: 'schedule_module'})}
+        type="submit"
+        buttonClass="btn btn-sm btn-success"
+      />);
     } else {
-        return (<ButtonElement
-            name="create"
-            label="Create Appointment"
-            type="submit"
-            buttonClass="btn btn-sm btn-success"
-           />
-         );
+      return (<ButtonElement
+        name="create"
+        label={t("Create Appointment", {ns: 'schedule_module'})}
+        type="submit"
+        buttonClass="btn btn-sm btn-success"
+      />);
     }
   }
+
   renderScheduleForm() {
-  let year = new Date();
-  let minYear = year.getFullYear();
-    const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
+    const { t } = this.props;
+    let year = new Date();
+    let minYear = year.getFullYear();
+    const title = this.state.editModal ? t('Edit Appointment', {ns: 'schedule_module'}) : t('Add Appointment', {ns: 'schedule_module'});
     return (
       <Modal
         title= {title}
@@ -366,7 +334,7 @@ class ScheduleIndex extends Component {
         >
           <TextboxElement
             name="DCCID"
-            label="DCCID"
+            label={t("DCCID", {ns: 'schedule_module'})}
             value={this.state.formData.DCCID}
             required={true}
             onUserInput={this.setFormData}
@@ -374,7 +342,7 @@ class ScheduleIndex extends Component {
           />
           <TextboxElement
             name="PSCID"
-            label="PSCID"
+            label={t("PSCID", {ns: 'schedule_module'})}
             value={this.state.formData.PSCID}
             required={true}
             onUserInput={this.setFormData}
@@ -383,7 +351,7 @@ class ScheduleIndex extends Component {
           <SelectElement
             name="Session"
             options={this.state.formData.SessionFieldOptions}
-            label="Visit"
+            label={t("Visit", {ns: 'schedule_module'})}
             value={this.state.formData.Session}
             required={true}
             onUserInput={this.setFormData}
@@ -391,7 +359,7 @@ class ScheduleIndex extends Component {
           />
           <DateElement
             name = "AppointmentDate"
-            label = "Appointment Date"
+            label = {t("Appointment Date", {ns: 'schedule_module'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentDate}
             minYear = {minYear}
@@ -399,176 +367,164 @@ class ScheduleIndex extends Component {
           />
           <TimeElement
             name = "AppointmentTime"
-            label = "Appointment Time"
+            label = {t("Appointment Time", {ns: 'schedule_module'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentTime}
             required = {false}
           />
           <SelectElement
             name="AppointmentType"
-            label = "Appointment Type"
+            label = {t("Appointment Type", {ns: 'schedule_module'})}
             options={this.state.data.fieldOptions.AppointmentType}
             value={this.state.formData.AppointmentType}
             required={true}
             onUserInput={this.setFormData}
           />
-        {this.renderScheduleFormButton()}
+          {this.renderScheduleFormButton()}
         </FormElement>
       </Modal>
     );
   }
+
   render() {
-    // If error occurs, return a message.
-    // XXX: Replace this with a UI component for 500 errors.
+    const { t } = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.', {ns: 'schedule_module'})}</h3>;
     }
 
-    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'DCCID', show: true, filter: {
+      {label: t('DCCID', {ns: 'schedule_module'}), show: true, filter: {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'schedule_module'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'schedule_module'}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'schedule_module'}), show: true, filter: {
         name: 'VisitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: 'Project', show: true, filter: {
+      {label: t('Project', {ns: 'schedule_module'}), show: true, filter: {
         name: 'Project',
         type: 'multiselect',
         options: options.project,
       }},
-      {label: 'Subproject', show: true, filter: {
+      {label: t('Subproject', {ns: 'schedule_module'}), show: true, filter: {
         name: 'Subproject',
         type: 'multiselect',
         options: options.subproject,
       }},
-      {label: 'Appointment Type', show: true, filter: {
+      {label: t('Appointment Type', {ns: 'schedule_module'}), show: true, filter: {
         name: 'Appointment Type',
         type: 'select',
         options: options.AppointmentType,
       }},
-      {label: 'Date', show: false, filter: {
+      {label: t('Date', {ns: 'schedule_module'}), show: false, filter: {
         name: 'Date',
         type: 'date',
       }},
-      {label: 'Time', show: false, filter: {
+      {label: t('Time', {ns: 'schedule_module'}), show: false, filter: {
         name: 'Time',
         type: 'time',
       }},
-      {label: 'Starts At', show: true},
-      {label: 'Edit', show: true,
-       name: 'edit',
-      },
-      {label: 'Delete', show: true, name: 'delete',
-      },
-      {label: 'AppointmentTypeName', show: false,
-        name: 'AppointmentTypeName',
-      },
+      {label: t('Starts At', {ns: 'schedule_module'}), show: true},
+      {label: t('Edit', {ns: 'schedule_module'}), show: true, name: 'edit'},
+      {label: t('Delete', {ns: 'schedule_module'}), show: true, name: 'delete'},
+      {label: t('AppointmentTypeName', {ns: 'schedule_module'}), show: false, name: 'AppointmentTypeName'},
     ];
     const actions = [
-      {name: 'addSchedule', label: 'Add Appointment', action: this.openModal},
+      {name: 'addSchedule', label: t('Add Appointment', {ns: 'schedule_module'}), action: this.openModal},
     ];
     let tabList = [
-      {
-        id: 'all',
-        label: 'All',
-      },
-      {
-        id: 'past',
-        label: 'Past',
-      },
-      {
-        id: 'next',
-        label: 'Next 30 Days',
-      },
-      {
-        id: 'today',
-        label: 'Today',
-      },
+      {id: 'all', label: t('All', {ns: 'schedule_module'})},
+      {id: 'past', label: t('Past', {ns: 'schedule_module'})},
+      {id: 'next', label: t('Next 30 Days', {ns: 'schedule_module'})},
+      {id: 'today', label: t('Today', {ns: 'schedule_module'})},
     ];
 
     return (
-    <div>
-      {this.renderScheduleForm()}
-      <div className="panel-body">
-      <Tabs tabs={tabList} defaultTab="all">
-        <TabPane TabId={tabList[0].id}>
-          <FilterableDataTable
-            name="schedule_module"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-            filters={this.state.filters}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <FilterableDataTable
-            name="schedule_module"
-            data={this.state.tabledatapast}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-            filters={this.state.filters}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[2].id}>
-          <FilterableDataTable
-            name="schedule_module"
-            data={this.state.tabledatanext}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-            filters={this.state.filters}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[3].id}>
-          <FilterableDataTable
-            name="schedule_module"
-            data={this.state.tabledatatoday}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            actions={actions}
-            filters={this.state.filters}
-          />
-        </TabPane>
-      </Tabs>	    
-       </div>
-    </div>
+      <div>
+        {this.renderScheduleForm()}
+        <div className="panel-body">
+          <Tabs tabs={tabList} defaultTab="all">
+            <TabPane TabId={tabList[0].id}>
+              <FilterableDataTable
+                name="schedule_module"
+                data={this.state.data.Data}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filters={this.state.filters}
+              />
+            </TabPane>
+            <TabPane TabId={tabList[1].id}>
+              <FilterableDataTable
+                name="schedule_module"
+                data={this.state.tabledatapast}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filters={this.state.filters}
+              />
+            </TabPane>
+            <TabPane TabId={tabList[2].id}>
+              <FilterableDataTable
+                name="schedule_module"
+                data={this.state.tabledatanext}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filters={this.state.filters}
+              />
+            </TabPane>
+            <TabPane TabId={tabList[3].id}>
+              <FilterableDataTable
+                name="schedule_module"
+                data={this.state.tabledatatoday}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filters={this.state.filters}
+              />
+            </TabPane>
+          </Tabs>	    
+        </div>
+      </div>
     );
   }
 }
 
 ScheduleIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <ScheduleIndex
+  i18n.addResourceBundle('hi', 'schedule_module', hiStrings);
+  const Index = withTranslation(
+    ['schedule_module', 'loris']
+  )(ScheduleIndex);
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
+    <Index
       dataURL={`${loris.BaseURL}/schedule_module/?format=json`}
       formURL={`${loris.BaseURL}/schedule_module/appointment`}
       BaseURL={loris.BaseURL}
       submitURL={`${loris.BaseURL}/schedule_module/appointment`}
       hasEditPermission={loris.userHasPermission('schedule_module')}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
-/* eslint-enable */
+
