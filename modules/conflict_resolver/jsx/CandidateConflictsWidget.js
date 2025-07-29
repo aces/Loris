@@ -2,6 +2,10 @@ import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -11,6 +15,7 @@ import PropTypes from 'prop-types';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
+  const { t } = props;
   const visits = getVisits(props.Conflicts);
   const instruments = getInstruments(props.Conflicts);
 
@@ -34,14 +39,14 @@ function CandidateConflictsWidget(props) {
           type: 'category',
           categories: visits,
           label: {
-            text: 'Visit',
+            text: t('Visit', {ns: 'conflict_resolver'}),
             position: 'outer-center',
           },
         },
         y: {
           label: {
             position: 'outer-middle',
-            text: 'Number of Conflicts',
+            text: t('Number of Conflicts', {ns: 'conflict_resolver'}),
           },
         },
       },
@@ -64,12 +69,10 @@ function CandidateConflictsWidget(props) {
     <div id='conflictschart' />
     <ul>
       <li>
-        {'Click on instrument in legend to visit conflict resolver '
-                + 'for that instrument across all visits.'}
+        {t('Click on instrument in legend to visit conflict resolver for that instrument across all visits.', {ns: 'conflict_resolver'})}
       </li>
       <li>
-        {'Click on bar in graph to visit conflict resolver '
-                + 'for that visit and instrument combination.'}
+        {t('Click on bar in graph to visit conflict resolver for that visit and instrument combination.', {ns: 'conflict_resolver'})}
       </li>
     </ul>
   </div>;
@@ -78,6 +81,7 @@ CandidateConflictsWidget.propTypes = {
   Conflicts: PropTypes.array,
   BaseURL: PropTypes.string,
   Candidate: PropTypes.object,
+  t: PropTypes.func,
 };
 
 /**
@@ -150,4 +154,4 @@ function getDataBreakdown(visits, instruments, conflicts) {
   return data;
 }
 
-export default CandidateConflictsWidget;
+export default withTranslation(['conflict_resolver', 'loris'])(CandidateConflictsWidget);
