@@ -5,6 +5,9 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SelectElement} from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * The fix FixConflictForm renders a <form> within a <td>. The form as a select
@@ -53,6 +56,7 @@ class FixConflictForm extends Component {
    * @param {string} value
    */
   resolveConflict(name, value) {
+    const { t } = this.props;
     fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {
       method: 'POST',
       credentials: 'same-origin',
@@ -71,7 +75,7 @@ class FixConflictForm extends Component {
         this.setState({success: true, error: null, emptyOption: false, value});
       })
       .catch((error) => {
-        swal('Error!', error, 'error');
+        swal(t('Error!', {ns: 'conflict_resolver'}), error, 'error');
         this.setState({error, success: false, emptyOption: true});
       });
   }
@@ -83,12 +87,11 @@ class FixConflictForm extends Component {
    */
   render() {
     const {value, success, error, emptyOption} = this.state;
-    const color = {
-      backgroundColor: success ? '#d1ffcf' : '',
-      transition: 'background-color 1s',
-    };
     return (
-      <td style={color}>
+      <td style={{
+        backgroundColor: success ? '#d1ffcf' : '',
+        transition: 'background-color 1s',
+      }}>
         <SelectElement
           name={this.props.conflictId}
           value={value}
@@ -106,6 +109,7 @@ class FixConflictForm extends Component {
 FixConflictForm.propTypes = {
   conflictId: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
+  t: PropTypes.func,
 };
 
-export default FixConflictForm;
+export default withTranslation(['conflict_resolver', 'loris'])(FixConflictForm);
