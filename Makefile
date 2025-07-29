@@ -104,6 +104,8 @@ locales:
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
+	msgfmt -o modules/media/locale/hi/LC_MESSAGES/media.mo modules/media/locale/hi/LC_MESSAGES/media.po
+	npx i18next-conv -l hi -s modules/media/locale/hi/LC_MESSAGES/media.po -t modules/media/locale/hi/LC_MESSAGES/media.json
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/next_stage/locale/ja/LC_MESSAGES/next_stage.mo modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po
