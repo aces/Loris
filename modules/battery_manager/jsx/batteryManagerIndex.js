@@ -530,8 +530,7 @@ class BatteryManagerIndex extends Component {
           swal.fire({
             title: t('Test Duplicate', {ns: 'battery_manager'}),
             text: t(
-              'The information provided corresponds with a deactivated test that already exists in the system. ' +
-              'Would you to like activate that test?',
+              'The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?',
               {ns: 'battery_manager'}
             ) + ' ' + edit,
             type: 'warning',
