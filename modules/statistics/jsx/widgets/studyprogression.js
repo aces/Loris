@@ -88,7 +88,6 @@ const StudyProgression = (props) => {
         views={[
           {
             content:
-              // ############ CBIGR OVERRIDE START ############
               <div
                 style={{
                   maxHeight: '400px',

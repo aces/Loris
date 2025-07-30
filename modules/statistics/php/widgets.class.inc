@@ -177,6 +177,25 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     );
             }
         }
+        // Sort each project's progression data by the most common titles first
+        $statisticCounts = [];
+        foreach ($studyProgressionProjects as $projectData) {
+            foreach ($projectData as $data) {
+                if (isset($statisticCounts[$data['title']])) {
+                    $statisticCounts[$data['title']]++;
+                } else {
+                    $statisticCounts[$data['title']] = 1;
+                }
+            }
+        }
+        foreach ($studyProgressionProjects as &$projectData) {
+            usort($projectData, function ($a, $b) use ($statisticCounts) {
+                return ($statisticCounts[$b['title']] ?? 0)
+                    - ($statisticCounts[$a['title']] ?? 0);
+            });
+        }
+        unset($projectData);
+
         $siteOptions = [];
         foreach ($centerIDs as $center) {
             if (array_key_exists($center->__toString(), $sites)) {
