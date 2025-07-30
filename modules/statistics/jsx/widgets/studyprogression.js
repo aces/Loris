@@ -7,6 +7,7 @@ import {setupCharts} from './helpers/chartBuilder';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
+ *
  * @param {object} props
  * @return {JSX.Element}
  */
