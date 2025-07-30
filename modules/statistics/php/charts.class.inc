@@ -186,7 +186,7 @@ class Charts extends \NDB_Page
         foreach ($data as $row) {
             $siteid = $row['SiteID'];
             $count  = intval($row['Count']);
-            $sex = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
+            $sex    = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
             if (!isset($processed_data[$siteid])) {
                 $processed_data[$siteid] = [
                     strtolower($sex) => $count
