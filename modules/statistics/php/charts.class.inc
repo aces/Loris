@@ -755,17 +755,17 @@ class Charts extends \NDB_Page
             }
         }
 
-        if (($queryParams['dateRegisteredStart'] ?? "undefined") != 'undefined') {
+        if (($queryParams['dateParticipantRegisteredStart'] ?? "undefined") != 'undefined') {
             $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateStart' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered >= :$paramName";
-            $params[$paramName] = $queryParams['dateRegisteredStart'];
+            $params[$paramName] = $queryParams['dateParticipantRegisteredStart'];
         }
-        if (($queryParams['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
+        if (($queryParams['dateParticipantRegisteredEnd'] ?? "undefined") != 'undefined') {
             $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateEnd' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered <= :$paramName";
-            $params[$paramName] = $queryParams['dateRegisteredEnd'];
+            $params[$paramName] = $queryParams['dateParticipantRegisteredEnd'];
         }
 
         return [

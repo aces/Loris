@@ -130,7 +130,7 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
     axis: {
       x: {
         type: 'category',
-        categories: labels, 
+        categories: labels,
       },
       y: {
         label: {
@@ -226,10 +226,10 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
-          
+
           // Calculate percentage based on grand total of entire dataset
           let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
-          
+
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
@@ -315,7 +315,7 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
           if (chart.chartType === 'pie') {
             chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
           } else if (chart.chartType === 'bar') {
-            chartObject = createBarChart(t, labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
+            chartObject = createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
             chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
           }

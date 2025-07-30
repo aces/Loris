@@ -51,8 +51,26 @@ const QueryChartForm = (props) => {
       // Handle clear selection
       if (normalizedValue.includes('__clear__')) {
         normalizedValue = undefined;
+      } else if (normalizedValue.length > 0) {
+        normalizedValue = '('
+          + normalizedValue.map((val) => `'${val}'`).join(',') + ')';
       }
     }
+
+    setFormDataObj((prevState) => {
+      const newFormData = {
+        ...prevState,
+        [formElement]: normalizedValue,
+      };
+      if (
+        (normalizedValue !== undefined
+        || prevState[formElement] !== undefined)
+        && !(formElement.includes('date') && value < '1900-01-01')
+      ) {
+        props.callback(newFormData);
+      }
+      return newFormData;
+    });
 
     const newFormData = {
       ...formDataObj,
@@ -206,8 +224,8 @@ const QueryChartForm = (props) => {
             display: 'block'}}>
             {t('Date Registered', {ns: 'statistics'})}</label>
           <DateElement
-            name='dateRegisteredStart'
-            value={formDataObj['dateRegisteredStart'] || ''}
+            name='dateParticipantRegisteredStart'
+            value={formDataObj['dateParticipantRegisteredStart'] || ''}
             onUserInput ={(name, value) => {
               setFormData(name, value);
             }}
@@ -217,8 +235,8 @@ const QueryChartForm = (props) => {
             label={t('Range Start', {ns: 'statistics'})}
           />
           <DateElement
-            name='dateRegisteredEnd'
-            value={formDataObj['dateRegisteredEnd'] || ''}
+            name='dateParticipantRegisteredEnd'
+            value={formDataObj['dateParticipantRegisteredEnd'] || ''}
             onUserInput={(name, value) => {
               setFormData(name, value);
             }}
