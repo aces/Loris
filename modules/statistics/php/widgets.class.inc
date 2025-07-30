@@ -189,10 +189,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
         foreach ($studyProgressionProjects as &$projectData) {
-            usort($projectData, function ($a, $b) use ($statisticCounts) {
-                return ($statisticCounts[$b['title']] ?? 0)
-                    - ($statisticCounts[$a['title']] ?? 0);
-            });
+            usort(
+                $projectData,
+                function ($a, $b) use ($statisticCounts) {
+                    return ($statisticCounts[$b['title']] ?? 0)
+                        - ($statisticCounts[$a['title']] ?? 0);
+                }
+            );
         }
         unset($projectData);
 
