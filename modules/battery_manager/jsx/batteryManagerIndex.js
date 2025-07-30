@@ -161,7 +161,7 @@ class BatteryManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
     const testId = row['ID'];
@@ -177,24 +177,42 @@ class BatteryManagerIndex extends Component {
       break;
     case t('Change Status', {ns: 'battery_manager'}):
       if (row.Active === 'Y') {
-        result = <td><CTA label={t('Deactivate', {ns: 'battery_manager'})} onUserInput={() => {
-          this.deactivateTest(testId);
-        }}/></td>;
+        result = (
+          <td>
+            <CTA
+              label={t('Deactivate', {ns: 'battery_manager'})}
+              onUserInput={() => {
+                this.deactivateTest(testId);
+              }}
+            />
+          </td>
+        );
       } else if (row.Active === 'N') {
-        result = <td><CTA label={t('Activate', {ns: 'battery_manager'})} onUserInput={() => {
-          this.activateTest(testId);
-        }}/></td>;
+        result = (
+          <td>
+            <CTA
+              label={t('Activate', {ns: 'battery_manager'})}
+              onUserInput={() => {
+                this.activateTest(testId);
+              }}
+            />
+          </td>
+        );
       }
       break;
     case t('Edit Metadata', {ns: 'battery_manager'}):
-      const editButton = <CTA label={t('Edit', {ns: 'battery_manager'})} onUserInput={() => {
-        this.loadTest(testId);
-        this.setState({edit: true});
-      }}/>;
+      const editButton = (
+        <CTA
+          label={t('Edit', {ns: 'battery_manager'})}
+          onUserInput={() => {
+            this.loadTest(testId);
+            this.setState({edit: true});
+          }}
+        />
+      );
       result = <td>{editButton}</td>;
       break;
     }
-
     return result;
   }
 
@@ -289,12 +307,17 @@ class BatteryManagerIndex extends Component {
    * @return {*}
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'battery_manager'})}</h3>;
+      return (
+        <h3>
+          {t('An error occured while loading the page.',
+            {ns: 'battery_manager'})}
+        </h3>
+      );
     }
     // Waiting for async data to load
     if (!this.state.isLoaded) {
@@ -309,60 +332,110 @@ class BatteryManagerIndex extends Component {
 
     const fields = [
       {label: 'ID', show: false},
-      {label: t('Instrument', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'testName',
-        type: 'select',
-        options: options.instruments,
-      }},
-      {label: t('Minimum Age', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'minimumAge',
-        type: 'numeric',
-      }},
-      {label: t('Maximum Age', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'maximumAge',
-        type: 'numeric',
-      }},
-      {label: t('Stage', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'stage',
-        type: 'select',
-        options: options.stages,
-      }},
-      {label: t('Cohort', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'cohort',
-        type: 'select',
-        options: options.cohorts,
-      }},
-      {label: t('Visit Label', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'visitLabel',
-        type: 'select',
-        options: options.visits,
-      }},
-      {label: t('Site', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'site',
-        type: 'select',
-        options: options.sites,
-      }},
-      {label: t('First Visit', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'firstVisit',
-        type: 'select',
-        options: options.firstVisit,
-      }},
-      {label: t('Instrument Order', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'instrumentOrder',
-        type: 'text',
-      }},
-      {label: t('Double Data Entry Enabled', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'DoubleDataEntryEnabled',
-        type: 'select',
-        options: options.DoubleDataEntryEnabled,
-      }},
-      {label: t('Active', {ns: 'battery_manager'}), show: true, filter: {
-        name: 'active',
-        type: 'select',
-        options: options.active,
-      }},
-      {label: t('Change Status', {ns: 'battery_manager'}), show: hasPermission('battery_manager_edit')},
-      {label: t('Edit Metadata', {ns: 'battery_manager'}), show: hasPermission('battery_manager_edit')},
+      {
+        label: t('Instrument', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'testName',
+          type: 'select',
+          options: options.instruments,
+        },
+      },
+      {
+        label: t('Minimum Age', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'minimumAge',
+          type: 'numeric',
+        },
+      },
+      {
+        label: t('Maximum Age', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'maximumAge',
+          type: 'numeric',
+        },
+      },
+      {
+        label: t('Stage', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'stage',
+          type: 'select',
+          options: options.stages,
+        },
+      },
+      {
+        label: t('Cohort', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'cohort',
+          type: 'select',
+          options: options.cohorts,
+        },
+      },
+      {
+        label: t('Visit Label', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'visitLabel',
+          type: 'select',
+          options: options.visits,
+        },
+      },
+      {
+        label: t('Site', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'site',
+          type: 'select',
+          options: options.sites,
+        },
+      },
+      {
+        label: t('First Visit', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'firstVisit',
+          type: 'select',
+          options: options.firstVisit,
+        },
+      },
+      {
+        label: t('Instrument Order', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'instrumentOrder',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Double Data Entry Enabled', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'DoubleDataEntryEnabled',
+          type: 'select',
+          options: options.DoubleDataEntryEnabled,
+        },
+      },
+      {
+        label: t('Active', {ns: 'battery_manager'}),
+        show: true,
+        filter: {
+          name: 'active',
+          type: 'select',
+          options: options.active,
+        },
+      },
+      {
+        label: t('Change Status', {ns: 'battery_manager'}),
+        show: hasPermission('battery_manager_edit'),
+      },
+      {
+        label: t('Edit Metadata', {ns: 'battery_manager'}),
+        show: hasPermission('battery_manager_edit'),
+      },
     ];
 
     const actions = [
@@ -390,7 +463,9 @@ class BatteryManagerIndex extends Component {
       ];
     });
 
-    const modalTitle = edit ? t('Edit Test', {ns: 'battery_manager'}) : t('Add New Test', {ns: 'battery_manager'});
+    const modalTitle = edit
+      ? t('Edit Test', {ns: 'battery_manager'})
+      : t('Add New Test', {ns: 'battery_manager'});
     const request = edit ? 'PUT' : 'POST';
     const handleSubmit = () => this.saveTest(test, request);
 
@@ -448,14 +523,20 @@ class BatteryManagerIndex extends Component {
         }
       });
 
-      const { t } = this.props;
+      const {t} = this.props;
 
       if (duplicate && duplicate.id !== test.id) {
         if (duplicate.active === 'N') {
-          const edit = test.id ? t('This will deactivate the current test.', {ns: 'battery_manager'}) : '';
+          const edit = test.id
+            ? t('This will deactivate the current test.',
+              {ns: 'battery_manager'})
+            : '';
           swal.fire({
             title: t('Test Duplicate', {ns: 'battery_manager'}),
-            text: t('The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?', {ns: 'battery_manager'}) + ' ' + edit,
+            text: t(
+              'The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?',
+              {ns: 'battery_manager'}
+            ) + ' ' + edit,
             type: 'warning',
             confirmButtonText: t('Activate', {ns: 'battery_manager'}),
             showCancelButton: true,
@@ -471,7 +552,8 @@ class BatteryManagerIndex extends Component {
         } else if (duplicate.active === 'Y') {
           swal.fire(
             t('Test Duplicate', {ns: 'battery_manager'}),
-            t('You cannot duplicate an active test', {ns: 'battery_manager'}),
+            t('You cannot duplicate an active test',
+              {ns: 'battery_manager'}),
             'error'
           );
         }
@@ -491,27 +573,39 @@ class BatteryManagerIndex extends Component {
    */
   validateTest(test) {
     return new Promise((resolve, reject) => {
-      const { t } = this.props;
+      const {t} = this.props;
       const errors = {};
       if (test.testName == null) {
-        errors.testName = t('This field is required', {ns: 'battery_manager'});
+        errors.testName = t('This field is required',
+          {ns: 'battery_manager'});
       }
       if (test.ageMinDays == null) {
-        errors.ageMinDays = t('This field is required', {ns: 'battery_manager'});
+        errors.ageMinDays = t('This field is required',
+          {ns: 'battery_manager'});
       } else if (test.ageMinDays < 0) {
-        errors.ageMinDays = t('This field must be 0 or greater', {ns: 'battery_manager'});
+        errors.ageMinDays = t('This field must be 0 or greater',
+          {ns: 'battery_manager'});
       }
       if (test.ageMaxDays == null) {
-        errors.ageMaxDays = t('This field is required', {ns: 'battery_manager'});
+        errors.ageMaxDays = t('This field is required',
+          {ns: 'battery_manager'});
       } else if (test.ageMaxDays < 0) {
-        errors.ageMaxDays = t('This field must be 0 or greater', {ns: 'battery_manager'});
+        errors.ageMaxDays = t('This field must be 0 or greater',
+          {ns: 'battery_manager'});
       }
       if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
-        errors.ageMinDays = t('Minimum age must be lesser than maximum age.', {ns: 'battery_manager'});
-        errors.ageMaxDays = t('Maximum age must be greater than minimum age.', {ns: 'battery_manager'});
+        errors.ageMinDays = t(
+          'Minimum age must be lesser than maximum age.',
+          {ns: 'battery_manager'}
+        );
+        errors.ageMaxDays = t(
+          'Maximum age must be greater than minimum age.',
+          {ns: 'battery_manager'}
+        );
       }
       if (test.stage == null) {
-        errors.stage = t('This field is required', {ns: 'battery_manager'});
+        errors.stage = t('This field is required',
+          {ns: 'battery_manager'});
       }
 
       if (Object.entries(errors).length === 0) {
