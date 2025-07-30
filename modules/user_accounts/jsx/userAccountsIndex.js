@@ -70,7 +70,7 @@ class UserAccountsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
@@ -83,7 +83,8 @@ class UserAccountsIndex extends Component {
       );
       if (cell.length === 0) {
         result = (
-          <td>{t('This user has no site affiliations', {ns: 'user_accounts'})}</td>
+          <td>{t('This user has no site affiliations',
+             {ns: 'user_accounts'})}</td>
         );
       }
       break;
@@ -96,7 +97,8 @@ class UserAccountsIndex extends Component {
       );
       if (cell.length === 0) {
         result = (
-          <td>{t('This user has no project affiliations', {ns: 'user_accounts'})}</td>
+          <td>{t('This user has no project affiliations',
+             {ns: 'user_accounts'})}</td>
         );
       }
       break;
@@ -135,11 +137,12 @@ class UserAccountsIndex extends Component {
    * @return {object}
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'user_accounts'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+         {ns: 'user_accounts'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -180,12 +183,14 @@ class UserAccountsIndex extends Component {
         type: 'select',
         options: options.actives,
       }},
-      {label: t('Pending Approval', {ns: 'user_accounts'}), show: true, filter: {
+      {label: t('Pending Approval', {ns: 'user_accounts'}),
+       show: true, filter: {
         name: 'pendingApproval',
         type: 'select',
         options: options.pendingApprovals,
       }},
-      {label: t('Account Request Date', {ns: 'user_accounts'}), show: true, filter: {
+      {label: t('Account Request Date', {ns: 'user_accounts'}),
+       show: true, filter: {
         name: 'accountRequestDate',
         type: 'date',
         hide: true,
