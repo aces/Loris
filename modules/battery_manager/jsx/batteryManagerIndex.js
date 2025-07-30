@@ -126,7 +126,7 @@ class BatteryManagerIndex extends Component {
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, value) {
-    const { t } = this.props;
+    const {t} = this.props;
     switch (column) {
     case t('First Visit', {ns: 'battery_manager'}):
       switch (value) {
@@ -530,7 +530,9 @@ class BatteryManagerIndex extends Component {
           swal.fire({
             title: t('Test Duplicate', {ns: 'battery_manager'}),
             text: t(
-              'The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?',
+              'The information provided corresponds with a deactivated test \\
+              that already exists in the system. \\
+              Would you to like activate that test?',
               {ns: 'battery_manager'}
             ) + ' ' + edit,
             type: 'warning',
