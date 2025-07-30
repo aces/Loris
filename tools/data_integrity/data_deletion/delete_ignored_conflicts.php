@@ -31,19 +31,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-set_include_path(
-    get_include_path().":".
-    __DIR__."../../../project/libraries:" .
-    __DIR__."../../../php/libraries:"
-);
-
 require_once __DIR__ . "/../../../vendor/autoload.php";
 require_once __DIR__ . "/../../generic_includes.php";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
-
-$config =& NDB_Config::singleton();
 
 // Meta fields that should be removed
 $defaultFields = [
@@ -69,7 +58,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
     $instrumentSpecified = true;
 } else {
     $instruments = array_keys(
-        \NDB_BVL_Instrument::getDDEInstrumentNamesList($loris)
+        \NDB_BVL_Instrument::getDDEInstrumentNamesList($lorisInstance)
     );
 }
 

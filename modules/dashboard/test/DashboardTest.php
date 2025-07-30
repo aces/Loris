@@ -93,6 +93,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
@@ -106,7 +107,7 @@ class DashboardTest extends LorisIntegrationTest
             "session",
             [
                 'ID'          => '222222',
-                'CandID'      => '999888',
+                'CandidateID' => 1,
                 'CenterID'    => '55',
                 'ProjectID'   => '7777',
                 'UserID'      => '1',
@@ -483,7 +484,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     *  Check user has 'issue_tracker_developer' permission,
+     *  Check user has 'issue_tracker_all_issue' permission,
      *  user can see the issue panel.
      *  Click the issue link can access issue module.
      *
@@ -492,7 +493,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testIssues()
     {
         $this->setupPermissions(
-            ["issue_tracker_developer"]
+            ["issue_tracker_all_issue"]
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -625,8 +626,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * Make sure there is no recruitment target set in the configuration
-     * module. Check that an incentive to define a recruitment target is
-     * displayed in recruitment panel.
+     * module, and then confirm that the overall recruitment is still shown.
      *
      * @return void
      */
@@ -638,7 +638,7 @@ class DashboardTest extends LorisIntegrationTest
             WebDriverBy::Id("overall-recruitment")
         )->getText();
         $this->assertStringContainsString(
-            "Please add a recruitment target for Overall Recruitment.",
+            "Overall Recruitment",
             $testText
         );
         $this->restoreConfigSetting("recruitmentTarget");

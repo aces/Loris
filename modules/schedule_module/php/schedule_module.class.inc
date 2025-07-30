@@ -96,7 +96,7 @@ class Schedule_Module extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ScheduleModuleProvisioner();
+        return new ScheduleModuleProvisioner($this->loris);
     }
 
     /**

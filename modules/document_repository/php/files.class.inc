@@ -123,8 +123,8 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hidden_file'   => !empty($req['hiddenFile']) ?
-                $req['hiddenFile'] : null,
+            'hidden_video'  => !empty($req['hiddenVideo']) ?
+                $req['hiddenVideo'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
             'version'       => $req['version'] ?? null,
@@ -243,7 +243,7 @@ class Files extends \NDB_Page
                 "visitLabel, " .
                 "Instrument as instrument, " .
                 "comments, " .
-                "hidden_file as hiddenFile," .
+                "hide_video as hiddenVideo," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -256,7 +256,7 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenFile'  => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo' => ['yes' => "Yes", 'no' => "No"],
         ];
 
         return $result;
@@ -313,7 +313,7 @@ class Files extends \NDB_Page
 
         if (! $user->hasPermission('document_repository_upload_edit')) {
             header("HTTP/1.1 403 Forbidden");
-            exit;
+            exit(0);
         }
 
         // Do some validation and fail early on bad inputs.
@@ -325,7 +325,7 @@ class Files extends \NDB_Page
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
-            exit;
+            exit(0);
         }
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger(strval($category))) {
@@ -397,7 +397,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
-            $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : null;
+            $hidden     = !empty($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -410,7 +410,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
-                    'hidden_file'   => $hidden,
+                    'hide_video'    => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",

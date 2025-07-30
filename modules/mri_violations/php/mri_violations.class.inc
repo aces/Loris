@@ -86,20 +86,20 @@ class Mri_Violations extends \DataFrameworkMenu
         $protocols = $db->pselect(
             "SELECT p.ID, mpg.Name as 'Protocol Group',
                     site.Name as Center_name, ScannerID,
-                    s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-                    TI_max, slice_thickness_min, slice_thickness_max,
-                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-                    zstep_min, zstep_max, time_min, time_max,
+                    mst.MriScanTypeName as scan_type_name, TR_min, TR_max, TE_min,
+                    TE_max, TI_min, TI_max, slice_thickness_min,
+                    slice_thickness_max, xspace_min, xspace_max, yspace_min,
+                    yspace_max, zspace_min, zspace_max, xstep_min, xstep_max,
+                    ystep_min, ystep_max, zstep_min, zstep_max, time_min, time_max,
                     series_description_regex,
                     image_type, PhaseEncodingDirection, EchoNumber
              FROM mri_protocol as p
              LEFT JOIN mri_protocol_group mpg
                  ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
-             LEFT JOIN mri_scan_type as s
-                 ON p.Scan_type=s.ID
+             LEFT JOIN mri_scan_type as mst
+                 ON p.MriScanTypeID=mst.MriScanTypeID
              LEFT JOIN psc site ON (p.CenterID=site.CenterID)
-             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+             ORDER BY mpg.MriProtocolGroupID ASC, p.MriScanTypeID ASC",
             []
         );
         return [
@@ -138,16 +138,24 @@ class Mri_Violations extends \DataFrameworkMenu
     {
         switch ($this->violationType) {
         case 'protocolviolation':
-            return (new ProtocolViolationProvisioner($this->seriesUID));
+            return (new ProtocolViolationProvisioner(
+                $this->loris,
+                $this->seriesUID
+            )
+        );
         case 'protocolcheck':
-            return (new ProtocolCheckViolationProvisioner($this->seriesUID))
+            return (new ProtocolCheckViolationProvisioner(
+                $this->loris,
+                $this->seriesUID
+            )
+        )
             ->filter(
                 new UserCenterMatchOrNullOrAnyPermission(
                     $this->allSitePermissionNames(),
                 )
             );
         default:
-            return (new Provisioner())
+            return (new Provisioner($this->loris))
                 ->filter(
                     new UserCenterMatchOrNullOrAnyPermission(
                         $this->allSitePermissionNames(),

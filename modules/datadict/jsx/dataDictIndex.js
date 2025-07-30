@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -199,6 +203,15 @@ class DataDictIndex extends Component {
           },
         },
       },
+      {
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohort,
+        },
+      },
     ];
     return (
       <FilterableDataTable
@@ -218,10 +231,14 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'datadict', {});
+  const Index = withTranslation(
+    ['datadict', 'loris']
+  )(DataDictIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataDictIndex
+    <Index
       dataURL={`${loris.BaseURL}/datadict/?format=binary`}
       fieldsURL={`${loris.BaseURL}/datadict/fields`}
     />

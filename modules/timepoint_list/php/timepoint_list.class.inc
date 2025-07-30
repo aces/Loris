@@ -127,7 +127,8 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_filter(
             $listOfTimePoints,
             function ($timePoint) use ($user) {
-                return $timePoint->isAccessibleBy($user);
+                return $timePoint->isAccessibleBy($user)
+                    || $user->hasPermission('access_all_profiles');
             }
         );
 
@@ -291,11 +292,12 @@ class Timepoint_List extends \NDB_Menu
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             )
         );

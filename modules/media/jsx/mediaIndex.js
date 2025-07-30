@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -113,7 +116,11 @@ class MediaIndex extends Component {
                             + encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>
-            <a href={downloadURL} target="_blank" download={row['File Name']}>
+            <a
+              href={downloadURL}
+              target="_blank"
+              download={encodeURIComponent(row['File Name'])}
+            >
               {cell}
             </a>
           </td>
@@ -283,10 +290,14 @@ MediaIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'media', {});
+  const Index = withTranslation(
+    ['media', 'loris']
+  )(MediaIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <MediaIndex
+    <Index
       dataURL={`${loris.BaseURL}/media/?format=json`}
       hasPermission={loris.userHasPermission}
     />

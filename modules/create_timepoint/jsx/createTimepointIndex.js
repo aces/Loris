@@ -134,6 +134,9 @@ class CreateTimepoint extends React.Component {
           if (data.psc) {
             state.form.options.psc = data.psc;
             state.form.display.psc = true;
+            if (data.defaultpsc) {
+              state.form.value.psc = data.defaultpsc;
+            }
           }
           // Populate the select options for project.
           if (data.project) {

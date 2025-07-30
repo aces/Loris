@@ -120,20 +120,20 @@
                        <!-- toggle feedback in mobile view -->
 
 
-                        <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
+                        <a class="navbar-brand" href="{$baseurl}/">{dgettext("loris", "LORIS")}{if $sandbox}: {dgettext("loris", "DEV")}{/if}</a>
                    </div>
                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
                         <ul class="nav navbar-nav">
-                            {foreach from=$menus item=menuitems key=category}
+		            {section name=category loop=$menus}
                                  <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$category}<b class="caret"></b>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$menus[category].Category}<b class="caret"></b>
                                         <ul class="dropdown-menu">
-                                            {section name=itemloop loop=$menuitems}
-                                            <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                            {section name=item loop=$menus[category].Items}
+                                            <li><a href="{$menus[category].Items[item]->link}">{$menus[category].Items[item]->label}</a></li>
                                             {/section}
                                         </ul>
                                     </a>
-                            {/foreach}
+                            {/section}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
                             {if $bvl_feedback|default}
@@ -145,13 +145,33 @@
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
-                            <li class="nav">
-                                <a href="#" class="css-tooltip">
-                                    Site Affiliations: {$userNumSites}
-                                    <span class="tooltip-text">{$user.SitesTooltip}</span>
+
+                            <!-- Affiliations Dropdown Menu -->
+                            <li class="nav dropdown nav-affiliations">
+                                <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    {dgettext("loris", "Affiliations")}
+                                    <span class="caret"></span>
                                 </a>
+                                <ul class="dropdown-menu affiliations-dropdown">
+                                    <li class="dropdown-header">{dngettext("loris", "Site Affiliation", "Site Affiliations", $userNumSites)}: {$userNumSites}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.SitesTooltip}</span>
+                                        </a>
+                                    </li>
+
+                                    <li role="separator" class="divider"></li>
+
+                                    <li class="dropdown-header">{dngettext("loris", "Project Affiliation", "Project Affiliations", $userNumProjects)}: {$userNumProjects}</li>
+                                    <li>
+                                        <a href="#">
+                                            <span class="tooltip-text">{$user.ProjectsTooltip}</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
+                            <!-- User Dropdown Menu -->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                     {$user.Real_name|escape} <b class="caret"></b>
@@ -160,13 +180,13 @@
                                     {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
-                                            My Preferences
+                                            {dgettext("loris", "My Preferences")}
                                         </a>
                                     </li>
                                     {/if}
                                     <li>
                                         <a href="{$baseurl}/?logout=true">
-                                            Log Out
+                                            {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>
                                 </ul>

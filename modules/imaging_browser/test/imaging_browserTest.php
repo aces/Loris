@@ -86,6 +86,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '000001',
                 'PSCID'                 => 'DCC0001',
                 'RegistrationCenterID'  => 1,
@@ -98,6 +99,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 2,
                 'CandID'                => '000002',
                 'PSCID'                 => 'AOL0002',
                 'RegistrationCenterID'  => 253,
@@ -110,6 +112,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 3,
                 'CandID'                => 000003,
                 'PSCID'                 => 'BOL0003',
                 'RegistrationCenterID'  => 254,
@@ -123,7 +126,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999997,
-                'CandID'        => 000001,
+                'CandidateID'   => 1,
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -137,7 +140,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999998,
-                'CandID'        => 000002,
+                'CandidateID'   => 2,
                 'Visit_label'   => 'Test1',
                 'CenterID'      => 253,
                 'ProjectID'     => 1,
@@ -151,7 +154,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => 999999,
-                'CandID'        => 000003,
+                'CandidateID'   => 3,
                 'Visit_label'   => 'Test2',
                 'CenterID'      => 254,
                 'ProjectID'     => 1,
@@ -244,25 +247,25 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'files',
             array(
-             'FileID'                => 1111,
-             'SessionID'             => 999998,
-             'File'                  => 'assembly/506145/V1/mri/native/' .
+             'FileID'            => 1111,
+             'SessionID'         => 999998,
+             'File'              => 'assembly/506145/V1/mri/native/' .
               'loris-MRI_506145_V1_t2_001.mnc',
-             'SeriesUID'             => '1.3.12.2.1107.5.2.32.35049.' .
+             'SeriesUID'         => '1.3.12.2.1107.5.2.32.35049.' .
                '2014021711090977356751313.0.0.0',
-             'EchoTime'              => 0.011,
-             'CoordinateSpace'       => 'native',
-             'OutputType'            => 'native',
-             'AcquisitionProtocolID' => 45,
-             'FileType'              => 'mnc',
-             'InsertedByUserID'      => 'lorisadmin',
-             'InsertTime'            => 1454951768,
-             'SourcePipeline'        => null,
-             'PipelineDate'          => null,
-             'SourceFileID'          => 1111,
-             'ProcessProtocolID'     => 1111,
-             'Caveat'                => 0,
-             'TarchiveSource'        => 263,
+             'EchoTime'          => 0.011,
+             'CoordinateSpace'   => 'native',
+             'OutputType'        => 'native',
+             'MriScanTypeID'     => 45,
+             'FileType'          => 'mnc',
+             'InsertedByUserID'  => 'lorisadmin',
+             'InsertTime'        => 1454951768,
+             'SourcePipeline'    => null,
+             'PipelineDate'      => null,
+             'SourceFileID'      => 1111,
+             'ProcessProtocolID' => 1111,
+             'Caveat'            => 0,
+             'TarchiveSource'    => 263,
             )
         );
         // @codingStandardsIgnoreEnd
@@ -271,25 +274,25 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'files',
             array(
-             'FileID'                => 2222,
-             'SessionID'             => 999999,
-             'File'                  => 'assembly/506145/V1/mri/native/' .
+             'FileID'            => 2222,
+             'SessionID'         => 999999,
+             'File'              => 'assembly/506145/V1/mri/native/' .
                'loris-MRI_506145_V1_t1_001.mnc',
-             'SeriesUID'             => '1.3.12.2.1107.5.2.32.35049.' .
+             'SeriesUID'         => '1.3.12.2.1107.5.2.32.35049.' .
                '2014021711090977356751313.0.0.0',
-             'EchoTime'              => 0.011,
-             'CoordinateSpace'       => 'native',
-             'OutputType'            => 'native',
-             'AcquisitionProtocolID' => 44,
-             'FileType'              => 'mnc',
-             'InsertedByUserID'      => 'lorisadmin',
-             'InsertTime'            => 1454951768,
-             'SourcePipeline'        => null,
-             'PipelineDate'          => null,
-             'SourceFileID'          => 2222,
-             'ProcessProtocolID'     => 2222,
-             'Caveat'                => 0,
-             'TarchiveSource'        => 264,
+             'EchoTime'          => 0.011,
+             'CoordinateSpace'   => 'native',
+             'OutputType'        => 'native',
+             'MriScanTypeID'     => 44,
+             'FileType'          => 'mnc',
+             'InsertedByUserID'  => 'lorisadmin',
+             'InsertTime'        => 1454951768,
+             'SourcePipeline'    => null,
+             'PipelineDate'      => null,
+             'SourceFileID'      => 2222,
+             'ProcessProtocolID' => 2222,
+             'Caveat'            => 0,
+             'TarchiveSource'    => 264,
             )
         );
         // @codingStandardsIgnoreStart

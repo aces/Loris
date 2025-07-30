@@ -41,11 +41,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Admin";
+        return \LORIS\GUI\MenuCategory::singleton("Admin");
     }
 
     /**
@@ -55,6 +55,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Survey Accounts";
+        return dgettext("survey_accounts", "Survey Accounts");
     }
 }

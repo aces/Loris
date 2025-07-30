@@ -106,7 +106,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo'    => ['yes' => "Yes", 'no' => "No"],
         ];
     }
     /**
@@ -182,7 +182,7 @@ class Document_Repository extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new DocRepoProvisioner();
+        return new DocRepoProvisioner($this->loris);
     }
     /**
      * Tells the base class that this page's provisioner can support the

@@ -151,7 +151,10 @@ class Candidate_List extends \DataFrameworkMenu
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Access Profile', "/$this->name")
+            new \LORIS\Breadcrumb(
+                dgettext("candidate_list", 'Access Profile'),
+                "/$this->name"
+            )
         );
     }
 
@@ -162,7 +165,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new CandidateListRowProvisioner();
+        return new CandidateListRowProvisioner($this->loris);
     }
 }
 

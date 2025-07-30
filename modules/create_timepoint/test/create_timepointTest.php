@@ -66,7 +66,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Timepoint", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -94,7 +94,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Timepoint", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText

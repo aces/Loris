@@ -85,11 +85,29 @@ class Edit_Help_Content extends \NDB_Form
             'title'      => null,
             'content'    => 'Under Construction',
             'section'    => isset($gets['section']) ?
-                htmlspecialchars($gets['section']) : null,
+                htmlspecialchars(
+                    $gets['section'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : null,
             'subsection' => isset($gets['subsection']) ?
-                htmlspecialchars($gets['subsection']) : null,
+                htmlspecialchars(
+                    $gets['subsection'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : null,
             'helpid'     => isset($gets['helpID']) ?
-                htmlspecialchars($gets['helpID']) : null,
+                htmlspecialchars(
+                    $gets['helpID'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : null,
         ];
 
         if (!empty($data['section'])) {

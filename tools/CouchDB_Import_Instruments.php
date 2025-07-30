@@ -141,9 +141,10 @@ class CouchDBInstrumentImporter
 
         $from = "FROM flag f
             JOIN session s ON(s.ID=f.SessionID)
-            JOIN candidate c ON(c.CandID=s.CandID)
+            JOIN candidate c ON(c.ID=s.CandidateID)
             LEFT JOIN flag ddef ON(ddef.CommentID=CONCAT('DDE_', f.CommentID))
-            LEFT JOIN test_names tn ON(f.TestID = tn.ID)";
+            LEFT JOIN test_names tn ON(f.TestID = tn.ID)
+            LEFT JOIN instrument_data d ON (d.ID = f.DataID) ";
 
         $where = "WHERE f.CommentID NOT LIKE 'DDE%'
             AND tn.Test_name=:inst AND s.Active='Y' AND c.Active='Y'";
@@ -151,7 +152,7 @@ class CouchDBInstrumentImporter
         if ($tablename === "") {
             // the data is in the flag table, add the data column to the query
             // and do not join the table.
-            $extraSelect = ", f.Data ";
+            $extraSelect = ", d.Data ";
 
             return $select . $extraSelect . $from . $where;
         }

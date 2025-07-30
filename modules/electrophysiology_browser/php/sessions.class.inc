@@ -158,7 +158,7 @@ class Sessions extends \NDB_Page
                 DISTINCT(pf.SessionID)
               FROM physiological_file pf
                 LEFT JOIN session s ON (s.ID=pf.SessionID)
-                LEFT JOIN candidate c USING (CandID)
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                 LEFT JOIN psc ON (s.CenterID=psc.CenterID)
                 LEFT JOIN physiological_output_type pot
                   USING (PhysiologicalOutputTypeID)
@@ -512,7 +512,7 @@ class Sessions extends \NDB_Page
             []
         );
 
-        $fileSummary['hedSchema'] = $hedSchema;
+        $fileSummary['hedSchema'] = iterator_to_array($hedSchema);
 
         return $fileSummary;
     }

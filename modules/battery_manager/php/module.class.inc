@@ -48,11 +48,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -62,6 +62,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Battery Manager";
+        return dgettext("battery_manager", "Battery Manager");
     }
 }

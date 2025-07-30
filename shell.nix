@@ -1,10 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  php = pkgs.php83.withExtensions ({ enabled, all }:
+  php = pkgs.php84.withExtensions ({ enabled, all }:
     enabled ++ [ all.ast ]);
 in
 pkgs.mkShell {
-  buildInputs = with pkgs; [ php git nodejs php83Packages.composer ];
+  buildInputs = with pkgs; [ php git nodejs php84Packages.composer gettext ];
   shellHook =
     ''
        php -v;

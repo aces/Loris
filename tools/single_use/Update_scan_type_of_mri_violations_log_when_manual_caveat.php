@@ -23,17 +23,17 @@ require_once __DIR__ . '/../generic_includes.php';
 // select all SeriesUID missing data from mri_violations_log
 $db = $lorisInstance->getDatabaseConnection();
 $seriesUIDs_list = selectManualCaveat($db);
-// loop through all SeriesUID to update the Scan_type field in
+// loop through all SeriesUID to update the MriScanTypeID field in
 // mri_violations_log
 foreach ($seriesUIDs_list as $seriesUID) {
     updateScanType($seriesUID['SeriesUID'], $db);
 }
 
 /**
- * Selects all SeriesUIDs for which Scan_type is set to NULL and Headers set
+ * Selects all SeriesUIDs for which MriScanTypeID is set to NULL and Headers set
  * to "Manual Caveat Set by%" in the mri_violations_log.
  *
- * @return array of seriesUID without Scan_type set in mri_violations_log
+ * @return array of seriesUID without MriScanTypeID set in mri_violations_log
  * @throws DatabaseException
  */
 function selectManualCaveat($db)
@@ -41,7 +41,7 @@ function selectManualCaveat($db)
     $query = "SELECT DISTINCT(SeriesUID) 
               FROM mri_violations_log 
               WHERE HEADER LIKE \"Manual Caveat Set by%\" 
-              AND Scan_type IS NULL";
+              AND MriScanTypeID IS NULL";
 
     $result = $db->pselect($query, []);
 
@@ -63,7 +63,7 @@ function updateScanType($seriesUID, $db)
 {
     // select scan type for the SeriesUID given as an argument
     $scan_type_list = $db->pselectCol(
-        "SELECT AcquisitionProtocolID FROM files WHERE SeriesUID=:seriesUID",
+        "SELECT MriScanTypeID FROM files WHERE SeriesUID=:seriesUID",
         ['seriesUID' => $seriesUID]
     );
 
@@ -73,7 +73,7 @@ function updateScanType($seriesUID, $db)
         print "Updating scan type to $scan_type for SeriesUID $seriesUID \n";
         $db->update(
             'mri_violations_log',
-            ['Scan_type'=>$scan_type],
+            ['MriScanTypeID'=>$scan_type],
             ['SeriesUID'=>$seriesUID]
         );
     } elseif (count($scan_type_list) == 0) {

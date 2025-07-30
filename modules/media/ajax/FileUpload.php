@@ -38,7 +38,7 @@ function editFile()
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Read JSON from STDIN
@@ -91,7 +91,7 @@ function uploadFile()
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Validate media path and destination folder
@@ -150,7 +150,7 @@ function uploadFile()
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
-        "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
+        "LEFT JOIN session s ON c.ID = s.CandidateID WHERE c.PSCID = :v_pscid AND " .
         "s.Visit_label = :v_visit_label",
         [
             'v_pscid'       => $pscid,
@@ -183,17 +183,23 @@ function uploadFile()
         'language_id'   => $language,
     ];
 
+    $projectID = $db->pselectOne(
+        "SELECT ProjectID FROM session WHERE ID=:sid",
+        ['sid' => $sessionID]
+    );
+
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
-            $uploadNotifier->notify(["file" => $fileName]);
+            $uploadNotifier->notify(["file" => $fileName, "project" => $projectID]);
             $qparam = ['ID' => $sessionID];
             $result = iterator_to_array(
                 $db->pselect(
-                    'SELECT ID, CandID, CenterID, ProjectID, Visit_label
-                            from session
-                        where ID=:ID',
+                    'SELECT s.ID, c.CandID, s.CenterID, s.ProjectID, s.Visit_label
+                            FROM session s
+                            JOIN candidate c ON c.ID=s.CandidateID
+                        WHERE s.ID=:ID',
                     $qparam
                 )
             )[0];
@@ -266,7 +272,7 @@ function getUploadFields()
     $sessionQuery = "SELECT
                       c.PSCID, s.Visit_label, s.CenterID, tn.Test_name, tn.Full_name
                      FROM candidate c
-                      LEFT JOIN session s USING (CandID)
+                      LEFT JOIN session s ON c.ID=s.CandidateID
                       LEFT JOIN flag f ON (s.ID=f.SessionID)
                       LEFT JOIN test_names tn ON (f.TestID=tn.ID)";
 
@@ -360,8 +366,8 @@ function getUploadFields()
             "file_name as fileName, " .
             "hide_file as hideFile, " .
             "language_id as language," .
-            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID 
-                LEFT JOIN candidate c ON (c.CandID=s.CandID) " .
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID) " .
             "WHERE m.id = :mediaId",
             ['mediaId' => $idMediaFile]
         );

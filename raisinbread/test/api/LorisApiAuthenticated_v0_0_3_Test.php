@@ -27,7 +27,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
     protected $base_uri;
     protected $originalJwtKey;
     protected $configIdJwt;
- 
+
     /**
      * Overrides LorisIntegrationTest::setUp() to store the current JWT key
      * and replaces it for an acceptable one.
@@ -80,6 +80,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -112,7 +113,7 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -254,8 +255,8 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
             ],
         );
 
-        $this->DB->delete("session", ['CandID' => '900000']);
-        $this->DB->delete("candidate", ['CandID' => '900000']);
+        $this->DB->delete("session", ['ID' => '999999']);
+        $this->DB->delete("candidate", ['ID' => 1]);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
 
