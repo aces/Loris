@@ -239,8 +239,8 @@ const QueryChartForm = (props) => {
             marginBottom: '5px',
             display: 'block'}}>Date Registered</label>
           <DateElement
-            name='dateParticipantRegisteredStart'
-            value={formDataObj['dateParticipantRegisteredStart'] || ''}
+            name='dateRegisteredStart'
+            value={formDataObj['dateRegisteredStart'] || ''}
             onUserInput ={(name, value) => {
               setFormData(name, value);
             }}
@@ -250,8 +250,8 @@ const QueryChartForm = (props) => {
             label={'Range Start'}
           />
           <DateElement
-            name='dateParticipantRegisteredEnd'
-            value={formDataObj['dateParticipantRegisteredEnd'] || ''}
+            name='dateRegisteredEnd'
+            value={formDataObj['dateRegisteredEnd'] || ''}
             onUserInput={(name, value) => {
               setFormData(name, value);
             }}

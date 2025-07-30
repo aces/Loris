@@ -595,11 +595,13 @@ class Charts extends \NDB_Page
             }
         }
 
-        if (($_GET['dateParticipantRegisteredStart'] ?? "undefined") != 'undefined') {
-            $projectQuery .= " AND c.Date_registered >= '{$_GET['dateParticipantRegisteredStart']}'";
+        if (($_GET['dateRegisteredStart'] ?? "undefined") != 'undefined') {
+            $projectQuery .= " AND c.Date_registered"
+                . " >= '{$_GET['dateRegisteredStart']}'";
         }
-        if (($_GET['dateParticipantRegisteredEnd'] ?? "undefined") != 'undefined') {
-            $projectQuery .= " AND c.Date_registered <= '{$_GET['dateParticipantRegisteredEnd']}'";
+        if (($_GET['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
+            $projectQuery .= " AND c.Date_registered"
+                ." <= '{$_GET['dateRegisteredEnd']}'";
         }
 
         return [
