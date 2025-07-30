@@ -75,7 +75,7 @@
             });
 
             headerPolicyRoot = ReactDOM.createRoot(
-                document.getElementById("headerPolicyButton")
+                document.getElementById("header-policy-button")
             );
             headerPolicyRoot.render(
                 React.createElement(PolicyButton, {
@@ -154,7 +154,7 @@
                             </li>
                             {/if}
                             {if $header_policy}
-                                <li class="hidden-xs hidden-sm" id="headerPolicyButton"></li>
+                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>

@@ -36,7 +36,7 @@ const PolicyButton = ({
   if (onClickPolicy) {
     return <a
       className="hidden-xs hidden-sm"
-      id="onClickPolicyButton"
+      id="on-click-policy-button"
       style={{...buttonStyle}}
       href="#"
       onClick={() => {
