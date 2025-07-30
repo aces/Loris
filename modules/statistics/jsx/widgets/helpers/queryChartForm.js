@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
+import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
 
 
 /**
@@ -67,17 +67,31 @@ const QueryChartForm = (props) => {
    */
 
   const setFormData = (formElement, value) => {
-    // Normalize single selection into array (in case)
-    const normalizedValue = Array.isArray(value) ? value : [value];
+    let normalizedValue = value;
+    if (!formElement.includes('date')) {
+      normalizedValue = Array.isArray(value) ? value : [value];
+      // Handle clear selection
+      if (normalizedValue.includes('__clear__')) {
+        normalizedValue = undefined;
+      } else if (normalizedValue.length > 0) {
+        normalizedValue = '('
+          + normalizedValue.map((val) => `'${val}'`).join(',') + ')';
+      }
+    }
 
     setFormDataObj(
       (prevState) => {
         const newFormData = {
           ...prevState,
-          [formElement]: normalizedValue.length > 0
-            ?normalizedValue : undefined,
+          [formElement]: normalizedValue,
         };
-        props.callback(newFormData);
+        if (
+          (normalizedValue !== undefined
+          || prevState[formElement] !== undefined)
+          && !(formElement.includes('date') && value < '1900-01-01')
+        ) {
+          props.callback(newFormData);
+        }
         return newFormData;
       }
     );
@@ -116,13 +130,9 @@ const QueryChartForm = (props) => {
                 ...optionsProjects}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedProjects']}
+              value ={formDataObj['selectedProjects'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -143,13 +153,9 @@ const QueryChartForm = (props) => {
                 ...optionsCohorts}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedCohorts']}
+              value ={formDataObj['selectedCohorts'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -169,13 +175,9 @@ const QueryChartForm = (props) => {
               options ={{__clear__: '-- Clear Selection --', ...optionsSites}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedSites']}
+              value ={formDataObj['selectedSites'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -196,13 +198,9 @@ const QueryChartForm = (props) => {
                 ...optionsVisits}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedVisits']}
+              value ={formDataObj['selectedVisits'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -224,13 +222,9 @@ const QueryChartForm = (props) => {
                 ...optionsStatus}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedParticipantStatus']}
+              value ={formDataObj['selectedParticipantStatus'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -238,6 +232,35 @@ const QueryChartForm = (props) => {
             />
           </div>
         )}
+
+        {/* DateRegistered Section */}
+        <div>
+          <label style ={{fontWeight: 'bold',
+            marginBottom: '5px',
+            display: 'block'}}>Date Registered</label>
+          <DateElement
+            name='dateParticipantRegisteredStart'
+            value={formDataObj['dateParticipantRegisteredStart'] || ''}
+            onUserInput ={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={'Range Start'}
+          />
+          <DateElement
+            name='dateParticipantRegisteredEnd'
+            value={formDataObj['dateParticipantRegisteredEnd'] || ''}
+            onUserInput={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={'Range End'}
+          />
+        </div>
       </div>
 
       {/* Buttons Section */}

@@ -102,6 +102,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         foreach ($projects as $projectID) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
+            $projectOptions[intval(strval($projectID))] = $projectInfo['Name'];
             if (is_null($projectInfo)) {
                 throw new \LorisException(
                     'No project settings exist in the Database for ' .
@@ -147,6 +148,12 @@ class Widgets extends \NDB_Page implements ETagCalculator
                         $db,
                         $sp["Count"]
                     );
+                $cohortVisits = \Utility::getVisitsForCohort(
+                    intval($sp["CohortID"])
+                );
+                foreach ($cohortVisits as $visitLabel => $visitName) {
+                    $visitOptions[$visitLabel] = $visitName;
+                }
             }
         }
         $siteOptions = [];

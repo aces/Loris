@@ -10,7 +10,7 @@ import {SelectElement} from 'jsx/Form';
 
 import '../css/WidgetIndex.css';
 
-import {setupCharts} from './widgets/helpers/chartBuilder';
+import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 
 /**
  * WidgetIndex - the main window.
@@ -172,6 +172,20 @@ const WidgetIndex = (props) => {
     chartDetails,
     setChartDetails
   ) => {
+    // Unload all charts in the section first
+    unloadCharts(chartDetails, section);
+
+    // Clear cached data from chartDetails to prevent old data from showing
+    let clearedChartDetails = {...chartDetails};
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      clearedChartDetails[section][chartID] = {
+        ...chartDetails[section][chartID],
+        data: null,
+        chartObject: null,
+      };
+    });
+    setChartDetails(clearedChartDetails);
+
     let formObject = new FormData();
     for (const key in formDataObj) {
       if (formDataObj[key] != '' && formDataObj[key] != ['']) {
@@ -179,21 +193,30 @@ const WidgetIndex = (props) => {
       }
     }
     const queryString = '?' + new URLSearchParams(formObject).toString();
-    let newChartDetails = {...chartDetails};
+    let newChartDetails = {...clearedChartDetails};
+
+    const chartPromises = [];
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
-        // update filters
-        let newChart = {...chartDetails[section][chart], filters: queryString};
-        setupCharts(false,
+        // update filters with cleared data
+        let newChart = {
+          ...clearedChartDetails[section][chart],
+          filters: queryString,
+        };
+        const chartPromise = setupCharts(false,
           {[section]: {[chart]: newChart}}).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
           }
         );
+        chartPromises.push(chartPromise);
       }
     );
-    setChartDetails(newChartDetails);
+
+    Promise.all(chartPromises).then(() => {
+      setChartDetails(newChartDetails);
+    });
   };
 
   /**

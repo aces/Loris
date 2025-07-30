@@ -30,6 +30,7 @@ const Recruitment = (props) => {
           label: 'Age (Years)',
           options: {pie: 'pie', bar: 'bar'},
           legend: 'under',
+          chartObject: null,
         },
         'ethnicity_pie': {
           title: 'Ethnicity at Screening',
@@ -39,6 +40,7 @@ const Recruitment = (props) => {
           label: 'Ethnicity',
           options: {pie: 'pie', bar: 'bar'},
           legend: 'under',
+          chartObject: null,
         },
         'siterecruitment_pie': {
           title: 'Total Recruitment per Site',
@@ -48,6 +50,7 @@ const Recruitment = (props) => {
           label: 'Participants',
           legend: '',
           options: {pie: 'pie', bar: 'bar'},
+          chartObject: null,
         },
         'siterecruitment_bysex': {
           title: 'Biological sex breakdown by site',
@@ -56,6 +59,7 @@ const Recruitment = (props) => {
           dataType: 'bar',
           legend: 'under',
           options: {bar: 'bar', pie: 'pie'},
+          chartObject: null,
         },
       },
     }

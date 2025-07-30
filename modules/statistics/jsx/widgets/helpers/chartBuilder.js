@@ -15,42 +15,16 @@ const siteColours = [
 // Colours for the recruitment bar chart: breakdown by sex
 const sexColours = ['#2FA4E7', '#1C70B6'];
 
-/**
- * onload - override link click to cancel any fetch for statistical data.
- */
-window.onload = () => {
-  document.body.addEventListener('click', (e) => {
-    // User clicks on a link..
-    if (
-      e.target &&
-      e.target.nodeName === 'A' &&
-      e.target.hasAttribute('data-target') === false
-    ) {
-      window.stop();
-    } else if (
-      e.target &&
-      e.target.nodeName === 'A' &&
-      e.target.hasAttribute('data-target') === true
-    ) {
-      const myTimeout = setTimeout(() => {
-        resizeGraphs();
-        clearTimeout(myTimeout);
-      }, 500);
-    }
-  });
-};
-
 let charts = []
-const resizeGraphs = () => {
-  charts.forEach((chart) => {
-    if (chart !== undefined) {
-      elementVisibility(chart.element, (visible) => {
-        if (visible) {
-          chart.resize();
-        }
-      })
-    }
-  })
+const resizeGraphs = (chartDetails) => {
+  Object.keys(chartDetails).forEach((section) => {
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      const chart = chartDetails[section][chartID].chartObject;
+      if (chart !== undefined && chart !== null) {
+        chart.resize();
+      }
+    });
+  });
 };
 
 /**
@@ -124,8 +98,7 @@ const createPieChart = (columns, id, targetModal, colours) => {
       }
     },
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
 const createBarChart = (labels, columns, id, targetModal, colours, dataType) => {
@@ -176,8 +149,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
       show: false
     }
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
 const createLineChart = (data, columns, id, label, targetModal) => {
@@ -247,8 +219,7 @@ const createLineChart = (data, columns, id, label, targetModal) => {
 
     }
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
 const getChartData = async (target, filters) => {
@@ -258,6 +229,25 @@ const getChartData = async (target, filters) => {
   }
   return await fetchData(query);
 }
+
+/**
+ * unloadCharts - unload all charts in a section to clear their data
+ * @param {object} chartDetails
+ * @param {string} section
+ */
+const unloadCharts = (chartDetails, section) => {
+  Object.keys(chartDetails[section]).forEach((chartID) => {
+    const chart = chartDetails[section][chartID].chartObject;
+    if (chart && typeof chart.unload === 'function') {
+      chart.unload();
+    }
+    // Clear the chart container completely
+    const element = document.getElementById(chartID);
+    if (element) {
+      element.innerHTML ='<p>Loading...</p>';
+    }
+  });
+};
 
 /**
  * setupCharts - fetch data for charts
@@ -302,17 +292,20 @@ const setupCharts = async (targetIsModal, chartDetails) => {
               columns = columns.slice(1, columns.length - 1);
             }
           }
+          let chartObject = null;
           if (chart.chartType === 'pie') {
-            createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
+            chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
           } else if (chart.chartType === 'bar') {
-            createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
+            chartObject = createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
-            createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal');
+            chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal');
           }
           newChartDetails[section][chartID].data = chartData;
+          newChartDetails[section][chartID].chartObject = chartObject;
         });
 
       chartPromises.push(chartPromise);
+      resizeGraphs(newChartDetails);
     });
   });
 
@@ -370,4 +363,5 @@ export {
   // following used by WidgetIndex.js,
   // recruitment.js and studyProgression.js
   setupCharts,
+  unloadCharts,
 };

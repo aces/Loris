@@ -30,6 +30,7 @@ const StudyProgression = (props) => {
         label: 'Scans',
         legend: 'under',
         options: {line: 'line'},
+        chartObject: null,
       },
     },
     'total_recruitment': {
@@ -41,6 +42,7 @@ const StudyProgression = (props) => {
         dataType: 'line',
         legend: '',
         options: {line: 'line'},
+        chartObject: null,
       },
     },
   });
