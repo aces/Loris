@@ -27,7 +27,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-    const ERR_MSG_CONFIG_MISSING = 'Required configuration settings for Server '
+    const ERR_MSG_CONFIG_MISSING = 'Required configuration setting for Server '
         . 'Processes Manager are missing. Cannot continue.';
 
     /**
@@ -97,11 +97,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return dgettext("loris", "Admin");
+        return \LORIS\GUI\MenuCategory::singleton("Admin");
     }
 
     /**

@@ -61,6 +61,8 @@ DROP TABLE IF EXISTS `issues_categories`;
 DROP TABLE IF EXISTS `testnames_permissions_rel`;
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
+DROP TABLE IF EXISTS `perm_perm_action_rel`;
+DROP TABLE IF EXISTS `permissions_action`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `permissions_category`;
 
