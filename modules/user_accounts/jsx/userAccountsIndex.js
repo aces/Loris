@@ -17,6 +17,8 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * When clicking on the Add User button or a Username, this component redirects
  * the user to a form that allows them to add or edit a user.
+ *
+ * @param {object} props - React component properties
  */
 class UserAccountsIndex extends Component {
   /**
@@ -74,52 +76,56 @@ class UserAccountsIndex extends Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case t('Site', {ns: 'user_accounts'}):
-      result = (
-        <td>{cell
-          .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-          .join(', ')}
-        </td>
-      );
-      if (cell.length === 0) {
+      case t('Site', {ns: 'user_accounts'}):
         result = (
-          <td>{t('This user has no site affiliations',
-             {ns: 'user_accounts'})}</td>
+          <td>
+            {cell
+              .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+              .join(', ')}
+          </td>
         );
-      }
-      break;
-    case t('Project', {ns: 'user_accounts'}):
-      result = (
-        <td>{cell.map(
-          (projectId) => this.state.data.fieldOptions.projects[projectId]
-        ).join(', ')}
-        </td>
-      );
-      if (cell.length === 0) {
+        if (cell.length === 0) {
+          result = (
+            <td>
+              {t('This user has no site affiliations', {ns: 'user_accounts'})}
+            </td>
+          );
+        }
+        break;
+      case t('Project', {ns: 'user_accounts'}):
         result = (
-          <td>{t('This user has no project affiliations',
-             {ns: 'user_accounts'})}</td>
+          <td>
+            {cell.map(
+              (projectId) => this.state.data.fieldOptions.projects[projectId]
+            ).join(', ')}
+          </td>
         );
-      }
-      break;
-    case t('Username', {ns: 'user_accounts'}):
-      url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
-      result = <td><a href ={url}>{cell}</a></td>;
-      break;
-    case t('Active', {ns: 'user_accounts'}):
-      if (row.Active === 'Y') {
-        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
-      } else if (row.Active === 'N') {
-        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
-      }
-      break;
-    case t('Pending Approval', {ns: 'user_accounts'}):
-      if (row['Pending Approval'] === 'Y') {
-        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
-      } else if (row['Pending Approval'] === 'N') {
-        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
-      }
-      break;
+        if (cell.length === 0) {
+          result = (
+            <td>
+              {t('This user has no project affiliations', {ns: 'user_accounts'})}
+            </td>
+          );
+        }
+        break;
+      case t('Username', {ns: 'user_accounts'}):
+        url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
+        result = <td><a href={url}>{cell}</a></td>;
+        break;
+      case t('Active', {ns: 'user_accounts'}):
+        if (row.Active === 'Y') {
+          result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+        } else if (row.Active === 'N') {
+          result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+        }
+        break;
+      case t('Pending Approval', {ns: 'user_accounts'}):
+        if (row['Pending Approval'] === 'Y') {
+          result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+        } else if (row['Pending Approval'] === 'N') {
+          result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+        }
+        break;
     }
     return result;
   }
@@ -128,7 +134,7 @@ class UserAccountsIndex extends Component {
    * Changes url to be able to add or edit a User.
    */
   addUser() {
-    location.href='/user_accounts/edit_user/';
+    location.href = '/user_accounts/edit_user/';
   }
 
   /**
@@ -141,8 +147,11 @@ class UserAccountsIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
-         {ns: 'user_accounts'})}</h3>;
+      return (
+        <h3>
+          {t('An error occured while loading the page.', {ns: 'user_accounts'})}
+        </h3>
+      );
     }
 
     // Waiting for async data to load
@@ -156,48 +165,81 @@ class UserAccountsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: t('Site', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'site',
-        type: 'multiselect',
-        options: options.sites,
-      }},
-      {label: t('Project', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'project',
-        type: 'select',
-        options: options.projects,
-      }},
-      {label: t('Username', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'username',
-        type: 'text',
-      }},
-      {label: t('Full Name', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'fullName',
-        type: 'text',
-      }},
-      {label: t('Email', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'email',
-        type: 'text',
-      }},
-      {label: t('Active', {ns: 'user_accounts'}), show: true, filter: {
-        name: 'active',
-        type: 'select',
-        options: options.actives,
-      }},
-      {label: t('Pending Approval', {ns: 'user_accounts'}),
-       show: true, filter: {
-        name: 'pendingApproval',
-        type: 'select',
-        options: options.pendingApprovals,
-      }},
-      {label: t('Account Request Date', {ns: 'user_accounts'}),
-       show: true, filter: {
-        name: 'accountRequestDate',
-        type: 'date',
-        hide: true,
-      }},
+      {
+        label: t('Site', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'site',
+          type: 'multiselect',
+          options: options.sites,
+        },
+      },
+      {
+        label: t('Project', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'project',
+          type: 'select',
+          options: options.projects,
+        },
+      },
+      {
+        label: t('Username', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'username',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Full Name', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'fullName',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Email', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'email',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Active', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'active',
+          type: 'select',
+          options: options.actives,
+        },
+      },
+      {
+        label: t('Pending Approval', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'pendingApproval',
+          type: 'select',
+          options: options.pendingApprovals,
+        },
+      },
+      {
+        label: t('Account Request Date', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'accountRequestDate',
+          type: 'date',
+          hide: true,
+        },
+      },
     ];
     const actions = [
-      {label: t('Add User', {ns: 'user_accounts'}), action: this.addUser},
+      {
+        label: t('Add User', {ns: 'user_accounts'}),
+        action: this.addUser,
+      },
     ];
 
     return (
