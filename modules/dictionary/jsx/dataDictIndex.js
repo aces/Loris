@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
@@ -339,10 +343,14 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dictionary', {});
+  const Index = withTranslation(
+    ['dictionary', 'loris']
+  )(DataDictIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataDictIndex
+    <Index
       dataURL={`${loris.BaseURL}/dictionary/?format=json`}
       BaseURL={loris.BaseURL}
     />

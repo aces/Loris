@@ -73,6 +73,8 @@ Profiler::checkpoint("Profiler started");
 // based on the module router, depending on if the module is public.
 $middlewarechain = (new \LORIS\Middleware\Language())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
+    ->withMiddleware(new \LORIS\Middleware\LorisMenu())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 

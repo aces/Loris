@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import {TabPane, Tabs} from 'jsx/Tabs';
 import IncompleteForms from './tabs_content/incompleteForms';
 import DataConflicts from './tabs_content/dataConflicts';
@@ -51,10 +55,14 @@ BehaviouralQC.propTypes = {
  * Render Behavioural Quality Control on page load.
  */
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'behavioural_qc', {});
+  const Index = withTranslation(
+    ['behavioural_qc', 'loris']
+  )(BehaviouralQC);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <BehaviouralQC
+    <Index
       baseURL={loris.BaseURL}
     />
   );
