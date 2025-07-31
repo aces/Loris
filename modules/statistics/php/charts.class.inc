@@ -526,7 +526,6 @@ class Charts extends \NDB_Page
     {
         $user = \NDB_Factory::singleton()->user();
 
-        $projectQuery = '';
         $cohortQuery  = '';
         $sessionJoin  = '';
         $visitQuery   = '';
