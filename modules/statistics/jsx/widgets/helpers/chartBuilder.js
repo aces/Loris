@@ -97,6 +97,13 @@ const createPieChart = (columns, id, targetModal, colours) => {
         }
       }
     },
+    tooltip: {
+      format: {
+        value: function (value, ratio) {
+          return `${value} (${(ratio * 100).toFixed(0)}%)`;
+        },
+      },
+    },
   });
   return newChart;
 }
