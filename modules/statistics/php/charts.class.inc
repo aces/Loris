@@ -544,7 +544,7 @@ class Charts extends \NDB_Page
             $projectQuery = " AND c.RegistrationProjectID IN ({$projectList}) ";
             if ($scansbymonth === true) {
                 $projectQuery = " AND s.ProjectID IN ({$projectList}) ";
-                $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
+                $sessionJoin  = "JOIN session s ON s.CandidateID=c.ID";
             }
         }
 

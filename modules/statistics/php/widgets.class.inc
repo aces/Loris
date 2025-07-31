@@ -59,17 +59,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-        $db      = $request->getAttribute('loris')->getDatabaseConnection();
-        $user    = $factory->user();
-        $projects    = $user->getProjectIDs();
-        $centerIDs   = $user->getCenterIDs();
+        $factory   = \NDB_Factory::singleton();
+        $config    = $factory->config();
+        $db        = $request->getAttribute('loris')->getDatabaseConnection();
+        $user      = $factory->user();
+        $projects  = $user->getProjectIDs();
+        $centerIDs = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $projectString  = "('".implode("','", array_map('strval', $projects))."')";
-        $centerString   = "('".implode("','", array_map('strval', $centerIDs))."')";
-        $recruitmentRaw = iterator_to_array(
+        $projectString      = "('".implode("','", array_map('strval', $projects))."')";
+        $centerString       = "('".implode("','", array_map('strval', $centerIDs))."')";
+        $recruitmentRaw     = iterator_to_array(
             $db->pselect(
                 "SELECT
                 COUNT(*) as Count,
@@ -84,7 +84,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             )
         );
         $total_participants = array_sum(array_column($recruitmentRaw, 'Count'));
-        $totalScans = $db->pselectOne(
+        $totalScans         = $db->pselectOne(
             "SELECT COUNT(distinct s.ID)
                 FROM files f
                 LEFT JOIN parameter_file pf USING (FileID)
@@ -95,7 +95,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 AND s.CenterID IN {$centerString}",
             []
         );
-        $recruitment = [
+        $recruitment        = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
                 "Overall Recruitment",
