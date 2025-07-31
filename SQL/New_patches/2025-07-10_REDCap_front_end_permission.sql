@@ -16,7 +16,7 @@ INSERT INTO perm_perm_action_rel (permID, actionID)
 -- adds the redcap dictionary table
 CREATE TABLE `redcap_dictionary` (
     ID int(10) unsigned NOT NULL auto_increment,
-    FormName varchar(255),
+    InstrumentName varchar(255),
     FieldName varchar(255) NOT NULL,
     FieldRequired boolean NOT NULL,
     FieldType varchar(20) NOT NULL,

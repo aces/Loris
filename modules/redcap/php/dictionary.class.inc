@@ -85,7 +85,7 @@ class Dictionary extends \NDB_Page
         $db         = $this->loris->getDatabaseConnection();
         $dictionary = $db->pselect(
             "SELECT
-                FormName,
+                InstrumentName,
                 FieldName,
                 FieldRequired,
                 FieldType,
