@@ -63,12 +63,12 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $config  = $factory->config();
         $db      = $request->getAttribute('loris')->getDatabaseConnection();
         $user    = $factory->user();
-        $projects  = $user->getProjectIDs();
-        $centerIDs = $user->getCenterIDs();
+        $projects    = $user->getProjectIDs();
+        $centerIDs   = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $projectString =  "('".implode("','",array_map('strval',$projects))."')";
-        $centerString  =  "('".implode("','",array_map('strval',$centerIDs))."')";
+        $projectString  = "('".implode("','", array_map('strval', $projects))."')";
+        $centerString   = "('".implode("','", array_map('strval', $centerIDs))."')";
         $recruitmentRaw = iterator_to_array(
             $db->pselect(
                 "SELECT
@@ -95,7 +95,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 AND s.CenterID IN {$centerString}",
             []
         );
-        $recruitment    = [
+        $recruitment = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
                 "Overall Recruitment",

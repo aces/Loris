@@ -553,7 +553,6 @@ class Charts extends \NDB_Page
             $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
 
-        
         if (($_GET['selectedSites'] ?? "undefined") != 'undefined') {
             // Set site query if selected
             $siteQuery = " AND c.RegistrationCenterID IN {$_GET['selectedSites']} ";
@@ -569,6 +568,7 @@ class Charts extends \NDB_Page
                 $siteQuery = " AND s.CenterID IN ({$centerList}) ";
             }
         }
+
         if (($_GET['selectedVisits'] ?? "undefined") != 'undefined') {
             // Set visit query if visits selected
             $visitQuery  = " AND s.Visit_label IN {$_GET['selectedVisits']} ";

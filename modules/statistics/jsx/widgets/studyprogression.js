@@ -185,8 +185,8 @@ const StudyProgression = (props) => {
 StudyProgression.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
-  updateFilters: PropTypes.function,
-  showChart: PropTypes.function,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 StudyProgression.defaultProps = {
   data: {},
