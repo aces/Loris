@@ -67,8 +67,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $projectString      = "('".implode("','", array_map('strval', $projects))."')";
-        $centerString       = "('".implode("','", array_map('strval', $centerIDs))."')";
+        $projectString = "('".implode("','", array_map('strval', $projects))."')";
+        $centerString  = "('".implode("','", array_map('strval', $centerIDs))."')";
+
         $recruitmentRaw     = iterator_to_array(
             $db->pselect(
                 "SELECT
