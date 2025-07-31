@@ -78,11 +78,11 @@ const Recruitment = (props) => {
 
   // Helper functions to calculate totals for each view
   const getTotalRecruitmentOverall = () => {
-    return json['recruitment']['overall']['total_recruitment'] || 0;
+    return json['recruitment']['overall']['total_recruitment'] || -1;
   };
 
   const getTotalRecruitmentSiteBreakdown = () => {
-    return json['recruitment']['overall']['total_recruitment'] || 0;
+    return json['recruitment']['overall']['total_recruitment'] || -1;
   };
 
   const getTotalProjectsCount = () => {
@@ -171,7 +171,8 @@ const Recruitment = (props) => {
                   <p>There have been no candidates registered yet.</p>
                 ),
             title: 'Recruitment - site breakdown',
-            subtitle: `Total participants: ${getTotalRecruitmentSiteBreakdown()}`,
+            subtitle: 'Total participants: '
+              + getTotalRecruitmentSiteBreakdown(),
             onToggleFilters: () => {
               setShowFiltersBreakdown((prev) => !prev);
             },

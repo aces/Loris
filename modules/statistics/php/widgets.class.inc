@@ -62,9 +62,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
         $db      = $request->getAttribute('loris')->getDatabaseConnection();
-
+        $user    = $factory->user();
+        $projects  = $user->getProjectIDs();
+        $centerIDs = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
+        $projectString =  "('".implode("','",array_map('strval',$projects))."')";
+        $centerString  =  "('".implode("','",array_map('strval',$centerIDs))."')";
         $recruitmentRaw = iterator_to_array(
             $db->pselect(
                 "SELECT
@@ -73,30 +77,38 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 c.RegistrationProjectID as ProjectID
              FROM candidate c
                  WHERE c.Active='Y' AND c.Entity_type='Human'
-                 AND c.RegistrationCenterID <> 1
+                 AND c.RegistrationProjectID IN $projectString
+                 AND c.RegistrationCenterID IN $centerString
              GROUP BY c.Sex, c.RegistrationProjectID",
                 []
             )
         );
-        $totalScans     = array_sum(array_column($recruitmentRaw, 'Count'));
+        $total_participants = array_sum(array_column($recruitmentRaw, 'Count'));
+        $totalScans = $db->pselectOne(
+            "SELECT COUNT(distinct s.ID)
+                FROM files f
+                LEFT JOIN parameter_file pf USING (FileID)
+                LEFT JOIN session s ON (s.ID=f.SessionID)
+                JOIN parameter_type pt USING (ParameterTypeID)
+                WHERE pt.Name='acquisition_date'
+                AND s.ProjectID IN {$projectString}
+                AND s.CenterID IN {$centerString}",
+            []
+        );
         $recruitment    = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
                 "Overall Recruitment",
                 $recruitmentTarget,
-                $totalScans,
+                $total_participants,
                 $recruitmentRaw,
             )
         ];
-
-        $user     = $factory->user();
-        $projects = $user->getProjectIDs();
 
         $projectOptions     = [];
         $cohortOptions      = [];
         $visitOptions       = [];
         $recruitmentCohorts = [];
-        $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
         foreach ($projects as $projectID) {

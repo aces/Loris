@@ -121,8 +121,7 @@ class Charts extends \NDB_Page
         $list_of_sites = $user->getStudySites();
 
         $data = $DB->pselectColWithIndexKey(
-            "
-            SELECT COUNT(c.CandID), c.RegistrationCenterID as CenterID
+            "SELECT COUNT(c.CandID), c.RegistrationCenterID as CenterID
                 FROM candidate c
                 {$conditions['sessionJoin']}
                 {$conditions['participantStatusJoin']}
@@ -132,8 +131,7 @@ class Charts extends \NDB_Page
                 {$conditions['visitQuery']}
                 {$conditions['siteQuery']}
                 {$conditions['participantStatusQuery']}
-                GROUP BY c.RegistrationCenterID
-        ",
+                GROUP BY c.RegistrationCenterID",
             [],
             "CenterID"
         );
@@ -224,7 +222,6 @@ class Charts extends \NDB_Page
             {$conditions['sessionJoin']}
             {$conditions['participantStatusJoin']}
             WHERE c.DoB IS NOT NULL
-            AND c.DoB <= c.date_registered
             AND c.Active='Y'
             AND c.Entity_type='Human'
             {$conditions['projectQuery']}
@@ -537,28 +534,26 @@ class Charts extends \NDB_Page
         $candJoin     = '';
         $participantStatusQuery = '';
 
-        // $params = ['selectedProjects', 'selectedCohorts',
-        //     'selectedSites', 'selectedVisits', 'selectedParticipantStatus'
-        // ];
-        // foreach ($params as $param) {
-        //     if (($_GET[$param] ?? "undefined") != 'undefined') {
-        //         $_GET[$param] = rtrim($_GET[$param], ',');
-        //         $_GET[$param] = explode(',', $_GET[$param]);
-        //         $_GET[$param] = "('" . implode("','", $_GET[$param]) . "')";
-        //     }
-        // }
-        error_log(print_r($_GET, true));
-
         if (($_GET['selectedProjects'] ?? "undefined") != 'undefined') {
             $candJoin     = "JOIN candidate c ON c.ID=s.CandidateID";
             $projectQuery = " AND c.RegistrationProjectID IN "
                              . $_GET['selectedProjects'];
+        } else {
+            $userProjects = $user->getProjectIDs();
+            $projectList  = "'" . implode("','", $userProjects) . "'";
+            $projectQuery = " AND c.RegistrationProjectID IN ({$projectList}) ";
+            if ($scansbymonth === true) {
+                $projectQuery = " AND s.ProjectID IN ({$projectList}) ";
+                $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
+            }
         }
 
         if (($_GET['selectedCohorts'] ?? "undefined") != 'undefined') {
             $cohortQuery = " AND s.CohortID IN {$_GET['selectedCohorts']} ";
             $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
+
+        
         if (($_GET['selectedSites'] ?? "undefined") != 'undefined') {
             // Set site query if selected
             $siteQuery = " AND c.RegistrationCenterID IN {$_GET['selectedSites']} ";

@@ -77,7 +77,8 @@ const StudyProgression = (props) => {
 
   // Helper function to calculate total recruitment
   const getTotalRecruitment = () => {
-    return json['studyprogression']['recruitment']['overall']['total_recruitment'] || 0;
+    return json['studyprogression']['recruitment']
+      ['overall']['total_recruitment'] || -1;
   };
 
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
