@@ -9,6 +9,5 @@ INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (13,'Imagi
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (14,'Technical Issue');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (15,'User Accounts');
 INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (16,'Other');
-INSERT INTO `issues_categories` (`categoryID`, `categoryName`) VALUES (17,'Medications');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
