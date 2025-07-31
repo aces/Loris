@@ -97,6 +97,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             []
         );
         $recruitment        = [
+            'overall' => $this->_createProjectProgressBar(
                 'overall',
                 dgettext("statistics", "Overall Recruitment"),
                 $recruitmentTarget,
