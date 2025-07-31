@@ -779,6 +779,16 @@ a.btn.btn-primary:hover:not(.download, .split-nav) {
     padding-right: 10px;
 }
 
+.panel-subtitle {
+    border: 1px solid #246EB6;
+    color: #246EB6;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background-color: white;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
 .panel-default {
     border-color: #C3D5DB;
 }
