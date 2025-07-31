@@ -1,5 +1,5 @@
 import {createRoot} from 'react-dom/client';
-import React, {Component} from 'react';
+import React, {Component, useRef} from 'react';
 import PropTypes from 'prop-types';
 
 import {Tabs, TabPane} from 'Tabs';
@@ -35,6 +35,7 @@ class InstrumentManagerIndex extends Component {
       modifyPermissions: false,
       selectedDataFile: null,
       action: null,
+      selectedInstruments: [],
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -43,6 +44,7 @@ class InstrumentManagerIndex extends Component {
     this.setSelectedDataFile = this.setSelectedDataFile.bind(this);
     this.setAction = this.setAction.bind(this);
     this.triggerValidityReport = this.triggerValidityReport.bind(this);
+    this.setSelectedInstruments = this.setSelectedInstruments.bind(this);
   }
 
   /**
@@ -83,6 +85,18 @@ class InstrumentManagerIndex extends Component {
       action: action,
     });
   }
+
+
+  /**
+   * setSelectedInstruments
+   * @param {array} instruments
+   */
+  setSelectedInstruments(instruments) {
+    this.setState({
+      selectedInstruments: instruments
+    });
+  };
+
 
   /**
    * Retrieve data from the provided URL and save it in state
@@ -130,6 +144,72 @@ class InstrumentManagerIndex extends Component {
         }).then((response) => {
           if (!response.ok) {
             console.error(response.status);
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            let message = data.message;
+
+            if (Object.keys(data).includes('idMapping')) {
+              message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+              message += data.message;
+              message += '<br/><br/>';
+              message += JSON.stringify(data.idMapping);
+              message += '</div>';
+            }
+
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              html: message,
+            });
+          } else {
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
+          }
+          resolve();
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
+        });
+      });
+  }
+
+  /**
+   * Upload multi-instrument data
+   */
+  uploadMultiInstrumentData() {
+    const data = new FormData();
+    data.append('multi-instrument', JSON.stringify(this.state.selectedInstruments));
+    data.append('action', this.state.action);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
+
+    return new Promise(
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            console.error((response.body));
             throw new Error('Unexpected error');
           }
           return response.json();
@@ -243,7 +323,6 @@ class InstrumentManagerIndex extends Component {
                 this.state.action === null
               ) {
                 this.triggerValidityReport();
-                e.preventDefault();
                 return;
               }
               return this.uploadInstrumentData(row.Instrument);
@@ -428,36 +507,70 @@ class InstrumentManagerIndex extends Component {
       return content;
     };
 
-    // const openMultiInstrumentDataUpload = () => {
-    //   this.setState({showMultiInstrumentUploadModal: true});
-    // };
-    // const actions = [
-    //   // {
-    //   //   label: 'Multi Upload',
-    //   //   action: openMultiInstrumentDataUpload,
-    //   //   show: this.props.hasPermission('instrument_manager_write'),
-    //   // },
-    // ];
+    const handleSubmit = () => {
+      if (
+        this.state.selectedDataFile === null ||
+        this.state.action === null ||
+        this.state.selectedInstruments.length === 0
+      ) {
+        this.triggerValidityReport();
+        return;
+      }
+      return this.uploadMultiInstrumentData();
+    }
+
+    const multiUploadModal = <Modal
+      title={'Upload Instrument Data (multi)'}
+      show={this.state.showMultiInstrumentUploadModal}
+      width={'75%'}
+      minHeight={'40vh'}
+      onSubmit={handleSubmit}
+      onClose={
+        () => {
+          this.setState({
+            showMultiInstrumentUploadModal: false,
+            selectedInstruments: [],
+          });
+        }
+      }>
+      <InstrumentDataUploadModal
+        setSelectedDataFile={this.setSelectedDataFile}
+        setAction={this.setAction}
+        instrumentList={this.state.data.Data.map(d => d[0])}
+        setSelectedInstruments={this.setSelectedInstruments}
+      />
+    </Modal>;
 
 
-    return (
-      <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
-          {permsModal}
-          <FilterableDataTable
-            name="instrument_manager"
-            data={this.state.data.Data}
-            fields={fields}
-            actions={[]}
-            getFormattedCell={this.formatColumn}
-          />
-        </TabPane>
-        <TabPane TabId='upload'>
-          {feedback()}
-          {uploadTab()}
-        </TabPane>
-      </Tabs>
-    );
+    const openMultiInstrumentDataUpload = () => {
+      this.setState({showMultiInstrumentUploadModal: true});
+    };
+    const actions = [
+      {
+        label: 'Upload Data (multi)',
+        action: openMultiInstrumentDataUpload,
+        show: this.props.hasPermission('instrument_manager_write'),
+      },
+    ];
+
+
+    return <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
+      <TabPane TabId={tabs[0].id}>
+        {multiUploadModal}
+        {permsModal}
+        <FilterableDataTable
+          name="instrument_manager"
+          data={this.state.data.Data}
+          fields={fields}
+          actions={actions}
+          getFormattedCell={this.formatColumn}
+        />
+      </TabPane>
+      <TabPane TabId='upload'>
+        {feedback()}
+        {uploadTab()}
+      </TabPane>
+    </Tabs>;
   }
 }
 

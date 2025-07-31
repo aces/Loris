@@ -48,25 +48,33 @@ class CSVParser
      * @param bool        $strict          If true, $headers cannot be a superset
      *                                     of $expectedHeaders
      *
-     * @return bool                        Returns true if headers are valid
+     * @return array                       Returns validation results
      */
     function _validateHeaders(
         array|false $headers, array $expectedHeaders, bool $strict = false
-    ): bool {
+    ): array {
         if (!$headers || ($strict && count($headers) !== count($expectedHeaders))
         ) {
-            return false;
+            return [
+                'success' => false,
+                'message' => 'Header count does not match expected header count'
+            ];
         }
 
         $matchingHeaders = true;
+        $missingHeaders = [];
         foreach ($expectedHeaders as $expectedHeader) {
             if (!in_array($expectedHeader, $headers)) {
                 error_log("Header not found: $expectedHeader");
                 $matchingHeaders = false;
-                break;
+                $missingHeaders[] = $expectedHeader;
             }
         }
-        return $matchingHeaders;
+        return [
+            'success' => $matchingHeaders,
+            'message' => count($missingHeaders) . ' missing header(s)',
+            'missing' => $missingHeaders
+        ];
     }
 
     /**
@@ -132,9 +140,11 @@ class CSVParser
 
         // Validate expected headers, if provided
         if (count($expectedHeaders) > 0) {
-            if (!$this->_validateHeaders($csvHeaders, $expectedHeaders)) {
+            $validationResults = $this->_validateHeaders($csvHeaders, $expectedHeaders);
+            if (!$validationResults['success']) {
+                $missingHeaders = join(', ', $validationResults['missing']);
                 throw new \RuntimeException(
-                    'File headers do not match expected headers'
+                    "{$validationResults['message']}: $missingHeaders"
                 );
             }
         }

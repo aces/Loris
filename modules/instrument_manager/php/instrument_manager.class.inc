@@ -187,7 +187,8 @@ class Instrument_Manager extends \DataFrameworkMenu
                 $this->createInstrumentEntry(
                     $instrumentName,
                     $targetdir,
-                    false
+                    true,
+                    true
                 );
             }
             $created = count($instruments) > 0;
@@ -214,7 +215,8 @@ class Instrument_Manager extends \DataFrameworkMenu
     public function createInstrumentEntry(
         string $instrumentName,
         SplFileInfo $targetDir,
-        bool $createMetaFile = true
+        bool $createMetaFile = true,
+        bool $isRedcap = false
     ) : bool {
         try {
             // Parse csv and iterate via this
@@ -241,7 +243,8 @@ class Instrument_Manager extends \DataFrameworkMenu
                         $targetDir->getFilename(),
                         $instrumentName . ".meta"
                     ),
-                    "jsondata{@}true\n"
+                    "jsondata{@}true\n" .
+                    $isRedcap ? "redcap{@}true\n" : ""
                 );
             }
         } catch (\NotFound $e) {

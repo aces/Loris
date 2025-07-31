@@ -214,15 +214,15 @@ class RedcapCSVParser extends CSVParser
         }
         fclose($fp);
 
-        // META file
-        $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
-        fwrite($fp_meta, "testname{@}$instrument_name\n");
-        fwrite($fp_meta, "table{@}$instrument_name\n");
-        fwrite($fp_meta, "jsondata{@}true\n");
-        fwrite($fp_meta, "norules{@}true");
-        fwrite($fp_meta, "redcap{@}true");
-
-        fclose($fp_meta);
+//        // META file
+//        $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
+//        fwrite($fp_meta, "testname{@}$instrument_name\n");
+//        fwrite($fp_meta, "table{@}$instrument_name\n");
+//        fwrite($fp_meta, "jsondata{@}true\n");
+//        fwrite($fp_meta, "norules{@}true");
+//        fwrite($fp_meta, "redcap{@}true");
+//
+//        fclose($fp_meta);
     }
 
     /**
@@ -231,63 +231,105 @@ class RedcapCSVParser extends CSVParser
      * @param LorisInstance $loris Loris instance
      * @param array         $instrumentNames List of instrument names
      * @param string        $userID User ID
+     * @param bool          $createNonexistent Create Nonexistent
      *
-     * @return RedcapDictionaryRecord[] Returns array RedcapDictionaryRecord
+     * @return array        Returns result array
      * @throws RuntimeException
      */
     public function parseDataCSV(
         LorisInstance $loris,
         array $instrumentNames,
-        string $userID
+        string $userID,
+        bool $createNonexistent
     ): array
     {
-        $results = [];
         try {
-            $expectedHeaders = [];
-            $parsedCSV       = $this->parse($expectedHeaders);
+            $db = $loris->getDatabaseConnection();
+            $db->beginTransaction();
 
-            foreach ($instrumentNames as $instrumentName) {
-                $instrumentHeaders = InstrumentDataParser::getCSVHeaders(
-                    $loris,
-                    $instrumentName,
-                );
-
-                $instrumentData = array_map(
-                    function ($csvRow) use ($instrumentHeaders) {
-                        return array_filter(
-                            $csvRow,
-                            function ($data, $header)
-                            use ($csvRow, $instrumentHeaders) {
-                                return in_array($header, $instrumentHeaders);
-                            },
-                            ARRAY_FILTER_USE_BOTH
-                        );
+            try {
+                // Ensure headers are expected headers
+                $expectedHeaders = array_reduce(
+                    $instrumentNames,
+                    function ($headers, $instrumentName) use ($loris, $createNonexistent) {
+                        return array_unique(array_merge(
+                            $headers,
+                            InstrumentDataParser::getCSVHeaders(
+                                $loris,
+                                $instrumentName,
+                                $createNonexistent
+                            )
+                        ));
                     },
-                    $parsedCSV
+                    []
                 );
 
-                $validData = InstrumentDataParser::validateData(
-                    $instrumentData,
-                    [
-                        'UserID'   => $userID,
-                        'Examiner' => $userID
-                    ]
-                );
+                $parsedCSV = $this->parse($expectedHeaders);
 
-                // TODO: Check for errors in above paylaod ($validData['errors'])
+                foreach ($instrumentNames as $instrumentName) {
+                    $instrumentHeaders = InstrumentDataParser::getCSVHeaders(
+                        $loris,
+                        $instrumentName,
+                    );
 
-                $result    = InstrumentDataParser::insertInstrumentData(
-                    $loris,
-                    $validData['data'],
-                    $instrumentName,
-                    $this->csvFile->getFilename()
-                );
-                $results[] = [...$result, 'instrument' => $instrumentName];
+                    $instrumentData = array_map(
+                        function ($csvRow) use ($instrumentHeaders) {
+                            return array_filter(
+                                $csvRow,
+                                function ($data, $header)
+                                use ($csvRow, $instrumentHeaders) {
+                                    return in_array($header, $instrumentHeaders);
+                                },
+                                ARRAY_FILTER_USE_BOTH
+                            );
+                        },
+                        $parsedCSV
+                    );
+
+                    $validData = InstrumentDataParser::validateData(
+                        $instrumentData,
+                        [
+                            'UserID'   => $userID,
+                            'Examiner' => $userID
+                        ]
+                    );
+
+                    if (count($validData['errors']) > 0) {
+                        throw new RuntimeException(
+                            'Validation error(s): ' .
+                            join(', ', $validData['errors'])
+                        );
+                    }
+
+                    $result = InstrumentDataParser::insertInstrumentData(
+                        $loris,
+                        $validData['data'],
+                        $instrumentName,
+                        $this->csvFile->getFilename()
+                    );
+
+                    if (!$result['success']) {
+                        $db->rollBack();
+                        return $result;
+                    }
+                }
+
+                $db->commit();
+                return [
+                    'success' => true,
+                    'message' => 'Successfully inserted data for ' .
+                        count($instrumentNames) . ' instruments'
+                ];
+            } catch (\Exception $e) {
+                $db->rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ];
             }
-            return $results;
-        } catch (\Exception $e) {
+        } catch (DatabaseException $dbe) {
             throw new RuntimeException(
-                "An error occurred while parsing: {$e->getMessage()}"
+                "Database Exception: {$dbe->getMessage()}"
             );
         }
     }

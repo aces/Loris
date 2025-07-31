@@ -64,19 +64,59 @@ class Instrument_Data extends \NDB_Page
      */
     protected function handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $request->getQueryParams();
-        if (isset($params['instrument']) && isset($params['action'])) {
-            $instrument = $params['instrument'];
-            $action     = $params['action'];
+        $params   = $request->getQueryParams();
+        $headers  = [];
+        $fileName = null;
 
-            if ($this->instrumentExists($instrument)) {
-                $headers = InstrumentDataParser::getCSVHeaders(
-                    $this->loris,
-                    $instrument,
-                    $action === 'CREATE_SESSIONS'
+
+        if (isset($params['action'])) {
+            $action = $params['action'];
+            if (isset($params['instrument'])) {
+                $instrument = $params['instrument'];
+
+                if ($this->instrumentExists($instrument)) {
+                    $headers = InstrumentDataParser::getCSVHeaders(
+                        $this->loris,
+                        $instrument,
+                        $action === 'CREATE_SESSIONS'
+                    );
+                } else {
+                    return new \LORIS\Http\Response\JSON\BadRequest(
+                        "$instrument does not exist"
+                    );
+                }
+                $fileName = "{$instrument}_headers.csv";
+            } else if (isset($params['instruments'])) {
+                $instruments = $params['instruments'];
+                foreach ($instruments as $instrument) {
+                    if ($this->instrumentExists($instrument)) {
+                        error_log("checking $instrument");
+                        $headers = array_unique(array_merge(
+                            $headers,
+                            InstrumentDataParser::getCSVHeaders(
+                                $this->loris,
+                                $instrument,
+                                $action === 'CREATE_SESSIONS'
+                            )
+                        ));
+                        error_log("MERGING $instrument");
+                    } else {
+                        error_log("$instrument does not exist");
+                        return new \LORIS\Http\Response\JSON\BadRequest(
+                            "$instrument does not exist"
+                        );
+                    }
+                }
+                $prefix = time();
+                $fileName = "{$prefix}_headers.csv";
+            } else {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Invalid request'
                 );
+            }
 
-                $fileName   = "{$instrument}_headers.csv";
+            // TODO: Remove if redundant
+            if (!is_null($fileName)) {
                 $fileObject = new \SplFileObject(
                     sys_get_temp_dir() . "/$fileName",
                     'w'
@@ -90,13 +130,7 @@ class Instrument_Data extends \NDB_Page
                     $request->withAttribute('filename', $fileName)
                 );
             }
-
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
-            );
-
         }
-
         return parent::handle($request);
     }
 
@@ -196,6 +230,10 @@ class Instrument_Data extends \NDB_Page
                         );
                     }
 
+
+                    $db = $this->loris->getDatabaseConnection();
+                    $db->beginTransaction();
+
                     $validData = $dataParser->validateData(
                         $data,
                         [
@@ -206,6 +244,7 @@ class Instrument_Data extends \NDB_Page
                     );
 
                     if (count($validData['errors']) > 0) {
+                        $db->rollBack();    // Rollback creations from validateData
                         return new \LORIS\Http\Response\JSON\OK(
                             [
                                 'message' => $validData['errors'],
@@ -220,29 +259,37 @@ class Instrument_Data extends \NDB_Page
                         $fileInfo->getFilename()
                     );
 
-                    if ($createNonexistent) {
-                        $db = $this->loris->getDatabaseConnection();
-                        $studyIDMapping = $db->pselect(
-                            'SELECT ExtStudyID, CandID
+                    if ($result['success']) {
+                        if ($createNonexistent) {
+                            $studyIDMapping = $db->pselect(
+                                'SELECT ExtStudyID, CandID
                             FROM candidate_project_extid_rel
                             WHERE ExtStudyID IN (' .
-                            join(
-                                ',',
-                                array_map(
-                                    function ($id) {
-                                        return "'$id'";
-                                    },
-                                    $studyIDs
-                                )
-                            ) .
-                            ')',
-                            [],
-                        );
+                                join(
+                                    ',',
+                                    array_map(
+                                        function ($id) {
+                                            return "'$id'";
+                                        },
+                                        $studyIDs
+                                    )
+                                ) .
+                                ')',
+                                [],
+                            );
 
-                        $result['idMapping'] = $studyIDMapping;
+                            $result['idMapping'] = $studyIDMapping;
+                        }
+
+                        $db->commit();
+                        return new \LORIS\Http\Response\JSON\Created($result);
                     }
 
-                    return new \LORIS\Http\Response\JSON\Created($result);
+                    $db->rollBack();
+                    return new \LORIS\Http\Response\JSON\BadRequest(
+                        $result['message']
+                    );
+
                 } catch (\Exception $e) {
                     return new \LORIS\Http\Response\JSON\OK(
                         [
@@ -256,13 +303,48 @@ class Instrument_Data extends \NDB_Page
                 'Instrument does not exist'
             );
         } else if (isset($requestBody['multi-instrument'])) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Multi-instrument not yet implemented'
+            $instruments = json_encode(json_decode($requestBody['multi-instrument']));
+            error_log($instruments);
+//            return new \LORIS\Http\Response\JSON\BadRequest(
+//                'Multi-instrument not yet implemented'
+//            );
+
+            $dataFile = $request->getUploadedFiles()['data_file'];
+            $userID   = $request->getAttribute('user')->getUsername();
+
+            $uploadFolder = $this->loris
+                ->getConfiguration()->getSetting('instrumentDataPath');
+            $filePrefix   = $userID . '_' . time() . '_';
+            $fileLocation = $uploadFolder . "/$filePrefix"
+                . $dataFile->getClientFilename();
+            $dataFile->moveTo($fileLocation);
+
+            $fileInfo = new SplFileInfo($fileLocation);
+            $this->_insertCSVFileEntry($fileInfo->getFilename());
+            $dataParser = new RedcapCSVParser(
+                $fileInfo,
             );
-            // $dataParser = new RedcapCSVParser(
-            //     $fileInfo,
-            // );
-            // $result = $dataParser->parseDataCSV($this->loris, ['bmi'], $userID);
+
+//            $instruments = $requestBody['multi-instrument'];
+            $instrumentNames = array_map(
+                function ($instrument) { return $instrument['value']; },
+                json_decode($instruments, true)
+            );
+            $result = $dataParser->parseDataCSV(
+                $this->loris,
+                $instrumentNames,
+                $userID,
+                $createNonexistent
+            );
+
+            error_log("returning");
+            error_log(json_encode($result));
+            return new \LORIS\Http\Response\JSON\Created($result);
+//            if ($result['success']) {
+//                return new \LORIS\Http\Response\JSON\Created($result);
+//            }
+//
+//            return new \LORIS\Http\Response\JSON\BadRequest(json_encode($result));
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(

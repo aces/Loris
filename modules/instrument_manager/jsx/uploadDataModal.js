@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
+import Select from 'react-select';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
+import InputLabel from 'jsx/form/InputLabel';
 import {RadioElement} from '../../../jsx/Form';
 
 /**
@@ -88,7 +90,7 @@ class InstrumentDataUploadModal extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    // console.log('multi: ', this.isMultiInstrument);
+    console.log('multi: ', this.isMultiInstrument, this.state.selectedInstruments.length);
     return (
       <div id={this.containerID}>
         <div
@@ -100,14 +102,20 @@ class InstrumentDataUploadModal extends Component {
           <div className='col-sm-11'>
             <FileElement
               name={'instrument_data_file'}
-              label={
-                (
-                  !this.isMultiInstrument ||
-                  this.state.selectedInstruments.length === 1
-                )
-                  ? `Upload csv file for ${this.state.selectedInstruments[0]}`
-                  : 'Upload csv file for any number of instruments'
-              }
+              // label={
+              //   'Upload csv file ' + ((
+              //     !this.isMultiInstrument ||
+              //     this.state.selectedInstruments.length === 1
+              //   )
+              //     ? `for ${this.state.selectedInstruments[0]?.value ?? this.state.selectedInstruments[0]}`
+              //     : (
+              //         this.state.selectedInstruments.length > 1
+              //           ? 'for selected instruments'
+              //           : ''
+              //       )
+              //   )
+              // }
+              label={'Upload csv file for targeted instruments'}
               onUserInput={this.dataFileSelected}
               value={this.state.selectedDataFile}
               required={true}
@@ -115,28 +123,56 @@ class InstrumentDataUploadModal extends Component {
           </div>
         </div>
 
-        {/* {*/}
-        {/*  this.isMultiInstrument && (*/}
-        {/*    <div style={{display: 'flex', justifyContent: 'center'}}>*/}
-        {/*      Select instruments*/}
-        {/*    </div>*/}
-        {/*  )*/}
-        {/* }*/}
+         {
+          this.isMultiInstrument && (
+            <div
+              className="row"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <div className='col-sm-11'>
+                <div className="row form-group">
+                  <InputLabel
+                    label={'Targeted instruments'}
+                    required={this.isMultiInstrument}
+                  />
+                  <Select
+                    className={'col-sm-9'}
+                    isMulti={true}
+                    options={this.props.instrumentList.map(i => { return {value: i, label: i}; })}
+                    value={this.state.selectedInstruments}
+                    onChange={(newList) => {
+                      this.setState({
+                        selectedInstruments: newList,
+                      }, () => {
+                        this.props.setSelectedInstruments(this.state.selectedInstruments)
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )
+         }
 
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <RadioElement
-            name={'create_participants'}
-            label={'Validation'}
-            options={{
-              VALIDATE_SESSIONS: 'All participants and visits exist',
-              CREATE_SESSIONS: 'Some participants or visits may not exist',
-            }}
-            checked={this.state.createParticipants}
-            onUserInput={this.handleRadioChange}
-            verticalOptions={false}
-            noWrap={true}
-            required={true}
-          />
+        <div className="row" style={{display: 'flex', justifyContent: 'center'}}>
+          <div className='col-sm-11'>
+            <RadioElement
+              name={'create_participants'}
+              label={'Participant validation'}
+              options={{
+                VALIDATE_SESSIONS: 'All participants and visits exist',
+                CREATE_SESSIONS: 'Some participants or visits may not exist',
+              }}
+              checked={this.state.createParticipants}
+              onUserInput={this.handleRadioChange}
+              verticalOptions={false}
+              noWrap={true}
+              required={true}
+            />
+          </div>
         </div>
 
 
@@ -152,9 +188,12 @@ class InstrumentDataUploadModal extends Component {
                   !this.isMultiInstrument ||
                   this.state.selectedInstruments.length === 1
                 )
-                  ? `instrument=${this.state.selectedInstruments[0]}`
+                  ? `instrument=${
+                  this.state.selectedInstruments[0].value
+                    ?? this.state.selectedInstruments[0]
+                }`
                   : this.state.selectedInstruments.map(
-                    (instrumentName) => `instruments=${instrumentName}`
+                    (instrumentName) => `instruments[]=${instrumentName.value}`
                   ).join('&') // TODO: Reconsider (max URL length)
               ) +
               `&action=${this.state.createParticipants}`
@@ -226,6 +265,7 @@ InstrumentDataUploadModal.propTypes = {
   instrumentList: PropTypes.array.isRequired,
   setSelectedDataFile: PropTypes.func,
   setAction: PropTypes.func,
+  setSelectedInstruments: PropTypes.func,
 };
 
 export default InstrumentDataUploadModal;

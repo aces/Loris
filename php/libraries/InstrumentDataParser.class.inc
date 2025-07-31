@@ -11,6 +11,7 @@ namespace LORIS;
 require_once 'NDB_Factory.class.inc';
 require_once 'CSVParser.class.inc';
 
+use Database;
 use DatabaseException;
 use LorisException;
 use RuntimeException;
@@ -179,7 +180,6 @@ class InstrumentDataParser extends CSVParser
         bool $createNonexistent = false,
     ): array {
         $errors = [];
-        // TODO: Rollback on failure? Creations are occurring
         foreach ($instrumentData as &$dataRow) {
             try {
                 $sessionID = null;
@@ -427,7 +427,7 @@ class InstrumentDataParser extends CSVParser
         string $instrumentName,
         string $csvFilename
     ): array {
-        $db = NDB_Factory::singleton()->database();
+        $db = $loris->getDatabaseConnection();
         $instrumentHeaders = self::getInstrumentHeaders(
             $loris,
             $instrumentName
@@ -435,7 +435,6 @@ class InstrumentDataParser extends CSVParser
 
         $errors = [];
         try {
-            $db->beginTransaction();
             try {
                 foreach ($instrumentData as $data) {
                     try {
@@ -530,13 +529,11 @@ class InstrumentDataParser extends CSVParser
 
                 if (count($errors) > 0) {
                     error_log('Errors found:' . json_encode($errors));
-                    $db->rollBack();
                     return [
                         'success' => false,
                         'message' => $errors,
                     ];
                 } else {
-                    $db->commit();
                     error_log("Saved " . count($instrumentData) . " row(s)");
 
                     return [
@@ -548,7 +545,6 @@ class InstrumentDataParser extends CSVParser
                 error_log(
                     "Rolling back due to unexpected error: {$e->getMessage()}"
                 );
-                $db->rollBack();
                 return [
                     'success' => false,
                     'message' => "Data error: {$e->getMessage()}"
