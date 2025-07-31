@@ -70,6 +70,16 @@ const StudyProgression = (props) => {
       chartDetails, setChartDetails);
   };
 
+  // Helper function to calculate total scans
+  const getTotalScans = () => {
+    return json['studyprogression']['total_scans'] || 0;
+  };
+
+  // Helper function to calculate total recruitment
+  const getTotalRecruitment = () => {
+    return json['studyprogression']['recruitment']['overall']['total_recruitment'] || 0;
+  };
+
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
     <>
       <Panel
@@ -123,6 +133,7 @@ const StudyProgression = (props) => {
               <p>There have been no scans yet.</p>
             ),
             title: 'Study Progression - site scans',
+            subtitle: `Total scans: ${getTotalScans()}`,
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
@@ -162,6 +173,7 @@ const StudyProgression = (props) => {
                 <p>There have been no candidates registered yet.</p>
               ),
             title: 'Study Progression - site recruitment',
+            subtitle: `Total recruitment: ${getTotalRecruitment()}`,
             onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
           },
         ]}

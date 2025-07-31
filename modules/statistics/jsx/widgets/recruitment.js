@@ -76,6 +76,24 @@ const Recruitment = (props) => {
       setChartDetails);
   };
 
+  // Helper functions to calculate totals for each view
+  const getTotalRecruitmentOverall = () => {
+    return json['recruitment']['overall']['total_recruitment'] || 0;
+  };
+
+  const getTotalRecruitmentSiteBreakdown = () => {
+    return json['recruitment']['overall']['total_recruitment'] || 0;
+  };
+
+  const getTotalProjectsCount = () => {
+    return Object.keys(json['recruitment'] || {})
+      .filter((key) => key !== 'overall').length;
+  };
+
+  const getTotalCohortsCount = () => {
+    return Object.keys(json['recruitmentcohorts'] || {}).length;
+  };
+
   useEffect(
     () => {
       if (json && Object.keys(json).length !== 0) {
@@ -106,6 +124,7 @@ const Recruitment = (props) => {
               {progressBarBuilder(json['recruitment']['overall'])}
             </div>,
             title: 'Recruitment - overall',
+            subtitle: `Total participants: ${getTotalRecruitmentOverall()}`,
           },
           {
             content:
@@ -152,6 +171,7 @@ const Recruitment = (props) => {
                   <p>There have been no candidates registered yet.</p>
                 ),
             title: 'Recruitment - site breakdown',
+            subtitle: `Total participants: ${getTotalRecruitmentSiteBreakdown()}`,
             onToggleFilters: () => {
               setShowFiltersBreakdown((prev) => !prev);
             },
@@ -176,6 +196,7 @@ const Recruitment = (props) => {
                 )}
               </div>,
             title: 'Recruitment - project breakdown',
+            subtitle: `Projects: ${getTotalProjectsCount()}`,
           },
           {
             content:
@@ -196,6 +217,7 @@ const Recruitment = (props) => {
                   )}
               </div>,
             title: 'Recruitment - cohort breakdown',
+            subtitle: `Cohorts: ${getTotalCohortsCount()}`,
           },
         ]}
       />
