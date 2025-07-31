@@ -149,6 +149,7 @@ const Recruitment = (props) => {
       setChartDetails);
   };
 
+  // Helper functions to calculate totals for each view
   const getTotalProjectsCount = () => {
     return Object.keys(json['recruitment'] || {})
       .filter((key) => key !== 'overall').length;
