@@ -167,14 +167,17 @@ abstract class SQLQueryEngine implements QueryEngine
         $sessionVariables = false;
         $keyFields        = [];
         foreach ($items as $dict) {
+            // Quote the question marks otherwise PDO will interpret
+            // these as positional placeholders
+            $dictName = str_replace('?', '??', $dict->getName());
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
-                . "`{$dict->getName()}`";
+                . "`$dictName`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
             }
             if ($dict->getCardinality()->__toString() === "many") {
-                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `{$dict->getName()}:key`";
+                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `$dictName:key`";
             }
         }
 
@@ -531,7 +534,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS $tablename");
         $DB->run(
             "CREATE TEMPORARY TABLE $tablename (
-            CandID int(6)
+            CandID int(10) unsigned
         );"
         );
 
@@ -579,7 +582,7 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {

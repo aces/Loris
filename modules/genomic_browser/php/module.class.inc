@@ -46,12 +46,13 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Genomics";
+        return \LORIS\GUI\MenuCategory::singleton("Genomics");
     }
+
 
     /**
      * {@inheritDoc}
@@ -60,6 +61,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Genomic Browser";
+        return dgettext("genomic_browser", "Genomic Browser");
     }
 }

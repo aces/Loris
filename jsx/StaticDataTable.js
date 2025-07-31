@@ -233,8 +233,8 @@ class StaticDataTable extends Component {
     let useKeyword = false;
     let filterMatchCount = 0;
     let filterValuesCount = (this.props.Filter ?
-        Object.keys(this.props.Filter).length :
-        0
+      Object.keys(this.props.Filter).length :
+      0
     );
     let tableData = this.props.Data;
     let headersData = this.props.Headers;
@@ -291,6 +291,63 @@ class StaticDataTable extends Component {
   }
 
   /**
+   * Get if the current sorting column has mixed types in its values.
+   *
+   * @return {boolean} true if mixed types, else false.
+   */
+  hasMixedTypes() {
+    // TODO: data column type check should probably be done once at init,
+    // meaning when receiving data, to find which columns have mixed types.
+    let typeFound = null;
+
+    // not the default column
+    if (this.state.SortColumn === -1) {
+      return false;
+    }
+
+    // Only checks string or number types, others are considered undefined.
+    // Break out of this loop once we encounter two mixed types:
+    // number and string inside the sorted column.
+    for (const row of this.props.Data) {
+      // cell value
+      let val = row[this.state.SortColumn];
+
+      // if null or undefined, go to the next iteration
+      if (val == null) {
+        continue;
+      }
+
+      // check number
+      if (!isNaN(val) && typeof val !== 'object') {
+        // if string is found, mix of types, break
+        if (typeFound === 'string') {
+          return true;
+        }
+        // register number only if not already in
+        if (typeFound == null) {
+          typeFound = 'number';
+        }
+
+        // avoid string section
+        continue;
+      }
+
+      // check string
+      if (typeof val === 'string' || val instanceof String) {
+        // if number is found, mix of types, break
+        if (typeFound === 'number') {
+          return true;
+        }
+        // register string only if not already in
+        if (typeFound == null) {
+          typeFound = 'string';
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
    * Sort the rows according to the sort configuration
    *
    * @return {object[]}
@@ -298,6 +355,10 @@ class StaticDataTable extends Component {
   getSortedRows() {
     const index = [];
 
+    // is the current sorted column with mixed type?
+    const isMixedType = this.hasMixedTypes();
+
+    //
     for (let i = 0; i < this.props.Data.length; i += 1) {
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
       // If SortColumn is equal to default No. column, set value to be
@@ -311,10 +372,12 @@ class StaticDataTable extends Component {
       if (val === '.') {
         // hack to handle non-existent items in DQT
         val = null;
-      } else if (isNumber) {
+      } else if (isNumber && !isMixedType) {
         // perform type conversion (from string to int/float)
         val = Number(val);
-      } else if (isString) {
+      } else if (isString || isMixedType) {
+        // in case of mixed types, force values to string.
+        val = String(val);
         // if string with text convert to lowercase
         val = val.toLowerCase();
       } else {
@@ -450,7 +513,7 @@ class StaticDataTable extends Component {
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
             <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-                onClick={this.setSortColumn(i).bind(this)}>
+              onClick={this.setSortColumn(i).bind(this)}>
               {this.props.Headers[i]}
             </th>
           );
@@ -482,8 +545,8 @@ class StaticDataTable extends Component {
 
     // Push rows to data table
     for (let i = 0;
-         (i < this.props.Data.length) && (rows.length < rowsPerPage);
-         i++
+      (i < this.props.Data.length) && (rows.length < rowsPerPage);
+      i++
     ) {
       curRow = [];
 
@@ -549,7 +612,7 @@ class StaticDataTable extends Component {
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
           const rowCell = this.state.Hide.defaultColumn !== true ?
-              <td>{rowIndex}</td> : null;
+            <td>{rowIndex}</td> : null;
 
           rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>

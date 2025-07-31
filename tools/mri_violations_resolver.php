@@ -17,24 +17,12 @@
  * @license  Loris License
  * @link     https://www.github.com/aces/Loris/
  */
-
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// path to config file
-$configFile = "../project/config.xml";
-
 require_once __DIR__ . "/generic_includes.php";
 
 $confirm = false;
 if (isset($argv[1]) && $argv[1] === "confirm") {
     $confirm = true;
 }
-
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize($configFile);
-
-$DB = $lorisInstance->getDatabaseConnection();
 
 // Query as it is in the mri violation module
 // It is complete as it apears in the module for two reasons:
@@ -62,9 +50,9 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
             LEFT JOIN candidate c
-            ON (mri_protocol_violated_scans.CandID = c.CandID)
+            ON (mri_protocol_violated_scans.CandidateID = c.ID)
             LEFT JOIN session s
-            ON (mri_protocol_violated_scans.CandID = s.CandID)
+            ON (mri_protocol_violated_scans.CandidateID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
@@ -72,7 +60,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 s.ProjectID as Project,
                 s.CohortID as Cohort,
                 MincFile,
-                mri_scan_type.Scan_type,
+                mst.MriScanTypeName as ScanType,
                 'Protocol Violation',
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
@@ -80,15 +68,15 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log
-            LEFT JOIN mri_scan_type
-            ON (mri_scan_type.ID=mri_violations_log.Scan_type)
+            LEFT JOIN mri_scan_type mst
+            ON (mst.MriScanTypeID=mri_violations_log.MriScanTypeID)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
-            ON (mri_violations_log.CandID=c.CandID)
+            ON (mri_violations_log.CandidateID=c.ID)
             LEFT JOIN session s
-            ON (mri_violations_log.CandID = s.CandID)
+            ON (mri_violations_log.CandidateID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
@@ -110,7 +98,7 @@ $query = "SELECT v.PatientName, v.Project, v.Cohort, v.Site, v.TimeRun,
             LEFT JOIN candidate c
             ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
             LEFT JOIN session s
-            ON (c.CandID = s.CandID)
+            ON (c.CandID = s.CandidateID)
             LEFT JOIN psc p
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL)

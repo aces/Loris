@@ -157,7 +157,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($this->loris, null, $testArray);
+        $dde       = 'DoubleDataEntryEnabled';
+        $testArray[$dde] = $testArray[$dde] ?? 'N';
+
+        $test = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test, "post");
     }
@@ -219,7 +222,8 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                          CohortID,
                          Visit_label,
                          CenterID,
-                         firstVisit
+                         firstVisit,
+                         DoubleDataEntryEnabled as DDE_enabled
                   FROM test_battery";
         // Select duplicate entry from Test Battery
         $entries = $this->db->pselect($query, []);
@@ -235,6 +239,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
+                && $testArray['DoubleDataEntryEnabled'] == $entry['DDE_enabled']
             ) {
                 return true;
             }

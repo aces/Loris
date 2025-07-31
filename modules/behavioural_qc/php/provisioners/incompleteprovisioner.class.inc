@@ -22,27 +22,15 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
      */
     function __construct()
     {
-        $config         =& \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-        $db = \NDB_Factory::singleton()->database();
-        for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
-        }
-        $where = "
-                AND (f.commentid NOT LIKE 'DDE_%')
-            ";
-        if (count($ddeInstruments) > 0) {
-            $ddeInstruments = implode(',', $ddeInstruments);
-            $where          = "
-                AND (t.test_name IN ($ddeInstruments) OR
-                f.commentid NOT LIKE 'DDE_%')
-            ";
-        }
         parent::__construct(
             "
             SELECT DISTINCT
                 t.Full_name AS _instrument,
-                s.candid AS _candID,
+                CASE
+                    WHEN f.commentid LIKE 'DDE_%' THEN 'DDE'
+                    ELSE 'IDE'
+                END AS _data_entry_type,
+                c.CandID AS _candID,
                 c.PSCID AS _pscID,
                 s.visit_label AS _visit,
                 s.ProjectID AS _project,
@@ -56,16 +44,23 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             FROM
 	            session s
                 JOIN flag f ON (f.sessionid = s.id)
-                JOIN candidate c ON (c.candid = s.candid)
+                JOIN candidate c ON (c.ID = s.CandidateID)
                 JOIN test_names t ON (t.ID = f.TestID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
+                JOIN test_battery ON (
+                    t.Test_name = test_battery.Test_name
+                    AND test_battery.Visit_label = s.Visit_label
+                )
             WHERE
                 s.Active = 'Y'
                 AND c.Active = 'Y'
                 AND coalesce(f.data_entry, 'In Progress') = 'In Progress'
                 AND psc.Centerid != '1'
                 AND c.Entity_type != 'Scanner'
-                $where
+                AND (
+                    test_battery.DoubleDataEntryEnabled = 'Y'
+                    OR f.commentid NOT LIKE 'DDE_%'
+                )
             ORDER BY
 	            f.commentid
             ",

@@ -25,13 +25,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * The form object for this instrument.
-     *
-     * @var LorisForm
-     */
-    public $form;
-
-    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -39,13 +32,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @var string
      */
     public $formType;
-
-    /**
-     * Array holding the date format
-     *
-     * @var array
-     */
-    public $dateOptions;
 
     /**
      * Type of instrument. Can be 'normal' or 'DirectEntry'
@@ -391,6 +377,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
+        // convert DoB And EDC date to years and months
+        // DoB to Derived Age
+        $dob = $candidate->getCandidateDoB();
+        if (is_string($dob) && strtotime($dob) !== false) {
+            $dob_date     = new \DateTime($dob);
+            $current_date = new \DateTime();
+            $dob_year     = abs($current_date->diff($dob_date)->y);
+            $dob_month    = abs($current_date->diff($dob_date)->m);
+            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $this->tpl_data['dob_age'] = $dob_age;
+        }
+        // EDC to EDC Age
+        $edc = $candidate->getCandidateEDC();
+        if (is_string($edc) && strtotime($edc) !== false) {
+            $edc_date     = new DateTime($edc);
+            $current_date = new DateTime();
+            $edc_year     = abs($current_date->diff($edc_date)->y);
+            $edc_month    = abs($current_date->diff($edc_date)->m);
+            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $this->tpl_data['edc_age'] = $edc_age;
+        }
     }
 
     /**
@@ -822,20 +829,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
-        $oldData = $db->pselectOne(
-            "SELECT id.Data FROM flag f
-                    JOIN instrument_data id ON (id.ID=f.DataID)
-                WHERE CommentID=:cid",
-            ['cid' => $this->getCommentID()]
-        );
-
-        // (The PDO driver seems to return null as "null" for JSON column types)
-        if (!empty($oldData) && $oldData !== "null") {
-            $oldData = json_decode($oldData, true);
-        } else {
-            $oldData = [];
-        }
-        $newData = array_merge($oldData ?? [], $values);
+        $newData = array_merge($this->getInstanceData() ?? [], $values);
 
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
@@ -860,10 +854,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->instanceData = $newData;
     }
-
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
+     * current form. Note that NDB_BVL_Instrument_LINST.class.inc mimics the logic
+     * of this function to build the data dictionary, so any changes here should
+     * be reflected there as well.
      *
      * @return void
      * @access private
@@ -1012,12 +1007,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
-            "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
+            "SELECT ProjectID FROM session s
+                 JOIN candidate c ON c.ID=s.CandidateID
+                 WHERE c.CandID=:cnd_id AND s.ID=:sid",
             [
                 'cnd_id' => $candID,
                 'sid'    => $sessionID,
             ]
         );
+
+        $curr_examinerID = $this->getFieldValue("Examiner");
 
         list(
             $CertificationEnabled,
@@ -1032,7 +1031,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['tst_name' => $this->testName]
             );
             $results = $db->pselectWithIndexKey(
-                "SELECT c.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
@@ -1042,24 +1041,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
+                    AND (epr.active = 'Y' OR epr.examinerID =:curr_examinerID)
                  ORDER BY full_name",
                 [
-                    'tid'     => $test_id,
-                    'cert_id' => 'certified',
-                    'cid'     => $centerID,
+                    'tid'             => $test_id,
+                    'cert_id'         => 'certified',
+                    'cid'             => $centerID,
+                    'curr_examinerID' => $curr_examinerID
                 ],
                 'examinerID'
             );
         } else {
             $results = $db->pselectWithIndexKey(
-                "SELECT e.examinerID, e.full_name, u.Email
+                "SELECT DISTINCT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
                      LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
+                     AND (epr.active = 'Y' OR e.examinerID =:curr_examinerID)
                      ORDER BY full_name",
-                ['centID' => $centerID],
+                [
+                    'centID'          => $centerID,
+                    'curr_examinerID' => $curr_examinerID
+                ],
                 'examinerID'
             );
         }
@@ -1181,7 +1186,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue==="" || $flag==false) {
+            if ($elvalue=="" || $flag==false) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -1811,7 +1816,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
-            ]
+            ],
+            ['class' => 'form-control input-sm not-answered']
         );
         $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
@@ -1840,9 +1846,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $options = []
     ): void {
 
-        if (empty($options)) {
-            $options = $this->dateOptions;
-        }
+        $options = ($options ?? []) + $this->dateOptions;
 
         $group   = [];
         $group[] = $this->createDate(
@@ -2092,7 +2096,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Loop over this instance data
         foreach ($thisData AS $key=>$value) {
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if ($otherData[$key] != $value) {
+                if (($otherData[$key] ?? null) != $value) {
                     $diff[] = [
                         'TestName'       => $this->testName,
                         'ExtraKeyColumn' => null,
@@ -2102,7 +2106,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         'CommentId1'     => $this->getCommentID(),
                         'Value1'         => $value,
                         'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key],
+                        'Value2'         => $otherData[$key] ?? null,
                     ];
                 }
             }
@@ -2219,12 +2223,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param ?\LORIS\Data\Query\QueryTerm $condition  A single QueryTerm that
      *                                                 matched instances must
      *                                                 meet to be loaded
+     * @param ?array                       $v          The visits that must match
      *
      * @return Generator<\NDB_BVL_Instrument>
      */
     function bulkLoadInstanceData(
         ?iterable $commentIDs,
         ?\LORIS\Data\Query\QueryTerm $condition = null,
+        $v = null,
     ): iterable {
         if ($this->commentID !== null && $this->commentID !== '') {
             throw new \LogicException(
@@ -2269,55 +2275,91 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
-                $conditions[] = "CommentID IN 
+                $conditions[] = "CommentID IN
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
-                $conditions[] = 'JSON_VALUE(Data, "$.'
-                . substr(
+                $fname = substr(
                     $condition->dictionary->getName(),
                     strlen($this->testName)+1
-                )
-                . '") '
-                . \LORIS\Data\Query\SQLQueryEngine::sqlOperator($condition->criteria)
-                . ' '
-                . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
-                    $condition->dictionary,
-                    $condition->criteria,
-                    $params
-                )
-                . ' ';
+                );
+                if ($fname == 'Administration'
+                    || $fname == 'Validity'
+                    || $fname == 'Data_entry'
+                ) {
+                    $conditions[] = "flag.$fname"
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
+                        $condition->criteria
+                    )
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
+                        $condition->dictionary,
+                        $condition->criteria,
+                        $params
+                    )
+                                   . ' ';
+                } else {
+
+                    $conditions[] = 'JSON_VALUE(Data, "$.'
+                    . substr(
+                        $condition->dictionary->getName(),
+                        strlen($this->testName)+1
+                    )
+                    . '")'
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
+                        $condition->criteria
+                    )
+                    . \LORIS\Data\Query\SQLQueryEngine::sqlValue(
+                        $condition->dictionary,
+                        $condition->criteria,
+                        $params
+                    )
+                    . ' ';
+                }
+
+                $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
 		    	SessionID,
                         CommentID,
-                        session.Visit_Label as VisitLabel,
+                        session.Visit_label as VisitLabel,
+			flag.Administration,
+			flag.Data_entry as DataEntry,
+			flag.Validity,
                         Data
                     FROM flag
-                        JOIN session ON (session.ID=flag.SessionID)
+                        JOIN session s ON (session.ID=flag.SessionID)
+                        JOIN candidate c ON c.ID=s.CandidateID
                         JOIN instrument_data ON (flag.DataID=instrument_data.ID)
 			JOIN test_names tn ON (tn.ID=flag.TestID)
 			$where";
-
+            \Profiler::checkpoint("Running query (JSON data): " . $query);
             $jsondata = $db->pselect($query, $params);
             foreach ($jsondata as $row) {
                     $newinst = clone $this;
 
-                $newinst->candID           = new CandID(strval($row['CandID']));
-                    $newinst->commentID    = $row['CommentID'];
-                    $newinst->visitLabel   = $row['VisitLabel'];
-                $newinst->sessionID        = new SessionID(
-                    strval($row['SessionID'])
+                    $newinst->candID     = new CandID(strval($row['CandID']));
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID(
+                        strval($row['SessionID'])
+                    );
+                $newinst->flags          = new \InstrumentFlags(
+                    $row['Data_entry'],
+                    $row['Administration'],
+                    $row['Validity']
                 );
+                unset($row['Data_entry'], $row['Administration'], $row['Validity']);
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,
                     ) ?? $this->defaultInstanceData();
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         } else {
+
             $conditions   = ['tn.test_name=:tn'];
             $params['tn'] = $this->testName;
             if ($commentIDs !== null) {
@@ -2325,11 +2367,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 			    (SELECT CommentID FROM load_comment_ids)";
             }
             if ($condition !== null) {
-                $conditions[] = 't.'
-                . substr(
+                $fname = substr(
                     $condition->dictionary->getName(),
                     strlen($this->testName)+1
-                )
+                );
+                if ($fname == 'Administration'
+                    || $fname == 'Validity'
+                    || $fname == 'Data_entry'
+                ) {
+                    $tname = 'f.';
+                } else {
+                    $tname = 't.';
+                }
+
+                $conditions[] = $tname
+                . $fname
                 . ' '
                 . \LORIS\Data\Query\SQLQueryEngine::sqlOperator(
                     $condition->criteria
@@ -2341,19 +2393,40 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $params
                 )
                 . ' ';
+                $conditions[] ="t.CommentID NOT LIKE 'DDE_%'";
             }
-            $where = 'WHERE ' . join(' AND ', $conditions);
-            $query = "SELECT 
-		    session.CandID as CandID,
-		    t.CommentID as CommentID,
-                    session.Visit_Label as VisitLabel,
-                    session.ID as SessionID, t.*
+            if (is_array($v) && !empty($v)) {
+                    $vescaped = array_map(
+                        function ($visit) use ($db) {
+                            return $db->quote($visit);
+                        },
+                        $v
+                    );
+
+                    $visitString = '(' . implode(',', $vescaped) . ')';
+                    $where       = 'WHERE ' . join(' AND ', $conditions) .
+                                   ' AND s.Visit_label IN ' . $visitString;
+            } else {
+                $where = 'WHERE ' . join(' AND ', $conditions);
+            }
+
+            $query = "SELECT
+                c.CandID as CandID,
+                t.CommentID as CommentID,
+                s.Visit_label as VisitLabel,
+                f.Administration,
+                f.Data_entry,
+                f.Validity,
+                s.ID as SessionID, t.*
                  FROM $this->table t
                     JOIN flag f ON (t.CommentID=f.CommentID)
 		    JOIN test_names tn ON (tn.ID=f.TestID)
-                    JOIN session ON (f.SessionID=session.ID)
-		 $where";
-            $data  = $db->pselect($query, $params);
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (s.CandidateID=c.ID)
+                     
+		    $where";
+            \Profiler::checkpoint("Running query (table instrument): " . $query);
+            $data = $db->pselect($query, $params);
             foreach ($data as $row) {
                     $newinst = clone $this;
 
@@ -2363,10 +2436,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst->sessionID  = new SessionID(strval($row['SessionID']));
                     unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
 
+                $newinst->flags = new \InstrumentFlags(
+                    $row['Data_entry'],
+                    $row['Administration'],
+                    $row['Validity']
+                );
+                unset($row['Data_entry'], $row['Administration'], $row['Validity']);
+
                     $newinst->instanceData = $row;
 
                     yield $newinst;
             }
+            \Profiler::checkpoint("Finished query");
             return;
         }
     }
@@ -2419,8 +2500,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // for this instrument with current session's visit & project
         $dxEvolutionID = $DB->pselectOne(
             "SELECT DxEvolutionID FROM diagnosis_evolution
-            WHERE instrumentName=:tn 
-            AND ProjectID=:pid 
+            WHERE instrumentName=:tn
+            AND ProjectID=:pid
             AND visitLabel=:vl",
             [
                 'tn'  => $this->testName,
@@ -2448,7 +2529,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Get the fields that correspond to a configured diagnosis
         $sourceFields = $DB->pselectOne(
-            "SELECT sourceField 
+            "SELECT sourceField
             FROM diagnosis_evolution
             WHERE DxEvolutionID=:dxEvID",
             ['dxEvID' => $dxEvolutionID]
@@ -2472,7 +2553,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
 
             $set = [
-                'CandID'        => $this->getCandID()->__toString(),
+                'CandidateID'   => $this->getCandidateID(),
                 'DxEvolutionID' => $dxEvolutionID,
                 'Diagnosis'     => json_encode($diagnosis),
                 'Confirmed'     => $confirmed
@@ -2534,7 +2615,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dob = $db->pselectOne(
             "SELECT c.DoB FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2553,7 +2634,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dod       = $db->pselectOne(
             "SELECT c.DoD FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2573,12 +2654,34 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $pscid = $db->pselectOne(
             "SELECT c.PSCID FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
         return $pscid;
     }
+
+    /**
+     * Get the candidateID.
+     *
+     * @return string|null The candidate's ID.
+     */
+    function getCandidateID(): ?string
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $id = $db->pselectOne(
+            "SELECT c.ID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        return $id;
+    }
+
+
 
     protected ?CandID $candID = null;
     /**
@@ -2598,7 +2701,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $candIDVal = $db->pselectOne(
             "SELECT c.CandID FROM flag f
             JOIN session s ON (f.SessionID=s.ID)
-            JOIN candidate c USING (CandID)
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE f.CommentID=:CID",
             ['CID' => $CommentID]
         );
@@ -2623,7 +2726,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!$this->jsonData) {
             $columns = $db->pselect(
                 "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+                 WHERE COLUMN_NAME<>'CommentID' AND TABLE_NAME=:table
+                 AND TABLE_SCHEMA=:db",
                 [
                     'table' => $this->table,
                     'db'    => $dbconfig['database'],
@@ -3068,6 +3172,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $this->determineDataEntryAllowed();
     }
 
+    private ?\InstrumentFlags $flags = null;
     /**
      * Gets the flags of that instrument
      *
@@ -3075,6 +3180,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function getFlags(): \InstrumentFlags
     {
+        if ($this->flags !== null) {
+            return $this->flags;
+        }
         $row = \NDB_Factory::singleton()->database()->pselectRow(
             'SELECT
                Data_entry as dataentry,
@@ -3090,11 +3198,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $administration = $row['administration'] ?? null;
         $validity       = $row['validity'] ?? null;
 
-        return new \InstrumentFlags(
+        $this->flags = new \InstrumentFlags(
             $dataentry,
             $administration,
             $validity
         );
+        return $this->flags;
     }
 
     /**
@@ -3325,20 +3434,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to get DDE from
+     * @param ?string              $Visit_label The visit label to get the DDE for if
+     *                                          null all DDE instruments are returned
      *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
-    {
-        $config = $loris->getConfiguration();
+    static function getDDEInstrumentNamesList(
+        \LORIS\LorisInstance $loris,
+        ?string $Visit_label=null
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
 
         $instrumentNamesList = self::getInstrumentNamesList($loris);
 
-        $doubleDataEntryInstruments = $config->getSetting(
-            'DoubleDataEntryInstruments'
-        );
+        if (empty($Visit_label)) {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'",
+                []
+            );
+        } else {
+            $doubleDataEntryInstruments = $DB->pselectCol(
+                "SELECT DISTINCT Test_name FROM test_battery
+                WHERE DoubleDataEntryEnabled='Y'
+                AND Visit_label = :Visit_label",
+                ['Visit_label' => $Visit_label]
+            );
+        }
 
         $instrumentNames = [];
         foreach ($instrumentNamesList as $testName => $fullName) {

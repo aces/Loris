@@ -117,7 +117,12 @@ class Edit_User extends \NDB_Form
             foreach ($fieldsThatAreStrings as $fieldName) {
                 // this check prevents PHP Notices
                 if (!empty($defaults[$fieldName])) {
-                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                    $defaults[$fieldName] = htmlspecialchars(
+                        $defaults[$fieldName],
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    );
                 }
             }
 
@@ -362,6 +367,7 @@ class Edit_User extends \NDB_Form
             }
         }
         unset($values['examiner_radiologist']);
+        $ex_pending = $values['examiner_pending'];
         unset($values['examiner_pending']);
         // END SETUP EXAMINER VALUES
 
@@ -407,8 +413,6 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $ex_pending = 'Y';
-
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
@@ -422,7 +426,7 @@ class Edit_User extends \NDB_Form
             if (!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites)
-                && empty($examinerID)
+                && count($examinerID) === 0
             ) {
                 // If examiner not in table and radiologist, pending and current
                 // sites fields set add the examiner to the examiner table
@@ -441,7 +445,7 @@ class Edit_User extends \NDB_Form
                             WHERE userID=:uid",
                     ['uid' => $uid]
                 );
-            } elseif (!empty($examinerID)
+            } elseif (count($examinerID) > 0
                 && ((!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites))
@@ -810,6 +814,7 @@ class Edit_User extends \NDB_Form
             'Sites',
             $siteOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
@@ -829,6 +834,7 @@ class Edit_User extends \NDB_Form
             'Projects',
             $projectOptions,
             [
+                'class'    => 'form-control input-sm resizable',
                 'multiple' => 'multiple',
                 'required' => true,
             ]
@@ -978,7 +984,13 @@ class Edit_User extends \NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                htmlspecialchars($row['label']) . "<br>",
+                htmlspecialchars(
+                    $row['label'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . "<br>",
                 $attribs
             );
         }
@@ -1011,7 +1023,13 @@ class Edit_User extends \NDB_Form
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
-                htmlspecialchars($row['Real_Name']) . "<br>",
+                htmlspecialchars(
+                    $row['Real_Name'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . "<br>",
                 $attribs
             );
         }

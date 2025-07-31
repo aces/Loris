@@ -61,6 +61,8 @@ DROP TABLE IF EXISTS `issues_categories`;
 DROP TABLE IF EXISTS `testnames_permissions_rel`;
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
+DROP TABLE IF EXISTS `perm_perm_action_rel`;
+DROP TABLE IF EXISTS `permissions_action`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `permissions_category`;
 
@@ -68,6 +70,8 @@ DROP TABLE IF EXISTS `permissions_category`;
 DROP TABLE IF EXISTS `modules`;
 
 -- 0000-00-00-schema.sql
+DROP TABLE IF EXISTS `redcap_notification`;
+
 DROP TABLE IF EXISTS `candidate_consent_rel`;
 DROP TABLE IF EXISTS `consent`;
 DROP TABLE IF EXISTS `candidate_consent_history`;
@@ -113,6 +117,8 @@ DROP TABLE IF EXISTS `publication`;
 DROP TABLE IF EXISTS `publication_status`;
 DROP TABLE IF EXISTS `publication_collaborator`;
 
+DROP TABLE IF EXISTS `login_summary_statistics`;
+
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
 DROP TABLE IF EXISTS `parameter_candidate`;
@@ -122,6 +128,7 @@ DROP TABLE IF EXISTS `parameter_type_category`;
 DROP TABLE IF EXISTS `parameter_type`;
 
 DROP TABLE IF EXISTS `media`;
+DROP TABLE IF EXISTS `mri_upload_server_processes_rel`;
 DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;

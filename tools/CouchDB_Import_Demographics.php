@@ -198,25 +198,25 @@ class CouchDBDemographicsImporter
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
 
         $tablesToJoin = " FROM session s
-                            JOIN candidate c USING (CandID)
+                            JOIN candidate c ON (c.ID = s.CandidateID)
                             LEFT JOIN psc p ON (p.CenterID=s.CenterID)
                             LEFT JOIN Project pr ON
                                 (pr.ProjectID=c.RegistrationProjectID)
                             LEFT JOIN caveat_options c_o
                                 ON (c_o.ID=c.flagged_reason)
                             LEFT JOIN parameter_candidate AS pc_comment
-                                ON (pc_comment.CandID=c.CandID)
+                                ON (pc_comment.CandidateID=c.ID)
                                 AND pc_comment.ParameterTypeID=(
                                     SELECT ParameterTypeID
                                     FROM parameter_type
                                     WHERE Name='candidate_comment'
                                 )
                             LEFT JOIN participant_status ps
-                                ON (ps.CandID=c.CandID)
+                                ON (ps.CandidateID=c.ID)
                             LEFT JOIN participant_status_options pso
                                 ON (pso.ID=ps.participant_status)
                             LEFT JOIN feedback_bvl_thread fbt
-                                ON (fbt.CandID=c.CandID)
+                                ON (fbt.CandidateID=c.ID)
                             LEFT JOIN feedback_bvl_entry fbe
                                 ON (fbe.FeedbackID=fbt.FeedbackID)";
 
@@ -230,13 +230,13 @@ class CouchDBDemographicsImporter
                         c.Sex,
                         s.Current_stage,
                         Failure,
-                        c.RegistrationProjectID, 
-                        CEF, 
-                        CEF_reason, 
-                        CEF_comment, 
-                        pc_comment.Value, 
-                        pso.Description, 
-                        ps.participant_suboptions, 
+                        c.RegistrationProjectID,
+                        CEF,
+                        CEF_reason,
+                        CEF_comment,
+                        pc_comment.Value,
+                        pso.Description,
+                        ps.participant_suboptions,
                         ps.reason_specify";
 
         // If proband fields are being used, add proband information into the
@@ -287,24 +287,28 @@ class CouchDBDemographicsImporter
             )->getAlias();
             $latestProjDx = "latestDiagnosis_$projectAlias";
 
-            $fieldsInQuery .= ", 
+            $fieldsInQuery .= ",
                 $latestProjDx.Diagnosis AS $latestProjDx";
             $tablesToJoin  .= "
                 LEFT JOIN (
-                    SELECT cde.CandID, Diagnosis 
+                    SELECT c.CandID, Diagnosis
                     FROM candidate_diagnosis_evolution_rel cde
                     JOIN diagnosis_evolution de USING (DxEvolutionID)
+                    JOIN candidate c ON c.ID=cde.CandidateID
                     JOIN (
-                        SELECT cde2.CandID, MAX(OrderNumber) AS OrderNumber 
+                        SELECT c.CandID, MAX(OrderNumber) AS OrderNumber
                         FROM diagnosis_evolution de2
-                        JOIN candidate_diagnosis_evolution_rel cde2 
+                        JOIN candidate_diagnosis_evolution_rel cde2
                         USING (DxEvolutionID)
+                        JOIN candidate c ON c.ID=cde2.CandidateID
                         WHERE de2.ProjectID=$projectID
                         GROUP BY CandID
-                        ) AS maxOrderNumber ON (maxOrderNumber.CandID=cde.CandID 
-                            AND maxOrderNumber.OrderNumber=de.OrderNumber)
+                        ) AS maxOrderNumber ON (
+                            maxOrderNumber.CandidateID=cde.CandidateID
+                            AND maxOrderNumber.OrderNumber=de.OrderNumber
+                        )
                     WHERE ProjectID=$projectID
-                ) AS $latestProjDx ON ($latestProjDx.CandID=c.CandID)";
+                ) AS $latestProjDx ON ($latestProjDx.CandidateID=c.ID)";
             $groupBy       .= ", $latestProjDx.Diagnosis";
         }
 
@@ -378,7 +382,9 @@ class CouchDBDemographicsImporter
         // Update data dictionary for latest diagnosis by project
         $projects = \Utility::getProjectList();
         foreach ($projects as $projectID => $project) {
-            $projectAlias = \Project::getProjectFromID($projectID)->getAlias();
+            $projectAlias = \Project::getProjectFromID(
+                \ProjectID::singleton($projectID)
+            )->getAlias();
             $fieldName    = "latestDiagnosis_" . $projectAlias;
 
             $this->Dictionary[$fieldName] = [

@@ -7,6 +7,7 @@ CREATE TABLE `Project` (
     `Name` VARCHAR(255) NOT NULL,
     `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
+    `showSummaryOnLogin` BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (`ProjectID`),
     UNIQUE KEY `u_ProjectName` (`Name`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
@@ -151,8 +152,8 @@ CREATE TABLE `caveat_options` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL,
+  `ID` int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `CandID` int(10) unsigned NOT NULL,
   `PSCID` varchar(255) NOT NULL DEFAULT '',
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
@@ -175,7 +176,6 @@ CREATE TABLE `candidate` (
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
   `ProbandSex` varchar(255) DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
-  PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
   KEY `FK_candidate_1` (`RegistrationCenterID`),
@@ -193,7 +193,7 @@ CREATE TABLE `candidate` (
 
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `CenterID` integer unsigned NOT NULL,
   `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
@@ -228,11 +228,11 @@ CREATE TABLE `session` (
   `MRICaveat` enum('true','false') NOT NULL DEFAULT 'false',
   `languageID` integer unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `session_candVisit` (`CandID`,`VisitNo`),
+  KEY `session_candVisit` (`CandidateID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
   KEY `SessionCohort` (`CohortID`),
   KEY `SessionActive` (`Active`),
-  CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `FK_session_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_3` FOREIGN KEY (`CohortID`) REFERENCES `cohort` (`CohortID`),
   CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
@@ -341,6 +341,7 @@ CREATE TABLE `test_battery` (
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
+  `DoubleDataEntryEnabled` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -520,10 +521,10 @@ CREATE TABLE `mri_scanner` (
   `Model` varchar(255) default NULL,
   `Serial_number` varchar(255) default NULL,
   `Software` varchar(255) default NULL,
-  `CandID` int(11) default NULL,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`ID`),
-  KEY `FK_mri_scanner_1` (`CandID`),
-  CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
+  KEY `FK_mri_scanner_1` (`CandidateID`),
+  CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET @OLD_SQL_MODE=@@SQL_MODE;
@@ -535,9 +536,10 @@ INSERT INTO `mri_scanner` (ID) VALUES (0);
 SET SQL_MODE=@OLD_SQL_MODE;
 
 CREATE TABLE `mri_scan_type` (
-  `ID` int(11) unsigned NOT NULL auto_increment,
-  `Scan_type` text NOT NULL,
-  PRIMARY KEY  (`ID`)
+  `MriScanTypeID` int(11) unsigned NOT NULL auto_increment,
+  `MriScanTypeName` VARCHAR(255) NOT NULL,
+  PRIMARY KEY  (`MriScanTypeID`),
+  CONSTRAINT `UK_mri_scan_type_name` UNIQUE KEY `MriScanTypeName` (`MriScanTypeName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
 
 INSERT INTO `mri_scan_type` VALUES
@@ -575,7 +577,7 @@ CREATE TABLE `files` (
   `EchoNumber` VARCHAR(20) DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
-  `AcquisitionProtocolID` int(10) unsigned default NULL,
+  `MriScanTypeID` int(10) unsigned default NULL,
   `FileType` varchar(12) default NULL,
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default 0,
@@ -594,11 +596,11 @@ CREATE TABLE `files` (
   KEY `sessionid` (`SessionID`),
   KEY `outputtype` (`OutputType`),
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
-  KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
+  KEY `ScanIndex` (`MriScanTypeID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
   KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
-  CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
+  CONSTRAINT `FK_files_2` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
@@ -649,7 +651,7 @@ CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `CenterID` integer unsigned DEFAULT NULL,
   `ScannerID` int(10) unsigned DEFAULT NULL,
-  `Scan_type` int(10) unsigned NOT NULL default '0',
+  `MriScanTypeID` int(10) unsigned NOT NULL,
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
   `TE_min` DECIMAL(10,4) DEFAULT NULL,
@@ -681,11 +683,12 @@ CREATE TABLE `mri_protocol` (
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
   CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_mri_protocol_scan_type` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,MriScanTypeID,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
    (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
@@ -693,15 +696,17 @@ INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
    (NULL,45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
 
 CREATE TABLE `mri_protocol_group_target` (
-     `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
-     `CohortID`             INT(10) UNSIGNED DEFAULT NULL,
-     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
-     PRIMARY KEY (`MriProtocolGroupTargetID`),
-     CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
-     CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)       REFERENCES `cohort` (`CohortID`)
+    `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
+    `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
+    `CohortID`                 INT(10) UNSIGNED DEFAULT NULL,
+    `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+    PRIMARY KEY (`MriProtocolGroupTargetID`),
+    CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+    CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
+    CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`CohortID`)           REFERENCES `cohort` (`CohortID`),
+    CONSTRAINT `UK_mri_protocol_group_target`
+      UNIQUE (`ProjectID`, `CohortID`, `Visit_label`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `CohortID`, `Visit_label`)
@@ -759,7 +764,7 @@ INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol ch
 
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `ValidMin` decimal(10,4) DEFAULT NULL,
@@ -767,9 +772,9 @@ CREATE TABLE `mri_protocol_checks` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY (`Scan_type`),
-  CONSTRAINT `FK_mriProtocolChecks_ScanType`
-    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
+  KEY (`MriScanTypeID`),
+  CONSTRAINT `FK_mri_protocol_checks_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -851,7 +856,7 @@ CREATE TABLE `bids_mri_scan_type_rel` (
   `BIDSPhaseEncodingDirectionID` int(3)  UNSIGNED DEFAULT NULL,
   PRIMARY KEY  (`MRIScanTypeID`),
   KEY `FK_bids_mri_scan_type_rel` (`MRIScanTypeID`),
-  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`MriScanTypeID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_bids_category`                 FOREIGN KEY (`BIDSCategoryID`)               REFERENCES `bids_category`(`BIDSCategoryID`),
   CONSTRAINT `FK_bids_scan_type_subcategory`    FOREIGN KEY (`BIDSScanTypeSubCategoryID`)    REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
   CONSTRAINT `FK_bids_scan_type`                FOREIGN KEY (`BIDSScanTypeID`)               REFERENCES `bids_scan_type` (`BIDSScanTypeID`),
@@ -864,35 +869,35 @@ INSERT INTO bids_mri_scan_type_rel
   (MRIScanTypeID, BIDSCategoryID, BIDSScanTypeSubCategoryID, BIDSScanTypeID, BIDSEchoNumber)
   VALUES
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'flair'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'flair'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='FLAIR'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'fMRI'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'fMRI'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='func'),
     (SELECT BIDSScanTypeSubCategoryID FROM bids_scan_type_subcategory WHERE BIDSScanTypeSubCategory='task-rest'),
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='bold'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 't1'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 't1'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='T1w'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 't2'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 't2'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='anat'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='T2w'),
     NULL
   ),
   (
-    (SELECT ID FROM mri_scan_type WHERE Scan_type = 'dti'),
+    (SELECT MriScanTypeID FROM mri_scan_type WHERE MriScanTypeName = 'dti'),
     (SELECT BIDSCategoryID FROM bids_category WHERE BIDSCategoryName='dwi'),
     NULL,
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='dwi'),
@@ -971,10 +976,10 @@ CREATE TABLE `mri_violations_log` (
   `TarchiveID` int(11) DEFAULT NULL,
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
-  `CandID` int(6) DEFAULT NULL,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `CheckID` int(11) DEFAULT NULL,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `MriScanTypeID` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
   `Header` varchar(255) DEFAULT NULL,
   `Value` varchar(255) DEFAULT NULL,
@@ -986,8 +991,12 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violations_log_scan_type`
+    FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_mri_checks_group_1`
-    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
+  CONSTRAINT `FK_mri_violations_log_candidate_1`
+      FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `violations_resolved` (
@@ -1004,7 +1013,7 @@ CREATE TABLE `violations_resolved` (
 
 CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6),
+  `CandidateID` int(10) unsigned,
   `PSCID` varchar(255),
   `TarchiveID` int(11),
   `time_run` datetime,
@@ -1030,7 +1039,8 @@ CREATE TABLE `mri_protocol_violated_scans` (
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
+  CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+  CONSTRAINT `FK_mri_protocol_violated_scans_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1105,7 +1115,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL,
-  `ProcessID` int(11) NOT NULL,
+  `ProcessID` int(11) DEFAULT NULL,
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
@@ -1280,7 +1290,7 @@ SET @tmp_val = NULL;
 
 CREATE TABLE `participant_status` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `UserID` varchar(255) DEFAULT NULL,
   `entry_staff` varchar(255) DEFAULT NULL,
   `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1289,13 +1299,13 @@ CREATE TABLE `participant_status` (
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `CandID` (`CandID`),
+  UNIQUE KEY `CandidateID` (`CandidateID`),
   UNIQUE KEY `ID` (`ID`),
   KEY `fk_participant_status_1_idx` (`participant_status`),
   KEY `fk_participant_status_2_idx` (`participant_suboptions`),
   CONSTRAINT `fk_participant_status_1` FOREIGN KEY (`participant_status`) REFERENCES `participant_status_options` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_participant_status_2` FOREIGN KEY (`participant_suboptions`) REFERENCES `participant_status_options` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_participant_status_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_participant_status_3` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `participant_accounts` (
@@ -1319,7 +1329,7 @@ CREATE TABLE `participant_emails` (
 
 CREATE TABLE `participant_status_history` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `entry_staff` varchar(255) DEFAULT NULL,
   `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `participant_status` int(11) DEFAULT NULL,
@@ -1327,15 +1337,17 @@ CREATE TABLE `participant_status_history` (
   `reason_specify_status` enum('not_answered') DEFAULT NULL,
   `participant_subOptions` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
+  UNIQUE KEY `ID` (`ID`),
+  CONSTRAINT `FK_participant_status_history_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `family` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `FamilyID` int(6) NOT NULL,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1364,6 +1376,11 @@ CREATE TABLE `examiners_psc_rel` (
   CONSTRAINT `FK_examiners_psc_rel_1` FOREIGN KEY (`examinerID`) REFERENCES `examiners` (`examinerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- REDCap examiner
+INSERT INTO examiners (full_name) VALUES ('REDCap');
+INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
+    SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
 
 CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1469,6 +1486,18 @@ CREATE TABLE `server_processes` (
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_upload_server_processes_rel` (
+  `UploadID` int(10) unsigned NOT NULL,
+  `ProcessID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UploadID`,`ProcessID`),
+  CONSTRAINT `UK_mri_upload_server_processes_rel_ProcessID`
+    UNIQUE KEY `ProcessID` (`ProcessID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_UploadID`
+    FOREIGN KEY (`UploadID`) REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_ProcessID`
+    FOREIGN KEY (`ProcessID`) REFERENCES `server_processes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `media` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` int(10) unsigned NOT NULL,
@@ -1525,31 +1554,34 @@ CREATE TABLE `issues` (
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
   `centerID` integer unsigned DEFAULT NULL,
-  `candID` int(6) DEFAULT NULL,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
+  `instrument` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`issueID`),
   KEY `fk_issues_1` (`reporter`),
   KEY `fk_issues_2` (`assignee`),
-  KEY `fk_issues_3` (`candID`),
+  KEY `fk_issues_3` (`CandidateID`),
   KEY `fk_issues_4` (`sessionID`),
   KEY `fk_issues_5` (`centerID`),
   KEY `fk_issues_6` (`lastUpdatedBy`),
   KEY `fk_issues_8` (`category`),
+  KEY `fk_issues_instrument` (`instrument`),
   CONSTRAINT `fk_issues_8` FOREIGN KEY (`category`) REFERENCES `issues_categories` (`categoryName`),
   CONSTRAINT `fk_issues_1` FOREIGN KEY (`reporter`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `fk_issues_3` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `fk_issues_instrument` FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `newValue` longtext NOT NULL,
   `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching') NOT NULL DEFAULT 'comment',
+  `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment',
   `issueID` int(11) unsigned NOT NULL,
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
@@ -1778,14 +1810,14 @@ INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID
 
 CREATE TABLE `parameter_candidate` (
   `ParameterCandidateID` int(10) unsigned NOT NULL auto_increment,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `ParameterTypeID` int(10) unsigned NOT NULL,
   `Value` varchar(255) default NULL,
   `InsertTime` int(10) unsigned NOT NULL default 0,
   PRIMARY KEY  (`ParameterCandidateID`),
-  KEY `candidate_type` (`CandID`,`ParameterTypeID`),
+  KEY `candidate_type` (`CandidateID`,`ParameterTypeID`),
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
-  CONSTRAINT `FK_parameter_candidate_2` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `FK_parameter_candidate_2` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`),
   CONSTRAINT `FK_parameter_candidate_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='per-candidate equivalent of parameter_session';
 
@@ -1889,7 +1921,7 @@ CREATE TABLE `SNP` (
 CREATE TABLE `SNP_candidate_rel` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL,
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `AlleleA` enum('A','C','T','G') DEFAULT NULL,
   `AlleleB` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
@@ -1899,15 +1931,15 @@ CREATE TABLE `SNP_candidate_rel` (
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `fk_SNP_candidate_rel_2` (`CandID`),
+  KEY `fk_SNP_candidate_rel_2` (`CandidateID`),
   KEY `fk_SNP_candidate_rel_1_idx` (`SNPID`),
   CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `CNV` (
   `CNVID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) DEFAULT NULL,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `Description` text,
   `Type` enum('gain','loss','unknown') DEFAULT NULL,
   `EventName` varchar(255) DEFAULT NULL,
@@ -1931,10 +1963,10 @@ CREATE TABLE `CNV` (
   `OfficialName` text,
   PRIMARY KEY (`CNVID`),
   KEY `PlatformID` (`PlatformID`),
-  KEY `CandID` (`CandID`),
+  KEY `CandidateID` (`CandidateID`),
   KEY `index4` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `CNV_ibfk_1` FOREIGN KEY (`PlatformID`) REFERENCES `genotyping_platform` (`PlatformID`),
-  CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
+  CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `GWAS` (
@@ -1990,21 +2022,21 @@ CREATE TABLE `genomic_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `genomic_candidate_files_rel` (
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `GenomicFileID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`CandID`,`GenomicFileID`),
+  PRIMARY KEY (`CandidateID`,`GenomicFileID`),
   KEY `GenomicFileID` (`GenomicFileID`),
-  CONSTRAINT `genomic_candidate_files_rel_ibfk_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `genomic_candidate_files_rel_ibfk_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
   CONSTRAINT `genomic_candidate_files_rel_ibfk_2` FOREIGN KEY (`GenomicFileID`) REFERENCES `genomic_files` (`GenomicFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `genomic_sample_candidate_rel` (
   `sample_label` varchar(100) NOT NULL,
-  `CandID` int(6) NOT NULL,
-  PRIMARY KEY (`sample_label`,`CandID`),
+  `CandidateID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`sample_label`,`CandidateID`),
   UNIQUE KEY `sample_label` (`sample_label`),
-  KEY `CandID` (`CandID`),
-  CONSTRAINT `genomic_sample_candidate_rel_ibfk_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
+  KEY `CandidateID` (`CandidateID`),
+  CONSTRAINT `genomic_sample_candidate_rel_ibfk_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `genomic_cpg_annotation` (
@@ -2095,7 +2127,9 @@ CREATE TABLE `data_release` (
  `file_name` varchar(255),
  `version` varchar(255),
  `upload_date` date,
- PRIMARY KEY (`id`)
+ `ProjectID` INT(10) UNSIGNED NULL,
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (
@@ -2146,7 +2180,7 @@ INSERT INTO `feedback_bvl_type` (Name, Description) VALUES
 
 CREATE TABLE `feedback_bvl_thread` (
   `FeedbackID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) DEFAULT NULL,
+  `CandidateID` int(10) unsigned DEFAULT NULL,
   `SessionID` int(11) unsigned DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
   `Feedback_level` enum('profile','visit','instrument') NOT NULL DEFAULT 'profile',
@@ -2160,7 +2194,8 @@ CREATE TABLE `feedback_bvl_thread` (
   `FieldName` text,
   PRIMARY KEY (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
-  KEY `FeedbackCandidate` (`CandID`),
+  KEY `FeedbackCandidate` (`CandidateID`),
+  CONSTRAINT FK_feedback_bvl_thread_candidate_1 FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2294,13 +2329,13 @@ CREATE TABLE `consent` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_rel` (
-  `CandidateID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned  NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
   `Status` enum('yes','no', 'not_applicable') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
-  CONSTRAINT `FK_candidate_consent_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_consent_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2353,13 +2388,13 @@ CREATE TABLE `diagnosis_evolution` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_diagnosis_evolution_rel` (
-  `CandID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
   `DxEvolutionID` int(10) unsigned NOT NULL,
   `Diagnosis` text DEFAULT NULL,
   `Confirmed` enum('Y', 'N') DEFAULT NULL,
   `LastUpdate` datetime NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-  CONSTRAINT `PK_candidate_diagnosis_evolution_rel` PRIMARY KEY (`CandID`, `DxEvolutionID`),
-  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `PK_candidate_diagnosis_evolution_rel` PRIMARY KEY (`CandidateID`, `DxEvolutionID`),
+  CONSTRAINT `FK_candidate_diagnosis_evolution_rel_CandID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_candidate_diagnosis_evolution_rel_DxEvolutionID` FOREIGN KEY (`DxEvolutionID`) REFERENCES `diagnosis_evolution` (`DxEvolutionID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2485,6 +2520,14 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+CREATE TABLE login_summary_statistics (
+    Title VARCHAR(255),
+    Project VARCHAR(255),
+    Value INT,
+    QueryOrder INT,
+    PRIMARY KEY (Title, Project)
+);
+
 CREATE TABLE dataquery_queries (
     QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
     Query JSON NOT NULL,
@@ -2528,12 +2571,12 @@ CREATE TABLE dataquery_starred_queries_rel (
 
 CREATE TABLE dataquery_run_results (
     RunID int(10) unsigned NOT NULL AUTO_INCREMENT,
-    CandID int(6) NOT NULL,
+    CandidateID int(10) unsigned NOT NULL,
     -- JSON or same format that's streamed in?
     RowData LONGTEXT DEFAULT NULL,
 
-    PRIMARY KEY (RunID, CandID),
-    FOREIGN KEY (CandID) REFERENCES candidate(CandID),
+    PRIMARY KEY (RunID, CandidateID),
+    FOREIGN KEY (CandidateID) REFERENCES candidate(ID),
     FOREIGN KEY (RunID) REFERENCES dataquery_run_queries(RunID)
 );
 
@@ -2544,7 +2587,7 @@ CREATE TABLE dataquery_study_queries_rel (
     -- to a saved query but is chosen by admins, a dashboard query
     -- shows the number of matching results on the LORIS dashboard.
     Name varchar(255) NOT NULL,
-    PinType enum('topquery', 'dashboard'),
+    PinType enum('topquery', 'dashboard', 'loginpage'),
     FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
     FOREIGN KEY (PinnedBy) REFERENCES users(ID),
     CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
@@ -2575,3 +2618,42 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `openid_connect_providers` (
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
+    `ClientID` text NOT NULL,
+    `ClientSecret` text NOT NULL,
+    `RedirectURI` text NOT NULL, -- our local redirectURI that the provider is configured to authorize
+                                 -- should be something like "https://something.loris.ca/oidc/callback"
+    PRIMARY KEY (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `openid_connect_csrf` (
+    `State` varchar(64) NOT NULL UNIQUE,
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Nonce` varchar(64) NOT NULL,
+    `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`State`),
+    CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- REDCap tables
+-- ********************************
+
+CREATE TABLE `redcap_notification` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `complete` char(1) NOT NULL,
+  `project_id` varchar(50) NOT NULL,
+  `record` varchar(20) NOT NULL COMMENT 'PSCID',
+  `redcap_event_name` varchar(50) NOT NULL COMMENT 'Visit_label',
+  `instrument` varchar(150) NOT NULL COMMENT 'Test_name',
+  `username` varchar(100) NOT NULL,
+  `redcap_url` varchar(255) NOT NULL,
+  `project_url` varchar(255) NOT NULL,
+  `received_dt` datetime NOT NULL,
+  `handled_dt` datetime NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_redcap_notif_received_dt` (`received_dt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

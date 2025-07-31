@@ -348,7 +348,7 @@ const DatasetTagger = ({
 
   useEffect(() => {
     const openTagViewerClasses = document
-      .querySelector('#tag-modal-container > div > button')
+      .querySelector('#tag-modal-container > button')
       .classList;
 
     if ([...addedTags, ...deletedTags].length > 0) {

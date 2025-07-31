@@ -25,11 +25,10 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 6, '0') AS _DCCID,
+                LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 cohort.CohortID AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _ExternalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
@@ -56,14 +55,14 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 candidate
                 LEFT JOIN (
                     SELECT
-                        s.CandID,
+                        c.CandID,
                         min(s.cohortID) AS CohortID
-                    FROM
-                        session s
+                    FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
-                JOIN CNV ON (candidate.CandID = CNV.CandID)
+                JOIN CNV ON (candidate.ID = CNV.CandidateID)
                 LEFT JOIN genotyping_platform
                     ON (CNV.PlatformID = genotyping_platform.PlatformID)
             WHERE

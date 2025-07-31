@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -42,31 +46,31 @@ class DataDictIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-      // Load the field options. This comes from a separate request than the
-      // table data stream. Once the fieldOptions are loaded, we set isLoaded
-      // to true so that the page is displayed with the data that's been
-      // retrieved.
-      fetch(this.props.fieldsURL, {credentials: 'same-origin'})
-          .then((resp) => resp.json())
-          .then((data) => this.setState({fieldOptions: data, isLoaded: true}))
-        .catch((error) => {
-            this.setState({error: true});
-            console.error(error);
-        });
+    // Load the field options. This comes from a separate request than the
+    // table data stream. Once the fieldOptions are loaded, we set isLoaded
+    // to true so that the page is displayed with the data that's been
+    // retrieved.
+    fetch(this.props.fieldsURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({fieldOptions: data, isLoaded: true}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
     this.fetchData();
   }
 
   /**
    * Retrive data from the provided URL and save it in state
    */
-    fetchData() {
-        fetchDataStream(this.props.dataURL,
-            (row) => this.state.data.push(row),
-            (end) => {
-                this.setState({isLoading: !end, data: this.state.data});
-            },
-            () => {},
-        );
+  fetchData() {
+    fetchDataStream(this.props.dataURL,
+      (row) => this.state.data.push(row),
+      (end) => {
+        this.setState({isLoading: !end, data: this.state.data});
+      },
+      () => {},
+    );
   }
 
   /**
@@ -129,7 +133,7 @@ class DataDictIndex extends Component {
           contentEditable="true"
           className="description"
           onBlur={updateDict(rowData)}>
-            {cell}
+          {cell}
         </td>
       );
     }
@@ -143,7 +147,7 @@ class DataDictIndex extends Component {
    */
   render() {
     if (this.state.error) {
-        return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occured while loading the page.</h3>;
     }
 
     // Waiting for async data to load
@@ -153,61 +157,70 @@ class DataDictIndex extends Component {
 
     const options = this.state.fieldOptions;
     let fields = [
-        {
-            label: 'Source From',
-            show: true,
-            filter: {
-                name: 'Source From',
-                type: 'multiselect',
-                options: options.sourceFrom,
-            },
+      {
+        label: 'Source From',
+        show: true,
+        filter: {
+          name: 'Source From',
+          type: 'multiselect',
+          options: options.sourceFrom,
         },
-        {
-            label: 'Name',
-            show: true,
-            filter: {
-                name: 'Name',
-                type: 'text',
-            },
+      },
+      {
+        label: 'Name',
+        show: true,
+        filter: {
+          name: 'Name',
+          type: 'text',
         },
-        {
-            label: 'Source Field',
-            show: true,
-            filter: {
-                name: 'Source Field',
-                type: 'text',
-            },
+      },
+      {
+        label: 'Source Field',
+        show: true,
+        filter: {
+          name: 'Source Field',
+          type: 'text',
         },
-        {
-            label: 'Description',
-            show: true,
-            filter: {
-                name: 'Description',
-                type: 'text',
-            },
+      },
+      {
+        label: 'Description',
+        show: true,
+        filter: {
+          name: 'Description',
+          type: 'text',
         },
-        {
-            label: 'Description Status',
-            show: true,
-            filter: {
-                name: 'DescriptionStatus',
-                type: 'select',
-                options: {
-                    'empty': 'Empty',
-                    'modified': 'Modified',
-                    'unchanged': 'Unchanged',
-                },
-            },
+      },
+      {
+        label: 'Description Status',
+        show: true,
+        filter: {
+          name: 'DescriptionStatus',
+          type: 'select',
+          options: {
+            'empty': 'Empty',
+            'modified': 'Modified',
+            'unchanged': 'Unchanged',
+          },
         },
+      },
+      {
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohort,
+        },
+      },
     ];
     return (
-        <FilterableDataTable
-           name="datadict"
-           data={this.state.data}
-           fields={fields}
-           loading={this.state.isLoading}
-           getFormattedCell={this.formatColumn}
-        />
+      <FilterableDataTable
+        name="datadict"
+        data={this.state.data}
+        fields={fields}
+        loading={this.state.isLoading}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }
@@ -218,10 +231,14 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'datadict', {});
+  const Index = withTranslation(
+    ['datadict', 'loris']
+  )(DataDictIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataDictIndex
+    <Index
       dataURL={`${loris.BaseURL}/datadict/?format=binary`}
       fieldsURL={`${loris.BaseURL}/datadict/fields`}
     />

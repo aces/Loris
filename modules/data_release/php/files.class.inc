@@ -116,6 +116,7 @@ class Files extends \NDB_Page
             $request,
             $posted['version'],
             $overwrite,
+            $posted['project'],
         );
     }
 
@@ -180,15 +181,17 @@ class Files extends \NDB_Page
      * Moves a to the appropriate place on the filesystem and inserts into
      * the database, returning an appropriate HTTP response.
      *
-     * @param \LORIS\FilesUploadHandler $files     The FilesUploadHandler which moves
-     *                                             the file and generates the
-     *                                             response.
-     * @param \User                     $user      The user uploading the file.
-     * @param string                    $fileName  The file name being uploaded.
-     * @param ServerRequestInterface    $request   The incoming request.
-     * @param ?string                   $version   The user submitted file version.
-     * @param bool                      $overwrite Flag to indicate if existing file
-     *                                             should be overwritten.
+     * @param \LORIS\FilesUploadHandler $files       The FilesUploadHandler which
+     *                                               moves the file and generates
+     *                                               the response.
+     * @param \User                     $user        The user uploading the file.
+     * @param string                    $fileName    The file name being uploaded.
+     * @param ServerRequestInterface    $request     The incoming request.
+     * @param ?string                   $version     The user submitted file version.
+     * @param bool                      $overwrite   Flag to indicate if existing
+     *                                               file should be overwritten.
+     * @param ?string                   $projectName The name of the project the file
+     *                                               belongs to
      *
      * @return ResponseInterface
      */
@@ -198,12 +201,28 @@ class Files extends \NDB_Page
         string $fileName,
         ServerRequestInterface $request,
         ?string $version,
-        bool $overwrite
+        bool $overwrite,
+        ?string $projectName
     ) : ResponseInterface {
         $DB = $this->loris->getDatabaseConnection();
         if ($version !== null) {
             $version = strtolower($version);
         }
+
+        // Get ProjectID
+        $ProjectID = $DB->pselectOne(
+            "SELECT ProjectID FROM Project WHERE Name=:project",
+            ['project' => $projectName]
+        );
+
+        // Get information on users with permission to the version
+
+        $releasePage = $this->Module->loadPage(
+            $this->loris,
+            'data_release',
+        );
+        assert($releasePage instanceof Data_Release);
+        $userVersionFiles = $releasePage->getUserVersionFiles($DB);
 
         $upload_date = date('Y-m-d');
         if ($overwrite) {
@@ -213,6 +232,7 @@ class Files extends \NDB_Page
                 [
                     'version'     => $version,
                     'upload_date' => $upload_date,
+                    'ProjectID'   => $ProjectID,
                 ],
                 ['file_name' => $fileName]
             );
@@ -224,6 +244,7 @@ class Files extends \NDB_Page
                         'file_name'   => $fileName,
                         'version'     => $version,
                         'upload_date' => $upload_date,
+                        'ProjectID'   => $ProjectID,
                     ]
                 );
 
@@ -240,6 +261,21 @@ class Files extends \NDB_Page
                 'data_release_id' => $fileID,
             ]
         );
+
+        // add permission for file to users with permission to the version
+        foreach ($userVersionFiles as $userid => $userVersionFile) {
+            if (array_key_exists('versions', $userVersionFile)
+                && in_array($version, $userVersionFile['versions'])
+            ) {
+                $DB->insertIgnore(
+                    'data_release_permissions',
+                    [
+                        'userid'          => $userid,
+                        'data_release_id' => $fileID,
+                    ]
+                );
+            }
+        }
         return $files->handle($request);
     }
 

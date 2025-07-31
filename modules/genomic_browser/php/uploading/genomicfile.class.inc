@@ -58,20 +58,25 @@ class Genomicfile
      */
     function setupUploading($user, $files, $values) : array
     {
+        if (!isset($files['file'])
+            || empty($files['file']->getStream()->getMetadata('uri'))
+        ) {
+            return [];
+        }
         $this->_user   = $user;
-        $this->_bytes  = $files['file']['size'];
+        $this->_bytes  = $files['file']->getSize();
         $this->_values = $values;
-
+        $uri           = $files['file']->getStream()->getMetadata('uri');
         $this->_fileToUpload
             = (object) [
-                'file_type'         => $files['file']['type'],
-                'file_name'         => $files['file']['name'],
-                'tmp_name'          => $files['file']['tmp_name'],
+                'file_type'         => $files['file']->getClientMediaType(),
+                'file_name'         => $files['file']->getClientFilename(),
+                'tmp_name'          => $uri,
                 'size'              => round($this->_bytes / 1048576, 0),
                 'inserted_by'       => $this->_user->getData('UserID'),
                 'genomic_file_type' => empty($this->_values['fileType']) ?
                 null : str_replace('_', ' ', $this->_values['fileType']),
-                'description'       => $this->_values['fileDescription'],
+                'description'       => $this->_values['fileDescription'] ?? '',
             ];
 
         $this->setFullPath($this->_fileToUpload);
@@ -240,9 +245,9 @@ class Genomicfile
                 $stmt = $DB->prepare(
                     "
                     INSERT IGNORE INTO
-                        genomic_candidate_files_rel (CandID, GenomicFileID)
+                        genomic_candidate_files_rel (CandidateID, GenomicFileID)
                     VALUES (
-                        (select CandID from candidate where PSCID = :pscid),
+                        (select ID from candidate where PSCID = :pscid),
                         :genomic_file_id
                     )
                     "
@@ -412,10 +417,10 @@ class Genomicfile
         $stmt = $DB->prepare(
             "
             INSERT IGNORE INTO
-                genomic_sample_candidate_rel (sample_label, CandID)
+                genomic_sample_candidate_rel (sample_label, CandidateID)
             VALUES (
                 :sample_label,
-                (SELECT CandID FROM candidate WHERE PSCID = :pscid)
+                (SELECT ID FROM candidate WHERE PSCID = :pscid)
             )
             "
         );

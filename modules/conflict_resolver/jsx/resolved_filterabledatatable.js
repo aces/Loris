@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -45,7 +46,7 @@ class ResolvedFilterableDataTable extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     return (
-        <td>{cell}</td>
+      <td>{cell}</td>
     );
   }
 
@@ -75,9 +76,9 @@ class ResolvedFilterableDataTable extends Component {
    */
   fetchData() {
     return fetch(
-        loris.BaseURL.concat('/conflict_resolver/resolved'),
-        {credentials: 'same-origin'}
-      )
+      loris.BaseURL.concat('/conflict_resolver/resolved'),
+      {credentials: 'same-origin'}
+    )
       .then((resp) => resp.json())
       .then((json) => {
         if (json.error) {
@@ -132,6 +133,11 @@ class ResolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.project,
       }},
+      {label: 'Cohort', show: true, filter: {
+        name: 'Cohort',
+        type: 'select',
+        options: options.cohort,
+      }},
       {label: 'Site', show: true, filter: {
         name: 'Site',
         type: 'select',
@@ -164,12 +170,8 @@ class ResolvedFilterableDataTable extends Component {
         name: 'Description',
         type: 'text',
       }},
-      {label: 'Value 1', show: true, filter: {
-        name: 'Value1',
-        type: 'text',
-      }},
-      {label: 'Value 2', show: true, filter: {
-        name: 'Value2',
+      {label: 'Incorrect Answer', show: true, filter: {
+        name: 'OldValue',
         type: 'text',
       }},
       {label: 'Correct Answer', show: true, filter: {
@@ -205,4 +207,6 @@ class ResolvedFilterableDataTable extends Component {
   }
 }
 
-export default ResolvedFilterableDataTable;
+export default withTranslation(
+  ['conflict_resolver', 'loris']
+)(ResolvedFilterableDataTable);

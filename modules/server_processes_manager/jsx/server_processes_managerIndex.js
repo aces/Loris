@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -81,10 +84,10 @@ class ServerProcessesManagerIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in server_processes_manager.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in server_processes_manager.class.inc
+     */
     const fields = [
       {label: 'PID', show: true, filter: {
         name: 'pid',
@@ -108,12 +111,12 @@ class ServerProcessesManagerIndex extends Component {
     ];
 
     return (
-          <FilterableDataTable
-            name="server_processes_manager"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
+      <FilterableDataTable
+        name="server_processes_manager"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+      />
     );
   }
 }
@@ -123,10 +126,16 @@ ServerProcessesManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  // FIXME: This is adding an empty object so that eslint doesn't complain about
+  // i18n being unused. Translate the module
+  i18n.addResourceBundle('ja', 'server_processes_manager', {});
+  const SPMIndex = withTranslation(
+    ['server_processes_manager', 'loris']
+  )(ServerProcessesManagerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ServerProcessesManagerIndex
+    <SPMIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
     />
   );

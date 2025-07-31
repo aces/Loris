@@ -14,11 +14,27 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+        $user->hasAnyPermission(
+            ['candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+    }
+    /**
+     * {@inheritDoc}
+     *
      * @return string The human readable name for this module
      */
     public function getLongName() : string
     {
-        return "Candidate Parameters";
+        return dgettext("candidate_parameters", "Candidate Parameters");
     }
 
     /**
@@ -176,7 +192,8 @@ class Module extends \Module
                 JOIN parameter_candidate pc USING (ParameterTypeID)
                 JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
                 JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-             WHERE ptc.Name='Candidate Parameters' AND pc.CandID=:cid",
+                JOIN candidate c ON c.ID=pc.CandidateID
+             WHERE ptc.Name='Candidate Parameters' AND c.CandID=:cid",
             ['cid' => $candidate->getCandID()]
         );
 

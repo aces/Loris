@@ -47,6 +47,37 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::tearDown();
     }
+    /**
+     * Tests that, when loading the create_timepoint module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testCreateTimepointBTN()
+    {
+        $this->safeGet(
+            $this->url . "/900000"
+        );
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div.col-xs-12.row > a:nth-child(2)"
+            )
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Create Timepoint", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
+
+
 
     /**
      * Tests that, when loading the create_timepoint module, some
@@ -63,7 +94,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Timepoint", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -73,6 +104,111 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
     }
+    /**
+     * Test that ensures the user can only choose from Projects and Sites they are
+     * affiliated with. Ensure the Cohort dropdown is dynamically populated once
+     * a Site and Project are selected.
+     *
+     * Ensure the Visit label dropdown is dynamically populated once the Cohort
+     * selection is done.
+     *
+     * Confirm that options displayed for Cohort and Visit labels fields match
+     * the content of the project_cohort_rel table and the visit_project_cohort_rel
+     * table respectively.
+     *
+     * Ensure a popup error is displayed when a project with no cohort associations
+     * is selected.
+     *
+     * Ensure a popup error is displayed when a cohort is selected, in combination
+     * with a project, where no visit labels are defined for that project-cohort
+     * combination.
+     *
+     * Ensure that if the user is affiliated with a single project and/or site,
+     * the Project/Site dropdowns are auto-populated with the sole available option.
+     *
+     * Ensure that if the Cohort and/or Visit label dropdowns contain a single option
+     * only, the option is auto-selected by default.
+     *
+     * @return void
+     */
+    function testDCCIDandProjectSite()
+    {
+        // Safe get the URL with query parameters
+        $this->safeGet(
+            $this->url .
+            "/create_timepoint/?candID=900000&identifier=900000&cohortID=1"
+        );
+
+        // Check the "Data Coordinating Center" dropdown
+        $this->_assertDropdownSelectedText('psc', 'Data Coordinating Center');
+
+        // Check the "Pumpernickel" dropdown
+        $this->_assertDropdownSelectedText('project', 'Pumpernickel');
+
+        // Check the "English" dropdown
+        $this->_assertDropdownSelectedText('languageID', 'English');
+
+        // Check the "cohort" dropdown has "Fresh" and "Stale" as options
+        $this->_assertDropdownHasOptions('cohort', ['Fresh', 'Stale']);
+    }
+
+    /**
+     * Helper function to assert that a dropdown has the expected selected text
+     *
+     * @param string $elementId    The ID of the dropdown element
+     * @param string $expectedText The expected selected text
+     *
+     * @return void
+     */
+    private function _assertDropdownSelectedText($elementId, $expectedText)
+    {
+        // Get the dropdown element
+        $selectElement = $this->safeFindElement(WebDriverBy::id($elementId));
+
+        // Create a WebDriverSelect object
+        $select = new WebDriverSelect($selectElement);
+
+        // Get the text of the selected option
+        $selectedOptionText = $select->getFirstSelectedOption()->getText();
+
+        // Assert that the selected text is as expected
+        $this->assertEquals(
+            $expectedText,
+            $selectedOptionText,
+            "The selected option in '$elementId' is not as expected."
+        );
+    }
+
+    /**
+     * Helper function to assert that a dropdown contains specific options
+     *
+     * @param string $elementId       The ID of the dropdown element
+     * @param array  $expectedOptions The list of expected options in the dropdown
+     *
+     * @return void
+     */
+    private function _assertDropdownHasOptions($elementId, array $expectedOptions)
+    {
+        // Get the dropdown element
+        $selectElement = $this->safeFindElement(WebDriverBy::id($elementId));
+
+        // Create a WebDriverSelect object
+        $select = new WebDriverSelect($selectElement);
+
+        // Get all options in the dropdown
+        $allOptions  = $select->getOptions();
+        $optionTexts = array_map(fn($option) => $option->getText(), $allOptions);
+
+        // Loop through expected options and assert that each exists
+        foreach ($expectedOptions as $expectedOption) {
+            $this->assertTrue(
+                in_array($expectedOption, $optionTexts),
+                "The option '$expectedOption' was not found in dropdown."
+            );
+        }
+    }
+
+
 
     /**
      * Tests that, when loading the create_timepoint module, some

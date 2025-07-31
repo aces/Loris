@@ -33,11 +33,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Imaging";
+        return \LORIS\GUI\MenuCategory::singleton("Imaging");
     }
 
     /**
@@ -47,7 +47,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Browser";
+        return dgettext("imaging_browser", "Imaging Browser");
     }
 
     /**
@@ -75,7 +75,7 @@ class Module extends \Module
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f
                          LEFT JOIN session s ON (s.ID=f.SessionID)
-                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                         LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                      WHERE (MRIQCStatus='' OR MRIQCPending='Y')
                          AND s.Active='Y' AND c.Active='Y'
                          AND s.CenterID <> 1",
@@ -94,14 +94,15 @@ class Module extends \Module
 
             $scansummary = $DB->pselect(
                 "SELECT s.Visit_label,
-                    mst.Scan_type,
+                    mst.MriScanTypeName as ScanType,
                     COALESCE(fqc.QCStatus, '') as QC,
                     COUNT(*) as nfiles
-                 FROM files f JOIN session s ON (s.ID=f.sessionID)
-                    JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
+                FROM files f JOIN session s ON (s.ID=f.sessionID)
+                    JOIN candidate c ON c.ID=s.CandidateID
+                    JOIN mri_scan_type mst ON (f.MriScanTypeID=mst.MriScanTypeID)
                     LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-                WHERE CandID=:cid AND f.OutputType='native'
-                GROUP BY s.Visit_label, mst.Scan_type, QC",
+                WHERE c.CandID=:cid AND f.OutputType='native'
+                GROUP BY s.Visit_label, mst.MriScanTypeName, QC",
                 ['cid' => $candidate->getCandID()],
             );
 

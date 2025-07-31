@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Loader from 'Loader';
 import {
-    SearchableDropdown,
-    SelectElement,
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    FileElement,
-    ButtonElement,
+  SearchableDropdown,
+  SelectElement,
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  FileElement,
+  ButtonElement,
 } from 'jsx/Form';
 
 /**
@@ -88,8 +88,8 @@ class DocUploadForm extends Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (<Loader/>);
@@ -109,7 +109,6 @@ class DocUploadForm extends Component {
               label="Category"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
-              hasError={false}
               required={true}
               value={this.state.formData.category}
             />
@@ -157,12 +156,12 @@ class DocUploadForm extends Component {
             {
               loris.userHasPermission('document_repository_hidden') ?
                 (<SelectElement
-                name="hiddenFile"
-                label="Restrict access to the file?"
-                options={this.state.data.fieldOptions.hiddenFile}
-                sortByValue={false}
-                onUserInput={this.setFormData}
-                value={this.state.formData.hiddenFile}
+                  name="hiddenFile"
+                  label="Restrict access to the file?"
+                  options={this.state.data.fieldOptions.hiddenFile}
+                  sortByValue={false}
+                  onUserInput={this.setFormData}
+                  value={this.state.formData.hiddenFile}
                 />) :
                 null
             }
@@ -178,6 +177,7 @@ class DocUploadForm extends Component {
             <ButtonElement
               label="Upload File(s)"
               disabled={this.state.uploadInProgress}
+              disabledLabel="Uploading..."
             />
           </FormElement>
         </div>
@@ -204,9 +204,9 @@ class DocUploadForm extends Component {
         if (formData[key] !== '') {
           if (key === 'files' &&
             document.querySelector('.fileUpload').multiple) {
-              Array.from(formData[key]).forEach((file) => {
-                formObject.append('files[]', file);
-              });
+            Array.from(formData[key]).forEach((file) => {
+              formObject.append('files[]', file);
+            });
           } else {
             formObject.append(key, formData[key]);
           }
@@ -229,7 +229,7 @@ class DocUploadForm extends Component {
                       this.setState({formData: {}});
                       this.props.refreshPage();
                     }
-                });
+                  });
               } else {
                 console.error(resp);
                 swal.fire('Upload Incomplete', data.message, 'warning');
@@ -243,21 +243,21 @@ class DocUploadForm extends Component {
               );
             });
           } else {
-              if (resp.status == 413) {
-                swal.fire('File too large', 'Could not upload file', 'error');
-              }
-              if (resp.status == 403) {
-                swal.fire('Permission denied',
-                    'Could not upload file',
-                    'error'
-                );
-              }
-              if (resp.status == 400) {
-                swal.fire('Something went wrong',
-                    JSON.parse(resp.response).message,
-                    'error'
-                );
-              }
+            if (resp.status == 413) {
+              swal.fire('File too large', 'Could not upload file', 'error');
+            }
+            if (resp.status == 403) {
+              swal.fire('Permission denied',
+                'Could not upload file',
+                'error'
+              );
+            }
+            if (resp.status == 400) {
+              swal.fire('Something went wrong',
+                JSON.parse(resp.response).message,
+                'error'
+              );
+            }
           }
         }).catch((error) => {
           console.error(error);

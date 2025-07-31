@@ -1,6 +1,9 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
 
@@ -45,16 +48,16 @@ class ConflictResolver extends Component {
 
     let filtertable;
     switch (this.state.activeTab) {
-      case 'unresolved':
-        filtertable = (
-          <UnresolvedFilterableDataTable />
-        );
-        break;
-      case 'resolved':
-        filtertable = (
-          <ResolvedFilterableDataTable />
-        );
-        break;
+    case 'unresolved':
+      filtertable = (
+        <UnresolvedFilterableDataTable />
+      );
+      break;
+    case 'resolved':
+      filtertable = (
+        <ResolvedFilterableDataTable />
+      );
+      break;
     }
     return (
       <Tabs
@@ -72,8 +75,12 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'conflict_resolver', {});
+  const Index = withTranslation(
+    ['conflict_resolver', 'loris']
+  )(ConflictResolver);
   createRoot(
     document.getElementById('lorisworkspace')
-  ).render(<ConflictResolver />);
+  ).render(<Index />);
 });
 

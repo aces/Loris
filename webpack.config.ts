@@ -5,14 +5,20 @@ import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
-// An object mapping each LORIS module to its entry points.
-let lorisModules: { [x: string]: string[] } = {
+// Build mode (development or production)
+const isDev = process.env.NODE_ENV === 'development';
+
+// Target module to build (if there is one)
+const target = process.env.target;
+
+// A record mapping each LORIS module to its entry points
+const lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
   login: ['loginIndex'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
-  candidate_parameters: ['CandidateParameters', 'ConsentWidget'],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
   configuration: [
     'CohortRelations',
     'configuration_helper',
@@ -45,6 +51,7 @@ let lorisModules: { [x: string]: string[] } = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
+    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
@@ -143,6 +150,7 @@ const resolve: webpack.ResolveOptions = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
+    I18nSetup: path.resolve(__dirname, './jsx/I18nSetup'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -171,13 +179,30 @@ const module: webpack.ModuleOptions = {
     },
     {
       test: /\.tsx?$/,
+      exclude: [/react-series-data-viewer/],
       use: [
         {
           loader: 'ts-loader',
-          options: {onlyCompileBundledFiles: true},
+          options: {
+            onlyCompileBundledFiles: true,
+          },
         },
       ],
     },
+    {
+      test: /.*\/react-series-data-viewer\/.*\.tsx?$/,
+      use: [
+        {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+            compilerOptions: {
+              strict: false,
+          },
+        },
+      },
+    ],
+  },
   ],
 };
 
@@ -186,35 +211,18 @@ const plugins: webpack.WebpackPluginInstance[] = [];
 plugins.push(new CopyPlugin({
   patterns: [
     {
-      from: path.resolve(__dirname, 'node_modules/react/umd'),
-      to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+      from: `node_modules/react/umd/${
+        isDev ? 'react.development.js' : 'react.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
       force: true,
-      globOptions: {
-        ignore: ['react.profiling.min.js'],
-      },
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
-      filter: async (path) => {
-        const file = path.split(/\\|\//).pop() as string;
-        const keep = [
-          'react.development.js',
-          'react.production.min.js',
-        ];
-        return keep.includes(file);
-      },
     },
     {
-      from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
-      to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+      from: `node_modules/react-dom/umd/${
+        isDev ? 'react-dom.development.js' : 'react-dom.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
       force: true,
-      /** https://webpack.js.org/plugins/copy-webpack-plugin/#filter */
-      filter: async (path) => {
-        const file = path.split(/\\|\//).pop() as string;
-        const keep = [
-          'react-dom.development.js',
-          'react-dom.production.min.js',
-        ];
-        return keep.includes(file);
-      },
     },
   ],
 }));
@@ -232,63 +240,105 @@ if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
 }
 
 /**
- * Get the webpack entries of a given module, which is described by its name
- * and its entry points.
- *
- * @returns A list of two-element tuples mapping each entry name (exemple
- * 'login/loginIndex') to its webpack entry.
+ * Add the project-specific modules and entry points to the record of main
+ * LORIS modules.
  */
-function makeModuleEntries(moduleName: string, files: string[]) {
+function addProjectModules(
+  modules: Record<string, string[]>,
+): Record<string, string[]> {
+  if (!fs.existsSync('./project/webpack-project.config.js')) {
+    return modules;
+  }
+
+  const projectModules: Record<string, string[]>
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    = require('./project/webpack-project.config.js');
+
+  // Copy the record of LORIS modules
+  const allModules: Record<string, string[]> = modules;
+  
+  // Add project-specific modules and overrides to the record of modules
+  for (const [moduleName, moduleEntryPoints] of
+    Object.entries(projectModules)
+  ) {
+    if (moduleName in allModules) {
+      allModules[moduleName].push(...moduleEntryPoints);
+    } else {
+      allModules[moduleName] = moduleEntryPoints;
+    }
+  }
+
+  return allModules;
+}
+
+/**
+ * Filter the record of LORIS modules to contain only the target module if a
+ * target is defined, or return the record unchanged if no target is defined.
+ */
+function filterTargetModules(
+  modules: Record<string, string[]>,
+): Record<string, string[]> {
+  // If there is no target module, do not filter the modules
+  if (!target) {
+    // eslint-disable-next-line no-console
+    console.log('Building all modules');
+    return modules;
+  }
+
+  // Exit if the target module is not found in the list of modules
+  if (!(target in modules)) {
+    console.error(`Target module \''${target}'\' not found`);
+    process.exit(1);
+  }
+
+  // Return a record containing only the target module files
+  // eslint-disable-next-line no-console
+  console.log(`Building module \'${target}\'`);
+  return {
+    [target]: modules[target],
+  };
+}
+
+/**
+ * Get the Webpack entries of a given module, with each entry being mapped to
+ * its name.
+ */
+function getModuleEntries(
+  moduleName: string,
+  moduleEntryPoints: string[],
+): Record<string, webpack.EntryOptions>[] {
   // Check if a project override exists for the module.
   const basePath = fs.existsSync(`./project/modules/${moduleName}`)
     ? `./project/modules/${moduleName}/`
     : `./modules/${moduleName}/`;
 
-  return files.map((fileName) => ([moduleName + '/' + fileName, {
-    import: basePath + 'jsx/' + fileName,
-    filename: basePath + 'js/' + fileName + '.js',
-    library: {
-      name: ['lorisjs', moduleName, fileName],
-      type: 'window',
+  return moduleEntryPoints.map((moduleEntryPoint) => ({
+    [moduleName + '/' + moduleEntryPoint]: {
+      import: basePath + 'jsx/' + moduleEntryPoint,
+      filename: basePath + 'js/' + moduleEntryPoint + '.js',
+      library: {
+        name: ['lorisjs', moduleName, moduleEntryPoint],
+        type: 'window',
+      },
     },
-  }]));
+  }));
 }
 
-// Add entries for project overrides.
-if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projectModules: { [x: string]: string[] }
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    = require('./project/webpack-project.config.js');
+/**
+ * Get the Webpack entries of the LORIS modules to build, with each entry being
+ * mapped to its name.
+ */
+function getModulesEntries(): Record<string, webpack.EntryOptions> {
+  const allModules = addProjectModules(lorisModules);
+  const targetModules = filterTargetModules(allModules);
+  const moduleEntries = Object.entries(targetModules)
+    .map(([moduleName, moduleEntryPoints]) =>
+      getModuleEntries(moduleName, moduleEntryPoints)
+    )
+    .flat();
 
-  for (const [moduleName, files] of Object.entries(projectModules)) {
-    if (moduleName in lorisModules) {
-      lorisModules[moduleName].push(...files);
-    } else {
-      lorisModules[moduleName] = files;
-    }
-  }
+  return Object.assign({}, ...moduleEntries);
 }
-
-// Only build the given target module if there is one in the current
-// environment.
-const target = process.env.target;
-if (target) {
-  if (target in lorisModules) {
-    lorisModules = {
-      [target]: lorisModules[target],
-    };
-  } else {
-    console.error(`Target module '${target}' not found.`);
-    process.exit(1);
-  }
-}
-
-// Transform the mapping of LORIS modules to a mapping of webpack entry points.
-const entries = Object.fromEntries(
-  Object.entries(lorisModules)
-    .map(([name, files]) => makeModuleEntries(name, files))
-    .flat()
-);
 
 const configs: webpack.Configuration[] = [];
 
@@ -300,7 +350,7 @@ configs.push({
     Breadcrumbs: './jsx/Breadcrumbs.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
-    ...entries,
+    ...getModulesEntries(),
   },
   output: {
     path: __dirname,
@@ -316,41 +366,5 @@ configs.push({
   module,
   stats: 'errors-warnings',
 });
-
-// HACK: For some reason, the electrophysiology session view only compiles if
-// it uses a separate (although possibly identical) configuration.
-if (!target || target === 'electrophysiology_browser') {
-  configs.push({
-    entry: {
-      electrophysiology_browser: {
-        import: './modules/electrophysiology_browser/'
-          + 'jsx/electrophysiologySessionView',
-        filename: './modules/electrophysiology_browser/'
-          + 'js/electrophysiologySessionView.js',
-        library: {
-          name: [
-            'lorisjs',
-            'electrophysiology_browser',
-            'electrophysiologySessionView',
-          ],
-          type: 'window',
-        },
-      },
-    },
-    output: {
-      path: __dirname,
-      filename: './htdocs/js/components/[name].js',
-      library: ['lorisjs', '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
-    devtool: 'source-map',
-    plugins,
-    optimization,
-    resolve,
-    module,
-    stats: 'errors-warnings',
-  });
-}
 
 export default configs;

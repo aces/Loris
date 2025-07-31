@@ -46,11 +46,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Imaging";
+        return \LORIS\GUI\MenuCategory::singleton("Imaging");
     }
 
     /**
@@ -60,7 +60,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "MRI Violated Scans";
+        return dgettext("mri_violations", "MRI Violated Scans");
     }
 
     /**
@@ -84,7 +84,7 @@ class Module extends \Module
             if (!class_exists('Provisioner')) {
                 self::registerAutoloader();
             }
-            $provisioner = new Provisioner();
+            $provisioner = new Provisioner($this->loris);
 
             if ($user->hasPermission('violated_scans_view_allsites')) {
                 $siteLabel = 'Site: All';

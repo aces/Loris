@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -69,10 +72,10 @@ class DicomArchive extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'Archive Location': {
-        const downloadURL = '/mri/jiv/get_file.php?file=' + cell
+    case 'Archive Location': {
+      const downloadURL = '/mri/jiv/get_file.php?file=' + cell
             + '&patientName=' + row['Patient Name'];
-        result =
+      result =
           <td>
             <a href={downloadURL}>
               <span className="glyphicon glyphicon-cloud-download"/>
@@ -80,27 +83,27 @@ class DicomArchive extends Component {
               {cell}
             </a>
           </td>;
-      }
+    }
       break;
-      case 'Metadata': {
-        const metadataURL = loris.BaseURL +
+    case 'Metadata': {
+      const metadataURL = loris.BaseURL +
           '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-        result = <td><a href={metadataURL}>{cell}</a></td>;
-      }
+      result = <td><a href={metadataURL}>{cell}</a></td>;
+    }
       break;
-      case 'MRI Browser': {
-        if (row.SessionID === null || row.SessionID === '') {
-          result = <td>&nbsp;</td>;
-        } else {
-          let mrlURL = loris.BaseURL
+    case 'MRI Browser': {
+      if (row.SessionID === null || row.SessionID === '') {
+        result = <td>&nbsp;</td>;
+      } else {
+        let mrlURL = loris.BaseURL
                        + '/imaging_browser/viewSession/?sessionID='
                        + row.SessionID;
-          result = <td><a href={mrlURL}>{cell}</a></td>;
-        }
-      break;
+        result = <td><a href={mrlURL}>{cell}</a></td>;
       }
-      case 'INVALID - HIDDEN':
-        result = <td className="text-danger">{cell}</td>;
+      break;
+    }
+    case 'INVALID - HIDDEN':
+      result = <td className="text-danger">{cell}</td>;
       break;
     }
 
@@ -189,9 +192,13 @@ DicomArchive.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dicom_archive', {});
+  const Index = withTranslation(
+    ['dicom_archive', 'loris']
+  )(DicomArchive);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
+    <Index dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
   );
 });

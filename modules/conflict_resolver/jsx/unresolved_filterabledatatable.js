@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
+import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
 
@@ -46,17 +47,17 @@ class UnresolvedFilterableDataTable extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     switch (column) {
-      case 'Correct Answer':
-        const options = {
-          1: rowData['Value 1'],
-          2: rowData['Value 2'],
-        };
-        return (
-          <FixConflictForm
-            conflictId={rowData['Conflict ID']}
-            options={options}
-          />
-        );
+    case 'Correct Answer':
+      const options = {
+        1: rowData['Value 1'],
+        2: rowData['Value 2'],
+      };
+      return (
+        <FixConflictForm
+          conflictId={rowData['Conflict ID']}
+          options={options}
+        />
+      );
     }
     return (
       <td>{cell}</td>
@@ -144,6 +145,11 @@ class UnresolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.project,
       }},
+      {label: 'Cohort', show: true, filter: {
+        name: 'cohort',
+        type: 'select',
+        options: options.cohort,
+      }},
       {label: 'Site', show: true, filter: {
         name: 'Site',
         type: 'select',
@@ -192,4 +198,6 @@ class UnresolvedFilterableDataTable extends Component {
   }
 }
 
-export default UnresolvedFilterableDataTable;
+export default withTranslation(
+  ['conflict_resolver', 'loris']
+)(UnresolvedFilterableDataTable);

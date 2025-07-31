@@ -37,8 +37,9 @@ class Module extends \Module
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
                 [
-                    'issue_tracker_reporter',
-                    'issue_tracker_developer'
+                    'issue_tracker_all_issue',
+                    'issue_tracker_own_issue',
+                    'issue_tracker_site_issue',
                 ]
             );
     }
@@ -46,11 +47,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -60,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Issue Tracker";
+        return dgettext("issue_tracker", "Issue Tracker");
     }
 
     /**
@@ -111,10 +112,11 @@ class Module extends \Module
                 "SELECT i.issueID as ID,
                         i.title as Title,
                         COUNT(DISTINCT ic.issueCommentID) as comments
-                 FROM issues i
+                FROM issues i
                     LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
-                 WHERE status != 'closed' AND CandID=:cid
-                 GROUP BY i.issueID, i.Title",
+                    JOIN candidate c ON c.ID=i.CandidateID
+                WHERE status != 'closed' AND c.CandID=:cid
+                GROUP BY i.issueID, i.Title",
                 [ 'cid' => $candidate->getCandID() ],
             );
             if (count($issues) === 0) {

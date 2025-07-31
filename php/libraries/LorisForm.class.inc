@@ -706,7 +706,15 @@ class LorisForm
                 }
             }
         }
-
+        //double escaping
+        if (!is_array($newValue)) {
+            $newValue = htmlspecialchars(
+                strval($newValue),
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
+        }
         return $newValue;
     }
 
@@ -1056,7 +1064,7 @@ class LorisForm
             $value = $timeStamp;
         } else if (preg_match(
             '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
-            $timeStamp,
+            $timeStamp ?? '',
             $bits
         )
         ) {
@@ -1090,7 +1098,7 @@ class LorisForm
     {
         $year   = $this->getValue($el['name']);
         $smarty = new Smarty_NeuroDB;
-        $value  = explode('-', $year)[0];
+        $value  = explode('-', $year ?? '')[0];
 
         $smarty->assign('name', $el['name']);
         $smarty->assign('minYear', $el['options']['minYear']);
