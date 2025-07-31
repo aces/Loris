@@ -526,11 +526,11 @@ class Charts extends \NDB_Page
     {
         $user = \NDB_Factory::singleton()->user();
 
-        $cohortQuery  = '';
-        $sessionJoin  = '';
-        $visitQuery   = '';
-        $PSJoin       = '';
-        $candJoin     = '';
+        $cohortQuery = '';
+        $sessionJoin = '';
+        $visitQuery  = '';
+        $PSJoin      = '';
+        $candJoin    = '';
         $participantStatusQuery = '';
 
         if (($_GET['selectedProjects'] ?? "undefined") != 'undefined') {
