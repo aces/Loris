@@ -275,7 +275,17 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1),
-  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1);
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_update'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_alter'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_update'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_pool_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1);
 
 
 -- permissions for each notification module

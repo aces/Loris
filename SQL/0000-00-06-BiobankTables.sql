@@ -390,3 +390,8 @@ INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1, 1), (2, 1);
 INSERT INTO `biobank_specimen_process` VALUES (2,'Analysis'),(1,'Collection'),(3,'Preparation');
 INSERT INTO `biobank_container_status` VALUES (1,'Available'),(4,'Discarded'),(3,'Dispensed');
 INSERT INTO `shipment_status` VALUES (1,'cancelled'),(2,'created'),(3,'received'),(4,'returned'),(5,'shipped');
+
+-- Insert ConfigSettings for label printing endpoint
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('biobank', 'Settings related to the biobank module', 1, 0, 'Biobank', 16);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'printEndpoint', 'Endpoint address for label printing logic', 1, 0, 'text', ID, 'Label Printing Endpoint', 1 FROM ConfigSettings WHERE Name="biobank";
+
