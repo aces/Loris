@@ -154,6 +154,12 @@ msgstr "प्रतिक्रिया"
 msgid "Scans"
 msgstr "स्कैन"
 
+msgid "Date of Birth"
+msgstr "जन्म तिथि"
+
+msgid "An error occured while loading the page."
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
