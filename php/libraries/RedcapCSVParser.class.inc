@@ -9,7 +9,7 @@
 namespace LORIS;
 
 require_once 'NDB_Factory.class.inc';
-require_once 'CSVParser.class.inc';
+require_once 'InstrumentDataParser.class.inc';
 require_once __DIR__ .
     '/../../modules/redcap/php/client/models/redcapdictionaryrecord.class.inc';
 require_once __DIR__ . '/../../modules/redcap/php/client/redcapprops.class.inc';
@@ -27,7 +27,7 @@ use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class RedcapCSVParser extends CSVParser
+class RedcapCSVParser extends InstrumentDataParser
 {
     private bool $trimInstrumentName;
     private array $importableInstruments = [];
@@ -86,7 +86,7 @@ class RedcapCSVParser extends CSVParser
                 function ($csvHeaders, $row) use ($expectedHeaders) {
                     try {
                         if (count($csvHeaders) < count($expectedHeaders)) {
-                            // Pad row with blanks -- Assumes prior order is same as expected
+                            // Pad row with blanks -- Assumes order was same as expected
                             $row = array_pad($row, count($expectedHeaders), '');
                         }
 
@@ -153,7 +153,6 @@ class RedcapCSVParser extends CSVParser
     public static function createLINSTFiles(
         array $instruments, string $outputFolder, $instrumentTitleMap = []
     ): void {
-        // write instrument
         foreach ($instruments as $instrumentName => $instrument) {
             self::createLINSTFile(
                 $outputFolder,
@@ -168,7 +167,7 @@ class RedcapCSVParser extends CSVParser
 
 
     /**
-     * Write LINST file and its associated META file.
+     * Create LINST file from REDCap dictionary
      *
      * @param string $output_dir       the output directory
      * @param string $instrument_name  the instrument name
@@ -213,18 +212,8 @@ class RedcapCSVParser extends CSVParser
             }
         }
         fclose($fp);
-
-//        // META file
-//        $fp_meta = fopen("$output_dir/$instrument_name.meta", "w");
-//        fwrite($fp_meta, "testname{@}$instrument_name\n");
-//        fwrite($fp_meta, "table{@}$instrument_name\n");
-//        fwrite($fp_meta, "jsondata{@}true\n");
-//        fwrite($fp_meta, "norules{@}true");
-//        fwrite($fp_meta, "redcap{@}true");
-//
-//        fclose($fp_meta);
     }
-
+    
     /**
      * Parse the Instrument Data csv file
      *
@@ -254,7 +243,7 @@ class RedcapCSVParser extends CSVParser
                     function ($headers, $instrumentName) use ($loris, $createNonexistent) {
                         return array_unique(array_merge(
                             $headers,
-                            InstrumentDataParser::getCSVHeaders(
+                            self::getCSVHeaders(
                                 $loris,
                                 $instrumentName,
                                 $createNonexistent
@@ -267,7 +256,7 @@ class RedcapCSVParser extends CSVParser
                 $parsedCSV = $this->parse($expectedHeaders);
 
                 foreach ($instrumentNames as $instrumentName) {
-                    $instrumentHeaders = InstrumentDataParser::getCSVHeaders(
+                    $instrumentHeaders = self::getCSVHeaders(
                         $loris,
                         $instrumentName,
                     );
@@ -286,7 +275,7 @@ class RedcapCSVParser extends CSVParser
                         $parsedCSV
                     );
 
-                    $validData = InstrumentDataParser::validateData(
+                    $validData = self::validateData(
                         $instrumentData,
                         [
                             'UserID'   => $userID,
@@ -301,7 +290,7 @@ class RedcapCSVParser extends CSVParser
                         );
                     }
 
-                    $result = InstrumentDataParser::insertInstrumentData(
+                    $result = self::insertInstrumentData(
                         $loris,
                         $validData['data'],
                         $instrumentName,

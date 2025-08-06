@@ -29,11 +29,8 @@ $result = [];
 
 try {
     $fileInfo   = new SplFileInfo($fileLocation);
-    $dataParser = new InstrumentDataParser(
-        $instrumentName,
-        $fileInfo,
-    );
-    $data       = $dataParser->parseCSV($lorisInstance, $createNonexistent);
+    $dataParser = new InstrumentDataParser($fileInfo);
+    $data       = $dataParser->parseCSV($lorisInstance, $instrumentName, $createNonexistent);
     $validData  = $dataParser::validateData(
         $data,
         [

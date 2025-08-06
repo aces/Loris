@@ -27,8 +27,6 @@ use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
  */
 class InstrumentDataParser extends CSVParser
 {
-    private string $instrumentName;
-
     /**
      * Construct parser
      *
@@ -37,10 +35,9 @@ class InstrumentDataParser extends CSVParser
      *
      * @return void
      */
-    public function __construct(string $instrumentName, SplFileInfo $csvFile)
+    public function __construct(SplFileInfo $csvFile)
     {
         parent::__construct($csvFile);
-        $this->instrumentName = $instrumentName;
     }
 
     /**
@@ -54,6 +51,7 @@ class InstrumentDataParser extends CSVParser
      */
     public function parseCSV(
         LorisInstance $loris,
+        string $instrumentName,
         bool $includeCreationColumns = false
     ): array {
         try {
@@ -61,7 +59,7 @@ class InstrumentDataParser extends CSVParser
 
             $expectedHeaders = self::getCSVHeaders(
                 $loris,
-                $this->instrumentName,
+                $instrumentName,
                 $includeCreationColumns,
                 $config->getSetting('useEDC') === 'true'
             );

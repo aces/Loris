@@ -523,7 +523,7 @@ class InstrumentManagerIndex extends Component {
       title={'Upload Instrument Data (multi)'}
       show={this.state.showMultiInstrumentUploadModal}
       width={'75%'}
-      minHeight={'40vh'}
+      minHeight={'450px'}
       onSubmit={handleSubmit}
       onClose={
         () => {

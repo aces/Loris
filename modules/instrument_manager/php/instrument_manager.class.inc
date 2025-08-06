@@ -244,7 +244,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                         $instrumentName . ".meta"
                     ),
                     "jsondata{@}true\n" .
-                    $isRedcap ? "redcap{@}true\n" : ""
+                    ($isRedcap ? "redcap{@}true\n" : "")
                 );
             }
         } catch (\NotFound $e) {

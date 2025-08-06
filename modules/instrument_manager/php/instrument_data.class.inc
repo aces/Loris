@@ -3,6 +3,7 @@
 namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
 use LORIS\RedcapCSVParser;
+use PHPUnit\Exception;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
@@ -208,12 +209,9 @@ class Instrument_Data extends \NDB_Page
 
                 // Parse
                 try {
-                    $dataParser = new InstrumentDataParser(
-                        $instrumentName,
-                        $fileInfo,
-                    );
+                    $dataParser = new InstrumentDataParser($fileInfo);
 
-                    $data = $dataParser->parseCSV($this->loris, $createNonexistent);
+                    $data = $dataParser->parseCSV($this->loris, $instrumentName, $createNonexistent);
 
                     $studyIDs = [];
                     if ($createNonexistent) {
@@ -304,47 +302,42 @@ class Instrument_Data extends \NDB_Page
             );
         } else if (isset($requestBody['multi-instrument'])) {
             $instruments = json_encode(json_decode($requestBody['multi-instrument']));
-            error_log($instruments);
-//            return new \LORIS\Http\Response\JSON\BadRequest(
-//                'Multi-instrument not yet implemented'
-//            );
 
-            $dataFile = $request->getUploadedFiles()['data_file'];
-            $userID   = $request->getAttribute('user')->getUsername();
+            try {
+                $dataFile = $request->getUploadedFiles()['data_file'];
+                $userID   = $request->getAttribute('user')->getUsername();
 
-            $uploadFolder = $this->loris
-                ->getConfiguration()->getSetting('instrumentDataPath');
-            $filePrefix   = $userID . '_' . time() . '_';
-            $fileLocation = $uploadFolder . "/$filePrefix"
-                . $dataFile->getClientFilename();
-            $dataFile->moveTo($fileLocation);
+                $uploadFolder = $this->loris
+                    ->getConfiguration()->getSetting('instrumentDataPath');
+                $filePrefix   = $userID . '_' . time() . '_';
+                $fileLocation = $uploadFolder . "/$filePrefix"
+                    . $dataFile->getClientFilename();
+                $dataFile->moveTo($fileLocation);
 
-            $fileInfo = new SplFileInfo($fileLocation);
-            $this->_insertCSVFileEntry($fileInfo->getFilename());
-            $dataParser = new RedcapCSVParser(
-                $fileInfo,
-            );
+                $fileInfo = new SplFileInfo($fileLocation);
+                $this->_insertCSVFileEntry($fileInfo->getFilename());
+                $dataParser = new RedcapCSVParser($fileInfo);
 
-//            $instruments = $requestBody['multi-instrument'];
-            $instrumentNames = array_map(
-                function ($instrument) { return $instrument['value']; },
-                json_decode($instruments, true)
-            );
-            $result = $dataParser->parseDataCSV(
-                $this->loris,
-                $instrumentNames,
-                $userID,
-                $createNonexistent
-            );
+                $instrumentNames = array_map(
+                    function ($instrument) { return $instrument['value']; },
+                    json_decode($instruments, true)
+                );
+                $result = $dataParser->parseDataCSV(
+                    $this->loris,
+                    $instrumentNames,
+                    $userID,
+                    $createNonexistent
+                );
 
-            error_log("returning");
-            error_log(json_encode($result));
-            return new \LORIS\Http\Response\JSON\Created($result);
-//            if ($result['success']) {
-//                return new \LORIS\Http\Response\JSON\Created($result);
-//            }
-//
-//            return new \LORIS\Http\Response\JSON\BadRequest(json_encode($result));
+                return new \LORIS\Http\Response\JSON\Created($result);
+            } catch (\RuntimeException $e) {
+                return new \LORIS\Http\Response\JSON\OK(
+                    [
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ]
+                );
+            }
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
