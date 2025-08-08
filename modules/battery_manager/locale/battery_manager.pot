@@ -84,7 +84,10 @@ msgstr ""
 msgid "Test Duplicate"
 msgstr ""
 
-msgid "The information provided corresponds with a deactivated test that already exists in the system. Would you to like activate that test?"
+msgid "The information provided corresponds with a deactivated test that already exists in the system."
+msgstr ""
+
+msgid "Would you to like activate that test?"
 msgstr ""
 
 msgid "You cannot duplicate an active test"
