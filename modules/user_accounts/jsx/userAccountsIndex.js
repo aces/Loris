@@ -23,6 +23,8 @@ import FilterableDataTable from 'FilterableDataTable';
 class UserAccountsIndex extends Component {
   /**
    * {@inheritdoc}
+   *
+   * @param props
    */
   constructor(props) {
     super(props);
@@ -76,56 +78,56 @@ class UserAccountsIndex extends Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-      case t('Site', {ns: 'user_accounts'}):
+    case t('Site', {ns: 'user_accounts'}):
+      result = (
+        <td>
+          {cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+        </td>
+      );
+      if (cell.length === 0) {
         result = (
           <td>
-            {cell
-              .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-              .join(', ')}
+            {t('This user has no site affiliations', {ns: 'user_accounts'})}
           </td>
         );
-        if (cell.length === 0) {
-          result = (
-            <td>
-              {t('This user has no site affiliations', {ns: 'user_accounts'})}
-            </td>
-          );
-        }
-        break;
-      case t('Project', {ns: 'user_accounts'}):
+      }
+      break;
+    case t('Project', {ns: 'user_accounts'}):
+      result = (
+        <td>
+          {cell.map(
+            (projectId) => this.state.data.fieldOptions.projects[projectId]
+          ).join(', ')}
+        </td>
+      );
+      if (cell.length === 0) {
         result = (
           <td>
-            {cell.map(
-              (projectId) => this.state.data.fieldOptions.projects[projectId]
-            ).join(', ')}
+            {t('This user has no project affiliations', {ns: 'user_accounts'})}
           </td>
         );
-        if (cell.length === 0) {
-          result = (
-            <td>
-              {t('This user has no project affiliations', {ns: 'user_accounts'})}
-            </td>
-          );
-        }
-        break;
-      case t('Username', {ns: 'user_accounts'}):
-        url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
-        result = <td><a href={url}>{cell}</a></td>;
-        break;
-      case t('Active', {ns: 'user_accounts'}):
-        if (row.Active === 'Y') {
-          result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
-        } else if (row.Active === 'N') {
-          result = <td>{t('No', {ns: 'user_accounts'})}</td>;
-        }
-        break;
-      case t('Pending Approval', {ns: 'user_accounts'}):
-        if (row['Pending Approval'] === 'Y') {
-          result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
-        } else if (row['Pending Approval'] === 'N') {
-          result = <td>{t('No', {ns: 'user_accounts'})}</td>;
-        }
-        break;
+      }
+      break;
+    case t('Username', {ns: 'user_accounts'}):
+      url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
+      result = <td><a href={url}>{cell}</a></td>;
+      break;
+    case t('Active', {ns: 'user_accounts'}):
+      if (row.Active === 'Y') {
+        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+      } else if (row.Active === 'N') {
+        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+      }
+      break;
+    case t('Pending Approval', {ns: 'user_accounts'}):
+      if (row['Pending Approval'] === 'Y') {
+        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+      } else if (row['Pending Approval'] === 'N') {
+        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+      }
+      break;
     }
     return result;
   }
