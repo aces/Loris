@@ -7,13 +7,13 @@ import swal from 'sweetalert2';
 import {Tabs, TabPane} from 'Tabs';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import {
-    FormElement,
-    SelectElement,
-    StaticElement,
-    ButtonElement,
-    DateElement,
-    TimeElement,
-    TextboxElement
+  FormElement,
+  SelectElement,
+  StaticElement,
+  ButtonElement,
+  DateElement,
+  TimeElement,
+  TextboxElement,
 } from 'jsx/Form';
 
 import i18n from 'I18nSetup';
@@ -71,7 +71,7 @@ class ScheduleIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => {
-         if (resp.ok) {
+        if (resp.ok) {
           resp.json().then((data) => {
             this.setState({data});
             const today = data.fieldOptions.today;
@@ -79,12 +79,13 @@ class ScheduleIndex extends Component {
             const list = data.Data;
             this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
             this.setState({tabledatanext: list.filter((e)=>{
-            return e[7]>today && e[7]<=next;
-             })});
+              return e[7]>today && e[7]<=next;
+            })});
             this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
             this.setState({isLoaded: true});
           });
-      }})
+        }
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -97,16 +98,19 @@ class ScheduleIndex extends Component {
       method: 'GET',
       cache: 'no-cache',
       credentials: 'same-origin',
-      })
+    })
       .then((resp) => resp.json())
       .then((data) => {
-       if (type === 'DCCID' ) {
-         this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
-      } 
-       if (type === 'PSCID' ) {
-         this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
-      }
-         this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
+        if (type === 'DCCID' ) {
+          this.setState({formData: {...this.state.formData,
+            PSCID: data['PSCID']}});
+        }
+        if (type === 'PSCID' ) {
+          this.setState({formData: {...this.state.formData,
+            DCCID: data['DCCID']}});
+        }
+        this.setState({formData: {...this.state.formData,
+          SessionFieldOptions: data['Session']}});
       })
       .catch((error) => {
         this.setState({error: true});
@@ -140,7 +144,7 @@ class ScheduleIndex extends Component {
   }
 
   handleSubmit(e) {
-    const { t } = this.props;
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -156,24 +160,28 @@ class ScheduleIndex extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => {
-      if (resp.ok && resp.status === 200) {
-        const msg = this.state.editModal ? t('Appointment modified.', {ns: 'schedule_module'}) : t('Appointment added.', {ns: 'schedule_module'});
-        swal.fire(t('Success!', {ns: 'schedule_module'}), msg, 'success').then((result) => {
-          if (result.value) {
-            this.fetchData();
-            this.closeModal();
-          }
-        });
-      } else {
-        resp.json().then((message) => {
-          swal.fire(t('No changes were made!', {ns: 'schedule_module'}), message.error, 'error');
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      .then((resp) => {
+        if (resp.ok && resp.status === 200) {
+          const msg = this.state.editModal ? t('Appointment modified.',
+            {ns: 'schedule_module'}) : t('Appointment added.',
+            {ns: 'schedule_module'});
+          swal.fire(t('Success!',
+            {ns: 'schedule_module'}), msg, 'success').then((result) => {
+            if (result.value) {
+              this.fetchData();
+              this.closeModal();
+            }
+          });
+        } else {
+          resp.json().then((message) => {
+            swal.fire(t('No changes were made!',
+              {ns: 'schedule_module'}), message.error, 'error');
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   mapColumn(column, cell) {
@@ -181,19 +189,23 @@ class ScheduleIndex extends Component {
   }
 
   deleteConfirm(id) {
-    const { t } = this.props;
+    const {t} = this.props;
     swal.fire({
       title: t('Are you sure?', {ns: 'schedule_module'}),
-      text: t('You won\'t be able to revert this!', {ns: 'schedule_module'}),
+      text: t('You won\'t be able to revert this!',
+        {ns: 'schedule_module'}),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: t('Yes, delete it!', {ns: 'schedule_module'}),
-      cancelButtonText: t('No, cancel it!', {ns: 'schedule_module'}),
+      confirmButtonText: t('Yes, delete it!',
+        {ns: 'schedule_module'}),
+      cancelButtonText: t('No, cancel it!',
+        {ns: 'schedule_module'}),
     }).then((result) => {
       if (result.value) {
         swal.fire(
           t('Deleted!', {ns: 'schedule_module'}),
-          t('Your appointment has been deleted.', {ns: 'schedule_module'}),
+          t('Your appointment has been deleted.',
+            {ns: 'schedule_module'}),
           'success',
         );
         this.deleteid(id);
@@ -202,27 +214,28 @@ class ScheduleIndex extends Component {
   }
 
   deleteid(id) {
-    let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
+    let deleteurl = loris.BaseURL +
+        '/schedule_module/appointment/' + id;
     fetch(deleteurl, {
       method: 'DELETE',
       cache: 'no-cache',
       credentials: 'same-origin',
     })
-    .then((resp) => {
-      if (resp.ok) {
-        if (this.state.data.Data.length == 1) {
-          window.location.reload();
+      .then((resp) => {
+        if (resp.ok) {
+          if (this.state.data.Data.length == 1) {
+            window.location.reload();
+          }
+          this.fetchData();
+        } else {
+          resp.text().then((message) => {
+            swal.fire('Error!', message, 'error');
+          });
         }
-        this.fetchData();
-      } else {
-        resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   edit(row) {
@@ -258,7 +271,7 @@ class ScheduleIndex extends Component {
   }
 
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
     case t('PSCID', {ns: 'schedule_module'}):
@@ -266,14 +279,21 @@ class ScheduleIndex extends Component {
       result = <td><a href ={url}>{cell}</a></td>;
       break;
     case t('Visit Label', {ns: 'schedule_module'}):
-      let visit = loris.BaseURL + '/instrument_list/?candID=' + row['DCCID'] + '&sessionID=' + row['Edit'];
+      let visit = loris.BaseURL + '/instrument_list/?candID=' +
+                   row['DCCID'] + '&sessionID=' + row['Edit'];
       result = <td><a href ={visit}>{cell}</a></td>;
       break;
     case t('Edit', {ns: 'schedule_module'}):
-      result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> {t('Edit', {ns: 'schedule_module'})}</button></td>;
+      result = <td><button className="btn btn-default"
+        onClick={() => this.edit(row)}>
+        <span className="glyphicon glyphicon-edit"></span>
+        {t('Edit', {ns: 'schedule_module'})}</button></td>;
       break;
     case t('Delete', {ns: 'schedule_module'}):
-      result = <td><button className="btn btn-default" onClick={() => this.deleteConfirm(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> {t('Delete', {ns: 'schedule_module'})}</button></td>;
+      result = <td><button className="btn btn-default"
+        onClick={() => this.deleteConfirm(row['Delete'])}>
+        <span className="glyphicon glyphicon-trash"></span>
+        {t('Delete', {ns: 'schedule_module'})}</button></td>;
       break;
     case t('Data Entry Status', {ns: 'schedule_module'}):
       let css='label label-default';
@@ -283,7 +303,8 @@ class ScheduleIndex extends Component {
       if (cell===t('No Data Found', {ns: 'schedule_module'})) {
         css='label label-danger';
       }
-      if (cell===t('In Progress', {ns: 'schedule_module'}) || cell===t('Not Started', {ns: 'schedule_module'})) {
+      if (cell===t('In Progress', {ns: 'schedule_module'}) ||
+        cell===t('Not Started', {ns: 'schedule_module'})) {
         css='label label-warning';
       }
       result = <td><span className={css}>{cell}</span></td>;
@@ -296,18 +317,18 @@ class ScheduleIndex extends Component {
   }
 
   renderScheduleFormButton() {
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.editModal) {
       return (<ButtonElement
         name="edit"
-        label={t("Edit Appointment", {ns: 'schedule_module'})}
+        label={t('Edit Appointment', {ns: 'schedule_module'})}
         type="submit"
         buttonClass="btn btn-sm btn-success"
       />);
     } else {
       return (<ButtonElement
         name="create"
-        label={t("Create Appointment", {ns: 'schedule_module'})}
+        label={t('Create Appointment', {ns: 'schedule_module'})}
         type="submit"
         buttonClass="btn btn-sm btn-success"
       />);
@@ -315,10 +336,12 @@ class ScheduleIndex extends Component {
   }
 
   renderScheduleForm() {
-    const { t } = this.props;
+    const {t} = this.props;
     let year = new Date();
     let minYear = year.getFullYear();
-    const title = this.state.editModal ? t('Edit Appointment', {ns: 'schedule_module'}) : t('Add Appointment', {ns: 'schedule_module'});
+    const title = this.state.editModal ?
+      t('Edit Appointment', {ns: 'schedule_module'}) :
+      t('Add Appointment', {ns: 'schedule_module'});
     return (
       <Modal
         title= {title}
@@ -334,7 +357,7 @@ class ScheduleIndex extends Component {
         >
           <TextboxElement
             name="DCCID"
-            label={t("DCCID", {ns: 'schedule_module'})}
+            label={t('DCCID', {ns: 'schedule_module'})}
             value={this.state.formData.DCCID}
             required={true}
             onUserInput={this.setFormData}
@@ -342,7 +365,7 @@ class ScheduleIndex extends Component {
           />
           <TextboxElement
             name="PSCID"
-            label={t("PSCID", {ns: 'schedule_module'})}
+            label={t('PSCID', {ns: 'schedule_module'})}
             value={this.state.formData.PSCID}
             required={true}
             onUserInput={this.setFormData}
@@ -351,7 +374,7 @@ class ScheduleIndex extends Component {
           <SelectElement
             name="Session"
             options={this.state.formData.SessionFieldOptions}
-            label={t("Visit", {ns: 'schedule_module'})}
+            label={t('Visit', {ns: 'schedule_module'})}
             value={this.state.formData.Session}
             required={true}
             onUserInput={this.setFormData}
@@ -359,7 +382,7 @@ class ScheduleIndex extends Component {
           />
           <DateElement
             name = "AppointmentDate"
-            label = {t("Appointment Date", {ns: 'schedule_module'})}
+            label = {t('Appointment Date', {ns: 'schedule_module'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentDate}
             minYear = {minYear}
@@ -367,14 +390,14 @@ class ScheduleIndex extends Component {
           />
           <TimeElement
             name = "AppointmentTime"
-            label = {t("Appointment Time", {ns: 'schedule_module'})}
+            label = {t('Appointment Time', {ns: 'schedule_module'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentTime}
             required = {false}
           />
           <SelectElement
             name="AppointmentType"
-            label = {t("Appointment Type", {ns: 'schedule_module'})}
+            label = {t('Appointment Type', {ns: 'schedule_module'})}
             options={this.state.data.fieldOptions.AppointmentType}
             value={this.state.formData.AppointmentType}
             required={true}
@@ -387,9 +410,10 @@ class ScheduleIndex extends Component {
   }
 
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'schedule_module'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'schedule_module'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -425,7 +449,8 @@ class ScheduleIndex extends Component {
         type: 'multiselect',
         options: options.subproject,
       }},
-      {label: t('Appointment Type', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('Appointment Type',
+        {ns: 'schedule_module'}), show: true, filter: {
         name: 'Appointment Type',
         type: 'select',
         options: options.AppointmentType,
@@ -439,12 +464,16 @@ class ScheduleIndex extends Component {
         type: 'time',
       }},
       {label: t('Starts At', {ns: 'schedule_module'}), show: true},
-      {label: t('Edit', {ns: 'schedule_module'}), show: true, name: 'edit'},
-      {label: t('Delete', {ns: 'schedule_module'}), show: true, name: 'delete'},
-      {label: t('AppointmentTypeName', {ns: 'schedule_module'}), show: false, name: 'AppointmentTypeName'},
+      {label: t('Edit',
+        {ns: 'schedule_module'}), show: true, name: 'edit'},
+      {label: t('Delete',
+        {ns: 'schedule_module'}), show: true, name: 'delete'},
+      {label: t('AppointmentTypeName',
+        {ns: 'schedule_module'}), show: false, name: 'AppointmentTypeName'},
     ];
     const actions = [
-      {name: 'addSchedule', label: t('Add Appointment', {ns: 'schedule_module'}), action: this.openModal},
+      {name: 'addSchedule', label: t('Add Appointment',
+        {ns: 'schedule_module'}), action: this.openModal},
     ];
     let tabList = [
       {id: 'all', label: t('All', {ns: 'schedule_module'})},
@@ -498,7 +527,7 @@ class ScheduleIndex extends Component {
                 filters={this.state.filters}
               />
             </TabPane>
-          </Tabs>	    
+          </Tabs>
         </div>
       </div>
     );
