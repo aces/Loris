@@ -71,7 +71,7 @@ class DataReleaseIndex extends Component {
   }
 
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
     case t('File Name', {ns: 'data_release'}):
@@ -81,7 +81,8 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_edit_file_access')) {
         const downloadURL = loris.BaseURL
             + '/data_release/files/'
-            + encodeURIComponent(row[t('Data Release ID', {ns: 'data_release'})]);
+            + encodeURIComponent(row[t('Data Release ID',
+              {ns: 'data_release'})]);
         result = (
           <td>
             <a
@@ -99,10 +100,11 @@ class DataReleaseIndex extends Component {
   }
 
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'data_release'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'data_release'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
