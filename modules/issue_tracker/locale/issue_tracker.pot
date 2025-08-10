@@ -111,3 +111,63 @@ msgstr ""
 msgid "An error occured while loading the page."
 msgstr ""
 
+msgid "Create New Issue"
+msgstr ""
+
+msgid "Never!"
+msgstr ""
+
+msgid "No-one!"
+msgstr ""
+
+msgid "Sometime Soon!"
+msgstr ""
+
+msgid "Submit Issue"
+msgstr ""
+
+msgid "Edit Issue"
+msgstr ""
+
+msgid "Update Issue"
+msgstr ""
+
+msgid "Add Attachment"
+msgstr ""
+
+msgid "Attachment for issue"
+msgstr ""
+
+msgid "Attachment for Issue"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Watching?"
+msgstr ""
+
+msgid "Add others to watching?"
+msgstr ""
+
+msgid "New Comment"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr ""
+
+msgid "Failed to submit issue :("
+msgstr ""
+
+msgid "Issue updated!"
+msgstr ""
+
+msgid "Issue created!"
+msgstr ""
+
+msgid "Error!"
+msgstr ""
+

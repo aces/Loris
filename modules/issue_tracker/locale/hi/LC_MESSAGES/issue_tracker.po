@@ -55,7 +55,7 @@ msgid "SessionID"
 msgstr "सत्र आईडी"
 
 msgid "CandID"
-msgstr "उम्मीदवार आईडी"
+msgstr "कैंडिडेट आईडी"
 
 msgid "Watching"
 msgstr "देख रहे हैं"
@@ -104,4 +104,64 @@ msgstr "बैच संपादन"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
+msgid "Create New Issue"
+msgstr "नई समस्या बनाएँ"
+
+msgid "Never!"
+msgstr "कभी नहीं!"
+
+msgid "No-one!"
+msgstr "कोई नहीं!"
+
+msgid "Sometime Soon!"
+msgstr "जल्द ही!"
+
+msgid "Submit Issue"
+msgstr "समस्या सबमिट करें"
+
+msgid "Edit Issue"
+msgstr "समस्या संपादित करें"
+
+msgid "Update Issue"
+msgstr "समस्या अपडेट करें"
+
+msgid "Add Attachment"
+msgstr "संलग्नक जोड़ें"
+
+msgid "Attachment for issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Attachment for Issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Watching?"
+msgstr "देख रहे हैं?"
+
+msgid "Add others to watching?"
+msgstr "अन्य को देखने में जोड़ें?"
+
+msgid "New Comment"
+msgstr "नई टिप्पणी"
+
+msgid "This field is required"
+msgstr "यह फ़ील्ड आवश्यक है"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "आपको 2 सेकंड में मुख्य पृष्ठ पर भेज दिया जाएगा!"
+
+msgid "Failed to submit issue :("
+msgstr "समस्या सबमिट करने में विफल :("
+
+msgid "Issue updated!"
+msgstr "समस्या अपडेट की गई!"
+
+msgid "Issue created!"
+msgstr "समस्या बनाई गई!"
+
+msgid "Error!"
+msgstr "त्रुटि!"
 
