@@ -70,7 +70,7 @@ class DataDictIndex extends Component {
    * @return {Function} callback function for react to activate swal
    */
   editSwal(row) {
-    const { t } = this.props;
+    const {t} = this.props;
     return () => {
       swal.fire({
         title: t('Edit Description', {ns: 'dictionary'}),
@@ -186,7 +186,7 @@ class DataDictIndex extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    const { t } = this.props;
+    const {t} = this.props;
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     let editIcon = '';
     let edited = '';
@@ -198,7 +198,8 @@ class DataDictIndex extends Component {
           onClick={this.editSwal(rowData)}>
         </i>);
       }
-      if (rowData[t('Description Status', {ns: 'dictionary'})] === t('Modified', {ns: 'dictionary'})) {
+      if (rowData[t('Description Status', {ns: 'dictionary'})] ===
+       t('Modified', {ns: 'dictionary'})) {
         edited = <span>({t('edited', {ns: 'dictionary'})})</span>;
       }
       return <td>{cell}
@@ -215,10 +216,11 @@ class DataDictIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'dictionary'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'dictionary'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -345,6 +347,7 @@ class DataDictIndex extends Component {
 DataDictIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   BaseURL: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
