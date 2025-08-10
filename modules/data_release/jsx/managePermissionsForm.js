@@ -53,9 +53,9 @@ class ManagePermissionsForm extends Component {
       .then((resp) => resp.json())
       .then((data) => this.setState({data, originalData: data}))
       .catch( (error) => {
-        this.setState({error:
+        this.setState({error: 
           this.props.t('An error occurred when loading the form!',
-            {ns: 'data_release'})});
+          {ns: 'data_release'})});
         console.error(error);
       });
   }
