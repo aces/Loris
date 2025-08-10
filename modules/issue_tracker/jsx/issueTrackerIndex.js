@@ -185,12 +185,13 @@ class IssueTrackerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'issue_tracker'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+         {ns: 'issue_tracker'})}</h3>;
     }
 
     // Waiting for async data to load
