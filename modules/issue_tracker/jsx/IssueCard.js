@@ -395,7 +395,9 @@ const IssueCard = React.memo(function IssueCard(props) {
                       e.target.value)
                   }
                 >
-                  <option value="">{t('All Sites', {ns: 'issue_tracker'})}</option>
+                  <option value="">
+                    {t('All Sites', {ns: 'issue_tracker'})}
+                  </option>
                   {Object.entries(sites).map(([id, name]) => (
                     <option
                       key={id}
@@ -405,7 +407,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div>lol
             </>
           ) : (
             <>

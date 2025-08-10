@@ -15,7 +15,7 @@ function CandidateIssuesWidget(props) {
   const issues = props.Issues.map(function(issue) {
     let comments;
     if (issue.comments && issue.comments != '0' ) {
-      comments = ' ('+ issue.comments + ' ' + 
+      comments = ' ('+ issue.comments + ' ' +
       t('comment', {ns: 'issue_tracker'});
       if (issue.comments != '1') {
         comments += 's';
