@@ -9,7 +9,6 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
 import {
   FormElement,
   SelectElement,
-  StaticElement,
   ButtonElement,
   DateElement,
   TimeElement,
@@ -536,6 +535,8 @@ class ScheduleIndex extends Component {
 
 ScheduleIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  formURL: PropTypes.string.isRequired,
+  submitURL: PropTypes.string.isRequired,
   t: PropTypes.func,
 };
 
