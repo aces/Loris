@@ -85,7 +85,7 @@ class DataDictIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    const { t } = this.props;
+    const {t} = this.props;
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === t('Description', {ns: 'datadict'}) && hasEditPermission) {
       let updateDict = (rowdata) => {
@@ -149,10 +149,11 @@ class DataDictIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'datadict'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'datadict'})}</h3>;
     }
 
     // Waiting for async data to load
