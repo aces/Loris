@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 /**
  * CandidateIssuesWidget represents a list of open issues to be displayed
@@ -10,10 +11,12 @@ import PropTypes from 'prop-types';
  * @return {object}
  */
 function CandidateIssuesWidget(props) {
+  const {t} = props;
   const issues = props.Issues.map(function(issue) {
     let comments;
     if (issue.comments && issue.comments != '0' ) {
-      comments = ' ('+ issue.comments + ' comment';
+      comments = ' ('+ issue.comments + ' ' + 
+      t('comment', {ns: 'issue_tracker'});
       if (issue.comments != '1') {
         comments += 's';
       }
@@ -31,6 +34,8 @@ function CandidateIssuesWidget(props) {
 CandidateIssuesWidget.propTypes = {
   Issues: PropTypes.array,
   BaseURL: PropTypes.string,
+  t: PropTypes.func,
 };
 
-export default CandidateIssuesWidget;
+export default withTranslation(
+  ['issue_tracker', 'loris'])(CandidateIssuesWidget);

@@ -191,7 +191,7 @@ class IssueTrackerIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-         {ns: 'issue_tracker'})}</h3>;
+        {ns: 'issue_tracker'})}</h3>;
     }
 
     // Waiting for async data to load
