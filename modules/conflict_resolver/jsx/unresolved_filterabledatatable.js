@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
 import PropTypes from 'prop-types';
-
-import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Filterable database for unresolved conflicts.

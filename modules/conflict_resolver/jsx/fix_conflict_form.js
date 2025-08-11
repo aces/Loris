@@ -5,9 +5,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {SelectElement} from 'jsx/Form';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
-import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * The fix FixConflictForm renders a <form> within a <td>. The form as a select
