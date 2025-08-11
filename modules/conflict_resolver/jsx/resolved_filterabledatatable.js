@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
-import i18n from 'I18nSetup';
 import FilterableDataTable from 'FilterableDataTable';
-
-import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
+import PropTypes from 'prop-types';
 
 /**
  * Filterable Datatable for resolved conflicts.
@@ -112,12 +110,13 @@ class ResolvedFilterableDataTable extends Component {
    * @return {JSX}
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // If error occurs, return a message.
     if (this.state.error) {
       return (
         <div className="alert alert-danger" role="alert">
-          <h4>{t('An error occured while loading the page.', {ns: 'conflict_resolver'})}</h4>
+          <h4>{t('An error occured while loading the page.',
+            {ns: 'conflict_resolver'})}</h4>
           {this.state.error.message}
         </div>
       );
@@ -131,13 +130,15 @@ class ResolvedFilterableDataTable extends Component {
     const options = this.state.data.fieldOptions;
 
     const fields = [
-      {label: t('Resolved ID', {ns: 'conflict_resolver'}), show: false},
+      {label: t('Resolved ID',
+        {ns: 'conflict_resolver'}), show: false},
       {label: t('Project', {ns: 'loris'}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
-      {label: t('Cohort', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Cohort',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Cohort',
         type: 'select',
         options: options.cohort,
@@ -166,35 +167,43 @@ class ResolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.instrument,
       }},
-      {label: t('Question', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Question',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Question',
         type: 'text',
       }},
-      {label: t('Description', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Description',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Description',
         type: 'text',
       }},
-      {label: t('Incorrect Answer', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Incorrect Answer',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'OldValue',
         type: 'text',
       }},
-      {label: t('Correct Answer', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Correct Answer',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'CorrectAnswer',
         type: 'text',
       }},
-      {label: t('User 1', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('User 1',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'User1',
         type: 'text',
       }},
-      {label: t('User 2', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('User 2',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'User2',
         type: 'text',
       }},
-      {label: t('Resolver', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Resolver',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Resolver',
         type: 'text',
       }},
-      {label: t('Resolution Timestamp', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Resolution Timestamp',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'ResolutionTimestamp',
         type: 'text',
       }},
@@ -210,6 +219,10 @@ class ResolvedFilterableDataTable extends Component {
     );
   }
 }
+
+ResolvedFilterableDataTable.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation(
   ['conflict_resolver', 'loris']

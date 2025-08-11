@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
@@ -42,7 +43,7 @@ class ConflictResolver extends Component {
    * @return {JSX}
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     const tabs = [
       {id: 'unresolved', label: t('Unresolved', {ns: 'conflict_resolver'})},
       {id: 'resolved', label: t('Resolved', {ns: 'conflict_resolver'})},
@@ -87,5 +88,10 @@ window.addEventListener('load', () => {
   ).render(<Index />);
 });
 
-export default withTranslation(['conflict_resolver', 'loris'])(ConflictResolver);
+ConflictResolver.propTypes = {
+  t: PropTypes.func,
+};
+
+export default withTranslation(
+  ['conflict_resolver', 'loris'])(ConflictResolver);
 
