@@ -174,20 +174,23 @@ class DocIndex extends React.Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
     case t('File Name', {ns: 'document_repository'}):
       let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
-                          + encodeURIComponent(row[t('Uploaded By', {ns: 'document_repository'})])
+                          + encodeURIComponent(row[t('Uploaded By',
+                            {ns: 'document_repository'})])
                           + '/'
-                          + encodeURIComponent(row[t('File Name', {ns: 'document_repository'})]);
+                          + encodeURIComponent(row[t('File Name',
+                            {ns: 'document_repository'})]);
       result = <td>
         <a
           href={downloadURL}
           target="_blank"
-          download={encodeURIComponent(row[t('File Name', {ns: 'document_repository'})])}
+          download={encodeURIComponent(row[t('File Name',
+            {ns: 'document_repository'})])}
         >
           {cell}
         </a>
@@ -195,8 +198,10 @@ class DocIndex extends React.Component {
       break;
     case t('Edit', {ns: 'document_repository'}):
       let editURL = loris.BaseURL
-                      + '/document_repository/edit/' + row[t('Edit', {ns: 'document_repository'})];
-      result = <td><a href={editURL}>{t('Edit', {ns: 'document_repository'})}</a></td>;
+                      + '/document_repository/edit/'
+                      + row[t('Edit', {ns: 'document_repository'})];
+      result = <td><a href={editURL}>{t('Edit',
+        {ns: 'document_repository'})}</a></td>;
       break;
     case t('Delete File', {ns: 'document_repository'}):
       let id = row[t('Edit', {ns: 'document_repository'})];
@@ -207,12 +212,14 @@ class DocIndex extends React.Component {
       function click() {
         swal.fire({
           title: t('Are you sure?', {ns: 'document_repository'}),
-          text: t('You won\'t be able to revert this!', {ns: 'document_repository'}),
+          text: t('You won\'t be able to revert this!',
+            {ns: 'document_repository'}),
           type: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: t('Yes, delete it!', {ns: 'document_repository'}),
+          confirmButtonText: t('Yes, delete it!',
+            {ns: 'document_repository'}),
         }).then((result) => {
           if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
@@ -223,14 +230,17 @@ class DocIndex extends React.Component {
             }).then((resp) => resp.json())
               .then(()=>{
                 location.reload();
-                swal.fire(t('Delete Successful!', {ns: 'document_repository'}), '', 'success');
+                swal.fire(t('Delete Successful!',
+                  {ns: 'document_repository'}), '', 'success');
               });
           }
         });
       }
 
       result = <td>
-        <a style={{cursor: 'pointer'}} onClick={click}>{t('Delete', {ns: 'document_repository'})}</a>
+        <a style={{cursor: 'pointer'}} onClick={click}>
+          {t('Delete', {ns: 'document_repository'})}
+        </a>
       </td>;
       break;
     }
@@ -243,11 +253,12 @@ class DocIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -258,34 +269,42 @@ class DocIndex extends React.Component {
       this.props.hasPermission('document_repository_upload_edit');
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: t('File Name', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('File Name',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'fileName',
         type: 'text',
       }},
-      {label: t('Version', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('Version',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'version',
         type: 'text',
       }},
-      {label: t('File Type', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('File Type',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'fileTypes',
         type: 'select',
         options: options.fileTypes,
       }},
-      {label: t('Instrument', {ns: 'document_repository'}), show: false},
-      {label: t('Uploaded By', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('Instrument',
+        {ns: 'document_repository'}), show: false},
+      {label: t('Uploaded By',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
-      {label: t('For Site', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('For Site',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: t('Comments', {ns: 'document_repository'}), show: true, filter: {
+      {label: t('Comments',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'Comments',
         type: 'text',
       }},
-      {label: t('Date Uploaded', {ns: 'document_repository'}), show: true},
+      {label: t('Date Uploaded',
+        {ns: 'document_repository'}), show: true},
       {
         label: t('Edit', {ns: 'document_repository'}),
         show: this.props.hasPermission('superUser')
@@ -466,7 +485,8 @@ DocIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
-  const TranslatedDocIndex = withTranslation(['document_repository', 'loris'])(DocIndex);
+  const TranslatedDocIndex = withTranslation(
+    ['document_repository', 'loris'])(DocIndex);
 
   createRoot(
     document.getElementById('lorisworkspace')

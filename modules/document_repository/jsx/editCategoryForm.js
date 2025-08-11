@@ -69,10 +69,11 @@ class EditDocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -83,7 +84,8 @@ class EditDocCategoryForm extends React.Component {
     let updateButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      updateButton = <ButtonElement label={t('Edit Category', {ns: 'document_repository'})}/>;
+      updateButton = <ButtonElement label={t('Edit Category',
+        {ns: 'document_repository'})}/>;
     }
 
     let errorSameParent = null;
@@ -92,7 +94,8 @@ class EditDocCategoryForm extends React.Component {
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
     ) {
-      errorSameParent = t('Cannot be equal to itself', {ns: 'document_repository'});
+      errorSameParent = t('Cannot be equal to itself',
+        {ns: 'document_repository'});
     }
 
     return (
@@ -102,7 +105,8 @@ class EditDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>{t('Change Name of a category', {ns: 'document_repository'})}</h3><br/>
+            <h3>{t('Change Name of a category',
+              {ns: 'document_repository'})}</h3><br/>
             <SelectElement
               name="categoryID"
               label={t('Category Name:', {ns: 'document_repository'})}
@@ -114,7 +118,8 @@ class EditDocCategoryForm extends React.Component {
             />
             <TextboxElement
               name="categoryNameChange"
-              label={t('New Name for Category', {ns: 'document_repository'})}
+              label={t('New Name for Category',
+                {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
@@ -150,12 +155,13 @@ class EditDocCategoryForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    const { t } = this.props;
+    const {t} = this.props;
     if (
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
     ) {
-      swal.fire(t('New parent cannot be equal to itself', {ns: 'document_repository'}), '', 'error');
+      swal.fire(t('New parent cannot be equal to itself',
+        {ns: 'document_repository'}), '', 'error');
     } else {
       this.editCategory();
     }
@@ -172,7 +178,8 @@ class EditDocCategoryForm extends React.Component {
       formData.categoryID==formData.newParentID
       && formData.categoryID!=null
     ) {
-      swal.fire(this.props.t('New parent cannot be equal to itself', {ns: 'document_repository'}), '', 'error');
+      swal.fire(this.props.t('New parent cannot be equal to itself',
+        {ns: 'document_repository'}), '', 'error');
     }
 
     for (let key in formData) {
@@ -194,7 +201,8 @@ class EditDocCategoryForm extends React.Component {
         } else if (response.statusText) {
           msg = response.statusText;
         } else {
-          msg = this.props.t('Edit error!', {ns: 'document_repository'});
+          msg = this.props.t('Edit error!',
+            {ns: 'document_repository'});
         }
         this.setState({
           errorMessage: msg,
@@ -203,7 +211,8 @@ class EditDocCategoryForm extends React.Component {
         console.error(msg);
       } else {
         swal.fire({
-          text: this.props.t('Edited Successful!', {ns: 'document_repository'}),
+          text: this.props.t('Edited Successful!',
+            {ns: 'document_repository'}),
           title: '',
           type: 'success',
         }).then(function() {
@@ -211,7 +220,8 @@ class EditDocCategoryForm extends React.Component {
         });
       }
     }).catch( (error) => {
-      let msg = error.message ? error.message : this.props.t('Edit error!', {ns: 'document_repository'});
+      let msg = error.message ? error.message :
+        this.props.t('Edit error!', {ns: 'document_repository'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -242,4 +252,5 @@ EditDocCategoryForm.propTypes = {
 
 i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
-export default withTranslation(['document_repository', 'loris'])(EditDocCategoryForm);
+export default withTranslation(
+  ['document_repository', 'loris'])(EditDocCategoryForm);
