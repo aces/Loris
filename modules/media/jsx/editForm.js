@@ -20,9 +20,8 @@ import {
   FileElement,
   ButtonElement,
 } from 'jsx/Form';
-import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
-import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
+import {withTranslation} from 'react-i18next';
+
 
 class MediaEditForm extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ class MediaEditForm extends Component {
   }
 
   componentDidMount() {
-    const { t } = this.props;
+    const {t} = this.props;
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
@@ -72,13 +71,14 @@ class MediaEditForm extends Component {
     }).catch((error) => {
       console.error(error);
       this.setState({
-        error: this.props.t('An error occurred when loading the form!', {ns: 'media'}),
+        error: this.props.t('An error occurred when loading the form!',
+          {ns: 'media'}),
       });
     });
   }
 
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.error !== undefined) {
       return (
         <div className='alert alert-danger text-center'>
@@ -176,7 +176,7 @@ class MediaEditForm extends Component {
             emptyOption={false}
             options={[
               t('No', {ns: 'media'}),
-              t('Yes', {ns: 'media'})
+              t('Yes', {ns: 'media'}),
             ]}
             onUserInput={this.setFormData}
             ref='hideFile'
@@ -193,12 +193,13 @@ class MediaEditForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { t } = this.props;
+    const {t} = this.props;
 
     let xhr = new XMLHttpRequest();
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
-        swal.fire(t('Upload Successful!', {ns: 'media'}), '', 'success');
+        swal.fire(t('Upload Successful!', {ns: 'media'}),
+          '', 'success');
         this.props.fetchData();
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
@@ -249,4 +250,5 @@ MediaEditForm.propTypes = {
   t: PropTypes.func,
 };
 
-export default withTranslation(['media', 'loris'])(MediaEditForm);
+export default withTranslation(
+  ['media', 'loris'])(MediaEditForm);
