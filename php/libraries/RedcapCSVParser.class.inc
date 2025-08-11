@@ -73,7 +73,9 @@ class RedcapCSVParser extends InstrumentDataParser
 
                     if (count($this->importableInstruments) > 0
                         && !in_array(
-                            $instrumentName, $this->importableInstruments, true
+                            $instrumentName,
+                            $this->importableInstruments,
+                            true
                         )
                     ) {
                         $msg = " -> instrument '$instrumentName' skipped.\n";
@@ -86,7 +88,7 @@ class RedcapCSVParser extends InstrumentDataParser
                 function ($csvHeaders, $row) use ($expectedHeaders) {
                     try {
                         if (count($csvHeaders) < count($expectedHeaders)) {
-                            // Pad row with blanks -- Assumes order was same as expected
+                            // Pad row with blanks -- Assumes expected order
                             $row = array_pad($row, count($expectedHeaders), '');
                         }
 
@@ -99,8 +101,10 @@ class RedcapCSVParser extends InstrumentDataParser
                             $this->trimInstrumentName
                         );
                     } catch (\LorisException $le) {
-                        error_log("Caught ERROR: "
-                            . $le->getMessage());
+                        error_log(
+                            "Caught ERROR: "
+                            . $le->getMessage()
+                        );
                         if ($this->trimInstrumentName) {
                             // print error but continue with non-trimmed
                             error_log($le->getMessage());

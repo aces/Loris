@@ -1,5 +1,5 @@
 import {createRoot} from 'react-dom/client';
-import React, {Component, useRef} from 'react';
+import React, {Component} from 'react';
 import Select from 'react-select';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
@@ -55,6 +55,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Update selectedDataFile on data file selection
+   *
    * @param {string} element - Element name
    * @param {string} file
    */
@@ -66,6 +67,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * setSelectedDataFile
+   *
    * @param {string} file
    */
   setSelectedDataFile(file) {
@@ -76,6 +78,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * setAction
+   *
    * @param {string} action
    */
   setAction(action) {
@@ -87,19 +90,21 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * setSelectedInstruments
+   *
    * @param {array} instruments
    */
   setSelectedInstruments(instruments) {
     this.setState({
-      selectedInstruments: instruments
+      selectedInstruments: instruments,
     });
-  };
+  }
 
 
   /**
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
+   *
    * @return {object}
    */
   fetchData() {
@@ -113,6 +118,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Trigger reportValidity() for form elements
+   *
    * @return {void}
    */
   triggerValidityReport() {
@@ -121,9 +127,12 @@ class InstrumentManagerIndex extends Component {
       return;
     }
     if (this.state.selectedInstruments.length === 0) {
-      const selectorExists = document.querySelector('#select-instruments input');
+      const selectorExists =
+        document.querySelector('#select-instruments input');
       if (selectorExists) {
-        selectorExists.setCustomValidity('Please select one or more instruments.');
+        selectorExists.setCustomValidity(
+          'Please select one or more instruments.'
+        );
         selectorExists.reportValidity();
       }
       return;
@@ -134,7 +143,8 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Upload instrument data
-   * @param instrument  Instrument name
+   *
+   * @param {string} instrument Instrument name
    */
   uploadInstrumentData(instrument) {
     const data = new FormData();
@@ -203,7 +213,10 @@ class InstrumentManagerIndex extends Component {
    */
   uploadMultiInstrumentData() {
     const data = new FormData();
-    data.append('multi-instrument', JSON.stringify(this.state.selectedInstruments));
+    data.append(
+      'multi-instrument',
+      JSON.stringify(this.state.selectedInstruments)
+    );
     data.append('action', this.state.action);
     data.append('data_file', this.state.selectedDataFile);
 
@@ -267,6 +280,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
+   *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
@@ -354,6 +368,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -529,7 +544,7 @@ class InstrumentManagerIndex extends Component {
       }
 
       return this.uploadMultiInstrumentData();
-    }
+    };
 
     const multiUploadModal = <Modal
       title={'Upload Instrument Data (multi)'}
@@ -549,7 +564,7 @@ class InstrumentManagerIndex extends Component {
       <InstrumentDataUploadModal
         setSelectedDataFile={this.setSelectedDataFile}
         setAction={this.setAction}
-        instrumentList={this.state.data.Data.map(d => d[0])}
+        instrumentList={this.state.data.Data.map((d) => d[0])}
         setSelectedInstruments={this.setSelectedInstruments}
       />
     </Modal>;
@@ -596,6 +611,7 @@ InstrumentManagerIndex.propTypes = {
 /**
  * Create a componenet to select permissions from a list of available
  * permissions.
+ *
  * @param {object} props - react props
  * @return {JSX}
  */

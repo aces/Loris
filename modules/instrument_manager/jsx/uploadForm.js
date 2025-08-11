@@ -25,6 +25,7 @@ class InstrumentUploadForm extends Component {
 
   /**
    * Update selectedFile on file selection
+   *
    * @param {string} element - Element name
    * @param {string} file
    */
@@ -82,6 +83,7 @@ class InstrumentUploadForm extends Component {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {

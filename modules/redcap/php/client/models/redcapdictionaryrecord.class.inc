@@ -302,7 +302,7 @@ class RedcapDictionaryRecord
     private function _optionsToLINST() : string
     {
         $dictionary = $this->select_choices;
-        if (is_null($dictionary)){
+        if (is_null($dictionary)) {
             return '';
         }
         $dictionary = str_replace(' | | ', ' | ', $dictionary);

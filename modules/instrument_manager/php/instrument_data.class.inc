@@ -69,7 +69,6 @@ class Instrument_Data extends \NDB_Page
         $headers  = [];
         $fileName = null;
 
-
         if (isset($params['action'])) {
             $action = $params['action'];
             if (isset($params['instrument'])) {
@@ -92,14 +91,16 @@ class Instrument_Data extends \NDB_Page
                 foreach ($instruments as $instrument) {
                     if ($this->instrumentExists($instrument)) {
                         error_log("checking $instrument");
-                        $headers = array_unique(array_merge(
-                            $headers,
-                            InstrumentDataParser::getCSVHeaders(
-                                $this->loris,
-                                $instrument,
-                                $action === 'CREATE_SESSIONS'
+                        $headers = array_unique(
+                            array_merge(
+                                $headers,
+                                InstrumentDataParser::getCSVHeaders(
+                                    $this->loris,
+                                    $instrument,
+                                    $action === 'CREATE_SESSIONS'
+                                )
                             )
-                        ));
+                        );
                         error_log("MERGING $instrument");
                     } else {
                         error_log("$instrument does not exist");
@@ -108,7 +109,7 @@ class Instrument_Data extends \NDB_Page
                         );
                     }
                 }
-                $prefix = time();
+                $prefix   = time();
                 $fileName = "{$prefix}_headers.csv";
             } else {
                 return new \LORIS\Http\Response\JSON\BadRequest(
@@ -170,21 +171,19 @@ class Instrument_Data extends \NDB_Page
         $createNonexistent
             = $requestBody['action'] === 'CREATE_SESSIONS';
 
-        if (
-            isset($requestBody['instrument']) ||
-            isset($requestBody['multi-instrument'])
+        if (isset($requestBody['instrument'])
+            || isset($requestBody['multi-instrument'])
         ) {
             $multiInstrument = isset($requestBody['multi-instrument']);
 
-            $dataFile = $request->getUploadedFiles()['data_file'];
-            $userID   = $request->getAttribute('user')->getUsername();
+            $dataFile     = $request->getUploadedFiles()['data_file'];
+            $userID       = $request->getAttribute('user')->getUsername();
             $uploadFolder = $this->loris
                 ->getConfiguration()->getSetting('instrumentDataPath');
             $filePrefix   = $userID . '_' . time() . '_';
             $fileLocation = $uploadFolder . "/$filePrefix"
                 . $dataFile->getClientFilename();
-            $fileInfo = new SplFileInfo($fileLocation);
-
+            $fileInfo     = new SplFileInfo($fileLocation);
 
             $dataFile->moveTo($fileLocation);
             $this->_insertCSVFileEntry($fileInfo->getFilename());
@@ -224,14 +223,18 @@ class Instrument_Data extends \NDB_Page
                 $dataParser = new InstrumentDataParser($fileInfo);
 
                 if ($multiInstrument) {
-                    $instrumentNames = json_encode(json_decode($requestBody['multi-instrument']));
+                    $instrumentNames = json_encode(
+                        json_decode($requestBody['multi-instrument'])
+                    );
 
                     try {
                         $instrumentNames = array_map(
-                            function ($instrument) { return $instrument['value']; },
+                            function ($instrument) {
+                                return $instrument['value'];
+                            },
                             json_decode($instrumentNames, true)
                         );
-                        $result = $dataParser->parseCSVMulti(
+                        $result          = $dataParser->parseCSVMulti(
                             $this->loris,
                             $instrumentNames,
                             $userID,
@@ -250,7 +253,11 @@ class Instrument_Data extends \NDB_Page
 
                     if ($this->instrumentExists($instrumentName)) {
 
-                        $data = $dataParser->parseCSV($this->loris, $instrumentName, $createNonexistent);
+                        $data = $dataParser->parseCSV(
+                            $this->loris,
+                            $instrumentName,
+                            $createNonexistent
+                        );
 
                         $studyIDs = [];
                         if ($createNonexistent) {
@@ -273,14 +280,14 @@ class Instrument_Data extends \NDB_Page
                         $validData = $dataParser->validateData(
                             $data,
                             [
-                                'UserID' => $userID,
+                                'UserID'   => $userID,
                                 'Examiner' => $userID
                             ],
                             $createNonexistent
                         );
 
                         if (count($validData['errors']) > 0) {
-                            $db->rollBack();    // Rollback creations from validateData
+                            $db->rollBack();    // Rollback created sessions
                             return new \LORIS\Http\Response\JSON\OK(
                                 [
                                     'message' => $validData['errors'],

@@ -30,8 +30,7 @@ class InstrumentDataParser extends CSVParser
     /**
      * Construct parser
      *
-     * @param string      $instrumentName Instrument name
-     * @param SplFileInfo $csvFile        csv file path
+     * @param SplFileInfo $csvFile csv file path
      *
      * @return void
      */
@@ -44,6 +43,7 @@ class InstrumentDataParser extends CSVParser
      * Parse the csv file
      *
      * @param LorisInstance $loris                  Loris instance
+     * @param string        $instrumentName         Instrument name
      * @param bool          $includeCreationColumns Include creation columns
      *
      * @return array    Returns array of column names as strings
@@ -560,9 +560,9 @@ class InstrumentDataParser extends CSVParser
     /**
      * Parse the Instrument Data csv file
      *
-     * @param LorisInstance $loris Loris instance
-     * @param array         $instrumentNames List of instrument names
-     * @param string        $userID User ID
+     * @param LorisInstance $loris             Loris instance
+     * @param array         $instrumentNames   List of instrument names
+     * @param string        $userID            User ID
      * @param bool          $createNonexistent Create Nonexistent
      *
      * @return array        Returns result array
@@ -573,8 +573,7 @@ class InstrumentDataParser extends CSVParser
         array $instrumentNames,
         string $userID,
         bool $createNonexistent
-    ): array
-    {
+    ): array {
         try {
             $db = $loris->getDatabaseConnection();
             $db->beginTransaction();
@@ -583,15 +582,19 @@ class InstrumentDataParser extends CSVParser
                 // Ensure headers are expected headers
                 $expectedHeaders = array_reduce(
                     $instrumentNames,
-                    function ($headers, $instrumentName) use ($loris, $createNonexistent) {
-                        return array_unique(array_merge(
-                            $headers,
-                            self::getCSVHeaders(
-                                $loris,
-                                $instrumentName,
-                                $createNonexistent
+                    function ($headers, $instrumentName) use (
+                        $loris, $createNonexistent
+                    ) {
+                        return array_unique(
+                            array_merge(
+                                $headers,
+                                self::getCSVHeaders(
+                                    $loris,
+                                    $instrumentName,
+                                    $createNonexistent
+                                )
                             )
-                        ));
+                        );
                     },
                     []
                 );
@@ -608,8 +611,9 @@ class InstrumentDataParser extends CSVParser
                         function ($csvRow) use ($instrumentHeaders) {
                             return array_filter(
                                 $csvRow,
-                                function ($data, $header)
-                                use ($csvRow, $instrumentHeaders) {
+                                function ($data, $header) use (
+                                    $csvRow, $instrumentHeaders
+                                ) {
                                     return in_array($header, $instrumentHeaders);
                                 },
                                 ARRAY_FILTER_USE_BOTH

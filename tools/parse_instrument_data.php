@@ -30,7 +30,11 @@ $result = [];
 try {
     $fileInfo   = new SplFileInfo($fileLocation);
     $dataParser = new InstrumentDataParser($fileInfo);
-    $data       = $dataParser->parseCSV($lorisInstance, $instrumentName, $createNonexistent);
+    $data       = $dataParser->parseCSV(
+        $lorisInstance,
+        $instrumentName,
+        $createNonexistent
+    );
     $validData  = $dataParser::validateData(
         $data,
         [

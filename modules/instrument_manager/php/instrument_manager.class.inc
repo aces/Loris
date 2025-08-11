@@ -205,6 +205,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      * @param string      $instrumentName Instrument name
      * @param SplFileInfo $targetDir      Instrument save location
      * @param bool        $createMetaFile Whether to create a .meta file
+     * @param bool        $isRedcap       Whether it's a REDCap instrument
      *
      * @return bool
      */

@@ -62,11 +62,11 @@ class CSVParser
         }
 
         $matchingHeaders = true;
-        $missingHeaders = [];
+        $missingHeaders  = [];
         foreach ($expectedHeaders as $expectedHeader) {
             if (!in_array($expectedHeader, $headers)) {
                 error_log("Header not found: $expectedHeader");
-                $matchingHeaders = false;
+                $matchingHeaders  = false;
                 $missingHeaders[] = $expectedHeader;
             }
         }
@@ -140,7 +140,10 @@ class CSVParser
 
         // Validate expected headers, if provided
         if (count($expectedHeaders) > 0) {
-            $validationResults = $this->_validateHeaders($csvHeaders, $expectedHeaders);
+            $validationResults = $this->_validateHeaders(
+                $csvHeaders,
+                $expectedHeaders
+            );
             if (!$validationResults['success']) {
                 $missingHeaders = join(', ', $validationResults['missing']);
                 throw new \RuntimeException(

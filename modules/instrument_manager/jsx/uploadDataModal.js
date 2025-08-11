@@ -33,6 +33,7 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Update selectedDataFile on file selection
+   *
    * @param {string} element - Element name
    * @param {string} file
    */
@@ -46,6 +47,7 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Update selectedDataFile on file selection
+   *
    * @param {string} element - Element name
    * @param {string} file
    * @param option
@@ -59,6 +61,7 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Display upload response
+   *
    * @param data    Response data
    */
   displayResponse = (data) => {
@@ -85,6 +88,7 @@ class InstrumentDataUploadModal extends Component {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {
@@ -104,7 +108,8 @@ class InstrumentDataUploadModal extends Component {
                   !this.isMultiInstrument ||
                   this.state.selectedInstruments.length === 1
                 )
-                  ? `${this.state.selectedInstruments[0]?.value ?? this.state.selectedInstruments[0]}`
+                  ? `${this.state.selectedInstruments[0]?.value
+                    ?? this.state.selectedInstruments[0]}`
                   : 'targeted instruments'
                 )
               }
@@ -114,8 +119,7 @@ class InstrumentDataUploadModal extends Component {
             />
           </div>
         </div>
-
-         {
+        {
           this.isMultiInstrument && (
             <div
               className="row"
@@ -134,13 +138,17 @@ class InstrumentDataUploadModal extends Component {
                     id={'select-instruments'}
                     className={'col-sm-9'}
                     isMulti={true}
-                    options={this.props.instrumentList.map(i => { return {value: i, label: i}; })}
+                    options={this.props.instrumentList.map((i) => {
+                      return {value: i, label: i};
+                    })}
                     value={this.state.selectedInstruments}
                     onChange={(newList) => {
                       this.setState({
                         selectedInstruments: newList,
                       }, () => {
-                        this.props.setSelectedInstruments(this.state.selectedInstruments)
+                        this.props.setSelectedInstruments(
+                          this.state.selectedInstruments
+                        );
                       });
                     }}
                   />
@@ -148,9 +156,12 @@ class InstrumentDataUploadModal extends Component {
               </div>
             </div>
           )
-         }
+        }
 
-        <div className="row" style={{display: 'flex', justifyContent: 'center'}}>
+        <div
+          className="row"
+          style={{display: 'flex', justifyContent: 'center'}}
+        >
           <div className='col-sm-11'>
             <RadioElement
               name={'create_participants'}
@@ -182,9 +193,9 @@ class InstrumentDataUploadModal extends Component {
                   this.state.selectedInstruments.length === 1
                 )
                   ? `instrument=${
-                  this.state.selectedInstruments[0].value
+                    this.state.selectedInstruments[0].value
                     ?? this.state.selectedInstruments[0]
-                }`
+                  }`
                   : this.state.selectedInstruments.map(
                     (instrumentName) => `instruments[]=${instrumentName.value}`
                   ).join('&') // TODO: Reconsider (max URL length)
