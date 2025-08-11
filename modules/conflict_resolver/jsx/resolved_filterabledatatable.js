@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
-import i18n from 'I18nSetup';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
-
-import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Filterable Datatable for resolved conflicts.
