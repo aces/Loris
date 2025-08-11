@@ -6,8 +6,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
 
-require_once 'RedcapCSVParser.class.inc';
-
 /**
  * Contains functions used to view and manage instruments installed in LORIS.
  * LINST instruments can be uploaded and installed automatically.

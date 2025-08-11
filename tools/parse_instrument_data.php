@@ -22,39 +22,49 @@ if (count($argv) != 5) {
 $instrumentName    = $argv[1];
 $fileLocation      = $argv[2];
 $createNonexistent = $argv[3] == 'true';
-$userID            = $argv[4];
-$examinerID        = $argv[5];
+$multiInstrument   = $argv[4] == 'true';
+$userID            = $argv[5];
+$examinerID        = $argv[6];
 
 $result = [];
 
 try {
     $fileInfo   = new SplFileInfo($fileLocation);
     $dataParser = new InstrumentDataParser($fileInfo);
-    $data       = $dataParser->parseCSV(
-        $lorisInstance,
-        $instrumentName,
-        $createNonexistent
-    );
-    $validData  = $dataParser::validateData(
-        $data,
-        [
-            'UserID'   => $userID,
-            'Examiner' => $examinerID,
-        ],
-        $createNonexistent
-    );
+    if ($multiInstrument) {
+        $result = $dataParser->parseCSVMulti(
+            $this->loris,
+            explode('{@}', $instrumentName),
+            $userID,
+            $createNonexistent
+        );
+    } else {
+        $data      = $dataParser->parseCSV(
+            $lorisInstance,
+            $instrumentName,
+            $createNonexistent
+        );
+        $validData = $dataParser::validateData(
+            $data,
+            [
+                'UserID'   => $userID,
+                'Examiner' => $examinerID,
+            ],
+            $createNonexistent
+        );
 
-    if (count($validData['errors']) > 0) {
-        echo json_encode($validData['errors']);
-        exit(2);    // Invalid Data Error(s)
+        if (count($validData['errors']) > 0) {
+            echo json_encode($validData['errors']);
+            exit(2);    // Invalid Data Error(s)
+        }
+
+        $result = $dataParser::insertInstrumentData(
+            $lorisInstance,
+            $validData['data'],
+            $instrumentName,
+            $fileInfo->getFilename()
+        );
     }
-
-    $result = $dataParser::insertInstrumentData(
-        $lorisInstance,
-        $validData['data'],
-        $instrumentName,
-        $fileInfo->getFilename()
-    );
 } catch (\Exception $e) {
     echo $e->getMessage();
     exit(3);        // Database or Unexpected Error

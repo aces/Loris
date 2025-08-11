@@ -2,14 +2,11 @@
 
 namespace LORIS\instrument_manager;
 use LORIS\InstrumentDataParser;
-use LORIS\RedcapCSVParser;
-use PHPUnit\Exception;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \SplFileInfo;
 use LORIS\server_processes_manager as SP;
 
-require_once 'RedcapCSVParser.class.inc';
 
 /**
  * Upload instrument data
@@ -65,9 +62,8 @@ class Instrument_Data extends \NDB_Page
      */
     protected function handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $params   = $request->getQueryParams();
-        $headers  = [];
-        $fileName = null;
+        $params  = $request->getQueryParams();
+        $headers = [];
 
         if (isset($params['action'])) {
             $action = $params['action'];
@@ -117,21 +113,18 @@ class Instrument_Data extends \NDB_Page
                 );
             }
 
-            // TODO: Remove if redundant
-            if (!is_null($fileName)) {
-                $fileObject = new \SplFileObject(
-                    sys_get_temp_dir() . "/$fileName",
-                    'w'
-                );
-                $fileObject->fputcsv($headers);
+            $fileObject = new \SplFileObject(
+                sys_get_temp_dir() . "/$fileName",
+                'w'
+            );
+            $fileObject->fputcsv($headers);
 
-                $downloader = new \LORIS\FilesDownloadHandler(
-                    new \SPLFileInfo(sys_get_temp_dir())
-                );
-                return $downloader->handle(
-                    $request->withAttribute('filename', $fileName)
-                );
-            }
+            $downloader = new \LORIS\FilesDownloadHandler(
+                new \SPLFileInfo(sys_get_temp_dir())
+            );
+            return $downloader->handle(
+                $request->withAttribute('filename', $fileName)
+            );
         }
         return parent::handle($request);
     }
@@ -175,6 +168,14 @@ class Instrument_Data extends \NDB_Page
             || isset($requestBody['multi-instrument'])
         ) {
             $multiInstrument = isset($requestBody['multi-instrument']);
+            if ($multiInstrument) {
+                $instrumentNames = array_map(
+                    function ($instrument) {
+                        return $instrument['value'];
+                    },
+                    json_decode($requestBody['multi-instrument'], true)
+                );
+            }
 
             $dataFile     = $request->getUploadedFiles()['data_file'];
             $userID       = $request->getAttribute('user')->getUsername();
@@ -195,8 +196,8 @@ class Instrument_Data extends \NDB_Page
                 $serverProcessLauncher = new SP\ServerProcessLauncher();
 
                 if ($multiInstrument) {
-                    $serverProcessLauncher->parseRedcapData(
-                        json_decode($requestBody['multi-instrument']),
+                    $serverProcessLauncher->parseInstrumentData(
+                        implode('{@}', $instrumentNames),
                         $fileLocation,
                         $createNonexistent
                     );
@@ -223,18 +224,8 @@ class Instrument_Data extends \NDB_Page
                 $dataParser = new InstrumentDataParser($fileInfo);
 
                 if ($multiInstrument) {
-                    $instrumentNames = json_encode(
-                        json_decode($requestBody['multi-instrument'])
-                    );
-
                     try {
-                        $instrumentNames = array_map(
-                            function ($instrument) {
-                                return $instrument['value'];
-                            },
-                            json_decode($instrumentNames, true)
-                        );
-                        $result          = $dataParser->parseCSVMulti(
+                        $result = $dataParser->parseCSVMulti(
                             $this->loris,
                             $instrumentNames,
                             $userID,

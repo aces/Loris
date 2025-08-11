@@ -41,6 +41,13 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
      */
     public bool $_createNonexistent;
 
+    /**
+     * Whether uploading multiple data for multiple instruments
+     *
+     * @var bool
+     */
+    public bool $_multiInstrument;
+
 
     /**
      * Builds a new ParseInstrumentDataServerProcess
@@ -48,6 +55,7 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
      * @param string  $instrument        Instrument name
      * @param string  $fileLocation      Location of the uploaded file
      * @param bool    $createNonexistent Whether to create participants/visits
+     * @param bool    $multiInstrument   Whether uploading for multiple instruments
      * @param ?int    $id                ID of the process in the database.
      * @param ?int    $pid               PID for this process
      * @param ?string $stdoutFile        Full path of file used to store the
@@ -63,13 +71,14 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
      * @param ?string $exitText          Result of the process in text form
      */
     public function __construct($instrument, $fileLocation, $createNonexistent,
-        $id = null, $pid = null, $stdoutFile = null, $stderrFile = null,
-        $exitCodeFile = null, $exitCode = null, $userid = null,
+        $multiInstrument, $id = null, $pid = null, $stdoutFile = null,
+        $stderrFile = null, $exitCodeFile = null, $exitCode = null, $userid = null,
         $startTime = null, $endTime = null, $exitText = null
     ) {
         $this->_instrument        = $instrument;
         $this->_fileLocation      = $fileLocation;
         $this->_createNonexistent = $createNonexistent;
+        $this->_multiInstrument   = $multiInstrument;
 
         parent::__construct(
             $id,
@@ -99,6 +108,7 @@ class ParseInstrumentDataServerProcess extends AbstractServerProcess
         $parseScript .= "$this->_instrument ";
         $parseScript .= "$this->_fileLocation ";
         $parseScript .= $this->_createNonexistent ? 'true ' : 'false ';
+        $parseScript .= $this->_multiInstrument ? 'true ' : 'false ';
         $parseScript .= "{$this->getUserId()} {$this->getUserId()}";
         return $parseScript;
     }

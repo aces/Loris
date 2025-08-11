@@ -14,13 +14,9 @@ require_once __DIR__ .
     '/../../modules/redcap/php/client/models/redcapdictionaryrecord.class.inc';
 require_once __DIR__ . '/../../modules/redcap/php/client/redcapprops.class.inc';
 
-use DatabaseException;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use RuntimeException;
-use NDB_Factory;
-use NotFound;
 use SplFileInfo;
-use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 
 /**
  * This class is used to parse redcap data
@@ -30,7 +26,7 @@ use \LORIS\Data\Dictionary\DictionaryItem as DictionaryItem;
 class RedcapCSVParser extends InstrumentDataParser
 {
     private bool $trimInstrumentName;
-    private array $importableInstruments = [];
+    private array $importableInstruments;
 
     /**
      * Construct parser
@@ -148,14 +144,14 @@ class RedcapCSVParser extends InstrumentDataParser
     /**
      * Convert array of RedcapDictionaryRecord to LINST file
      *
-     * @param array[] $instruments        LINST instruments
-     * @param string  $outputFolder       Instrument output folder
-     * @param string  $instrumentTitleMap Instrument name map
+     * @param array  $instruments        LINST instruments
+     * @param string $outputFolder       Instrument output folder
+     * @param array  $instrumentTitleMap Instrument name map
      *
      * @return void
      */
     public static function createLINSTFiles(
-        array $instruments, string $outputFolder, $instrumentTitleMap = []
+        array $instruments, string $outputFolder, array $instrumentTitleMap = []
     ): void {
         foreach ($instruments as $instrumentName => $instrument) {
             self::createLINSTFile(
@@ -187,7 +183,7 @@ class RedcapCSVParser extends InstrumentDataParser
         array $instrument
     ): void {
         $fp = fopen("$output_dir/$instrument_name.linst", "w");
-        fwrite($fp, "{-@-}testname{@}$instrument_name\n");
+        fwrite($fp, "testname{@}$instrument_name\n");
         fwrite($fp, "table{@}$instrument_name\n");
         fwrite($fp, "title{@}$instrument_title\n");
 

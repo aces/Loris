@@ -11,7 +11,6 @@ namespace LORIS;
 require_once 'NDB_Factory.class.inc';
 require_once 'CSVParser.class.inc';
 
-use Database;
 use DatabaseException;
 use LorisException;
 use RuntimeException;
@@ -611,9 +610,7 @@ class InstrumentDataParser extends CSVParser
                         function ($csvRow) use ($instrumentHeaders) {
                             return array_filter(
                                 $csvRow,
-                                function ($data, $header) use (
-                                    $csvRow, $instrumentHeaders
-                                ) {
+                                function ($header) use ($instrumentHeaders) {
                                     return in_array($header, $instrumentHeaders);
                                 },
                                 ARRAY_FILTER_USE_BOTH

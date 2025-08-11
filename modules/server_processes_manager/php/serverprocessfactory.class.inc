@@ -58,6 +58,7 @@ class ServerProcessFactory
                     '',
                     '',
                     false,
+                    false,
                     intval($dbRow['id']),
                     intval($dbRow['pid']),
                     $dbRow['stdout_file'],
