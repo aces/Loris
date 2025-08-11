@@ -239,7 +239,10 @@ class InstrumentManagerIndex extends Component {
           if (data.success) {
             let message = data.message;
 
-            if (Object.keys(data).includes('idMapping')) {
+            if (
+              Object.keys(data).includes('idMapping') &&
+              Object.values(data['idMapping']).length > 0
+            ) {
               message = '<div style="overflow-y: scroll; max-height: 50vh;">';
               message += data.message;
               message += '<br/><br/>';

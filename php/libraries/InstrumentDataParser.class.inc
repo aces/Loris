@@ -600,17 +600,31 @@ class InstrumentDataParser extends CSVParser
 
                 $parsedCSV = $this->parse($expectedHeaders);
 
+                $studyIDs = [];
+                if ($createNonexistent) {
+                    $studyIDs = array_reduce(
+                        $parsedCSV,
+                        function ($mapping, $row) {
+                            $studyID = $row['StudyID'];
+                            if (!in_array($studyID, $mapping)) {
+                                $mapping[] = $studyID;
+                            }
+                            return $mapping;
+                        },
+                        []
+                    );
+                }
+
                 foreach ($instrumentNames as $instrumentName) {
                     $instrumentHeaders = self::getCSVHeaders(
                         $loris,
                         $instrumentName,
                     );
-
                     $instrumentData = array_map(
                         function ($csvRow) use ($instrumentHeaders) {
                             return array_filter(
                                 $csvRow,
-                                function ($header) use ($instrumentHeaders) {
+                                function ($data, $header) use ($instrumentHeaders) {
                                     return in_array($header, $instrumentHeaders);
                                 },
                                 ARRAY_FILTER_USE_BOTH
@@ -648,10 +662,32 @@ class InstrumentDataParser extends CSVParser
                 }
 
                 $db->commit();
+
+                $studyIDMapping = [];
+                if ($createNonexistent) {
+                    $studyIDMapping = $db->pselect(
+                        'SELECT ExtStudyID, CandID
+                            FROM candidate_project_extid_rel
+                            WHERE ExtStudyID IN (' .
+                        join(
+                            ',',
+                            array_map(
+                                function ($id) {
+                                    return "'$id'";
+                                },
+                                $studyIDs
+                            )
+                        ) .
+                        ')',
+                        [],
+                    );
+                }
+
                 return [
-                    'success' => true,
-                    'message' => 'Successfully inserted data for ' .
-                        count($instrumentNames) . ' instruments'
+                    'success'   => true,
+                    'message'   => 'Successfully inserted data for ' .
+                        count($instrumentNames) . ' instruments',
+                    'idMapping' => $studyIDMapping
                 ];
             } catch (\Exception $e) {
                 $db->rollBack();
