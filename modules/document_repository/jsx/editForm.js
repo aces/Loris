@@ -9,9 +9,8 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
-import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+
 
 /**
  * Document Edit Form
@@ -77,10 +76,11 @@ class DocEditForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -98,7 +98,8 @@ class DocEditForm extends React.Component {
           name="docEdit"
           onSubmit={this.handleSubmit}
         >
-          <h3>{t('Edit Document Repository File', {ns: 'document_repository'})}</h3>
+          <h3>{t('Edit Document Repository File',
+            {ns: 'document_repository'})}</h3>
           <br />
           <SelectElement
             name="category"
@@ -148,7 +149,8 @@ class DocEditForm extends React.Component {
             loris.userHasPermission('document_repository_hidden') &&
                 (<SelectElement
                   name="hiddenFile"
-                  label={t('Restrict access to the file?', {ns: 'document_repository'})}
+                  label={t('Restrict access to the file?',
+                    {ns: 'document_repository'})}
                   options={this.state.data.hiddenVideo}
                   sortByValue={false}
                   onUserInput={this.setFormData}

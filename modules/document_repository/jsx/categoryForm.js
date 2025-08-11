@@ -71,10 +71,11 @@ class DocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -85,7 +86,8 @@ class DocCategoryForm extends React.Component {
     let addButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      addButton = <ButtonElement label={t('Add Category', {ns: 'document_repository'})}/>;
+      addButton = <ButtonElement label={t('Add Category',
+        {ns: 'document_repository'})}/>;
     }
 
     return (
@@ -96,10 +98,12 @@ class DocCategoryForm extends React.Component {
             fileUpload={true}
             onSubmit={this.handleSubmit}
           >
-            <h3>{t('Add a category', {ns: 'document_repository'})}</h3><br/>
+            <h3>{t('Add a category',
+              {ns: 'document_repository'})}</h3><br/>
             <TextboxElement
               name="categoryName"
-              label={t('Category Name', {ns: 'document_repository'})}
+              label={t('Category Name',
+                {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
@@ -171,10 +175,12 @@ class DocCategoryForm extends React.Component {
           this.setState({
             formData: {}, // reset form data after successful file upload
           });
-          swal.fire('Category Successfully Added!', '', 'success');
+          swal.fire('Category Successfully Added!',
+            '', 'success');
         } else {
           resp.json().then((data) => {
-            swal.fire('Could not add category!', data.error, 'error');
+            swal.fire('Could not add category!',
+              data.error, 'error');
           }).catch((error) => {
             console.error(error);
             swal.fire(
@@ -211,4 +217,5 @@ DocCategoryForm.propTypes = {
 
 i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
-export default withTranslation(['document_repository', 'loris'])(DocCategoryForm);
+export default withTranslation(
+  ['document_repository', 'loris'])(DocCategoryForm);

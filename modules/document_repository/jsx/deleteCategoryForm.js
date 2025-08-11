@@ -68,10 +68,11 @@ class DeleteDocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -82,7 +83,8 @@ class DeleteDocCategoryForm extends React.Component {
     let deleteButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      deleteButton = <ButtonElement label={t('Delete Category', {ns: 'document_repository'})}/>;
+      deleteButton = <ButtonElement label={t('Delete Category',
+        {ns: 'document_repository'})}/>;
     }
 
     return (
@@ -130,7 +132,7 @@ class DeleteDocCategoryForm extends React.Component {
    * Delete the Category.
    */
   deleteCategory() {
-    const { t } = this.props;
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -169,7 +171,8 @@ class DeleteDocCategoryForm extends React.Component {
         });
       }
     }).catch( (error) => {
-      let msg = error.message ? error.message : t('Delete error!', {ns: 'document_repository'});
+      let msg = error.message ? error.message : t('Delete error!',
+        {ns: 'document_repository'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -200,4 +203,5 @@ DeleteDocCategoryForm.propTypes = {
 
 i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
-export default withTranslation(['document_repository', 'loris'])(DeleteDocCategoryForm);
+export default withTranslation(
+  ['document_repository', 'loris'])(DeleteDocCategoryForm);

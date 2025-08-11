@@ -90,9 +90,10 @@ class DocUploadForm extends Component {
    */
   render() {
     // Data loading error
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'document_repository'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'document_repository'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -161,7 +162,8 @@ class DocUploadForm extends Component {
               loris.userHasPermission('document_repository_hidden') ?
                 (<SelectElement
                   name="hiddenFile"
-                  label={t('Restrict access to the file?', {ns: 'document_repository'})}
+                  label={t('Restrict access to the file?',
+                    {ns: 'document_repository'})}
                   options={this.state.data.fieldOptions.hiddenFile}
                   sortByValue={false}
                   onUserInput={this.setFormData}
@@ -228,7 +230,8 @@ class DocUploadForm extends Component {
             resp.json().then((data) => {
               if (data.error_count === 0) {
                 swal.fire(
-                  this.props.t('Upload Successful!', {ns: 'document_repository'}),
+                  this.props.t('Upload Successful!',
+                    {ns: 'document_repository'}),
                   '',
                   'success'
                 ).then((result) => {
@@ -240,7 +243,8 @@ class DocUploadForm extends Component {
               } else {
                 console.error(resp);
                 swal.fire(
-                  this.props.t('Upload Incomplete', {ns: 'document_repository'}),
+                  this.props.t('Upload Incomplete',
+                    {ns: 'document_repository'}),
                   data.message,
                   'warning'
                 );
@@ -248,8 +252,11 @@ class DocUploadForm extends Component {
             }).catch((error) => {
               console.error(error);
               swal.fire(
-                this.props.t('Error reading response', {ns: 'document_repository'}),
-                this.props.t('Please report the issue or contact your administrator', {ns: 'document_repository'}),
+                this.props.t('Error reading response',
+                  {ns: 'document_repository'}),
+                this.props.t(
+                  'Please report the issue or contact your administrator',
+                  {ns: 'document_repository'}),
                 'error'
               );
             });
@@ -257,20 +264,23 @@ class DocUploadForm extends Component {
             if (resp.status == 413) {
               swal.fire(
                 this.props.t('File too large', {ns: 'document_repository'}),
-                this.props.t('Could not upload file', {ns: 'document_repository'}),
+                this.props.t('Could not upload file',
+                  {ns: 'document_repository'}),
                 'error'
               );
             }
             if (resp.status == 403) {
               swal.fire(
                 this.props.t('Permission denied', {ns: 'document_repository'}),
-                this.props.t('Could not upload file', {ns: 'document_repository'}),
+                this.props.t('Could not upload file',
+                  {ns: 'document_repository'}),
                 'error'
               );
             }
             if (resp.status == 400) {
               swal.fire(
-                this.props.t('Something went wrong', {ns: 'document_repository'}),
+                this.props.t('Something went wrong',
+                  {ns: 'document_repository'}),
                 JSON.parse(resp.response).message,
                 'error'
               );
@@ -279,8 +289,11 @@ class DocUploadForm extends Component {
         }).catch((error) => {
           console.error(error);
           swal.fire(
-            this.props.t('Something went wrong', {ns: 'document_repository'}),
-            this.props.t('Please report the issue or contact your administrator', {ns: 'document_repository'}),
+            this.props.t('Something went wrong',
+              {ns: 'document_repository'}),
+            this.props.t(
+              'Please report the issue or contact your administrator',
+              {ns: 'document_repository'}),
             'error'
           );
         }).finally(() => this.setState({uploadInProgress: false}));
