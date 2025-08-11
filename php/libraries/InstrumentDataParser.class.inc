@@ -174,7 +174,7 @@ class InstrumentDataParser extends CSVParser
     public static function validateData(
         array $instrumentData,
         array $injectedColumns,
-        bool $createNonexistent = false,
+        bool $createNonexistent = false
     ): array {
         $errors = [];
         foreach ($instrumentData as &$dataRow) {
@@ -620,14 +620,14 @@ class InstrumentDataParser extends CSVParser
                         $loris,
                         $instrumentName,
                     );
-                    $instrumentData = array_map(
+                    $instrumentData    = array_map(
                         function ($csvRow) use ($instrumentHeaders) {
                             return array_filter(
                                 $csvRow,
-                                function ($data, $header) use ($instrumentHeaders) {
+                                function ($header) use ($instrumentHeaders) {
                                     return in_array($header, $instrumentHeaders);
                                 },
-                                ARRAY_FILTER_USE_BOTH
+                                ARRAY_FILTER_USE_KEY
                             );
                         },
                         $parsedCSV

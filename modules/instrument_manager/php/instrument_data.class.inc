@@ -168,6 +168,7 @@ class Instrument_Data extends \NDB_Page
             || isset($requestBody['multi-instrument'])
         ) {
             $multiInstrument = isset($requestBody['multi-instrument']);
+            $instrumentNames = [];
             if ($multiInstrument) {
                 $instrumentNames = array_map(
                     function ($instrument) {
@@ -199,13 +200,15 @@ class Instrument_Data extends \NDB_Page
                     $serverProcessLauncher->parseInstrumentData(
                         implode('{@}', $instrumentNames),
                         $fileLocation,
-                        $createNonexistent
+                        $createNonexistent,
+                        true
                     );
                 } else {
                     $serverProcessLauncher->parseInstrumentData(
                         $instrumentName,
                         $fileLocation,
-                        $createNonexistent
+                        $createNonexistent,
+                        false
                     );
                 }
 

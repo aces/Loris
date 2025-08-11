@@ -182,12 +182,14 @@ class ServerProcessLauncher
     public function parseInstrumentData(
         string $instrument,
         string $fileLocation,
-        bool $createNonexistent
+        bool $createNonexistent,
+        bool $multiInstrument
     ): ?int {
         $parseInstrumentDataProcess = new ParseInstrumentDataServerProcess(
             $instrument,
             $fileLocation,
-            $createNonexistent
+            $createNonexistent,
+            $multiInstrument
         );
         return $this->_launch($parseInstrumentDataProcess);
     }
