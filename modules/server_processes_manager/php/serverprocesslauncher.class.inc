@@ -175,6 +175,7 @@ class ServerProcessLauncher
      * @param string $instrument        Instrument name
      * @param string $fileLocation      File location
      * @param bool   $createNonexistent Whether to create participants/visits
+     * @param bool   $multiInstrument   Whether to expect multiple instruments
      *
      * @return ?int ID (in the database) of the launched process or null
      *             if the process could not be run
