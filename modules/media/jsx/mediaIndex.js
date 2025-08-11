@@ -106,16 +106,18 @@ class MediaIndex extends Component {
    * @return {React.ReactElement|void} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     cell = this.mapColumn(column, cell);
-    const style = (row[t('File Visibility', {ns: 'media'})] === 'hidden') ? 'bg-danger' : '';
+    const style = (row[t('File Visibility',
+      {ns: 'media'})] === 'hidden') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
     case t('File Name', {ns: 'media'}):
       if (this.props.hasPermission('media_read')) {
         const downloadURL = loris.BaseURL
                             + '/media/files/'
-                            + encodeURIComponent(row[t('File Name', {ns: 'media'})]);
+                            + encodeURIComponent(
+                              row[t('File Name', {ns: 'media'})]);
         result = (
           <td className={style}>
             <a
@@ -149,7 +151,8 @@ class MediaIndex extends Component {
         return;
       }
       const editButton = (
-        <TriggerableModal title={t('Edit Media File', {ns: 'media'})} label={t('Edit', {ns: 'media'})}>
+        <TriggerableModal title={t('Edit Media File',
+          {ns: 'media'})} label={t('Edit', {ns: 'media'})}>
           <MediaEditForm
             DataURL={loris.BaseURL
                         + '/media/ajax/FileUpload.php'
@@ -174,12 +177,13 @@ class MediaIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'media'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'media'})}</h3>;
     }
 
     // Waiting for async data to load

@@ -14,7 +14,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 i18n.addResourceBundle('hi', 'media', hiStrings);
 
@@ -63,7 +63,8 @@ class MediaUploadForm extends Component {
       if (!response.ok) {
         console.error(response.status + ': ' + response.statusText);
         this.setState({
-          error: this.props.t('An error occurred when loading the form!', {ns: 'media'}),
+          error: this.props.t('An error occurred when loading the form!',
+            {ns: 'media'}),
         });
         return;
       }
@@ -77,7 +78,8 @@ class MediaUploadForm extends Component {
     }).catch((error) => {
       console.error(error);
       this.setState({
-        error: this.props.t('An error occurred when loading the form!', {ns: 'media'}),
+        error: this.props.t('An error occurred when loading the form!',
+          {ns: 'media'}),
       });
     });
   }
@@ -88,7 +90,7 @@ class MediaUploadForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // Data loading error
     if (this.state.error !== undefined) {
@@ -110,9 +112,13 @@ class MediaUploadForm extends Component {
 
     let helpText = (
       <span>
-        {t('File name must begin with', {ns: 'media'})} <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
-        {t('For example, for candidate', {ns: 'media'})} <i>ABC123</i>, {t('visit', {ns: 'media'})} <i>V1</i> {t('for', {ns: 'media'})}
-        <i>Body Mass Index</i> {t('the file name should be prefixed by', {ns: 'media'})}:
+        {t('File name must begin with', {ns: 'media'})}
+        <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
+        {t('For example, for candidate', {ns: 'media'})}
+        <i>ABC123</i>, {t('visit', {ns: 'media'})} <i>V1</i>
+        {t('for', {ns: 'media'})}
+        <i>Body Mass Index</i>
+        {t('the file name should be prefixed by', {ns: 'media'})}:
         <b> ABC123_V1_bmi</b><br/>
         {t('File cannot exceed', {ns: 'media'})} {this.props.maxUploadSize}
       </span>
@@ -198,7 +204,7 @@ class MediaUploadForm extends Component {
             />
             <SelectElement
               name='language'
-              label={t("Document's Language", {ns: 'media'})}
+              label={t('Document\'s Language', {ns: 'media'})}
               options={this.state.Data.language}
               onUserInput={this.setFormData}
               ref='language'
@@ -277,7 +283,8 @@ class MediaUploadForm extends Component {
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal.fire(
         this.props.t('Invalid file name!', {ns: 'media'}),
-        this.props.t('File name should begin with:', {ns: 'media'}) + ' ' + requiredFileName,
+        this.props.t('File name should begin with:', {ns: 'media'})
+        + ' ' + requiredFileName,
         'error'
       );
       return;
@@ -288,7 +295,10 @@ class MediaUploadForm extends Component {
     if (isDuplicate >= 0) {
       swal.fire({
         title: this.props.t('Are you sure?', {ns: 'media'}),
-        text: this.props.t('A file with this name already exists!\n Would you like to override existing file?', {ns: 'media'}),
+        text: this.props.t(
+          'A file with this name already exists!\n'
+          +' Would you like to override existing file?',
+          {ns: 'media'}),
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'media'}),
@@ -297,7 +307,9 @@ class MediaUploadForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal.fire(this.props.t('Cancelled', {ns: 'media'}), this.props.t('Your imaginary file is safe :)', {ns: 'media'}), 'error');
+          swal.fire(this.props.t('Cancelled', {ns: 'media'}),
+            this.props.t('Your imaginary file is safe :)',
+              {ns: 'media'}), 'error');
         }
       }.bind(this));
     } else {
@@ -411,7 +423,7 @@ class MediaUploadForm extends Component {
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm(formRefs, formData) {
-    const { t } = this.props;
+    const {t} = this.props;
     let isValidForm = true;
 
     let requiredFields = {
