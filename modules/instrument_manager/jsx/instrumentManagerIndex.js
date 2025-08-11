@@ -116,8 +116,19 @@ class InstrumentManagerIndex extends Component {
    * @return {void}
    */
   triggerValidityReport() {
+    if (this.state.selectedDataFile === null) {
+      document.querySelector('[name="instrument_data_file"]').reportValidity();
+      return;
+    }
+    if (this.state.selectedInstruments.length === 0) {
+      const selectorExists = document.querySelector('#select-instruments input');
+      if (selectorExists) {
+        selectorExists.setCustomValidity('Please select one or more instruments.');
+        selectorExists.reportValidity();
+      }
+      return;
+    }
     document.querySelector('[name="create_participants"]').reportValidity();
-    document.querySelector('[name="instrument_data_file"]').reportValidity();
   }
 
 
@@ -315,6 +326,7 @@ class InstrumentManagerIndex extends Component {
                 selectedDataFile: null,
               });
             }}
+            useForm={false}
             onSubmit={(e) => {
               if (
                 this.state.selectedDataFile === null ||
@@ -431,6 +443,7 @@ class InstrumentManagerIndex extends Component {
         title={'Edit Permissions for '
                 + this.state.modifyPermissions.instrument}
         show={true}
+        minHeight={'450px'}
         onSubmit={submitPromise}
         onClose={
           () => {
@@ -514,6 +527,7 @@ class InstrumentManagerIndex extends Component {
         this.triggerValidityReport();
         return Promise.reject();
       }
+
       return this.uploadMultiInstrumentData();
     }
 
@@ -522,6 +536,7 @@ class InstrumentManagerIndex extends Component {
       show={this.state.showMultiInstrumentUploadModal}
       width={'75%'}
       minHeight={'450px'}
+      useForm={false}
       onSubmit={handleSubmit}
       onClose={
         () => {

@@ -41,7 +41,6 @@ class InstrumentDataUploadModal extends Component {
     this.setState({
       selectedDataFile: file,
     });
-    console.log('onchange', file);
   }
 
 
@@ -132,6 +131,7 @@ class InstrumentDataUploadModal extends Component {
                     required={this.isMultiInstrument}
                   />
                   <Select
+                    id={'select-instruments'}
                     className={'col-sm-9'}
                     isMulti={true}
                     options={this.props.instrumentList.map(i => { return {value: i, label: i}; })}
