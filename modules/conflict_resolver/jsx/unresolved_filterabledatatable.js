@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
-
-import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
+import PropTypes from 'prop-types';
 
 /**
  * Filterable database for unresolved conflicts.
@@ -125,11 +123,12 @@ class UnresolvedFilterableDataTable extends Component {
    */
   render() {
     // If error occurs, return a message.
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.error) {
       return (
         <div className="alert alert-danger" role="alert">
-          <h4>{t('An error occured while loading the page.', {ns: 'conflict_resolver'})}</h4>
+          <h4>{t('An error occured while loading the page.',
+            {ns: 'conflict_resolver'})}</h4>
           {this.state.error.toString()}
         </div>
       );
@@ -201,6 +200,10 @@ class UnresolvedFilterableDataTable extends Component {
     );
   }
 }
+
+UnresolvedFilterableDataTable.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation(
   ['conflict_resolver', 'loris']
