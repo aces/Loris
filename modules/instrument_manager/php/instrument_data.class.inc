@@ -170,167 +170,171 @@ class Instrument_Data extends \NDB_Page
         $createNonexistent
             = $requestBody['action'] === 'CREATE_SESSIONS';
 
-        if (isset($requestBody['instrument'])) {
+        if (
+            isset($requestBody['instrument']) ||
+            isset($requestBody['multi-instrument'])
+        ) {
+            $multiInstrument = isset($requestBody['multi-instrument']);
+
+            $dataFile = $request->getUploadedFiles()['data_file'];
+            $userID   = $request->getAttribute('user')->getUsername();
+            $uploadFolder = $this->loris
+                ->getConfiguration()->getSetting('instrumentDataPath');
+            $filePrefix   = $userID . '_' . time() . '_';
+            $fileLocation = $uploadFolder . "/$filePrefix"
+                . $dataFile->getClientFilename();
+            $fileInfo = new SplFileInfo($fileLocation);
+
+
+            $dataFile->moveTo($fileLocation);
+            $this->_insertCSVFileEntry($fileInfo->getFilename());
+
             $instrumentName = $requestBody['instrument'];
 
-            if ($this->instrumentExists($instrumentName)) {
-                $dataFile = $request->getUploadedFiles()['data_file'];
-                $userID   = $request->getAttribute('user')->getUsername();
+            if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
+                // Run as background task
+                $serverProcessLauncher = new SP\ServerProcessLauncher();
 
-                $uploadFolder = $this->loris
-                    ->getConfiguration()->getSetting('instrumentDataPath');
-                $filePrefix   = $userID . '_' . time() . '_';
-                $fileLocation = $uploadFolder . "/$filePrefix"
-                    . $dataFile->getClientFilename();
-                $dataFile->moveTo($fileLocation);
-
-                $fileInfo = new SplFileInfo($fileLocation);
-                $this->_insertCSVFileEntry($fileInfo->getFilename());
-
-                if ($fileInfo->getSize() > self::MAX_FILE_BYTES) {
-                    // Run as background task
-                    $serverProcessLauncher = new SP\ServerProcessLauncher();
+                if ($multiInstrument) {
+                    $serverProcessLauncher->parseRedcapData(
+                        json_decode($requestBody['multi-instrument']),
+                        $fileLocation,
+                        $createNonexistent
+                    );
+                } else {
                     $serverProcessLauncher->parseInstrumentData(
                         $instrumentName,
                         $fileLocation,
                         $createNonexistent
                     );
-
-                    $result = [
-                        'success' => true,
-                        'message' => "Due to the relatively large size of the " .
-                            "uploaded file, the process will being run " .
-                            "asynchronously in the background. You will receive " .
-                            "an email once completed."
-
-                    ];
-                    return new \LORIS\Http\Response\JSON\Created($result);
                 }
 
-                // Parse
-                try {
-                    $dataParser = new InstrumentDataParser($fileInfo);
+                $result = [
+                    'success' => true,
+                    'message' => "Due to the relatively large size of the " .
+                        "uploaded file, the process will being run " .
+                        "asynchronously in the background. You will receive " .
+                        "an email once completed."
 
-                    $data = $dataParser->parseCSV($this->loris, $instrumentName, $createNonexistent);
+                ];
+                return new \LORIS\Http\Response\JSON\Created($result);
+            }
 
-                    $studyIDs = [];
-                    if ($createNonexistent) {
-                        $studyIDs = array_reduce(
-                            $data,
-                            function ($mapping, $row) {
-                                $studyID = $row['StudyID'];
-                                if (!in_array($studyID, $mapping)) {
-                                    $mapping[] = $studyID;
-                                }
-                                return $mapping;
-                            },
-                            []
+            try {
+                $dataParser = new InstrumentDataParser($fileInfo);
+
+                if ($multiInstrument) {
+                    $instrumentNames = json_encode(json_decode($requestBody['multi-instrument']));
+
+                    try {
+                        $instrumentNames = array_map(
+                            function ($instrument) { return $instrument['value']; },
+                            json_decode($instrumentNames, true)
                         );
-                    }
-
-
-                    $db = $this->loris->getDatabaseConnection();
-                    $db->beginTransaction();
-
-                    $validData = $dataParser->validateData(
-                        $data,
-                        [
-                            'UserID'   => $userID,
-                            'Examiner' => $userID
-                        ],
-                        $createNonexistent
-                    );
-
-                    if (count($validData['errors']) > 0) {
-                        $db->rollBack();    // Rollback creations from validateData
+                        $result = $dataParser->parseCSVMulti(
+                            $this->loris,
+                            $instrumentNames,
+                            $userID,
+                            $createNonexistent
+                        );
+                        return new \LORIS\Http\Response\JSON\Created($result);
+                    } catch (\RuntimeException $e) {
                         return new \LORIS\Http\Response\JSON\OK(
                             [
-                                'message' => $validData['errors'],
+                                'success' => false,
+                                'message' => $e->getMessage()
                             ]
                         );
                     }
+                } else {
 
-                    $result = InstrumentDataParser::insertInstrumentData(
-                        $this->loris,
-                        $validData['data'],
-                        $instrumentName,
-                        $fileInfo->getFilename()
-                    );
+                    if ($this->instrumentExists($instrumentName)) {
 
-                    if ($result['success']) {
+                        $data = $dataParser->parseCSV($this->loris, $instrumentName, $createNonexistent);
+
+                        $studyIDs = [];
                         if ($createNonexistent) {
-                            $studyIDMapping = $db->pselect(
-                                'SELECT ExtStudyID, CandID
-                            FROM candidate_project_extid_rel
-                            WHERE ExtStudyID IN (' .
-                                join(
-                                    ',',
-                                    array_map(
-                                        function ($id) {
-                                            return "'$id'";
-                                        },
-                                        $studyIDs
-                                    )
-                                ) .
-                                ')',
-                                [],
+                            $studyIDs = array_reduce(
+                                $data,
+                                function ($mapping, $row) {
+                                    $studyID = $row['StudyID'];
+                                    if (!in_array($studyID, $mapping)) {
+                                        $mapping[] = $studyID;
+                                    }
+                                    return $mapping;
+                                },
+                                []
                             );
-
-                            $result['idMapping'] = $studyIDMapping;
                         }
 
-                        $db->commit();
-                        return new \LORIS\Http\Response\JSON\Created($result);
+                        $db = $this->loris->getDatabaseConnection();
+                        $db->beginTransaction();
+
+                        $validData = $dataParser->validateData(
+                            $data,
+                            [
+                                'UserID' => $userID,
+                                'Examiner' => $userID
+                            ],
+                            $createNonexistent
+                        );
+
+                        if (count($validData['errors']) > 0) {
+                            $db->rollBack();    // Rollback creations from validateData
+                            return new \LORIS\Http\Response\JSON\OK(
+                                [
+                                    'message' => $validData['errors'],
+                                ]
+                            );
+                        }
+
+                        $result = InstrumentDataParser::insertInstrumentData(
+                            $this->loris,
+                            $validData['data'],
+                            $instrumentName,
+                            $fileInfo->getFilename()
+                        );
+
+                        if ($result['success']) {
+                            if ($createNonexistent) {
+                                $studyIDMapping = $db->pselect(
+                                    'SELECT ExtStudyID, CandID
+                            FROM candidate_project_extid_rel
+                            WHERE ExtStudyID IN (' .
+                                    join(
+                                        ',',
+                                        array_map(
+                                            function ($id) {
+                                                return "'$id'";
+                                            },
+                                            $studyIDs
+                                        )
+                                    ) .
+                                    ')',
+                                    [],
+                                );
+
+                                $result['idMapping'] = $studyIDMapping;
+                            }
+
+                            $db->commit();
+                            return new \LORIS\Http\Response\JSON\Created($result);
+                        }
+
+                        $db->rollBack();
+                        return new \LORIS\Http\Response\JSON\OK(
+                            [
+                                'success' => false,
+                                'message' => $result['message']
+                            ]
+                        );
+                    } else {
+                        return new \LORIS\Http\Response\JSON\BadRequest(
+                            'Instrument does not exist'
+                        );
                     }
-
-                    $db->rollBack();
-                    return new \LORIS\Http\Response\JSON\BadRequest(
-                        $result['message']
-                    );
-
-                } catch (\Exception $e) {
-                    return new \LORIS\Http\Response\JSON\OK(
-                        [
-                            'message' => $e->getMessage()
-                        ]
-                    );
                 }
-            }
-
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Instrument does not exist'
-            );
-        } else if (isset($requestBody['multi-instrument'])) {
-            $instruments = json_encode(json_decode($requestBody['multi-instrument']));
-
-            try {
-                $dataFile = $request->getUploadedFiles()['data_file'];
-                $userID   = $request->getAttribute('user')->getUsername();
-
-                $uploadFolder = $this->loris
-                    ->getConfiguration()->getSetting('instrumentDataPath');
-                $filePrefix   = $userID . '_' . time() . '_';
-                $fileLocation = $uploadFolder . "/$filePrefix"
-                    . $dataFile->getClientFilename();
-                $dataFile->moveTo($fileLocation);
-
-                $fileInfo = new SplFileInfo($fileLocation);
-                $this->_insertCSVFileEntry($fileInfo->getFilename());
-                $dataParser = new RedcapCSVParser($fileInfo);
-
-                $instrumentNames = array_map(
-                    function ($instrument) { return $instrument['value']; },
-                    json_decode($instruments, true)
-                );
-                $result = $dataParser->parseDataCSV(
-                    $this->loris,
-                    $instrumentNames,
-                    $userID,
-                    $createNonexistent
-                );
-
-                return new \LORIS\Http\Response\JSON\Created($result);
-            } catch (\RuntimeException $e) {
+            } catch (\Exception $e) {
                 return new \LORIS\Http\Response\JSON\OK(
                     [
                         'success' => false,

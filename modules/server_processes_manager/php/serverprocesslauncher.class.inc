@@ -191,4 +191,26 @@ class ServerProcessLauncher
         );
         return $this->_launch($parseInstrumentDataProcess);
     }
+
+    /**
+     * Launch REDCap data parse process
+     *
+     * @param array  $instrumentNames   Instrument names
+     * @param string $fileLocation      File location
+     * @param bool   $createNonexistent Whether to create participants/visits
+     *
+     * @return ?int ID (in the database) of the launched process or null
+     *             if the process could not be run
+     */
+    public function parseRedcapData(
+        array $instrumentNames,
+        string $fileLocation,
+        bool $createNonexistent
+    ): ?int {
+        $parseRedcapDataProcess = new ParseRedcapDataServerProcess(
+            $fileLocation,
+            $createNonexistent
+        );
+        return $this->_launch($parseRedcapDataProcess);
+    }
 }

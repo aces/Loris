@@ -556,4 +556,113 @@ class InstrumentDataParser extends CSVParser
             ];
         }
     }
+
+    /**
+     * Parse the Instrument Data csv file
+     *
+     * @param LorisInstance $loris Loris instance
+     * @param array         $instrumentNames List of instrument names
+     * @param string        $userID User ID
+     * @param bool          $createNonexistent Create Nonexistent
+     *
+     * @return array        Returns result array
+     * @throws RuntimeException
+     */
+    public function parseCSVMulti(
+        LorisInstance $loris,
+        array $instrumentNames,
+        string $userID,
+        bool $createNonexistent
+    ): array
+    {
+        try {
+            $db = $loris->getDatabaseConnection();
+            $db->beginTransaction();
+
+            try {
+                // Ensure headers are expected headers
+                $expectedHeaders = array_reduce(
+                    $instrumentNames,
+                    function ($headers, $instrumentName) use ($loris, $createNonexistent) {
+                        return array_unique(array_merge(
+                            $headers,
+                            self::getCSVHeaders(
+                                $loris,
+                                $instrumentName,
+                                $createNonexistent
+                            )
+                        ));
+                    },
+                    []
+                );
+
+                $parsedCSV = $this->parse($expectedHeaders);
+
+                foreach ($instrumentNames as $instrumentName) {
+                    $instrumentHeaders = self::getCSVHeaders(
+                        $loris,
+                        $instrumentName,
+                    );
+
+                    $instrumentData = array_map(
+                        function ($csvRow) use ($instrumentHeaders) {
+                            return array_filter(
+                                $csvRow,
+                                function ($data, $header)
+                                use ($csvRow, $instrumentHeaders) {
+                                    return in_array($header, $instrumentHeaders);
+                                },
+                                ARRAY_FILTER_USE_BOTH
+                            );
+                        },
+                        $parsedCSV
+                    );
+
+                    $validData = self::validateData(
+                        $instrumentData,
+                        [
+                            'UserID'   => $userID,
+                            'Examiner' => $userID
+                        ]
+                    );
+
+                    if (count($validData['errors']) > 0) {
+                        throw new RuntimeException(
+                            'Validation error(s): ' .
+                            join(', ', $validData['errors'])
+                        );
+                    }
+
+                    $result = self::insertInstrumentData(
+                        $loris,
+                        $validData['data'],
+                        $instrumentName,
+                        $this->csvFile->getFilename()
+                    );
+
+                    if (!$result['success']) {
+                        $db->rollBack();
+                        return $result;
+                    }
+                }
+
+                $db->commit();
+                return [
+                    'success' => true,
+                    'message' => 'Successfully inserted data for ' .
+                        count($instrumentNames) . ' instruments'
+                ];
+            } catch (\Exception $e) {
+                $db->rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ];
+            }
+        } catch (DatabaseException $dbe) {
+            throw new RuntimeException(
+                "Database Exception: {$dbe->getMessage()}"
+            );
+        }
+    }
 }

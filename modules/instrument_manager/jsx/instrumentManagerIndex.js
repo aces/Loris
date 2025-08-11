@@ -1,20 +1,18 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component, useRef} from 'react';
+import Select from 'react-select';
+import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
-import InstrumentUploadForm from './uploadForm';
-
 import Modal from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
 import TriggerableModal from 'jsx/TriggerableModal';
 
-import Select from 'react-select';
-import swal from 'sweetalert2';
-
+import InstrumentUploadForm from './uploadForm';
 import InstrumentDataUploadModal from './uploadDataModal';
 
 /**
@@ -323,7 +321,7 @@ class InstrumentManagerIndex extends Component {
                 this.state.action === null
               ) {
                 this.triggerValidityReport();
-                return;
+                return Promise.reject();
               }
               return this.uploadInstrumentData(row.Instrument);
             }}
@@ -514,7 +512,7 @@ class InstrumentManagerIndex extends Component {
         this.state.selectedInstruments.length === 0
       ) {
         this.triggerValidityReport();
-        return;
+        return Promise.reject();
       }
       return this.uploadMultiInstrumentData();
     }

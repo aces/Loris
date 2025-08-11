@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
-import {FileElement} from 'jsx/Form';
+import {FileElement, RadioElement} from 'jsx/Form';
 import InputLabel from 'jsx/form/InputLabel';
-import {RadioElement} from '../../../jsx/Form';
 
 /**
  * Instrument Upload Form component
@@ -24,7 +23,6 @@ class InstrumentDataUploadModal extends Component {
       selectedInstruments: this.isMultiInstrument
         ? []
         : this.props.instrumentList,
-      submitted: false,
       createParticipants: null,
     };
 
@@ -39,10 +37,11 @@ class InstrumentDataUploadModal extends Component {
    * @param {string} file
    */
   dataFileSelected(element, file) {
+    this.props.setSelectedDataFile(file);
     this.setState({
       selectedDataFile: file,
     });
-    this.props.setSelectedDataFile(file);
+    console.log('onchange', file);
   }
 
 
@@ -53,10 +52,10 @@ class InstrumentDataUploadModal extends Component {
    * @param option
    */
   handleRadioChange(element, option) {
+    this.props.setAction(option);
     this.setState({
       createParticipants: option,
     });
-    this.props.setAction(option);
   }
 
   /**
@@ -90,7 +89,6 @@ class InstrumentDataUploadModal extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    console.log('multi: ', this.isMultiInstrument, this.state.selectedInstruments.length);
     return (
       <div id={this.containerID}>
         <div
@@ -102,20 +100,15 @@ class InstrumentDataUploadModal extends Component {
           <div className='col-sm-11'>
             <FileElement
               name={'instrument_data_file'}
-              // label={
-              //   'Upload csv file ' + ((
-              //     !this.isMultiInstrument ||
-              //     this.state.selectedInstruments.length === 1
-              //   )
-              //     ? `for ${this.state.selectedInstruments[0]?.value ?? this.state.selectedInstruments[0]}`
-              //     : (
-              //         this.state.selectedInstruments.length > 1
-              //           ? 'for selected instruments'
-              //           : ''
-              //       )
-              //   )
-              // }
-              label={'Upload csv file for targeted instruments'}
+              label={
+                'Upload csv file for ' + ((
+                  !this.isMultiInstrument ||
+                  this.state.selectedInstruments.length === 1
+                )
+                  ? `${this.state.selectedInstruments[0]?.value ?? this.state.selectedInstruments[0]}`
+                  : 'targeted instruments'
+                )
+              }
               onUserInput={this.dataFileSelected}
               value={this.state.selectedDataFile}
               required={true}
@@ -204,54 +197,6 @@ class InstrumentDataUploadModal extends Component {
             &nbsp;Download Expected Template
           </a>
         </div>
-
-
-        {/* <div style={{display: 'flex', justifyContent: 'center'}}>*/}
-        {/*  <button*/}
-        {/*    className='btn btn-primary'*/}
-        {/*    style={{marginTop: '5px'}}*/}
-        {/*    disabled={*/}
-        {/*      this.state.submitted ||*/}
-        {/*      this.state.selectedDataFile === null ||*/}
-        {/*      this.state.selectedInstruments.length === 0*/}
-        {/*    }*/}
-        {/*    onClick={() => {*/}
-        {/*      // if (*/}
-        {/*      //   this.state.selectedDataFile === null ||*/}
-        {/*      //   this.state.selectedInstruments.length === 0*/}
-        {/*      // ) {*/}
-        {/*      //   e.preventDefault();*/}
-        {/*      //   return;*/}
-        {/*      // }*/}
-        {/*      this.setState({*/}
-        {/*        submitted: true*/}
-        {/*      });*/}
-
-        {/*      if (!this.isMultiInstrument || this.state.selectedInstruments.length === 1) {*/}
-        {/*        this.uploadInstrumentData(this.state.selectedInstruments[0])*/}
-        {/*          .then(() => {*/}
-        {/*            // this.setState({*/}
-        {/*            //   selectedDataFile: null,*/}
-        {/*            // });*/}
-        {/*            // document.getElementById(this.containerID).parentElement.remove();*/}
-        {/*          })*/}
-        {/*          .finally(() => {*/}
-        {/*            this.setState({*/}
-        {/*              submitted: false,*/}
-        {/*            });*/}
-        {/*            document.getElementById(this.containerID)*/}
-        {/*              .parentElement.parentElement.parentElement.parentElement*/}
-        {/*              .remove();*/}
-
-        {/*          });*/}
-        {/*      } else {*/}
-        {/*        console.error('Multi instrument not yet implemented');*/}
-        {/*      }*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    Submit*/}
-        {/*  </button>*/}
-        {/* </div>*/}
       </div>
     );
   }

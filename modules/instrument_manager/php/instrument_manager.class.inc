@@ -139,10 +139,6 @@ class Instrument_Manager extends \DataFrameworkMenu
         } else {
             // Assume redcap instrument
 
-//            return new \LORIS\Http\Response\JSON\BadRequest(
-//                'Redcap is not supported'
-//            );
-
             // TODO: Rename file. Affix timestamp
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes('text/csv');
