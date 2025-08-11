@@ -168,4 +168,30 @@ class ServerProcessLauncher
 
         return $process_id;
     }
+
+    /**
+     * Launch instrument data parse process
+     *
+     * @param string $instrument        Instrument name
+     * @param string $fileLocation      File location
+     * @param bool   $createNonexistent Whether to create participants/visits
+     * @param bool   $multiInstrument   Whether to expect multiple instruments
+     *
+     * @return ?int ID (in the database) of the launched process or null
+     *             if the process could not be run
+     */
+    public function parseInstrumentData(
+        string $instrument,
+        string $fileLocation,
+        bool $createNonexistent,
+        bool $multiInstrument
+    ): ?int {
+        $parseInstrumentDataProcess = new ParseInstrumentDataServerProcess(
+            $instrument,
+            $fileLocation,
+            $createNonexistent,
+            $multiInstrument
+        );
+        return $this->_launch($parseInstrumentDataProcess);
+    }
 }

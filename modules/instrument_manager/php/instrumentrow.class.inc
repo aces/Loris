@@ -81,6 +81,18 @@ class InstrumentRow implements \LORIS\Data\DataInstance
     {
         $linst = $this->_path . "/project/instruments/$instrument.linst";
         if (file_exists($linst)) {
+            $meta = $this->_path . "/project/instruments/$instrument.meta";
+            if (file_exists($meta)) {
+                $fp = fopen($meta, "r");
+                while (($line = fgets($fp, 4096)) !== false) {
+                    $row = explode("{@}", $line);
+                    if ($row[0] == 'redcap') {
+                        if ($row[1]) {
+                            return 'REDCap Instrument';
+                        }
+                    }
+                }
+            }
             return 'Instrument Builder';
         }
 
@@ -152,7 +164,23 @@ class InstrumentRow implements \LORIS\Data\DataInstance
                 'tablename' => $instrument,
             ]
         );
-        return ($exists > 0) ? 'Exists' : 'Missing';
+        if ($exists > 0) {
+            return 'Exists';
+        }
+
+        $meta = $this->_path . "/project/instruments/$instrument.meta";
+        if (file_exists($meta)) {
+            $fp = fopen($meta, "r");
+            while (($line = fgets($fp, 4096)) !== false) {
+                $row = explode("{@}", $line);
+                if ($row[0] == 'jsondata') {
+                    if ($row[1]) {
+                        return 'JSON';
+                    }
+                }
+            }
+        }
+        return 'Missing';
     }
 
     /**

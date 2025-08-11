@@ -125,5 +125,7 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (134,'useAdvancedPermissions','Restricts access to data based on both sites and projects and require a special permission to access data not affiliated to a session (SessionID null). Keeping this setting to NO should ensure backwards compatibility (access to all data when module loads)',1,0,'boolean',50,'Use Advanced Permissions',5);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (135,'biobank','Settings related to the biobank module',1,0,NULL,NULL,'Biobank',14);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (136,'printEndpoint','Endpoint address for label printing logic',1,0,'text',135,'Label Printing Endpoint',1);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (137,'instrumentDataPath','Path to directory for uploaded instrument data csv files',1,0,'text',26,'Instrument Data Upload Path',16);
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

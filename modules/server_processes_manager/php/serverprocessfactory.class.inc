@@ -29,47 +29,51 @@ class ServerProcessFactory
     /**
      * Creates a server process based on the parameters passed as arguments.
      *
-     * @param int    $id           ID of the process in the database.
-     * @param int    $pid          ID of the Unix process associated to that task
-     * @param string $type         type of server process
-     * @param string $stdoutFile   full path to the process's stdout file
-     * @param string $stderrFile   full path to the server process's stderr file
-     * @param string $exitCodeFile full path to the file that will store the
-     *                             process's exit code
-     * @param int    $exitCode     process exit code
-     * @param string $userId       name of the user who submitted the server process
-     * @param string $startTime    time at which the process was started in
-     *                             YYYY-MM-DD HH:MM:SS format
-     * @param string $endTime      time at which the process was started in
-     *                             YYYY-MM-DD HH:MM:SS format
-     * @param string $exitText     text output by the process upon completion.
+     * @param array $dbRow Process database row.
      *
-     * @return MriUploadServerProcess the server process created
+     * @return AbstractServerProcess the server process created
+     *
      * @throws \InvalidArgumentException if the server process type is unknown
      */
-    public function getServerProcess(
-        $id, $pid, $type, $stdoutFile, $stderrFile,
-        $exitCodeFile, $exitCode, $userId,
-        $startTime, $endTime, $exitText
-    ): MRIUploadServerProcess {
-        if ($type == MriUploadServerProcess::PROCESS_TYPE) {
-            return new MriUploadServerProcess(
-                null,
-                '',
-                $id,
-                $pid,
-                $stdoutFile,
-                $stderrFile,
-                $exitCodeFile,
-                $exitCode,
-                $userId,
-                $startTime,
-                $endTime,
-                $exitText
-            );
-        }
-
-        throw new \InvalidArgumentException("Unknown server process type $type");
+    public function getServerProcess(array $dbRow): AbstractServerProcess
+    {
+        return match ($dbRow['type']) {
+            MriUploadServerProcess::PROCESS_TYPE =>
+                new MriUploadServerProcess(
+                    null,
+                    '',
+                    intval($dbRow['id']),
+                    intval($dbRow['pid']),
+                    $dbRow['stdout_file'],
+                    $dbRow['stderr_file'],
+                    $dbRow['exit_code_file'],
+                    intval($dbRow['exit_code']),
+                    $dbRow['userid'],
+                    $dbRow['start_time'],
+                    $dbRow['end_time'],
+                    $dbRow['exit_text']
+                ),
+            ParseInstrumentDataServerProcess::PROCESS_TYPE =>
+                new ParseInstrumentDataServerProcess(
+                    '',
+                    '',
+                    false,
+                    false,
+                    intval($dbRow['id']),
+                    intval($dbRow['pid']),
+                    $dbRow['stdout_file'],
+                    $dbRow['stderr_file'],
+                    $dbRow['exit_code_file'],
+                    intval($dbRow['exit_code']),
+                    $dbRow['userid'],
+                    $dbRow['start_time'],
+                    $dbRow['end_time'],
+                    $dbRow['exit_text']
+                ),
+            default => throw new \InvalidArgumentException(
+                "Unknown server process type: {$dbRow['type']}"
+            )
+        };
     }
 }
 
