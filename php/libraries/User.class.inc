@@ -350,22 +350,23 @@ class User extends UserPermissions implements
      */
     public function getVisits(): array
     {
-        $visit_labels     = [];
-        $list_of_projects = $this->getProjectIDs();
-        foreach ($list_of_projects as $projectID) {
-            $cohorts = \Utility::getCohortList($projectID);
-            foreach ($cohorts as $cohortID => $cohortTitle) {
-                $visits = \Utility::getVisitsForProjectCohort(
-                    $projectID,
-                    $cohortID
-                );
-                foreach ($visits as $_ => $visitLabel) {
-                    if (!in_array($visitLabel, $visit_labels)) {
-                        $visit_labels[$visitLabel] = $visitLabel;
-                    }
+        $visit_labels = [];
+        $userProjectIDs = $this->getProjectIDs();
+        
+        // Get VisitController instance
+        $visitController = new \LORIS\VisitController();
+        $allVisitsProjectCohort = $visitController->getVisitsProjectCohort();
+        
+        foreach ($allVisitsProjectCohort as [$visit, $projectID, $cohortID]) {
+            // Check if user has access to this project
+            if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
+                $visitLabel = $visit->getName();
+                if (!in_array($visitLabel, $visit_labels)) {
+                    $visit_labels[$visitLabel] = $visitLabel;
                 }
             }
         }
+        
         return $visit_labels;
     }
 
