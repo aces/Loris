@@ -310,7 +310,8 @@ INSERT INTO menu_categories (name, orderby) VALUES
 ('Electrophysiology', 3),
 ('Genomics', 4),
 ('Imaging', 5),
-('Reports', 6),
-('Tools', 7),
-('Admin', 8);
+('Biobank', 6),
+('Reports', 7),
+('Tools', 8),
+('Admin', 9);
 
