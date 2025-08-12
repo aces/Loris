@@ -99,27 +99,55 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
-        foreach ($projects as $projectID) {
+        $modules = $this->loris->getActiveModules();
+
+        $studyWidgets = [];
+        foreach ($modules as $module) {
+            $mwidget = $module->getWidgets(
+                'study-progression',
+                $user,
+                []
+            );
+            foreach ($mwidget as $mwidget) {
+                if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
+                    $studyWidgets[$mwidget->label()] = $mwidget->data();
+                    if (!$module->hasAccess($user)) {
+                        foreach (
+                            $studyWidgets[$mwidget->label()] as $key => $value
+                        ) {
+                            if (isset($value['url'])) {
+                                $studyWidgets[$mwidget->label()][$key]['url'] = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $studyProgressionProjects = [];
+        foreach ($projects as $pid) {
             // Set project recruitment data
-            $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
             if (is_null($projectInfo)) {
                 throw new \LorisException(
                     'No project settings exist in the Database for ' .
-                    'project ID ' . intval(strval($projectID))
+                    'project ID ' . intval(strval($pid))
                 );
             }
-            $recruitment[intval(strval($projectID))]
-                = $this->_createProjectProgressBar(
-                    strval($projectID),
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject(
-                        $recruitmentRaw,
-                        $projectID
-                    ),
-                    $recruitmentRaw
+            $recruitment[intval(strval($pid))] = $this->_createProjectProgressBar(
+                strval($pid),
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject(
+                    $recruitmentRaw,
+                    $pid
+                ),
+                $recruitmentRaw
+            );
+            $studyProgressionProjects[$projectInfo['Name']]
+                = $this->_createProjectSummary(
+                    strval($pid),
+                    $studyWidgets
                 );
-
             // Set cohort recruitment data
             $centerList  = "'" . implode("','", $centerIDs) . "'";
             $projectList = "'" . implode("','", $projects) . "'";
@@ -149,6 +177,28 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     );
             }
         }
+        // Sort each project's progression data by the most common titles first
+        $statisticCounts = [];
+        foreach ($studyProgressionProjects as $projectData) {
+            foreach ($projectData as $data) {
+                if (isset($statisticCounts[$data['title']])) {
+                    $statisticCounts[$data['title']]++;
+                } else {
+                    $statisticCounts[$data['title']] = 1;
+                }
+            }
+        }
+        foreach ($studyProgressionProjects as &$projectData) {
+            usort(
+                $projectData,
+                function ($a, $b) use ($statisticCounts) {
+                    return ($statisticCounts[$b['title']] ?? 0)
+                        - ($statisticCounts[$a['title']] ?? 0);
+                }
+            );
+        }
+        unset($projectData);
+
         $siteOptions = [];
         foreach ($centerIDs as $center) {
             if (array_key_exists($center->__toString(), $sites)) {
@@ -164,15 +214,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
             'cohorts'           => $cohortOptions,
             'sites'             => $siteOptions,
             'visits'            => $visitOptions,
-            'participantStatus' => $participantStatusOptions
+            'participantStatus' => $participantStatusOptions,
         ];
         $values  = [];
         // Used for the react widget recruitment.js
         $values['recruitment'] = $recruitment;
         // Used for the react widget studyprogression.js
         $values['studyprogression']   = [
-            'total_scans' => $totalScans,
-            'recruitment' => $recruitment
+            'total_scans'     => $totalScans,
+            'recruitment'     => $recruitment,
+            'progressionData' => $studyProgressionProjects,
         ];
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
@@ -361,6 +412,35 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 = round($totalMales / $totalRecruitment * 100);
         }
         return $rv;
+    }
+
+    /**
+     * Generates the template data for a project summary.
+     *
+     * @param string $ID      The name of the progress bar being created.
+     * @param array  $widgets The raw data from the database
+     *
+     * @return array data for the project summary
+     */
+    private function _createProjectSummary(
+        $ID,
+        $widgets
+    ): array {
+        $projectData = [];
+        foreach ($widgets as $name => $widget) {
+            foreach ($widget as $projectID => $data) {
+                if ($projectID == $ID) {
+                    $projectData[] = [
+                        'title'  => $name,
+                        'url'    => $data['url'],
+                        'colour' => $data['colour'],
+                        'count'  => $data['count']
+                    ];
+                }
+            }
+        }
+
+        return $projectData;
     }
 
     /**

@@ -163,7 +163,7 @@ const Recruitment = (props) => {
               >
                 {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
-                    if (key !== 'overall') {
+                    if (key !== 'overall' && value['total_recruitment'] > 0) {
                       return <div key ={`projectBreakdown_${key}`}>
                         {progressBarBuilder(value)}
                       </div>;

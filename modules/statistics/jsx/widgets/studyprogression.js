@@ -87,6 +87,63 @@ const StudyProgression = (props) => {
         }}
         views={[
           {
+            content:
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'scroll',
+                  overflowX: 'hidden',
+                }}
+              >
+                {Object.entries(json['studyprogression']
+                  ['progressionData']).map(
+                  ([projectName, projectData]) => {
+                    if (projectData.length > 0) {
+                      return <div key={`progress_${projectName}`}>
+                        <h3 style={{marginTop: 0}}>{projectName}</h3>
+                        <div
+                          className='study-progression-container'
+                        >
+                          {projectData.map((data) => {
+                            const commonProps = {
+                              className: 'study-progression-button',
+                              style: {
+                                backgroundColor: data['colour'],
+                                color: 'black',
+                                textDecoration: 'none',
+                              },
+                              key: `progress_${projectName}_${data['title']}`,
+                            };
+
+                            const content = (
+                              <>
+                                <h4>{data['count']}</h4>
+                                <div>
+                                  {data['title'].replace('_', ' ')}
+                                  {data['count'] !== 1 && 's'}
+                                </div>
+                              </>
+                            );
+
+                            return data['url'] ? (
+                              <a {...commonProps} href={data['url']}>
+                                {content}
+                              </a>
+                            ) : (
+                              <div {...commonProps}>
+                                {content}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>;
+                    }
+                  }
+                )}
+              </div>,
+            title: 'Study Progression - summary',
+          },
+          {
             content: json['studyprogression']['total_scans'] > 0 ? (
               <div
                 style={{
@@ -170,8 +227,8 @@ const StudyProgression = (props) => {
 StudyProgression.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
-  updateFilters: PropTypes.function,
-  showChart: PropTypes.function,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 StudyProgression.defaultProps = {
   data: {},
