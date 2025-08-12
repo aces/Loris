@@ -13,38 +13,38 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr ""
+msgstr "लोरिस"
 
 msgid "DEV"
-msgstr ""
+msgstr "डेव"
 
 msgid "Affiliations"
-msgstr ""
+msgstr "संबद्धता"
 
 msgid "Site Affiliation"
-msgstr ""
+msgstr "साइट संबद्धता"
 
 msgid "Site Affiliations"
-msgstr ""
+msgstr "साइट संबद्धताएँ"
 
 msgid "Project Affiliation"
-msgstr ""
+msgstr "परियोजना संबद्धता"
 
 msgid "Project Affiliations"
-msgstr ""
+msgstr "परियोजना संबद्धताएँ"
 
 msgid "Log Out"
-msgstr ""
+msgstr "लॉग आउट"
 
 msgid "My Preferences"
-msgstr ""
+msgstr "मेरी पसंद"
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -56,7 +56,8 @@ msgstr ""
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr ""
+msgstr "प्रशासन"
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -68,14 +69,14 @@ msgstr ""
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
-msgstr ""
+msgstr "उपकरण"
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr ""
+msgstr "नैदानिक"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -83,88 +84,88 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr ""
+msgstr "इमेजिंग"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr ""
+msgstr "उम्मीदवार"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
-msgstr ""
+msgstr "जीनोमिक्स"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
-msgstr ""
+msgstr "इलेक्ट्रोफिजियोलॉजी"
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
 msgid "Reports"
-msgstr ""
+msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr ""
+msgstr "समय बिंदु"
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "हाँ"
 
 msgid "No"
-msgstr ""
+msgstr "नहीं"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "पीएससीआईडी"
 
 msgid "DCCID"
-msgstr ""
+msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr ""
+msgstr "दौरे का लेबल"
 
 msgid "Site"
-msgstr ""
+msgstr "साइट"
 
 msgid "Project"
-msgstr ""
+msgstr "परियोजना"
 
 msgid "Cohort"
-msgstr ""
+msgstr "समूह"
 
 msgid "Date of registration"
-msgstr ""
+msgstr "पंजीकरण की तिथि"
 
 msgid "Participant Status"
-msgstr ""
+msgstr "प्रतिभागी की स्थिति"
 
 msgid "DoB"
-msgstr ""
+msgstr "जन्म तिथि"
 
 msgid "Sex"
-msgstr ""
+msgstr "लिंग"
 
 msgid "Feedback"
-msgstr ""
+msgstr "प्रतिक्रिया"
 
 msgid "Scans"
-msgstr ""
+msgstr "स्कैन"
 
 msgid "Date of Birth"
-msgstr ""
+msgstr "जन्म तिथि"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr ""
+msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
 
 msgid "Maximum rows per page:"
-msgstr ""
+msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
 msgid "Download Table as CSV"
-msgstr ""
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
