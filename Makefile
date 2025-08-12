@@ -198,3 +198,6 @@ server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES
 
 conflict_resolver:
 	target=conflict_resolver npm run compile
+
+my_preferences:
+	target=my_preferences npm run compile

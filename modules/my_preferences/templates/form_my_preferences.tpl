@@ -63,13 +63,17 @@
             <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
-    {if $mfa_secret == ""}
+    <div>
     <div class="row form-group">
-         <button>Enable MFA</button>
+       <label class="col-sm-2">
+       {* It would be nice to do this inline but the whole page is embedded
+          in a different form element with a smarty template and it's easier
+          to create a new "fresh" page with modern react/etc than rewrite
+          the whole page or do a hybrid here *}
+       <a href="{$baseurl}/my_preferences/mfa">Configure MFA</a>
+	</label>
     </div>
-    {else}
-otpauth://totp/{urlencode($study_title)}:{urlencode($form.UserID.html)}?secret={$mfa_secret}&amp;period=30&amp;digits=6&amp;issuer={urlencode($study_title)}
-    {/if}
+
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.language_preference.label}
