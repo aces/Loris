@@ -84,6 +84,7 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  my_preferences: ['mfa'],
 };
 
 /*
