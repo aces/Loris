@@ -22,13 +22,6 @@ namespace LORIS\redcap\config;
 class RedcapConfig
 {
     /**
-     * The LORIS user that is assigned the issues created by the REDCap module.
-     *
-     * @var \User
-     */
-    public readonly \User $issue_assignee;
-
-    /**
      * The REDCap project ID of the project.
      *
      * @var string
@@ -81,9 +74,6 @@ class RedcapConfig
     /**
      * Constructor.
      *
-     * @param \User                $issue_assignee             The LORIS issue
-     *                                                         assignee for the
-     *                                                         REDCap module.
      * @param string               $redcap_project_id          The REDCap project
      *                                                         ID.
      * @param string               $redcap_instance_url        The REDCap instance
@@ -103,7 +93,6 @@ class RedcapConfig
      *                                                         mappings.
      */
     public function __construct(
-        \User $issue_assignee,
         string $redcap_project_id,
         string $redcap_instance_url,
         string $redcap_api_token,
@@ -112,10 +101,9 @@ class RedcapConfig
         RedcapConfigLorisId $candidate_id,
         ?array $visits,
     ) {
-        $this->issue_assignee      = $issue_assignee;
-        $this->redcap_project_id   = $redcap_project_id;
-        $this->redcap_instance_url = $redcap_instance_url;
-        $this->redcap_api_token    = $redcap_api_token;
+        $this->redcap_project_id          = $redcap_project_id;
+        $this->redcap_instance_url        = $redcap_instance_url;
+        $this->redcap_api_token           = $redcap_api_token;
         $this->prefix_instrument_variable = $prefix_instrument_variable;
         $this->redcap_participant_id      = $redcap_participant_id;
         $this->candidate_id = $candidate_id;
