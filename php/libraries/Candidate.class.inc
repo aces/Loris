@@ -57,7 +57,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * candID, and will only ever instantiate one object in
      * the event that it's called multiple times.
      *
-     * @param CandID $candID A 6 digit Loris CandID that matches
+     * @param CandID $candID A 6-10 digit Loris CandID that matches
      *                       a candidate in the candidate table
      *
      * @return Candidate the Candidate object
@@ -79,7 +79,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * information from the database and populating it into the
      * Candidate object. Used by singleton method.
      *
-     * @param CandID $candID The 6 digit Loris CandID
+     * @param CandID $candID The 6-10 digit Loris CandID
      *
      * @return void As a side-effect loads candidate into current
      *              object
@@ -96,10 +96,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
+        $query = "SELECT c.ID, c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, 
+            c.Active, u1.Real_name as RegisteredBy,
             c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
@@ -142,6 +142,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             case 'CandID':
                 $this->candidateInfo[$key] = new CandID(strval($value));
                 break;
+            case 'ID':
+                $this->candidateInfo[$key] = strval($value);
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -158,7 +161,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $row = $db->pselectRow(
                     "SELECT Value, pt.Description
                     FROM candidate c
-                    JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
+                    JOIN parameter_candidate pc ON (pc.CandidateID=c.ID)
                     LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
@@ -202,9 +205,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // get Time Point SessionIDs for the $candID
-        $query = "SELECT s.ID, s.ProjectID, s.CenterID FROM session as s
-            WHERE s.CandID=:Candidate AND s.Active='Y'
-            ORDER BY ID";
+        $query = "SELECT s.ID, s.ProjectID, s.CenterID FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE c.CandID=:Candidate AND s.Active='Y'
+            ORDER BY s.ID";
         $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
@@ -259,7 +263,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        ProjectID $registrationProjectID = null
+        ?ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -268,7 +272,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $project = \Project::getProjectFromID($registrationProjectID);
 
-        $user = \User::singleton($_SESSION['State']->getUsername());
+        if (isset($_SESSION['State'])) {
+            $user = \User::singleton($_SESSION['State']->getUsername());
+        } elseif (!empty(getenv('USER'))) {
+            $user = \User::singleton(getenv('USER'));
+        } else {
+            throw new \LorisException(
+                "No username found to associate with the creation of this candidate"
+            );
+        }
 
         // figure out how to generate PSCID
         $config        = $factory->config();
@@ -436,7 +448,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * Used to check that PSCID matches CandID when entered into the boxes
      * on the candidate_list form
      *
-     * @param CandID $candID 6 digit Loris CandID
+     * @param CandID $candID 6-10 digit Loris CandID
      * @param string $PSCID  project study center ID
      *
      * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
@@ -585,7 +597,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["CandID"];
     }
-
+    /**
+     * Returns the ID of this candidate
+     *
+     * @return string ID
+     */
+    function getID()
+    {
+        return $this->candidateInfo["ID"];
+    }
 
     /**
      * Returns the PSCID of this candidate
@@ -752,8 +772,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         //
         $db = $factory->database();
 
-        $query  = "SELECT ID, Visit_label FROM session
-            WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
+        $query  = "SELECT s.ID, Visit_label FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE c.CandID=:Candidate AND c.Active='Y' ORDER BY c.CandID";
         $result = $db->pselect($query, ['Candidate' => $candID]);
 
         // map the array [VisitNo]=>Visit_label
@@ -808,9 +829,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT CohortID, title FROM session
+        $query  = "SELECT CohortID, title FROM session s
           LEFT JOIN cohort USING (CohortID)
-          WHERE CandID=:cid AND Date_visit IS NOT NULL
+          JOIN candidate c ON c.ID=s.CandidateID
+          WHERE c.CandID=:cid AND Date_visit IS NOT NULL
           ORDER BY Date_visit DESC LIMIT 1";
         $where  = ['cid' => $candID];
         $result = $db->pselectRow($query, $where);
@@ -833,7 +855,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $candID = $this->getCandID();
         $query  = "SELECT Visit_label FROM session
-          LEFT JOIN candidate USING (CandID)
+          LEFT JOIN candidate ON candidate.ID=session.CandidateID
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
         $where  = ['cid' => $candID];
@@ -861,7 +883,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $query  = "SELECT MAX(s.VisitNo)+1
                     FROM candidate AS c
-                        LEFT JOIN session AS s USING (CandID)
+                        LEFT JOIN session AS s ON c.ID=s.CandidateID
                     WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
         $result = $db->pselectOne($query, ['CaID' => $this->getCandID()]);
 
@@ -936,8 +958,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $candID = $this->getCandID();
 
         $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
-            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
-            WHERE CandidateID=:cid";
+            FROM candidate_consent_rel cc
+            JOIN consent c USING (ConsentID)
+            JOIN candidate ca ON ca.ID=cc.CandidateID
+            WHERE ca.CandID=:cid";
         $where = ['cid' => $candID];
         $key   = "ConsentID";
 
@@ -1073,8 +1097,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             "SELECT pso.Description
              FROM participant_status ps
                 JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
-             WHERE CandID=:candid",
-            ['candid' => $this->getCandID()],
+             WHERE ps.CandidateID=:candidate_id",
+            ['candidate_id' => $this->getData('ID')],
         );
         return $res['Description'] ?? '';
     }
@@ -1112,12 +1136,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 Confirmed,
                 LastUpdate,
                 OrderNumber
-            FROM diagnosis_evolution 
-            JOIN candidate_diagnosis_evolution_rel USING (DxEvolutionID)
+            FROM diagnosis_evolution
+            JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+            JOIN candidate c ON c.ID=cde.CandidateID
             WHERE OrderNumber IN (
-                SELECT MAX(orderNumber) AS OrderNumber 
+                SELECT MAX(orderNumber) AS OrderNumber
                 FROM diagnosis_evolution de2
                 JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+                JOIN candidate c ON c.ID=cde.CandidateID
                 WHERE CandID=:candID
                 AND ProjectID=:projID"
                 . $whereConfirmed .
@@ -1239,5 +1265,98 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         } // end foreach seq
 
         return '/^'.$regex.'$/i';
+    }
+
+    /**
+     * Filter CandIDs out of $candIDs which aren't accessible to $user
+     *
+     * @param \LORIS\LorisInstance $loris   The LORISInstance with a database
+     *                                      connection to use
+     * @param CandID[]             $candIDs The CandIDs to be filtered
+     * @param \User                $user    The user whose access should check.
+     *
+     * @return Generator<CandID>
+     */
+    static public function filterInaccessibleCandIDs(
+        \LORIS\LorisInstance $loris,
+        array $candIDs,
+        \User $user,
+    ) : iterable {
+        if (count($candIDs) == 0) {
+            return [];
+        }
+        $DB = $loris->getNewDatabaseConnection();
+        $DB->setBuffering(false);
+
+        // Put candidates into a temporary table so that it can be used in a join
+        // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
+        // too slow to be useable.
+        $DB->run("DROP TEMPORARY TABLE IF EXISTS accesscandidates");
+        $DB->run(
+            "CREATE TEMPORARY TABLE accesscandidates(
+	    CandID int(10) unsigned NOT NULL,
+	    PRIMARY KEY(CandID)
+        );"
+        );
+        $insertstmt = "INSERT INTO accesscandidates VALUES"
+                . " (" . join('),(', $candIDs) . ')';
+        $q          = $DB->prepare($insertstmt);
+        $q->execute([]);
+
+        // Get the data which affects accessibility in bulk.
+        $rows      = $DB->pselect(
+            "SELECT c.CandID, c.RegistrationProjectID,
+                c.RegistrationCenterID, s.ProjectID as SProjectID,
+                s.CenterID as SCenterID, s.ID as sessionID
+            FROM candidate c LEFT JOIN session s ON (s.CandidateID=c.ID)
+            WHERE c.Active='Y' AND COALESCE(s.Active, 'Y')='Y'
+                AND c.CandID IN (SELECT CandID FROM accesscandidates)
+            ORDER BY c.CandID",
+            []
+        );
+        $curCandID = '';
+        $canddata  = null;
+
+        // Foreach CandID, create the TimePointData object for all timepoints
+        // that were returned.
+        foreach ($rows as $row) {
+            if ($curCandID != $row['CandID']) {
+                if ($canddata !== null) {
+                     $candidate = new \Candidate($canddata);
+                    if ($candidate->isAccessibleBy($user)) {
+                        yield $canddata->CandID;
+                    }
+                }
+                $canddata  = new \CandidateData(
+                    candID: new CandID(strval($row['CandID'])),
+                    registrationProjectID: $row['RegistrationProjectID'] !== null
+                    ? \ProjectID::singleton($row['RegistrationProjectID'])
+                    : null,
+                    registrationCenterID: $row['RegistrationCenterID'] !== null
+                    ? \CenterID::singleton($row['RegistrationCenterID'])
+                    : null,
+                    timepoints: [],
+                );
+                $curCandID = $row['CandID'];
+            }
+            if ($row['sessionID'] !== null) {
+                $canddata->timepoints[] = new \TimePoint(
+                    new \TimePointData(
+                        new \SessionID(strval($row['sessionID'])),
+                        \ProjectID::singleton($row['SProjectID']),
+                        \CenterID::singleton($row['SCenterID']),
+                    )
+                );
+            }
+        }
+
+        // check the last candidate that wouldn't have entered the check in the
+        // loop
+        if ($canddata !== null) {
+            $candidate = new \Candidate($canddata);
+            if ($candidate->isAccessibleBy($user)) {
+                yield $canddata->CandID;
+            }
+        }
     }
 }

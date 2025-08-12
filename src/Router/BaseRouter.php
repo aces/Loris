@@ -31,28 +31,17 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $loris;
-    protected $user;
-
     /**
      * Construct a BaseRouter
      *
-     * @param \User  $user       The user accessing LORIS. (May be an AnonymousUser
-     *                           instance).
-     * @param string $projectdir The base of the LORIS project directory.
-     * @param string $moduledir  The base of the LORIS modules directory.
+     * @param \LORIS\LorisInstance $loris The LORIS instance being routed
+     * @param \User                $user  The user accessing LORIS. (May be an
+     *                                    AnonymousUser instance).
      */
-    public function __construct(\User $user, string $projectdir, string $moduledir)
-    {
-        $this->user  = $user;
-        $this->loris = new \LORIS\LorisInstance(
-            \NDB_Factory::singleton()->database(),
-            \NDB_Factory::singleton()->config(),
-            [
-             $projectdir . "/modules",
-             $moduledir,
-            ]
-        );
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        protected \User $user
+    ) {
     }
 
     /**
@@ -67,6 +56,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
     {
         $uri  = $request->getUri();
         $path = $uri->getPath();
+
         // Replace multiple slashes in the URL with a single slash
         $path = preg_replace("/\/+/", "/", $path);
         // Remove any trailing slash remaining, so that foo/ and foo are the same
@@ -125,6 +115,39 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
             $module = $this->loris->getModule($modulename);
             $module->registerAutoloader();
+
+            if (file_exists(__DIR__ . "/../../project/locale/")) {
+                $lang = \LORIS\Middleware\Language::detectLocale($this->loris, $request);
+                if ($lang !== null) {
+                    /* detectLanguage should have validated that it's a valid locale, but
+                     * ensure that there are no unsafe characters just in case since we
+                     * might be dealing with user input */
+                    if (preg_match("/([a-zA-Z])+(_)?(a-zA-Z)*/", $lang)) {
+                        $overrides = glob(__DIR__ . "/../../project/locale/$lang/LC_MESSAGES/*.mo");
+                        // Requires pecl intl extension
+                        if (function_exists('locale_get_primary_language')) {
+                            $overrides = array_merge(
+                                $overrides,
+                                glob(
+                                    __DIR__ . "/../../project/locale/"
+                                    . locale_get_primary_language($lang)
+                                    . "/LC_MESSAGES/*.mo"
+                                )
+                            );
+                        }
+
+                        // We need to override the textdomain binding for every module
+                        // that has a translation override for the menu to be able
+                        // to look up the right project-specific translation even though we're
+                        // in the module.
+                        // Otherwise, fall back on the module's textdomain set from getModule()
+                        foreach ($overrides as $file) {
+                            $textdomain = basename($file, ".mo");
+                            bindtextdomain($textdomain, __DIR__ . "/../../project/locale/");
+                        }
+                    }
+                }
+            }
             $requestloglevel = $logSettings->getRequestLogLevel();
             if ($requestloglevel != "none") {
                 $module->setLogger(
@@ -140,7 +163,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
-        if (preg_match("/^([0-9]{6})$/", $components[0])) {
+        if (preg_match("/^([0-9]{6,10})$/", $components[0])) {
             $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL((string )$baseurl);

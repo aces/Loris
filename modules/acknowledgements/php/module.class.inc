@@ -1,27 +1,28 @@
 <?php declare(strict_types=1);
 
 /**
- * This serves as a hint to LORIS that this module is a real module.
- * It does nothing but implement the module class in the module's namespace.
+ * File contains the LORIS\acknowledgements\Module class.
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Behavioural
- * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @category   Core
+ * @package    Main
+ * @subpackage Core
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\acknowledgements;
 
 /**
- * Class module implements the basic LORIS module functionality
+ * File contains the LORIS\acknowledgements\Module class.
  *
- * @category Behavioural
- * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @category   Core
+ * @package    Main
+ * @subpackage Core
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 class Module extends \Module
 {
@@ -46,11 +47,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -60,6 +61,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Acknowledgements";
+        return dgettext("acknowledgements", "Acknowledgements");
     }
 }

@@ -39,7 +39,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasPermission('dicom_archive_view_allsites');
+            $user->hasAnyPermission(
+                [
+                    'dicom_archive_view_allsites',
+                    'dicom_archive_view_ownsites',
+                ]
+            );
     }
 
     /**
@@ -108,11 +113,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Imaging";
+        return \LORIS\GUI\MenuCategory::singleton("Imaging");
     }
 
     /**
@@ -122,6 +127,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "DICOM Archive";
+        return dgettext("dicom_archive", "DICOM Archive");
     }
 }

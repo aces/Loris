@@ -37,7 +37,6 @@ class Files extends Component {
     this.formatColumn = this.formatColumn.bind(this);
     this.openFileUploadModal = this.openFileUploadModal.bind(this);
     this.closeFileUploadModal = this.closeFileUploadModal.bind(this);
-    this.renderFileUploadForm = this.renderFileUploadForm.bind(this);
     this.setFileUploadFormData = this.setFileUploadFormData.bind(this);
   }
 
@@ -116,26 +115,7 @@ class Files extends Component {
       },
       showFileUploadModal: false,
     });
-  }
-
-  /**
-   * Render File Upload Form
-   *
-   * @return {JSX} react upload form modal
-   */
-  renderFileUploadForm() {
-    return (
-      <Modal
-        title='Upload File'
-        onClose={this.closeFileUploadModal}
-        show={this.state.showFileUploadModal}
-      >
-        <GenomicUploadForm
-          permissions={this.state.data.permissions}
-          baseURL={this.props.baseURL}
-        />
-      </Modal>
-    );
+    this.fetchData();
   }
 
   /**
@@ -252,7 +232,17 @@ class Files extends Component {
 
     return (
       <React.Fragment>
-        {this.renderFileUploadForm()}
+        <Modal
+          title='Upload File'
+          onClose={this.closeFileUploadModal}
+          show={this.state.showFileUploadModal}
+        >
+          <GenomicUploadForm
+            permissions={this.state.data.permissions}
+            baseURL={this.props.baseURL}
+            closeFileUploadModal={this.closeFileUploadModal}
+          />
+        </Modal>
         <FilterableDataTable
           name={'filterableDataTableFiles'}
           data={this.state.data.Data}

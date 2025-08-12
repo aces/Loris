@@ -146,7 +146,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
         }
     },
     size: {
-      width: targetModal ? 1000 : 350,
+      width: targetModal ? 1000 : 700,
       height: targetModal ? 700 : 350,
     },
     axis: {
@@ -201,6 +201,8 @@ const createLineChart = (data, columns, id, label, targetModal) => {
         type: 'timeseries',
         tick: {
           format: '%m-%Y',
+          rotate: -65,
+          multiline: true,
         },
       },
       y: {

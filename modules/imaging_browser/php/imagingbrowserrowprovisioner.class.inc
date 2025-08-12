@@ -35,9 +35,12 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      * Create an ImagingBrowserRowProvisioner, which gets rows for
      * the imaging browser menu table.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
+     *
      * @throws \ConfigurationException
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $config = \NDB_Config::singleton();
         $DB     = \NDB_Factory::singleton()->database();
@@ -73,14 +76,14 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+                        DISTINCT f.MriScanTypeID))>0 ";
                     $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+                        DISTINCT f.MriScanTypeID))";
                 } else {
                     $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+                        DISTINCT f.MriScanTypeID))>0 ";
                     $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+                        DISTINCT f.MriScanTypeID))";
                 }
                 $isFirst = false;
             }
@@ -159,7 +162,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
                 MIN(files_qcstatus.QCStatus+0) as $qc[$key]
               FROM files
               JOIN files_qcstatus USING (FileID)
-              WHERE files.AcquisitionProtocolID= $key
+              WHERE files.MriScanTypeID= $key
                 AND files_qcstatus.QCStatus IN (1, 2)
               GROUP BY files.SessionID) $pass[$key]
                 ON ($pass[$key].SessionID=f.SessionID
@@ -183,6 +186,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // Final query
         // =================================================
         parent::__construct(
+            $loris,
             "SELECT
               p.Name as Site,
               c.PSCID as PSCID,
@@ -196,7 +200,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $NewDataSubquery as New_Data,
               GROUP_CONCAT(DISTINCT OutputType) as Links,
               s.ID as sessionID,
-              GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
+              GROUP_CONCAT(DISTINCT mst.MriScanTypeName) as sequenceType,
               $PendingNewquery as pending,
               s.CenterID as CenterID,
               c.Entity_type as entityType,
@@ -204,12 +208,12 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               s.ProjectID
             FROM psc AS p
               JOIN session s ON (s.CenterID=p.CenterID)
-              JOIN candidate c ON (c.CandID=s.CandID)
+              JOIN candidate c ON (c.ID=s.CandidateID)
               LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID)
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-              LEFT JOIN mri_scan_type modality ON
-                (f.AcquisitionProtocolID=modality.ID)
+              LEFT JOIN mri_scan_type mst ON
+                (f.MriScanTypeID=mst.MriScanTypeID)
               $left_joins
             WHERE
               s.Active = 'Y' AND

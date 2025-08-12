@@ -85,9 +85,9 @@ class VisitSummary extends \NDB_Page
                 	JOIN test_names tn ON (tn.ID = f.TestID)
                 LEFT JOIN conflicts_unresolved cu
                     ON (cu.CommentId1=f.CommentID OR cu.CommentID2=f.CommentID)
-                LEFT JOIN candidate c USING (CandID)
-            WHERE c.Active='Y' AND s.Active='Y' AND 
-                c.CandID=:candid AND s.Visit_Label=:vl
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE c.Active='Y' AND s.Active='Y' AND
+                c.CandID=:candid AND s.Visit_label=:vl
                 AND f.CommentID NOT LIKE 'DDE%'
             GROUP BY
                 s.Visit_label,

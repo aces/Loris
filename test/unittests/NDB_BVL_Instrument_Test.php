@@ -458,7 +458,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     ],
                     ['label' => '',
                         'name'    => 'hourMinField_status',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control input-sm not-answered',
                         'type'    => 'select',
                         'options' => [
                             ''             => '',
@@ -472,7 +472,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ],
                 'label'     => 'hourMinLabel',
                 'delimiter' => ' ',
-                'options'   => false,
+                'options'   => null,
                 'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
@@ -546,7 +546,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'type'    => 'date',
                         'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][0]),
-                        'options' => ['value' => 'Option']
+                        'options' => [
+                            'value'   => 'Option',
+                            'maxYear' => '9999'
+                        ]
                     ],
                     [
                         'label'   => null,
@@ -1205,7 +1208,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD=null WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD=null WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1225,7 +1228,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1908,13 +1911,15 @@ class NDB_BVL_Instrument_Test extends TestCase
             "candidate",
             [
                 [
-                    'CandID' => 1,
+                    'ID'     => 1,
+                    'CandID' => 100000,
                     'DoB'    => '1999-01-01',
                     'DoD'    => '2016-01-01',
                     'PSCID'  => '345'
                 ],
                 [
-                    'CandID' => 2,
+                    'ID'     => 2,
+                    'CandID' => 100001,
                     'DoB'    => '1999-01-01',
                     'DoD'    => '2016-01-01',
                     'PSCID'  => '346'
@@ -1925,14 +1930,14 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'       => '123',
-                    'CandID'   => 1,
-                    'CohortID' => '12'
+                    'ID'          => '123',
+                    'CandidateID' => 1,
+                    'CohortID'    => '12'
                 ],
                 [
-                    'ID'       => '234',
-                    'CandID'   => 2,
-                    'CohortID' => '12'
+                    'ID'          => '234',
+                    'CandidateID' => 2,
+                    'CohortID'    => '12'
                 ]
             ]
         );

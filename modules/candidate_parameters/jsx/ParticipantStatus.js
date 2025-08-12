@@ -96,10 +96,6 @@ class ParticipantStatus extends Component {
    */
   setFormData(formElement, value) {
     let formData = this.state.formData;
-    let required = this.state.Data.required;
-    if (formElement === 'participantStatus' && required.indexOf(value) < 0) {
-      formData.participantSuboptions = '';
-    }
     formData[formElement] = value;
     this.setState(
       {
@@ -149,8 +145,7 @@ class ParticipantStatus extends Component {
         this.state.formData.participantStatus :
         this.state.Data.participantStatus
     );
-
-    if (participantStatus && required.indexOf(participantStatus) > -1) {
+    if (participantStatus && required.includes(Number(participantStatus))) {
       subOptions = this.state.Data.parentIDs[participantStatus];
       suboptionsRequired = true;
     }

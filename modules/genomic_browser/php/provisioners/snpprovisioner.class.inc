@@ -25,11 +25,10 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 6, '0') AS _DCCID,
+                LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
-                subproj.title AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
+                cohort.title AS _Cohort,
                 candidate.ExternalID AS _externalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
@@ -60,17 +59,17 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 candidate
                 LEFT JOIN (
                     SELECT
-                        s.CandID,
+                        c.CandID,
                         min(s.cohortID) AS CohortID
-                    FROM
-                        session s
+                    FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
-                LEFT JOIN cohort AS subproj
-                    ON (cohort.CohortID = subproj.CohortID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                LEFT JOIN cohort
+                    ON (cohort.CohortID = CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
                 JOIN SNP_candidate_rel
-                    ON (candidate.CandID = SNP_candidate_rel.CandID)
+                    ON (candidate.ID = SNP_candidate_rel.CandidateID)
                 LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
                 LEFT JOIN genotyping_platform
                     ON (SNP_candidate_rel.PlatformID =

@@ -26,7 +26,7 @@ if (!$user->hasPermission('context_help')) {
 
 if (empty($_POST)) {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    exit(0);
 }
 
 $DB = (\NDB_Factory::singleton())->database();

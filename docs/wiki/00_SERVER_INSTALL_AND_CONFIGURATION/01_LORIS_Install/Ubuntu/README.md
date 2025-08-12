@@ -18,7 +18,7 @@ LORIS requires a LAMP stack in order to run, specifically:
 
 * MySQL 5.7 (or MariaDB 10.3) (or higher)
 
-* PHP 8.1 (or higher)
+* PHP 8.3 (or higher)
 
 Additionally, the following package manager are required to build LORIS:  
 
@@ -46,19 +46,19 @@ The following Ubuntu packages are required and should be installed using
 
 * software-properties-common
 
-* php8.2-mysql
+* php8.3-mysql
 
-* php8.2-xml
+* php8.3-xml
 
-* php8.2-mbstring
+* php8.3-mbstring
 
-* php8.2-gd
+* php8.3-gd
 
-* php8.2-zip
+* php8.3-zip
 
-* php8.2-curl (for development instances only)
+* php8.3-curl (for development instances only)
 
-* libapache2-mod-php8.2
+* libapache2-mod-php8.3
 
 ## Creating the lorisadmin user
 Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 

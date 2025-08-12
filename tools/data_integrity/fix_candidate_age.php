@@ -81,13 +81,18 @@ foreach ($instruments as $testName=>$instrument) {
     $CommentIDs = $DB->pselectCol(
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
-            JOIN candidate c ON c.CandID=s.CandID
+            JOIN candidate c ON c.ID=s.CandidateID
             JOIN test_names tn ON tn.ID=f.TestID
         WHERE c.Active='Y' AND s.Active='Y'
-
-        AND tn.Test_name=:tn",
+            AND f.DataID IS NOT NULL
+            AND tn.Test_name=:tn",
         ['tn' => $testName]
     );
+
+    if (empty($CommentIDs)) {
+        echo "\tNo data found for $testName\n";
+        continue;
+    }
 
     $instrumentInstances = $instrument->bulkLoadInstanceData($CommentIDs);
 

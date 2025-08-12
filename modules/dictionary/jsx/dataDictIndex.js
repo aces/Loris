@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
@@ -197,11 +201,6 @@ class DataDictIndex extends Component {
       return <td>{cell}
         <span style={{color: '#838383'}}>{edited} {editIcon} </span>
       </td>;
-    case 'Data Type':
-      if (cell == 'enumeration') {
-        cell = rowData['Field Options'].join(';');
-      }
-      return <td>{cell}</td>;
     default:
       return <td>{cell}</td>;
     }
@@ -309,13 +308,22 @@ class DataDictIndex extends Component {
         },
       },
       {
-        // We may or may not have an 8th column depending
-        // on type, which we need for formatting other columns.
-        // We don't show or display a filter because it's only
-        // valid for some data types.
-        label: 'Field Options',
-        show: false,
-        filter: null,
+        label: 'Visits',
+        show: true,
+        filter: {
+          name: 'Visits',
+          type: 'multiselect',
+          options: options.visits,
+        },
+      },
+      {
+        label: 'Cohorts',
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohorts,
+        },
       },
     ];
     return (
@@ -335,10 +343,14 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dictionary', {});
+  const Index = withTranslation(
+    ['dictionary', 'loris']
+  )(DataDictIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataDictIndex
+    <Index
       dataURL={`${loris.BaseURL}/dictionary/?format=json`}
       BaseURL={loris.BaseURL}
     />

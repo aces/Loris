@@ -215,6 +215,15 @@ class Files extends \NDB_Page
             ['project' => $projectName]
         );
 
+        // Get information on users with permission to the version
+
+        $releasePage = $this->Module->loadPage(
+            $this->loris,
+            'data_release',
+        );
+        assert($releasePage instanceof Data_Release);
+        $userVersionFiles = $releasePage->getUserVersionFiles($DB);
+
         $upload_date = date('Y-m-d');
         if ($overwrite) {
             // update file in data_release table.
@@ -252,6 +261,21 @@ class Files extends \NDB_Page
                 'data_release_id' => $fileID,
             ]
         );
+
+        // add permission for file to users with permission to the version
+        foreach ($userVersionFiles as $userid => $userVersionFile) {
+            if (array_key_exists('versions', $userVersionFile)
+                && in_array($version, $userVersionFile['versions'])
+            ) {
+                $DB->insertIgnore(
+                    'data_release_permissions',
+                    [
+                        'userid'          => $userid,
+                        'data_release_id' => $fileID,
+                    ]
+                );
+            }
+        }
         return $files->handle($request);
     }
 

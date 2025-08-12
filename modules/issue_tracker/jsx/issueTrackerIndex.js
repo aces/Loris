@@ -13,6 +13,7 @@ import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 class IssueTrackerIndex extends Component {
   /**
    * @constructor
+   *
    * @param {object} props - React Component properties
    */
   constructor(props) {
@@ -40,6 +41,7 @@ class IssueTrackerIndex extends Component {
 
   /**
    * Called by React when the component updates.
+   *
    * @param {object} prevProps - Previous props
    * @param {object} prevState - Previous state
    */
@@ -271,15 +273,22 @@ class IssueTrackerIndex extends Component {
       {label: 'Closed Issues', filter: {
         status: {value: ['closed'], exactMatch: true},
       }},
-      {label: 'My Issues', filter: {
-        assignee: {
-          value: this.state.data.fieldOptions.userID, exactMatch: true,
-        },
-        status: {
-          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
-        },
-      }},
     ];
+
+    // Add "My Issues" filter only if user has any issues
+    if (this.state.data.userIssueCount > 0) {
+      filterPresets.push({
+        label: 'My Issues',
+        filter: {
+          assignee: {
+            value: this.state.data.fieldOptions.userID, exactMatch: true,
+          },
+          status: {
+            value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+          },
+        },
+      });
+    }
 
     const addIssue = () => {
       window.location.replace(
@@ -298,7 +307,7 @@ class IssueTrackerIndex extends Component {
     ];
 
     // Only display the Batch mode tab if user has the required permission
-    if (this.props.hasPermission('issue_tracker_developer')) {
+    if (this.props.hasPermission('issue_tracker_all_issue')) {
       tabList.push({
         id: 'batch',
         label: 'Batch Edit',

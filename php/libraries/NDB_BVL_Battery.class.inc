@@ -203,8 +203,8 @@ class NDB_BVL_Battery
             throw new \LorisException("Invalid instrument");
         }
 
-        // get SessionID, UserID, Visit_label
-        $query = "SELECT ID as SessionID, UserID, Visit_label
+        // get SessionID, UserID, Visit_label, CohortID
+        $query = "SELECT ID as SessionID, UserID, Visit_label, CohortID
                   FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
@@ -225,6 +225,7 @@ class NDB_BVL_Battery
 
         $DDEEnabled = $this->isDoubleDataEntryEnabledForInstrument(
             $sessionData['Visit_label'],
+            strval($sessionData['CohortID']),
             $testName
         );
         if ($obj->usesJSONdata() !== true) {
@@ -304,7 +305,7 @@ class NDB_BVL_Battery
 		JOIN test_names tn ON (f.TestID=tn.ID)
 		JOIN session s
             ON (s.ID=f.SessionID)
-            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
                AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = ['SID' => $this->sessionID];
@@ -370,7 +371,6 @@ class NDB_BVL_Battery
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-
         // return all the data selected
         return iterator_to_array($rows);
     }
@@ -381,6 +381,8 @@ class NDB_BVL_Battery
      *
      * @param string $Visit_label The Visit_label that we want to
      *                            check if DDE is enabled for.
+     * @param string $CohortID    The CohortID that we want to
+     *                            check if DDE is enabled for.
      * @param string $Test_name   The test_name that we want to
      *                            check if DDE is enabled for.
      *
@@ -388,6 +390,7 @@ class NDB_BVL_Battery
      */
     static function isDoubleDataEntryEnabledForInstrument(
         String $Visit_label,
+        String $CohortID,
         String $Test_name
     ) : bool {
         $DB  = \NDB_Factory::singleton()->database();
@@ -395,8 +398,13 @@ class NDB_BVL_Battery
             'SELECT DISTINCT DoubleDataEntryEnabled
             FROM test_battery
             WHERE Visit_label=:Visit_label
+            AND CohortID=:CohortID
             AND Test_name=:Test_name',
-            ['Visit_label' => $Visit_label, 'Test_name' => $Test_name]
+            [
+                'Visit_label' => $Visit_label,
+                'CohortID'    => $CohortID,
+                'Test_name'   => $Test_name
+            ]
         ) == 'Y' ? true : false;
 
         return $ans;
@@ -628,7 +636,7 @@ class NDB_BVL_Battery
 
         $OtherInfo = $DB->pselectRow(
             "SELECT CandID, c.PSCID, s.CohortID FROM session s
-                    JOIN candidate c USING (CandID)
+                    JOIN candidate c ON c.ID = s.CandidateID
                 WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
             ['SID' => $SessionID]
         );

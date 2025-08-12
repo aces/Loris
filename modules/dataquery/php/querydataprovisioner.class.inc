@@ -48,7 +48,7 @@ class QueryDataProvisioner extends ProvisionerInstance
      */
     public function getAllInstances() : \Traversable
     {
-        $candidates = $this->QueryRun->getCandidates();
+        $candidates = $this->QueryRun->getCandidates($this->user);
 
         $dataiterators = [];
         $fields        = [];
@@ -82,7 +82,7 @@ class QueryDataProvisioner extends ProvisionerInstance
             $dataiterators[$modulename] = $engine->getCandidateData(
                 $fielddict,
                 $candidates,
-                null
+                null,
             );
         }
         return $this->_mergeIterators($candidates, $dataiterators, $fieldsarray);

@@ -76,11 +76,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Clinical";
+        return \LORIS\GUI\MenuCategory::singleton("Clinical");
     }
 
     /**
@@ -90,7 +90,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Conflict Resolver";
+        return dgettext("conflict_resolver", "Conflict Resolver");
     }
 
     /**
@@ -113,12 +113,12 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "Data entry conflict",
+                    dgettext("conflict_resolver", "Data entry conflict"),
                     $DB,
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                          LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
                          LEFT JOIN session s ON (flag.SessionID=s.ID)
-                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                         LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                      WHERE s.Active='Y' AND c.Active='Y' AND
                          s.CenterID <> 1",
                     'access_all_profiles',
@@ -147,7 +147,9 @@ class Module extends \Module
                      LEFT JOIN flag f2 ON (f2.CommentID=cu.CommentID2)
                      LEFT JOIN session s1 ON (f1.SessionID=s1.ID)
                      LEFT JOIN session s2 ON (f2.SessionID=s2.ID)
-                 WHERE (s1.CandID=:cand1 OR s2.CandID=:cand2)
+                     JOIN candidate c1 ON (s1.CandidateID=c1.ID)
+                     JOIN candidate c2 ON (s2.CandidateID=c2.ID)
+                 WHERE (c1.CandID=:cand1 OR c2.CandID=:cand2)
                  GROUP BY tn.Test_name, s1.Visit_label
                  ORDER BY s1.Visit_label, tn.Test_name",
                 ['cand1' => $candID, 'cand2' => $candID],
@@ -163,7 +165,7 @@ class Module extends \Module
             }
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Unresolved Conflicts",
+                    dgettext("conflict_resolver", "Unresolved Conflicts"),
                     $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",
                     [

@@ -23,15 +23,14 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
     {
         parent::__construct(
             "
-           SELECT
+            SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 6, '0') AS _DCCID,
+                LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
                 cohort.CohortID AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 gscr.sample_label AS _Sample,
                 cpg.cpg_name AS _cpg_name,
                 cpg.beta_value AS _Beta_value,
@@ -63,15 +62,15 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 candidate
                 LEFT JOIN (
                     SELECT
-                        s.CandID,
+                        c.CandID,
                         min(s.cohortID) AS CohortID
-                    FROM
-                        session s
+                    FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
                 LEFT JOIN genomic_sample_candidate_rel gscr
-                    ON (gscr.CandID = candidate.CandID)
+                    ON (gscr.CandidateID = candidate.ID)
                 LEFT JOIN genomic_cpg cpg ON (gscr.sample_label = cpg.sample_label)
                 LEFT JOIN genomic_cpg_annotation gca USING (cpg_name)
                 LEFT JOIN genotyping_platform platform
