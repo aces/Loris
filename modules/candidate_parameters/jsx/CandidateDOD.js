@@ -192,6 +192,8 @@ class CandidateDOD extends Component {
         text: 'Date of death updated!',
         type: 'success',
         confirmButtonText: 'OK',
+      }).then((result) => {
+        location.reload();
       });
       if (result.value) {
         this.fetchData();
