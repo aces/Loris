@@ -165,6 +165,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     intval($sp["CohortID"])
                 );
                 foreach ($cohortVisits as $visitLabel => $visitName) {
+                    // get visit id
                     $visitOptions[$visitLabel] = $visitName;
                 }
             }

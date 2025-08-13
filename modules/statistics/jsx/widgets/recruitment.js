@@ -147,8 +147,8 @@ const Recruitment = (props) => {
                           name={'recruitment'}
                           id={'recruitmentSiteBreakdownForm'}
                           data={json}
-                          callback={(formDataObj) => {
-                            updateFilters(formDataObj, 'siteBreakdown');
+                          callback={async (formDataObj) => {
+                            await updateFilters(formDataObj, 'siteBreakdown');
                           }}
                         />
                       </div>

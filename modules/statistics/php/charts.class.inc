@@ -533,6 +533,16 @@ class Charts extends \NDB_Page
         $candJoin    = '';
         $participantStatusQuery = '';
 
+        foreach ($_GET as $key => $value) {
+            if (
+                str_contains($key, 'selected')
+                && !str_contains($key, 'date')
+                && $value != 'undefined'
+            ) {
+                $_GET[$key] = "('".str_replace(",", "','", $value)."')";
+            }
+        }
+
         if (($_GET['selectedProjects'] ?? "undefined") != 'undefined') {
             $candJoin     = "JOIN candidate c ON c.ID=s.CandidateID";
             $projectQuery = " AND c.RegistrationProjectID IN "
@@ -590,10 +600,12 @@ class Charts extends \NDB_Page
         }
 
         if (($_GET['dateRegisteredStart'] ?? "undefined") != 'undefined') {
+            $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
             $projectQuery .= " AND c.Date_registered"
                 . " >= '{$_GET['dateRegisteredStart']}'";
         }
         if (($_GET['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
+            $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
             $projectQuery .= " AND c.Date_registered"
                 ." <= '{$_GET['dateRegisteredEnd']}'";
         }
