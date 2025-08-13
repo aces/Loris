@@ -77,6 +77,8 @@ locales:
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	msgfmt -o modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po
 	msgfmt -o modules/datadict/locale/ja/LC_MESSAGES/datadict.mo modules/datadict/locale/ja/LC_MESSAGES/datadict.po
+	msgfmt -o modules/datadict/locale/hi/LC_MESSAGES/datadict.mo modules/datadict/locale/hi/LC_MESSAGES/datadict.po
+	npx i18next-conv -l hi -s modules/datadict/locale/hi/LC_MESSAGES/datadict.po -t modules/datadict/locale/hi/LC_MESSAGES/datadict.json
 	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
