@@ -6,6 +6,7 @@ import PaginationLinks from 'jsx/PaginationLinks';
 import Panel from 'jsx/Panel';
 import {Tabs, TabPane} from 'jsx/Tabs';
 import '../css/issue_tracker_batchmode.css';
+import {withTranslation} from 'react-i18next';
 
 /**
  * IssueTrackerBatchMode component
@@ -24,6 +25,7 @@ function IssueTrackerBatchMode({options}) {
   const [error, setError] = useState(null);
   const [assignees, setAssignees] = useState({});
   const [otherWatchers, setOtherWatchers] = useState({});
+  const {t} = this.props;
 
   // Pagination state
   const [page, setPage] = useState({
@@ -82,7 +84,8 @@ function IssueTrackerBatchMode({options}) {
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching issues:', error);
-      setError('Failed to fetch issues. Please try again later.');
+      setError(t('Failed to fetch issues. Please try again later.',
+        {ns: 'issue_tracker'}));
       setIsLoading(false);
     }
   }
@@ -171,7 +174,7 @@ function IssueTrackerBatchMode({options}) {
       id: 'category',
       label: (
         <span>
-          Category{' '}
+          {t('Category', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedCategories.length}</span>
         </span>
       ),
@@ -180,7 +183,7 @@ function IssueTrackerBatchMode({options}) {
       id: 'priority',
       label: (
         <span>
-          Priority{' '}
+          {t('Priority', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedPriorities.length}</span>
         </span>
       ),
@@ -189,7 +192,7 @@ function IssueTrackerBatchMode({options}) {
       id: 'status',
       label: (
         <span>
-          Status{' '}
+          {t('Status', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedStatuses.length}</span>
         </span>
       ),
@@ -198,7 +201,7 @@ function IssueTrackerBatchMode({options}) {
       id: 'site', // Added site tab
       label: (
         <span>
-          Site{' '}
+          {t('Site', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedSites.length}</span>
         </span>
       ),
@@ -207,13 +210,13 @@ function IssueTrackerBatchMode({options}) {
 
   const panelTitle = (
     <div className="panel-title-container">
-      <span>Filters</span>
+      <span>{t('Filters', {ns: 'issue_tracker'})}</span>
       <button
         type="button"
         className="btn btn-primary btn-sm filter-reset-button"
         onClick={resetFilters}
       >
-        Reset
+        {t('Reset', {ns: 'issue_tracker'})}
       </button>
     </div>
   );
@@ -318,8 +321,10 @@ function IssueTrackerBatchMode({options}) {
       <br/>
       <div className="pagination-container">
         <div>
-          {paginatedIssues.length} issues displayed of {filteredIssues.length}.
-          (Maximum issues per page:
+          {paginatedIssues.length} {t('issues displayed',
+            {ns: 'issue_tracker'})}
+          {t('of', {ns: 'issue_tracker'})} {filteredIssues.length}
+          ({t('Maximum issues per page', {ns: 'issue_tracker'})}:
           <select
             className="input-sm perPage"
             onChange={updatePageRows}
@@ -357,14 +362,17 @@ function IssueTrackerBatchMode({options}) {
           ))
         ) : (
           <div className="no-results-message">
-            No issues match the selected filters.
+            {t('No issues match the selected filters.',
+              {ns: 'issue_tracker'})}
           </div>
         )}
       </div>
       <div className="pagination-container">
         <div>
-          {paginatedIssues.length} issues displayed of {filteredIssues.length}.
-          (Maximum issues per page:
+          {paginatedIssues.length} {t('issues displayed',
+            {ns: 'issue_tracker'})}
+          {t('of', {ns: 'issue_tracker'})} {filteredIssues.length}.
+          ({t('Maximum issues per page', {ns: 'issue_tracker'})}:
           <select
             className="input-sm perPage"
             onChange={updatePageRows}
@@ -396,6 +404,8 @@ IssueTrackerBatchMode.propTypes = {
     categories: PropTypes.object,
     sites: PropTypes.object,
   }).isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default IssueTrackerBatchMode;
+export default withTranslation(
+  ['issue_tracker', 'loris'])(IssueTrackerBatchMode);
