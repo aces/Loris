@@ -328,7 +328,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the names of projects accessible to the user
      *
      * @return array
      */
@@ -352,9 +352,12 @@ class User extends UserPermissions implements
     {
         $visit_labels = [];
         $userProjectIDs = $this->getProjectIDs();
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         
         // Get VisitController instance
-        $visitController = new \LORIS\VisitController();
+        $visitController = new \LORIS\VisitController($DB);
         $allVisitsProjectCohort = $visitController->getVisitsProjectCohort();
         
         foreach ($allVisitsProjectCohort as [$visit, $projectID, $cohortID]) {

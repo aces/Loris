@@ -62,7 +62,8 @@ class Options extends \LORIS\Http\Endpoint
         }
 
         // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
+        // $list_of_projects = \Utility::getProjectList();
+        $list_of_projects = $user->getProjectNames();
         $project_options  = [];
         foreach (array_values($list_of_projects) as $name) {
             $project_options[$name] = $name;
