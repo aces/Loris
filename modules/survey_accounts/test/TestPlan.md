@@ -10,20 +10,20 @@
 4.  Ensure all columns are sortable (ascending and descending).
     [Manual Testing]
 5.  Click on a URL fill out field, make sure “Save and Continue” works
-    (if mandatory fields are not filled out make sure it doesn’t allow you to save.
+    (if mandatory fields are not filled out make sure it doesn’t allow you to save).
     Make sure that if you don’t fill out a field that is required,
     and you hit save and continue fields you have filled out are not erased.
     [Manual Testing]
 6.  Add Survey button:
-    * Try sending the URL to yourself -  make sure that both email addresses match in order for the “Email Survey” button to work
+    * Try sending the URLs to yourself -  make sure that both email addresses match in order for the “Email Survey” button to work
       (try mismatched email addresses to make sure that the "Email Survey" button remains inactive).
-    * Once you hit “Email Survey” you should get a blank page where you can customize an email to go along with the URL –
+    * Once you hit “Email Survey” you should get a blank page where you can customize an email to go along with the URLs –
     enter in a message and make sure it sends (also try the "Close" button on this page).
     The email can be pre-populated for each instrument using participant_emails table.
-    * Ensure that the instrument being sent is what you get (and that the URL brings you to the correct survey).
+    * Ensure that the instruments being sent are what you get (and that the URLs brings you to the correct survey).
     * Use the `Create Survey` button (no email address should be specified).
     * Use the `Email survey` button by specifying email address.
-    * Check that the survey list shows the newly created survey with all the correct information.
+    * Check that the survey list shows the newly created surveys with all the correct information.
     * Try creating a survey for a candidate in a Project that the user is not affiliated with. This should not be allowed.
     * Try mismatched PSCID and DCCID and should get an error message.
     * Try creating duplicate instrument for a candidate for a visit, should get an error message.

@@ -155,16 +155,18 @@ class AddSurvey extends \NDB_Form
         );
         $reminder        = " already exists for given candidate for visit ";
         foreach ($instrument_list as $instrument) {
-            if ($values['Test_name'] == $instrument['Test_name']) {
-                $instrument_instance = \NDB_BVL_Instrument::factory(
-                    $this->loris,
-                    $instrument['Test_name']
-                );
-                return [
-                    'Test_name' => "Instrument ".
-                        $instrument_instance->getFullName().
-                        $reminder. $values['VL'],
-                ];
+            foreach ($values['Test_name'] as $testName) {
+                if ($testName == $instrument['Test_name']) {
+                    $instrument_instance = \NDB_BVL_Instrument::factory(
+                        $this->loris,
+                        $instrument['Test_name']
+                    );
+                    return [
+                        'Test_name' => "Instrument ".
+                            $instrument_instance->getFullName().
+                            $reminder. $values['VL'],
+                    ];
+                }
             }
         }
         if (!isset($_REQUEST['fire_away'])
@@ -207,26 +209,8 @@ class AddSurvey extends \NDB_Form
             ]
         );
 
-        $InstrumentExists = $db->pselectOne(
-            "SELECT 'x' FROM participant_accounts
-            WHERE Test_name=:TN AND SessionID=:SID",
-            [
-                'TN'  => $values['Test_name'],
-                'SID' => $SessionID,
-            ]
-        );
-        if ($InstrumentExists == 'x') {
-            return;
-        }
-        $battery = new \NDB_BVL_Battery($this->loris);
-        $battery->selectBattery(
-            new \SessionID($SessionID)
-        );
-
-        $commentID = $battery->addInstrument($this->loris, $values['Test_name']);
-
-        $key = $this->_generateSurveyKey();
-
+        $url       = '';
+        $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
         $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
             $sendEmail = true;
@@ -237,30 +221,51 @@ class AddSurvey extends \NDB_Form
             $status = 'Created';
         }
 
-        try {
-            $db->insert(
-                "participant_accounts",
+        $battery = new \NDB_BVL_Battery($this->loris);
+        $battery->selectBattery(
+            new \SessionID($SessionID)
+        );
+
+        foreach ($values['Test_name'] as $testName) {
+            $InstrumentExists = $db->pselectOne(
+                "SELECT 'x' FROM participant_accounts
+                WHERE Test_name=:TN AND SessionID=:SID",
                 [
-                    'SessionID'       => $SessionID,
-                    'Test_name'       => $values['Test_name'],
-                    'Status'          => $status,
-                    'OneTimePassword' => $key,
-                    'CommentID'       => $commentID,
+                    'TN'  => $testName,
+                    'SID' => $SessionID,
                 ]
             );
-            $this->tpl_data['success'] = true;
-        } catch (\DatabaseException $e) {
-            error_log($e->getMessage());
-            $this->tpl_data['success'] = false;
+            if ($InstrumentExists == 'x') {
+                return;
+            }
+
+            $commentID = $battery->addInstrument($this->loris, $testName);
+            $key       = $this->_generateSurveyKey();
+
+            try {
+                $db->insert(
+                    "participant_accounts",
+                    [
+                        'SessionID'       => $SessionID,
+                        'Test_name'       => $testName,
+                        'Status'          => $status,
+                        'OneTimePassword' => $key,
+                        'CommentID'       => $commentID,
+                    ]
+                );
+                $this->tpl_data['success'] = true;
+            } catch (\DatabaseException $e) {
+                error_log($e->getMessage());
+                $this->tpl_data['success'] = false;
+            }
+            $url .= $baseURL . '/survey.php?key=' . urlencode($key) . "\n";
         }
 
-        if ($email && ($values['send_email'] == 'true')) {
+        if ($email && ($sendEmail == 'true')) {
             $config   = \NDB_Config::singleton();
-            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
                 'study'     => $config->getSetting("title"),
-                'url'       => $baseURL . '/survey.php?key=' .
-                        urlencode($key),
+                'url'       => $url,
                 'EmailForm' => $values['email_dialog'],
             ];
             \Email::send($email, 'new_survey.tpl', $msg_data);
@@ -296,10 +301,10 @@ class AddSurvey extends \NDB_Form
         $this->addSelect(
             "Test_name",
             "Instrument",
-            array_merge(
-                ['' => ''],
-                \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
-            )
+            \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris),
+            [
+                'multiple' => 'multiple',
+            ]
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");

@@ -61,12 +61,14 @@ $(document).ready(function () {
         $("#participant_accounts_form").submit();
     });
     $("input[type=submit]").click(function (e) {
+        var test_name_array=$('[name="Test_name[]"]').val();
+        var tn=test_name_array.toString();
         if(e.currentTarget.classList.contains('email')) {
             $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
                 dccid: $("input[name=CandID]").val(),
                 pscid: $("input[name=PSCID]").val(),
                 VL: $("select[name=VL]").val(),
-                TN: $("select[name=Test_name]").val(),
+                TN: tn,
                 Email: $("input[name=Email]").val(),
                 Email2: $("input[name=Email2]").val()
             },
