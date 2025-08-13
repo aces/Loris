@@ -165,8 +165,18 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_uploader_nosessionid', 'Imaging Scans with no session ID', (SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
-    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2)
-    ;
+    ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2),
+    ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_specimen_alter','Edit Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_view','View Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_create','Create Containers',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_container_update','Edit Container Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_pool_view','View Pool Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_pool_create','Create Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
@@ -265,7 +275,17 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1),
-  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1);
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_update'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_alter'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_container_update'),3),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_pool_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1);
 
 
 -- permissions for each notification module
