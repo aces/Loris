@@ -350,16 +350,16 @@ class User extends UserPermissions implements
      */
     public function getVisits(): array
     {
-        $visit_labels = [];
+        $visit_labels   = [];
         $userProjectIDs = $this->getProjectIDs();
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        
+
         // Get VisitController instance
-        $visitController = new \LORIS\VisitController($DB);
+        $visitController        = new \LORIS\VisitController($DB);
         $allVisitsProjectCohort = $visitController->getVisitsProjectCohort();
-        
+
         foreach ($allVisitsProjectCohort as [$visit, $projectID, $cohortID]) {
             // Check if user has access to this project
             if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
@@ -369,7 +369,7 @@ class User extends UserPermissions implements
                 }
             }
         }
-        
+
         return $visit_labels;
     }
 
