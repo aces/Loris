@@ -534,8 +534,7 @@ class Charts extends \NDB_Page
         $participantStatusQuery = '';
 
         foreach ($_GET as $key => $value) {
-            if (
-                str_contains($key, 'selected')
+            if (str_contains($key, 'selected')
                 && !str_contains($key, 'date')
                 && $value != 'undefined'
             ) {
