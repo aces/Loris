@@ -51,9 +51,6 @@ const QueryChartForm = (props) => {
       // Handle clear selection
       if (normalizedValue.includes('__clear__')) {
         normalizedValue = undefined;
-      } else if (normalizedValue.length > 0) {
-        normalizedValue = '('
-          + normalizedValue.map((val) => `'${val}'`).join(',') + ')';
       }
     }
 
