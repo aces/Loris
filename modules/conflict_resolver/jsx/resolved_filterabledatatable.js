@@ -128,8 +128,8 @@ class ResolvedFilterableDataTable extends Component {
 
     const fields = [
       {label: 'Resolved ID', show: false},
-      {label: 'Project', show: true, filter: {
-        name: 'Project',
+      {label: 'Project', show: false, filter: {
+        name: 'projectid',
         type: 'select',
         options: options.project,
       }},
@@ -139,7 +139,7 @@ class ResolvedFilterableDataTable extends Component {
         options: options.cohort,
       }},
       {label: 'Site', show: true, filter: {
-        name: 'Site',
+        name: 'centerid',
         type: 'select',
         options: options.site,
       }},
