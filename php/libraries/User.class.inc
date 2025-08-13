@@ -360,7 +360,7 @@ class User extends UserPermissions implements
         $visitController        = new \LORIS\VisitController($DB);
         $allVisitsProjectCohort = $visitController->getVisitsProjectCohort();
 
-        foreach ($allVisitsProjectCohort as [$visit, $projectID, $cohortID]) {
+        foreach ($allVisitsProjectCohort as [$visit, $projectID]) {
             // Check if user has access to this project
             if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
                 $visitLabel = $visit->getName();
