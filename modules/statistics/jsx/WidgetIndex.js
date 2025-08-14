@@ -28,7 +28,7 @@ const WidgetIndex = (props) => {
     let {title, chartType, options} = chartDetails[section][chartID];
     return (
       <div
-        className ="site-breakdown-card"
+        className ="chart-card"
       >
         {/* Chart Title and Dropdown */}
         <div className ='chart-header'>

@@ -84,7 +84,7 @@ const createPieChart = (columns, id, targetModal, colours) => {
       type: 'pie',
     },
     size: {
-      height: targetModal ? 700 : 350,
+      height: targetModal ? 500 : 350,
       width: targetModal ? 700 : 350,
     },
     color: {
@@ -127,7 +127,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
     },
     size: {
       width: targetModal ? 1000 : 700,
-      height: targetModal ? 700 : 350,
+      height: targetModal ? 500 : 350,
     },
     axis: {
       x: {
@@ -162,20 +162,17 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
 const createLineChart = (data, columns, id, label, targetModal) => {
   let newChart = c3.generate({
     size: {
-      height: targetModal && 1000,
+      height: targetModal && 500,
       width: targetModal && 1000
     },
     bindto: targetModal ? targetModal : id,
     data: {
       x: 'x',
-      xFormat: '%m-%Y',
+      xFormat: id.includes('bymonth') && '%m-%Y',
       columns: columns,
       type: 'area-spline',
     },
-    legend: {
-      show: targetModal ? true : false,
-    },
-    axis: {
+    axis: id.includes('bymonth') && {
       x: {
         type: 'timeseries',
         tick: {
