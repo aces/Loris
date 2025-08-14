@@ -334,24 +334,8 @@ class Charts extends \NDB_Page
             // Track all ages for labels
             $allAges[$age] = true;
 
-            // Initialize project data if needed
-            if (!isset($agesByProject[$projectID])) {
-                $agesByProject[$projectID] = [
-                    'name' => $projectName,
-                    'ages' => []
-                ];
-            }
-
-            if (!isset($agesByProject[$projectID]['ages'])
-                || !is_array($agesByProject[$projectID]['ages'])
-            ) {
-                $agesByProject[$projectID]['ages'] = [];
-            }
-
-            if (!isset($agesByProject[$projectID]['ages'][$age])) {
-                $agesByProject[$projectID]['ages'][$age] = 0;
-            }
-
+            $agesByProject[$projectID]['ages'] ??= [];
+            $agesByProject[$projectID]['ages'][$age] ??= 0;
             $agesByProject[$projectID]['ages'][$age]++;
         }
 
