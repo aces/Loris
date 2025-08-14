@@ -315,7 +315,7 @@ class Charts extends \NDB_Page
         // Process age data by project
         $agesByProject = [];
         foreach ($ages_per_project as $row) {
-            $projectID = $row['ProjectID'];
+            $projectID   = $row['ProjectID'];
             $projectName = $row['ProjectName'];
             
             // Calculate age from date registered
@@ -323,7 +323,7 @@ class Charts extends \NDB_Page
                 $row['DoB'],
                 $row['Date_registered']
             );
-            $age = $ageOb['year'];
+            $age   = $ageOb['year'];
             
             // Track all ages for labels
             $allAges[$age] = true;
