@@ -1,6 +1,7 @@
 -- Publication Lead Investigators do not need to be collaborators
 ALTER TABLE publication
-ADD COLUMN LeadInvestigatorEmail VARCHAR(255) NULL;
+ADD COLUMN LeadInvestigatorEmail VARCHAR(255) NULL,
+ADD COLUMN LeadInvestigator VARCHAR(255) NULL;
 
 UPDATE publication
 SET LeadInvestigator = (SELECT Name FROM publication_collaborator WHERE PublicationCollaboratorID = LeadInvestigatorID),
