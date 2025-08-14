@@ -345,10 +345,10 @@ class Charts extends \NDB_Page
             // Initialize age count if needed
             if (!isset($agesByProject[$projectID]['ages'][$age])) {
                 $agesByProject[$projectID]['ages'][$age] = 0;
+            } else {
+                // Increment count for this age
+                $agesByProject[$projectID]['ages'][$age]++;
             }
-
-            // Increment count for this age
-            ++$agesByProject[$projectID]['ages'][$age];
         }
 
         // Create sorted labels (individual ages)
