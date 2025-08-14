@@ -335,19 +335,18 @@ class Charts extends \NDB_Page
             $allAges[$age] = true;
 
             // Initialize project data if needed
-            if (!isset($agesByProject[$projectID])
-                || !is_array($agesByProject[$projectID]['ages'])
-            ) {
+            if (!isset($agesByProject[$projectID])) {
                 $agesByProject[$projectID] = [
                     'name' => $projectName,
                     'ages' => []
                 ];
             }
 
-            // Initialize age count if needed
-            if (!isset($agesByProject[$projectID]['ages'][$age])) {
-                $agesByProject[$projectID]['ages'][$age] = 0;
-            } else {
+            if (is_array($agesByProject[$projectID]['ages'])) {
+                // Initialize age count if needed
+                if (!isset($agesByProject[$projectID]['ages'][$age])) {
+                    $agesByProject[$projectID]['ages'][$age] = 0;
+                }
                 // Increment count for this age
                 $agesByProject[$projectID]['ages'][$age]++;
             }
