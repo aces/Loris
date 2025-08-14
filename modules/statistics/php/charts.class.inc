@@ -346,6 +346,7 @@ class Charts extends \NDB_Page
             if (!isset($agesByProject[$projectID]['ages'])) {
                 $agesByProject[$projectID]['ages'] = [];
             }
+
             if (!isset($agesByProject[$projectID]['ages'][$age])) {
                 $agesByProject[$projectID]['ages'][$age] = 1;
             } else {
