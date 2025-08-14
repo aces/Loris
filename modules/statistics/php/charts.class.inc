@@ -342,14 +342,17 @@ class Charts extends \NDB_Page
                 ];
             }
 
-            if (is_array($agesByProject[$projectID]['ages'])) {
-                // Initialize age count if needed
-                if (!isset($agesByProject[$projectID]['ages'][$age])) {
-                    $agesByProject[$projectID]['ages'][$age] = 0;
-                }
-                // Increment count for this age
-                $agesByProject[$projectID]['ages'][$age]++;
+            if (!isset($agesByProject[$projectID]['ages'])
+                || !is_array($agesByProject[$projectID]['ages'])
+            ) {
+                $agesByProject[$projectID]['ages'] = [];
             }
+
+            if (!isset($agesByProject[$projectID]['ages'][$age])) {
+                $agesByProject[$projectID]['ages'][$age] = 0;
+            }
+
+            $agesByProject[$projectID]['ages'][$age]++;
         }
 
         // Create sorted labels (individual ages)
