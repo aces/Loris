@@ -266,9 +266,12 @@ class Charts extends \NDB_Page
             $recruitmentByAgeData[] = ["label" => $label, "total" => $count];
         }
         // sort the labels
-        usort($recruitmentByAgeData, function ($a, $b) {
-            return $a['label'] <=> $b['label'];
-        });
+        usort(
+            $recruitmentByAgeData,
+            function ($a, $b) {
+                return $a['label'] <=> $b['label'];
+            }
+        );
 
         return (new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData));
     }
@@ -287,9 +290,12 @@ class Charts extends \NDB_Page
         $list_of_projects = $user->getProjects();
 
         // Sort projects by name
-        usort($list_of_projects, function ($p1, $p2) {
-            return strcmp($p1->getName(), $p2->getName());
-        });
+        usort(
+            $list_of_projects,
+            function ($p1, $p2) {
+                return strcmp($p1->getName(), $p2->getName());
+            }
+        );
 
         $ages_per_project = $DB->pselect(
             "SELECT p.ProjectID, p.Name as ProjectName, c.DoB, c.Date_registered
@@ -311,23 +317,23 @@ class Charts extends \NDB_Page
         // Initialize age distribution data
         $ageData = [];
         $allAges = [];
-        
+
         // Process age data by project
         $agesByProject = [];
         foreach ($ages_per_project as $row) {
             $projectID   = $row['ProjectID'];
             $projectName = $row['ProjectName'];
-            
+
             // Calculate age from date registered
             $ageOb = \Utility::calculateAge(
                 $row['DoB'],
                 $row['Date_registered']
             );
             $age   = $ageOb['year'];
-            
+
             // Track all ages for labels
             $allAges[$age] = true;
-            
+
             // Initialize project data if needed
             if (!isset($agesByProject[$projectID])) {
                 $agesByProject[$projectID] = [
@@ -335,22 +341,22 @@ class Charts extends \NDB_Page
                     'ages' => []
                 ];
             }
-            
+
             // Initialize age count if needed
             if (!isset($agesByProject[$projectID]['ages'][$age])) {
                 $agesByProject[$projectID]['ages'][$age] = 0;
             }
-            
+
             // Increment count for this age
             $agesByProject[$projectID]['ages'][$age]++;
         }
-        
+
         // Create sorted labels (individual ages)
         $ageLabels = array_keys($allAges);
         sort($ageLabels, SORT_NUMERIC);
-        
+
         $ageData['labels'] = $ageLabels;
-        
+
         // Format data for each project
         $ageData['datasets'] = [];
         foreach ($agesByProject as $projectData) {
@@ -358,13 +364,13 @@ class Charts extends \NDB_Page
             foreach ($ageLabels as $age) {
                 $data[] = $projectData['ages'][$age] ?? 0;
             }
-            
+
             $ageData['datasets'][] = [
                 'name' => $projectData['name'],
                 'data' => $data
             ];
         }
-        
+
         return new \LORIS\Http\Response\JsonResponse($ageData);
     }
 
