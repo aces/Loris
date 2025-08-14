@@ -348,7 +348,7 @@ class Charts extends \NDB_Page
             }
 
             // Increment count for this age
-            $agesByProject[$projectID]['ages'][$age]++;
+            ++$agesByProject[$projectID]['ages'][$age];
         }
 
         // Create sorted labels (individual ages)
