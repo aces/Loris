@@ -335,7 +335,9 @@ class Charts extends \NDB_Page
             $allAges[$age] = true;
 
             // Initialize project data if needed
-            if (!isset($agesByProject[$projectID])) {
+            if (!isset($agesByProject[$projectID])
+                || !is_array($agesByProject[$projectID]['ages'])
+            ) {
                 $agesByProject[$projectID] = [
                     'name' => $projectName,
                     'ages' => []
