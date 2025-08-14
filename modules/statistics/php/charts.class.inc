@@ -352,6 +352,12 @@ class Charts extends \NDB_Page
             } else {
                 $agesByProject[$projectID]['ages'][$age]++;
             }
+
+            if (!isset($agesByProject[$projectID]['ages'][$age])) {
+                $agesByProject[$projectID]['ages'][$age] = 0;
+            }
+
+            $agesByProject[$projectID]['ages'][$age]++;
         }
 
         // Create sorted labels (individual ages)
