@@ -11,6 +11,10 @@ services:
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 2s
+      retries: 30
 
   selenium:
     image: selenium/standalone-firefox:4.25
@@ -28,7 +32,8 @@ services:
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
-      - db
+      - db:
+          condition: service_healthy
     command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
 
   unit-tests:
