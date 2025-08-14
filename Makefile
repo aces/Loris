@@ -1,6 +1,6 @@
-.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev
+.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev locales
 
-all: VERSION
+all: locales VERSION
 	composer install --no-dev
 	npm ci
 	npm run build
@@ -12,7 +12,7 @@ VERSION: .
 phpdev:
 	composer install
 
-dev: phpdev jsdev fastdev 
+dev: locales phpdev jsdev fastdev
 
 jsdev:
 	npm ci
@@ -59,6 +59,7 @@ testdata:
 
 locales: 
 	msgfmt -o locale/ja/LC_MESSAGES/loris.mo locale/ja/LC_MESSAGES/loris.po
+	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
@@ -67,6 +68,7 @@ locales:
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
 	msgfmt -o modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po
 	msgfmt -o modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
@@ -109,6 +111,9 @@ locales:
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 
+acknowledgements:
+	target=acknowledgements npm run compile
+
 data_release: 
 	target=data_release npm run compile
 
@@ -131,6 +136,8 @@ issue_tracker:
 	target=issue_tracker npm run compile
 
 candidate_list:
+	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
 candidate_parameters:
@@ -142,3 +149,8 @@ dashboard:
 publication:
 	target=publication npm run compile
 
+server_processes_manager:
+	target=server_processes_manager npm run compile
+
+conflict_resolver:
+	target=conflict_resolver npm run compile

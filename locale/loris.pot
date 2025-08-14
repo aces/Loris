@@ -116,3 +116,49 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+# Common candidate terms
+msgid "PSCID"
+msgstr ""
+
+msgid "DCCID"
+msgstr ""
+
+msgid "Visit Label"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Cohort"
+msgstr ""
+
+msgid "Date of registration"
+msgstr ""
+
+msgid "Participant Status"
+msgstr ""
+
+msgid "DoB"
+msgstr ""
+
+msgid "Sex"
+msgstr ""
+
+msgid "Feedback"
+msgstr ""
+
+msgid "Scans"
+msgstr ""
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr ""
+
+msgid "Maximum rows per page:"
+msgstr ""
+
+msgid "Download Table as CSV"
+msgstr ""
