@@ -11,12 +11,12 @@ services:
       - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
-      - MYSQL_ROOT_PASSWORD=rootpw   # fixed so healthcheck can log in
+      - MYSQL_ROOT_PASSWORD=rootpw  # fixed password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpw"]
-      interval: 5s        # check every 5 seconds
-      retries: 30         # allow 30 failed attempts
-      start_period: 60s   # give MariaDB 60s before counting failures
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -prootpw || exit 1"]
+      interval: 5s
+      retries: 50
+      start_period: 90s
 
   selenium:
     image: selenium/standalone-firefox:4.25
