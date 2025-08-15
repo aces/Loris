@@ -2,13 +2,11 @@ FROM mariadb:11.8
 
 ARG BASE_DIR
 
-# 拷贝所有需要的 SQL 文件
 COPY SQL/ /sql/
 COPY raisinbread/instruments/instrument_sql/ /instruments_sql/
 COPY raisinbread/RB_files/ /RB_files/
 COPY test/test_instrument/testtest.sql /test_instrument.sql
 
-# 合并所有 SQL 文件到一个初始化文件
 RUN cat /sql/0000-00-00-schema.sql \
         /sql/0000-00-01-Modules.sql \
         /sql/0000-00-02-Permission.sql \
@@ -20,7 +18,6 @@ RUN cat /sql/0000-00-00-schema.sql \
         /RB_files/*.sql \
     > /docker-entrypoint-initdb.d/0000-compiled.sql
 
-# 生成 0001-paths.sql，顺便创建测试用户和授权
 RUN echo "USE LorisTest;" > /docker-entrypoint-initdb.d/0001-paths.sql \
     && echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql \
     && echo "CREATE USER IF NOT EXISTS 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword';" >> /docker-entrypoint-initdb.d/0001-paths.sql \
