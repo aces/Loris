@@ -14,7 +14,6 @@ COPY raisinbread/instruments/instrument_sql/medical_history.sql  /medical_histor
 COPY raisinbread/instruments/instrument_sql/mri_parameter_form.sql  /mri_parameter_form.sql
 COPY raisinbread/instruments/instrument_sql/radiology_review.sql  /radiology_review.sql
 COPY test/test_instrument/testtest.sql /test_instrument.sql
-COPY raisinbread/RB_files/*.sql /RB_files/
 
 RUN echo "Use LorisTest;" | cat - \
     0000-00-00-schema.sql \
