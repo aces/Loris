@@ -18,8 +18,17 @@ RUN cat /sql/0000-00-00-schema.sql \
         /RB_files/*.sql \
     > /docker-entrypoint-initdb.d/0000-compiled.sql
 
-RUN echo "CREATE DATABASE IF NOT EXISTS LorisTest;" > /docker-entrypoint-initdb.d/0001-init.sql \
-    && echo "USE LorisTest;" >> /docker-entrypoint-initdb.d/0001-init.sql \
-    && echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-init.sql \
-    && echo "GRANT ALL PRIVILEGES ON LorisTest.* TO 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword';" >> /docker-entrypoint-initdb.d/0001-init.sql \
-    && echo "FLUSH PRIVILEGES;" >> /docker-entrypoint-initdb.d/0001-init.sql
+# 1. Use the database
+RUN echo "USE LorisTest;" >> /docker-entrypoint-initdb.d/0001-paths.sql
+
+# 2. Update Config table
+RUN echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0002-config.sql
+
+# 3. Create user (required for MariaDB 10.5)
+RUN echo "CREATE USER IF NOT EXISTS 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword';" >> /docker-entrypoint-initdb.d/0003-create-user.sql
+
+# 4. Grant privileges
+RUN echo "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'%';" >> /docker-entrypoint-initdb.d/0004-grant.sql
+
+# 5. Flush privileges
+RUN echo "FLUSH PRIVILEGES;" >> /docker-entrypoint-initdb.d/0005-flush.sql
