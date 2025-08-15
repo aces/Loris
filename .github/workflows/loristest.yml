@@ -293,8 +293,3 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-
-      # Always show DB logs at end for debugging
-      - name: Show MariaDB logs (final dump)
-        if: always()
-        run: docker compose logs db
