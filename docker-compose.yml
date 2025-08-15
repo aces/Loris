@@ -32,7 +32,7 @@ services:
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
-      - db:
+        db:
           condition: service_healthy
     command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
 
