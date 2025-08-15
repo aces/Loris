@@ -1,4 +1,4 @@
-FROM mariadb:10.5
+FROM mariadb:11.0
 
 ARG BASE_DIR
 
@@ -31,6 +31,9 @@ RUN echo "Use LorisTest;" | cat - \
     test_instrument.sql \
     RB_files/*.sql > /docker-entrypoint-initdb.d/0000-compiled.sql
 
-RUN echo "Use LorisTest;" >> /docker-entrypoint-initdb.d/0001-paths.sql
-RUN echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql
-RUN echo "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION;" >> /docker-entrypoint-initdb.d/0004-sql-user.sql
+
+RUN echo "USE LorisTest;" > /docker-entrypoint-initdb.d/0001-paths.sql \
+    && echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql \
+    && echo "CREATE USER IF NOT EXISTS 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword';" >> /docker-entrypoint-initdb.d/0001-paths.sql \
+    && echo "GRANT UPDATE, INSERT, SELECT, DELETE, DROP, CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'%';" >> /docker-entrypoint-initdb.d/0001-paths.sql \
+    && echo "FLUSH PRIVILEGES;" >> /docker-entrypoint-initdb.d/0001-paths.sql
