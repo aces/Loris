@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     build:
@@ -10,16 +11,18 @@ services:
       - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=rootpw   # fixed so healthcheck can log in
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 2s
-      retries: 30
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpw"]
+      interval: 5s        # check every 5 seconds
+      retries: 30         # allow 30 failed attempts
+      start_period: 60s   # give MariaDB 60s before counting failures
 
   selenium:
     image: selenium/standalone-firefox:4.25
     ports:
       - "5900:5900"
+
   web:
     build:
       context: .
@@ -32,8 +35,8 @@ services:
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
-        db:
-          condition: service_healthy
+      db:
+        condition: service_healthy
     command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
 
   unit-tests:
@@ -47,7 +50,8 @@ services:
     environment:
       - LORIS_DB_CONFIG=test/config.xml
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     entrypoint: /app/test/wait-for-services.sh
 
   integration-tests:
@@ -62,7 +66,11 @@ services:
       - SELENIUM_REQUIRED=true
       - DOCKER_WEB_SERVER=http://web:8000
     depends_on:
-      - db
-      - selenium
-      - web
+      db:
+        condition: service_healthy
+      selenium:
+        condition: service_started
+      web:
+        condition: service_started
     entrypoint: /app/test/wait-for-services.sh
+
