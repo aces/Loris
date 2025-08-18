@@ -25,20 +25,8 @@ msgstr "नई प्रोफ़ाइल"
 msgid "Create a New Profile"
 msgstr "नई प्रोफ़ाइल बनाएं"
 
-msgid "Date of Birth*"
-msgstr "जन्म तिथि*"
-
 msgid "Date of Birth Confirm*"
 msgstr "जन्म तिथि की पुष्टि करें*"
-
-msgid "Sex*"
-msgstr "लिंग*"
-
-msgid "Site*"
-msgstr "साइट*"
-
-msgid "Project*"
-msgstr "परियोजना*"
 
 msgid "Date of Birth fields must match"
 msgstr "जन्म तिथि फ़ील्ड मेल खाना चाहिए"
@@ -58,20 +46,5 @@ msgstr "ईडीसी की पुष्टि करें"
 msgid "Recruit another candidate"
 msgstr "एक और उम्मीदवार जोड़ें"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
-msgid "Error!"
-msgstr "त्रुटि!"
-
-msgid "DCCID:"
-msgstr "डीसीसीआईडी:"
-
-msgid "PSCID:"
-msgstr "पीएससीआईडी:"
-
 msgid "Access Profile"
 msgstr "प्रोफ़ाइल देखें"
-
-msgid "Create"
-msgstr "बनाएं"

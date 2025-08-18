@@ -56,13 +56,13 @@ class NewProfileIndex extends React.Component {
     const formData = this.state.formData;
 
     if (formData.dobDate !== formData.dobDateConfirm) {
-      swal.fire(this.props.t('Error!', {ns: 'new_profile'}),
+      swal.fire(this.props.t('Error!', {ns: 'loris'}),
         this.props.t('Date of Birth fields must match',
           {ns: 'new_profile'}), 'error');
     } else if (this.state.configData['edc'] === 'true' &&
          (formData.edcDate !== formData.edcDateConfirm)
     ) {
-      swal.fire(this.props.t('Error!', {ns: 'new_profile'}),
+      swal.fire(this.props.t('Error!', {ns: 'loris'}),
         this.props.t('EDC fields must match', {ns: 'new_profile'}), 'error');
     } else {
       validate = true;
@@ -110,10 +110,10 @@ class NewProfileIndex extends React.Component {
               icon: 'success',
               title: this.props.t('New Candidate Created',
                 {ns: 'new_profile'}),
-              html: this.props.t('DCCID:',
-                {ns: 'new_profile'}) + ' ' + data.CandID + ' '
-                  + this.props.t('PSCID:',
-                    {ns: 'new_profile'}) + ' ' + data.PSCID + ' ',
+              html: this.props.t('DCCID',
+                {ns: 'loris'}) + ': ' + data.CandID + ' '
+                  + this.props.t('PSCID',
+                    {ns: 'loris'}) + ': ' + data.PSCID + ' ',
               confirmButtonText: this.props.t('Access Profile',
                 {ns: 'new_profile'}),
               showCancelButton: true,
@@ -129,7 +129,7 @@ class NewProfileIndex extends React.Component {
             .catch((error) => {
               swal.fire({
                 icon: 'error',
-                title: this.props.t('Error!', {ns: 'new_profile'}),
+                title: this.props.t('Error!', {ns: 'loris'}),
                 text: error,
               });
               console.error(error);
@@ -138,11 +138,11 @@ class NewProfileIndex extends React.Component {
           resp.json().then((message) => {
             this.setState({submitDisabled: false});
             swal.fire(this.props.t('Error!',
-              {ns: 'new_profile'}), message.error, 'error');
+              {ns: 'loris'}), message.error, 'error');
           }).catch((error) => {
             swal.fire({
               icon: 'error',
-              title: this.props.t('Error!', {ns: 'new_profile'}),
+              title: this.props.t('Error!', {ns: 'loris'}),
               text: error,
             });
             console.error(error);
@@ -152,7 +152,7 @@ class NewProfileIndex extends React.Component {
       .catch((error) => {
         swal.fire({
           icon: 'error',
-          title: this.props.t('Error!', {ns: 'new_profile'}),
+          title: this.props.t('Error!', {ns: 'loris'}),
           text: error,
         });
         console.error(error);
@@ -169,7 +169,7 @@ class NewProfileIndex extends React.Component {
   render() {
     if (this.state.error) {
       return <h3>{this.props.t('An error occured while loading the page.',
-        {ns: 'new_profile'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -219,7 +219,7 @@ class NewProfileIndex extends React.Component {
       pscid =
         <TextboxElement
           name = "pscid"
-          label = {this.props.t('PSCID', {ns: 'new_profile'})}
+          label = {this.props.t('PSCID', {ns: 'loris'})}
           onUserInput = {this.setFormData}
           value = {this.state.formData.pscid}
           required = {true}
@@ -229,7 +229,7 @@ class NewProfileIndex extends React.Component {
       site =
         <SelectElement
           name = "site"
-          label = {this.props.t('Site*', {ns: 'new_profile'})}
+          label = {this.props.t('Site', {ns: 'loris'})}
           options = {this.state.configData.site}
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
@@ -238,11 +238,11 @@ class NewProfileIndex extends React.Component {
     }
     const fields = [
       {
-        label: this.props.t('Date of Birth*', {ns: 'new_profile'}),
+        label: this.props.t('Date of Birth', {ns: 'loris'}),
         element: (
           <DateElement
             name = "dobDate"
-            label = {this.props.t('Date of Birth*', {ns: 'new_profile'})}
+            label = {this.props.t('Date of Birth', {ns: 'loris'})}
             minYear = {minYear}
             maxYear = {dobMaxYear}
             dateFormat = {dateFormat}
@@ -253,12 +253,12 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Date of Birth Confirm*', {ns: 'new_profile'}),
+        label: this.props.t('Date of Birth Confirm', {ns: 'new_profile'}),
         element: (
           <DateElement
             name = "dobDateConfirm"
-            label = {this.props.t('Date of Birth Confirm*',
-              {ns: 'new_profile'})}
+            label = {this.props.t('Date of Birth Confirm',
+              {ns: 'new_profile'}) + '*'}
             minYear = {minYear}
             maxYear = {dobMaxYear}
             dateFormat = {dateFormat}
@@ -269,11 +269,11 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Sex*', {ns: 'new_profile'}),
+        label: this.props.t('Sex', {ns: 'loris'}) ,
         element: (
           <SelectElement
             name = "sex"
-            label = {this.props.t('Sex*', {ns: 'new_profile'})}
+            label = {this.props.t('Sex', {ns: 'loris'})}
             options = {this.state.configData.sex}
             onUserInput = {this.setFormData}
             value = {this.state.formData.sex}
@@ -282,15 +282,15 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Site*', {ns: 'new_profile'}),
+        label: this.props.t('Site', {ns: 'loris'}) ,
         element: site,
       },
       {
-        label: this.props.t('Project*', {ns: 'new_profile'}),
+        label: this.props.t('Project', {ns: 'loris'}) ,
         element: (
           <SelectElement
             name = "project"
-            label = {this.props.t('Project*', {ns: 'new_profile'})}
+            label = {this.props.t('Project', {ns: 'loris'}) }
             options = {this.state.configData.project}
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
@@ -299,7 +299,7 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('PSCID', {ns: 'new_profile'}),
+        label: this.props.t('PSCID', {ns: 'loris'}),
         element: pscid,
       },
       {
@@ -319,7 +319,7 @@ class NewProfileIndex extends React.Component {
           {fields.map((field, idx) => field.element)}
           <ButtonElement
             name = "fire_away"
-            label = {this.props.t('Create', {ns: 'new_profile'})}
+            label = {this.props.t('Create', {ns: 'loris'})}
             id = "button"
             type = "submit"
             disabled={this.state.submitDisabled}
