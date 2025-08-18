@@ -7,6 +7,7 @@ import {
   SelectElement,
   NumericElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Battery Manager Form
@@ -22,26 +23,41 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors, handleSubmit} = this.props;
+    const {test, options, setTest, add, errors, handleSubmit, t} = this.props;
 
     const renderHelpText = () => {
       if (add) {
         return (
           <span>
-            You cannot add an entry if it has a duplicate entry in the test
-            battery.<br/>
-            If the duplicate entry is inactive, you will be given the option
-            to activate it.
+            {t(
+              'You cannot add an entry if it has' +
+              'a duplicate entry in the test battery.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'If the duplicate entry is inactive,' +
+              ' you will be given the option to activate it.',
+              {ns: 'battery_manager'}
+            )}
           </span>
         );
       } else {
         return (
           <span>
-             Editing an entry will alter the current entry.<br/>
-             You cannot edit an entry to have the same values as another active
-             entry.<br/>
-             If the duplicate entry is inactive, you will be given the option
-             to activate it.
+            {t(
+              'Editing an entry will alter the current entry.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'You cannot edit an entry to have the ' +
+              'same values as another active entry.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'If the duplicate entry is inactive,' +
+              ' you will be given the option to activate it.',
+              {ns: 'battery_manager'}
+            )}
             <br/>
             <br/>
           </span>
@@ -55,13 +71,13 @@ class BatteryManagerForm extends Component {
         onSubmit={handleSubmit}
       >
         <StaticElement
-          label="Note"
+          label={t('Note', {ns: 'battery_manager'})}
           text={renderHelpText()}
         />
         <SelectElement
           name="testName"
-          label="Instrument"
-          placeHolder="Search for instrument"
+          label={t('Instrument', {ns: 'battery_manager'})}
+          placeHolder={t('Search for instrument', {ns: 'battery_manager'})}
           options={options.instruments}
           onUserInput={setTest}
           required={true}
@@ -70,7 +86,8 @@ class BatteryManagerForm extends Component {
         />
         <NumericElement
           name="ageMinDays"
-          label="Minimum age (days)"
+          label={t('Minimum Age', {ns: 'battery_manager'}) +
+          ' (' + t('days', {ns: 'battery_manager'}) + ')'}
           onUserInput={setTest}
           min={0}
           max={99999}
@@ -80,7 +97,8 @@ class BatteryManagerForm extends Component {
         />
         <NumericElement
           name="ageMaxDays"
-          label="Maximum age (days)"
+          label={t('Maximum Age', {ns: 'battery_manager'}) +
+           ' (' + t('days', {ns: 'battery_manager'}) + ')'}
           onUserInput={setTest}
           min={0}
           max={99999}
@@ -90,7 +108,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="stage"
-          label="Stage"
+          label={t('Stage', {ns: 'battery_manager'})}
           options={options.stages}
           onUserInput={setTest}
           required={true}
@@ -99,7 +117,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="cohort"
-          label="Cohort"
+          label={t('Cohort', {ns: 'loris'})}
           options={options.cohorts}
           onUserInput={setTest}
           required={false}
@@ -107,7 +125,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="visitLabel"
-          label="Visit Label"
+          label={t('Visit Label', {ns: 'loris'})}
           options={options.visits}
           onUserInput={setTest}
           required={false}
@@ -115,8 +133,8 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="centerId"
-          label="Site"
-          placeHolder="Search for site"
+          label={t('Site', {ns: 'loris'})}
+          placeHolder={t('Search for site', {ns: 'battery_manager'})}
           options={options.sites}
           strictSearch={true}
           onUserInput={setTest}
@@ -125,7 +143,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="firstVisit"
-          label="First Visit"
+          label={t('First Visit', {ns: 'battery_manager'})}
           options={options.firstVisit}
           onUserInput={setTest}
           required={false}
@@ -133,7 +151,7 @@ class BatteryManagerForm extends Component {
         />
         <NumericElement
           name="instrumentOrder"
-          label="Instrument Order"
+          label={t('Instrument Order', {ns: 'battery_manager'})}
           onUserInput={setTest}
           required={false}
           min={0}
@@ -143,7 +161,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="DoubleDataEntryEnabled"
-          label="Enable Double Data Entry"
+          label={t('Enable Double Data Entry', {ns: 'battery_manager'})}
           options={options.DoubleDataEntryEnabled}
           onUserInput={setTest}
           required={true}
@@ -151,7 +169,7 @@ class BatteryManagerForm extends Component {
           emptyOption={false}
         />
         <ButtonElement
-          label="Submit"
+          label={t('Submit', {ns: 'battery_manager'})}
         />
       </FormElement>
     );
@@ -165,7 +183,8 @@ BatteryManagerForm.propTypes = {
   add: PropTypes.bool,
   errors: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
-export default BatteryManagerForm;
-
+export default withTranslation(
+  ['battery_manager', 'loris'])(BatteryManagerForm);

@@ -129,18 +129,18 @@ class BatteryManagerIndex extends Component {
     case t('First Visit', {ns: 'battery_manager'}):
       switch (value) {
       case 'Y':
-        return t('Yes', {ns: 'battery_manager'});
+        return t('Yes', {ns: 'loris'});
       case 'N':
-        return t('No', {ns: 'battery_manager'});
+        return t('No', {ns: 'loris'});
       default:
         return value;
       }
     case t('Active', {ns: 'battery_manager'}):
       switch (value) {
       case 'Y':
-        return t('Yes', {ns: 'battery_manager'});
+        return t('Yes', {ns: 'loris'});
       case 'N':
-        return t('No', {ns: 'battery_manager'});
+        return t('No', {ns: 'loris'});
       default:
         return value;
       }
@@ -169,10 +169,10 @@ class BatteryManagerIndex extends Component {
     case t('Instrument', {ns: 'battery_manager'}):
       result = <td>{this.state.options.instruments[cell]}</td>;
       break;
-    case t('Cohort', {ns: 'battery_manager'}):
+    case t('Cohort', {ns: 'loris'}):
       result = <td>{this.state.options.cohorts[cell]}</td>;
       break;
-    case t('Site', {ns: 'battery_manager'}):
+    case t('Site', {ns: 'loris'}):
       result = <td>{this.state.options.sites[cell]}</td>;
       break;
     case t('Change Status', {ns: 'battery_manager'}):
@@ -315,7 +315,7 @@ class BatteryManagerIndex extends Component {
       return (
         <h3>
           {t('An error occured while loading the page.',
-            {ns: 'battery_manager'})}
+            {ns: 'loris'})}
         </h3>
       );
     }
@@ -367,7 +367,7 @@ class BatteryManagerIndex extends Component {
         },
       },
       {
-        label: t('Cohort', {ns: 'battery_manager'}),
+        label: t('Cohort', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'cohort',
@@ -376,7 +376,7 @@ class BatteryManagerIndex extends Component {
         },
       },
       {
-        label: t('Visit Label', {ns: 'battery_manager'}),
+        label: t('Visit Label', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'visitLabel',
@@ -385,7 +385,7 @@ class BatteryManagerIndex extends Component {
         },
       },
       {
-        label: t('Site', {ns: 'battery_manager'}),
+        label: t('Site', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'site',
