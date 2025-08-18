@@ -257,11 +257,7 @@ class NewProfileIndex extends React.Component {
         element: (
           <DateElement
             name = "dobDateConfirm"
-            label = {this.props.t('Date of Birth Confirm',
               {ns: 'new_profile'}) + '*'}
-            minYear = {minYear}
-            maxYear = {dobMaxYear}
-            dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
@@ -274,23 +270,6 @@ class NewProfileIndex extends React.Component {
           <SelectElement
             name = "sex"
             label = {this.props.t('Sex', {ns: 'loris'})}
-            options = {this.state.configData.sex}
-            onUserInput = {this.setFormData}
-            value = {this.state.formData.sex}
-            required = {true}
-          />
-        ),
-      },
-      {
-        label: this.props.t('Site', {ns: 'loris'}) ,
-        element: site,
-      },
-      {
-        label: this.props.t('Project', {ns: 'loris'}) ,
-        element: (
-          <SelectElement
-            name = "project"
-            label = {this.props.t('Project', {ns: 'loris'}) }
             options = {this.state.configData.project}
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
