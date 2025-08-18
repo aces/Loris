@@ -93,3 +93,30 @@ msgstr ""
 msgid "You cannot duplicate an active test"
 msgstr ""
 
+msgid "You cannot add an entry if it has a duplicate entry in the test battery."
+msgstr ""
+
+msgid "If the duplicate entry is inactive, you will be given the option to activate it."
+msgstr ""
+
+msgid "Editing an entry will alter the current entry."
+msgstr ""
+
+msgid "You cannot edit an entry to have the same values as another active entry."
+msgstr ""
+
+msgid "Search for instrument"
+msgstr ""
+
+msgid "days"
+msgstr ""
+
+msgid "Search for site"
+msgstr ""
+
+msgid "Enable Double Data Entry"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
