@@ -343,6 +343,29 @@ class Utility
         return self::getCohortList($projectID);
     }
 
+
+    /**
+     * Return list of all active examiners
+     *
+     * @return array
+     */
+    static function getAllActiveExaminers(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        return $DB->pselectWithIndexKey(
+            "SELECT DISTINCT e.examinerID, e.full_name, u.Email
+                 FROM examiners e
+                 JOIN examiners_psc_rel epr
+                 JOIN users u ON (u.ID = e.userID)
+                 WHERE epr.active = 'Y'
+                 ORDER BY full_name",
+            [],
+            'examinerID'
+        );
+    }
+
+
     /**
      * Returns a list of visits associated with the supplied cohort.
      * The visits are in an associative array format [VisitName=>VisitLabel]
