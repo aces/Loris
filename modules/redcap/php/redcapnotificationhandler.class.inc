@@ -343,50 +343,37 @@ class RedcapNotificationHandler
      */
     private static function _formatEnumFields(array $assoc_values): array
     {
-        $keys    = array_keys($assoc_values);
-        $reduced = array_reduce(
-            $keys,
-            function ($carry, $item) use ($assoc_values) {
-                $field_name = $item;
-                $value      = $assoc_values[$field_name];
+        $results = [];
 
-                preg_match('/(.*)[_][_][_](.*)/', $item, $matches);
-                if (!empty($matches[1])) {
-                    // It is an enum field
-                    $new_field_name = $matches[1];
-                    $prev_value     = isset($carry[$new_field_name])
-                        ? [$carry[$new_field_name]]
-                        : [];
-                    $new_value      = $prev_value;
+        foreach ($assoc_values as $field_name => $value) {
+            preg_match('/(.*)___(.*)/', strval($field_name), $matches);
+            if (!empty($matches[1])) {
+                // It is an enum field
+                $new_field_name = $matches[1];
+                $prev_value     = isset($results[$new_field_name])
+                    ? [$results[$new_field_name]]
+                    : [];
+                $new_value      = $prev_value;
 
-                    if ($value == '1') {
-                        // The value is selected
-                        $value     = [$matches[2]];
-                        $new_value = [
-                            implode(
-                                '{@}',
-                                array_merge($prev_value, $value)
-                            )
-                        ];
-                    }
-
-                    $value      = array_shift($new_value);
-                    $field_name = $new_field_name;
+                if ($value == '1') {
+                    // The value is selected
+                    $value     = [$matches[2]];
+                    $new_value = [
+                        implode(
+                            '{@}',
+                            array_merge($prev_value, $value)
+                        )
+                    ];
                 }
 
-                if (!isset($carry[$field_name])) {
-                    $carry[$field_name] = null;
-                }
+                $value      = array_shift($new_value);
+                $field_name = $new_field_name;
+            }
 
-                $carry[$field_name] = $value;
+            $results[$field_name] = $value;
+        }
 
-                return $carry;
-
-            },
-            []
-        );
-
-        return $reduced;
+        return $results;
     }
 
     /**
