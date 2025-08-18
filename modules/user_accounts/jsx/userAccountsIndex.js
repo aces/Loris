@@ -78,7 +78,7 @@ class UserAccountsIndex extends Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case t('Site', {ns: 'user_accounts'}):
+    case t('Site', {ns: 'loris'}):
       result = (
         <td>
           {cell
@@ -94,7 +94,7 @@ class UserAccountsIndex extends Component {
         );
       }
       break;
-    case t('Project', {ns: 'user_accounts'}):
+    case t('Project', {ns: 'loris'}):
       result = (
         <td>
           {cell.map(
@@ -151,7 +151,7 @@ class UserAccountsIndex extends Component {
     if (this.state.error) {
       return (
         <h3>
-          {t('An error occured while loading the page.', {ns: 'user_accounts'})}
+          {t('An error occured while loading the page.', {ns: 'loris'})}
         </h3>
       );
     }
@@ -168,7 +168,7 @@ class UserAccountsIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {
-        label: t('Site', {ns: 'user_accounts'}),
+        label: t('Site', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'site',
@@ -177,7 +177,7 @@ class UserAccountsIndex extends Component {
         },
       },
       {
-        label: t('Project', {ns: 'user_accounts'}),
+        label: t('Project', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'project',
