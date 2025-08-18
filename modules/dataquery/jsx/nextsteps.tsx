@@ -25,7 +25,7 @@ function NextSteps(props: {
 
   const canRun = (props.fields && props.fields.length > 0);
   const fieldLabel = (props.fields && props.fields.length > 0)
-    ? 'Modify Fields'
+    ? 'Define Fields'
     : 'Choose Fields';
   const filterLabel = (props.filters && props.filters.group.length > 0)
     ? 'Modify Filters'
