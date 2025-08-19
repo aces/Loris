@@ -48,9 +48,6 @@ msgstr "अनुमति जोड़ें"
 msgid "Manage Permissions"
 msgstr "अनुमतियाँ प्रबंधित करें"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
 msgid "Note"
 msgstr "नोट"
 

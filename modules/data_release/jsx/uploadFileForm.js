@@ -84,7 +84,7 @@ class UploadFileForm extends Component {
         />
         <SelectElement
           name='project'
-          label={t('Project', {ns: 'data_release'})}
+          label={t('Project', {ns: 'loris'})}
           onUserInput={this.updateFormElement}
           required={true}
           value={this.state.formData.project}
@@ -153,7 +153,7 @@ class UploadFileForm extends Component {
                 + ' (' + maxSizeAllowed + ')';
       errorMessage['Filesize'] = msg;
       swal.fire({
-        title: t('Error', {ns: 'data_release'}),
+        title: t('Error', {ns: 'loris'}),
         text: msg,
         type: 'error',
         showCancelButton: true,

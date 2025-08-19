@@ -104,7 +104,7 @@ class DataReleaseIndex extends Component {
 
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'data_release'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
