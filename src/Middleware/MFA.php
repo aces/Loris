@@ -46,8 +46,11 @@ class MFA implements MiddlewareInterface, MiddlewareChainer
 		// No MFA required on the login page
 		return $this->next->process($request, $handler);
 	}
+	// Should only be true for the MFA validation endpoints
+	if($request->getAttribute("bypassMFA") === true) {
+		return $this->next->process($request, $handler);
+	}
 	$singlepointlogin = $_SESSION['State']->getProperty('login');
-	var_dump($singlepointlogin);
 	if($singlepointlogin->passedMFA()) {
 		return $this->next->process($request, $handler);
 
