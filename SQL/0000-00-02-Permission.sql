@@ -286,7 +286,7 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
-  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1);
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
