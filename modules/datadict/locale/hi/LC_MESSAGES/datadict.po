@@ -48,6 +48,4 @@ msgstr "अपरिवर्तित"
 msgid "Cohorts"
 msgstr "समूह"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 

@@ -48,6 +48,3 @@ msgstr ""
 msgid "Cohorts"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
-
