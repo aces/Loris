@@ -60,12 +60,6 @@ msgstr ""
 msgid "Candidate"
 msgstr ""
 
-msgid "Session"
-msgstr ""
-
-msgid "Project"
-msgstr ""
-
 msgid "Data Type"
 msgstr ""
 
@@ -90,6 +84,4 @@ msgstr ""
 msgid "Cohorts"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
 

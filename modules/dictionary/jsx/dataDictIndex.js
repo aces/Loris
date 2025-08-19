@@ -288,7 +288,7 @@ class DataDictIndex extends Component {
           options: {
             'candidate': t('Candidate', {ns: 'dictionary'}),
             'session': t('Session', {ns: 'dictionary'}),
-            'project': t('Project', {ns: 'dictionary'}),
+            'project': t('Project', {ns: 'loris'}),
           },
         },
       },
