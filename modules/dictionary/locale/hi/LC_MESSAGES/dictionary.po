@@ -60,12 +60,6 @@ msgstr "डेटा दायरा"
 msgid "Candidate"
 msgstr "उम्मीदवार"
 
-msgid "Session"
-msgstr "सत्र"
-
-msgid "Project"
-msgstr "परियोजना"
-
 msgid "Data Type"
 msgstr "डेटा प्रकार"
 
@@ -90,6 +84,4 @@ msgstr "दौरे"
 msgid "Cohorts"
 msgstr "समूह"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
