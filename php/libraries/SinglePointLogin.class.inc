@@ -29,14 +29,9 @@
 class SinglePointLogin
 {
     /**
-     * Defines whether a user is currently logged in
-     */
-    var $_isLoggedIn = false;
-
-    /**
      * Whether the user has already provided the an MFA token
      */
-    var $_passedMFA = false;
+    var $_isLoggedIn = false;
 
     /**
      * Internally held copy of username
@@ -200,6 +195,7 @@ class SinglePointLogin
     function passwordAuthenticate(
         string $username,
         string $password,
+	?string $code = null,
         bool $redirect = true
     ): bool {
 
@@ -265,7 +261,6 @@ class SinglePointLogin
                         Password_hash,
 			active_from,
 			active_to
-
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
@@ -295,9 +290,7 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 try {
                     $newHash = new \Password($password);
-                    \User::factory($username)->updatePassword(
-                        $newHash
-                    );
+                    \User::factory($username)->updatePassword($newHash);
                 } catch (\InvalidArgumentException $e) {
                     // Edge-case: if a user has a password based on old LORIS
                     // password standards and it needs rehashing, it will
@@ -314,7 +307,8 @@ class SinglePointLogin
                         ['UserID' => $username]
                     );
                 }
-
+		//if($user->totpRequired() && $!$this->passedMFA()) {
+		//}
             }
 
             if ($row['Active'] == 'N'
@@ -607,6 +601,6 @@ class SinglePointLogin
     }
 
     function passedMFA() : bool {
-	    return $this->_passedMFA;
+	    return $_SESSION['PassedMFA'] ?? false === true;
     }
 }

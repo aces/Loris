@@ -688,4 +688,9 @@ class User extends UserPermissions implements
     {
         return $this->userInfo['Pending_approval'] == 'Y';
     }
+
+    public function totpRequired(): bool
+    {
+        return $this->userInfo['TOTPSecret'] !== null;
+    }
 }
