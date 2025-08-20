@@ -36,7 +36,10 @@ function CodeValidator(props: {
 		  return resp.json()
 	  }).then( (json) => {
 		  if (json.ok == 'success') {
-			  swal.fire('Success!', json.message, 'success')
+			  swal.fire('Success!', json.message, 'success').then( () => {
+				  window.location.href = loris.BaseURL + "/my_preferences/";
+			  });
+
 		  } else if (json.error) {
 			  swal.fire('Error', json.error, 'error')
 		  } else {

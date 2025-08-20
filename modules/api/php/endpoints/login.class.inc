@@ -105,7 +105,6 @@ class Login extends Endpoint
 
             $user     = $requestdata['username'] ?? null;
             $password = $requestdata['password'] ?? null;
-            $mfacode  = $requestdata['code'] ?? null;
 
             if ($user === null || $password === null) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
@@ -115,7 +114,7 @@ class Login extends Endpoint
 
             $login = $this->getLoginAuthenticator();
 
-            if ($login->passwordAuthenticate($user, $password, $mfacode, false)) {
+            if ($login->passwordAuthenticate($user, $password, false)) {
                 $token = $this->getEncodedToken($user);
                 if (!empty($token)) {
                     return new \LORIS\Http\Response\JsonResponse(

@@ -41,32 +41,32 @@ class MFA implements MiddlewareInterface, MiddlewareChainer
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $loris = $request->getAttribute("loris");
-	$user = $request->getAttribute("user");
-	if($user->totpRequired() === false) {
-		return $this->next->process($request, $handler);
-	}
-	$singlepointlogin = $_SESSION['State']->getProperty('login');
-	if($singlepointlogin->passedMFA() === true) {
-		return $this->next->process($request, $handler);
-	}
+        $user  = $request->getAttribute("user");
+        if ($user->totpRequired() === false) {
+            return $this->next->process($request, $handler);
+        }
+        $singlepointlogin = $_SESSION['State']->getProperty('login');
+        if ($singlepointlogin->passedMFA() === true) {
+            return $this->next->process($request, $handler);
+        }
 
-	$loginmodule = $loris->getModule("login");
-	$loginmodule->registerAutoloader();
-	$page = $loginmodule->loadPage($loris, "mfa");
-	$baseURL = $request->getAttribute("baseurl");
+        $loginmodule = $loris->getModule("login");
+        $loginmodule->registerAutoloader();
+        $page    = $loginmodule->loadPage($loris, "mfa");
+        $baseURL = $request->getAttribute("baseurl");
 
-	// Whitelist of resources needed to load the MFA prompt page
-	if(str_ends_with($request->getURI()->getPath(), ".js") || 
-		str_ends_with($request->getURI()->getPath(), ".css") ||
-		str_ends_with($request->getURI()->getPath(), "Authentication") ||
-		str_ends_with($request->getURI()->getPath(), "summary_statistics")) {
-		return $this->next->process($request, $handler);
-	}
-	return new AnonymousPageDecorationMiddleware(
-		$baseURL ?? "",
-		\NDB_Config::singleton(),
-		$page->getJSDependencies(),
-		$page->getCSSDependencies(),	
-	)->process($request, $page);
+    // Whitelist of resources needed to load the MFA prompt page
+        if (str_ends_with($request->getURI()->getPath(), ".js") ||
+        str_ends_with($request->getURI()->getPath(), ".css") ||
+        str_ends_with($request->getURI()->getPath(), "Authentication") ||
+        str_ends_with($request->getURI()->getPath(), "summary_statistics")) {
+            return $this->next->process($request, $handler);
+        }
+        return (new AnonymousPageDecorationMiddleware(
+            $baseURL ?? "",
+            \NDB_Config::singleton(),
+            $page->getJSDependencies(),
+            $page->getCSSDependencies(),
+        ))->process($request, $page);
     }
 }
