@@ -42,19 +42,31 @@ class MFA implements MiddlewareInterface, MiddlewareChainer
     ) : ResponseInterface {
         $loris = $request->getAttribute("loris");
 	$user = $request->getAttribute("user");
-	if($user instanceof \LORIS\AnonymousUser) {
-		// No MFA required on the login page
-		return $this->next->process($request, $handler);
-	}
-	// Should only be true for the MFA validation endpoints
-	if($request->getAttribute("bypassMFA") === true) {
+	if($user->totpRequired() === false) {
 		return $this->next->process($request, $handler);
 	}
 	$singlepointlogin = $_SESSION['State']->getProperty('login');
-	if($singlepointlogin->passedMFA()) {
+	if($singlepointlogin->passedMFA() === true) {
 		return $this->next->process($request, $handler);
-
 	}
-	return new \LORIS\Http\Response\JSON\OK(["foo" => 'xx']);
+
+	$loginmodule = $loris->getModule("login");
+	$loginmodule->registerAutoloader();
+	$page = $loginmodule->loadPage($loris, "mfa");
+	$baseURL = $request->getAttribute("baseurl");
+
+	// Whitelist of resources needed to load the MFA prompt page
+	if(str_ends_with($request->getURI()->getPath(), ".js") || 
+		str_ends_with($request->getURI()->getPath(), ".css") ||
+		str_ends_with($request->getURI()->getPath(), "Authentication") ||
+		str_ends_with($request->getURI()->getPath(), "summary_statistics")) {
+		return $this->next->process($request, $handler);
+	}
+	return new AnonymousPageDecorationMiddleware(
+		$baseURL ?? "",
+		\NDB_Config::singleton(),
+		$page->getJSDependencies(),
+		$page->getCSSDependencies(),	
+	)->process($request, $page);
     }
 }

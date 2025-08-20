@@ -76,7 +76,12 @@ class MFA extends \NDB_Page
 		    return new \LORIS\Http\Response\JSON\BadRequest('Code does not match expected value');
 	    }
 	    $db = $this->loris->getDatabaseConnection();
-	    $db->update("users", ['TOTPSecret' => $secret], ['ID' => $user->getId()]);
+	    $db->_trackChanges = false;
+	    // We are dealing with binary data that never gets exposed to the user
+	    $db->unsafeUpdate("users", ['TOTPSecret' => $secret], ['ID' => $user->getId()]);
+
+	    $login = $_SESSION['state']->getProperty('login');
+	    $login->setPassedMFA();
 	    return new \LORIS\Http\Response\JSON\OK(['ok' => 'success',
 		    'message' => 'Successfully registered multifactor authenticator']);
     }
