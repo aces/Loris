@@ -160,7 +160,6 @@ class Authentication extends \NDB_Page implements ETagCalculator
         $success = $login->passwordAuthenticate(
             $values['username'],
             $values['password'],
-	    null,
             false,
         );
         if ($success) {

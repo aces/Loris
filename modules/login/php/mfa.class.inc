@@ -4,27 +4,23 @@ namespace LORIS\login;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Middleware\ETagCalculator;
 
 /**
- * POST request for authentication.
+ * Perform multi-factor authentication for LORIS.
  *
- * Used to request account.
+ * This page is used by the MFA middleware to prompt for and
+ * validate a 2 factor authentication code.
  *
- * @category Loris
- * @package  Login
- * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class MFA extends \NDB_Page
 {
     public $skipTemplate = true;
 
     /**
-     * Include additional JS files
+     * {@inheritDoc}
      *
-     * @return array of javascript to be inserted
+     * @return array
      */
     function getJSDependencies()
     {
@@ -38,10 +34,11 @@ class MFA extends \NDB_Page
             ]
         );
     }
+
     /**
-     * Include additional CSS files:
+     * {@inheritDoc}
      *
-     * @return array of javascript to be inserted
+     * @return array
      */
     function getCSSDependencies()
     {
@@ -64,8 +61,8 @@ class MFA extends \NDB_Page
     {
         // Ensure POST request.
         switch ($request->getMethod()) {
-	case 'GET':
-		return parent::handle($request);
+        case 'GET':
+            return parent::handle($request);
         case 'POST':
             return $this->_handlePOST($request);
         default:
@@ -84,22 +81,22 @@ class MFA extends \NDB_Page
      */
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
-	    $requestdata = json_decode((string )$request->getBody(), true);
-	    $user = $request->getAttribute("user");
-	    if(!isset($requestdata['code'])) {
-		    return new \LORIS\Http\Response\JSON\Unauthorized("missing code");
-	    }
+        $requestdata = json_decode((string )$request->getBody(), true);
+        $user        = $request->getAttribute("user");
+        if (!isset($requestdata['code'])) {
+            return new \LORIS\Http\Response\JSON\Unauthorized("missing code");
+        }
 
-	    $validator = $user->getTOTPValidator();
-	    $counter = $validator->getTimeCounter();
-	    $wantCode = $validator->getCode($counter, 6);
-	    if($wantCode === $requestdata['code']) {
-		    $login = $_SESSION['State']->getProperty('login');
-		    $login->setPassedMFA();
-		    return new \LORIS\Http\Response\JSON\OK(["success" => "validated code"]);
-	    } else {
-		    return new \LORIS\Http\Response\JSON\Unauthorized("invalid code");
-	    }
+        $validator = $user->getTOTPValidator();
+        $counter   = $validator->getTimeCounter();
+        $wantCode  = $validator->getCode($counter, 6);
+        if ($wantCode === $requestdata['code']) {
+            $login = $_SESSION['State']->getProperty('login');
+            $login->setPassedMFA();
+            return new \LORIS\Http\Response\JSON\OK(["success" => "validated code"]);
+        } else {
+            return new \LORIS\Http\Response\JSON\Unauthorized("invalid code");
+        }
     }
 
     /**

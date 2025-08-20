@@ -111,9 +111,6 @@ class NDB_Client
                     header("Location: /login/password-expiry");
 
                 }
-		if($login->needsMFA()) {
-			return false;
-		}
                 $login->setState();
             } elseif ($auth === false) {
                 // only send a 403 error if they were attempting to log in,
