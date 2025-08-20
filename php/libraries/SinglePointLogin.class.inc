@@ -184,10 +184,11 @@ class SinglePointLogin
      * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
-     *                         out a login or password expiry
-     *                         page. when trying to authenticate.
-     *                         If false, it won't provide any output
-     *                         in those situation.
+     *                         out a login or password
+     *                         expiry page. when trying
+     *                         to authenticate. If false,
+     *                         it won't provide any
+     *                         output in those situation.
      *
      * @return bool False unless account is valid and password correct.
      * @access public
@@ -195,7 +196,6 @@ class SinglePointLogin
     function passwordAuthenticate(
         string $username,
         string $password,
-	?string $code = null,
         bool $redirect = true
     ): bool {
 
@@ -307,8 +307,6 @@ class SinglePointLogin
                         ['UserID' => $username]
                     );
                 }
-		//if($user->totpRequired() && $!$this->passedMFA()) {
-		//}
             }
 
             if ($row['Active'] == 'N'
@@ -600,15 +598,30 @@ class SinglePointLogin
         $_SESSION['State']->setProperty('login', $this);
     }
 
-    public function passedMFA() {
-	    return $_SESSION['PassedMFA'] ?? false === true;
+    /**
+     * Returns true if this login session has already passed a 2 factor
+     * authentication check
+     *
+     * @return bool
+     */
+    public function passedMFA(): bool
+    {
+        return $_SESSION['PassedMFA'] ?? false === true;
     }
-    public function setPassedMFA() {
-	    // NDB_Client called session_write_close, we need to re-start it
-	    // to edit a session variable.
-	    session_start();
-	    $_SESSION['PassedMFA'] = true;
-	    session_write_close();
+
+    /**
+     * Declare this session as having passed a 2 factor authentication
+     * check
+     *
+     * @return void
+     */
+    public function setPassedMFA()
+    {
+        // NDB_Client called session_write_close, we need to re-start it
+        // to edit a session variable.
+        session_start();
+        $_SESSION['PassedMFA'] = true;
+        session_write_close();
     }
 
 }

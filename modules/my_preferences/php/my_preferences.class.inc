@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\my_preferences;
-use chillerlan\QRCode\QRCode;
 
 /**
  * Implements the my preferences page.

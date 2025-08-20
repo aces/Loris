@@ -86,7 +86,13 @@ class AnonymousUser extends \User
         return [];
     }
 
-    function totpRequired() : bool {
-	    return false;
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    function totpRequired() : bool
+    {
+        return false;
     }
 }

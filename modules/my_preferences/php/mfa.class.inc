@@ -12,19 +12,24 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class MFA extends \NDB_Page
 {
-	public $skipTemplate = true;
+    public $skipTemplate = true;
 
-	public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-	{
-		return new \LORIS\BreadcrumbTrail(
-			new \LORIS\Breadcrumb(
-				dgettext("loris", "My Preferences")
-			),
-			new \LORIS\Breadcrumb(
-				dgettext("my_preferences", "Configure 2FA")
-			),
-		);
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("loris", "My Preferences")
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("my_preferences", "Configure 2FA")
+            ),
+        );
+    }
 
     /**
      * {@inheritDoc}
@@ -35,15 +40,18 @@ class MFA extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-	    switch($request->getMethod()) {
-	    case 'GET':
-		    return parent::handle($request);
-	    case 'POST':
-		    return $this->validateCodeAndSave($request->getAttribute("user"), $request->getParsedBody());
-	    default:
-		    return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
+        switch ($request->getMethod()) {
+        case 'GET':
+            return parent::handle($request);
+        case 'POST':
+            return $this->validateCodeAndSave(
+                $request->getAttribute("user"),
+                $request->getParsedBody()
+            );
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
 
-	    }
+        }
     }
     /**
      * {@inheritDoc}
@@ -63,27 +71,48 @@ class MFA extends \NDB_Page
         );
     }
 
-    function validateCodeAndSave(\User $user, array $values): ResponseInterface {
-	    if(!isset($values['code']) || !isset($values['secret'])) {
-		    return new \LORIS\Http\Response\JSON\BadRequest('Missing code or secret to validate');
-	    }
-	    $base32Decoder = new Base32();
-	    $secret = $base32Decoder->decode($values['secret']);
-	    $validator = new \LORIS\Security\OTP\TOTP(secret: $secret);
-            $counter = $validator->getTimeCounter();
-	    $wantCode = $validator->getCode($counter, 6);
-	    if($wantCode !== strval($values['code'])) {
-		    return new \LORIS\Http\Response\JSON\BadRequest('Code does not match expected value');
-	    }
-	    $db = $this->loris->getDatabaseConnection();
-	    $db->_trackChanges = false;
-	    // We are dealing with binary data that never gets exposed to the user
-	    $db->unsafeUpdate("users", ['TOTPSecret' => $secret], ['ID' => $user->getId()]);
+    /**
+     * Validates the code passed by the user matches the secret key that they
+     * provided and save the secret key to the database if it matches
+     *
+     * @param \User $user   The user providing the 2FA code
+     * @param array $values The parsed values submitted by the user
+     *
+     * @return ResponseInterface
+     */
+    function validateCodeAndSave(\User $user, array $values): ResponseInterface
+    {
+        if (!isset($values['code']) || !isset($values['secret'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Missing code or secret to validate'
+            );
+        }
+        $base32Decoder = new Base32();
+        $secret        = $base32Decoder->decode($values['secret']);
+        $validator     = new \LORIS\Security\OTP\TOTP(secret: $secret);
+            $counter   = $validator->getTimeCounter();
+        $wantCode      = $validator->getCode($counter, 6);
+        if ($wantCode !== strval($values['code'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Code does not match expected value'
+            );
+        }
+        $db = $this->loris->getDatabaseConnection();
+        $db->_trackChanges = false;
+        // We are dealing with binary data that never gets exposed to the user
+        $db->unsafeUpdate(
+            "users",
+            ['TOTPSecret' => $secret],
+            ['ID' => $user->getId()]
+        );
 
-	    $login = $_SESSION['state']->getProperty('login');
-	    $login->setPassedMFA();
-	    return new \LORIS\Http\Response\JSON\OK(['ok' => 'success',
-		    'message' => 'Successfully registered multifactor authenticator']);
+        $login = $_SESSION['State']->getProperty('login');
+        $login->setPassedMFA();
+        return new \LORIS\Http\Response\JSON\OK(
+            ['ok' => 'success',
+                'message' => 'Successfully registered multifactor authenticator'
+            ]
+        );
     }
 }
 
