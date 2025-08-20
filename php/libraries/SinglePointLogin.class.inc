@@ -600,7 +600,15 @@ class SinglePointLogin
         $_SESSION['State']->setProperty('login', $this);
     }
 
-    function passedMFA() : bool {
+    public function passedMFA() {
 	    return $_SESSION['PassedMFA'] ?? false === true;
     }
+    public function setPassedMFA() {
+	    // NDB_Client called session_write_close, we need to re-start it
+	    // to edit a session variable.
+	    session_start();
+	    $_SESSION['PassedMFA'] = true;
+	    session_write_close();
+    }
+
 }

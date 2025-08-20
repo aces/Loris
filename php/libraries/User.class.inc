@@ -689,6 +689,14 @@ class User extends UserPermissions implements
         return $this->userInfo['Pending_approval'] == 'Y';
     }
 
+
+    public function getTOTPValidator() : ?\LORIS\Security\OTP\TOTP
+    {
+	    if($this->userInfo['TOTPSecret'] === null) {
+		    return null;
+	    }
+	    return new \LORIS\Security\OTP\TOTP(secret: $this->userInfo['TOTPSecret']);
+    }
     public function totpRequired(): bool
     {
         return $this->userInfo['TOTPSecret'] !== null;
