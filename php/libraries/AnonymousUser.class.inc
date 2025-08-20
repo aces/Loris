@@ -85,4 +85,8 @@ class AnonymousUser extends \User
     {
         return [];
     }
+
+    function totpRequired() : bool {
+	    return false;
+    }
 }
