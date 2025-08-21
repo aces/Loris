@@ -76,6 +76,7 @@ $middlewarechain = (new \LORIS\Middleware\Language())
     ->withMiddleware(new \LORIS\Middleware\LorisMenu())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
+    ->withMiddleware(new \LORIS\Middleware\ContentSecurityPolicy())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
