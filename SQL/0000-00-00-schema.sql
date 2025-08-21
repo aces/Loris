@@ -289,6 +289,14 @@ CREATE TABLE `instrument_data` (
   PRIMARY KEY (`ID`)
 );
 
+CREATE TABLE `instrument_data_files` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `DataID` INT(10) UNSIGNED DEFAULT NULL,
+  `FilePath` VARCHAR(255) NOT NULL,
+  CONSTRAINT `FK_flag_instrument_data_files` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
+  PRIMARY KEY (`ID`)
+);
+
 CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
@@ -1472,7 +1480,7 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
 CREATE TABLE `server_processes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL,
-  `type` enum('mri_upload') NOT NULL,
+  `type` enum('mri_upload','parse_instrument_data') NOT NULL,
   `stdout_file` varchar(255) DEFAULT NULL,
   `stderr_file` varchar(255) DEFAULT NULL,
   `exit_code_file` varchar(255) DEFAULT NULL,

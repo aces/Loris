@@ -237,9 +237,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * @param \Project     $project        The project of the timepoint
      * @param integer|null $lang           The language id
      *
-     * @throws DatabaseException
+     * @return Timepoint
+     * @throws Exception
      *
-     * @return void
+     * @throws DatabaseException
      */
     static function createNew(
         \Candidate $candidate,
@@ -248,7 +249,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         \Site $psc,
         \Project $project,
         ?int $lang = null
-    ): void {
+    ): Timepoint {
 
         // insert into session set CandID=$candID,
         // CohortID=$CohortID, VisitNo=nextVisitNumber(),
@@ -300,6 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // insert the data
         $db->insert('session', $insertData);
+
+        return TimePoint::singleton(
+            new SessionID($db->lastInsertID)
+        );
     }
 
     /**
