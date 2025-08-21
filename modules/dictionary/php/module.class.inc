@@ -88,6 +88,18 @@ class Module extends \Module
         $categories  = [];
 
         $categoryitems = [];
+
+        // Get the instruments that the user has access to based on their Projects
+        $userVisits  = $user->getVisits();
+        $instruments = [];
+        foreach ($userVisits as $visitLabel => $_) {
+            $visitInstruments = \Utility::getVisitInstruments($visitLabel);
+            foreach ($visitInstruments as $testName => $fullName) {
+                if (!isset($instruments[$testName])) {
+                    $instruments[$testName] = $fullName;
+                }
+            }
+        }
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
                 continue;
@@ -104,6 +116,11 @@ class Module extends \Module
                 $categories[$mname] = [];
 
                 foreach ($mdict as $cat) {
+                    if ($mname === 'instruments'
+                        && !isset($instruments[$cat->getName()])
+                    ) {
+                        continue;
+                    }
                     $categories[$mname][$cat->getName()] = $cat->getDescription();
                     $categoryitems[] = [
                         'Module'   => $module,
