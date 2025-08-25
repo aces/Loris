@@ -4,7 +4,7 @@ import swal from 'sweetalert2';
 import QRCode from 'react-qr-code';
 import * as base32 from 'hi-base32';
 import Modal from 'Modal';
-import {TextboxElement} from 'jsx/Form';
+import MFAPrompt from 'jsx/MFAPrompt';
 
 declare const loris: any;
 
@@ -27,46 +27,41 @@ function genPotentialSecret() {
 function CodeValidator(props: {
   secret: string
 }): React.ReactElement {
-  const [code, setCode] = useState<string>('');
-  const formSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formObject = new FormData();
-    formObject.append('code', code);
-    formObject.append('secret', props.secret);
-    fetch(loris.BaseURL + '/my_preferences/mfa', {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: formObject,
-    }).then( (resp) => {
-      if (resp.status !== 400 && !resp.ok) {
-        throw new Error('Bad server response');
-      }
-      return resp.json();
-    }).then( (json) => {
-      if (json.ok == 'success') {
-        swal.fire('Success!', json.message, 'success').then( () => {
-          window.location.href = loris.BaseURL + '/my_preferences/';
-        });
-      } else if (json.error) {
-        swal.fire('Error', json.error, 'error');
-      } else {
-        throw new Error('Unexpected JSON response');
-      }
-    }).catch( (e: Error) => {
-      swal.fire('Error', e.message, 'error');
-    });
-  }, [props.secret, code]);
-  return (<form onSubmit={formSubmit}>
-    <h3>Validate Code</h3>
+  const formSubmit = useCallback(
+    (code: string, onError: (msg: string) => void) => {
+      const formObject = new FormData();
+      formObject.append('code', code);
+      formObject.append('secret', props.secret);
+      fetch(loris.BaseURL + '/my_preferences/mfa', {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject,
+      }).then( (resp) => {
+        if (resp.status !== 400 && !resp.ok) {
+          throw new Error('Bad server response');
+        }
+        return resp.json();
+      }).then( (json) => {
+        if (json.ok == 'success') {
+          swal.fire('Success!', json.message, 'success').then( () => {
+            window.location.href = loris.BaseURL + '/my_preferences/';
+          });
+        } else if (json.error) {
+          onError(json.error);
+        } else {
+          throw new Error('Unexpected JSON response');
+        }
+      }).catch( (e: Error) => {
+        onError(e.message);
+      });
+    }, [props.secret]);
+  return (
     <div>
-      <TextboxElement
-        name=''
-        onUserInput={(name: string, value: string) => setCode(value)}
-        value={code}
-      />
-      <button>Validate</button></div>
-  </form>);
+      <h3>Validate Code</h3>
+      <MFAPrompt validate={formSubmit} />
+    </div>
+  );
 }
 /**
  *
