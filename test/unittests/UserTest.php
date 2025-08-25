@@ -60,6 +60,7 @@ class UserTest extends TestCase
             'Active'                 => 'Y',
             'Password_hash'          => null,
             'PasswordChangeRequired' => 0,
+            'TOTPSecret'             => null,
             'Pending_approval'       => 'Y',
             'Doc_Repo_Notifications' => 'Y',
             'language_preference'    => 2,

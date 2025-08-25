@@ -3,6 +3,7 @@
         bootstrap="bootstrap.php"
         verbose="true"
         testdox="true"
+	displayDetailsOnTestsThatTriggerDeprecations="true"
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
