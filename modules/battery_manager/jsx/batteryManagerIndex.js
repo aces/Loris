@@ -10,20 +10,7 @@ import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';
 
-/**
- * Battery Manager
- *
- * Main module component rendering tab pane with Browse and Add tabs
- *
- * @author Victoria Foing
- * @author Henri Rabalais
- */
 class BatteryManagerIndex extends Component {
-  /**
-   * Constructor
-   *
-   * @param {object} props
-   */
   constructor(props) {
     super(props);
 
@@ -46,23 +33,12 @@ class BatteryManagerIndex extends Component {
     this.validateTest = this.validateTest.bind(this);
   }
 
-  /**
-   * Component did mount lifecycle method.
-   */
   componentDidMount() {
     this.fetchData(this.props.testEndpoint, 'GET', 'tests')
       .then(() => this.fetchData(this.props.optionEndpoint, 'GET', 'options'))
       .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Retrieve data from the provided URL and store it in state
-   *
-   * @param {string} url
-   * @param {string} method
-   * @param {string} state
-   * @return {object} promise
-   */
   fetchData(url, method, state) {
     return new Promise((resolve, reject) => {
       return fetch(url, {credentials: 'same-origin', method: method})
@@ -75,14 +51,6 @@ class BatteryManagerIndex extends Component {
     });
   }
 
-  /**
-   * Posts data from the provided URL to the server.
-   *
-   * @param {string} url
-   * @param {object} data
-   * @param {string} method
-   * @return {object} promise
-   */
   postData(url, data, method) {
     return new Promise((resolve, reject) => {
       const dataClone = JSON.parse(JSON.stringify(data));
@@ -111,33 +79,13 @@ class BatteryManagerIndex extends Component {
     });
   }
 
-  /**
-   * Modify value of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} value - cell value
-   * @return {string} a mapped value for the table cell at a given column
-   */
   mapColumn(column, value) {
     switch (column) {
     case 'First Visit':
-      switch (value) {
-      case 'Y':
-        return 'Yes';
-      case 'N':
-        return 'No';
-      }
-      break;
+      return value === 'Y' ? 'Yes' : value === 'N' ? 'No' : value;
     case 'Active':
-      switch (value) {
-      case 'Y':
-        return 'Yes';
-      case 'N':
-        return 'No';
-      }
-      break;
+      return value === 'Y' ? 'Yes' : value === 'N' ? 'No' : value;
     case 'Change Status':
-      return '';
     case 'Edit Metadata':
       return '';
     default:
@@ -145,14 +93,6 @@ class BatteryManagerIndex extends Component {
     }
   }
 
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
-   * @return {*} a formated table cell for a given column
-   */
   formatColumn(column, cell, row) {
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
@@ -190,76 +130,51 @@ class BatteryManagerIndex extends Component {
     return result;
   }
 
-  /**
-   * Set the form data based on state values of child elements/components
-   *
-   * @param {string} name - name of the selected element
-   * @param {string} value - selected value for corresponding form element
-   */
   setTest(name, value) {
-    const test = this.state.test;
-    test[name] = value;
+    const test = {...this.state.test};
+    // Convert numeric fields to number, keep 0
+    if (['ageMinDays', 'ageMaxDays', 'instrumentOrder'].includes(name)) {
+      test[name] = value !== '' ? Number(value) : null;
+    } else {
+      test[name] = value;
+    }
     this.setState({test});
   }
 
-  /**
-   * Loads a test into the current state based on the testId
-   *
-   * @param {string} testId
-   */
   loadTest(testId) {
     const test = JSON.parse(JSON.stringify(this.state.tests
       .find((test) => test.id === testId)));
     this.setState({test});
   }
 
-  /**
-   * Close the Form
-   */
   closeForm() {
     this.setState({add: false, edit: false, test: {}, errors: {}});
   }
 
-  /**
-   * Activate Test
-   *
-   * @param {number} id
-   */
   activateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
     test.active = 'Y';
     this.saveTest(test, 'PUT');
   }
 
-  /**
-   * Deactivate Test
-   *
-   * @param {number} id
-   */
   deactivateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
     test.active = 'N';
     this.saveTest(test, 'PUT');
   }
 
-  /**
-   * Updates a previously existing Test with an updated Test.
-   *
-   * @param {object} test
-   * @param {string} request
-   * @return {object} promise
-   */
   saveTest(test, request) {
     return new Promise((resolve, reject) => {
       Object.keys(test).forEach((key) => {
-        if (test[key] == '') {
+        // Only convert empty string to null, keep 0 as-is
+        if (test[key] === '') {
           test[key] = null;
         }
       });
       this.checkDuplicate(test)
         .then((test) => this.validateTest(test))
         .then((test) => this.postData(
-          this.props.testEndpoint+(test.id || ''),
+          this.props.testEndpoint + (test.id || ''),
           test,
           request
         ))
@@ -269,29 +184,100 @@ class BatteryManagerIndex extends Component {
     });
   }
 
-  /**
-   * Render Method
-   *
-   * @return {*}
-   */
+  checkDuplicate(test) {
+    return new Promise((resolve, reject) => {
+      let duplicate;
+      this.state.tests.forEach((testCheck) => {
+        if (
+          test.testName == testCheck.testName &&
+          test.ageMinDays == testCheck.ageMinDays &&
+          test.ageMaxDays == testCheck.ageMaxDays &&
+          test.stage == testCheck.stage &&
+          test.cohort == testCheck.cohort &&
+          test.visitLabel == testCheck.visitLabel &&
+          test.centerId == testCheck.centerId &&
+          test.firstVisit == testCheck.firstVisit &&
+          test.DoubleDataEntryEnabled == testCheck.DoubleDataEntryEnabled
+        ) {
+          duplicate = testCheck;
+        }
+      });
+
+      if (duplicate && duplicate.id !== test.id) {
+        if (duplicate.active === 'N') {
+          const edit = test.id ? 'This will deactivate the current test.' : '';
+          swal.fire({
+            title: 'Test Duplicate',
+            text: 'The information provided corresponds with a deactivated '+
+            'test that already exists in the system. Would you to like '+
+            'activate that test? '+edit,
+            type: 'warning',
+            confirmButtonText: 'Activate',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.value) {
+              this.activateTest(duplicate.id);
+              if (test.id && (test.id !== duplicate.id)) {
+                this.deactivateTest(test.id);
+              }
+              this.closeForm();
+            }
+          });
+        } else if (duplicate.active === 'Y') {
+          swal.fire(
+            'Test Duplicate', 'You cannot duplicate an active test', 'error'
+          );
+        }
+        reject();
+      } else {
+        resolve(test);
+      }
+    });
+  }
+
+  validateTest(test) {
+    return new Promise((resolve, reject) => {
+      const errors = {};
+      if (test.testName == null) {
+        errors.testName = 'This field is required';
+      }
+      if (test.ageMinDays == null) {
+        errors.ageMinDays = 'This field is required';
+      } else if (test.ageMinDays < 0) {
+        errors.ageMinDays = 'This field must be 0 or greater';
+      }
+      if (test.ageMaxDays == null) {
+        errors.ageMaxDays = 'This field is required';
+      } else if (test.ageMaxDays < 0) {
+        errors.ageMaxDays = 'This field must be 0 or greater';
+      }
+      if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
+        errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
+        errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
+      }
+      if (test.stage == null) {
+        errors.stage = 'This field is required';
+      }
+
+      if (Object.entries(errors).length === 0) {
+        this.setState({errors}, () => resolve(test));
+      } else {
+        this.setState({errors}, () => reject(errors));
+      }
+    });
+  }
+
   render() {
-    // If error occurs, return a message.
-    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
     }
-
-    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in batter_manager.class.inc
-     */
     const {options, test, tests, errors, add, edit} = this.state;
     const {hasPermission} = this.props;
+
     const fields = [
       {label: 'ID', show: false},
       {label: 'Instrument', show: true, filter: {
@@ -407,102 +393,6 @@ class BatteryManagerIndex extends Component {
       </div>
     );
   }
-
-  /**
-   * Checks whether the Test is a duplicate of an existing Test.
-   *
-   * @param {object} test
-   * @return {object} promise
-   */
-  checkDuplicate(test) {
-    return new Promise((resolve, reject) => {
-      let duplicate;
-      this.state.tests.forEach((testCheck) => {
-        if (
-          test.testName == testCheck.testName &&
-          test.ageMinDays == testCheck.ageMinDays &&
-          test.ageMaxDays == testCheck.ageMaxDays &&
-          test.stage == testCheck.stage &&
-          test.cohort == testCheck.cohort &&
-          test.visitLabel == testCheck.visitLabel &&
-          test.centerId == testCheck.centerId &&
-          test.firstVisit == testCheck.firstVisit &&
-          test.DoubleDataEntryEnabled == testCheck.DoubleDataEntryEnabled
-        ) {
-          duplicate = testCheck;
-        }
-      });
-
-      if (duplicate && duplicate.id !== test.id) {
-        if (duplicate.active === 'N') {
-          const edit = test.id ? 'This will deactivate the current test.' : '';
-          swal.fire({
-            title: 'Test Duplicate',
-            text: 'The information provided corresponds with a deactivated '+
-            'test that already exists in the system. Would you to like '+
-            'activate that test? '+edit,
-            type: 'warning',
-            confirmButtonText: 'Activate',
-            showCancelButton: true,
-          }).then((result) => {
-            if (result.value) {
-              this.activateTest(duplicate.id);
-              if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id);
-              }
-              this.closeForm();
-            }
-          });
-        } else if (duplicate.active === 'Y') {
-          swal.fire(
-            'Test Duplicate', 'You cannot duplicate an active test', 'error'
-          );
-        }
-        reject();
-      } else {
-        resolve(test);
-      }
-    });
-  }
-
-
-  /**
-   * Checks that test fields are valide
-   *
-   * @param {object} test
-   * @return {object} promise
-   */
-  validateTest(test) {
-    return new Promise((resolve, reject) => {
-      const errors = {};
-      if (test.testName == null) {
-        errors.testName = 'This field is required';
-      }
-      if (test.ageMinDays == null) {
-        errors.ageMinDays = 'This field is required';
-      } else if (test.ageMinDays < 0) {
-        errors.ageMinDays = 'This field must be 0 or greater';
-      }
-      if (test.ageMaxDays == null) {
-        errors.ageMaxDays = 'This field is required';
-      } else if (test.ageMaxDays < 0) {
-        errors.ageMaxDays = 'This field must be 0 or greater';
-      }
-      if (Number(test.ageMinDays) > Number(test.ageMaxDays)) {
-        errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
-        errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
-      }
-      if (test.stage == null) {
-        errors.stage = 'This field is required';
-      }
-
-      if (Object.entries(errors).length === 0) {
-        this.setState({errors}, () => resolve(test));
-      } else {
-        this.setState({errors}, reject);
-      }
-    });
-  }
 }
 
 BatteryManagerIndex.propTypes = {
@@ -522,3 +412,6 @@ window.addEventListener('load', () => {
     />
   );
 });
+
+export default BatteryManagerIndex;
+
