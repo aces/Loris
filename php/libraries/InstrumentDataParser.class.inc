@@ -110,23 +110,23 @@ class InstrumentDataParser extends CSVParser
     /**
      * Convert instrument data dictionary to columns
      *
-     * @param DictionaryItem[] $dataDict       Data dictionary
-     * @param string           $instrumentName Instrument name
-     * @param array            $excluded       Excluded columns. Default is
-     *                                         single-item array with empty
-     *                                         string
+     * @param DictionaryItem[] $dataDict         Data dictionary
+     * @param string           $instrumentPrefix Instrument prefix
+     * @param array            $excluded         Excluded columns. Default is
+     *                                           single-item array with empty
+     *                                           string
      *
      * @return array    Returns instrument columns
      */
     protected static function convertDictionaryToColumns(
-        array $dataDict, string $instrumentName, array $excluded = ['']
+        array $dataDict, string $instrumentPrefix, array $excluded = ['']
     ): array {
         return array_reduce(
             $dataDict,
-            function ($columns, $field) use ($instrumentName, $excluded) {
+            function ($columns, $field) use ($instrumentPrefix, $excluded) {
                 $fieldName = implode(
                     '',     // Strip first occurrence of prefix
-                    explode("{$instrumentName}_", $field->getName(), 2)
+                    explode("{$instrumentPrefix}_", $field->getName(), 2)
                 );
                 if (!in_array($fieldName, $excluded)) {
                     $columns[] = $fieldName;
@@ -156,7 +156,7 @@ class InstrumentDataParser extends CSVParser
         $dataDict   = $instrument->getDataDictionary();
         return self::convertDictionaryToColumns(
             $dataDict,
-            $instrumentName,
+            $instrument->table,
             $excluded,
         );
     }
