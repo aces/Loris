@@ -86,8 +86,8 @@ function MFAIndex(): React.ReactElement {
     <p>Scan the following QR code below in your MFA authenticator and
       enter the code to validate.</p>
     <p>
-      <b>Note that this will <i>overwrite</i>
-        any previously setup MFA in LORIS!</b>
+      <b>Note that this will <i>overwrite</i> any previously
+      setup MFA in LORIS!</b>
     </p>
     <QRCode value={mfaUrl} />
     <p>Can't scan the QR code?
