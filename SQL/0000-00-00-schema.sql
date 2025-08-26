@@ -2421,7 +2421,6 @@ CREATE TABLE `publication_collaborator` (
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
-    `LeadInvestigatorID` int(10) unsigned NOT NULL,
     `UserID` int(10) unsigned NOT NULL,
     `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
@@ -2435,12 +2434,13 @@ CREATE TABLE `publication` (
     `link` varchar(255) DEFAULT NULL,
     `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
     `project` int(10) unsigned DEFAULT NULL,
+    `LeadInvestigator` VARCHAR(255) DEFAULT NULL,
+    `LeadInvestigatorEmail` VARCHAR(255) DEFAULT NULL,
     CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
     CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
