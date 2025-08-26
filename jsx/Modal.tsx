@@ -15,7 +15,6 @@ export type ModalProps = PropsWithChildren<{
   title?: ReactNode;
   width?: string;
   minHeight?: string;
-  useForm?: boolean;
 }>;
 
 /**
@@ -38,7 +37,6 @@ const Modal = ({
   children,
   width,
   minHeight,
-  useForm = true,
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
@@ -94,7 +92,8 @@ const Modal = ({
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
       return <div style={submitStyle}>
-        <ButtonElement onUserInput={handleSubmit} />
+        {/*<ButtonElement onUserInput={handleSubmit} />*/}
+          <ButtonElement />
       </div>;
     }
   };
@@ -218,7 +217,7 @@ const Modal = ({
           <span style={glyphStyle} onClick={handleClose}>×</span>
         </div>
         <div>
-          {(onSubmit && useForm) ? (
+          {onSubmit ? (
             <FormElement
               name='modal'
               onSubmit={handleSubmit}

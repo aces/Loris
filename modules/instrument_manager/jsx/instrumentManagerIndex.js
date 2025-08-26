@@ -43,6 +43,7 @@ class InstrumentManagerIndex extends Component {
     this.setAction = this.setAction.bind(this);
     this.triggerValidityReport = this.triggerValidityReport.bind(this);
     this.setSelectedInstruments = this.setSelectedInstruments.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
 
   /**
@@ -97,6 +98,18 @@ class InstrumentManagerIndex extends Component {
     this.setState({
       selectedInstruments: instruments,
     });
+  }
+
+
+  /**
+   * resetState
+   *
+   * @return {void}
+   */
+  resetState() {
+    this.setSelectedInstruments([]);
+    this.setSelectedDataFile(null);
+    this.setAction(null);
   }
 
 
@@ -183,6 +196,8 @@ class InstrumentManagerIndex extends Component {
               type: 'success',
               html: message,
             });
+
+            this.resetState();
           } else {
             let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
             if (Array.isArray(data.message)) {
@@ -255,6 +270,8 @@ class InstrumentManagerIndex extends Component {
               type: 'success',
               html: message,
             });
+
+            this.resetState();
           } else {
             let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
             if (Array.isArray(data.message)) {
@@ -339,9 +356,7 @@ class InstrumentManagerIndex extends Component {
             label={'Upload Data'}
             title={'Upload Instrument Data'}
             onClose={() => {
-              this.setState({
-                selectedDataFile: null,
-              });
+              this.resetState();
             }}
             useForm={false}
             onSubmit={(e) => {
@@ -560,8 +575,8 @@ class InstrumentManagerIndex extends Component {
         () => {
           this.setState({
             showMultiInstrumentUploadModal: false,
-            selectedInstruments: [],
           });
+          this.resetState();
         }
       }>
       <InstrumentDataUploadModal

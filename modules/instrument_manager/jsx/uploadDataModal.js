@@ -182,7 +182,14 @@ class InstrumentDataUploadModal extends Component {
 
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <a
-            className={`btn btn-default${this.state.createParticipants === null
+            className={`btn btn-default${
+              (
+                this.state.createParticipants === null ||
+                (
+                  this.isMultiInstrument &&
+                  this.state.selectedInstruments.length === 0
+                )
+              )
               ? ' disabled'
               : ''
             }`}
