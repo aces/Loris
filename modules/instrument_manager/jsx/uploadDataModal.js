@@ -190,8 +190,8 @@ class InstrumentDataUploadModal extends Component {
                   this.state.selectedInstruments.length === 0
                 )
               )
-              ? ' disabled'
-              : ''
+                ? ' disabled'
+                : ''
             }`}
             href={
               loris.BaseURL.concat('/instrument_manager/instrument_data/?') + (

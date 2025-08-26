@@ -359,7 +359,7 @@ class InstrumentManagerIndex extends Component {
               this.resetState();
             }}
             useForm={false}
-            onSubmit={(e) => {
+            onSubmit={() => {
               if (
                 this.state.selectedDataFile === null ||
                 this.state.action === null
