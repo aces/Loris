@@ -617,7 +617,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan1()
     {
-        $this->safeGet($this->url . '/main.php?logout=true');
+        $this->safeGet($this->url . '/login/logout');
         $this->login("UnitTester", $this->validPassword);
         $welcomeText = $this->safeFindElement(
             WebDriverBy::cssSelector(".welcome")
