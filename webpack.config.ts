@@ -28,6 +28,7 @@ const lorisModules: Record<string, string[]> = {
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
+  biobank: ['biobankIndex'],
   create_timepoint: ['createTimepointIndex'],
   candidate_list: ['openProfileForm', 'candidateListIndex'],
   datadict: ['dataDictIndex'],

@@ -153,6 +153,12 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
+msgid "Date of Birth"
+msgstr ""
+
+msgid "An error occured while loading the page."
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
