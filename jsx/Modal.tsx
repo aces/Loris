@@ -14,6 +14,7 @@ export type ModalProps = PropsWithChildren<{
   onSuccess?: (data: any) => void;
   title?: ReactNode;
   width?: string;
+  minHeight?: string;
 }>;
 
 /**
@@ -35,6 +36,7 @@ const Modal = ({
   title,
   children,
   width,
+  minHeight,
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
@@ -112,6 +114,7 @@ const Modal = ({
   const bodyStyle: CSSProperties = {
     padding: success ? 0 : '15px 15px',
     maxHeight: success ? 0 : '75vh',
+    minHeight: success ? 0 : (minHeight ?? 'unset'),
     overflow: 'scroll',
     opacity: success ? 0 : 1,
     transition: '1s ease, opacity 0.3s',

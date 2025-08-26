@@ -1,18 +1,19 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
+import Select from 'react-select';
+import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
-import InstrumentUploadForm from './uploadForm';
-
 import Modal from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
+import TriggerableModal from 'jsx/TriggerableModal';
 
-import Select from 'react-select';
-import swal from 'sweetalert2';
+import InstrumentUploadForm from './uploadForm';
+import InstrumentDataUploadModal from './uploadDataModal';
 
 /**
  * Instrument Manager Index component
@@ -30,10 +31,19 @@ class InstrumentManagerIndex extends Component {
       error: false,
       isLoaded: false,
       modifyPermissions: false,
+      selectedDataFile: null,
+      action: null,
+      selectedInstruments: [],
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.uploadInstrumentData = this.uploadInstrumentData.bind(this);
+    this.setSelectedDataFile = this.setSelectedDataFile.bind(this);
+    this.setAction = this.setAction.bind(this);
+    this.triggerValidityReport = this.triggerValidityReport.bind(this);
+    this.setSelectedInstruments = this.setSelectedInstruments.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
 
   /**
@@ -43,6 +53,65 @@ class InstrumentManagerIndex extends Component {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
+
+  /**
+   * Update selectedDataFile on data file selection
+   *
+   * @param {string} element - Element name
+   * @param {string} file
+   */
+  dataFileSelected(element, file) {
+    this.setState({
+      selectedDataFile: file,
+    });
+  }
+
+  /**
+   * setSelectedDataFile
+   *
+   * @param {string} file
+   */
+  setSelectedDataFile(file) {
+    this.setState({
+      selectedDataFile: file,
+    });
+  }
+
+  /**
+   * setAction
+   *
+   * @param {string} action
+   */
+  setAction(action) {
+    this.setState({
+      action: action,
+    });
+  }
+
+
+  /**
+   * setSelectedInstruments
+   *
+   * @param {array} instruments
+   */
+  setSelectedInstruments(instruments) {
+    this.setState({
+      selectedInstruments: instruments,
+    });
+  }
+
+
+  /**
+   * resetState
+   *
+   * @return {void}
+   */
+  resetState() {
+    this.setSelectedInstruments([]);
+    this.setSelectedDataFile(null);
+    this.setAction(null);
+  }
+
 
   /**
    * Retrieve data from the provided URL and save it in state
@@ -59,6 +128,175 @@ class InstrumentManagerIndex extends Component {
         this.setState({error: true});
       });
   }
+
+  /**
+   * Trigger reportValidity() for form elements
+   *
+   * @return {void}
+   */
+  triggerValidityReport() {
+    if (this.state.selectedDataFile === null) {
+      document.querySelector('[name="instrument_data_file"]').reportValidity();
+      return;
+    }
+    if (this.state.selectedInstruments.length === 0) {
+      const selectorExists =
+        document.querySelector('#select-instruments input');
+      if (selectorExists) {
+        selectorExists.setCustomValidity(
+          'Please select one or more instruments.'
+        );
+        selectorExists.reportValidity();
+      }
+      return;
+    }
+    document.querySelector('[name="create_participants"]').reportValidity();
+  }
+
+
+  /**
+   * Upload instrument data
+   *
+   * @param {string} instrument Instrument name
+   */
+  uploadInstrumentData(instrument) {
+    const data = new FormData();
+    data.append('instrument', instrument);
+    data.append('action', this.state.action);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
+
+    return new Promise(
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            let message = data.message;
+
+            if (Object.keys(data).includes('idMapping')) {
+              message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+              message += data.message;
+              message += '<br/><br/>';
+              message += JSON.stringify(data.idMapping);
+              message += '</div>';
+            }
+
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              html: message,
+            });
+
+            this.resetState();
+          } else {
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
+          }
+          resolve();
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
+        });
+      });
+  }
+
+  /**
+   * Upload multi-instrument data
+   */
+  uploadMultiInstrumentData() {
+    const data = new FormData();
+    data.append(
+      'multi-instrument',
+      JSON.stringify(this.state.selectedInstruments)
+    );
+    data.append('action', this.state.action);
+    data.append('data_file', this.state.selectedDataFile);
+
+    const url = loris.BaseURL.concat('/instrument_manager/instrument_data/');
+
+    return new Promise(
+      (resolve, reject) => {
+        fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: data,
+        }).then((response) => {
+          if (!response.ok) {
+            console.error(response.status);
+            console.error((response.body));
+            throw new Error('Unexpected error');
+          }
+          return response.json();
+        }).then((data) => {
+          if (data.success) {
+            let message = data.message;
+
+            if (
+              Object.keys(data).includes('idMapping') &&
+              Object.values(data['idMapping']).length > 0
+            ) {
+              message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+              message += data.message;
+              message += '<br/><br/>';
+              message += JSON.stringify(data.idMapping);
+              message += '</div>';
+            }
+
+            swal.fire({
+              title: 'Upload Successful!',
+              type: 'success',
+              html: message,
+            });
+
+            this.resetState();
+          } else {
+            let message = '<div style="overflow-y: scroll; max-height: 50vh;">';
+            if (Array.isArray(data.message)) {
+              message += `<br/># Errors: ${data.message.length}<br/><br/>`;
+              data.message.forEach((error) => {
+                message += (JSON.stringify(error) + '<br/>');
+              });
+            } else {
+              message += data.message;
+            }
+            message += '</div>';
+            throw new Error(message);
+          }
+          resolve();
+        }).catch((e) => {
+          swal.fire({
+            title: 'No data was uploaded',
+            type: 'warning',
+            html: e.message,
+          });
+          reject();
+        });
+      });
+  }
+
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
@@ -106,6 +344,38 @@ class InstrumentManagerIndex extends Component {
               )
             }
           </div>
+        </td>
+      );
+    }
+
+
+    if (column === 'Upload') {
+      return (
+        <td style={{verticalAlign: 'middle'}}>
+          <TriggerableModal
+            label={'Upload Data'}
+            title={'Upload Instrument Data'}
+            onClose={() => {
+              this.resetState();
+            }}
+            useForm={false}
+            onSubmit={() => {
+              if (
+                this.state.selectedDataFile === null ||
+                this.state.action === null
+              ) {
+                this.triggerValidityReport();
+                return Promise.reject();
+              }
+              return this.uploadInstrumentData(row.Instrument);
+            }}
+          >
+            <InstrumentDataUploadModal
+              setSelectedDataFile={this.setSelectedDataFile}
+              setAction={this.setAction}
+              instrumentList={[row.Instrument]}
+            />
+          </TriggerableModal>
         </td>
       );
     }
@@ -165,6 +435,7 @@ class InstrumentManagerIndex extends Component {
         name: 'permissionsRequired',
         type: 'text',
       }},
+      {label: 'Upload', show: true, filter: {}},
     ];
 
     const tabs = [
@@ -205,6 +476,7 @@ class InstrumentManagerIndex extends Component {
         title={'Edit Permissions for '
                 + this.state.modifyPermissions.instrument}
         show={true}
+        minHeight={'450px'}
         onSubmit={submitPromise}
         onClose={
           () => {
@@ -266,7 +538,7 @@ class InstrumentManagerIndex extends Component {
       } else if (this.state.data.fieldOptions.writable) {
         let url = loris.BaseURL.concat('/instrument_manager/');
         content = (
-          <InstrumentUploadForm action={url}/>
+          <InstrumentUploadForm action={url} data={this.state.data} />
         );
       } else {
         content = (
@@ -279,23 +551,72 @@ class InstrumentManagerIndex extends Component {
       return content;
     };
 
-    return (
-      <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
-          {permsModal}
-          <FilterableDataTable
-            name="instrument_manager"
-            data={this.state.data.Data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-          />
-        </TabPane>
-        <TabPane TabId='upload'>
-          {feedback()}
-          {uploadTab()}
-        </TabPane>
-      </Tabs>
-    );
+    const handleSubmit = () => {
+      if (
+        this.state.selectedDataFile === null ||
+        this.state.action === null ||
+        this.state.selectedInstruments.length === 0
+      ) {
+        this.triggerValidityReport();
+        return Promise.reject();
+      }
+
+      return this.uploadMultiInstrumentData();
+    };
+
+    const multiUploadModal = <Modal
+      title={'Upload Instrument Data (multi)'}
+      show={this.state.showMultiInstrumentUploadModal}
+      width={'75%'}
+      minHeight={'450px'}
+      useForm={false}
+      onSubmit={handleSubmit}
+      onClose={
+        () => {
+          this.setState({
+            showMultiInstrumentUploadModal: false,
+          });
+          this.resetState();
+        }
+      }>
+      <InstrumentDataUploadModal
+        setSelectedDataFile={this.setSelectedDataFile}
+        setAction={this.setAction}
+        instrumentList={this.state.data.Data.map((d) => d[0])}
+        setSelectedInstruments={this.setSelectedInstruments}
+      />
+    </Modal>;
+
+
+    const openMultiInstrumentDataUpload = () => {
+      this.setState({showMultiInstrumentUploadModal: true});
+    };
+    const actions = [
+      {
+        label: 'Upload Data (multi)',
+        action: openMultiInstrumentDataUpload,
+        show: this.props.hasPermission('instrument_manager_write'),
+      },
+    ];
+
+
+    return <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
+      <TabPane TabId={tabs[0].id}>
+        {multiUploadModal}
+        {permsModal}
+        <FilterableDataTable
+          name="instrument_manager"
+          data={this.state.data.Data}
+          fields={fields}
+          actions={actions}
+          getFormattedCell={this.formatColumn}
+        />
+      </TabPane>
+      <TabPane TabId='upload'>
+        {feedback()}
+        {uploadTab()}
+      </TabPane>
+    </Tabs>;
   }
 }
 
