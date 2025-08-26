@@ -53,6 +53,4 @@ msgstr "खाता अनुरोध तिथि"
 msgid "Add User"
 msgstr "उपयोगकर्ता जोड़ें"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 

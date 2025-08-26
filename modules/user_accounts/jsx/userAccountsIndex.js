@@ -116,16 +116,16 @@ class UserAccountsIndex extends Component {
       break;
     case t('Active', {ns: 'user_accounts'}):
       if (row.Active === 'Y') {
-        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+        result = <td>{t('Yes', {ns: 'loris'})}</td>;
       } else if (row.Active === 'N') {
-        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+        result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
     case t('Pending Approval', {ns: 'user_accounts'}):
       if (row['Pending Approval'] === 'Y') {
-        result = <td>{t('Yes', {ns: 'user_accounts'})}</td>;
+        result = <td>{t('Yes', {ns: 'loris'})}</td>;
       } else if (row['Pending Approval'] === 'N') {
-        result = <td>{t('No', {ns: 'user_accounts'})}</td>;
+        result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
     }

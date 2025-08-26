@@ -53,9 +53,4 @@ msgstr ""
 msgid "Add User"
 msgstr ""
 
-msgid "User Accounts"
-msgstr ""
-
-msgid "An error occured while loading the page."
-msgstr ""
 
