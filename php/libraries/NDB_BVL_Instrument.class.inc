@@ -199,6 +199,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $selectMultipleElements = [];
 
     /**
+     * Array containing all metadata elements in an instrument.
+     *
+     * @var array
+     *
+     * @access protected
+     */
+    protected array $metadataElements = [
+        "Date_taken",
+        "Examiner",
+        "Window_Difference",
+        "Candidate_Age",
+    ];
+
+    /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
@@ -2958,15 +2972,232 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Validate whether the values submitted are valid
+     * Validate the given array keys against the instrument default structure.
+     * Strictly checks against "required" fields.
+     * Additional fields are not allowed.
+     * Throw a LorisException if any check does not pass.
      *
-     * @param array $values an array of values submitted
+     * @param array $instrumentData instrument data to check
      *
-     * @return boolean true if values are valid
+     * @throws \LorisException
+     *
+     * @return void
      */
-    function validate(array $values): bool
-    {
-        return $this->determineDataEntryAllowed();
+    private function _validateKeys(
+        array $instrumentData
+    ): void {
+        // get keys from new data
+        $dataKeys = array_keys($instrumentData);
+
+        // load default instrument data keys
+        $defaultDictionary = $this->defaultInstanceData();
+        $defaultDataKeys   = array_keys($defaultDictionary);
+
+        // filter out metadata fields, keep only instrument data fields
+        $defaultDataKeys = array_values(
+            array_filter(
+                $defaultDataKeys,
+                fn($k) => !in_array(
+                    $k,
+                    $this->metadataElements,
+                    true
+                )
+            )
+        );
+
+        // also select all required elements only
+        $defaultRequiredElements = array_values(
+            array_filter(
+                $defaultDataKeys,
+                fn($k) => in_array(
+                    $k,
+                    $this->_requiredElements,
+                    true
+                )
+            )
+        );
+
+        // missing required fields
+        $missingKeys = array_diff($defaultRequiredElements, $dataKeys);
+        if (!empty($missingKeys)) {
+            $i = implode(",", $missingKeys);
+            throw new \LorisException("Missing required field(s): {$i}.");
+        }
+
+        // additional fields: fields outside instrument fields
+        // Note: additional fields are not an issue with JSON instruments
+        // but only with instruments having their own table.
+        $additionalKeys = array_diff($dataKeys, $defaultDataKeys);
+        if (!empty($additionalKeys)) {
+            $i = implode(",", $additionalKeys);
+            throw new \LorisException("Additional field(s) not permitted: {$i}.");
+        }
+    }
+
+    /**
+     * Validate the given array values against the instrument dictionary items.
+     * Throw a LorisException if any check does not pass.
+     *
+     * @param array $instrumentData instrument data to check
+     * @param bool  $checkAllValues tells if all instrument field values should
+     *                              be checked (PUT) instead of part of them
+     *                              (PATCH)
+     *
+     * @throws \LorisException
+     *
+     * @return void
+     */
+    private function _validateValues(
+        array $instrumentData,
+        bool $checkAllValues = false
+    ): void {
+        // Get date format from system configuration
+        $config     = $this->loris->getConfiguration();
+        $dateFormat = $config->getSetting('dateDisplayFormat');
+
+        // Date parser function
+        $getDateTime = fn($s, $f) => DateTime::createFromFormat($f, $s);
+
+        // Type check functions with string compatibility
+        $isString   = fn($f) => is_scalar($f) && is_string("{$f}");
+        $isBoolean  = fn($f) =>
+        is_bool($f)
+        || (is_string($f)
+        && in_array(strtolower($f), ['true', 'false', '0', '1'], true))
+        || (is_numeric($f) && ($f == 0 || $f == 1));
+        $isInteger  = fn($f) =>
+        is_int($f)
+        || (is_string($f) && preg_match('/^\d+$/', $f))
+        || (is_float($f) && floor($f) == $f);
+        $isFloat    = fn($f) => is_numeric($f) && is_float((float)$f + 0);
+        $isDuration = fn($f) => $isInteger($f) && (int)$f >= 0;
+        $isDate     = fn($f, $fmt) =>
+        ($dt = $getDateTime($f, $fmt)) !== false && $dt->format($fmt) === $f;
+        $isTime     = fn($f, $fmt) =>
+        ($dt = DateTime::createFromFormat(
+            "Y-m-d {$fmt}",
+            "2000-01-01 {$f}"
+        )
+        ) !== false && $dt->format($fmt) === $f;
+
+        // Validate each field in the data dictionary
+        foreach ($this->getDataDictionary() as $dictionaryItem) {
+            $fieldName = $dictionaryItem->fieldname;
+
+            // Skip fields that are not present in PATCH input
+            if (!$checkAllValues && !array_key_exists($fieldName, $instrumentData)) {
+                continue;
+            }
+
+            // Skip metadata/system fields
+            if (in_array($fieldName, $this->metadataElements, true)) {
+                continue;
+            }
+
+            // Get expected type object and field value
+            $expectedType = $dictionaryItem->getDataType();
+            $fieldToCheck = $instrumentData[$fieldName];
+
+            $t = $expectedType;
+
+            // Normalize string values (e.g., trim spaces)
+            if (is_string($fieldToCheck)) {
+                $fieldToCheck = trim($fieldToCheck);
+            }
+
+            // Get enumeration options if applicable
+            $optionKeys = $expectedType instanceof \LORIS\Data\Types\Enumeration
+            ? $expectedType->getOptions()
+            : null;
+
+            // Check if this field supports multiple selection
+            $isMultiEnum = in_array($fieldName, $this->selectMultipleElements, true);
+
+            // Validate the value based on its expected type
+
+            $f = $fieldToCheck;
+            $d = $dateFormat;
+
+            $isValid = match (true) {
+                $t instanceof \LORIS\Data\Types\StringType   => $isString($f),
+                $t instanceof \LORIS\Data\Types\URI          => $isString($f),
+                $t instanceof \LORIS\Data\Types\BooleanType  => $isBoolean($f),
+                $t instanceof \LORIS\Data\Types\IntegerType  => $isInteger($f),
+                $t instanceof \LORIS\Data\Types\DecimalType  => $isFloat($f),
+                $t instanceof \LORIS\Data\Types\DateType     => $isDate($f, $d),
+                $t instanceof \LORIS\Data\Types\TimeType     => $isTime($f, $d),
+                $t instanceof \LORIS\Data\Types\Duration     => $isDuration($f),
+                $t instanceof \LORIS\Data\Types\Enumeration  => $isString($f) && (
+                !$isMultiEnum
+                    ? in_array($fieldToCheck, $optionKeys, true)
+                    : array_all(
+                        explode("{@}", $fieldToCheck),
+                        fn($v) => in_array(trim($v), $optionKeys, true)
+                    )
+                ),
+                default => throw new \LorisException(
+                    "Unknown type '" . get_class($expectedType) .
+                    "' for field: {$fieldToCheck}"
+                )
+            };
+
+            // If validation failed, prepare an error message
+            if (!$isValid) {
+                $expectedFormat = match (true) {
+                    $expectedType instanceof \LORIS\Data\Types\DateType =>
+                    " (format: '{$dateFormat}')",
+                    $expectedType instanceof \LORIS\Data\Types\TimeType =>
+                    " (format: 'HH:mm:ss')",
+                    $expectedType instanceof \LORIS\Data\Types\Enumeration =>
+                    ", possible answers: '"
+                    .implode("','", $optionKeys ?? []) . "'",
+                    default => ""
+                };
+
+                // Add multiselect info if applicable
+                if ($isMultiEnum && $t instanceof \LORIS\Data\Types\Enumeration) {
+                    $expectedFormat .= " with delimiter '{@}'";
+                }
+
+                // Compose the full validation error message
+                $multi = $isMultiEnum ? "multi-" : "";
+                $msg   = "Field not valid: {$fieldName}. ";
+                $msg  .= "Expected: {$multi}"
+                         . basename(str_replace('\\', '/', get_class($t)));
+                $msg  .= "{$expectedFormat}";
+
+                throw new \LorisException($msg);
+            }
+        }
+    }
+
+    /**
+     * Validate whether the data submitted are valid against this instrument.
+     * Checks both keys and values. Throws a LorisException if any test fails.
+     *
+     * @param array $dataToCheck    an array of values submitted
+     * @param bool  $checkAllValues tells if all instrument field values should
+     *                              be checked (PUT) instead of part of them
+     *                              (PATCH)
+     *
+     * @throws \LorisException
+     *
+     * @return void
+     */
+    public function validate(
+        array $dataToCheck,
+        bool $checkAllValues = false
+    ): void {
+        // data to check even exist
+        if (empty($dataToCheck)) {
+            throw new \LorisException("No data provided.");
+        }
+
+        // validate the keys against the instrument dictionary entries
+        $this->_validateKeys($dataToCheck);
+
+        // validate the values against the instrument dictionary entries
+        $this->_validateValues($dataToCheck, $checkAllValues);
     }
 
     /**
