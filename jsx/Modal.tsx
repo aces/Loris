@@ -91,10 +91,7 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return <div style={submitStyle}>
-        {/*<ButtonElement onUserInput={handleSubmit} />*/}
-          <ButtonElement />
-      </div>;
+      return <div style={submitStyle}><ButtonElement/></div>;
     }
   };
 
