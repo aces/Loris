@@ -1,16 +1,5 @@
 <?php declare(strict_types=1);
 
-/**
- * This file contains unit test for the CandID value object.
- *
- * PHP Version 7
- *
- * @category Tests
- * @package  StudyEntities
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\Security;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
@@ -19,15 +8,10 @@ use \PHPUnit\Framework\TestCase;
 use \LORIS\Security\OTP\HOTP;
 
 /**
- * Unit test class for the CandID value object
+ * Group of tests for HMAC-based One Time Passwords (HOTP)
+ * primarily based on RFC4226 test vectors.
  *
- * PHP Version 7
- *
- * @category Tests
- * @package  StudyEntities
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class HOTP_Test extends TestCase
 {

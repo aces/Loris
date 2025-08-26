@@ -1,16 +1,5 @@
 <?php declare(strict_types=1);
 
-/**
- * This file contains unit test for the CandID value object.
- *
- * PHP Version 7
- *
- * @category Tests
- * @package  StudyEntities
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\Security;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
@@ -19,15 +8,10 @@ use \PHPUnit\Framework\TestCase;
 use \LORIS\Security\OTP\TOTP;
 
 /**
- * Unit test class for the CandID value object
+ * Unit test class for Time-based One Time Passwords (TOTP)
+ * primarily based on RFC6238
  *
- * PHP Version 7
- *
- * @category Tests
- * @package  StudyEntities
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class TOTP_Test extends TestCase
 {
@@ -40,7 +24,8 @@ class TOTP_Test extends TestCase
     function testRFC6238Counters() : void
     {
         $totp = new TOTP("abc", timestep: 30);
-        // Unix time => RFC6238 time based counter for HOTP
+	// Unix time => RFC6238 time based counter to pass to HOTP
+	// algorithm.
         $validValues = [
             59          => hexdec("0000000000000001"),
             1111111109  => hexdec("00000000023523EC"),
