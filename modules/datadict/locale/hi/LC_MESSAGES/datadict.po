@@ -19,32 +19,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Data Dictionary (Legacy)"
-msgstr ""
+msgstr "डेटा शब्दकोश (पुराना)"
 
 msgid "Source From"
-msgstr ""
+msgstr "स्रोत से"
 
 msgid "Name"
-msgstr ""
+msgstr "नाम"
 
 msgid "Source Field"
-msgstr ""
+msgstr "स्रोत फ़ील्ड"
 
 msgid "Description"
-msgstr ""
+msgstr "विवरण"
 
 msgid "Description Status"
-msgstr ""
+msgstr "विवरण स्थिति"
 
 msgid "Empty"
-msgstr ""
+msgstr "खाली"
 
 msgid "Modified"
-msgstr ""
+msgstr "संशोधित"
 
 msgid "Unchanged"
-msgstr ""
+msgstr "अपरिवर्तित"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "समूह"
+
 
