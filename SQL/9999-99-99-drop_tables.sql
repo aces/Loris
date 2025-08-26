@@ -165,6 +165,8 @@ DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;
 DROP TABLE IF EXISTS `user_account_history`;
+DROP TABLE IF EXISTS `policies`;
+DROP TABLE IF EXISTS `user_policy_decision`;
 DROP TABLE IF EXISTS `data_integrity_flag`;
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
 DROP TABLE IF EXISTS `certification_training_quiz_questions`;
