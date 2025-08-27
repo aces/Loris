@@ -90,8 +90,8 @@ function MFAIndex(): React.ReactElement {
       setup MFA in LORIS!</b>
     </p>
     <QRCode value={mfaUrl} />
-    <p>Can't scan the QR code?
-      <a href="#" onClick={() => setShowModal(true)}>Setup manually.</a>
+    <p>Can't scan the QR code? <a href="#" onClick={() => setShowModal(true)}>
+    Setup manually.</a>
     </p>
     <CodeValidator secret={key} />
   </div>;

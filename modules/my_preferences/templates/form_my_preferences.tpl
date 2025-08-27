@@ -70,7 +70,7 @@
           in a different form element with a smarty template and it's easier
           to create a new "fresh" page with modern react/etc than rewrite
           the whole page or do a hybrid here *}
-       <a href="{$baseurl}/my_preferences/mfa">Configure MFA</a>
+       <a href="{$baseurl}/my_preferences/mfa">Configure multi-factor authentication (MFA)</a>
 	</label>
     </div>
 

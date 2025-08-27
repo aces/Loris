@@ -43,9 +43,17 @@ function Digit(props: {
 }
 
 type errorCallback = (msg: string) => void;
+type MFACode = [
+     number|null,
+    number|null,
+    number|null,
+    number|null,
+    number|null,
+    number|null];
+
 /**
- * Prompt for a multi-factor authentication code and call onValidate
- * after a valid code has been entered.
+ * Prompt for a multi-factor authentication code and call validate
+ * callback to validate the code after all 6 digits have been entered.
  *
  * @param props - React props
  * @param props.validate - Callback when a code is entered to validate it.
@@ -55,18 +63,12 @@ type errorCallback = (msg: string) => void;
 function MFAPrompt(props: {validate:
     (code: string, onError: errorCallback) => void
 }) {
-  const [code, setCode] = useState<[
-     number|null,
-    number|null,
-    number|null,
-    number|null,
-    number|null,
-    number|null]>([null, null, null, null, null, null]);
+  const [code, setCode] = useState<MFACode>([null, null, null, null, null, null]);
   const digitCallback = useCallback(
     (index: number, value: number): boolean => {
       if (value >= 0 && value <= 9) {
        setCode(prev => {
-        const newCode = [...prev];
+        const newCode: MFACode = [...prev];
         newCode[index] = value;
         return newCode;
       });
