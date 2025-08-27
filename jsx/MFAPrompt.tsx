@@ -65,18 +65,20 @@ function MFAPrompt(props: {validate:
   const digitCallback = useCallback(
     (index: number, value: number): boolean => {
       if (value >= 0 && value <= 9) {
-        code[index] = value;
-        setCode([...code]);
-        return true;
+       setCode(prev => {
+        const newCode = [...prev];
+        newCode[index] = value;
+        return newCode;
+      });
       }
       return false;
     },
-    [code, setCode]
+    []
   );
   const errorCallback = useCallback( (msg: string) => {
     swal.fire('Error', msg, 'error');
     setCode([null, null, null, null, null, null]);
-  }, [setCode]);
+  }, []);
   useEffect( () => {
     if (code.indexOf(null) >= 0) {
       return;
