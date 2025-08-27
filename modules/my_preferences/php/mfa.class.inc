@@ -23,10 +23,12 @@ class MFA extends \NDB_Page
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                dgettext("loris", "My Preferences")
+                dgettext("loris", "My Preferences"),
+                '/my_preferences',
             ),
             new \LORIS\Breadcrumb(
-                dgettext("my_preferences", "Configure 2FA")
+                dgettext("my_preferences", "Configure MFA"),
+                '/my_preferences/mfa',
             ),
         );
     }
