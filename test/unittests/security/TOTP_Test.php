@@ -24,8 +24,8 @@ class TOTP_Test extends TestCase
     function testRFC6238Counters() : void
     {
         $totp = new TOTP("abc", timestep: 30);
-	// Unix time => RFC6238 time based counter to pass to HOTP
-	// algorithm.
+        // Unix time => RFC6238 time based counter to pass to HOTP
+        // algorithm.
         $validValues = [
             59          => hexdec("0000000000000001"),
             1111111109  => hexdec("00000000023523EC"),

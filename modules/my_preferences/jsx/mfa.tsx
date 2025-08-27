@@ -68,8 +68,8 @@ function CodeValidator(props: {
  */
 function MFAIndex(): React.ReactElement {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [key] = useState<string>(genPotentialSecret());
   const studyTitle = loris.config('studyTitle');
-  const key = genPotentialSecret();
   const mfaUrl = 'otpauth://totp/'
     + encodeURI(studyTitle)
     + ':' + encodeURI(loris.user.username)
