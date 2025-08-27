@@ -12,6 +12,8 @@
 
 namespace LORIS\redcap\client\models\records;
 
+use LORIS\redcap\client\RedcapProps;
+
 /**
  * This represents a redcap record.
  *
@@ -23,6 +25,20 @@ namespace LORIS\redcap\client\models\records;
  */
 class RedcapRecord
 {
+    /**
+     * The date at which the record was completed if it was completed using a
+     * survey.
+     */
+    public readonly ?\DateTimeImmutable $datetime;
+
+    /**
+     * The record completion status.
+     * 0 = incomplete / partial survey response
+     * 1 = unverified
+     * 2 = complete
+     */
+    public readonly int $complete;
+
     private string $_form_name;
 
     private array $_props;
@@ -37,6 +53,22 @@ class RedcapRecord
     {
         $this->_form_name = $form_name;
         $this->_props     = $props;
+
+        $props = new RedcapProps('record', $props);
+
+        $datetime_string = $props->getStringNullable("{$form_name}_timestamp");
+        if ($datetime_string !== null) {
+            try {
+                $datetime = new \DateTimeImmutable($datetime_string);
+            } catch (\DateMalformedStringException) {
+                $datetime = null;
+            }
+        } else {
+            $datetime = null;
+        }
+
+        $this->datetime = $datetime;
+        $this->complete = $props->getInt("{$form_name}_complete");
     }
 
     /**
