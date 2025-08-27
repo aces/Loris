@@ -63,15 +63,18 @@ type MFACode = [
 function MFAPrompt(props: {validate:
     (code: string, onError: errorCallback) => void
 }) {
-  const [code, setCode] = useState<MFACode>([null, null, null, null, null, null]);
+  const [code, setCode] = useState<MFACode>(
+    [null, null, null, null, null, null]
+  );
   const digitCallback = useCallback(
     (index: number, value: number): boolean => {
       if (value >= 0 && value <= 9) {
-       setCode(prev => {
-        const newCode: MFACode = [...prev];
-        newCode[index] = value;
-        return newCode;
-      });
+        setCode((prev) => {
+          const newCode: MFACode = [...prev];
+          newCode[index] = value;
+          return newCode;
+        });
+        return true;
       }
       return false;
     },
