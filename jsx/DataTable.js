@@ -354,7 +354,8 @@ class DataTable extends Component {
         }
         break;
       default:
-        searchString = data ? data.toString().toLowerCase() : '';
+              searchString = (data !== null && data !== undefined) ? data.toString().toLowerCase() : '';
+		      
         if (exactMatch) {
           result = (searchString === searchKey);
         } else if (opposite) {
@@ -376,7 +377,7 @@ class DataTable extends Component {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data ? data.toString().toLowerCase() : '';
+              searchString = (data !== null && data !== undefined) ? data.toString().toLowerCase() : '';
 
         let searchArray = searchString.split(',');
         match = (searchArray.includes(searchKey));
