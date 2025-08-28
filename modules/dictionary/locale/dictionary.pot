@@ -57,9 +57,6 @@ msgstr ""
 msgid "Data Scope"
 msgstr ""
 
-msgid "Candidate"
-msgstr ""
-
 msgid "Data Type"
 msgstr ""
 
@@ -78,10 +75,6 @@ msgstr ""
 msgid "Many"
 msgstr ""
 
-msgid "Visits"
-msgstr ""
 
-msgid "Cohorts"
-msgstr ""
 
 

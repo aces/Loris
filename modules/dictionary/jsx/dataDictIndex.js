@@ -220,7 +220,7 @@ class DataDictIndex extends Component {
 
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'dictionary'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load

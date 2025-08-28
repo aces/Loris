@@ -45,9 +45,6 @@ msgstr "खाली"
 msgid "Unchanged"
 msgstr "अपरिवर्तित"
 
-msgid "Module"
-msgstr "मॉड्यूल"
-
 msgid "Category"
 msgstr "श्रेणी"
 
@@ -56,9 +53,6 @@ msgstr "फ़ील्ड नाम"
 
 msgid "Data Scope"
 msgstr "डेटा दायरा"
-
-msgid "Candidate"
-msgstr "उम्मीदवार"
 
 msgid "Data Type"
 msgstr "डेटा प्रकार"
@@ -78,10 +72,6 @@ msgstr "वैकल्पिक"
 msgid "Many"
 msgstr "अनेक"
 
-msgid "Visits"
-msgstr "दौरे"
 
-msgid "Cohorts"
-msgstr "समूह"
 
 
