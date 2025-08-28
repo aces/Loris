@@ -96,12 +96,16 @@ class Module extends \Module
             );
 
             $frontend_feedback = [];
+	    $dateformatter = new \IntlDateFormatter(null, \IntlDateFormatter::SHORT, \IntlDateFormatter::SHORT);
+
             foreach ($bvl_feedback as $row) {
-                if (new \DateTime($row['Testdate']) > $last_login) {
+		$row['Testdate'] = new \DateTime($row['Testdate']);
+                if ($row['Testdate'] > $last_login) {
                     $row['new'] = true;
                 } else {
                     $row['new'] = false;
-                }
+		}
+                $row['Testdate'] = $dateformatter->format($row['Testdate']);
                 $url = '';
                 switch ($row['Feedback_level']) {
                 case 'profile':
