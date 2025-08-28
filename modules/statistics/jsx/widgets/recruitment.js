@@ -21,7 +21,7 @@ const Recruitment = (props) => {
 
   const [chartDetails, setChartDetails] = useState(
     {
-      'siteBreakdown': {
+      'generalBreakdown': {
         'agerecruitment_pie': {
           title: 'Total recruitment by Age',
           filters: '',
@@ -30,6 +30,7 @@ const Recruitment = (props) => {
           label: 'Age (Years)',
           options: {pie: 'pie', bar: 'bar'},
           legend: 'under',
+          chartObject: null,
         },
         'ethnicity_pie': {
           title: 'Ethnicity at Screening',
@@ -39,7 +40,10 @@ const Recruitment = (props) => {
           label: 'Ethnicity',
           options: {pie: 'pie', bar: 'bar'},
           legend: 'under',
+          chartObject: null,
         },
+      },
+      'siteBreakdown': {
         'siterecruitment_pie': {
           title: 'Total Recruitment per Site',
           filters: '',
@@ -48,6 +52,7 @@ const Recruitment = (props) => {
           label: 'Participants',
           legend: '',
           options: {pie: 'pie', bar: 'bar'},
+          chartObject: null,
         },
         'siterecruitment_bysex': {
           title: 'Biological sex breakdown by site',
@@ -56,6 +61,19 @@ const Recruitment = (props) => {
           dataType: 'bar',
           legend: 'under',
           options: {bar: 'bar', pie: 'pie'},
+          chartObject: null,
+        },
+      },
+      'projectBreakdown': {
+        'agedistribution_line': {
+          sizing: 11,
+          title: 'Candidate Age at Registration',
+          filters: '',
+          chartType: 'line',
+          dataType: 'line',
+          legend: '',
+          options: {line: 'line'},
+          chartObject: null,
         },
       },
     }
@@ -65,11 +83,47 @@ const Recruitment = (props) => {
     return props.showChart(section, chartID, chartDetails, setChartDetails);
   };
 
+  const showFilters = (section) => {
+    return <>
+      <div className="btn-group" style={{marginBottom: '10px'}}>
+        <button
+          type="button"
+          className="btn btn-default btn-xs"
+          onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+        >
+          {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+        </button>
+      </div>
+      {showFiltersBreakdown && (
+        <div style={{marginTop: '15px'}}>
+          <QueryChartForm
+            Module={'statistics'}
+            name={'recruitment'}
+            id={'recruitmentForm' + section}
+            data={json}
+            callback={async (formDataObj) => {
+              await updateFilters(formDataObj, section);
+            }}
+          />
+        </div>
+      )}
+    </>;
+  };
+
   const updateFilters = (formDataObj, section) => {
     props.updateFilters(formDataObj,
       section,
       chartDetails,
       setChartDetails);
+  };
+
+  const getTotalProjectsCount = () => {
+    return Object.keys(json['recruitment'] || {})
+      .filter((key) => key !== 'overall').length;
+  };
+
+  const getTotalCohortsCount = () => {
+    return Object.keys(json['recruitmentcohorts'] || {}).length;
   };
 
   useEffect(
@@ -94,47 +148,40 @@ const Recruitment = (props) => {
         id ='statistics_recruitment'
         onChangeView ={(index) => {
           setupCharts(false, chartDetails);
+          setShowFiltersBreakdown(false);
         }}
         views ={[
           {
             content:
-            <div className ='recruitment-panel' id='overall-recruitment'>
-              {progressBarBuilder(json['recruitment']['overall'])}
-            </div>,
+            <>
+              <div className ='recruitment-panel' id='overall-recruitment'>
+                {progressBarBuilder(json['recruitment']['overall'])}
+              </div>
+              <br />
+              {showFilters('generalBreakdown')}
+              <div className={'charts-grid'}>
+                {Object
+                  .keys(chartDetails['generalBreakdown'])
+                  .map((chartID) => (
+                    <React.Fragment key={chartID}>
+                      {showChart('generalBreakdown', chartID)}
+                    </React.Fragment>
+                  ))}
+              </div>
+            </>,
             title: 'Recruitment - overall',
+            subtitle: `Total participants: `
+              + json['recruitment']['overall']['total_recruitment'] || -1,
           },
           {
             content:
               json['recruitment']['overall'] &&
               json['recruitment']['overall']['total_recruitment'] > 0 ? (
                   <>
-                    <div className="btn-group" style={{marginBottom: '10px'}}>
-                      <button
-                        type="button"
-                        className="btn btn-default btn-xs"
-                        onClick={() => setShowFiltersBreakdown((prev) => !prev)}
-                      >
-                        {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
-                      </button>
-                    </div>
-                    {showFiltersBreakdown && (
-                      <div style={{marginTop: '15px'}}>
-                        <QueryChartForm
-                          Module={'statistics'}
-                          name={'recruitment'}
-                          id={'recruitmentSiteBreakdownForm'}
-                          data={json}
-                          callback={(formDataObj) => {
-                            updateFilters(formDataObj, 'siteBreakdown');
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className={'site-breakdown-grid'}
-                      id={Object.keys(json.options.sites).length > 15
-                        ? 'site-breakdown-grid-one-column'
-                        : undefined
-                      }>
+                    {showFilters('siteBreakdown')}
+                    <div className={'charts-grid'}
+                      id={'charts-one-column'}
+                    >
                       {Object
                         .keys(chartDetails['siteBreakdown'])
                         .map((chartID) => (
@@ -148,12 +195,13 @@ const Recruitment = (props) => {
                   <p>There have been no candidates registered yet.</p>
                 ),
             title: 'Recruitment - site breakdown',
-            onToggleFilters: () => {
-              setShowFiltersBreakdown((prev) => !prev);
-            },
+            subtitle: 'Total participants: '
+              + json['recruitment']['overall']['total_recruitment'] || -1,
           },
           {
-            content:
+            content: <>
+              {showFilters('projectBreakdown')}
+              {showChart('projectBreakdown', 'agedistribution_line')}
               <div
                 style={{
                   maxHeight: '400px',
@@ -170,8 +218,10 @@ const Recruitment = (props) => {
                     }
                   }
                 )}
-              </div>,
+              </div>
+            </>,
             title: 'Recruitment - project breakdown',
+            subtitle: `Projects: ${getTotalProjectsCount()}`,
           },
           {
             content:
@@ -192,6 +242,7 @@ const Recruitment = (props) => {
                   )}
               </div>,
             title: 'Recruitment - cohort breakdown',
+            subtitle: `Cohorts: ${getTotalCohortsCount()}`,
           },
         ]}
       />

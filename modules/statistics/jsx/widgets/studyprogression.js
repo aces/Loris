@@ -13,9 +13,7 @@ import {setupCharts} from './helpers/chartBuilder';
  */
 const StudyProgression = (props) => {
   const [loading, setLoading] = useState(true);
-  const [showFiltersScans, setShowFiltersScans] = useState(false);
-  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
-  const [activeView, setActiveView] = useState(0);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
 
   let json = props.data;
 
@@ -30,10 +28,11 @@ const StudyProgression = (props) => {
         label: 'Scans',
         legend: 'under',
         options: {line: 'line'},
+        chartObject: null,
       },
     },
     'total_recruitment': {
-      'siterecruitment_line': {
+      'siterecruitment_bymonth': {
         sizing: 11,
         title: 'Recruitment per site',
         filters: '',
@@ -41,6 +40,7 @@ const StudyProgression = (props) => {
         dataType: 'line',
         legend: '',
         options: {line: 'line'},
+        chartObject: null,
       },
     },
   });
@@ -68,22 +68,22 @@ const StudyProgression = (props) => {
       chartDetails, setChartDetails);
   };
 
+  // Helper function to calculate total recruitment
+  const getTotalRecruitment = () => {
+    return json['studyprogression']['recruitment']
+      ['overall']['total_recruitment'] || -1;
+  };
+
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
     <>
       <Panel
         title='Study Progression'
         id='statistics_studyprogression'
-        activeView={activeView}
         onChangeView={(index) => {
-          setActiveView(index);
           setupCharts(false, chartDetails);
 
           // reset filters when switching views
-          if (index === 0) {
-            setShowFiltersScans(false);
-          } else if (index === 1) {
-            setShowFiltersRecruitment(false);
-          }
+          setShowFiltersBreakdown(false);
         }}
         views={[
           {
@@ -99,12 +99,12 @@ const StudyProgression = (props) => {
                   <button
                     type="button"
                     className="btn btn-default btn-xs"
-                    onClick={() => setShowFiltersScans((prev) => !prev)}
+                    onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                   >
-                    {showFiltersScans ? 'Hide Filters' : 'Show Filters'}
+                    {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
                   </button>
                 </div>
-                {showFiltersScans && (
+                {showFiltersBreakdown && (
                   <QueryChartForm
                     Module={'statistics'}
                     name={'studyprogression'}
@@ -121,7 +121,8 @@ const StudyProgression = (props) => {
               <p>There have been no scans yet.</p>
             ),
             title: 'Study Progression - site scans',
-            onToggleFilters: () => setShowFiltersScans((prev) => !prev),
+            subtitle: 'Total scans: '
+              + json['studyprogression']['total_scans'] || -1,
           },
           {
             content: json['studyprogression']['recruitment']['overall'][
@@ -138,12 +139,12 @@ const StudyProgression = (props) => {
                     <button
                       type="button"
                       className="btn btn-default btn-xs"
-                      onClick={() => setShowFiltersRecruitment((prev) => !prev)}
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                     >
-                      {showFiltersRecruitment ? 'Hide Filters' : 'Show Filters'}
+                      {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
                     </button>
                   </div>
-                  {showFiltersRecruitment && (
+                  {showFiltersBreakdown && (
                     <QueryChartForm
                       Module={'statistics'}
                       name={'studyprogression'}
@@ -154,13 +155,13 @@ const StudyProgression = (props) => {
                       }}
                     />
                   )}
-                  {showChart('total_recruitment', 'siterecruitment_line')}
+                  {showChart('total_recruitment', 'siterecruitment_bymonth')}
                 </div>
               ) : (
                 <p>There have been no candidates registered yet.</p>
               ),
             title: 'Study Progression - site recruitment',
-            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
+            subtitle: `Total recruitment: ${getTotalRecruitment()}`,
           },
         ]}
       />
@@ -170,8 +171,8 @@ const StudyProgression = (props) => {
 StudyProgression.propTypes = {
   data: PropTypes.object,
   baseURL: PropTypes.string,
-  updateFilters: PropTypes.function,
-  showChart: PropTypes.function,
+  updateFilters: PropTypes.func,
+  showChart: PropTypes.func,
 };
 StudyProgression.defaultProps = {
   data: {},
