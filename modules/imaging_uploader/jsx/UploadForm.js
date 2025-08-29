@@ -221,18 +221,22 @@ class UploadForm extends Component {
       swal.fire({
         title: t('Are you sure?', {ns: 'imaging_uploader'}),
         text: t('A file with this name already exists! '
-          +'Would you like to overwrite the existing file?', {ns: 'imaging_uploader'}),
+          + 'Would you like to overwrite the existing file?',
+        {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: t('Yes, I am sure!', {ns: 'imaging_uploader'}),
-        cancelButtonText: t('No, cancel it!', {ns: 'imaging_uploader'}),
+        confirmButtonText: t('Yes, I am sure!',
+          {ns: 'imaging_uploader'}),
+        cancelButtonText: t('No, cancel it!',
+          {ns: 'imaging_uploader'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire(
             t('Cancelled', {ns: 'imaging_uploader'}),
-            t('Your upload has been cancelled.', {ns: 'imaging_uploader'}),
+            t('Your upload has been cancelled.',
+              {ns: 'imaging_uploader'}),
             'error'
           );
         }
@@ -249,15 +253,18 @@ class UploadForm extends Component {
         {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: t('Yes, I am sure!', {ns: 'imaging_uploader'}),
-        cancelButtonText: t('No, cancel it!', {ns: 'imaging_uploader'}),
+        confirmButtonText: t('Yes, I am sure!',
+          {ns: 'imaging_uploader'}),
+        cancelButtonText: t('No, cancel it!',
+          {ns: 'imaging_uploader'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire(
             t('Cancelled', {ns: 'imaging_uploader'}),
-            t('Your upload has been cancelled.', {ns: 'imaging_uploader'}),
+            t('Your upload has been cancelled.',
+              {ns: 'imaging_uploader'}),
             'error'
           );
         }
@@ -312,10 +319,12 @@ class UploadForm extends Component {
         if (this.props.imagingUploaderAutoLaunch === 'true' ||
             this.props.imagingUploaderAutoLaunch === '1'
         ) {
-          text = t('Processing of this file by the MRI pipeline has started',
+          text =
+          t('Processing of this file by the MRI pipeline has started',
             {ns: 'imaging_uploader'}) + '\n'
-                + t('Select this upload in the result table to view the processing progress',
-                  {ns: 'imaging_uploader'});
+                + t('Select this upload in the result table'+
+                  ' to view the processing progress',
+                {ns: 'imaging_uploader'});
         }
         swal.fire({
           title: t('Upload Successful!', {ns: 'imaging_uploader'}),
