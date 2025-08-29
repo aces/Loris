@@ -108,9 +108,6 @@ msgstr ""
 msgid "Search for instrument"
 msgstr ""
 
-msgid "days"
-msgstr ""
-
 msgid "Search for site"
 msgstr ""
 
@@ -120,3 +117,5 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
+msgid "Maximum Age (days)"
+msgstr ""
