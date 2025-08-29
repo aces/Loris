@@ -306,5 +306,7 @@ UploadForm.propTypes = {
   autoLaunch: PropTypes.string,
   uploadURL: PropTypes.string.isRequired,
   maxUploadSize: PropTypes.number,
+  refreshPage: PropTypes.func,
   t: PropTypes.func,
+
 };
