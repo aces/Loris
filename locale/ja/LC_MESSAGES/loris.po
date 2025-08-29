@@ -181,3 +181,7 @@ msgstr "新しい"
 
 msgid "Updated"
 msgstr "更新"
+
+msgid "Uploaded"
+msgstr "アップロード済み"
+
