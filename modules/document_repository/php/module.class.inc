@@ -97,18 +97,30 @@ class Module extends \Module
                 )
             );
             $numberOfDocs = sizeof($docs);
+
+            $dateformatter = new \IntlDateFormatter(
+                "",
+                \IntlDateFormatter::SHORT,
+                \IntlDateFormatter::SHORT
+            );
             for ($i=0; $i < $numberOfDocs; $i++) {
-                if (new \DateTime($docs[$i]['Date_uploaded']) > $last_login) {
+                $uploaddate = new \DateTime($docs[$i]['Date_uploaded']);
+                if ($uploaddate > $last_login) {
                     $docs[$i]['new'] = true;
                 } else {
                     $docs[$i]['new'] = false;
                 }
+
+                $docs[$i]['Date_uploaded'] = $dateformatter->format($uploaddate);
             }
 
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Document Repository Notifications",
+                        dgettext(
+                            "document_repository",
+                            "Document Repository Notifications"
+                        ),
                         $this->renderTemplate(
                             "docnotifications.tpl",
                             [
