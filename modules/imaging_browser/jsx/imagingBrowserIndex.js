@@ -119,7 +119,7 @@ class ImagingBrowserIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-         {ns: 'imaging_browser'})}</h3>;
+        {ns: 'imaging_browser'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -157,11 +157,11 @@ class ImagingBrowserIndex extends Component {
         type: 'text',
       }},
       {label: t('Visit QC Status', {ns: 'imaging_browser'}),
-       show: true, filter: {
-        name: 'visitQCStatus',
-        type: 'select',
-        options: options.visitQCStatus,
-      }},
+        show: true, filter: {
+          name: 'visitQCStatus',
+          type: 'select',
+          options: options.visitQCStatus,
+        }},
       {label: t('First Acquisition', {ns: 'imaging_browser'}), show: true},
       {label: t('First Insertion', {ns: 'imaging_browser'}), show: true},
       {label: t('Last QC', {ns: 'imaging_browser'}), show: true},
@@ -169,23 +169,23 @@ class ImagingBrowserIndex extends Component {
       {label: t('Links', {ns: 'imaging_browser'}), show: true},
       {label: t('SessionID', {ns: 'imaging_browser'}), show: false},
       {label: t('Sequence Type', {ns: 'imaging_browser'}),
-       show: false, filter: {
-        name: 'sequenceType',
-        type: 'multiselect',
-        options: options.sequenceTypes,
-      }},
+        show: false, filter: {
+          name: 'sequenceType',
+          type: 'multiselect',
+          options: options.sequenceTypes,
+        }},
       {label: t('Pending New', {ns: 'imaging_browser'}),
-       show: false, filter: {
-        name: 'pendingNew',
-        type: 'multiselect',
-        options: options.pendingNew,
-      }},
+        show: false, filter: {
+          name: 'pendingNew',
+          type: 'multiselect',
+          options: options.pendingNew,
+        }},
       {label: t('Entity Type', {ns: 'imaging_browser'}),
-       show: false, filter: {
-        name: 'entityType',
-        type: 'multiselect',
-        options: options.entityType,
-      }},
+        show: false, filter: {
+          name: 'entityType',
+          type: 'multiselect',
+          options: options.entityType,
+        }},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types
@@ -193,7 +193,7 @@ class ImagingBrowserIndex extends Component {
      */
     Object.values(configLabels).forEach((label)=> {
       fields.push({label: t(label + ' QC Status', {ns: 'imaging_browser'}),
-       show: true}
+        show: true}
       );
     });
 
