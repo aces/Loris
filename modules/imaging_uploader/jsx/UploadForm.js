@@ -145,9 +145,9 @@ class UploadForm extends Component {
     if (!fileName.match(properExt)) {
       swal.fire({
         title: t('Invalid extension for the uploaded file!',
-           {ns: 'imaging_uploader'}),
+          {ns: 'imaging_uploader'}),
         text: t('Filename extension does not match .zip, .tgz or .tar.gz ',
-           {ns: 'imaging_uploader'}),
+          {ns: 'imaging_uploader'}),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
       });
@@ -156,7 +156,7 @@ class UploadForm extends Component {
         mriFile: t('The file', {ns: 'imaging_uploader'}) + ' '
                  + fileName
                  + ' ' + t('must be of type .tgz, .tar.gz or .zip.',
-                   {ns: 'imaging_uploader'}),
+          {ns: 'imaging_uploader'}),
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
@@ -194,8 +194,9 @@ class UploadForm extends Component {
     if (mriFile.status === 'Success') {
       swal.fire({
         title: t('File already exists!', {ns: 'imaging_uploader'}),
-        text: t('A file with this name has already successfully passed the MRI pipeline!',
-           {ns: 'imaging_uploader'}),
+        text: t('A file with this name has already successfully'
+          +' passed the MRI pipeline!',
+        {ns: 'imaging_uploader'}),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
       });
@@ -206,8 +207,9 @@ class UploadForm extends Component {
     if (mriFile.status === 'In Progress...') {
       swal.fire({
         title: t('File is currently processing!', {ns: 'imaging_uploader'}),
-        text: t('A file with this name is currently going through the MRI pipeline!',
-           {ns: 'imaging_uploader'}),
+        text: t('A file with this name is currently going'
+          +' through the MRI pipeline!',
+        {ns: 'imaging_uploader'}),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
       });
@@ -244,7 +246,7 @@ class UploadForm extends Component {
         text: t('A file with this name has been uploaded but has'+
           ' not yet been processed by the MRI pipeline.' +
           ' Would you like to overwrite the existing file?',
-           {ns: 'imaging_uploader'}),
+        {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: t('Yes, I am sure!', {ns: 'imaging_uploader'}),
@@ -311,9 +313,9 @@ class UploadForm extends Component {
             this.props.imagingUploaderAutoLaunch === '1'
         ) {
           text = t('Processing of this file by the MRI pipeline has started',
-             {ns: 'imaging_uploader'}) + '\n'
+            {ns: 'imaging_uploader'}) + '\n'
                 + t('Select this upload in the result table to view the processing progress',
-                   {ns: 'imaging_uploader'});
+                  {ns: 'imaging_uploader'});
         }
         swal.fire({
           title: t('Upload Successful!', {ns: 'imaging_uploader'}),
@@ -360,13 +362,13 @@ class UploadForm extends Component {
     } else if (xhr.status == 0) {
       errorMessage = {
         'mriFile': [t('Upload failed: a network error occured',
-           {ns: 'imaging_uploader'})],
+          {ns: 'imaging_uploader'})],
       };
     } else if (xhr.status == 413) {
       errorMessage = {
         'mriFile': [
           t('Please make sure files are not larger than',
-             {ns: 'imaging_uploader'})
+            {ns: 'imaging_uploader'})
           + ' ' + this.props.maxUploadSize,
         ],
       };
@@ -374,7 +376,7 @@ class UploadForm extends Component {
       errorMessage = {
         'mriFile': [
           t('Upload failed: received HTTP response code',
-             {ns: 'imaging_uploader'})
+            {ns: 'imaging_uploader'})
           + ' ' + xhr.status,
         ],
       };
@@ -420,17 +422,17 @@ class UploadForm extends Component {
 
     const notes = (
       <span>
-        {t('File cannot exceed', {ns: 'imaging_uploader'})} 
+        {t('File cannot exceed', {ns: 'imaging_uploader'})}
         {this.props.maxUploadSize}<br/>
         {t('File must be of type .tgz or tar.gz or .zip',
-           {ns: 'imaging_uploader'})}<br/>
+          {ns: 'imaging_uploader'})}<br/>
         {t('For files that are not Phantom Scans, file name must begin with',
-           {ns: 'imaging_uploader'})}
+          {ns: 'imaging_uploader'})}
         <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
         {t('For example, for CandID', {ns: 'imaging_uploader'})}
-         <i>100000</i>, {t('PSCID', {ns: 'loris'})} <i>ABC123</i>,
-          {t('and Visit Label', {ns: 'imaging_uploader'})} <i>V1</i>
-           {t('the file name should be prefixed by:', {ns: 'imaging_uploader'})}
+        <i>100000</i>, {t('PSCID', {ns: 'loris'})} <i>ABC123</i>,
+        {t('and Visit Label', {ns: 'imaging_uploader'})} <i>V1</i>
+        {t('the file name should be prefixed by:', {ns: 'imaging_uploader'})}
         <b> ABC123_100000_V1</b><br/>
       </span>
     );

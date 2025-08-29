@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
