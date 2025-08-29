@@ -1,6 +1,8 @@
 /* global UploadProgress */
 import React, {Component} from 'react';
 import Panel from 'Panel';
+import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 import {
   FormElement,
   SelectElement,
@@ -198,17 +200,18 @@ class LogPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     const logTypes = {
-      summary: 'Summary',
-      detailed: 'Detailed',
+      summary: t('Summary', {ns: 'imaging_uploader'}),
+      detailed: t('Detailed', {ns: 'imaging_uploader'}),
     };
 
     return (
-      <Panel id='log_panel' title='Log Viewer'>
+      <Panel id='log_panel' title={t('Log Viewer', {ns: 'imaging_uploader'})}>
         <FormElement name='log_form'>
           <SelectElement
             name='LogType'
-            label='Logs to display'
+            label={t('Logs to display', {ns: 'imaging_uploader'})}
             options={logTypes}
             onUserInput={this.onLogTypeChange}
             value={this.state.logType}
@@ -227,7 +230,8 @@ class LogPanel extends Component {
   }
 }
 
-LogPanel.propTypes = {};
-LogPanel.defaultProps = {};
+LogPanel.propTypes = {
+  t: PropTypes.func,
+};
 
-export default LogPanel;
+export default withTranslation(['imaging_uploader', 'loris'])(LogPanel);
