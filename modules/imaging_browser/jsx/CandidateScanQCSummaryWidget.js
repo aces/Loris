@@ -57,15 +57,21 @@ function CandidateScanQCSummaryWidget(props) {
   return <div>
     <div id='imagebreakdownchart' />
     <ul>
-      <li>{t('Red bar denotes number of failed QC scans.', {ns: 'imaging_browser'})}</li>
-      <li>{t('Green bar denotes number of passed QC scans.', {ns: 'imaging_browser'})}</li>
-      <li>{t('Grey bar denotes other QC statuses.', {ns: 'imaging_browser'})}</li>
+      <li>{t('Red bar denotes number of failed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Green bar denotes number of passed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Grey bar denotes other QC statuses.',
+        {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
-      {t('Different shades represent different modalities. Only native modalities are displayed in results.', {ns: 'imaging_browser'})}
+      {t('Different shades represent different modalities.'+
+        ' Only native modalities are displayed in results.',
+      {ns: 'imaging_browser'})}
     </p>
     <p>
-      {t('Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser.', {ns: 'imaging_browser'})}
+      {t('Hover over any visit to see detailed modality breakdown for visit,'+
+        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
 }
