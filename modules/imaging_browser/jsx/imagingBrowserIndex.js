@@ -91,7 +91,7 @@ class ImagingBrowserIndex extends Component {
         '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
         '&selectedOnly=1&backURL=/imaging_browser/'}>
-          {t('selected', {ns: 'imaging_browser'})}
+        {t('selected', {ns: 'imaging_browser'})}
       </a>);
 
       cellLinks.push(' | ');
@@ -99,7 +99,7 @@ class ImagingBrowserIndex extends Component {
         '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
         '&backURL=/imaging_browser/'}>
-          {t('all types', {ns: 'imaging_browser'})}
+        {t('all types', {ns: 'imaging_browser'})}
       </a>);
       result = (<td>{cellLinks}</td>);
       break;
@@ -118,7 +118,8 @@ class ImagingBrowserIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'imaging_browser'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+         {ns: 'imaging_browser'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -155,7 +156,8 @@ class ImagingBrowserIndex extends Component {
         name: 'visitLabel',
         type: 'text',
       }},
-      {label: t('Visit QC Status', {ns: 'imaging_browser'}), show: true, filter: {
+      {label: t('Visit QC Status', {ns: 'imaging_browser'}),
+       show: true, filter: {
         name: 'visitQCStatus',
         type: 'select',
         options: options.visitQCStatus,
@@ -166,17 +168,20 @@ class ImagingBrowserIndex extends Component {
       {label: t('New Data', {ns: 'imaging_browser'}), show: true},
       {label: t('Links', {ns: 'imaging_browser'}), show: true},
       {label: t('SessionID', {ns: 'imaging_browser'}), show: false},
-      {label: t('Sequence Type', {ns: 'imaging_browser'}), show: false, filter: {
+      {label: t('Sequence Type', {ns: 'imaging_browser'}),
+       show: false, filter: {
         name: 'sequenceType',
         type: 'multiselect',
         options: options.sequenceTypes,
       }},
-      {label: t('Pending New', {ns: 'imaging_browser'}), show: false, filter: {
+      {label: t('Pending New', {ns: 'imaging_browser'}),
+       show: false, filter: {
         name: 'pendingNew',
         type: 'multiselect',
         options: options.pendingNew,
       }},
-      {label: t('Entity Type', {ns: 'imaging_browser'}), show: false, filter: {
+      {label: t('Entity Type', {ns: 'imaging_browser'}),
+       show: false, filter: {
         name: 'entityType',
         type: 'multiselect',
         options: options.entityType,
