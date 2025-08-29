@@ -124,12 +124,9 @@ locales:
 	msgfmt -o modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.mo modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
 	msgfmt -o modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po
-<<<<<<< HEAD
 	npx i18next-conv -l ja -s modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
-=======
 	msgfmt -o modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po
-	npx i18next-conv -l hi -s modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.json
->>>>>>> 8f373d351 (add Translation)
+	npx i18next-conv -l hi -s modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
