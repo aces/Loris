@@ -175,3 +175,9 @@ msgstr "ページあたりの最大行数:"
 
 msgid "Download Table as CSV"
 msgstr "表をCSVとしてダウンロード"
+
+msgid "NEW"
+msgstr "新しい"
+
+msgid "Updated"
+msgstr "更新"
