@@ -53,4 +53,49 @@ msgstr ""
 msgid "Add User"
 msgstr ""
 
+msgid "The form you submitted contains data entry errors"
+msgstr ""
+
+msgid "Password Rules"
+msgstr ""
+
+msgid "The password must be at least 8 characters long."
+msgstr ""
+
+msgid "The password cannot be your username or email address."
+msgstr ""
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr ""
+
+msgid "Please choose a unique password."
+msgstr ""
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
+msgstr ""
+
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
+msgstr ""
+
+msgid "Add/Edit User"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Reject User"
+msgstr ""
+
 

@@ -53,4 +53,49 @@ msgstr "खाता अनुरोध तिथि"
 msgid "Add User"
 msgstr "उपयोगकर्ता जोड़ें"
 
+msgid "The form you submitted contains data entry errors"
+msgstr "आपके द्वारा प्रस्तुत फॉर्म में डेटा प्रविष्टि त्रुटियां हैं"
+
+msgid "Password Rules"
+msgstr "पासवर्ड नियम"
+
+msgid "The password must be at least 8 characters long."
+msgstr "पासवर्ड कम से कम 8 अक्षर लंबा होना चाहिए।"
+
+msgid "The password cannot be your username or email address."
+msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "कोई विशेष वर्ण आवश्यक नहीं हैं लेकिन आपका पासवर्ड स्वीकार किए जाने के लिए पर्याप्त रूप से जटिल होना चाहिए।"
+
+msgid "Please choose a unique password."
+msgstr "कृपया एक अनूठा पासवर्ड चुनें।"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "हम आपके लिए एक उत्पन्न करने के लिए पासवर्ड प्रबंधक का उपयोग करने का सुझाव देते हैं।"
+
+msgid "Notes"
+msgstr "नोट्स"
+
+msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
+msgstr "स्पष्टता और अद्वितीयता के लिए उपयोगकर्ता नाम के रूप में ईमेल पते का उपयोग करने की अनुशंसा की जाती है।"
+
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
+msgstr "नया पासवर्ड बनाते समय, कृपया नीचे 'उपयोगकर्ता को ईमेल भेजें' बॉक्स को चेक करके उपयोगकर्ता को सूचित करें!"
+
+msgid "Add/Edit User"
+msgstr "उपयोगकर्ता जोड़ें/संपादित करें"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "Reject User"
+msgstr "उपयोगकर्ता को अस्वीकार करें"
+
 
