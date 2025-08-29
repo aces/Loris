@@ -1,0 +1,115 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Imaging Browser"
+msgstr "इमेजिंग ब्राउज़र"
+
+msgid "View Session"
+msgstr "सत्र देखें"
+
+msgid "New and pending imaging session"
+msgstr "नई और लंबित इमेजिंग सत्र"
+
+msgid "New and pending imaging sessions"
+msgstr "नई और लंबित इमेजिंग सत्रों"
+
+msgid "Visit QC Status"
+msgstr "विजिट QC स्थिति"
+
+msgid "First Acquisition"
+msgstr "पहला अधिग्रहण"
+
+msgid "First Insertion"
+msgstr "पहला सम्मिलन"
+
+msgid "Last QC"
+msgstr "अंतिम QC"
+
+msgid "New Data"
+msgstr "नया डेटा"
+
+msgid "Links"
+msgstr "लिंक"
+
+msgid "SessionID"
+msgstr "सेशन आईडी"
+
+msgid "Sequence Type"
+msgstr "सीक्वेंस प्रकार"
+
+msgid "Pending New"
+msgstr "लंबित नया"
+
+msgid "Entity Type"
+msgstr "इकाई प्रकार"
+
+msgid "QC Status"
+msgstr "QC स्थिति"
+
+msgid "selected"
+msgstr "चयनित"
+
+msgid "all types"
+msgstr "सभी प्रकार"
+
+msgid "NEW"
+msgstr "नया"
+
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "Header Info"
+msgstr "हेडर जानकारी"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "Download Image"
+msgstr "इमेज डाउनलोड करें"
+
+msgid "Longitudinal View"
+msgstr "लंबवत दृश्य"
+
+msgid "QC Comments"
+msgstr "QC टिप्पणियाँ"
+
+msgid "Series Instance UID"
+msgstr "सीरीज इंस्टेंस UID"
+
+msgid "Number of Scans"
+msgstr "स्कैन की संख्या"
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr "लाल बार असफल QC स्कैन की संख्या दर्शाता है।"
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr "हरा बार पास किए गए QC स्कैन की संख्या दर्शाता है।"
+
+msgid "Grey bar denotes other QC statuses."
+msgstr "ग्रे बार अन्य QC स्थितियाँ दर्शाता है।"
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "विभिन्न शेड्स विभिन्न मोडैलिटी का प्रतिनिधित्व करते हैं। केवल मूल मोडैलिटी परिणामों में दिखाई जाती हैं।"
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "किसी भी विजिट पर होवर करें ताकि विजिट के लिए विस्तृत मोडैलिटी ब्रेकडाउन देखें, क्लिक करें और इमेजिंग ब्राउज़र पर जाएं।"

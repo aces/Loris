@@ -37,6 +37,72 @@ msgstr[0] ""
 msgid "Imaging QC Summary"
 msgstr ""
 
+msgid "Visit QC Status"
+msgstr ""
+
+msgid "First Acquisition"
+msgstr ""
+
+msgid "First Insertion"
+msgstr ""
+
+msgid "Last QC"
+msgstr ""
+
+msgid "New Data"
+msgstr ""
+
+msgid "Links"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Sequence Type"
+msgstr ""
+
+msgid "Pending New"
+msgstr ""
+
+msgid "Entity Type"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "selected"
+msgstr ""
+
+msgid "all types"
+msgstr ""
+
+msgid "NEW"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "Header Info"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "Download Image"
+msgstr ""
+
+msgid "Longitudinal View"
+msgstr ""
+
+msgid "QC Comments"
+msgstr ""
+
+msgid "Series Instance UID"
+msgstr ""
+
 msgid "Number of Scans"
 msgstr ""
 
