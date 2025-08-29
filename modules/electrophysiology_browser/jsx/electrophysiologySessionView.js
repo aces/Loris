@@ -560,3 +560,6 @@ window.onload = function() {
     document.getElementById('eegSidebar')
   ).render(eegSidebar);
 };
+
+export default withTranslation(
+  ['electrophysiology_browser', 'loris'])(ElectrophysiologySessionView);
