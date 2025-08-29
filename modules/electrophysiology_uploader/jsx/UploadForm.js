@@ -308,5 +308,4 @@ UploadForm.propTypes = {
   maxUploadSize: PropTypes.number,
   refreshPage: PropTypes.func,
   t: PropTypes.func,
-
 };
