@@ -130,11 +130,17 @@ msgstr "दौरे का लेबल"
 msgid "Site"
 msgstr "साइट"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 msgid "Project"
 msgstr "परियोजना"
 
 msgid "Cohort"
 msgstr "समूह"
+
+msgid "Session"
+msgstr "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -156,6 +162,12 @@ msgstr "स्कैन"
 
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
+
+msgid "Visits"
+msgstr "भ्रमण"
+
+msgid "Cohorts"
+msgstr "समूह"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"

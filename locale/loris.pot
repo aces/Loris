@@ -129,10 +129,16 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Module"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
 msgid "Cohort"
+msgstr ""
+
+msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
@@ -154,6 +160,12 @@ msgid "Scans"
 msgstr ""
 
 msgid "Date of Birth"
+msgstr ""
+
+msgid "Visits"
+msgstr ""
+
+msgid "Cohorts"
 msgstr ""
 
 msgid "An error occured while loading the page."

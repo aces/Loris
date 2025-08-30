@@ -286,8 +286,8 @@ class DataDictIndex extends Component {
           name: 'datascope',
           type: 'select',
           options: {
-            'candidate': t('Candidate', {ns: 'dictionary'}),
-            'session': t('Session', {ns: 'dictionary'}),
+            'candidate': t('Candidate', {ns: 'loris'}),
+            'session': t('Session', {ns: 'loris'}),
             'project': t('Project', {ns: 'loris'}),
           },
         },

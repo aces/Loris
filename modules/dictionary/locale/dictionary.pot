@@ -45,9 +45,6 @@ msgstr ""
 msgid "Unchanged"
 msgstr ""
 
-msgid "Module"
-msgstr ""
-
 msgid "Category"
 msgstr ""
 
