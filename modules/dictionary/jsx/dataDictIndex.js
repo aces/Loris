@@ -231,7 +231,7 @@ class DataDictIndex extends Component {
     let options = this.state.data.fieldOptions;
     let fields = [
       {
-        label: t('Module', {ns: 'dictionary'}),
+        label: t('Module', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Module',
@@ -315,7 +315,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: t('Visits', {ns: 'dictionary'}),
+        label: t('Visits', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Visits',
@@ -324,7 +324,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: t('Cohorts', {ns: 'dictionary'}),
+        label: t('Cohorts', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Cohorts',
