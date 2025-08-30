@@ -97,7 +97,7 @@ class BatteryManagerForm extends Component {
         />
         <NumericElement
           name="ageMaxDays"
-          label={t('Maximum Age (days)', { ns: 'battery_manager' })}
+          label={t('Maximum Age (days)', {ns: 'battery_manager'})}
           onUserInput={setTest}
           min={0}
           max={99999}
