@@ -124,7 +124,6 @@ class RedcapRecordImporter
 
         $visit_label = $this->_mapper->getVisitLabel(
             $record,
-            $record->unique_event_name,
             $candidate,
         );
 
