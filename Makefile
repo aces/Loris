@@ -76,6 +76,8 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	msgfmt -o modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po
 	msgfmt -o modules/datadict/locale/ja/LC_MESSAGES/datadict.mo modules/datadict/locale/ja/LC_MESSAGES/datadict.po
@@ -122,11 +124,7 @@ locales:
 acknowledgements:
 	target=acknowledgements npm run compile
 
-data_release:
-	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
-	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json 
-	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
-	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+data_release: 
 	target=data_release npm run compile
 
 instrument_manager:
@@ -165,4 +163,6 @@ server_processes_manager:
 	target=server_processes_manager npm run compile
 
 conflict_resolver:
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	target=conflict_resolver npm run compile
