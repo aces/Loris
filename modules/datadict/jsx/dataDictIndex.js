@@ -239,7 +239,8 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'datadict', {});
+  i18n.addResourceBundle('hi', 'datadict', hiStrings);
+  i18n.addResourceBundle('ja', 'datadict', jaStrings);
   const Index = withTranslation(
     ['datadict', 'loris']
   )(DataDictIndex);
