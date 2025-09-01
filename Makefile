@@ -67,8 +67,11 @@ locales:
 	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
 	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
 	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json
+<<<<<<< HEAD
 	msgfmt -o locale/es/LC_MESSAGES/loris.mo locale/es/LC_MESSAGES/loris.po
 	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json
+=======
+>>>>>>> 4c420e9d9 (Add Makefile)
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
@@ -183,17 +186,8 @@ publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
 server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
 	target=server_processes_manager npm run compile
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 conflict_resolver:
 	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
 	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	target=conflict_resolver npm run compile
-=======
->>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
-=======
-conflict_resolver:
-	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
-	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
-	target=conflict_resolver npm run compile
->>>>>>> d56f08bf9 (Add withTranslation for conflict_resolver)
+
