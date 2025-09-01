@@ -563,7 +563,6 @@ class DataTable extends Component {
        ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
     </span>;
 
-
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
