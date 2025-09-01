@@ -159,14 +159,6 @@ publication:
 
 server_processes_manager:
 	target=server_processes_manager npm run compile
-
-<<<<<<< HEAD
-<<<<<<< HEAD
+	
 conflict_resolver:
 	target=conflict_resolver npm run compile
-=======
->>>>>>> c5e729db3 (Translate strings from data table / filters so that candidate list module is fully translated)
-=======
-conflict_resolver:
-	target=conflict_resolver npm run compile
->>>>>>> d56f08bf9 (Add withTranslation for conflict_resolver)
