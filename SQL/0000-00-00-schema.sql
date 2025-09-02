@@ -105,6 +105,7 @@ CREATE TABLE `users` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
   `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
+  `TOTPSecret` binary(64) DEFAULT NULL,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
