@@ -24,3 +24,8 @@ msgstr ""
 msgid "Edit User"
 msgstr ""
 
+msgid "Pending account approval"
+msgstr ""
+
+msgid "Pending account approvals"
+msgstr ""

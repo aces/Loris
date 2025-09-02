@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 $user =& User::singleton();
-if (!$user->hasPermission('dataquery_view')) {
+if (!$user->hasPermission('dqt_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit(0);
 }

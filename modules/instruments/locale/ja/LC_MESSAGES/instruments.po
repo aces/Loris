@@ -21,3 +21,9 @@ msgstr ""
 msgid "Instruments"
 msgstr "機器"
 
+
+msgid "Incomplete form"
+msgstr "不完全なフォーム"
+
+msgid "Incomplete forms"
+msgstr "不完全なフォーム"

@@ -10,6 +10,7 @@ INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('api', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('battery_manager', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('behavioural_qc', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('biobank', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('brainbrowser', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('bvl_feedback', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('candidate_list', 'Y');
@@ -55,5 +56,6 @@ INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dataquery', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('redcap', 'N');
+INSERT INTO modules (Name, Active) VALUES ('policy_tracker', 'Y');
 
 ALTER TABLE issues ADD CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `modules` (`ID`);

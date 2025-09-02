@@ -16,8 +16,8 @@ use \LORIS\LorisInstance;
 use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\client\RedcapHttpClient;
 use \LORIS\redcap\config\RedcapConfig;
-use \LORIS\redcap\client\models\records\IRedcapRecord;
 use \LORIS\redcap\client\models\RedcapNotification;
+use \LORIS\redcap\client\models\records\RedcapRecord;
 
 /**
  * This represents a REDCap notification handler.
@@ -99,7 +99,7 @@ class RedcapNotificationHandler
         RedcapConfig $config,
     ) {
         $queries = new RedcapQueries($loris);
-        $mapper  = new RedcapMapper($redcap_client, $config, $queries);
+        $mapper  = new RedcapMapper($loris, $redcap_client, $config);
 
         $this->_loris         = $loris;
         $this->_redcap_client = $redcap_client;
@@ -158,17 +158,23 @@ class RedcapNotificationHandler
 
         $psc_id = $candidate->getPSCID();
 
-        $visit_label = $this->_mapper->getVisitLabel(
-            $this->_redcap_notif->unique_event_name,
-        );
+        // The visit label is populated using record information.
+        $visit_label = null;
 
         // Track which instruments are updated and not updated.
         $instruments_not_updated = [];
 
-        //
+        // Import each REDCap record into LORIS.
         foreach ($records as $record) {
+            // Get the LORIS visit label associated with the REDCap record.
+            $visit_label = $this->_mapper->getVisitLabel(
+                $record,
+                $this->_redcap_notif->unique_event_name,
+                $candidate,
+            );
+
             // if repeating instrument, contains the repeat index
-            $instrument_name = $record->getInstrumentName();
+            $instrument_name = $record->getLorisInstrumentName();
 
             // get the comment ID for that instrument
             $comment_id = $this->_getCommentId(
@@ -234,7 +240,7 @@ class RedcapNotificationHandler
      * Check that the REDCap and LORIS dictionaries of an instrument match.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument object
-     * @param IRedcapRecord       $record     a REDCap instrument record
+     * @param RedcapRecord        $record     a REDCap instrument record
      *
      * @throws \LorisException if a REDCap field not in LORIS instrument
      *
@@ -242,7 +248,7 @@ class RedcapNotificationHandler
      */
     private function _assertDictionaryMatches(
         \NDB_BVL_Instrument $instrument,
-        IRedcapRecord $record
+        RedcapRecord $record
     ): void {
         // var
         $instrument_name  = $instrument->testName;
@@ -343,63 +349,50 @@ class RedcapNotificationHandler
      */
     private static function _formatEnumFields(array $assoc_values): array
     {
-        $keys    = array_keys($assoc_values);
-        $reduced = array_reduce(
-            $keys,
-            function ($carry, $item) use ($assoc_values) {
-                $field_name = $item;
-                $value      = $assoc_values[$field_name];
+        $results = [];
 
-                preg_match('/(.*)[_][_][_](.*)/', $item, $matches);
-                if (!empty($matches[1])) {
-                    // It is an enum field
-                    $new_field_name = $matches[1];
-                    $prev_value     = isset($carry[$new_field_name])
-                        ? [$carry[$new_field_name]]
-                        : [];
-                    $new_value      = $prev_value;
+        foreach ($assoc_values as $field_name => $value) {
+            preg_match('/(.*)___(.*)/', strval($field_name), $matches);
+            if (!empty($matches[1])) {
+                // It is an enum field
+                $new_field_name = $matches[1];
+                $prev_value     = isset($results[$new_field_name])
+                    ? [$results[$new_field_name]]
+                    : [];
+                $new_value      = $prev_value;
 
-                    if ($value == '1') {
-                        // The value is selected
-                        $value     = [$matches[2]];
-                        $new_value = [
-                            implode(
-                                '{@}',
-                                array_merge($prev_value, $value)
-                            )
-                        ];
-                    }
-
-                    $value      = array_shift($new_value);
-                    $field_name = $new_field_name;
+                if ($value == '1') {
+                    // The value is selected
+                    $value     = [$matches[2]];
+                    $new_value = [
+                        implode(
+                            '{@}',
+                            array_merge($prev_value, $value)
+                        )
+                    ];
                 }
 
-                if (!isset($carry[$field_name])) {
-                    $carry[$field_name] = null;
-                }
+                $value      = array_shift($new_value);
+                $field_name = $new_field_name;
+            }
 
-                $carry[$field_name] = $value;
+            $results[$field_name] = $value;
+        }
 
-                return $carry;
-
-            },
-            []
-        );
-
-        return $reduced;
+        return $results;
     }
 
     /**
      * Update a LORIS instrument data with a REDCap record data.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument instance
-     * @param IRedcapRecord       $record     a REDCap record
+     * @param RedcapRecord        $record     a REDCap record
      *
      * @return void
      */
     private function _updateInstrument(
         \NDB_BVL_Instrument $instrument,
-        IRedcapRecord $record
+        RedcapRecord $record
     ): void {
         // var
         $instrument_name   = $record->getFormName();

@@ -6,6 +6,38 @@ DROP TABLE IF EXISTS dataquery_run_queries;
 DROP TABLE IF EXISTS dataquery_query_names;
 DROP TABLE IF EXISTS dataquery_queries;
 
+-- 0000-00-6-BiobankTables.sql
+DROP TABLE IF EXISTS `biobank_container_shipment_rel`;
+DROP TABLE IF EXISTS `shipment`;
+DROP TABLE IF EXISTS `shipment_log`;
+DROP TABLE IF EXISTS `shipment_status`;
+DROP TABLE IF EXISTS `shipment_type`;
+DROP TABLE IF EXISTS `biobank_specimen_pool_rel`;
+DROP TABLE IF EXISTS `biobank_pool`;
+DROP TABLE IF EXISTS `biobank_specimen_project_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_parent`;
+DROP TABLE IF EXISTS `biobank_specimen_analysis`;
+DROP TABLE IF EXISTS `biobank_specimen_preparation`;
+DROP TABLE IF EXISTS `biobank_specimen_collection`;
+DROP TABLE IF EXISTS `biobank_specimen_freezethaw`;
+DROP TABLE IF EXISTS `biobank_specimen`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol`;
+DROP TABLE IF EXISTS `biobank_specimen_attribute`;
+DROP TABLE IF EXISTS `biobank_specimen_attribute_datatype`;
+DROP TABLE IF EXISTS `biobank_specimen_process`;
+DROP TABLE IF EXISTS `biobank_specimen_type_parent`;
+DROP TABLE IF EXISTS `biobank_specimen_type_container_type_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type_unit_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type`;
+DROP TABLE IF EXISTS `biobank_container_parent`;
+DROP TABLE IF EXISTS `biobank_container`;
+DROP TABLE IF EXISTS `biobank_container_type`;
+DROP TABLE IF EXISTS `biobank_container_status`;
+DROP TABLE IF EXISTS `biobank_container_capacity`;
+DROP TABLE IF EXISTS `biobank_container_dimension`;
+DROP TABLE IF EXISTS `biobank_unit`;
+
 -- 0000-00-05-ElectrophysiologyTables.sql
 DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;
 DROP TABLE IF EXISTS `physiological_event_parameter`;
@@ -133,6 +165,8 @@ DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;
 DROP TABLE IF EXISTS `user_account_history`;
+DROP TABLE IF EXISTS `policies`;
+DROP TABLE IF EXISTS `user_policy_decision`;
 DROP TABLE IF EXISTS `data_integrity_flag`;
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
 DROP TABLE IF EXISTS `certification_training_quiz_questions`;

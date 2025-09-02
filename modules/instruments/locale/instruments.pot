@@ -21,3 +21,8 @@ msgstr ""
 msgid "Instruments"
 msgstr ""
 
+msgid "Incomplete form"
+msgstr ""
+
+msgid "Incomplete forms"
+msgstr ""
