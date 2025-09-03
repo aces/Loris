@@ -536,7 +536,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
     /**
      * Sorts project progression data by the most common statistic titles.
      *
-     * @param array $studyProgressionProjects The project data to sort
+     * @param array $projects The project data to sort
      *
      * @return array Sorted project data
      */
@@ -566,8 +566,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
      */
     private function _calculateStatisticCounts(
         array $studyProgressionProjects
-    ): array
-    {
+    ): array {
         $statisticCounts = [];
 
         foreach ($studyProgressionProjects as $projectData) {
