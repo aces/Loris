@@ -1,6 +1,6 @@
 INSERT INTO modules (Name, Active) VALUES ('biobank', 'Y');
 
-INSERT INTO `permissions` VALUES
+INSERT INTO `permissions` (code, description, moduleID, action, categoryID) VALUES
     ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), 'View', '2'),
     ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Create', '2'),
     ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), 'Edit', '2'),

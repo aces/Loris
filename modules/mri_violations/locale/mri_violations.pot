@@ -21,3 +21,9 @@ msgstr ""
 msgid "MRI Violated Scans"
 msgstr ""
 
+msgid "Violated scan"
+msgstr ""
+
+msgid "Violated scans"
+msgstr ""
+

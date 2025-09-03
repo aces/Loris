@@ -1,7 +1,7 @@
 # Data Query Tool (DQT) Test Plan
 
 1. Ensure the DQT module loads only for a user that has the permission 'Data 
-Query Tool: View/Download Cross-Modality Data' (`dataquery_view`)
+Query Tool: View/Download Cross-Modality Data' (`dqt_view`)
 2. Go to the "Define Fields" tab:
    - select an instrument in the instrument drop down, ensure the fields are displayed
      with the option to restrict to certain visits
