@@ -29,6 +29,7 @@ const StudyProgression = (props) => {
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
+        titlePrefix: 'Month',
       },
     },
     'total_recruitment': {
@@ -41,6 +42,7 @@ const StudyProgression = (props) => {
         legend: '',
         options: {line: 'line'},
         chartObject: null,
+        titlePrefix: 'Month',
       },
     },
   });

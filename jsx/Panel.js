@@ -92,10 +92,10 @@ const Panel = (props) => {
           ? props.views[activeView]['title']
           : props.title}
         {props.views && props.views[activeView]['subtitle']
-          && <span className='panel-subtitle'>
+          && <span>
             {!props.views[activeView]['subtitle'].endsWith('-1')
-              ? '| ' + `${props.views[activeView]['subtitle']}`
-              : '| ' + 'Loading...'
+              ? ' | ' + `${props.views[activeView]['subtitle']}`
+              : ' | ' + 'Loading...'
             }
           </span>
         }

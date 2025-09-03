@@ -159,7 +159,17 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
   return newChart;
 }
 
-const createLineChart = (data, columns, id, label, targetModal) => {
+const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => {
+  // Calculate grand total across all data points for percentage calculation
+  let grandTotal = 0;
+  if (data && data.datasets) {
+    for (let i = 0; i < data.datasets.length; i++) {
+      for (let j = 0; j < data.datasets[i].data.length; j++) {
+        grandTotal += parseInt(data.datasets[i].data[j]);
+      }
+    }
+  }
+
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -172,6 +182,7 @@ const createLineChart = (data, columns, id, label, targetModal) => {
       columns: columns,
       type: 'area-spline',
     },
+    spline: {interpolation: {type: 'monotone'}},
     axis: id.includes('bymonth') && {
       x: {
         type: 'timeseries',
@@ -193,7 +204,7 @@ const createLineChart = (data, columns, id, label, targetModal) => {
       pattern: siteColours,
     },
     tooltip: {
-      // hide if 0
+      // hide if 0 and add percentage calculations based on grand total
       contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
         let $$ = this,
           config = $$.config,
@@ -201,26 +212,36 @@ const createLineChart = (data, columns, id, label, targetModal) => {
           nameFormat = config.tooltip_format_name || function (name) { return name; },
           valueFormat = config.tooltip_format_value || defaultValueFormat,
           text, i, title, value, name, bgcolor;
+
         for (i = 0; i < d.length; i++) {
           if (d[i] && d[i].value == 0) { continue; }
 
           if (! text) {
             title = titleFormat ? titleFormat(d[i].x) : d[i].x;
+            // Format title based on chart type or titlePrefix
+            if (titlePrefix) {
+              title = `${titlePrefix}: ${title}`;
+            } else if (id.includes('agedistribution')) {
+              title = `Age: ${title}`;
+            }
             text = "<table class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
           }
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
+          
+          // Calculate percentage based on grand total of entire dataset
+          let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
+          
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
           text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
-          text += "<td class='value'>" + value + "</td>";
+          text += "<td class='value'>" + value + " (" + percentage + "%)</td>";
           text += "</tr>";
         }
         return text + "</table>";
       }
-
     }
   });
   return newChart;
@@ -302,7 +323,7 @@ const setupCharts = async (targetIsModal, chartDetails) => {
           } else if (chart.chartType === 'bar') {
             chartObject = createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
-            chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal');
+            chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
           }
           newChartDetails[section][chartID].data = chartData;
           newChartDetails[section][chartID].chartObject = chartObject;
