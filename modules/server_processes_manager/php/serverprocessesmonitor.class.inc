@@ -141,19 +141,9 @@ class ServerProcessesMonitor
         $serverProcessFactory = new ServerProcessFactory();
         $savedProcesses       = [];
         foreach ($rows as $row) {
-            $savedProcesses[$row['id']] = $serverProcessFactory->getServerProcess(
-                intval($row['id']),
-                intval($row['pid']),
-                $row['type'],
-                $row['stdout_file'],
-                $row['stderr_file'],
-                $row['exit_code_file'],
-                intval($row['exit_code']),
-                $row['userid'],
-                $row['start_time'],
-                $row['end_time'],
-                $row['exit_text']
-            );
+            $savedProcesses[$row['id']]
+                = $serverProcessFactory->getServerProcess($row);
+
         }
 
         //-----------------------------------------------------
@@ -170,8 +160,7 @@ class ServerProcessesMonitor
         // Compute process state for each process to monitor
         foreach ($idsToMonitor as $id) {
             // Find process in the database with this id (null if none)
-            $matchingProcess = isset($savedProcesses[$id])
-                ? $savedProcesses[$id] : null;
+            $matchingProcess = $savedProcesses[$id] ?? null;
 
             if (is_null($matchingProcess)) {
                 // No process with this id. Unknown id = unknown state
