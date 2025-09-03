@@ -36,6 +36,7 @@ class DataWidget implements \LORIS\GUI\Widget
      * @param string $label    The label to describe the data.
      * @param array  $data     The array data.
      * @param string $cssclass A CSS class to add to the element.
+     * @param string $colour   The colour to use for the element.
      */
     public function __construct(
         string $label,
@@ -81,6 +82,7 @@ class DataWidget implements \LORIS\GUI\Widget
 
     /**
      * Returns the colour
+     *
      * @return string
      */
     public function colour() : string

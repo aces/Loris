@@ -101,8 +101,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $studyWidgets = $this->_collectStudyProgressionWidgets($user);
         $studyProgressionProjects = $this->_createStudyProgressionProjects(
-            $projects, 
-            $config, 
+            $projects,
+            $config,
             $studyWidgets
         );
 
@@ -459,12 +459,12 @@ class Widgets extends \NDB_Page implements ETagCalculator
      */
     private function _collectStudyProgressionWidgets(\User $user): array
     {
-        $modules = $this->loris->getActiveModules();
+        $modules      = $this->loris->getActiveModules();
         $studyWidgets = [];
 
         foreach ($modules as $module) {
             $moduleWidgets = $module->getWidgets('study-progression', $user, []);
-            
+
             foreach ($moduleWidgets as $widget) {
                 if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
                     continue;
@@ -507,9 +507,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
     /**
      * Creates study progression data for all projects.
      *
-     * @param array  $projects     Array of project IDs
-     * @param \NDB_Config $config  Configuration object
-     * @param array  $studyWidgets Collected study widgets
+     * @param array       $projects     Array of project IDs
+     * @param \NDB_Config $config       Configuration object
+     * @param array       $studyWidgets Collected study widgets
      *
      * @return array Study progression data organized by project
      */
@@ -519,14 +519,14 @@ class Widgets extends \NDB_Page implements ETagCalculator
         array $studyWidgets
     ): array {
         $studyProgressionProjects = [];
-        
+
         foreach ($projects as $pid) {
             $projectInfo = $config->getProjectSettings(intval(strval($pid)));
             if (is_null($projectInfo)) {
                 continue;
             }
-            
-            $studyProgressionProjects[$projectInfo['Name']] 
+
+            $studyProgressionProjects[$projectInfo['Name']]
                 = $this->_createProjectSummary(strval($pid), $studyWidgets);
         }
 
@@ -540,11 +540,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return array Sorted project data
      */
-    private function _sortProjectsByPopularity(array $studyProgressionProjects): array
+    private function _sortProjectsByPopularity(array $projects): array
     {
-        $statisticCounts = $this->_calculateStatisticCounts($studyProgressionProjects);
-        
-        foreach ($studyProgressionProjects as &$projectData) {
+        $statisticCounts = $this->_calculateStatisticCounts($projects);
+
+        foreach ($projects as &$projectData) {
             usort(
                 $projectData,
                 function ($a, $b) use ($statisticCounts) {
@@ -553,8 +553,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 }
             );
         }
-        
-        return $studyProgressionProjects;
+
+        return $projects;
     }
 
     /**
@@ -564,17 +564,19 @@ class Widgets extends \NDB_Page implements ETagCalculator
      *
      * @return array Count of each statistic title
      */
-    private function _calculateStatisticCounts(array $studyProgressionProjects): array
+    private function _calculateStatisticCounts(
+        array $studyProgressionProjects
+    ): array
     {
         $statisticCounts = [];
-        
+
         foreach ($studyProgressionProjects as $projectData) {
             foreach ($projectData as $data) {
                 $title = $data['title'];
                 $statisticCounts[$title] = ($statisticCounts[$title] ?? 0) + 1;
             }
         }
-        
+
         return $statisticCounts;
     }
 
@@ -589,13 +591,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
     private function _createProjectSummary(string $projectID, array $widgets): array
     {
         $projectData = [];
-        
+
         foreach ($widgets as $widgetName => $widgetConfig) {
             if (!isset($widgetConfig[$projectID])) {
                 continue;
             }
-            
-            $data = $widgetConfig[$projectID];
+
+            $data          = $widgetConfig[$projectID];
             $projectData[] = [
                 'title'  => $widgetName,
                 'url'    => $data['url'] ?? null,
