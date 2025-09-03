@@ -102,12 +102,15 @@ class Module extends \Module
         }
 
         if ($last_login === null) {
-            $logindatestring = "...never. Welcome!";
+            $logindatestring = dgettext("dashboard", "...never. Welcome!");
         } else {
-            // Note: This is the format from MySQL for historical reasons.
-            // We might want to make it a more human-friendly since we have
-            // a \DateTime object.
-            $logindatestring = $last_login->format('Y-m-d H:i:s');
+            $formatter = new \IntlDateFormatter(
+                '',
+                \IntlDateFormatter::TRADITIONAL,
+                \IntlDateFormatter::SHORT
+            );
+
+            $logindatestring = $formatter->format($last_login);
         }
 
         return new Widget(
