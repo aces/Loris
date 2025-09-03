@@ -99,31 +99,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
-        $modules = $this->loris->getActiveModules();
+        $studyWidgets = $this->_collectStudyProgressionWidgets($user);
+        $studyProgressionProjects = $this->_createStudyProgressionProjects(
+            $projects, 
+            $config, 
+            $studyWidgets
+        );
 
-        $studyWidgets = [];
-        foreach ($modules as $module) {
-            $mwidget = $module->getWidgets(
-                'study-progression',
-                $user,
-                []
-            );
-            foreach ($mwidget as $mwidget) {
-                if ($mwidget instanceof \LORIS\dashboard\DataWidget) {
-                    $studyWidgets[$mwidget->label()] = $mwidget->data();
-                    if (!$module->hasAccess($user)) {
-                        foreach (
-                            $studyWidgets[$mwidget->label()] as $key => $value
-                        ) {
-                            if (isset($value['url'])) {
-                                $studyWidgets[$mwidget->label()][$key]['url'] = null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $studyProgressionProjects = [];
         foreach ($projects as $pid) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($pid)));
@@ -143,11 +125,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 ),
                 $recruitmentRaw
             );
-            $studyProgressionProjects[$projectInfo['Name']]
-                = $this->_createProjectSummary(
-                    strval($pid),
-                    $studyWidgets
-                );
             // Set cohort recruitment data
             $centerList  = "'" . implode("','", $centerIDs) . "'";
             $projectList = "'" . implode("','", $projects) . "'";
@@ -415,35 +392,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * Generates the template data for a project summary.
-     *
-     * @param string $ID      The name of the progress bar being created.
-     * @param array  $widgets The raw data from the database
-     *
-     * @return array data for the project summary
-     */
-    private function _createProjectSummary(
-        $ID,
-        $widgets
-    ): array {
-        $projectData = [];
-        foreach ($widgets as $name => $widget) {
-            foreach ($widget as $projectID => $data) {
-                if ($projectID == $ID) {
-                    $projectData[] = [
-                        'title'  => $name,
-                        'url'    => $data['url'],
-                        'colour' => $data['colour'],
-                        'count'  => $data['count']
-                    ];
-                }
-            }
-        }
-
-        return $projectData;
-    }
-
-    /**
      * Gets the total count of candidates of a specific sex
      *
      * @param array  $raw The raw data returned from the SQL query.
@@ -500,6 +448,163 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
         return $sum;
+    }
+
+    /**
+     * Collects study progression widgets from all active modules.
+     *
+     * @param \User $user The current user
+     *
+     * @return array Collected study widgets data
+     */
+    private function _collectStudyProgressionWidgets(\User $user): array
+    {
+        $modules = $this->loris->getActiveModules();
+        $studyWidgets = [];
+
+        foreach ($modules as $module) {
+            $moduleWidgets = $module->getWidgets('study-progression', $user, []);
+            
+            foreach ($moduleWidgets as $widget) {
+                if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
+                    continue;
+                }
+
+                $widgetData = [
+                    ...$widget->data(),
+                    "colour" => $widget->colour()
+                ];
+
+                // Remove URLs if user doesn't have access to the module
+                if (!$module->hasAccess($user)) {
+                    $widgetData = $this->_removeUrlsFromWidgetData($widgetData);
+                }
+
+                $studyWidgets[$widget->label()] = $widgetData;
+            }
+        }
+
+        return $studyWidgets;
+    }
+
+    /**
+     * Removes URLs from widget data for unauthorized access.
+     *
+     * @param array $widgetData The widget data to process
+     *
+     * @return array Widget data with URLs removed
+     */
+    private function _removeUrlsFromWidgetData(array $widgetData): array
+    {
+        foreach ($widgetData as $key => $value) {
+            if (isset($value['url'])) {
+                $widgetData[$key]['url'] = null;
+            }
+        }
+        return $widgetData;
+    }
+
+    /**
+     * Creates study progression data for all projects.
+     *
+     * @param array  $projects     Array of project IDs
+     * @param \NDB_Config $config  Configuration object
+     * @param array  $studyWidgets Collected study widgets
+     *
+     * @return array Study progression data organized by project
+     */
+    private function _createStudyProgressionProjects(
+        array $projects,
+        \NDB_Config $config,
+        array $studyWidgets
+    ): array {
+        $studyProgressionProjects = [];
+        
+        foreach ($projects as $pid) {
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
+            if (is_null($projectInfo)) {
+                continue;
+            }
+            
+            $studyProgressionProjects[$projectInfo['Name']] 
+                = $this->_createProjectSummary(strval($pid), $studyWidgets);
+        }
+
+        return $this->_sortProjectsByPopularity($studyProgressionProjects);
+    }
+
+    /**
+     * Sorts project progression data by the most common statistic titles.
+     *
+     * @param array $studyProgressionProjects The project data to sort
+     *
+     * @return array Sorted project data
+     */
+    private function _sortProjectsByPopularity(array $studyProgressionProjects): array
+    {
+        $statisticCounts = $this->_calculateStatisticCounts($studyProgressionProjects);
+        
+        foreach ($studyProgressionProjects as &$projectData) {
+            usort(
+                $projectData,
+                function ($a, $b) use ($statisticCounts) {
+                    return ($statisticCounts[$b['title']] ?? 0)
+                        - ($statisticCounts[$a['title']] ?? 0);
+                }
+            );
+        }
+        
+        return $studyProgressionProjects;
+    }
+
+    /**
+     * Calculates how many times each statistic title appears across projects.
+     *
+     * @param array $studyProgressionProjects The project data
+     *
+     * @return array Count of each statistic title
+     */
+    private function _calculateStatisticCounts(array $studyProgressionProjects): array
+    {
+        $statisticCounts = [];
+        
+        foreach ($studyProgressionProjects as $projectData) {
+            foreach ($projectData as $data) {
+                $title = $data['title'];
+                $statisticCounts[$title] = ($statisticCounts[$title] ?? 0) + 1;
+            }
+        }
+        
+        return $statisticCounts;
+    }
+
+    /**
+     * Generates the template data for a project summary.
+     *
+     * @param string $projectID The project ID being processed
+     * @param array  $widgets   The collected study widgets
+     *
+     * @return array Data for the project summary
+     */
+    private function _createProjectSummary(string $projectID, array $widgets): array
+    {
+        $projectData = [];
+        
+        foreach ($widgets as $widgetName => $widgetConfig) {
+            if (!isset($widgetConfig[$projectID])) {
+                continue;
+            }
+            
+            $data = $widgetConfig[$projectID];
+            $projectData[] = [
+                'title'  => $widgetName,
+                'url'    => $data['url'] ?? null,
+                'colour' => $widgetConfig['colour'] ?? null,
+                'count'  => $data['count'] ?? 0
+            ];
+        }
+
+        return $projectData;
     }
 
     /**

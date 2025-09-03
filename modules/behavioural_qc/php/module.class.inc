@@ -82,7 +82,6 @@ class Module extends \Module
                 "SELECT 
                             p.ProjectID,
                             COUNT(*) AS count,
-                            'rgb(252, 241, 255)' as colour,
                             CONCAT('$baseURL/behavioural_qc/?Project=', p.ProjectID)
                             AS url
                         FROM flag f 
@@ -101,6 +100,7 @@ class Module extends \Module
                     "Behavioural Session",
                     $data,
                     "",
+                    'rgb(252, 241, 255)'
                 )
             ];
         }

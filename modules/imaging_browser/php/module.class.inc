@@ -131,7 +131,6 @@ class Module extends \Module
                     p.ProjectID,
                     p.Name AS ProjectName,
                     COUNT(s.ID) AS count,
-                    'rgb(235, 255, 254)' as colour,
                     '".$baseURL."/imaging_browser' as url
                 FROM session s
                 JOIN Project p ON p.ProjectID = s.ProjectID
@@ -147,6 +146,7 @@ class Module extends \Module
                     "Imaging Session",
                     $data,
                     "",
+                    'rgb(235, 255, 254)',
                 )
             ];
         }

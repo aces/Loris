@@ -28,6 +28,7 @@ class DataWidget implements \LORIS\GUI\Widget
     protected $label;
     protected $data;
     protected $cssclass;
+    protected $colour;
 
     /**
      * Construct a DataWidget with the given properties.
@@ -40,10 +41,12 @@ class DataWidget implements \LORIS\GUI\Widget
         string $label,
         array $data,
         string $cssclass,
+        string $colour,
     ) {
         $this->label    = $label;
         $this->data     = $data;
         $this->cssclass = $cssclass;
+        $this->colour   = $colour;
     }
 
     /**
@@ -74,6 +77,15 @@ class DataWidget implements \LORIS\GUI\Widget
     public function CSSClass() : string
     {
         return $this->cssclass;
+    }
+
+    /**
+     * Returns the colour
+     * @return string
+     */
+    public function colour() : string
+    {
+        return $this->colour;
     }
 
     /**

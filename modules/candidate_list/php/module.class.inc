@@ -118,7 +118,6 @@ class Module extends \Module
                 "SELECT
                     ProjectID,
                     COUNT(DISTINCT PSCID) AS count,
-                    'rgb(255, 252, 199)' AS colour,
                     CONCAT('$baseURL/candidate_list/?project=', ProjectName)
                     AS url,
                     ProjectName
@@ -144,6 +143,7 @@ class Module extends \Module
                     "Participant",
                     $data,
                     "",
+                    'rgb(255, 252, 199)',
                 )
             ];
         }
