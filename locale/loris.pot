@@ -168,3 +168,14 @@ msgstr ""
 
 msgid "Download Table as CSV"
 msgstr ""
+
+# Common strings on widgets
+msgid "NEW"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Uploaded"
+msgstr ""
+

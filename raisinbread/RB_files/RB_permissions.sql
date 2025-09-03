@@ -32,7 +32,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (38,'imaging_uploader_allsites','Imaging Scans - All Sites',22,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (39,'acknowledgements_view','Acknowledgee List',1,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (40,'acknowledgements_edit','Acknowledgee List',1,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (41,'dataquery_view','Cross-Modality Data',44,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (41,'dataquery_view','Cross-Modality Data',49,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (42,'genomic_data_manager','Genomic Files',18,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (43,'media_write','Candidate Media Files',29,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (44,'media_read','Candidate Media Files',29,2);
@@ -80,5 +80,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (86,'biobank_specimen_view','View Specimens',51,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (87,'biobank_container_view','View Containers',51,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (88,'biobank_pool_view','View Pools',51,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (89,'dqt_view','Cross-Modality Data (legacy)',44,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

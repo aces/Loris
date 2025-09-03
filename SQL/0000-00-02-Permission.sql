@@ -122,7 +122,7 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_uploader_allsites','Imaging Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_uploader'),2),
     ('acknowledgements_view','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),2),
     ('acknowledgements_edit','Acknowledgee List',(SELECT ID FROM modules WHERE Name='acknowledgements'),2),
-    ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),2),
+    ('dqt_view','Cross-Modality Data (legacy)',(SELECT ID FROM modules WHERE Name='dqt'),2),
     ('genomic_data_manager','Genomic Files',(SELECT ID FROM modules WHERE Name='genomic_browser'),2),
     ('media_write','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),2),
     ('media_read','Candidate Media Files',(SELECT ID FROM modules WHERE Name='media'),2),
@@ -176,7 +176,8 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('biobank_pool_view','View Pool Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_pool_create','Create Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
-    ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2');
+    ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
@@ -285,7 +286,10 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
-  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1);
+  ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
+  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
 
 
 -- permissions for each notification module

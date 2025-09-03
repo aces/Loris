@@ -21,3 +21,8 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr ""
 
+msgid "Your assigned issue"
+msgstr ""
+
+msgid "Your assigned issues"
+msgstr ""
