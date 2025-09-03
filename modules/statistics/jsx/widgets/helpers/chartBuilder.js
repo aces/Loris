@@ -167,6 +167,7 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       }
     }
   }
+
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -179,7 +180,7 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       columns: columns,
       type: 'area-spline',
     },
-    spline: {interpolation: {type: 'monotone'}}
+    spline: {interpolation: {type: 'monotone'}},
     axis: id.includes('bymonth') && {
       x: {
         type: 'timeseries',
