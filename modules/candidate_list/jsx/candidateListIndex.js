@@ -251,7 +251,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Scan Done', {ns: 'candidate_list'}),
+        'label': this.props.t('Scan Done', {ns: 'loris'}),
         'show': true,
         'filter': {
           name: 'scanDone',
@@ -369,8 +369,8 @@ class CandidateListIndex extends Component {
     const actions = [
       {
         label: this.state.hideFilter ?
-          this.props.t('Show Advanced Filters', {ns: 'candidate_list'}) :
-          this.props.t('Hide Advanced Filters', {ns: 'candidate_list'}),
+          this.props.t('Show Advanced Filters', {ns: 'loris'}) :
+          this.props.t('Hide Advanced Filters', {ns: 'loris'}),
         action: this.toggleFilters,
         name: 'advanced',
       },
