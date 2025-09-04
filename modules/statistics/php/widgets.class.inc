@@ -572,18 +572,20 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         foreach ($widgets as $widgetName => $widgetConfig) {
             $found = false;
-            
+
             // Search through numeric indices for matching ProjectID
             foreach ($widgetConfig as $key => $value) {
-                if (is_array($value) && isset($value['ProjectID']) && 
-                    strval($value['ProjectID']) === $projectID) {
+                if (is_array($value)
+                    && isset($value['ProjectID'])
+                    && strval($value['ProjectID']) === $projectID
+                ) {
                     $projectData[] = [
                         'title'  => $widgetName,
                         'url'    => $value['url'] ?? null,
                         'colour' => $widgetConfig['colour'] ?? null,
                         'count'  => $value['count'] ?? 0
                     ];
-                    $found = true;
+                    $found         = true;
                     break;
                 }
             }
