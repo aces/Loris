@@ -89,6 +89,43 @@ const StudyProgression = (props) => {
         }}
         views={[
           {
+            content:
+              <div className='study-progression-container'>
+                {Object.entries(json['studyprogression']
+                  ['progressionData']).map(
+                  ([projectName, projectData]) => {
+                    if (projectData.length > 0) {
+                      return <div key={`progress_${projectName}`}>
+                        <h3 style={{marginTop: 0}}>{projectName}</h3>
+                        <div className='study-progression-project'>
+                          {projectData.map((data) => {
+                            const commonProps = {
+                              className: 'study-progression-button',
+                              style: {
+                                backgroundColor: data['colour'],
+                              },
+                              key: `progress_${projectName}_${data['title']}`,
+                            };
+
+                            return (
+                              <a {...commonProps} href={data['url']}>
+                                <h4>{data['count']}</h4>
+                                <div>
+                                  {data['title']}
+                                  {data['count'] !== 1 && 's'}
+                                </div>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>;
+                    }
+                  }
+                )}
+              </div>,
+            title: 'Study Progression - summary',
+          },
+          {
             content: json['studyprogression']['total_scans'] > 0 ? (
               <div
                 style={{

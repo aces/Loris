@@ -704,10 +704,8 @@ class DashboardTest extends LorisIntegrationTest
         );
     }
     /**
-     * 7. Check that scans per site (study progression panel) view is correct
-     * (scan dates and scan numbers).
-     * 8. Check that recruitment per site view is correct
-     * (study progression panel).
+     * 7. Check that study progression panel is correct.
+     * 8. Check that there is no error message in the panel.
      *
      * @return void
      */
@@ -721,7 +719,7 @@ class DashboardTest extends LorisIntegrationTest
         )->getText();
 
         $this->assertStringContainsString(
-            "Scan sessions per site",
+            "Candidates",
             $testText
         );
 

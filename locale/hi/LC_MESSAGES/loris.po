@@ -160,6 +160,18 @@ msgstr "जन्म तिथि"
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
+msgid "Entity Type"
+msgstr "इकाई प्रकार"
+
+msgid "Scan Done"
+msgstr "स्कैन पूरा हुआ"
+
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छुपाएँ"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"

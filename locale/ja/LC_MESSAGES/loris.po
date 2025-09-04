@@ -166,6 +166,24 @@ msgstr "フィードバック"
 msgid "Scans"
 msgstr "スキャン"
 
+msgid "Date of Birth"
+msgstr "生年月日"
+
+msgid "An error occured while loading the page."
+msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Entity Type"
+msgstr "エンティティタイプ"
+
+msgid "Scan Done"
+msgstr "スキャン完了"
+
+msgid "Show Advanced Filters"
+msgstr "詳細フィルターを表示"
+
+msgid "Hide Advanced Filters"
+msgstr "詳細フィルターを非表示"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
