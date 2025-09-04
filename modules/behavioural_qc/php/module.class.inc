@@ -60,4 +60,51 @@ class Module extends \Module
     {
         return dgettext("behavioural_qc", "Behavioural Quality Control");
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        switch ($type) {
+        case 'study-progression':
+            $DB   = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                "SELECT 
+                            p.ProjectID,
+                            COUNT(*) AS count,
+                            CONCAT('$baseURL/behavioural_qc/?Project=', p.ProjectID)
+                            AS url,
+                            p.Name AS ProjectName
+                        FROM flag f 
+                        JOIN session s ON f.SessionID = s.ID 
+                        JOIN Project p ON p.ProjectID = s.ProjectID
+                        WHERE DataID IS NOT NULL
+                        AND s.Active <> 'N' 
+                        AND s.CenterID <> 1 
+                        AND f.CommentID NOT LIKE 'DDE_%'
+                        GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    "Behavioural Session",
+                    $data,
+                    "",
+                    'rgb(252, 241, 255)'
+                )
+            ];
+        }
+        return [];
+    }
 }
