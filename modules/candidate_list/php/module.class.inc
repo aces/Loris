@@ -140,7 +140,7 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Participant",
+                    "Candidate",
                     $data,
                     "",
                     'rgb(255, 252, 199)',

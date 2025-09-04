@@ -88,51 +88,31 @@ const StudyProgression = (props) => {
         views={[
           {
             content:
-              <div
-                style={{
-                  maxHeight: '400px',
-                  overflowY: 'scroll',
-                  overflowX: 'hidden',
-                }}
-              >
+              <div className='study-progression-container'>
                 {Object.entries(json['studyprogression']
                   ['progressionData']).map(
                   ([projectName, projectData]) => {
                     if (projectData.length > 0) {
                       return <div key={`progress_${projectName}`}>
                         <h3 style={{marginTop: 0}}>{projectName}</h3>
-                        <div
-                          className='study-progression-container'
-                        >
+                        <div className='study-progression-project'>
                           {projectData.map((data) => {
                             const commonProps = {
                               className: 'study-progression-button',
                               style: {
                                 backgroundColor: data['colour'],
-                                color: 'black',
-                                textDecoration: 'none',
                               },
                               key: `progress_${projectName}_${data['title']}`,
                             };
 
-                            const content = (
-                              <>
+                            return (
+                              <a {...commonProps} href={data['url']}>
                                 <h4>{data['count']}</h4>
                                 <div>
-                                  {data['title'].replace('_', ' ')}
+                                  {data['title']}
                                   {data['count'] !== 1 && 's'}
                                 </div>
-                              </>
-                            );
-
-                            return data['url'] ? (
-                              <a {...commonProps} href={data['url']}>
-                                {content}
                               </a>
-                            ) : (
-                              <div {...commonProps}>
-                                {content}
-                              </div>
                             );
                           })}
                         </div>

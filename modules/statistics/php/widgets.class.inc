@@ -154,27 +154,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     );
             }
         }
-        // Sort each project's progression data by the most common titles first
-        $statisticCounts = [];
-        foreach ($studyProgressionProjects as $projectData) {
-            foreach ($projectData as $data) {
-                if (isset($statisticCounts[$data['title']])) {
-                    $statisticCounts[$data['title']]++;
-                } else {
-                    $statisticCounts[$data['title']] = 1;
-                }
-            }
-        }
-        foreach ($studyProgressionProjects as &$projectData) {
-            usort(
-                $projectData,
-                function ($a, $b) use ($statisticCounts) {
-                    return ($statisticCounts[$b['title']] ?? 0)
-                        - ($statisticCounts[$a['title']] ?? 0);
-                }
-            );
-        }
-        unset($projectData);
 
         $siteOptions = [];
         foreach ($centerIDs as $center) {
@@ -592,17 +571,22 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $projectData = [];
 
         foreach ($widgets as $widgetName => $widgetConfig) {
-            if (!isset($widgetConfig[$projectID])) {
-                continue;
+            $found = false;
+            
+            // Search through numeric indices for matching ProjectID
+            foreach ($widgetConfig as $key => $value) {
+                if (is_array($value) && isset($value['ProjectID']) && 
+                    strval($value['ProjectID']) === $projectID) {
+                    $projectData[] = [
+                        'title'  => $widgetName,
+                        'url'    => $value['url'] ?? null,
+                        'colour' => $widgetConfig['colour'] ?? null,
+                        'count'  => $value['count'] ?? 0
+                    ];
+                    $found = true;
+                    break;
+                }
             }
-
-            $data          = $widgetConfig[$projectID];
-            $projectData[] = [
-                'title'  => $widgetName,
-                'url'    => $data['url'] ?? null,
-                'colour' => $widgetConfig['colour'] ?? null,
-                'count'  => $data['count'] ?? 0
-            ];
         }
 
         return $projectData;

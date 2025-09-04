@@ -16,28 +16,36 @@
 }
 
 .study-progression-container {
+  max-height: 415px;
+  overflow-y: auto;
+}
+
+.study-progression-project {
   flex-direction: row;
   display: flex;
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
+  margin-left: 5px;
 }
 
 .study-progression-button {
   background-color: #ffffff;
   border-radius: 15px;
+  min-width: 150px;
   padding: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
   text-align: center;
   margin: 0 10px 10px 0;
   padding: 10px;
+  color: black !important;
+  text-decoration: none !important;
 }
 
 .study-progression-button:hover {
   transform: translateY(-10px);
   background-color: #f9fdff;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  border: 1px solid #acacac;
+  box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* ===== Chart Header (Title + Dropdown) ===== */

@@ -83,7 +83,8 @@ class Module extends \Module
                             p.ProjectID,
                             COUNT(*) AS count,
                             CONCAT('$baseURL/behavioural_qc/?Project=', p.ProjectID)
-                            AS url
+                            AS url,
+                            p.Name AS ProjectName
                         FROM flag f 
                         JOIN session s ON f.SessionID = s.ID 
                         JOIN Project p ON p.ProjectID = s.ProjectID
