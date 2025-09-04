@@ -21,11 +21,7 @@ msgstr ""
 msgid "Access Profile"
 msgstr "प्रोफ़ाइल तक पहुँचें"
 
-msgid "Entity Type"
-msgstr "इकाई प्रकार"
 
-msgid "Scan Done"
-msgstr "स्कैन पूरा हुआ"
 
 msgid "Visit Count"
 msgstr "आगंतुक गणना"
@@ -33,9 +29,5 @@ msgstr "आगंतुक गणना"
 msgid "Open Profile"
 msgstr "प्रोफ़ाइल खोलें"
 
-msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
 
-msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
 

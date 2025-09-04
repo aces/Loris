@@ -159,6 +159,18 @@ msgstr ""
 msgid "An error occured while loading the page."
 msgstr ""
 
+msgid "Entity Type"
+msgstr ""
+
+msgid "Scan Done"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""

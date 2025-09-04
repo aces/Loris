@@ -239,7 +239,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        label: this.props.t('Entity Type', {ns: 'candidate_list'}),
+        label: this.props.t('Entity Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'entityType',
