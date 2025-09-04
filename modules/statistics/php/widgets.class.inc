@@ -571,10 +571,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $projectData = [];
 
         foreach ($widgets as $widgetName => $widgetConfig) {
-            $found = false;
-
             // Search through numeric indices for matching ProjectID
-            foreach ($widgetConfig as $key => $value) {
+            foreach ($widgetConfig as $value) {
                 if (is_array($value)
                     && isset($value['ProjectID'])
                     && strval($value['ProjectID']) === $projectID
@@ -585,7 +583,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
                         'colour' => $widgetConfig['colour'] ?? null,
                         'count'  => $value['count'] ?? 0
                     ];
-                    $found         = true;
                     break;
                 }
             }
