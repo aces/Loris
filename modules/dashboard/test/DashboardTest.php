@@ -719,7 +719,7 @@ class DashboardTest extends LorisIntegrationTest
         )->getText();
 
         $this->assertStringContainsString(
-            "Participants",
+            "Candidates",
             $testText
         );
 
