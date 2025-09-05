@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # Smarty template main.tpl strings
-msgid "LORIS"
+msgid "LORIS"f
 msgstr "लोरिस"
 
 msgid "DEV"
@@ -64,6 +64,9 @@ msgstr "प्रशासन"
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "डेटा शब्दकोश"
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -139,6 +142,9 @@ msgstr "परियोजना"
 msgid "Cohort"
 msgstr "समूह"
 
+msgid "Cohorts"
+msgstr "समूह"
+
 msgid "Session"
 msgstr "सत्र"
 
@@ -165,9 +171,6 @@ msgstr "जन्म तिथि"
 
 msgid "Visits"
 msgstr "भ्रमण"
-
-msgid "Cohorts"
-msgstr "समूह"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"

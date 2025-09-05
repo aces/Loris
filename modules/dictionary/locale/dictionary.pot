@@ -72,6 +72,5 @@ msgstr ""
 msgid "Many"
 msgstr ""
 
-
-
-
+msgid "Description"
+msgstr ""

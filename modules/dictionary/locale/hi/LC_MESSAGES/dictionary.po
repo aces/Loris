@@ -72,6 +72,5 @@ msgstr "वैकल्पिक"
 msgid "Many"
 msgstr "अनेक"
 
-
-
-
+msgid "Description"
+msgstr "विवरण"
