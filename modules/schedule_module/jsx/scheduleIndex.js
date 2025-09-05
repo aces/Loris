@@ -273,11 +273,11 @@ class ScheduleIndex extends Component {
     const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case t('PSCID', {ns: 'schedule_module'}):
+    case t('PSCID', {ns: 'loris'}):
       let url = loris.BaseURL + '/' + row['DCCID'] + '/';
       result = <td><a href ={url}>{cell}</a></td>;
       break;
-    case t('Visit Label', {ns: 'schedule_module'}):
+    case t('Visit Label', {ns: 'loris'}):
       let visit = loris.BaseURL + '/instrument_list/?candID=' +
                    row['DCCID'] + '&sessionID=' + row['Edit'];
       result = <td><a href ={visit}>{cell}</a></td>;
@@ -356,7 +356,7 @@ class ScheduleIndex extends Component {
         >
           <TextboxElement
             name="DCCID"
-            label={t('DCCID', {ns: 'schedule_module'})}
+            label={t('DCCID', {ns: 'loris'})}
             value={this.state.formData.DCCID}
             required={true}
             onUserInput={this.setFormData}
@@ -364,7 +364,7 @@ class ScheduleIndex extends Component {
           />
           <TextboxElement
             name="PSCID"
-            label={t('PSCID', {ns: 'schedule_module'})}
+            label={t('PSCID', {ns: 'loris'})}
             value={this.state.formData.PSCID}
             required={true}
             onUserInput={this.setFormData}
@@ -412,7 +412,7 @@ class ScheduleIndex extends Component {
     const {t} = this.props;
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'schedule_module'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -420,31 +420,31 @@ class ScheduleIndex extends Component {
     }
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: t('DCCID', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: t('PSCID', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: t('Site', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('Site', {ns: 'loris'}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
       }},
-      {label: t('Visit Label', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'VisitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: t('Project', {ns: 'schedule_module'}), show: true, filter: {
+      {label: t('Project', {ns: 'loris'}), show: true, filter: {
         name: 'Project',
         type: 'multiselect',
         options: options.project,
       }},
-      {label: t('Subproject', {ns: 'schedule_module'}), show: true, filter: {
-        name: 'Subproject',
+      {label: t('Cohort', {ns: 'loris'}), show: true, filter: {
+        name: 'Cohort',
         type: 'multiselect',
         options: options.subproject,
       }},
