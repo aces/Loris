@@ -191,6 +191,11 @@ class MediaEditForm extends Component {
     );
   }
 
+  /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
   handleSubmit(e) {
     e.preventDefault();
     const {t} = this.props;
@@ -228,6 +233,12 @@ class MediaEditForm extends Component {
     xhr.send(JSON.stringify(this.state.formData));
   }
 
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
 
