@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # Smarty template main.tpl strings
-msgid "LORIS"f
+msgid "LORIS"
 msgstr "लोरिस"
 
 msgid "DEV"
