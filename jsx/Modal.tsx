@@ -48,8 +48,9 @@ const Modal = ({
     if (throwWarning) { // Display warning if enabled
       Swal.fire({
         title: t('Are You Sure?'),
-        text: 
-        t('Leaving the form will result in the loss of any information entered.'),
+        text:
+        t('Leaving the form will result in the'
+          +' loss of any information entered.'),
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: t('Proceed'),
