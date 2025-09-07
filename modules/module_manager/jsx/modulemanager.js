@@ -5,6 +5,10 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
 import {SelectElement} from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/module_manager.json';
 
 /**
  * Module Manager React Component
@@ -63,12 +67,13 @@ class ModuleManagerIndex extends Component {
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
+    const {t} = this.props;
     switch (column) {
-    case 'Active':
+    case t('Active', {ns: 'module_manager'}):
       if (cell === 'Y') {
-        return 'Yes';
+        return t('Yes', {ns: 'loris'});
       } else if (cell === 'N') {
-        return 'No';
+        return t('No', {ns: 'loris'});
       }
       // This shouldn't happen, it's a non-nullable
       // enum in the backend.
@@ -85,6 +90,7 @@ class ModuleManagerIndex extends Component {
    * @param {number} id
    */
   toggleActive(name, value, id) {
+    const {t} = this.props;
     fetch(
       this.props.BaseURL + '/module_manager/modules/' + name,
       {
@@ -98,18 +104,25 @@ class ModuleManagerIndex extends Component {
       }
     ).then((response) => {
       if (response.status != 205) {
-        swal.fire('Error!', 'Could not update ' + name + '.', 'error');
+        swal.fire(
+          t('Error!', {ns: 'module_manager'}),
+          t('Could not update ', {ns: 'module_manager'}) + name + '.',
+          'error'
+        );
       } else {
         const success = this.setModuleDisplayStatus(name, value);
         if (success === true) {
           swal.fire({
-            title: 'Success!',
-            text: 'Updated ' + name + ' status! ' +
-                  'To apply changes the interface must be reloaded. Proceed?',
+            title: t('Success!', {ns: 'module_manager'}),
+            text: t('Updated', {ns: 'module_manager'}) +
+            name + t(' status! ', {ns: 'module_manager'}) +
+                  t('To apply changes the interface must be reloaded. Proceed?',
+                    {ns: 'module_manager'}),
             type: 'success',
             showCancelButton: true,
-            confirmButtonText: 'Reload the page',
-            cancelButtonText: 'Continue',
+            confirmButtonText: t('Reload the page',
+              {ns: 'module_manager'}),
+            cancelButtonText: t('Continue', {ns: 'module_manager'}),
           }).then((status) => {
             if (status.value) {
               window.location.href = this.props.BaseURL
@@ -120,8 +133,9 @@ class ModuleManagerIndex extends Component {
           // If we get here something went very wrong, because somehow
           // a module was toggled that isn't in the table.
           swal.fire(
-            'Error!',
-            'Could not find module ' + id + '.',
+            t('Error!', {ns: 'module_manager'}),
+            t('Could not find module ',
+              {ns: 'module_manager'}) + id + '.',
             'error'
           );
         }
@@ -160,13 +174,16 @@ class ModuleManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column == 'Active' && this.props.hasEditPermission) {
+    const {t} = this.props;
+    if (column == t('Active',
+      {ns: 'module_manager'}) && this.props.hasEditPermission) {
       return <td><SelectElement
         name={row.Name}
         id={row.Name}
         label=''
         emptyOption={false}
-        options={{'Y': 'Yes', 'N': 'No'}}
+        options={{'Y': t('Yes',
+          {ns: 'loris'}), 'N': t('No', {ns: 'loris'})}}
         value={cell}
         onUserInput={this.toggleActive}
         noMargins={true}
@@ -184,8 +201,10 @@ class ModuleManagerIndex extends Component {
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -194,20 +213,20 @@ class ModuleManagerIndex extends Component {
     }
 
     const fields = [
-      {label: 'Name', show: true, filter: {
+      {label: t('Name', {ns: 'module_manager'}), show: true, filter: {
         name: 'Name',
         type: 'text',
       }},
-      {label: 'Full Name', show: true, filter: {
+      {label: t('Full Name', {ns: 'module_manager'}), show: true, filter: {
         name: 'Full Name',
         type: 'text',
       }},
-      {label: 'Active', show: true, filter: {
+      {label: t('Active', {ns: 'module_manager'}), show: true, filter: {
         name: 'Active',
         type: 'select',
         options: {
-          'Y': 'Yes',
-          'N': 'No',
+          'Y': t('Yes', {ns: 'loris'}),
+          'N': t('No', {ns: 'loris'}),
         },
       }},
     ];
@@ -226,13 +245,19 @@ ModuleManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   BaseURL: PropTypes.string,
   hasEditPermission: PropTypes.bool,
+  t: PropTypes.func.isRequired,
 };
 
+const TranslatedModuleManagerIndex =
+        withTranslation(['module_manager', 'loris'])(ModuleManagerIndex);
+
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'module_manager', hiStrings);
+
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ModuleManagerIndex
+    <TranslatedModuleManagerIndex
       dataURL={`${loris.BaseURL}/module_manager/?format=json`}
       BaseURL={loris.BaseURL}
       hasEditPermission={loris.userHasPermission('module_manager_edit')}

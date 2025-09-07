@@ -13,40 +13,40 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Module Manager"
-msgstr ""
+msgstr "मॉड्यूल प्रबंधक"
 
 msgid "Error!"
-msgstr ""
+msgstr "त्रुटि!"
 
 msgid "Could not update "
-msgstr ""
+msgstr "अद्यतन नहीं कर सका "
 
 msgid "Success!"
-msgstr ""
+msgstr "सफलता!"
 
 msgid "Updated"
-msgstr ""
+msgstr "अद्यतन किया गया"
 
 msgid "status!"
-msgstr ""
+msgstr "स्थिति!"
 
 msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr ""
+msgstr "परिवर्तनों को लागू करने के लिए इंटरफ़ेस को पुनः लोड करना आवश्यक है। क्या आप आगे बढ़ना चाहते हैं?"
 
 msgid "Reload the page"
-msgstr ""
+msgstr "पृष्ठ पुनः लोड करें"
 
 msgid "Continue"
-msgstr ""
+msgstr "जारी रखें"
 
 msgid "Could not find module "
-msgstr ""
+msgstr "मॉड्यूल नहीं मिला "
 
 msgid "Full Name"
-msgstr ""
+msgstr "पूरा नाम"
