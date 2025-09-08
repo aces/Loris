@@ -45,6 +45,7 @@ class BatteryManagerIndex extends Component {
     this.closeForm = this.closeForm.bind(this);
     this.validateTest = this.validateTest.bind(this);
   }
+
   /**
    * Component did mount lifecycle method.
    */
@@ -54,6 +55,14 @@ class BatteryManagerIndex extends Component {
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Retrieve data from the provided URL and store it in state
+   *
+   * @param {string} url
+   * @param {string} method
+   * @param {string} state
+   * @return {object} promise
+   */
   fetchData(url, method, state) {
     return new Promise((resolve, reject) => {
       return fetch(url, {credentials: 'same-origin', method: method})
@@ -350,13 +359,19 @@ class BatteryManagerIndex extends Component {
    * @return {*}
    */
   render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
     }
+    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in batter_manager.class.inc
+     */
     const {options, test, tests, errors, add, edit} = this.state;
     const {hasPermission} = this.props;
 
