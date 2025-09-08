@@ -145,7 +145,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Imaging Session",
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "Imaging Session",
+                        "Imaging Sessions"
+                    ),
                     $data,
                     "",
                     'rgb(235, 255, 254)',
