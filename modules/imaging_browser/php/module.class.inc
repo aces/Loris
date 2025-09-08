@@ -70,9 +70,11 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "imaging_browser",
-                    "New and pending imaging session",
-                    "New and pending imaging sessions",
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "New and pending imaging session",
+                        "New and pending imaging sessions",
+                    ),
                     $DB,
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f

@@ -129,9 +129,11 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "instruments",
-                    "Incomplete form",
-                    "Incomplete forms",
+                    new \LORIS\GUI\LocalizableString(
+                        "instruments",
+                        "Incomplete form",
+                        "Incomplete forms",
+                    ),
                     $DB,
                     "SELECT COUNT(*) FROM flag
                         LEFT JOIN session s ON (s.ID=flag.SessionID)
