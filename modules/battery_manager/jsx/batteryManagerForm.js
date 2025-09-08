@@ -139,7 +139,7 @@ class BatteryManagerForm extends Component {
           min={0}
           max={127}
           value={test.instrumentOrder != null ?
-                 String(test.instrumentOrder) : ''}
+            String(test.instrumentOrder) : ''}
         />
         <SelectElement
           name="DoubleDataEntryEnabled"
