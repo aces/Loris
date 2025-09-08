@@ -20,3 +20,51 @@ msgstr ""
 
 msgid "Survey Accounts"
 msgstr ""
+
+msgid "Survey was added successfully."
+msgstr ""
+
+msgid "Click here to go back to view the list of survey's created"
+msgstr ""
+
+msgid "Survey List"
+msgstr ""
+
+msgid "Usage"
+msgstr ""
+
+msgid "Use this form to create a link for a study participant to use in order to directly enter a form/data into Loris."
+msgstr ""
+
+msgid "Add Survey"
+msgstr ""
+
+msgid "Create survey"
+msgstr ""
+
+msgid "Email survey"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Email to Study Participant"
+msgstr ""
+
+msgid "Optionally enter a customized message here. A default email will be sent if left blank."
+msgstr ""
+
+msgid "This is where your message goes."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "Status"
+msgstr ""
