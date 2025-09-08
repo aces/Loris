@@ -16,6 +16,11 @@ import {
  * @author Victoria Foing
  */
 class BatteryManagerForm extends Component {
+  /**
+   * Render function
+   *
+   * @return {*}
+   */
   render() {
     const {test, options, setTest, add, errors, handleSubmit} = this.props;
 

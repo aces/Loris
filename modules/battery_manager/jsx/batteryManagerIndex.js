@@ -10,7 +10,20 @@ import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';
 
+/**
+ * Battery Manager
+ *
+ * Main module component rendering tab pane with Browse and Add tabs
+ *
+ * @author Victoria Foing
+ * @author Henri Rabalais
+ */
 class BatteryManagerIndex extends Component {
+  /**
+   * Constructor
+   *
+   * @param {object} props
+   */
   constructor(props) {
     super(props);
 
@@ -32,7 +45,9 @@ class BatteryManagerIndex extends Component {
     this.closeForm = this.closeForm.bind(this);
     this.validateTest = this.validateTest.bind(this);
   }
-
+  /**
+   * Component did mount lifecycle method.
+   */
   componentDidMount() {
     this.fetchData(this.props.testEndpoint, 'GET', 'tests')
       .then(() => this.fetchData(this.props.optionEndpoint, 'GET', 'options'))
@@ -50,7 +65,14 @@ class BatteryManagerIndex extends Component {
         });
     });
   }
-
+  /**
+   * Posts data from the provided URL to the server.
+   *
+   * @param {string} url
+   * @param {object} data
+   * @param {string} method
+   * @return {object} promise
+   */
   postData(url, data, method) {
     return new Promise((resolve, reject) => {
       const dataClone = JSON.parse(JSON.stringify(data));
@@ -78,7 +100,13 @@ class BatteryManagerIndex extends Component {
           .catch((e) => reject(e)));
     });
   }
-
+  /**
+   * Modify value of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} value - cell value
+   * @return {string} a mapped value for the table cell at a given column
+   */
   mapColumn(column, value) {
     switch (column) {
     case 'First Visit':
@@ -93,6 +121,14 @@ class BatteryManagerIndex extends Component {
     }
   }
 
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {object} row - row content indexed by column
+   * @return {*} a formated table cell for a given column
+   */
   formatColumn(column, cell, row) {
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
@@ -130,6 +166,12 @@ class BatteryManagerIndex extends Component {
     return result;
   }
 
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} name - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
   setTest(name, value) {
     const test = {...this.state.test};
     // Convert numeric fields to number, keep 0
@@ -141,28 +183,52 @@ class BatteryManagerIndex extends Component {
     this.setState({test});
   }
 
+  /**
+   * Loads a test into the current state based on the testId
+   *
+   * @param {string} testId
+   */
   loadTest(testId) {
     const test = JSON.parse(JSON.stringify(this.state.tests
       .find((test) => test.id === testId)));
     this.setState({test});
   }
-
+  /**
+   * Close the Form
+   */
   closeForm() {
     this.setState({add: false, edit: false, test: {}, errors: {}});
   }
 
+  /**
+   * Activate Test
+   *
+   * @param {number} id
+   */
   activateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
     test.active = 'Y';
     this.saveTest(test, 'PUT');
   }
 
+  /**
+   * Deactivate Test
+   *
+   * @param {number} id
+   */
   deactivateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
     test.active = 'N';
     this.saveTest(test, 'PUT');
   }
 
+  /**
+   * Updates a previously existing Test with an updated Test.
+   *
+   * @param {object} test
+   * @param {string} request
+   * @return {object} promise
+   */
   saveTest(test, request) {
     return new Promise((resolve, reject) => {
       Object.keys(test).forEach((key) => {
@@ -184,6 +250,12 @@ class BatteryManagerIndex extends Component {
     });
   }
 
+  /**
+   * Checks whether the Test is a duplicate of an existing Test.
+   *
+   * @param {object} test
+   * @return {object} promise
+   */
   checkDuplicate(test) {
     return new Promise((resolve, reject) => {
       let duplicate;
@@ -235,6 +307,12 @@ class BatteryManagerIndex extends Component {
     });
   }
 
+  /**
+   * Checks that test fields are valide
+   *
+   * @param {object} test
+   * @return {object} promise
+   */
   validateTest(test) {
     return new Promise((resolve, reject) => {
       const errors = {};
@@ -266,7 +344,11 @@ class BatteryManagerIndex extends Component {
       }
     });
   }
-
+  /**
+   * Render Method
+   *
+   * @return {*}
+   */
   render() {
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
