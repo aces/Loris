@@ -126,6 +126,9 @@ testdata:
 %.mo: %.po
 	msgfmt -o $@ $<
 
+locale/%/LC_MESSAGES/loris.json: locale/%/LC_MESSAGES/loris.po
+	npx i18next-conv -l $* -s $? -t $@
+
 locales: $(MOFILES) $(I18NextFiles)
 
 acknowledgements:
