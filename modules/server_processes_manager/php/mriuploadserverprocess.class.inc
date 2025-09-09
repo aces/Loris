@@ -209,6 +209,16 @@ class MriUploadServerProcess extends AbstractServerProcess
 
         return !is_null($exitCode) && is_numeric($exitCode) && $exitCode == 0;
     }
+
+    /**
+     * Perform action once process is completed
+     *
+     * @return void
+     */
+    public function performPostAction()
+    {
+        // Do nothing
+    }
 }
 
 

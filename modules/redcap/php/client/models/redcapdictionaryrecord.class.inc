@@ -302,6 +302,9 @@ class RedcapDictionaryRecord
     private function _optionsToLINST() : string
     {
         $dictionary = $this->select_choices;
+        if (is_null($dictionary)) {
+            return '';
+        }
         $dictionary = str_replace(' | | ', ' | ', $dictionary);
         if (str_starts_with($dictionary, '| ')) {
             $dictionary = substr($dictionary, 2);

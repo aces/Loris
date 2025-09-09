@@ -484,6 +484,9 @@ abstract class AbstractServerProcess
         $this->_exitText = $exitText;
         $this->_endTime  = $endTime;
 
+        // Perform additional actions
+        $this->performPostAction();
+
         //------------------------------------------------------------------
         // Delete the temporary (stdout stderr and exitCode) files if it is
         // required to do so
@@ -547,6 +550,7 @@ abstract class AbstractServerProcess
         return $this->_databaseProvider;
     }
 
+
     /**
      * Specifies the Unix shell command used to run the process
      *
@@ -581,6 +585,14 @@ abstract class AbstractServerProcess
      * @abstract
      */
     abstract function getType();
+
+    /**
+     * Perform action once process is completed
+     *
+     * @return   void
+     * @abstract
+     */
+    abstract public function performPostAction();
 }
 
 
