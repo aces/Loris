@@ -1,9 +1,5 @@
 {
     "Access Profile": "アクセスプロファイル",
-    "Entity Type": "エンティティタイプ",
-    "Scan Done": "スキャン完了",
     "Visit Count": "訪問回数",
-    "Open Profile": "プロフィールを開く",
-    "Show Advanced Filters": "詳細フィルターを表示",
-    "Hide Advanced Filters": "詳細フィルターを非表示"
+    "Open Profile": "プロフィールを開く"
 }
