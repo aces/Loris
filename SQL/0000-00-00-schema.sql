@@ -1204,7 +1204,8 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
   ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
   ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
-  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited'),
+  ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Issue Tracker: All issues created or edited');
 
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
