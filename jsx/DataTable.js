@@ -121,7 +121,7 @@ class DataTable extends Component {
     if (this.props.getMappedCell) {
       csvData = csvData
       .map((row, i) => this.props.fields
-        .flatMap((field, j) => this.props.getMappedCell(
+        .map((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
