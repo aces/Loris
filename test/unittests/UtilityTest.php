@@ -930,21 +930,17 @@ class UtilityTest extends TestCase
         $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
     }
 
-    /**
-     * Test that valueIsPositiveInteger returns true when given positive ints
-     *
-     * @param $int from dataProvider
-     *
-     * @dataProvider positiveIntegerValues
-     *
-     * @covers Utility::valueIsPositiveInteger
-     * @return void
-     */
-    public function testValueIsPositiveIntegerReturnsTrue($int): void
-    {
-        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
-    }
-
+/**
+ * Test that valueIsPositiveInteger returns true when given positive ints
+ *
+ * @dataProvider positiveIntegerValues
+ *
+ * @covers \Utility::valueIsPositiveInteger
+ */
+public function testValueIsPositiveIntegerReturnsTrue(int $int): void
+{
+    $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+}
     /**
      * Tests the
      * n function. Test cases adapted from blog post on
