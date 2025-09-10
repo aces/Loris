@@ -48,19 +48,19 @@ class BreadcrumbTrailTest extends TestCase
      *
      * @param []     $data1 A label/link pair
      * @param []     $data2 A label/link pair
-     * @param string $c     The value to compare
+     * @param string $expected The value to compare
      *
      * @dataProvider toStringProvider
      * @covers       Breadcrumb::__toString
      * @return       void
      */
-    public function testToString($data1, $data2, $c)
+    public function testToString(array $data1, array $data2, string $expected): void
     {
         $this->breadcrumbTrail = new BreadcrumbTrail(
             new Breadcrumb($data1[0], $data1[1]),
             new Breadcrumb($data2[0], $data2[1])
         );
-        $this->assertEquals($c, $this->breadcrumbTrail);
+        $this->assertEquals($expected, (string)$this->breadcrumbTrail);
     }
 
     /**
@@ -68,7 +68,7 @@ class BreadcrumbTrailTest extends TestCase
      *
      * @return []
      */
-    public function toStringProvider()
+    public function toStringProvider(): array
     {
         return [
             [

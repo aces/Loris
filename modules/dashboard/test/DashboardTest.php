@@ -600,7 +600,7 @@ class DashboardTest extends LorisIntegrationTest
 
             $this->_testPlan1();
             $this->_testPlan2();
-            //$this->_testPlan3();
+            $this->_testPlan3();
             $this->_testPlan5And6();
             $this->_testPlan7And8();
 
