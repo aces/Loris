@@ -162,7 +162,6 @@ class RedcapQueries
         return \Candidate::singleton(new CandID($cand_id));
     }
 
-
     /**
      * Get an examiner ID from the database using a given examiner full name.
      *
