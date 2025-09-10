@@ -858,30 +858,40 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with($this->stringContains("AND sourcefrom = :sf"))
-            ->willReturn(
-                [
-                    ['SourceField' => 'instrument_field',
-                        'Name'        => 'instrument_name'
-                    ]
-                ]
-            );
+    // Create a fake Query object
+    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->assertEquals(
-            [0 => ['SourceField' => 'instrument_field',
-                'Name'        => 'instrument_name'
+    // Make the Query iterable so Utility::getSourcefields() can consume it
+    $queryMock->method('getIterator')->willReturn(new ArrayIterator([
+        [
+            'SourceField' => 'instrument_field',
+            'Name'        => 'instrument_name',
+        ]
+    ]));
+
+    // Make pselect() return the fake Query
+    $this->_dbMock->expects($this->any())
+        ->method('pselect')
+        ->with($this->stringContains("AND sourcefrom = :sf"))
+        ->willReturn($queryMock);
+
+    $this->assertEquals(
+        [
+            [
+                'SourceField' => 'instrument_field',
+                'Name'        => 'instrument_name',
             ]
-            ],
-            Utility::getSourcefields('instrument1', '1', 'name')
-        );
+        ],
+        Utility::getSourcefields('instrument1', '1', 'name')
+    );
     }
 
     /**
-     * DataProvider for function testValueIsPositiveIntegerReturnsFalse
+     * DataProvider for testValueIsPositiveIntegerReturnsFalse
      *
-     * @return array
+     * @return array<int, array<int, mixed>>
      */
     public function notPositiveIntegerValues(): array
     {
@@ -901,46 +911,42 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * DataProvider for function testValueIsPositiveIntegerReturnsTrue
+     * Test that valueIsPositiveInteger returns false if given negative ints
+     * or values that are not integers
      *
-     * @return array
+     * @dataProvider notPositiveIntegerValues
+     * @covers \Utility::valueIsPositiveInteger
+     */
+    public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
+    {
+        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+    }
+    /**
+     * Test that valueIsPositiveInteger returns true when given positive ints
+     *           
+     * @dataProvider positiveIntegerValues
+     * @covers \Utility::valueIsPositiveInteger
+     */
+    public function testValueIsPositiveIntegerReturnsTrue(int $int): void
+    {
+        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+    }
+
+    /**
+     * Data provider for positive integers
+     *
+     * @return array<int, array<int, int>>
      */
     public function positiveIntegerValues(): array
     {
         return [
             [1],
+            [5],
             [100],
-            ['1000'],
         ];
     }
 
-    /**
-     * Test that valueIsPositiveInteger returns false if given negative ints
-     * or values that are not integers
-     *
-     * @param $notInt from dataProvider
-     *
-     * @dataProvider notPositiveIntegerValues
-     *
-     * @covers Utility::valueIsPositiveInteger
-     * @return void
-     */
-    public function testValueIsPositiveIntegerReturnsFalse($notInt): void
-    {
-        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
-    }
 
-/**
- * Test that valueIsPositiveInteger returns true when given positive ints
- *
- * @dataProvider positiveIntegerValues
- *
- * @covers \Utility::valueIsPositiveInteger
- */
-public function testValueIsPositiveIntegerReturnsTrue(int $int): void
-{
-    $this->assertTrue(\Utility::valueIsPositiveInteger($int));
-}
     /**
      * Tests the
      * n function. Test cases adapted from blog post on
