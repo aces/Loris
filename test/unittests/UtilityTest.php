@@ -888,64 +888,46 @@ class UtilityTest extends TestCase
     );
     }
 
-    /**
-     * DataProvider for testValueIsPositiveIntegerReturnsFalse
-     *
-     * @return array<int, array<int, mixed>>
-     */
-    public function notPositiveIntegerValues(): array
-    {
-        return [
-            [-1],
-            [0],
-            [3.14],
-            ['abcdefg'],
-            ['-1'],
-            ['-98.6'],
-            ['0'],
-            [[]],
-            [[1]],
-            [null],
-            [new stdClass()]
-        ];
-    }
+public function notPositiveIntegerValues(): array
+{
+    return [
+        -1,
+        0,
+        3.14,
+        'abcdefg',
+        '-1',
+        '-98.6',
+        '0',
+        [],
+        [1],
+        null,
+        new stdClass(),
+    ];
+}
 
-    /**
-     * Test that valueIsPositiveInteger returns false if given negative ints
-     * or values that are not integers
-     *
-     * @dataProvider notPositiveIntegerValues
-     * @covers \Utility::valueIsPositiveInteger
-     */
-    public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
-    {
-        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
-    }
-    /**
-     * Test that valueIsPositiveInteger returns true when given positive ints
-     *           
-     * @dataProvider positiveIntegerValues
-     * @covers \Utility::valueIsPositiveInteger
-     */
-    public function testValueIsPositiveIntegerReturnsTrue(int $int): void
-    {
-        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
-    }
+public function positiveIntegerValues(): array
+{
+    return [
+        1,
+        5,
+        100,
+    ];
+}
+/**
+ * @dataProvider notPositiveIntegerValues
+ */
+public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
+{
+    $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+}
 
-    /**
-     * Data provider for positive integers
-     *
-     * @return array<int, array<int, int>>
-     */
-    public function positiveIntegerValues(): array
-    {
-        return [
-            [1],
-            [5],
-            [100],
-        ];
-    }
-
+/**
+ * @dataProvider positiveIntegerValues
+ */
+public function testValueIsPositiveIntegerReturnsTrue(int $int): void
+{
+    $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+}
 
     /**
      * Tests the
