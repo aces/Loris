@@ -128,8 +128,8 @@ class RedcapQueries
     {
         // Check that the candidate exists first.
         $cand_id = $this->_db->pselectOne(
-            "SELECT CandID FROM candidate WHERE CandID = :cand_id",
-            ['psc_id' => $cand_id],
+            "SELECT CandID FROM candidate WHERE CandId = :cand_id",
+            ['cand_id' => $cand_id],
         );
 
         if ($cand_id === null) {
@@ -138,6 +138,21 @@ class RedcapQueries
 
         return \Candidate::singleton(new CandID($cand_id));
     }
+    public function tryGetCandidateWithExternalId(string $external_id): ?\Candidate
+    {
+        // Check that the candidate exists first.
+        $cand_id = $this->_db->pselectOne(
+            "SELECT CandID FROM candidate WHERE ExternalId = :external_id",
+            ['external_id' => $external_id],
+        );
+
+        if ($cand_id === null) {
+            return null;
+        }
+
+        return \Candidate::singleton(new CandID($cand_id));
+    }
+
 
     /**
      * Get an examiner ID from the database using a given examiner full name.
