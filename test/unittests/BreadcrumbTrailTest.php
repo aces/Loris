@@ -50,9 +50,11 @@ class BreadcrumbTrailTest extends TestCase
      * @param []     $data2 A label/link pair
      * @param string $expected The value to compare
      *
-     * @dataProvider toStringProvider
      * @covers       Breadcrumb::__toString
      * @return       void
+     */
+    /**
+     * @dataProvider toStringProvider
      */
     public function testToString(array $data1, array $data2, string $expected): void
     {
