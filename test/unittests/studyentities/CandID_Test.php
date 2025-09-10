@@ -55,10 +55,9 @@ class CandID_Test extends TestCase
      *
      * @dataProvider invalidValues
      *
-     * @expectedException DomainException
      * @return            void
      */
-    public function testContructorInvalidValues($invalidValue): void
+    public function testContructorInvalidValues(string $invalidValue): void
     {
         $this->expectException("DomainException");
         new CandID($invalidValue);
@@ -83,7 +82,7 @@ class CandID_Test extends TestCase
     public function testToString(): void
     {
         $candid = new CandID("123456");
-        $this->assertEquals('123456', (string) $candid);
+        $this->assertEquals('123456', (string)$candid);
     }
 }
 

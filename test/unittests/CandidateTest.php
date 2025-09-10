@@ -13,6 +13,9 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
+use PHPUnit\Framework\MockObject\MockObject;
+use ArrayIterator;
+
 /**
  * Unit test for Candidate class
  *
@@ -1356,62 +1359,42 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    private function _setUpTestDoublesForSelectCandidate()
-    {
+private function _setUpTestDoublesForSelectCandidate(): void
+{
+    /** @var \LORIS\Database\Query|MockObject $resultMock */
+    $resultMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $resultMock->method("getIterator")
-            ->willReturn(
-                new ArrayIterator(
-                    [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        => 98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
-                    ]
-                )
-            );
-        $this->_dbMock
-            ->method('pselect')
-            ->willReturn($resultMock);
-        /*
-                $this->onConsecutiveCalls(
-                    [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
-                    ],
-                    $this->_listOfTimePoints
-                )
-            );
-        */
+    $resultMock->method('getIterator')
+        ->willReturn(
+            new ArrayIterator([
+                [
+                    'ID'        => 97,
+                    'ProjectID' => 1,
+                    'CenterID'  => 2,
+                ],
+                [
+                    'ID'        => 98,
+                    'ProjectID' => 1,
+                    'CenterID'  => 2,
+                ],
+            ])
+        );
 
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
+    $this->_dbMock->method('pselect')
+        ->willReturn($resultMock);
 
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
+    $this->_dbMock->expects($this->once())
+        ->method('pselectRow')
+        ->willReturn($this->_candidateInfo);
 
-        $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
-    }
+    $this->_dbMock->method('pselectCol')
+        ->willReturn(['Male', 'Female', 'Other']);
 
+    $this->_configMock->method('getSetting')
+        ->willReturnMap($this->_configMap);
+}
     /**
      * Set up mock database and config information
      * This is only necessary to test the functions that use
