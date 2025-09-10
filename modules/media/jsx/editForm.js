@@ -20,14 +20,10 @@ import {
   FileElement,
   ButtonElement,
 } from 'jsx/Form';
-/**
- * Media Edit Form component
- */
+import {withTranslation} from 'react-i18next';
+
+
 class MediaEditForm extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
 
@@ -43,17 +39,15 @@ class MediaEditForm extends Component {
     this.setFormData = this.setFormData.bind(this);
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
+    const {t} = this.props;
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status + ': ' + response.statusText);
         this.setState({
-          error: 'An error occurred when loading the form!',
+          error: t('An error occurred when loading the form!', {ns: 'media'}),
         });
         return;
       }
@@ -77,18 +71,14 @@ class MediaEditForm extends Component {
     }).catch((error) => {
       console.error(error);
       this.setState({
-        error: 'An error occurred when loading the form!',
+        error: this.props.t('An error occurred when loading the form!',
+          {ns: 'media'}),
       });
     });
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
   render() {
-    // Data loading error
+    const {t} = this.props;
     if (this.state.error !== undefined) {
       return (
         <div className='alert alert-danger text-center'>
@@ -99,11 +89,10 @@ class MediaEditForm extends Component {
       );
     }
 
-    // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
         <button className='btn-info has-spinner'>
-          Loading
+          {t('Loading', {ns: 'media'})}
           <span
             className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
@@ -120,7 +109,7 @@ class MediaEditForm extends Component {
         >
           <SelectElement
             name='pscid'
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             options={this.state.Data.candidates}
             onUserInput={this.setFormData}
             ref='pscid'
@@ -130,7 +119,7 @@ class MediaEditForm extends Component {
           />
           <SelectElement
             name='visitLabel'
-            label='Visit Label'
+            label={t('Visit Label', {ns: 'loris'})}
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
             ref='visitLabel'
@@ -140,7 +129,7 @@ class MediaEditForm extends Component {
           />
           <SelectElement
             name='instrument'
-            label='Instrument'
+            label={t('Instrument', {ns: 'media'})}
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
             ref='instrument'
@@ -149,7 +138,7 @@ class MediaEditForm extends Component {
           />
           <DateElement
             name='dateTaken'
-            label='Date of Administration'
+            label={t('Date of Administration', {ns: 'media'})}
             minYear={this.state.Data.startYear}
             maxYear={this.state.Data.endYear}
             onUserInput={this.setFormData}
@@ -158,7 +147,7 @@ class MediaEditForm extends Component {
           />
           <TextareaElement
             name='comments'
-            label='Comments'
+            label={t('Comments', {ns: 'media'})}
             onUserInput={this.setFormData}
             ref='comments'
             value={this.state.formData.comments}
@@ -166,7 +155,7 @@ class MediaEditForm extends Component {
           <SelectElement
             name='language'
             id='language_id'
-            label='Language'
+            label={t('Language', {ns: 'media'})}
             options={this.state.Data.language}
             onUserInput={this.setFormData}
             value={this.state.formData.language}
@@ -178,20 +167,23 @@ class MediaEditForm extends Component {
             required={true}
             disabled={true}
             ref='file'
-            label='Uploaded file'
+            label={t('Uploaded file', {ns: 'media'})}
             value={this.state.mediaData.fileName}
           />
           <SelectElement
             name='hideFile'
-            label='Hide File'
+            label={t('Hide File', {ns: 'media'})}
             emptyOption={false}
-            options={['No', 'Yes']}
+            options={[
+              t('No', {ns: 'media'}),
+              t('Yes', {ns: 'media'}),
+            ]}
             onUserInput={this.setFormData}
             ref='hideFile'
             value={this.state.formData.hideFile}
           />
           <ButtonElement
-            label='Update File'
+            label={t('Update File', {ns: 'media'})}
             onUserInput = {() => {}}
           />
         </FormElement>
@@ -206,15 +198,17 @@ class MediaEditForm extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
+    const {t} = this.props;
 
     let xhr = new XMLHttpRequest();
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
-        swal.fire('Upload Successful!', '', 'success');
+        swal.fire(t('Upload Successful!', {ns: 'media'}),
+          '', 'success');
         this.props.fetchData();
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
-        let msg = 'Error updating file';
+        let msg = t('Error updating file', {ns: 'media'});
         if (xhr.response) {
           const resp = JSON.parse(xhr.response);
           if (resp.message) {
@@ -228,7 +222,9 @@ class MediaEditForm extends Component {
 
     xhr.addEventListener('error', () => {
       console.error(xhr.status + ': ' + xhr.statusText);
-      let msg = xhr.response.message || 'Error updating file';
+      let msg = (xhr.response && xhr.response.message)
+        ? xhr.response.message
+        : t('Error updating file', {ns: 'media'});
       console.error(msg);
       swal.fire(msg, '', 'error');
     }, false);
@@ -262,6 +258,8 @@ MediaEditForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   fetchData: PropTypes.func,
+  t: PropTypes.func,
 };
 
-export default MediaEditForm;
+export default withTranslation(
+  ['media', 'loris'])(MediaEditForm);
