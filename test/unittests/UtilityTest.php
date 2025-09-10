@@ -888,47 +888,51 @@ class UtilityTest extends TestCase
     );
     }
 
-public function notPositiveIntegerValues(): array
-{
-    return [
-        -1,
-        0,
-        3.14,
-        'abcdefg',
-        '-1',
-        '-98.6',
-        '0',
-        [],
-        [1],
-        null,
-        new stdClass(),
-    ];
-}
+    /**
+     * @return iterable<array{0:mixed}>
+     */
+    public static function notPositiveIntegerValues(): iterable
+    {
+        yield [-1];
+        yield [0];
+        yield [3.14];
+        yield ['abcdefg'];
+        yield ['-1'];
+        yield ['-98.6'];
+        yield ['0'];
+        yield [[]];
+        yield [[1]];
+        yield [null];
+        yield [new \stdClass()];
+    }
 
-public function positiveIntegerValues(): array
-{
-    return [
-        1,
-        5,
-        100,
-    ];
-}
-/**
- * @dataProvider notPositiveIntegerValues
- */
-public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
-{
-    $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
-}
+    /**
+     * @dataProvider notPositiveIntegerValues
+     * @covers \Utility::valueIsPositiveInteger
+     */
+    public function testValueIsPositiveIntegerReturnsFalse($notInt): void
+    {
+        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+    }
 
-/**
- * @dataProvider positiveIntegerValues
- */
-public function testValueIsPositiveIntegerReturnsTrue(int $int): void
-{
-    $this->assertTrue(\Utility::valueIsPositiveInteger($int));
-}
+    /**
+     * @return iterable<array{0:int}>
+     */
+    public static function positiveIntegerValues(): iterable
+    {
+        yield [1];
+        yield [5];
+        yield [100];
+    }
 
+    /**
+     * @dataProvider positiveIntegerValues
+     * @covers \Utility::valueIsPositiveInteger
+     */
+    public function testValueIsPositiveIntegerReturnsTrue($int): void
+    {
+        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+    }
     /**
      * Tests the
      * n function. Test cases adapted from blog post on
