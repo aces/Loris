@@ -32,8 +32,9 @@ enum RedcapConfigLorisId
      */
     case CandId;
 
-        /**
-     * The REDCap partcipant identifier should be mapped to a LORIS candidate External Study ID.
+    /**
+     * The REDCap partcipant identifier should be mapped to a LORIS candidate 
+     * External Study ID.
      */
     case ExternalId;
 }

@@ -471,7 +471,7 @@ class RedcapMapper
             RedcapConfigLorisId::CandId =>
                 $this->_queries->tryGetCandidateWithCandId($candidate_identifier),
             RedcapConfigLorisId::PscId =>
-                $this->_queries->tryGetCandidateWithPscId($candidate_identifier),    
+                $this->_queries->tryGetCandidateWithPscId($candidate_identifier),
             RedcapConfigLorisId::ExternalId=>
                 $this->_queries->tryGetCandidateWithExternalId($candidate_identifier)
         };
