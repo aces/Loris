@@ -138,7 +138,7 @@ class RedcapQueries
 
         return \Candidate::singleton(new CandID($cand_id));
     }
-    
+
     /**
      * Get a candidate from the database using a given ExternalID.
      *
@@ -147,7 +147,6 @@ class RedcapQueries
      * @return ?\Candidate A LORIS candidate, or `null` if no candidate matches the
      *                     given ExternalID.
      */
-
     public function tryGetCandidateWithExternalId(string $external_id): ?\Candidate
     {
         // Check that the candidate exists first.
