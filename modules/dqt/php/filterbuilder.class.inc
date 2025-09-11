@@ -114,5 +114,4 @@ class Filterbuilder extends \NDB_Page
     {
         return $user->hasPermission('dqt_view');
     }
-
 }

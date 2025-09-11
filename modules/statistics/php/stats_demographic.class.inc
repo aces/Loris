@@ -61,6 +61,7 @@ class Stats_Demographic extends \NDB_Form
         }
         return false;
     }
+
     /**
      * RenderStatsTable function
      *
@@ -666,6 +667,7 @@ class Stats_Demographic extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -681,6 +683,5 @@ class Stats_Demographic extends \NDB_Form
             [$baseURL . '/statistics/css/statistics.css']
         );
     }
-
 }
 

@@ -79,7 +79,6 @@ class ImagingBrowserRow implements \LORIS\Data\DataInstance,
         return $this->ProjectID;
     }
 
-
     /**
      * This tells if the image is a phantom.
      *

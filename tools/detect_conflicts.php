@@ -284,7 +284,6 @@ if ($delete_ignored_conflicts) {
     }
 }
 
-
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
@@ -393,8 +392,6 @@ function detectConflicts($test_name, $commentids, $current_conflicts)
     return $detected_conflicts;
 }
 
-
-
 /**
  *  Write the data into a csv file
  *
@@ -450,8 +447,6 @@ function writeCSV($output, $path, $instrument, $visit_label, $prefix)
     }
 }
 
-
-
 /**
  * Return data using the commentid
  *
@@ -471,8 +466,6 @@ function getInfoUsingCommentID($commentid)
     );
     return $data;
 }
-
-
 
 /**
  * Detect those conflicts which are currently in the conflicts_unresolved table
@@ -607,7 +600,6 @@ function detectIgnoreColumns($lorisInstance, $instruments, $confirm)
         ignoreColumn($instrument, $instrumentFields, $confirm);
     }
 }
-
 
 /**
  * Prints the instrument-specific ignore columns to be removed

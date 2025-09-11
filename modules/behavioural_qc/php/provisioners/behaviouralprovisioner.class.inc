@@ -56,5 +56,4 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
             '\LORIS\behavioural_qc\Models\BehaviouralDTO'
         );
     }
-
 }

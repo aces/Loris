@@ -443,7 +443,6 @@ abstract class NDB_Notifier_Abstract
         return $n_services;
     }
 
-
     /**
      * Static Getter for list of services for the study
      *

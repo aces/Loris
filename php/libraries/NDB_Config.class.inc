@@ -48,6 +48,7 @@ class NDB_Config
     var $configFilePath;
 
     static $configInstance = null;
+
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -145,7 +146,6 @@ class NDB_Config
 
         return $file;
     }
-
 
     /**
      * Converts a SimpleXMLElement to an array.
@@ -517,7 +517,6 @@ class NDB_Config
         }
         return [];
     }
-
 
     /**
      * Retrieve a set of links to display to the user

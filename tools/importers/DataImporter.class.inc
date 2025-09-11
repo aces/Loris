@@ -86,7 +86,6 @@ abstract class DataImporter
      * statement. */
     protected $INSERTQueue = [];
 
-
     /**
      * Creates a new data importer object. Must be generated through two CSV
      * files: the "mapping file" and the "data file".
@@ -240,7 +239,6 @@ abstract class DataImporter
         return $this->candIDMapping[$newPSCID] ?? null;
     }
 
-
     /**
      * Returns a visual representation of the SQL queries to be run in order to
      * perform data import. Used for displaying to users and logging.
@@ -313,7 +311,6 @@ abstract class DataImporter
         $this->mappingHeaders = array_keys($this->mappingRows[0]);
         $this->dataHeaders    = array_keys($this->dataRows[0]);
     }
-
 
     /**
      * Format UPDATE commands for printing.
@@ -396,7 +393,6 @@ SQL;
         }
         return $report;
     }
-
 
     /**
      * Converts a csv file into a two-dimensional PHP array where each element

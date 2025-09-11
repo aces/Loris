@@ -31,6 +31,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 class Charts extends \NDB_Page
 {
     public $skipTemplate = true;
+
     /**
      * Checking user's permission
      *
@@ -331,7 +332,6 @@ class Charts extends \NDB_Page
 
         return (new \LORIS\Http\Response\JsonResponse($recruitmentByEthnicityData));
     }
-
 
     /**
      * Handle an incoming request for monthly progression

@@ -71,7 +71,6 @@ function editFile()
 
 }
 
-
 /**
  * Handles the media upload process
  *

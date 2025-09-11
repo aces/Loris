@@ -78,6 +78,7 @@ class ConfigurationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that configuration loads with the permission
      *
@@ -96,6 +97,7 @@ class ConfigurationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that configuration can not load without the permission
      *
@@ -114,6 +116,7 @@ class ConfigurationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that cohort panel in configuration
      *
@@ -127,6 +130,7 @@ class ConfigurationTest extends LorisIntegrationTest
         )->getText();
          $this->assertStringContainsString("CohortID", $bodyText);
     }
+
     /**
      * Tests that cohort navigate back to config page
      *
@@ -147,6 +151,7 @@ class ConfigurationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests links, click each link, the particular content shows on the page.
      *
@@ -168,6 +173,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->_linkTest("API Keys");
 
     }
+
     /**
      * Add a method for testing the link. After click the link,the page
      * shows particular content.
@@ -204,6 +210,7 @@ class ConfigurationTest extends LorisIntegrationTest
             $this->assertEquals(true, 1);
         }
     }
+
     /**
      * Test project link appears
      *
@@ -220,6 +227,5 @@ class ConfigurationTest extends LorisIntegrationTest
             $bodyText
         );
     }
-
 }
 

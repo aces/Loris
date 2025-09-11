@@ -24,6 +24,7 @@ namespace LORIS\document_repository;
 class Edit extends \NDB_Page
 {
     public $skipTemplate = true;
+
     /**
      * Check user permissions
      *
@@ -69,5 +70,4 @@ class Edit extends \NDB_Page
             [$baseURL . "/document_repository/js/editFormIndex.js"]
         );
     }
-
 }

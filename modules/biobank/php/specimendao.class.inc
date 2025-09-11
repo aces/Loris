@@ -201,7 +201,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         return new \ArrayIterator($this->selectInstances());
     }
 
-
     /**
      * Queries all rows of the biobank_specimen_type table and returns a nested
      * array with the ID field as the index.
@@ -299,6 +298,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     // XXX: This should potentially be queried from a table called
     // `biobank_specimen_units` since containers are not currently using units.
     // Discussions need to be had with Rida regarding this.
+
     /**
      * Queries all rows of the biobank_unit table and returns a nested
      * array with the ID field as the index.
@@ -546,7 +546,6 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
 
         return $this->getInstanceFromId($specimen->getId());
     }
-
 
     /**
      * Generates a new sample number for the specimen.

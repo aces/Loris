@@ -105,6 +105,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->resetPermissions();
         $this->restoreConfigSetting("mriCodePath");
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -148,6 +149,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         }
         $this->restoreConfigSetting("mriCodePath");
     }
+
     /**
      * Testing React filter in this page.
      *

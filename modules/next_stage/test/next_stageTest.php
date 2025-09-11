@@ -54,6 +54,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $bodyText
         );
     }
+
     /**
      * Tests that, page loads with data_entry permission
      *

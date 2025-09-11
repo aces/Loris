@@ -47,6 +47,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::tearDown();
     }
+
     /**
      * Tests that, when loading the create_timepoint module, some
      * text appears in the body.
@@ -77,8 +78,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
     }
 
-
-
     /**
      * Tests that, when loading the create_timepoint module, some
      * text appears in the body.
@@ -104,6 +103,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
     }
+
     /**
      * Test that ensures the user can only choose from Projects and Sites they are
      * affiliated with. Ensure the Cohort dropdown is dynamically populated once
@@ -208,8 +208,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         }
     }
 
-
-
     /**
      * Tests that, when loading the create_timepoint module, some
      * text appears in the body.
@@ -253,7 +251,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
     }
 
-
     /**
      * Tests that, create a timepoint and input a empty cohort
      * get Error message
@@ -273,6 +270,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
 
     }
+
     /**
      * Tests that timepoint loads with the permission
      *

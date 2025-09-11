@@ -99,7 +99,6 @@ class State
         return null;
     }
 
-
     /**
      * Gets the last URL that was access to use as a "back" link.
      *

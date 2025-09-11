@@ -255,7 +255,6 @@ class RedcapQueries
         $stmt->execute($notif_params);
     }
 
-
     /**
      * Mark a flag as complete.
      *

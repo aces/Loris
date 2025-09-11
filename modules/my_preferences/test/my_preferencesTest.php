@@ -329,6 +329,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
     }
+
     /**
      * Accesses the current user.
      *
@@ -340,6 +341,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             $this->url . "/my_preferences/"
         );
     }
+
     /**
      * Performed after every test.
      *

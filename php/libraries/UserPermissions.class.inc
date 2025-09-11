@@ -64,7 +64,6 @@ class UserPermissions
         return true;
     }
 
-
     /**
      * Loads the users's permissions
      *
@@ -94,7 +93,6 @@ class UserPermissions
             $this->permissions[$row['code']] = $userMatch;
         }
     }
-
 
     /**
      * Determines if the user has the permission to access a specific module
@@ -182,7 +180,6 @@ class UserPermissions
         return $this->permissions;
     }
 
-
     /**
      * Add permissions to a user
      *
@@ -210,7 +207,6 @@ class UserPermissions
         // refresh the user permissions
         $this->setPermissions();
     }
-
 
     /**
      * Removes permissions from a user
@@ -247,7 +243,6 @@ class UserPermissions
         $this->setPermissions();
     }
 
-
     /**
      * Returns an array of the user's permission IDs
      *
@@ -275,7 +270,6 @@ class UserPermissions
         }
         return $permIDs;
     }
-
 
     /**
      * Returns an array with all permissions information for the user

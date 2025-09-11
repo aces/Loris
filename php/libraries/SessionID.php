@@ -26,6 +26,7 @@
 class SessionID extends ValidatableIdentifier
 {
     protected const SESSIONID_MAX_LENGTH = 10;
+
     /**
      * Returns this identifier type
      *

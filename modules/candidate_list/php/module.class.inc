@@ -76,7 +76,6 @@ class Module extends \Module
         return \LORIS\GUI\MenuCategory::singleton("Candidate");
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -149,5 +148,4 @@ class Module extends \Module
         }
         return [];
     }
-
 }

@@ -147,6 +147,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
 
     }
+
     /**
      * Safely sets a smarty template variable.
      *
@@ -258,7 +259,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     {
         $this->form->addElement('static', $name, $label);
     }
-
 
     /**
      * Adds a text element to the current page with no accompanying
@@ -543,6 +543,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $labelString
         );
     }
+
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
@@ -797,7 +798,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $html;
     }
 
-
     /**
      * Returns the form-specific defaults
      *
@@ -867,7 +867,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         ];
         return $files;
     }
-
 
     /**
      * Returns an ordered list of CSS dependencies that this page depends

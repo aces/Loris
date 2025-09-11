@@ -351,6 +351,5 @@ class NDB_BVL_Battery_Test extends TestCase
             ]
         );
     }
-
 }
 

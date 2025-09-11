@@ -53,7 +53,6 @@ class Module extends \Module
         return \LORIS\GUI\MenuCategory::singleton("Genomics");
     }
 
-
     /**
      * {@inheritDoc}
      *

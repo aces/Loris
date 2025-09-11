@@ -24,7 +24,6 @@
  */
 class ConflictDetector
 {
-
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
@@ -155,6 +154,5 @@ class ConflictDetector
         );
         return ($conflictCount != 0);
     }
-
 }
 

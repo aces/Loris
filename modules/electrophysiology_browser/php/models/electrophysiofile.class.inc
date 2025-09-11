@@ -31,7 +31,6 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     private $_splitFileIDs = [];
     private \LORIS\LorisInstance $loris;
 
-
     /**
      * Construct a BIDSFile
      *

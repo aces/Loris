@@ -58,6 +58,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_visit   = $visit;
         $this->_tarname = $tarname;
     }
+
     /**
      * Return which methods are supported by this endpoint.
      *
