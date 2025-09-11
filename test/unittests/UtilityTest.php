@@ -628,23 +628,30 @@ class UtilityTest extends TestCase
      * @covers Utility::lookupBattery
      * @return void
      */
-    public function testLookupBattery()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                [
-                    ['Test_name' => 'test1'],
-                    ['Test_name' => 'test2']
-                ]
-            );
+public function testLookupBattery(): void
+{
+    /** @var \LORIS\Database\Query|MockObject $queryMock */
+    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->onlyMethods(['getIterator'])
+        ->getMock();
 
-        $this->assertEquals(
-            ['test1', 'test2'],
-            Utility::lookupBattery(25)
-        );
+    $queryMock->method('getIterator')->willReturn(
+        new ArrayIterator([
+            ['Test_name' => 'test1'],
+            ['Test_name' => 'test2']
+        ])
+    );
 
-    }
+    $this->_dbMock->expects($this->any())
+        ->method('pselect')
+        ->willReturn($queryMock);
+
+    $this->assertEquals(
+        ['test1', 'test2'],
+        Utility::lookupBattery(25)
+    );
+}
 
     /**
      * Test that lookupBattery returns the correct information
@@ -653,25 +660,33 @@ class UtilityTest extends TestCase
      * @covers Utility::lookupBattery
      * @return void
      */
-    public function testLookupBatteryWithStage()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with($this->stringContains(" AND b.Stage=:BatStage"))
-            ->willReturn(
-                [
-                    ['Test_name' => 'test1',
-                        'Stage'     => 'stage1'
-                    ]
-                ]
-            );
+public function testLookupBatteryWithStage(): void
+{
+    /** @var \LORIS\Database\Query|MockObject $queryMock */
+    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->onlyMethods(['getIterator'])
+        ->getMock();
 
-        $this->assertEquals(
-            ['test1'],
-            Utility::lookupBattery(25, 'stage1')
-        );
+    $queryMock->method('getIterator')->willReturn(
+        new ArrayIterator([
+            [
+                'Test_name' => 'test1',
+                'Stage'     => 'stage1'
+            ]
+        ])
+    );
 
-    }
+    $this->_dbMock->expects($this->any())
+        ->method('pselect')
+        ->with($this->stringContains(" AND b.Stage=:BatStage"))
+        ->willReturn($queryMock);
+
+    $this->assertEquals(
+        ['test1'],
+        Utility::lookupBattery(25, 'stage1')
+    );
+}
 
     /**
      * Test that associativeToNumericArray correctly converts
@@ -772,27 +787,38 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields
      * @return void
      */
-    public function testGetSourcefieldsWithInstrumentSpecified()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with($this->stringContains("AND sourcefrom = :sf"))
-            ->willReturn(
-                [
-                    ['SourceField' => 'instrument_field',
-                        'Name'        => 'instrument_name'
-                    ]
-                ]
-            );
+public function testGetSourcefieldsWithInstrumentSpecified(): void
+{
+    /** @var \LORIS\Database\Query|MockObject $queryMock */
+    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->onlyMethods(['getIterator'])
+        ->getMock();
 
-        $this->assertEquals(
-            [0 => ['SourceField' => 'instrument_field',
+    $queryMock->method('getIterator')->willReturn(
+        new ArrayIterator([
+            [
+                'SourceField' => 'instrument_field',
                 'Name'        => 'instrument_name'
             ]
-            ],
-            Utility::getSourcefields('instrument1', null, null)
-        );
-    }
+        ])
+    );
+
+    $this->_dbMock->expects($this->any())
+        ->method('pselect')
+        ->with($this->stringContains("AND sourcefrom = :sf"))
+        ->willReturn($queryMock);
+
+    $this->assertEquals(
+        [
+            [
+                'SourceField' => 'instrument_field',
+                'Name'        => 'instrument_name'
+            ]
+        ],
+        Utility::getSourcefields('instrument1', null, null)
+    );
+}
 
     /**
      * Test that getSourcefields returns the correct information
@@ -801,26 +827,37 @@ class UtilityTest extends TestCase
      * @covers Utility::getSourcefields
      * @return void
      */
-    public function testGetSourcefieldsWithCommentIDSpecified()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                [
-                    ['SourceField' => 'commentID_field',
-                        'Name'        => 'commentID_name'
-                    ]
-                ]
-            );
+public function testGetSourcefieldsWithCommentIDSpecified(): void
+{
+    /** @var \LORIS\Database\Query|MockObject $queryMock */
+    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+        ->disableOriginalConstructor()
+        ->onlyMethods(['getIterator'])
+        ->getMock();
 
-        $this->assertEquals(
-            [0 => ['SourceField' => 'commentID_field',
+    $queryMock->method('getIterator')->willReturn(
+        new ArrayIterator([
+            [
+                'SourceField' => 'commentID_field',
                 'Name'        => 'commentID_name'
             ]
-            ],
-            Utility::getSourcefields(null, '1', null)
-        );
-    }
+        ])
+    );
+
+    $this->_dbMock->expects($this->any())
+        ->method('pselect')
+        ->willReturn($queryMock);
+
+    $this->assertEquals(
+        [
+            [
+                'SourceField' => 'commentID_field',
+                'Name'        => 'commentID_name'
+            ]
+        ],
+        Utility::getSourcefields(null, '1', null)
+    );
+}
 
     /**
      * Test that getSourcefields returns the correct information
