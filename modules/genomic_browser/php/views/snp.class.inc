@@ -57,5 +57,4 @@ class SNP
     {
         return $this->_formElement;
     }
-
 }

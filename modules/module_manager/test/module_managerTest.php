@@ -25,7 +25,6 @@ require_once __DIR__ .
  */
 class ModuleManagerTest extends LorisIntegrationTest
 {
-
     /**
      * Tests that the module_manager loads an error page if
      * the user has no permission.

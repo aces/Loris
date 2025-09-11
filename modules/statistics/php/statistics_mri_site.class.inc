@@ -48,6 +48,7 @@ class Statistics_Mri_Site extends Statistics_Site
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * GetIssueName function
      *
@@ -67,6 +68,7 @@ class Statistics_Mri_Site extends Statistics_Site
         }
         return $issue;
     }
+
     /**
      * CompleteCount function
      *

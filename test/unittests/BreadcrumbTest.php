@@ -79,5 +79,4 @@ class BreadcrumbTest extends TestCase
             $this->_breadcrumb->__toString()
         );
     }
-
 }

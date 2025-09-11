@@ -56,6 +56,7 @@ class View_Project extends \NDB_Form
             || $nProjects > 0
         );
     }
+
     /**
      * Entry point for /publications/view_project
      * Checks if project id is provided and otherwise
@@ -133,5 +134,4 @@ class View_Project extends \NDB_Form
             [$baseURL . "/publication/js/viewProjectIndex.js"]
         );
     }
-
 }

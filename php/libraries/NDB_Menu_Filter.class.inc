@@ -375,6 +375,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return;
     }
+
     /**
      * Gets the base query
      *
@@ -392,6 +393,7 @@ class NDB_Menu_Filter extends NDB_Menu
         return $query;
 
     }
+
     /**
      * Adds filters
      *
@@ -601,7 +603,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
     }
 
-
     /**
      * Sets the template data for the data table's rows
      *
@@ -774,6 +775,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return json_encode($this->toArray());
     }
+
     /**
      * Returns the full list of candidates, users, etc.
      *

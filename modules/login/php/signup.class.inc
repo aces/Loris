@@ -306,5 +306,4 @@ class Signup extends \NDB_Page implements ETagCalculator
     {
         return true;
     }
-
 }

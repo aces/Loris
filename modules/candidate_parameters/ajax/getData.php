@@ -66,6 +66,7 @@ default:
     header("HTTP/1.1 404 Not Found");
     exit(0);
 }
+
 /**
  * Handles the fetching of Candidate Info fields
  *
@@ -428,7 +429,6 @@ function getParticipantStatusHistory(CandID $candID)
 
     return iterator_to_array($unformattedComments);
 }
-
 
 /**
  * Handles the fetching of Consent Status fields

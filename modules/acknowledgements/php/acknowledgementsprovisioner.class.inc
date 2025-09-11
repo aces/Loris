@@ -68,5 +68,4 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
     {
             return new AcknowledgementRow($row);
     }
-
 }

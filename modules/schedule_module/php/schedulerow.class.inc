@@ -47,6 +47,7 @@ class ScheduleRow implements \LORIS\Data\DataInstance,
     protected $AppointmentTypeName;
     protected $site;
     protected $ProjectID;
+
     /**
      * Create a new CandidateListRow
      *

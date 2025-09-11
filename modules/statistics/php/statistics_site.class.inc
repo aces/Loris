@@ -175,6 +175,7 @@ class Statistics_Site extends \NDB_Menu
     {
         return $this->instruments[$instrument];
     }
+
     /**
      * CompleteCount function
      *
@@ -250,6 +251,7 @@ class Statistics_Site extends \NDB_Menu
         );
         return iterator_to_array($result);
     }
+
     /**
      * Setup function
      *

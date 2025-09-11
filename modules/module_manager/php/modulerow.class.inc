@@ -62,5 +62,4 @@ class ModuleRow implements \LORIS\Data\DataInstance
             'Active'   => $this->Active,
         ];
     }
-
 }

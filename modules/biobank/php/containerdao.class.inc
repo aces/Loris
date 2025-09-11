@@ -51,6 +51,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
     // XXX: I'm not sure if this function is really necessary since it is only
     // being used once, and should likely not be accessed outside this class.
+
     /**
      * This method is used when the DAO class needs to create a new Container
      * instance.
@@ -83,6 +84,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     // XXX: Currently this function is never used with any conditions passed as
     // parameters. Decide if this is a necessary feature. It is likely useful,
     // but I need to figure out how to integrate it wit the dataprovisioner.
+
     /**
      * This will select all containers from the database that match the
      * attribute values passed by $conditions and will return an array
@@ -151,6 +153,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         }
         return $containers;
     }
+
     /**
      * Instantiates an ArrayIterator class that is composed of all the Container
      * Objects.
@@ -164,6 +167,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
     // XXX: The conditions parameter is only used to differentiate primary types
     // from non primary types. Decide if this is a front-end concern.
+
     /**
      * Queries all rows of the biobank_container_type table and returns a nested
      * array with the ID field as the index. Conditions may be passed to filter
@@ -197,6 +201,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     // in the design of this entity, they are not being used in any way
     // throughout the module. Decide if container capacities are still
     // important, or if they should be deprecated.
+
     /**
      * Queries all rows of the biobank_container_capacity table and returns a
      * nested array with the ID field as the index.
@@ -219,6 +224,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     // in the design of this entity, they are only being used by Specimen Objects
     // in this module. Decide if container units are still important, or if they
     // should be deprecated.
+
     /**
      * Queries all rows of the biobank_unit table and returns a
      * nested array with the ID field as the index.
@@ -270,7 +276,6 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
         return $stati;
     }
-
 
     // TODO: Not being used. Delete if not useful by November 2023.
     /**
@@ -490,6 +495,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
 
     // FIXME: For some reason, this isn't working as intended and is returning
     // way more ChildContainers than necessary.
+
     /**
      * This function takes a Container Object and retrieves an array of ContainerIDs
      * representing all the descendant children of the Container.

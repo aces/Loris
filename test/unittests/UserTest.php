@@ -302,6 +302,7 @@ class UserTest extends TestCase
      * @var array config name => value
      */
     private $_configMap = [];
+
     /**
      * This method is called before each test is executed.
      *

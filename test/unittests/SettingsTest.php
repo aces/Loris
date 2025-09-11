@@ -130,7 +130,6 @@ class SettingsTest extends TestCase
         ];
     }
 
-
     /**
      * Test isSandbox() returns false when config value is
      *  - string 'FAlse'

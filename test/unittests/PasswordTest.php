@@ -112,7 +112,6 @@ class PasswordTest extends TestCase
         ];
     }
 
-
     /**
      * Test the CandID constructor with invalid values
      *

@@ -53,7 +53,6 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private static $_TST0001_CANDIDATEID = 1;
 
-
     /**
      * Tests that, when loading the timepoint_list module, some
      * text appears in the body.
@@ -76,6 +75,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             $bodyText
         );
     }
+
     /**
      * Checks the contents of the session table and compares it against an expected
      * result.
@@ -115,6 +115,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             );
         }
     }
+
     /**
      * Tests that the correct sessions are retrieved from the
      * database and displayed on the page for the given candidate.

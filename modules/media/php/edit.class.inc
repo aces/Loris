@@ -101,5 +101,4 @@ class Edit extends \NDB_Form
     {
         return $user->hasPermission('media_write');
     }
-
 }

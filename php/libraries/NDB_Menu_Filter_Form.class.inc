@@ -30,8 +30,6 @@ use \Psr\Http\Message\ResponseInterface;
 
 class NDB_Menu_Filter_Form extends NDB_Menu_Filter
 {
-
-
     /**
      * Saves the form
      *
@@ -52,8 +50,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             }
         }
     }
-
-
 
     /**
      * Preprocesses the array of values to be saved into the database
@@ -83,7 +79,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         $this->_process($values);
     }
 
-
     /**
      * Processes the values and saves to database
      *
@@ -112,6 +107,5 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         }
         return parent::handle($request);
     }
-
 }
 

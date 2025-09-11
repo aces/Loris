@@ -46,6 +46,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
     }
+
     /**
      * Delete testing data from database
      *
@@ -55,6 +56,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
     }
+
     /**
      * Tests that, when loading the dicom_archive module > viewDetails subtest, some
      * text appears in the body.
@@ -76,6 +78,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that help editor loads with the permission
      *
@@ -98,6 +101,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests clear button in the form
      * The form should refreash and the data should be gone.
@@ -137,6 +141,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             '5 rows'
         );
     }
+
     /**
      * Tests that the (view-details) link works
      *
@@ -152,6 +157,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString('View Details', $text);
     }
+
     /**
      * Tests that the (view-Images) link works
      *

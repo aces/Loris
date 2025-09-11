@@ -193,5 +193,4 @@ class Module extends \Module
     {
         return true;
     }
-
 }

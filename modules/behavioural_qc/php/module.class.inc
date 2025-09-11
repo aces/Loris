@@ -27,7 +27,6 @@ namespace LORIS\behavioural_qc;
  */
 class Module extends \Module
 {
-
     /**
      * {@inheritDoc}
      *

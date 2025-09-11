@@ -71,7 +71,6 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_project = $project;
     }
 
-
     /**
      * Returns which methods are supported by this endpoint.
      *
