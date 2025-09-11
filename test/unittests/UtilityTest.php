@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use \Loris\StudyEntities\Candidate\CandID;
 use PHPUnit\Framework\MockObject\MockObject;
 use LORIS\Database\Query;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Unit tests for Utility class.
@@ -891,6 +892,12 @@ class UtilityTest extends TestCase
     /**
      * @return iterable<array{0:mixed}>
      */
+    #[DataProvider('notPositiveIntegerValues')]
+    public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
+    {
+        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+    }
+
     public static function notPositiveIntegerValues(): iterable
     {
         yield [-1];
@@ -906,32 +913,17 @@ class UtilityTest extends TestCase
         yield [new \stdClass()];
     }
 
-    /**
-     * @dataProvider notPositiveIntegerValues
-     * @covers \Utility::valueIsPositiveInteger
-     */
-    public function testValueIsPositiveIntegerReturnsFalse($notInt): void
+    #[DataProvider('positiveIntegerValues')]
+    public function testValueIsPositiveIntegerReturnsTrue(int $int): void
     {
-        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
 
-    /**
-     * @return iterable<array{0:int}>
-     */
     public static function positiveIntegerValues(): iterable
     {
         yield [1];
         yield [5];
         yield [100];
-    }
-
-    /**
-     * @dataProvider positiveIntegerValues
-     * @covers \Utility::valueIsPositiveInteger
-     */
-    public function testValueIsPositiveIntegerReturnsTrue($int): void
-    {
-        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
     /**
      * Tests the
