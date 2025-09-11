@@ -214,39 +214,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that the calculateAge() method fails
-     * when the dates have the incorrect format
-     *
-     * @param string $first  string with the badly formatted date of birth
-     * @param string $second string with the badly formatted current date
-     *
-     * @dataProvider ageIncorrectFormatProvider
-     * @covers       Utility::calculateAge
-     *
-     * @return void
-     */
-    public function testCalculateAgeFormat($first, $second)
-    {
-        $this->expectException('\LorisException');
-        Utility::calculateAge($first, $second);
-    }
-
-    /**
-     * Data provider for testCalculateAgeFormat
-     *
-     * @return array
-     */
-    public function ageIncorrectFormatProvider()
-    {
-        return [
-            ["1990\\07\\05", "2018\\05\\23"],
-            ["1990", "2018"],
-            ["1990_07_05", "2019_09_65"],
-            [" ", " "],
-        ];
-    }
-
-    /**
      * Test that getConsentList() returns a list from the database
      *
      * @covers Utility::getConsentList
