@@ -13,64 +13,64 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Data Dictionary"
-msgstr ""
+msgstr "डेटा शब्दकोश"
 
 msgid "Edit Description"
-msgstr ""
+msgstr "विवरण संपादित करें"
 
 msgid "Modify"
-msgstr ""
+msgstr "संशोधित करें"
 
 msgid "Missing description"
-msgstr ""
+msgstr "विवरण अनुपलब्ध है"
 
 msgid "Description Status"
-msgstr ""
+msgstr "विवरण स्थिति"
 
 msgid "Modified"
-msgstr ""
+msgstr "संशोधित"
 
 msgid "edited"
-msgstr ""
+msgstr "संपादित"
 
 msgid "Empty"
-msgstr ""
+msgstr "खाली"
 
 msgid "Unchanged"
-msgstr ""
+msgstr "अपरिवर्तित"
 
 msgid "Category"
-msgstr ""
+msgstr "श्रेणी"
 
 msgid "Field Name"
-msgstr ""
+msgstr "फ़ील्ड नाम"
 
 msgid "Data Scope"
-msgstr ""
+msgstr "डेटा दायरा"
 
 msgid "Data Type"
-msgstr ""
+msgstr "डेटा प्रकार"
 
 msgid "Data Cardinality"
-msgstr ""
+msgstr "डेटा कार्डिनैलिटी"
 
 msgid "Unique"
-msgstr ""
+msgstr "अद्वितीय"
 
 msgid "Single"
-msgstr ""
+msgstr "एकल"
 
 msgid "Optional"
-msgstr ""
+msgstr "वैकल्पिक"
 
 msgid "Many"
-msgstr ""
+msgstr "अनेक"
 
 msgid "Description"
-msgstr ""
+msgstr "विवरण"

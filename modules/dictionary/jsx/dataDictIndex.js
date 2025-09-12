@@ -9,6 +9,8 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
 
+import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
+
 /**
  * Data Dictionary Page.
  *
@@ -68,16 +70,17 @@ class DataDictIndex extends Component {
    * @return {Function} callback function for react to activate swal
    */
   editSwal(row) {
+    const {t} = this.props;
     return () => {
       swal.fire({
-        title: 'Edit Description',
+        title: t('Edit Description', {ns: 'dictionary'}),
         input: 'text',
         inputValue: row.Description,
-        confirmButtonText: 'Modify',
+        confirmButtonText: t('Modify', {ns: 'dictionary'}),
         showCancelButton: true,
         inputValidator: (value) => {
           if (!value) {
-            return 'Missing description';
+            return t('Missing description', {ns: 'dictionary'});
           }
         },
       }).then((result) => {
@@ -106,7 +109,7 @@ class DataDictIndex extends Component {
             // Aggressively update the state and assume
             // it's been modified.
             this.state.data.Data[i][3] = result.value;
-            this.state.data.Data[i][4] = 'Modified';
+            this.state.data.Data[i][4] = t('Modified', {ns: 'dictionary'});
 
             // Force a re-render
             this.setState({state: this.state});
@@ -183,20 +186,21 @@ class DataDictIndex extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     let editIcon = '';
-    let edited='';
+    let edited = '';
     switch (column) {
-    case 'Description':
+    case t('Description', {ns: 'dictionary'}):
       if (hasEditPermission) {
         editIcon = (<i className="fas fa-edit"
           style={{cursor: 'pointer'}}
           onClick={this.editSwal(rowData)}>
         </i>);
       }
-
-      if (rowData['Description Status'] == 'Modified') {
-        edited = <span>(edited)</span>;
+      if (rowData[t('Description Status', {ns: 'dictionary'})] ===
+       t('Modified', {ns: 'dictionary'})) {
+        edited = <span>({t('edited', {ns: 'dictionary'})})</span>;
       }
       return <td>{cell}
         <span style={{color: '#838383'}}>{edited} {editIcon} </span>
@@ -212,8 +216,11 @@ class DataDictIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
+
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -224,7 +231,7 @@ class DataDictIndex extends Component {
     let options = this.state.data.fieldOptions;
     let fields = [
       {
-        label: 'Module',
+        label: t('Module', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Module',
@@ -233,18 +240,18 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Category',
+        label: t('Category', {ns: 'dictionary'}),
         show: false,
         filter: {
           name: 'Category',
           type: 'select',
-          options: this.state.moduleFilter == ''
+          options: this.state.moduleFilter === ''
             ? {}
             : options.categories[this.state.moduleFilter],
         },
       },
       {
-        label: 'Field Name',
+        label: t('Field Name', {ns: 'dictionary'}),
         show: true,
         filter: {
           name: 'Name',
@@ -252,7 +259,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Description',
+        label: t('Description', {ns: 'dictionary'}),
         show: true,
         filter: {
           name: 'Description',
@@ -260,33 +267,33 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Description Status',
+        label: t('Description Status', {ns: 'dictionary'}),
         show: false,
         filter: {
           name: 'DescriptionStatus',
           type: 'select',
           options: {
-            'empty': 'Empty',
-            'modified': 'Modified',
-            'unchanged': 'Unchanged',
+            'empty': t('Empty', {ns: 'dictionary'}),
+            'modified': t('Modified', {ns: 'dictionary'}),
+            'unchanged': t('Unchanged', {ns: 'dictionary'}),
           },
         },
       },
       {
-        label: 'Data Scope',
+        label: t('Data Scope', {ns: 'dictionary'}),
         show: true,
         filter: {
           name: 'datascope',
           type: 'select',
           options: {
-            'candidate': 'Candidate',
-            'session': 'Session',
-            'project': 'Project',
+            'candidate': t('Candidate', {ns: 'loris'}),
+            'session': t('Session', {ns: 'loris'}),
+            'project': t('Project', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'Data Type',
+        label: t('Data Type', {ns: 'dictionary'}),
         show: true,
         filter: {
           name: 'datatype',
@@ -294,21 +301,21 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Data Cardinality',
+        label: t('Data Cardinality', {ns: 'dictionary'}),
         show: true,
         filter: {
           name: 'cardinality',
           type: 'select',
           options: {
-            'unique': 'Unique',
-            'single': 'Single',
-            'optional': 'Optional',
-            'many': 'Many',
+            'unique': t('Unique', {ns: 'dictionary'}),
+            'single': t('Single', {ns: 'dictionary'}),
+            'optional': t('Optional', {ns: 'dictionary'}),
+            'many': t('Many', {ns: 'dictionary'}),
           },
         },
       },
       {
-        label: 'Visits',
+        label: t('Visits', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Visits',
@@ -317,7 +324,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Cohorts',
+        label: t('Cohorts', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Cohorts',
@@ -340,10 +347,11 @@ class DataDictIndex extends Component {
 DataDictIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   BaseURL: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'dictionary', {});
+  i18n.addResourceBundle('hi', 'dictionary', hiStrings);
   const Index = withTranslation(
     ['dictionary', 'loris']
   )(DataDictIndex);
