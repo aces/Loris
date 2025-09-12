@@ -1,0 +1,13 @@
+{
+    "Module Manager": "मॉड्यूल प्रबंधक",
+    "Error!": "त्रुटि!",
+    "Could not update ": "अद्यतन नहीं कर सका ",
+    "Success!": "सफलता!",
+    "Updated": "अद्यतन किया गया",
+    "status!": "स्थिति!",
+    "To apply changes the interface must be reloaded. Proceed?": "परिवर्तनों को लागू करने के लिए इंटरफ़ेस को पुनः लोड करना आवश्यक है। क्या आप आगे बढ़ना चाहते हैं?",
+    "Reload the page": "पृष्ठ पुनः लोड करें",
+    "Continue": "जारी रखें",
+    "Could not find module ": "मॉड्यूल नहीं मिला ",
+    "Full Name": "पूरा नाम"
+}
