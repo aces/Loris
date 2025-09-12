@@ -107,7 +107,7 @@ $lorisInstance = new \LORIS\LorisInstance(
     $factory->database(),
     $factory->config(),
     [
-        __DIR__ . "/../project/",
+        __DIR__ . "/../project/modules",
         __DIR__ . "/../modules/"
     ]
 );
