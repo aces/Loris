@@ -8,7 +8,7 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
-import hiStrings from '../locale/hi/LC_MESSAGES/survey_accounts.json'
+import hiStrings from '../locale/hi/LC_MESSAGES/survey_accounts.json';
 /**
  * Survey Account React Component
  */
@@ -90,7 +90,8 @@ class SurveyAccountsIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
