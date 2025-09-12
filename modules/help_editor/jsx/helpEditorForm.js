@@ -5,6 +5,9 @@ import Markdown from 'jsx/Markdown';
 import Help from 'jsx/Help';
 import swal from 'sweetalert2';
 import {TextboxElement, TextareaElement} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
 
 /**
  * Help Editor Form Page.
@@ -19,6 +22,7 @@ import {TextboxElement, TextareaElement} from 'jsx/Form';
  */
 
 const HelpEditorForm = (props) => {
+  const {t} = props;
   const [title, setTitle] = useState(props.title ?? '');
   const [content, setContent] = useState(props.content ?? '');
   const helpPreview = [];
@@ -69,17 +73,19 @@ const HelpEditorForm = (props) => {
         return;
       }
       swal.fire({
-        title: 'Content update successful!',
+        title: t('Content update successful!',
+          {ns: 'help_editor'}),
         type: 'success',
-        confirmButtonText: 'Close',
+        confirmButtonText: t('Close', {ns: 'help_editor'}),
       });
     }).catch((error) => {
       console.error(error);
       swal.fire({
-        title: 'Content update unsuccessful.',
-        text: 'Something went wrong',
+        title: t('Content update unsuccessful.',
+          {ns: 'help_editor'}),
+        text: t('Something went wrong', {ns: 'help_editor'}),
         type: 'error',
-        confirmButtonText: 'Try again',
+        confirmButtonText: t('Try again', {ns: 'help_editor'}),
       });
     });
   };
@@ -95,13 +101,13 @@ const HelpEditorForm = (props) => {
         <div className="row">
           <div className="col-sm-9">
             <TextboxElement
-              label='Title'
+              label={t('Title', {ns: 'help_editor'})}
               name='title'
               value={title}
               onUserInput={onUserInput}
             />
             <TextareaElement
-              label='Content'
+              label={t('Content', {ns: 'help_editor'})}
               rows={15}
               name='content'
               value={content}
@@ -109,13 +115,14 @@ const HelpEditorForm = (props) => {
             />
             <div className="col-sm-9 col-sm-offset-3">
               <p><small>
-                Open the help dialog to preview the changes.
+                {t('Open the help dialog to preview the changes.',
+                  {ns: 'help_editor'})}
               </small></p>
               <input
                 className="btn btn-sm btn-primary"
                 id="save-help"
                 name="fire_away"
-                value="Save"
+                value={t('Save', {ns: 'help_editor'})}
                 type="submit"
                 onClick={save}
               />
@@ -135,6 +142,9 @@ HelpEditorForm.propTypes = {
   subsection: PropTypes.string,
   helpid: PropTypes.string,
   url: PropTypes.string,
+  t: PropTypes.func,
 };
 
-window.RHelpEditorForm = React.createFactory(HelpEditorForm);
+i18n.addResourceBundle('hi', 'help_editor', hiStrings);
+window.RHelpEditorForm = React.createFactory(
+  withTranslation(['help_editor'])(HelpEditorForm));
