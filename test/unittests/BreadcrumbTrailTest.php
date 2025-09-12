@@ -33,28 +33,19 @@ class BreadcrumbTrailTest extends TestCase
     protected $breadcrumbTrail;
 
     /**
-     * This method is called before each test is executed.
-     *
-     * @return void
+     * Setup before each test
      */
     protected function setUp(): void
     {
         parent::setUp();
+        $this->breadcrumbTrail = null;
     }
 
     /**
      * Test __toString() returns correct string
-     * TODO: Add potential edge cases (such as white space)
      *
-     * @param []     $data1 A label/link pair
-     * @param []     $data2 A label/link pair
-     * @param string $expected The value to compare
-     *
-     * @covers       Breadcrumb::__toString
-     * @return       void
-     */
-    /**
      * @dataProvider toStringProvider
+     * @covers Breadcrumb::__toString
      */
     public function testToString(array $data1, array $data2, string $expected): void
     {
@@ -62,13 +53,40 @@ class BreadcrumbTrailTest extends TestCase
             new Breadcrumb($data1[0], $data1[1]),
             new Breadcrumb($data2[0], $data2[1])
         );
+
         $this->assertEquals($expected, (string)$this->breadcrumbTrail);
     }
 
     /**
-     * ToString Provider
+     * Test empty BreadcrumbTrail returns empty string
      *
-     * @return []
+     * @covers Breadcrumb::__toString
+     */
+    public function testEmptyBreadcrumbTrailReturnsEmptyString(): void
+    {
+        $this->breadcrumbTrail = new BreadcrumbTrail();
+        $this->assertEquals('', (string)$this->breadcrumbTrail);
+    }
+
+    /**
+     * Test single Breadcrumb behaves correctly
+     *
+     * @covers Breadcrumb::__toString
+     */
+    public function testSingleBreadcrumb(): void
+    {
+        $this->breadcrumbTrail = new BreadcrumbTrail(
+            new Breadcrumb('OnlyLabel', 'OnlyLink')
+        );
+
+        $expected = '{"text":"OnlyLabel","query":"OnlyLink"}';
+        $this->assertEquals($expected, (string)$this->breadcrumbTrail);
+    }
+
+    /**
+     * Data provider for testToString()
+     *
+     * @return array<int, array{0:array,1:array,2:string}>
      */
     public function toStringProvider(): array
     {
@@ -84,8 +102,13 @@ class BreadcrumbTrailTest extends TestCase
                 ["anotherLabel", "anotherLink"],
                 '{"text":"aLabel","query":"aLink"},'
                 . '{"text":"anotherLabel","query":"anotherLink"}'
-            ]
+            ],
+            [
+                ["Label With Spaces", "Link With Spaces"],
+                ["Second Label", "Second Link"],
+                '{"text":"Label With Spaces","query":"Link With Spaces"},'
+                . '{"text":"Second Label","query":"Second Link"}'
+            ],
         ];
     }
 }
-
