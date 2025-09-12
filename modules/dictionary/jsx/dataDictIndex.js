@@ -79,6 +79,7 @@ class DataDictIndex extends Component {
         inputValue: row.Description,
         confirmButtonText: t('Modify', {ns: 'dictionary'}),
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'dictionary'}),
         inputValidator: (value) => {
           if (!value) {
             return t('Missing description', {ns: 'dictionary'});
@@ -89,9 +90,10 @@ class DataDictIndex extends Component {
           return;
         }
 
+        const fieldname = row[t('Field Name', {ns: 'dictionary'})];
         const url = this.props.BaseURL
               + '/dictionary/fields/'
-              + encodeURI(row['Field Name']);
+              + encodeURI(fieldname);
 
         // The fetch happens asynchronously, which means that the
         // swal closes before it returns. We find the index that
@@ -101,7 +103,7 @@ class DataDictIndex extends Component {
         let odesc;
         let ostat;
         for (i = 0; i < this.state.data.Data.length; i++) {
-          if (this.state.data.Data[i][2] == row['Field Name']) {
+          if (this.state.data.Data[i][2] == fieldname) {
             // Store the original values in case the fetch
             // fails and we need to restore them.
             odesc = this.state.data.Data[i][3];
