@@ -8,7 +8,6 @@ import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
 import {withTranslation} from 'react-i18next';
 
 
-
 /**
  * Help Editor Archive Page.
  *
@@ -97,7 +96,7 @@ class HelpEditor extends React.Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-         {ns: 'help_editor'})}</h3>;
+        {ns: 'help_editor'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -141,13 +140,13 @@ class HelpEditor extends React.Component {
 
 HelpEditor.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 const TranslatedHelpEditor = withTranslation(
   ['help_editor'])(HelpEditor);
 
 window.addEventListener('load', () => {
-
   i18n.addResourceBundle('hi', 'help_editor', hiStrings);
   createRoot(
     document.getElementById('lorisworkspace')
