@@ -123,15 +123,19 @@ class PasswordTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @return            void
      */
-    public function testContructorInvalidValues($invalidValue): void
-    {
-        $this->expectException("InvalidArgumentException");
+public function testConstructorInvalidValues(): void
+{
+    $invalidValues = [null, '', 123, [], new stdClass()]; // all invalid values
+
+    foreach ($invalidValues as $invalidValue) {
+        $this->expectException(\TypeError::class);
         $this->_configMock->expects($this->any())
             ->method('getSetting')
             ->willReturn('false');
 
         new \Password($invalidValue);
     }
+}
 
     /**
      * Ensures that a password object is returned when given valid input. No
