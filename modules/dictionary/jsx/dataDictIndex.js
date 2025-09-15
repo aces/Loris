@@ -79,7 +79,7 @@ class DataDictIndex extends Component {
         inputValue: row.Description,
         confirmButtonText: t('Modify', {ns: 'dictionary'}),
         showCancelButton: true,
-        cancelButtonText: t('Cancel', {ns: 'dictionary'}),
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
         inputValidator: (value) => {
           if (!value) {
             return t('Missing description', {ns: 'dictionary'});

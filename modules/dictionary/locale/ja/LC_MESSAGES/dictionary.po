@@ -24,9 +24,6 @@ msgstr "データ辞書"
 msgid "Edit Description"
 msgstr "説明を編集"
 
-msgid "Cancel"
-msgstr "取り消す"
-
 msgid "Modify"
 msgstr "修正する"
 

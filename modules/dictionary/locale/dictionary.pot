@@ -24,9 +24,6 @@ msgstr ""
 msgid "Edit Description"
 msgstr ""
 
-msgid "Cancel"
-msgstr ""
-
 msgid "Modify"
 msgstr ""
 
