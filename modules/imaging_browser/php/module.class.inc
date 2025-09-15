@@ -127,15 +127,15 @@ class Module extends \Module
         case 'study-progression':
             $DB   = $factory->database();
             $data = $DB->pselectWithIndexKey(
-                "SELECT 
+                "SELECT
                     p.ProjectID,
                     p.Name AS ProjectName,
                     COUNT(s.ID) AS count,
-                    '".$baseURL."/imaging_browser' as url
+                    CONCAT('".$baseURL."/imaging_browser/?project=', p.Name) as url
                 FROM session s
                 JOIN Project p ON p.ProjectID = s.ProjectID
                 JOIN mri_upload mu ON mu.SessionID = s.ID
-                WHERE s.Active <> 'N' 
+                WHERE s.Active <> 'N'
                 AND s.CenterID <> 1
                 GROUP BY p.Name",
                 [],
@@ -143,7 +143,7 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Imaging Session",
+                    "Imaging Sessions",
                     $data,
                     "",
                     'rgb(235, 255, 254)',
