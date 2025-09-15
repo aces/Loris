@@ -45,6 +45,7 @@ const StudyProgression = (props) => {
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
+        yLabel: 'Candidates registered',
         titlePrefix: 'Month',
       },
     },
@@ -58,7 +59,25 @@ const StudyProgression = (props) => {
         legend: '',
         options: {line: 'line'},
         chartObject: null,
+        yLabel: 'Candidates registered',
         titlePrefix: 'Month',
+      },
+    },
+    'project_sizes': {    // This should be a class
+      'size_byproject': {
+        sizing: 11,
+        title: 'Size breakdown by project',
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: 'Size (GB)',
+        units: 'GB',
+        showPieLabelRatio: false,
+        legend: '',
+        options: {pie: 'pie', bar: 'bar'},
+        chartObject: null,
+        yLabel: 'Size (GB)',
+        titlePrefix: 'Project',
       },
     },
   });
@@ -82,6 +101,7 @@ const StudyProgression = (props) => {
         setChartDetails(data);
       });
       json = props.data;
+      console.log('thejson', json);
       setLoading(false);
     }
   }, [props.data, t]);
@@ -217,6 +237,46 @@ const StudyProgression = (props) => {
               ),
             title: title('Site Recruitment'),
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
+          },
+          {
+            content:
+              Object.keys(json['options']['projects']).length > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    {/*<button*/}
+                    {/*  type="button"*/}
+                    {/*  className="btn btn-default btn-xs"*/}
+                    {/*  onClick={() => setShowFiltersBreakdown((prev) => !prev)}*/}
+                    {/*>*/}
+                    {/*  {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}*/}
+                    {/*</button>*/}
+                  </div>
+                  {showFiltersBreakdown && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionProjectSizesForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'project_sizes');
+                      }}
+                    />
+                  )}
+                  {showChart('project_sizes', 'size_byproject')}
+                </div>
+              ) : (
+                <p>There is no data yet.</p>
+              ),
+            title: 'Study Progression - project sizes',
+            subtitle: 'Total size: '
+              + (json['studyprogression']['total_size'] ?? -1)
+              + ' GB',
           },
         ]}
       />
