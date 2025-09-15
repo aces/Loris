@@ -58,4 +58,59 @@ class Module extends \Module
     {
         return dgettext("dqt", "Data Query Tool");
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        $factory  = \NDB_Factory::singleton();
+        $baseURL  = $factory->settings()->getBaseURL();
+        $projects = $user->getProjects();
+
+        switch ($type) {
+            case 'study-progression':
+                $DB   = $factory->database();
+                $cachedSizeData = json_decode(
+                    html_entity_decode($DB->pselectOne(
+                        "SELECT Value
+                  FROM cached_data
+                  JOIN cached_data_type USING (CachedDataTypeID)
+                  WHERE Name='projects_disk_space'",
+                        []
+                    )),
+                    true
+                );
+
+                $data = [];
+                foreach ($projects as $project) {
+                    $projectName = $project->getName();
+                    if (in_array($projectName, array_keys($cachedSizeData))) {
+                        $data[] = [
+                            'ProjectID'   => $project->getId(),
+                            'count'       => $cachedSizeData[$projectName]['total'] . ' GB',
+                            'url'         => "$baseURL/dqt",
+                            'ProjectName' => $projectName
+                        ];
+                    }
+                }
+
+                return [
+                    new \LORIS\dashboard\DataWidget(
+                        "Project Size",
+                        $data,
+                        "",
+                        'rgb(186,225,255)',
+                    )
+                ];
+        }
+        return [];
+    }
 }
