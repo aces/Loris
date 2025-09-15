@@ -11,6 +11,7 @@ import {
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+i18n.addResourceBundle('hi', 'publication', hiStrings);
 
 /**
  * View project component
@@ -52,7 +53,8 @@ class ViewProject extends React.Component {
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal.fire(
-        t('Please fix any remaining form errors before submission', {ns: 'publication'}),
+        t('Please fix any remaining form errors before submission',
+          {ns: 'publication'}),
         '',
         'error'
       );
@@ -83,7 +85,8 @@ class ViewProject extends React.Component {
       if (!response.ok) {
         console.error(response.status);
         response.json().then((data) => {
-          let message = (data && data.message) || t('Something went wrong!', {ns: 'publication'});
+          let message = (data && data.message) || t('Something went wrong!',
+            {ns: 'publication'});
           swal.fire(t('Edit failed!', {ns: 'publication'}), message, 'error');
         });
         return;
@@ -93,7 +96,9 @@ class ViewProject extends React.Component {
     }).catch((error) => {
       // Network error
       console.error(error);
-      swal.fire(t('Edit failed!', {ns: 'publication'}), t('Something went wrong!', {ns: 'publication'}), 'error');
+      swal.fire(t('Edit failed!', {ns: 'publication'}),
+        t('Something went wrong!',
+          {ns: 'publication'}), 'error');
     });
   }
 
@@ -171,7 +176,7 @@ class ViewProject extends React.Component {
       // Network error
       console.error(error);
       this.setState({
-        error: t('An error occured while loading the page.', {ns: 'publication'}),
+        error: t('An error occured while loading the page.', {ns: 'loris'}),
       });
     });
   }
@@ -264,7 +269,7 @@ class ViewProject extends React.Component {
     let keywordLinks;
     let voiLinks;
     let files;
-    i18n.addResourceBundle('hi', 'publication', hiStrings);
+
 
     if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
@@ -314,7 +319,7 @@ class ViewProject extends React.Component {
         />
         <StaticElement
           name="project"
-          label="Project"
+          label={this.props.t('Project', {ns: 'loris'})}
           text={this.state.formData.projectName}
         />
         <StaticElement
@@ -468,7 +473,6 @@ class ViewProject extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'publication', hiStrings);
     const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
@@ -490,7 +494,7 @@ class ViewProject extends React.Component {
       // in formData reflects the ID, not the description
       statusElement = <SelectElement
         name="status"
-        label={t('Status', {ns: 'publication'})}
+        label={t('Status', {ns: 'loris'})}
         id="status"
         value={this.state.formData.status}
         onUserInput={this.setFormData}
@@ -512,7 +516,7 @@ class ViewProject extends React.Component {
       // to avoid having 2 submit buttons
       reviewBtn = this.state.userCanEdit ?
         undefined :
-        <ButtonElement label={t('Submit', {ns: 'publication'})} />;
+        <ButtonElement label={t('Submit', {ns: 'loris'})} />;
     } else {
       const statClassMap = {
         Pending: 'text-warning',
@@ -525,7 +529,7 @@ class ViewProject extends React.Component {
         </span>
       );
       statusElement = <StaticElement
-        label={t('Status', {ns: 'publication'})}
+        label={t('Status', {ns: 'loris'})}
         text={statusText}
       />;
       if (status === 'Rejected') {
@@ -592,4 +596,5 @@ ViewProject.propTypes = {
   t: PropTypes.func,
 };
 
-export default withTranslation(['publication'])(ViewProject);
+export default withTranslation(
+  ['publication', 'loris'])(ViewProject);

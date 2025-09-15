@@ -27,9 +27,6 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-msgid "Clear Filters"
-msgstr ""
-
 msgid "File to upload"
 msgstr ""
 
@@ -72,7 +69,7 @@ msgstr ""
 msgid "Submission Successful!"
 msgstr ""
 
-msgid "Propose Project"
+msgid "Propose a Project"
 msgstr ""
 
 msgid "Propose a new project"
@@ -136,4 +133,52 @@ msgid "Rejected"
 msgstr ""
 
 msgid "For help finding variables of interest, consult"
+msgstr ""
+
+msgid "Date Proposed"
+msgstr ""
+
+msgid "Approval Status"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Project Proposal Creator"
+msgstr ""
+
+msgid "Publication ID"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "View Project"
+msgstr ""
+
+msgid "LORIS Users with Edit Permission"
+msgstr ""
+
+msgid "Type of Variables of Interest"
+msgstr ""
+
+msgid "Propose Project"
+msgstr ""
+
+msgid "Send email notification?"
+msgstr ""
+
+msgid "Add User"
+msgstr ""
+
+msgid "Add Collaborator"
+msgstr ""
+
+msgid "Add Keyword"
+msgstr ""
+
+msgid "Add Variable of Interest"
 msgstr ""

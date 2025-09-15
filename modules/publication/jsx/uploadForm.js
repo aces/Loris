@@ -7,6 +7,9 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+i18n.addResourceBundle('hi', 'publication', hiStrings);
 
 /**
  * Publication upload form component
@@ -162,7 +165,8 @@ class PublicationUploadForm extends React.Component {
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal.fire(
-        t('Please fix any remaining form errors before submission', {ns: 'loris'}),
+        t('Please fix any remaining form errors before submission',
+          {ns: 'loris'}),
         '',
         'error'
       );
@@ -194,7 +198,8 @@ class PublicationUploadForm extends React.Component {
         console.error(response.status);
         response.json().then((data) => {
           let message = (data && data.message) || '';
-          swal.fire(t('Something went wrong!', {ns: 'loris'}), message, 'error');
+          swal.fire(t('Something went wrong!', {ns: 'loris'}),
+            message, 'error');
         });
         return;
       }

@@ -96,7 +96,7 @@ class EmailElement extends React.Component {
               onChange={this.props.toggleEmailNotify}
               value={this.props.addressee}
             />
-            <span>{t('Send email notification?', {ns: 'loris'})}</span>
+            <span>{t('Send email notification?', {ns: 'publication'})}</span>
           </span>
         </div>
       </div>
@@ -133,7 +133,8 @@ EmailElement.defaultProps = {
   },
 };
 
-export const TranslatedEmailElement = withTranslation(['loris'])(EmailElement);
+export const TranslatedEmailElement = withTranslation(
+  ['publication', 'loris'])(EmailElement);
 
 /**
  * Project form fields component
@@ -403,9 +404,11 @@ class ProjectFormFields extends React.Component {
 
     let voiHelp = (
       <span>
-        {t('For help finding variables of interest, consult', {ns: 'publication'})}
+        {t('For help finding variables of interest, consult',
+          {ns: 'publication'})}
         &nbsp;
-        <a href={loris.BaseURL + '/datadict/'}>{t('Data Dictionary', {ns: 'loris'})}</a>
+        <a href={loris.BaseURL + '/datadict/'}>{t('Data Dictionary',
+          {ns: 'loris'})}</a>
       </span>
     );
     let collabNames = [];
@@ -516,7 +519,7 @@ class ProjectFormFields extends React.Component {
         <TagsElement
           name="usersWithEditPerm"
           id="usersWithEditPerm"
-          label={t('LORIS Users with Edit Permission', {ns: 'loris'})}
+          label={t('LORIS Users with Edit Permission', {ns: 'publication'})}
           options={this.props.users}
           useSearch={true}
           strictSearch={true}
@@ -526,7 +529,7 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingUWEP}
           pendingValKey="pendingUWEP"
           items={this.props.formData.usersWithEditPerm}
-          btnLabel={t('Add User', {ns: 'loris'})}
+          btnLabel={t('Add User', {ns: 'publication'})}
         />
         <TagsElement
           name="collaborators"
@@ -541,7 +544,7 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingCollab}
           pendingValKey="pendingCollab"
           items={collabNames}
-          btnLabel={t('Add Collaborator', {ns: 'loris'})}
+          btnLabel={t('Add Collaborator', {ns: 'publication'})}
         />
         {collabEmails}
         <TagsElement
@@ -557,11 +560,11 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingKWItem}
           pendingValKey="pendingKWItem"
           items={this.props.formData.keywords}
-          btnLabel={t('Add Keyword', {ns: 'loris'})}
+          btnLabel={t('Add Keyword', {ns: 'publication'})}
         />
         <SelectElement
           name="voiType"
-          label={t('Type of Variables of Interest', {ns: 'loris'})}
+          label={t('Type of Variables of Interest', {ns: 'publication'})}
           options={voiTypeOptions}
           onUserInput={this.props.setFormData}
           value={this.props.formData.voiType}
@@ -581,7 +584,7 @@ class ProjectFormFields extends React.Component {
           options={voiOptions}
           pendingValKey="pendingItemVF"
           items={this.props.formData.voiFields}
-          btnLabel={t('Add Variable of Interest', {ns: 'loris'})}
+          btnLabel={t('Add Variable of Interest', {ns: 'publication'})}
         />
         <StaticElement
           text={voiHelp}
@@ -614,4 +617,5 @@ ProjectFormFields.propTypes = {
   projectOptions: PropTypes.object,
   t: PropTypes.func,
 };
-export default withTranslation(['publication'])(ProjectFormFields);
+export default withTranslation(
+  ['publication', 'loris'])(ProjectFormFields);

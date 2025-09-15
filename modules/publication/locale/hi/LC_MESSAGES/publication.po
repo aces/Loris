@@ -27,9 +27,6 @@ msgstr "लोड हो रहा है"
 msgid "Browse"
 msgstr "ब्राउज़ करें"
 
-msgid "Clear Filters"
-msgstr "फ़िल्टर साफ़ करें"
-
 msgid "File to upload"
 msgstr "अपलोड करने के लिए फ़ाइल"
 
@@ -72,7 +69,7 @@ msgstr "कुछ गलत हो गया!"
 msgid "Submission Successful!"
 msgstr "सबमिशन सफल रहा!"
 
-msgid "Propose Project"
+msgid "Propose a Project"
 msgstr "एक प्रोजेक्ट प्रस्तावित करें"
 
 msgid "Propose a new project"
@@ -138,3 +135,50 @@ msgstr "अस्वीकृत"
 msgid "For help finding variables of interest, consult"
 msgstr "रुचि वाले वेरिएबल खोजने में सहायता के लिए, परामर्श करें"
 
+msgid "Date Proposed"
+msgstr "प्रस्तावित तिथि"
+
+msgid "Approval Status"
+msgstr "स्वीकृति स्थिति"
+
+msgid "Project"
+msgstr "परियोजना"
+
+msgid "Project Proposal Creator"
+msgstr "परियोजना प्रस्ताव निर्माता"
+
+msgid "Publication ID"
+msgstr "प्रकाशन आईडी"
+
+msgid "Published"
+msgstr "प्रकाशित"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "View Project"
+msgstr "परियोजना देखें"
+
+msgid "LORIS Users with Edit Permission"
+msgstr "संपादन अनुमति वाले LORIS उपयोगकर्ता"
+
+msgid "Type of Variables of Interest"
+msgstr "रुचि वाले वेरिएबल का प्रकार"
+
+msgid "Propose Project"
+msgstr "परियोजना प्रस्तावित करें"
+
+msgid "Send email notification?"
+msgstr "ईमेल अधिसूचना भेजें?"
+
+msgid "Add User"
+msgstr "उपयोगकर्ता जोड़ें"
+
+msgid "Add Collaborator"
+msgstr "सहयोगी जोड़ें"
+
+msgid "Add Keyword"
+msgstr "कीवर्ड जोड़ें"
+
+msgid "Add Variable of Interest"
+msgstr "रुचि वाला वेरिएबल जोड़ें"

@@ -16,6 +16,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
  */
 class PublicationIndex extends React.Component {
   /**
+   * @param {object} props - React Component properties
    * @constructor
    */
   constructor(props) {
@@ -142,7 +143,7 @@ class PublicationIndex extends React.Component {
           >
             <br/>
             <ButtonElement
-              label={t('Clear Filters', {ns: 'publication'})}
+              label={t('Clear Filters', {ns: 'loris'})}
               type="reset"
               onUserInput={this.resetFilters}
             />
@@ -200,7 +201,6 @@ PublicationIndex.propTypes = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
- 
   i18n.addResourceBundle('hi', 'publication', hiStrings);
   const PIIndex = withTranslation(['publication', 'loris'])(PublicationIndex);
   createRoot(document.getElementById('lorisworkspace')).render(
