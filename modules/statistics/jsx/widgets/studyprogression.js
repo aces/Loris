@@ -66,7 +66,7 @@ const StudyProgression = (props) => {
     'project_sizes': {    // This should be a class
       'size_byproject': {
         sizing: 11,
-        title: 'Size breakdown by project',
+        title: 'Dataset size breakdown by project',
         filters: '',
         chartType: 'pie',
         dataType: 'pie',
@@ -273,7 +273,7 @@ const StudyProgression = (props) => {
               ) : (
                 <p>There is no data yet.</p>
               ),
-            title: 'Study Progression - project sizes',
+            title: 'Study Progression - project dataset sizes',
             subtitle: 'Total size: '
               + (json['studyprogression']['total_size'] ?? -1)
               + ' GB',
