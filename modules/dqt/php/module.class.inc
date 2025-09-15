@@ -104,7 +104,7 @@ class Module extends \Module
 
                 return [
                     new \LORIS\dashboard\DataWidget(
-                        "Project Size",
+                        "Dataset Size",
                         $data,
                         "",
                         'rgb(186,225,255)',
