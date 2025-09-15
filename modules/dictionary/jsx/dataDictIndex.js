@@ -76,7 +76,7 @@ class DataDictIndex extends Component {
       swal.fire({
         title: t('Edit Description', {ns: 'dictionary'}),
         input: 'text',
-        inputValue: row.Description,
+        inputValue: row[t('Description', {ns: 'dictionary'})],
         confirmButtonText: t('Modify', {ns: 'dictionary'}),
         showCancelButton: true,
         cancelButtonText: t('Cancel', {ns: 'loris'}),
