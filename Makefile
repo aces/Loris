@@ -173,3 +173,6 @@ server_processes_manager:
 
 conflict_resolver:
 	target=conflict_resolver npm run compile
+
+my_preferences:
+	target=my_preferences npm run compile

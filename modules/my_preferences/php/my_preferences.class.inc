@@ -353,6 +353,7 @@ class My_Preferences extends \NDB_Form
                 unset($nGroup);
             }
         }
+
         $this->tpl_data['notification_rows'] = $notification_rows;
         //------------------------------------------------------------
 
