@@ -199,6 +199,10 @@ msgstr ""
 msgid "Download Table as CSV"
 msgstr ""
 
+# Dashboard panel strings
+msgid "Views"
+msgstr ""
+
 # Common strings on widgets
 msgid "NEW"
 msgstr ""

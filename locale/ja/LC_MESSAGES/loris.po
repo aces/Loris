@@ -212,6 +212,11 @@ msgstr "ページあたりの最大行数:"
 msgid "Download Table as CSV"
 msgstr "表をCSVとしてダウンロード"
 
+# Dashboard panel strings
+msgid "Views"
+msgstr "ビュー"
+
+# Common strings on widgets
 msgid "NEW"
 msgstr "新しい"
 

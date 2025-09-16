@@ -20,3 +20,24 @@ msgstr ""
 
 msgid "Statistics"
 msgstr "統計"
+
+msgid "Study Progression"
+msgstr "学習の進捗"
+
+msgid "Summary"
+msgstr "まとめ"
+
+msgid "Site Scans"
+msgstr "サイトスキャン"
+
+msgid "Site Recruitment"
+msgstr "現場採用"
+
+msgid "-- Clear Selection --"
+msgstr "-- 選択をクリア--"
+
+msgid "Scan sessions per site"
+msgstr "サイトごとのスキャンセッション"
+
+msgid "Recruitment per site"
+msgstr "サイトごとの募集"
