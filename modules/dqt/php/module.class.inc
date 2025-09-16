@@ -76,40 +76,44 @@ class Module extends \Module
         $projects = $user->getProjects();
 
         switch ($type) {
-            case 'study-progression':
-                $DB   = $factory->database();
-                $cachedSizeData = json_decode(
-                    html_entity_decode($DB->pselectOne(
+        case 'study-progression':
+            $DB = $factory->database();
+            $cachedSizeData = json_decode(
+                html_entity_decode(
+                    $DB->pselectOne(
                         "SELECT Value
                   FROM cached_data
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
                         []
-                    )),
-                    true
-                );
+                    )
+                ),
+                true
+            );
 
-                $data = [];
-                foreach ($projects as $project) {
-                    $projectName = $project->getName();
-                    if (in_array($projectName, array_keys($cachedSizeData))) {
-                        $data[] = [
-                            'ProjectID'   => $project->getId(),
-                            'count'       => $cachedSizeData[$projectName]['total'] . ' GB',
-                            'url'         => "$baseURL/dqt",
-                            'ProjectName' => $projectName
-                        ];
-                    }
+            $data = [];
+            foreach ($projects as $project) {
+                $projectName = $project->getName();
+                if (!in_array($projectName, array_keys($cachedSizeData))) {
+                    continue;
                 }
 
-                return [
-                    new \LORIS\dashboard\DataWidget(
-                        "Dataset Size",
-                        $data,
-                        "",
-                        'rgb(186,225,255)',
-                    )
+                $data[] = [
+                    'ProjectID'   => $project->getId(),
+                    'ProjectName' => $projectName,
+                    'count'       => "{$cachedSizeData[$projectName]['total']} GB",
+                    'url'         => "$baseURL/dqt",
                 ];
+            }
+
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    "Dataset Size",
+                    $data,
+                    "",
+                    'rgb(186,225,255)',
+                )
+            ];
         }
         return [];
     }
