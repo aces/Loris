@@ -248,14 +248,7 @@ const StudyProgression = (props) => {
                     gap: '10px',
                   }}
                 >
-                  <div className="btn-group" style={{marginBottom: '10px'}}>
-                    {/*<button*/}
-                    {/*  type="button"*/}
-                    {/*  className="btn btn-default btn-xs"*/}
-                    {/*  onClick={() => setShowFiltersBreakdown((prev) => !prev)}*/}
-                    {/*>*/}
-                    {/*  {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}*/}
-                    {/*</button>*/}
+                  <div className="btn-group" style={{marginBottom: '10px
                   </div>
                   {showFiltersBreakdown && (
                     <QueryChartForm
