@@ -63,7 +63,7 @@ const StudyProgression = (props) => {
         titlePrefix: 'Month',
       },
     },
-    'project_sizes': {    // This should be a class
+    'project_sizes': { // This should be a class
       'size_byproject': {
         sizing: 11,
         title: 'Dataset size breakdown by project',
@@ -248,7 +248,7 @@ const StudyProgression = (props) => {
                     gap: '10px',
                   }}
                 >
-                  <div className="btn-group" style={{marginBottom: '10px
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
                   </div>
                   {showFiltersBreakdown && (
                     <QueryChartForm
