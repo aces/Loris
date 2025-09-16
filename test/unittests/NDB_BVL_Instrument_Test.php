@@ -1153,7 +1153,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Administration'              => '',
                 'Validity'                    => '',
                 'Exclusion'                   => null,
-                'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
                 'DataID'                      => null,
             ]
@@ -1889,7 +1888,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '123',
                     'CommentID'                   => 'commentID1',
                     'TestID'                      => '1000',
-                    'UserID'                      => '456',
                     'Data_entry'                  => 'Incomplete',
                     'Administration'              => 'admin1',
                     'Validity'                    => 'valid1',
@@ -1900,7 +1898,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '234',
                     'CommentID'                   => 'commentID2',
                     'TestID'                      => '1001',
-                    'UserID'                      => '457',
                     'Data_entry'                  => 'Complete',
                     'Administration'              => 'admin2',
                     'Validity'                    => 'valid2',
@@ -1947,13 +1944,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             [
                 [
                     'CommentID'  => 'commentID1',
-                    'UserID'     => '456',
                     'Examiner'   => 'Test Examiner1',
                     'Date_taken' => '2010-05-05'
                 ],
                 [
                     'CommentID'  => 'commentID2',
-                    'UserID'     => '457',
                     'Examiner'   => 'Test Examiner2',
                     'Date_taken' => '2010-05-05'
                 ],
