@@ -104,6 +104,8 @@ class Charts extends \NDB_Page
             return $this->_handleProjectSizeBreakdown();
         case 'agedistribution_line':
             return $this->_handleAgeDistributionByProject($request);
+        case 'eeg_recordings_by_site':
+            return $this->_handleSiteEEGRecordingsBreakdown();
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -854,13 +856,15 @@ class Charts extends \NDB_Page
         $projects = $user->getProjects();
 
         $cachedSizeData = json_decode(
-            html_entity_decode($DB->pselectOne(
-                "SELECT Value
+            html_entity_decode(
+                $DB->pselectOne(
+                    "SELECT Value
                   FROM cached_data
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
-                []
-            )),
+                    []
+                )
+            ),
             true
         );
 
@@ -876,5 +880,52 @@ class Charts extends \NDB_Page
         }
 
         return (new \LORIS\Http\Response\JsonResponse($projectData));
+    }
+
+    /**
+     * Handle an incoming request for EEG recordings by site breakdown.
+     *
+     * @return ResponseInterface
+     */
+    private function _handleSiteEEGRecordingsBreakdown()
+    {
+        $DB    = \NDB_Factory::singleton()->database();
+        $user  = \NDB_Factory::singleton()->user();
+        $sites = $user->getStudySites();
+
+        $conditions = $this->_buildQueryConditions();
+
+        $user = \NDB_Factory::singleton()->user();
+
+        $data = $DB->pselect(
+            "SELECT s.CenterID,
+                COUNT(distinct s.ID) as count
+            FROM physiological_file pf
+            LEFT JOIN session s ON (s.ID=pf.SessionID)
+
+            GROUP BY s.CenterID
+            ORDER BY s.CenterID",
+            []
+        );
+
+        $processed_data = [];
+        foreach ($data as $row) {
+            $processed_data[$row['CenterID']] = [
+                'CenterID' => $row['CenterID'],
+                'Name'     => $row['Name'],
+                'count'    => intval($row['count']),
+            ];
+        }
+        $siteData = [];
+        foreach ($sites as $siteID => $siteName) {
+            if (in_array($siteID, array_keys($processed_data))) {
+                $siteData[] = [
+                    'label' => $siteName,
+                    'total' => $processed_data[$siteID]['count'],
+                ];
+            }
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($siteData));
     }
 }
