@@ -142,7 +142,10 @@ class DataDictIndex extends Component {
           // good, but it's possible the status was changed
           // back to the original. So update the status
           // based on what the response said the value was.
-          this.state.data.Data[i][4] = response.headers.get('X-StatusDesc');
+          this.state.data.Data[i][4] = this.props.t(
+            response.headers.get('X-StatusDesc'),
+            {ns: 'dictionary'}
+          );
           this.setState({state: this.state});
         }).catch(() => {
           // Something went wrong, restore the original
