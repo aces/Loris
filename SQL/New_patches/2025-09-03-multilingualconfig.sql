@@ -1,4 +1,4 @@
-ALTER table ConfigSetting ADD COLUMN Multilingual boolean DEFAULT false;
+ALTER table ConfigSettings ADD COLUMN Multilingual boolean DEFAULT false;
 UPDATE ConfigSettings SET Multilingual=true WHERE Name='projectDescription';
 
 CREATE TABLE `ConfigI18n` (
