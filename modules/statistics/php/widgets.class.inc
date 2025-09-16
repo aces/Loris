@@ -122,13 +122,15 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $totalSizeOfProjectsGB = 0;
         $projectsSizes         = [];
         $cachedSizeData        = json_decode(
-            html_entity_decode($db->pselectOne(
-                "SELECT Value
+            html_entity_decode(
+                $db->pselectOne(
+                    "SELECT Value
                   FROM cached_data
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
-                []
-            )),
+                    []
+                )
+            ),
             true
         );
 
@@ -190,7 +192,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
 
             if (in_array($projectName, array_keys($cachedSizeData))) {
-                $projectSize                 = $cachedSizeData[$projectName]['total'];
+                $projectSize = $cachedSizeData[$projectName]['total'];
                 $projectsSizes[$projectName] = $projectSize;
                 $totalSizeOfProjectsGB      += floatval($projectSize);
             }
@@ -202,6 +204,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $siteOptions[$center->__toString()] = $sites[$center->__toString()];
             }
         }
+
+        $eeg_data = $db->pselectOneInt(
+            "SELECT COUNT(distinct s.ID) as total_recordings
+            FROM physiological_file pf
+            JOIN session s ON (s.ID=pf.SessionID)
+            WHERE s.ProjectID IN (" .
+                join($user->getProjectIDs())
+            . ")",
+            []
+        );
 
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
@@ -226,7 +238,11 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
 
-        $values['size_byproject']     = $projectsSizes;
+        $values['size_byproject'] = $projectsSizes;
+
+        $values['eeg_data'] = [
+            $eeg_data
+        ];
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
 
