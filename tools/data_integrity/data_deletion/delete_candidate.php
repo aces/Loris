@@ -140,6 +140,7 @@ under the following path:
 USAGE;
     die;
 }
+
 /**
  * All tables with entries to be deleted here are only those with FOREIGN KEY
  * relations to `candidate`.

@@ -92,6 +92,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             }
         );
     }
+
     /**
      * Creates a new module instance
      *
@@ -194,6 +195,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
         return true;
     }
+
     /**
      * Loads a page within this module and calls all necessary setup.
      *
@@ -365,7 +367,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         return null;
     }
-
 
     /**
      * Return a list of \LORIS\GUI\MenuItems to add to the LORIS

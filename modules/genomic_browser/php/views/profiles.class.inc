@@ -55,5 +55,4 @@ class Profiles
     {
         return $this->_formElement;
     }
-
 }

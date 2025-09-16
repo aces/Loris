@@ -130,9 +130,7 @@ const StudyProgression = (props) => {
                             return (
                               <a {...commonProps} href={data['url']}>
                                 <h4>{data['count']}</h4>
-                                <div>
-                                  {data['title']}
-                                </div>
+                                <div>{data['title']}</div>
                               </a>
                             );
                           })}

@@ -532,5 +532,4 @@ class Genomicfile
         }
         $this->reportProgress(80, 'File registered');
     }
-
 }

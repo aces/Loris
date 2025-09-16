@@ -73,6 +73,7 @@ class PoolController
 
     // TODO: Decide if this should be able to handle a list of pools rather
     // than a singular pool array.
+
     /**
      * Takes a list of pool arrays from the client-side, validates them,
      * instantiates them and sends them to the DAO to be saved to the database.
@@ -165,7 +166,6 @@ class PoolController
         }
         // TODO: Validate Label with Regex and required
     }
-
 
     /**
      * Validates Pool Object Specimen IDs

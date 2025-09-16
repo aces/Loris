@@ -45,6 +45,7 @@ class WidgetContent
         $this->_body   = $body;
         $this->_footer = $footer;
     }
+
     /**
      * Return the content for the title of the widget.
      *
@@ -64,6 +65,7 @@ class WidgetContent
     {
         return $this->_body;
     }
+
     /**
      * Return the content for the title of the widget.
      *

@@ -148,6 +148,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the Imaging_uploader module without permission,
      * "You do not have access to this page." appears in the body.
@@ -166,6 +167,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the Imaging_uploader module with permission,
      * "You do not have access to this page." not appears in the body.
@@ -185,6 +187,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that, inputing some data into filter,then clicking the
      * [clear form] button, make sure that all of filter form should be
@@ -216,6 +219,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
          $this->assertEquals('', $bodyText1);
          $this->assertEquals('', $bodyText2);
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *
@@ -227,6 +231,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         // click upload tab
         $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *

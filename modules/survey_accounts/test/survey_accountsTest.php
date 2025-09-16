@@ -38,6 +38,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     static $add         = ".panel-body .btn-primary:nth-child(1)";
     // header of the table
     static $table = ".table-header > .row > div > div:nth-child(1)";
+
     /**
      * Insert testing data
      *
@@ -172,6 +173,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         parent::tearDown();
     }
+
     /**
      * Tests that, when loading the Survey accounts module, some
      * text appears in the body.
@@ -196,6 +198,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the Survey without right permission, some
      * text appears in the body.
@@ -215,6 +218,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that errors are correctly displayed when the user enters incorrect
      * or invalid values.
@@ -302,7 +306,9 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     // todo add a survey successful.
+
     /**
      * Tests that, input some data and click search button, check the results.
      *
@@ -316,6 +322,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this-> _testFilter(self::$pscid, self::$table, "1 rows", "8888");
         $this-> _testFilter(self::$pscid, self::$table, "0 rows", "test");
     }
+
     /**
      * Testing filter funtion and clear button
      *

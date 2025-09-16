@@ -89,8 +89,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         return $scan_types;
     }
 
-
-
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *

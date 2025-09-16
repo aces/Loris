@@ -43,6 +43,7 @@ class Stats_Behavioural extends \NDB_Form
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *

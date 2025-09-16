@@ -48,7 +48,6 @@ class Module extends \Module
             );
     }
 
-
     /**
      * The default handler for a module routes to a page of the first component of
      * the URL's name, or the same name as the module if serving the root of the

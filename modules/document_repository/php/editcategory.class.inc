@@ -47,7 +47,6 @@ class EditCategory extends \NDB_Page
         );
     }
 
-
     /**
      * Handle a post form
      *
@@ -65,6 +64,7 @@ class EditCategory extends \NDB_Page
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
         }
     }
+
     /**
      * Handles the upload category process
      *

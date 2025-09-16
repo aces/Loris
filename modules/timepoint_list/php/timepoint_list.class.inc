@@ -234,6 +234,7 @@ class Timepoint_List extends \NDB_Menu
 
         $this->tpl_data['actions'] = $this->getActionButtons();
     }
+
     /**
      * Determining Previous Stage
      *
@@ -258,6 +259,7 @@ class Timepoint_List extends \NDB_Menu
         }
         return  'Not Started';
     }
+
     /**
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
@@ -270,6 +272,7 @@ class Timepoint_List extends \NDB_Menu
     {
         return (new \BVL_Feedback_Panel($candID))->display();
     }
+
     /**
      * Get Action Buttons
      *

@@ -515,6 +515,5 @@ class FeedbackMRI
         }
         return $where;
     }
-
 }
 

@@ -100,6 +100,7 @@ class Statistics_DD_Site extends statistics_site
             $this->query_vars
         );
     }
+
     /**
      * GetResults function
      *

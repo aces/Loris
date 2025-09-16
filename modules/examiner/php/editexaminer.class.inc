@@ -377,7 +377,6 @@ class EditExaminer extends \NDB_Form
         $this->form->addFormRule([&$this, '_validateEditExaminer']);
     }
 
-
     /**
      * Validates the certification form values.
      *
@@ -454,6 +453,7 @@ class EditExaminer extends \NDB_Form
 
         return $instruments;
     }
+
     /**
      * Generate a breadcrumb trail for this page.
      *

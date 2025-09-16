@@ -92,6 +92,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $this->resetUserProject();
     }
+
     /**
      * Test that the page instrument link works on card section
      *

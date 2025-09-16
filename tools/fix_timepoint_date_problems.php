@@ -313,7 +313,6 @@ case 'diagnose':
     break;
 } // end switch ($action)
 
-
 /**
  * Print usage
  *
@@ -620,7 +619,6 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
 
     return;
 }
-
 
 /**
  * Returns an array of missing instruments for the timepoint

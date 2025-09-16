@@ -334,6 +334,7 @@ class Image
 
         return new \SplFileInfo($fullpath);
     }
+
     /**
      * Creates an immutable object representation of this Image
      *

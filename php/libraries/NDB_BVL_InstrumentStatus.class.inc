@@ -93,6 +93,7 @@ class NDB_BVL_InstrumentStatus
     {
         $this->loris = $loris;
     }
+
     /**
      * Loads the object with the current status of the instrument
      *
@@ -339,5 +340,4 @@ class NDB_BVL_InstrumentStatus
         );
         $this->select($this->_commentID);
     }
-
 } // end of class

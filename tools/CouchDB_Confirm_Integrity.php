@@ -37,7 +37,6 @@ class CouchDBIntegrityChecker
     var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
-
     /**
      * Initialize references to SQL database and CouchDB wrapper
      *

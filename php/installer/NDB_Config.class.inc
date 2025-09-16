@@ -51,7 +51,6 @@ class NDB_Config extends \NDB_Config
         return $cfg;
     }
 
-
     /**
      * Get a setting used by the installer.
      *

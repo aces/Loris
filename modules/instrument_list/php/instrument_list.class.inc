@@ -76,6 +76,7 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $this->candidate = $candidate;
     }
+
     /**
      * Checking permissions
      *
@@ -419,6 +420,4 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->candidate = $candidate;
     }
-
-
 }

@@ -27,7 +27,6 @@ require_once __DIR__ .
  */
 class StatisticsTest extends LorisIntegrationTest
 {
-
     /**
      * Tests that, when loading the Statistics module, some
      * text appears in the body.
@@ -51,6 +50,7 @@ class StatisticsTest extends LorisIntegrationTest
         );
 
     }
+
     /**
      * Tests that the Statistics loads if the user has not the correct
      * permissions
@@ -110,6 +110,7 @@ class StatisticsTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Data Entry Statistics", $bodyText);
     }
+
     /**
      * Tests that, when loading the Demographic Statistics Tab
      * in Statistics module, some text appears in the body.

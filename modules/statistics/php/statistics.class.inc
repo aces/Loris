@@ -75,6 +75,7 @@ class Statistics extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *

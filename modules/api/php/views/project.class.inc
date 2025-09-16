@@ -43,7 +43,6 @@ class Project
         $this->_project = $project;
     }
 
-
     /**
      * Produce an array representation of this project.
      *

@@ -75,6 +75,7 @@ class DocTree extends \NDB_Page
                 );
         }
     }
+
     /**
      * This method will return an array of document_repository_categories
      *
@@ -89,6 +90,7 @@ class DocTree extends \NDB_Page
             )
         );
     }
+
     /**
      * This method will return an array of all children's categories
      *
@@ -138,6 +140,7 @@ class DocTree extends \NDB_Page
         }
         return $arr;
     }
+
     /**
      * This method will return a json of the parent's categroies and
      * the children's categories of one category.
@@ -182,5 +185,4 @@ class DocTree extends \NDB_Page
 
         return $result;
     }
-
 }

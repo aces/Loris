@@ -30,6 +30,7 @@ class Imaging_Browser extends \DataFrameworkMenu
     var $AjaxModule      = true;
     public $skipTemplate = true;
     public $fieldOptions;
+
     /**
      * Determine whether the user has permission to view this page
      *
@@ -183,7 +184,6 @@ class Imaging_Browser extends \DataFrameworkMenu
         return $provisioner;
     }
 
-
     /**
      * Include additional CSS files:
      *  1. imaging_browser.css
@@ -200,8 +200,6 @@ class Imaging_Browser extends \DataFrameworkMenu
             [$baseURL . "/imaging_browser/css/imaging_browser.css"]
         );
     }
-
-
 
     /**
      * Include the column formatter

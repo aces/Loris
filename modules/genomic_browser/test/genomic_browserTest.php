@@ -85,6 +85,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the genomic_browser module, the
      * breadcrumb is 'Genomic browser' or an error is given according
@@ -110,6 +111,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the genomic_browser module, the each Tab should
      * have their own UIs.
@@ -130,7 +132,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->_FilesUI
         );
     }
-
 
     /**
      * Tests that the filters and the clear filter buton the Profiles
@@ -244,6 +245,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         }
 
     }
+
     /**
      * This function could test filter function in each Tabs.
      *
@@ -269,6 +271,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 );
                   $this->assertStringContainsString($expectDataRows, $text);
     }
+
     /**
      * Tests that, when clicking the upload button,the upload window should show up
      *

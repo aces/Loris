@@ -256,7 +256,6 @@ class NDB_BVL_Feedback
         return $list;
     }
 
-
     /**
      * Get feedback type id given the feedback type name
      *

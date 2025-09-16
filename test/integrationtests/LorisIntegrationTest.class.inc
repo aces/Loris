@@ -260,7 +260,6 @@ abstract class LorisIntegrationTest extends TestCase
         );
     }
 
-
     /**
      * Restores a config to its saved (previous) value.
      *

@@ -57,5 +57,4 @@ class CNV
     {
         return $this->_formElement;
     }
-
 }

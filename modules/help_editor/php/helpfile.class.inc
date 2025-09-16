@@ -73,7 +73,6 @@ class HelpFile
         return $obj;
     }
 
-
     /**
      * Inserts a help file
      *
@@ -92,7 +91,6 @@ class HelpFile
         return intval($DB->lastInsertID);
     }
 
-
     /**
      * Updates a help file
      *
@@ -109,7 +107,6 @@ class HelpFile
         return true;
     }
 
-
     /**
      * Dumps the HelpFile as an array
      *
@@ -124,7 +121,6 @@ class HelpFile
 
         return $data;
     }
-
 
     /**
      * Returns the ID of a given hash

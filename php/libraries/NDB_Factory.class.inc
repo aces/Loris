@@ -329,6 +329,7 @@ class NDB_Factory
         self::$_settings = null;
         $this->_baseURL  = $baseURL;
     }
+
     /**
      * Returns a singleton settings object
      *

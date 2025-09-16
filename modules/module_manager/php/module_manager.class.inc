@@ -58,6 +58,7 @@ class Module_Manager extends \DataFrameworkMenu
         return [];
 
     }
+
     /**
      * {@inheritDoc}
      *

@@ -41,6 +41,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             '300001 / MTL001' => '#bc2 > a:nth-child(3) > div',
             'TimePoint V1'    => '#bc2 > a:nth-child(4) > div',
         ];
+
     /**
      * Tests that, when loading the Instrument list module, some
      * text appears in the body.
@@ -91,6 +92,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that Instrument list loads with without permission
      *
@@ -112,6 +114,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Testing UI elements when page loads
      *

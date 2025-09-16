@@ -46,6 +46,7 @@ if (isset($_REQUEST['action'])) {
         exit(0);
     }
 }
+
 /**
  * Gets publication and parameter_type data from database
  *
@@ -231,6 +232,7 @@ function getProjectData($db, $user, $id) : array
         }
     }
 }
+
 /**
  * Gets Variables of Interest for a given publication ID
  *
@@ -260,6 +262,7 @@ function getVOIs($id) : array
     $vois      =  array_merge($testNames, $fields);
     return $vois;
 }
+
 /**
  * Gets Keywords for a given publication ID
  *

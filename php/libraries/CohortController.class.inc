@@ -64,6 +64,7 @@ class CohortController extends \LORIS\Data\ProvisionerInstance
                 RecruitmentTarget
             FROM cohort ";
     }
+
     /**
      * Retruns a list of configured Cohorts
      *

@@ -115,6 +115,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that publicaiton loads with permission
      *
@@ -138,6 +139,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that publicaiton loads with permission
      *
@@ -161,6 +163,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *
@@ -173,6 +176,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->_testPageUIs("/publication/view_project?id=1", $this->_loadingViewUI);
 
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *

@@ -307,7 +307,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
     }
 
-
     /**
      * Test that addTextElement and addTextAreaElement adds the correct data to
      * the instrument
@@ -591,6 +590,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
     }
+
     /**
      * Test that addNumericElement adds the correct data to the instrument
      *
@@ -1404,6 +1404,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
         $this->assertTrue($this->_instrument->XINValidate($elements));
     }
+
     /**
      * Test that XINRegisterRule sets the values in the XINRules
      * array for the appropriate element name

@@ -30,7 +30,6 @@ require_once __DIR__ .
  */
 class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
 {
-
     /**
      * Does basic setting up of Loris variables for this test,after testing
      * a test data, remove the testing data from database.
@@ -41,6 +40,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
     }
+
     /**
      * Deleting test data
      *
@@ -50,6 +50,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
     }
+
      /**
       * Tests that configuration loads with the permission
       *
@@ -74,8 +75,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
 
     }
 
-
-
     /**
      * Tests that, when loading the document_repository module, some
      * text appears in the body.
@@ -90,6 +89,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Document Repository", $bodyText);
     }
+
     /**
      * Tests Upload page.
      *
@@ -107,6 +107,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringContainsString("Upload files", $text);
 
     }
+
     /**
      * Tests Category page.
      *
@@ -124,6 +125,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringContainsString("Add a category", $text);
 
     }
+
     /**
      * Tests add a Category .
      *

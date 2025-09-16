@@ -146,8 +146,6 @@ class DirectDataEntryMainPage
         ];
     }
 
-
-
     /**
      * Get the page which follows this page
      *

@@ -127,6 +127,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
+
     /**
      * Testing instrument element appears in the body.
      *

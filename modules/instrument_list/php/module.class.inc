@@ -31,7 +31,6 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class Module extends \Module
 {
-
     /**
      * The instrument_list module falls back to the instrument_list page regardless
      * of what the page loaded was. This ensures that routes which use the CandID

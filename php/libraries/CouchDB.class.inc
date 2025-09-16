@@ -27,6 +27,7 @@ class SocketWrapper
     public $host;
     public $port;
     public $socket;
+
     /**
      * Constructor for SocketWrapper
      */
@@ -368,7 +369,6 @@ class CouchDB
         $response_split = explode("\r\n\r\n", $response, 2);
         return trim($response_split[1]);
     }
-
 
     /**
      * Low level function to get a document from CouchDB, relative to the

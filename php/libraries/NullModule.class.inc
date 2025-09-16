@@ -28,6 +28,7 @@
 class NullModule extends Module
 {
     protected $longname;
+
     /**
      * The NullModule is used in cases where there is no
      * directory to pass (such as unit tests) and as such

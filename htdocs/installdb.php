@@ -224,6 +224,7 @@ function tplvar($name)
         $tpl_data[$name] = '';
     }
 }
+
 tplvar('dbhost');
 tplvar('dbadminuser');
 tplvar('dbadminpassword');

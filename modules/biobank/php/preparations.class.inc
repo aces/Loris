@@ -32,6 +32,7 @@ use \Psr\Http\Message\ResponseInterface;
 class Preparations implements RequestHandlerInterface
 {
     private \LORIS\LorisInstance $loris;
+
     /**
      * Returns true if user has access to this endpoint.
      *

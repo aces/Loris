@@ -38,6 +38,7 @@ class DocRepoRow implements
     protected $DBRow;
 
     private \CenterID $CenterID;
+
     /**
      * Create a new HelpRow
      *
@@ -49,6 +50,7 @@ class DocRepoRow implements
         $this->DBRow    = $row;
         $this->CenterID = $cid;
     }
+
     /**
      * Returns the CenterID for this row
      *
@@ -58,6 +60,7 @@ class DocRepoRow implements
     {
         return $this->CenterID;
     }
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *

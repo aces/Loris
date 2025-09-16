@@ -124,5 +124,4 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
             ]
         );
     }
-
 }

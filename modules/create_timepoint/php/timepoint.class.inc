@@ -325,6 +325,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
      * an incoming HTTP request.
@@ -340,6 +341,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
+
     /**
      * Return an array of valid HTTP methods for this endpoint
      *

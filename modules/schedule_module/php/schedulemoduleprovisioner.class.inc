@@ -53,6 +53,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
+
     /**
      * Returns a SQL query string.
      *
@@ -109,6 +110,7 @@ ON
             return $query;
 
     }
+
         /**
          * Returns an instance of a CandidateListRow object for a given
          * table row.

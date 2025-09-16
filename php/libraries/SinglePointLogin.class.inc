@@ -90,7 +90,6 @@ class SinglePointLogin
         return $this->_passwordChangeRequired;
     }
 
-
     /**
      * Checks whether anyone is currently logged in
      *

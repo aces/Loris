@@ -21,3 +21,56 @@ msgstr ""
 msgid "Data Dictionary"
 msgstr ""
 
+msgid "Edit Description"
+msgstr ""
+
+msgid "Modify"
+msgstr ""
+
+msgid "Missing description"
+msgstr ""
+
+msgid "Description Status"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "edited"
+msgstr ""
+
+msgid "Empty"
+msgstr ""
+
+msgid "Unchanged"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""
+
+msgid "Data Scope"
+msgstr ""
+
+msgid "Data Type"
+msgstr ""
+
+msgid "Data Cardinality"
+msgstr ""
+
+msgid "Unique"
+msgstr ""
+
+msgid "Single"
+msgstr ""
+
+msgid "Optional"
+msgstr ""
+
+msgid "Many"
+msgstr ""
+
+msgid "Description"
+msgstr ""

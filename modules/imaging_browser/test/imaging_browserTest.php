@@ -47,7 +47,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     static $selectedLink = '#dynamictable tbody tr:nth-child(1) td:nth-child(12) '
                            .'a:nth-child(2)';
 
-
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user

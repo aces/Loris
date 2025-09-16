@@ -105,7 +105,6 @@ class Upload extends \NDB_Page
         );
     }
 
-
     /**
      * Processes the values & saves to database and return a json response.
      *

@@ -29,7 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-
     /**
      * The API module is a module which is "public" so that the login endpoint
      * is accessible. Each endpoint must do its own validation of access levels

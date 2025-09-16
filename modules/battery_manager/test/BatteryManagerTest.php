@@ -36,6 +36,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
+
     /**
      * Tests that, when loading the BatteryManager module, some
      * text appears in the body.
@@ -89,6 +90,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -108,6 +110,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -154,6 +157,7 @@ class BatteryManagerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -280,6 +284,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -302,6 +307,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests filter in the form
      * The form should refreash and the data should be gone.

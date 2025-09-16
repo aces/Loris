@@ -273,7 +273,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withStatus(204);
     }
 
-
     /**
      * Implements the ETagCalculator interface
      *

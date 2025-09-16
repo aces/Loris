@@ -31,6 +31,7 @@ class VisitsPopulator
 {
     var $DB;
     var $Config;
+
     /**
      * Constructor function. Instantiates references to database and
      * config class.
@@ -118,8 +119,6 @@ class VisitsPopulator
             }
         }
     }
-
-
 
     /**
      * Runs the logic of the script.

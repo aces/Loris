@@ -81,5 +81,4 @@ ORDER BY
         $cid = \CenterID::singleton(intval($row['For_site']));
         return new DocRepoRow($row, $cid);
     }
-
 }

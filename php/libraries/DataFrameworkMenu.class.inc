@@ -40,7 +40,6 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 abstract class DataFrameworkMenu extends NDB_Menu_Filter
 {
-
     /**
      * Constructor for a DataFrameworkMenu class. This signature must match
      * the base NDB_Page type in order for LORIS to be able to load the page.
@@ -75,7 +74,6 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      * @return ?array
      */
     abstract public function allSitePermissionNames() : ?array;
-
 
     /**
      * Determines whether the DataProvisioner should filter out rows which
