@@ -139,7 +139,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Candidate",
+                    new \LORIS\GUI\LocalizableString(
+                        "loris",
+                        "Candidate",
+                        "Candidates"
+                    ),
                     $data,
                     "",
                     'rgb(255, 252, 199)',
