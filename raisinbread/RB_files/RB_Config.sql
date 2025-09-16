@@ -1,3 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `Config`;
 LOCK TABLES `Config` WRITE;
@@ -21,7 +22,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (19,23,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (20,24,'Customize this text with your citation policy (via Configuration module)');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (22,12,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (23,27,'/data-raisinbread/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/var/www/loris/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (24,28,'/home/driusan/Code/Loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (26,30,'/PATH/TO/EXTERNAL/LIBRARY/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (29,33,'tools/logs/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (30,34,'/data/incoming/');
