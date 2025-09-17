@@ -13,58 +13,58 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Timepoint List"
-msgstr ""
+msgstr "Lista de Puntos en el Tiempo"
 
 msgid "Click to Open"
-msgstr ""
+msgstr "Haga clic para abrir"
 
 msgid "Stage Status"
-msgstr ""
+msgstr "Estado de la Etapa"
 
 msgid "Date of Stage"
-msgstr ""
+msgstr "Día de la Etapa"
 
 msgid "Imaging Scan Done"
-msgstr ""
+msgstr "Imagen de Scan hecha"
 
 msgid "BVL QC"
-msgstr ""
+msgstr "CC Conductual"
 
 msgid "BVL Exclusion"
-msgstr ""
+msgstr "Exclusión Conductual"
 
 msgid "Registered By"
-msgstr ""
+msgstr "Registrado por"
 
 msgid "List of Visits (Time Points)"
-msgstr ""
+msgstr "Lista de Visitas (Puntos en el Tiempo)"
 
 msgid "Create time point"
-msgstr ""
+msgstr "Crear punto en el Tiempo"
 
 msgid "Candidate Info"
-msgstr ""
+msgstr "Información del Candidato"
 
 msgid "View Imaging datasets"
-msgstr ""
+msgstr "Ver secuencias de datos de Imágenes"
 
 msgid "Actions:"
-msgstr ""
+msgstr "Acciones:"
 
 msgid "Derived Age"
-msgstr ""
+msgstr "Edad Calculada"
 
 msgid "EDC Age"
-msgstr ""
+msgstr "Edad EDC"
 
 msgid "Biological Sex"
-msgstr ""
+msgstr "Sexo Biológico"
 
 msgid "You do not have access to any timepoints registered for this candidate."
-msgstr ""
+msgstr "Usted no tiene ningún Punto de Tiempo registrado para este candidato."
