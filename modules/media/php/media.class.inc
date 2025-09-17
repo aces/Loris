@@ -9,7 +9,7 @@ namespace LORIS\media;
  * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Media

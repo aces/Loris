@@ -3,7 +3,7 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -15,7 +15,7 @@ namespace LORIS\next_stage;
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

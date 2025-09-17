@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit test for NDB_Menu_Filter class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3

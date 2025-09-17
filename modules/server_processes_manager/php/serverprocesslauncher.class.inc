@@ -4,7 +4,7 @@
  * Provides a way to asynchronously execute a process on the server.
  * The process will be run in the background, as a stand-alone Unix process
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessesLauncher
  * @package  Loris
@@ -18,7 +18,7 @@ namespace LORIS\server_processes_manager;
  * Allows processes to be executed on the server, as background Unix processes.
  * Records the processes successfully started in the database.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessesLauncher
  * @package  Loris

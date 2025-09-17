@@ -3,7 +3,7 @@
 /**
  * Unit test for Password class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main

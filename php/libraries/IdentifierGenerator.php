@@ -6,7 +6,7 @@
  * handles the creation and validation of new IDs using various generation
  * methods.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -17,7 +17,7 @@
 /**
  * This class serves as a generic parent for identifier generators.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
