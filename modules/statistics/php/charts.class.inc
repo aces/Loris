@@ -843,7 +843,6 @@ class Charts extends \NDB_Page
         return $data;
     }
 
-
     /**
      * Handle an incoming request for project size breakdown.
      *

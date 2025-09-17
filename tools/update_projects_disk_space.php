@@ -74,7 +74,6 @@ if ($rowExists) {
 
 echo "cached_data:projects_disk_space updated\r\n";
 
-
 /**
  * Calculate directory size, recursively, skipping .tgz files
  *
