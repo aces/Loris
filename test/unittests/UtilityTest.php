@@ -13,8 +13,6 @@
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
-use \Loris\StudyEntities\Candidate\CandID;
-use PHPUnit\Framework\MockObject\MockObject;
 use LORIS\Database\Query;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -994,7 +992,7 @@ class UtilityTest extends TestCase
      *
      * @param mixed $notInt The value to test
      *
-     * @return iterable<array{0:mixed}>
+     * @return void
      */
     #[DataProvider('notPositiveIntegerValues')]
     public function testValueIsPositiveIntegerReturnsFalse(mixed $notInt): void
@@ -1005,7 +1003,7 @@ class UtilityTest extends TestCase
     /**
      * Test that valueIsPositiveInteger returns true for positive integers
      *
-     * @return void
+     * @return iterable<array{0:mixed}> List of non-positive integer values
      */
     public static function notPositiveIntegerValues(): iterable
     {

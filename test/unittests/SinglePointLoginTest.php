@@ -46,37 +46,33 @@ class SinglePointLoginTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
-    {
-        $Factory    = NDB_Factory::singleton();
-        $mockdb     = $this->getMockBuilder("\Database")->getMock();
-        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+protected function setUp(): void
+{
+    $factory    = NDB_Factory::singleton();
+    $mockdb     = $this->getMockBuilder("\Database")->getMock();
+    $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $this->_configMap = [
-            [
-                'JWTKey',
-                "example_key"
-            ],
-        ];
+    $mockconfig->method('getSetting')
+        ->willReturnMap([
+            ['JWTKey', 'example_key'],
+        ]);
 
-        $mockconfig->method('getSetting')
-            ->willReturnMap($this->_configMap);
+    '@phan-var \Database $mockdb';
+    '@phan-var \NDB_Config $mockconfig';
+    $factory->setConfig($mockconfig);
+    $factory->setDatabase($mockdb);
 
-        '@phan-var \Database $mockdb';
-        '@phan-var \NDB_Config $mockconfig';
-        $Factory->setConfig($mockconfig);
-        $Factory->setDatabase($mockdb);
+    $methodsToKeep   = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
+    $allMethods      = get_class_methods('SinglePointLogin');
+    $exceptMethods   = array_values(array_diff($allMethods, $methodsToKeep));
 
-        $method       = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
-        $AllMethods   = get_class_methods('SinglePointLogin');
-        $exceptMethod = array_diff($AllMethods, $method);
-        $login        = $this->getMockBuilder('SinglePointLogin')
-            ->onlyMethods($exceptMethod)->getMock();
+    $login = $this->getMockBuilder('SinglePointLogin')
+        ->onlyMethods($exceptMethods)
+        ->getMock();
 
-        '@phan-var \SinglePointLogin $login';
-        $this->_login = $login;
-
-    }
+    '@phan-var \SinglePointLogin $login';
+    $this->_login = $login;
+}
 
     /**
      * Test JWTAuthenticate with valid token
