@@ -60,6 +60,21 @@ class FakeDatabase extends Database
         string $type='U'
     ) : void {
     }
+    /**
+     * Escapes HTML special characters in all values of the given array.
+     *
+     * This method is used to prevent XSS or injection attacks by converting
+     * characters like <, >, &, " into their corresponding HTML entities.
+     *
+     * @param array $arr The input array containing values to be escaped.
+     *
+     * @return array The array with all values HTML-escaped.
+     */
+    public function HTMLEscapeArray(array $arr): array
+    {
+        return $arr;
+    }
+
 }
 
 use PHPUnit\Framework\TestCase;
@@ -837,10 +852,10 @@ class Database_Test extends TestCase
      */
     public function testUnsafeInsertOnDuplicateUpdateDoesntEscapeHTML(): void
     {
-        // Mock the Database class
         $stub = $this->getMockBuilder(FakeDatabase::class)
             ->onlyMethods(
-                ['HTMLEscapeArray',
+                [
+                    'HTMLEscapeArray',
                     '_implodeAsPrepared',
                     '_implodeWithKeys',
                     '_printQuery',
@@ -848,7 +863,6 @@ class Database_Test extends TestCase
                 ]
             )
             ->getMock();
-
         // Mock PDOStatement
         $stmt = $this->getMockBuilder(PDOStatement::class)
             ->onlyMethods(['execute', 'rowCount'])
