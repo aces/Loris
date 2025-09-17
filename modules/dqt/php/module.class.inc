@@ -92,18 +92,21 @@ class Module extends \Module
             );
 
             $data = [];
-            foreach ($projects as $project) {
-                $projectName = $project->getName();
-                if (!in_array($projectName, array_keys($cachedSizeData))) {
-                    continue;
-                }
 
-                $data[] = [
-                    'ProjectID'   => $project->getId(),
-                    'ProjectName' => $projectName,
-                    'count'       => "{$cachedSizeData[$projectName]['total']} GB",
-                    'url'         => "$baseURL/dqt",
-                ];
+            if (!is_null($cachedSizeData)) {
+                foreach ($projects as $project) {
+                    $projectName = $project->getName();
+                    if (!in_array($projectName, array_keys($cachedSizeData))) {
+                        continue;
+                    }
+
+                    $data[] = [
+                        'ProjectID'   => $project->getId(),
+                        'ProjectName' => $projectName,
+                        'count'       => "{$cachedSizeData[$projectName]['total']} GB",
+                        'url'         => "$baseURL/dqt",
+                    ];
+                }
             }
 
             return [
