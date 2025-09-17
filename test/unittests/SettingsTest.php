@@ -92,12 +92,6 @@ class SettingsTest extends TestCase
 
     /**
      * Test isSandbox() returns true when config value is
-     *  - string 'TRUE'
-     *  - number 1
-     *  - string '5'
-     *
-     * @param mixed $sandboxVal sandbox config value to be returned
-     *                          by getSetting() mock
      *
      * @dataProvider getTrueValue
      *
@@ -114,7 +108,8 @@ class SettingsTest extends TestCase
 
             $this->assertTrue(
                 $this->_settings->isSandbox(),
-                "Failed asserting that isSandbox() returns true for value: " . var_export($sandboxVal, true)
+                "Failed asserting that isSandbox() returns true for value: " .
+                var_export($sandboxVal, true)
             );
         }
     }
@@ -140,13 +135,6 @@ class SettingsTest extends TestCase
 
     /**
      * Test isSandbox() returns false when config value is
-     *  - string 'FAlse'
-     *  - number 0
-     *  - string '0'
-     *  - an empty string
-     *
-     * @param mixed $sandboxVal sandbox config value to be returned
-     *                          by getSetting() mock
      *
      * @dataProvider getFalseValue
      *
@@ -163,7 +151,8 @@ class SettingsTest extends TestCase
 
             $this->assertFalse(
                 $this->_settings->isSandbox(),
-                "Failed asserting that isSandbox() returns false for value: " . var_export($sandboxVal, true)
+                "Failed asserting that isSandbox() returns false for value: " .
+                var_export($sandboxVal, true)
             );
         }
     }

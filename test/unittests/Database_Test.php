@@ -116,7 +116,7 @@ class Database_Test extends TestCase
      *
      * @return array
      */
-    function _getAllMethodsExcept($methods)
+    function getAllMethodsExcept($methods)
     {
         $AllMethods = get_class_methods('Database');
 
@@ -173,7 +173,7 @@ class Database_Test extends TestCase
     function testUpdateEscapesHTML()
     {
         $stub = $this->getMockBuilder(FakeDatabase::class)
-            ->onlyMethods($this->_getAllMethodsExcept(['update']))
+            ->onlyMethods($this->getAllMethodsExcept(['update']))
             ->getMock();
 
         $PDO  = $this->getMockBuilder(FakePDO::class)->getMock();
@@ -182,7 +182,7 @@ class Database_Test extends TestCase
         $stmt->expects($this->once())
             ->method("execute")
             ->with($this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;']))
-            ->willReturn(true);   // ✅ FIXED
+            ->willReturn(true);
 
         $PDO->expects($this->once())
             ->method("prepare")
@@ -203,7 +203,7 @@ class Database_Test extends TestCase
     function testUnsafeUpdateDoesntEscapeHTML()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['unsafeupdate']))
+            ->onlyMethods($this->getAllMethodsExcept(['unsafeupdate']))
             ->getMock();
 
         $PDO  = $this->getMockBuilder('FakePDO')->getMock();
@@ -223,27 +223,28 @@ class Database_Test extends TestCase
         $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
     }
-
     /**
-     * Test that insert automatically escapes any HTML in the data for security
+     * Test that insert automatically escapes any HTML in the data for security.
      *
-     * @return void
+     * This method verifies that inserting data with HTML characters
+     * will be properly escaped to prevent XSS vulnerabilities.
+     *
+     * @param string $table   The table name
+     * @param array  $data    The data to insert
+     * @param array  $options Optional insertion options
+     *
+     * @return bool True on success, false on failure
+     *
      * @covers Database::insert
      */
-    public function unsafeInsert(string $table, array $data, array $options = []): bool
-    {
+    public function unsafeInsert(
+        string $table, array $data, array $options = []
+    ): bool {
         $stmt = $this->_PDO->prepare("INSERT INTO {$table} (...) VALUES (...)");
         $ok   = $stmt->execute($data);
         $this->lastInsertID = $this->_PDO->lastInsertId();  // <-- important
         return $ok;
     }
-    /**
-     * Test that unsafeinsert does not escape HTML when called intead of insert
-     *
-     * @return void
-     * @covers Database::unsafeinsert
-     */
-
     /**
      * Test that delete deletes a row from a specified table
      * when provided null values
@@ -765,9 +766,18 @@ class Database_Test extends TestCase
             ]
         );
     }
-    public function _HTMLEscapeArray(array $arr): array
+    /**
+     * Escape HTML characters in all values of an array.
+     *
+     * This method iterates over the input array and applies
+     * htmlspecialchars() to each value to prevent XSS attacks.
+     *
+     * @param array $arr Input array with values to escape
+     *
+     * @return array Array with HTML-escaped values
+     */
+    public function HTMLEscapeArray(array $arr): array
     {
-        // Call original private method using reflection if needed, or simulate escaping
         $escaped = [];
         foreach ($arr as $k => $v) {
             $escaped[$k] = htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE);
@@ -785,7 +795,7 @@ class Database_Test extends TestCase
     {
         // Use existing FakeDatabase class
         $stub = $this->getMockBuilder(FakeDatabase::class)
-            ->onlyMethods($this->_getAllMethodsExcept(['insertOnDuplicateUpdate']))
+            ->onlyMethods($this->getAllMethodsExcept(['insertOnDuplicateUpdate']))
             ->getMock();
 
         // Mock PDOStatement
@@ -829,7 +839,14 @@ class Database_Test extends TestCase
     {
         // Mock the Database class
         $stub = $this->getMockBuilder(FakeDatabase::class)
-            ->onlyMethods(['_HTMLEscapeArray', '_implodeAsPrepared', '_implodeWithKeys', '_printQuery', 'trackChanges'])
+            ->onlyMethods(
+                ['HTMLEscapeArray',
+                    '_implodeAsPrepared',
+                    '_implodeWithKeys',
+                    '_printQuery',
+                    'trackChanges'
+                ]
+            )
             ->getMock();
 
         // Mock PDOStatement
@@ -840,7 +857,7 @@ class Database_Test extends TestCase
             ->method('execute')
             ->with($this->equalTo(['field' => '<b>Hello</b>']))
             ->willReturn(true);
-        $stmt->method('rowCount')->willReturn(1); // simulate update instead of insert
+        $stmt->method('rowCount')->willReturn(1);
 
         // Mock PDO
         $PDO = $this->getMockBuilder(PDO::class)
@@ -907,7 +924,7 @@ class Database_Test extends TestCase
     function testPrepare()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['prepare']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1062,7 +1079,7 @@ class Database_Test extends TestCase
     function testPselectRowCallsPrepare()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['pselectRow']))
+            ->onlyMethods($this->getAllMethodsExcept(['pselectRow']))
             ->getMock();
 
         $query  = "SELECT ID, Name, Description, Visible FROM ConfigSettings";
@@ -1309,7 +1326,7 @@ class Database_Test extends TestCase
             "This test calls a private method, making it fail for now"
         );
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['insertIgnore']))
+            ->onlyMethods($this->getAllMethodsExcept(['insertIgnore']))
             ->getMock();
 
         $table = "ConfigSettings";
@@ -1575,7 +1592,7 @@ class Database_Test extends TestCase
     function testQuote()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['quote']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['quote']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1610,7 +1627,7 @@ class Database_Test extends TestCase
     function testInTransaction()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['inTransaction']))
+            ->onlyMethods($this->getAllMethodsExcept(['inTransaction']))
             ->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1634,7 +1651,7 @@ class Database_Test extends TestCase
     function testBeginTransaction()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
+            ->onlyMethods($this->getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1659,7 +1676,7 @@ class Database_Test extends TestCase
     function testBeginTransactionThrowsException()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
+            ->onlyMethods($this->getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1682,7 +1699,7 @@ class Database_Test extends TestCase
     function testRollback()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['rollBack']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1704,7 +1721,7 @@ class Database_Test extends TestCase
     function testRollbackThrowsException()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['rollBack']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1726,7 +1743,7 @@ class Database_Test extends TestCase
     function testCommit()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['commit']))->getMock();
 
         $PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stub->expects($this->once())->method("inTransaction")->willReturn(true);
@@ -1747,7 +1764,7 @@ class Database_Test extends TestCase
     function testCommitThrowsException()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
+            ->onlyMethods($this->getAllMethodsExcept(['commit']))->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(false);
         $this->expectException("DatabaseException");
@@ -1769,7 +1786,7 @@ class Database_Test extends TestCase
     function testIsConnectedNoPDO()
     {
         $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
+            ->onlyMethods($this->getAllMethodsExcept(['isConnected']))
             ->getMock();
 
         '@phan-var \Database $stub';

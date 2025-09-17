@@ -573,7 +573,11 @@ class CandidateTest extends TestCase
             ->willReturn(new QueryStub([]));
 
         // Initialize candidate
-        $this->_candidate->select(new LORIS\StudyEntities\Candidate\CandID(strval($this->_candidateInfo['CandID'])));
+        $this->_candidate->select(
+            new LORIS\StudyEntities\Candidate\CandID(
+                strval($this->_candidateInfo['CandID'])
+            )
+        );
 
         // Assert getValidCohorts() returns empty array
         $this->assertEquals([], $this->_candidate->getValidCohorts());
@@ -1190,9 +1194,6 @@ class CandidateTest extends TestCase
      */
     private function _setUpTestDoublesForSelectCandidate(): void
     {
-        /**
- * @var \LORIS\Database\Query|MockObject $resultMock
-*/
         $resultMock = $this->getMockBuilder(\LORIS\Database\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1253,25 +1254,53 @@ class CandidateTest extends TestCase
         $this->_factoryForDB->setConfig($this->_config);
     }
 }
+/**
+ * A stub class for Query used in unit testing.
+ *
+ * Implements IteratorAggregate and Countable to simulate
+ * database query results for testing purposes.
+ *
+ * PHP Version 8
+ *
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category Tests
+ * @package  Database
+ */
 class QueryStub extends Query implements \IteratorAggregate, \Countable
 {
     private array $rows;
-
+    /**
+     * Constructor.
+     *
+     * @param array<int, array> $rows Optional initial rows
+     */
     public function __construct(array $rows)
     {
         $this->rows = $rows;
     }
-
+    /**
+     * Get all rows.
+     *
+     * @return array<int, array> All rows
+     */
     public function getFirstRow(): array
     {
         return $this->rows[0] ?? [];
     }
-
+    /**
+     * Count the number of rows.
+     *
+     * @return int Number of rows
+     */
     public function count(): int
     {
         return count($this->rows);
     }
-
+    /**
+     * Retrieve an external iterator.
+     *
+     * @return \Traversable<int, array> Iterator for rows
+     */
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->rows);
