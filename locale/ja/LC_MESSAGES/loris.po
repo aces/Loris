@@ -181,6 +181,12 @@ msgstr "フィードバック"
 msgid "Scans"
 msgstr "スキャン"
 
+msgid "Stage"
+msgstr "ステージ"
+
+msgid "Sent To DCC"
+msgstr "DCCに送信"
+
 msgid "Date of Birth"
 msgstr "生年月日"
 
@@ -228,3 +234,34 @@ msgstr "アップロード済み"
 
 msgid "Total"
 msgstr "合計"
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr "開始されていません"
+
+msgid "Screening"
+msgstr "スクリーニング"
+
+msgid "Visit"
+msgstr "訪問"
+
+msgid "Approval"
+msgstr "承認"
+
+msgid "Subject"
+msgstr "候補者"
+
+msgid "Recycling Bin"
+msgstr "リサイクルビン"
+
+msgid "Pass"
+msgstr "合格"
+
+msgid "Failure"
+msgstr "失敗"
+
+msgid "Withdrawal"
+msgstr "撤退"
+
+msgid "In Progress"
+msgstr "進行中"
