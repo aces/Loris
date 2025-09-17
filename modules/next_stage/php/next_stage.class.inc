@@ -3,7 +3,7 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -15,7 +15,7 @@ namespace LORIS\next_stage;
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -125,6 +125,7 @@ class Next_Stage extends \NDB_Form
         $this->tpl_data['candID']    = $timePoint->getCandID();
 
     }
+
     /**
      * Add elements to the page (after LorisForm has been
      * initialized in the parent.)
@@ -188,6 +189,7 @@ class Next_Stage extends \NDB_Form
 
         $this->form->addFormRule([&$this, '_validate']);
     }
+
     /**
      * Validate function
      *
@@ -285,5 +287,4 @@ class Next_Stage extends \NDB_Form
             )
         );
     }
-
 }

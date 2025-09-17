@@ -3,7 +3,7 @@
 /**
  * This contains tests relevant to the Login endpoint
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   API
  * @package    Tests

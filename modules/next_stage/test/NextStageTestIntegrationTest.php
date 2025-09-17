@@ -3,7 +3,7 @@
 /**
  * Next_stage automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Next_stage automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -54,6 +54,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $bodyText
         );
     }
+
     /**
      * Tests that, page loads with data_entry permission
      *

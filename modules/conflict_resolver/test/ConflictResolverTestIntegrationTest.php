@@ -3,7 +3,7 @@
 /**
   * Automated integration tests for conflict resolver module
   *
-  * PHP Version 7
+  * PHP Version 8
   *
   * @category Test
   * @package  Loris
@@ -42,6 +42,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     static $display     = ".table-header";
     static $saveBtn     = ".btn-sm:nth-child(1)";
     static $resetBtn    = ".btn-sm:nth-child(2)";
+
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -53,6 +54,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
     }
+
      /**
       * Delete testing data from database
       * author: Wang Shen
@@ -106,6 +108,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString($loadingError, $bodyText);
         $this->resetPermissions();
     }
+
     /**
      * Tests clear button in the form
      * The form should refreash and the data should be gone.
@@ -159,6 +162,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             "573"
         );
     }
+
      /**
       * Tests filter in resolved conflicts
       * author: Wang Shen
@@ -213,6 +217,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         );
 
     }
+
      /**
       * Tests save a unresolved conflicts to resolved
       * author: Wang Shen

@@ -3,7 +3,7 @@
 /**
  * This implements a visit's dicom endpoint class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

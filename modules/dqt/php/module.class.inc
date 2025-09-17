@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -36,17 +36,17 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
+        return parent::hasAccess($user) && $user->hasPermission('dqt_view');
     }
 
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return dgettext("loris", "Reports");
+        return \LORIS\GUI\MenuCategory::singleton("Reports");
     }
 
     /**

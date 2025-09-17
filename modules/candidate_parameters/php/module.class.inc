@@ -14,6 +14,23 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+        $user->hasAnyPermission(
+            ['candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @return string The human readable name for this module
      */
     public function getLongName() : string

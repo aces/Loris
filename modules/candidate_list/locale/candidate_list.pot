@@ -21,3 +21,10 @@ msgstr ""
 msgid "Access Profile"
 msgstr ""
 
+msgid "Visit Count"
+msgstr ""
+
+msgid "Open Profile"
+msgstr ""
+
+

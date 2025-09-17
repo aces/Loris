@@ -24,3 +24,24 @@ msgstr ""
 msgid "Behavioural Feedback Notifications"
 msgstr ""
 
+# Default strings from feedback_bvl_type in raisinbread
+msgid "Input"
+msgstr ""
+
+msgid "Input Errors"
+msgstr ""
+
+msgid "Scoring"
+msgstr ""
+
+msgid "Scoring Errors"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Feedback description"
+msgstr ""

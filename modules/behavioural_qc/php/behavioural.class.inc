@@ -23,7 +23,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Behavioural extends \NDB_Page implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -147,5 +146,4 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     {
         return ['GET'];
     }
-
 }

@@ -43,6 +43,7 @@ class SnpBrowser extends \DataFrameworkMenu implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)

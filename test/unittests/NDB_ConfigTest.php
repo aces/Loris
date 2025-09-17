@@ -3,7 +3,7 @@
 /**
  * Unit test for NDB_Config class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -230,6 +230,7 @@ class NDB_ConfigTest extends TestCase
         $this->_config->_settings = ['aaa' => ["bbb" => "test"]];
         $this->assertEquals("test", $this->_config->getSettingFromXML("bbb"));
     }
+
     /**
      * Test getSetting() method. Giving an array, it should parse the value.
      *
@@ -300,6 +301,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals($result, $this->_config->getProjectSettings(999));
 
     }
+
     /**
      * Test getCohortSettings() method. Given a projectID, it should
      * return an array containing the cohort information.
@@ -383,5 +385,4 @@ class NDB_ConfigTest extends TestCase
             $this->_config->getExternalLinks('GitHub')
         );
     }
-
 }

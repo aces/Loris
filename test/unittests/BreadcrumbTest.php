@@ -3,7 +3,7 @@
 /**
  * Breadcrumb class tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -79,5 +79,4 @@ class BreadcrumbTest extends TestCase
             (string)$this->_breadcrumb
         );
     }
-
 }

@@ -3,7 +3,7 @@
 /**
  * New_profile automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * New_profile automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -34,6 +34,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     public $edcConfirm = "input[name='edcDateConfirm']";
 
     public $btn = "button[name='fire_away']";
+
     /**
      * Tests that, when loading the new_profile module with all settings
      * enabled, the correct fields all appear in the body.
@@ -107,5 +108,4 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertEquals("New Candidate Created", $swalTitle);
     }
-
 }

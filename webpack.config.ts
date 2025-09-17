@@ -28,6 +28,7 @@ const lorisModules: Record<string, string[]> = {
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
+  biobank: ['biobankIndex'],
   create_timepoint: ['createTimepointIndex'],
   candidate_list: ['openProfileForm', 'candidateListIndex'],
   datadict: ['dataDictIndex'],
@@ -150,6 +151,7 @@ const resolve: webpack.ResolveOptions = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
+    I18nSetup: path.resolve(__dirname, './jsx/I18nSetup'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -347,6 +349,7 @@ configs.push({
     StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
+    PolicyButton: './jsx/PolicyButton.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
     ...getModulesEntries(),

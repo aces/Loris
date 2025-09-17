@@ -21,4 +21,9 @@ msgstr ""
 msgid "Access Profile"
 msgstr "アクセスプロファイル"
 
+msgid "Visit Count"
+msgstr "訪問回数"
+
+msgid "Open Profile"
+msgstr "プロフィールを開く"
 

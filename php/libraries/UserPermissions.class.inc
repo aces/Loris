@@ -3,7 +3,7 @@
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -64,7 +64,6 @@ class UserPermissions
         return true;
     }
 
-
     /**
      * Loads the users's permissions
      *
@@ -94,7 +93,6 @@ class UserPermissions
             $this->permissions[$row['code']] = $userMatch;
         }
     }
-
 
     /**
      * Determines if the user has the permission to access a specific module
@@ -182,7 +180,6 @@ class UserPermissions
         return $this->permissions;
     }
 
-
     /**
      * Add permissions to a user
      *
@@ -210,7 +207,6 @@ class UserPermissions
         // refresh the user permissions
         $this->setPermissions();
     }
-
 
     /**
      * Removes permissions from a user
@@ -247,7 +243,6 @@ class UserPermissions
         $this->setPermissions();
     }
 
-
     /**
      * Returns an array of the user's permission IDs
      *
@@ -276,7 +271,6 @@ class UserPermissions
         return $permIDs;
     }
 
-
     /**
      * Returns an array with all permissions information for the user
      *
@@ -290,29 +284,54 @@ class UserPermissions
         // create DB object
         $DB = $loris->getDatabaseConnection();
 
-        $query = "SELECT
+        $select     = "SELECT
                 p.permID,
                 p.code,
                 p.description,
                 pc.Description as type,
-                p.action,
+                GROUP_CONCAT(
+                    DISTINCT pa.name
+                    ORDER BY pa.name ASC
+                    SEPARATOR '/'
+                ) as action,
                 p.moduleID
-            FROM permissions p ";
+            FROM permissions p
+                LEFT JOIN perm_perm_action_rel ppar ON (p.permID = ppar.permID)
+                LEFT JOIN permissions_action pa ON (ppar.actionID = pa.ID)
+                LEFT JOIN permissions_category pc ON (pc.ID = p.categoryID)
+                LEFT JOIN modules m ON (p.moduleID = m.ID)
+        ";
+        $where      = " WHERE m.Active='Y'";
+        $groupBy    = " GROUP BY p.permID, p.code, pc.Description, p.moduleID";
+        $orderBy    = " ORDER BY p.categoryID, m.Name, p.description";
+        $conditions = [];
 
-        //If not superuser, get the permissions that the user has
+        // additional elements
+        $additionalJoin  = "";
+        $additionalWhere = "";
+
+        // If not superuser, get the permissions that the user has
         if (!$this->hasPermission('superuser')) {
-            $query .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
-                LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID
-            WHERE up.userID = :UID and m.Active='Y'
-                ORDER BY p.categoryID, m.Name, p.description";
-            $dbrows = $DB->pselect($query, ['UID' => $this->userID]);
-        } else {
-            $query .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
-                ORDER BY p.categoryID, m.Name, p.description";
-            $dbrows = $DB->pselect($query, []);
+            $additionalJoin    = " JOIN user_perm_rel up ON (p.permID = up.PermID)";
+            $additionalWhere   = " AND up.userID = :UID";
+            $conditions["UID"] = $this->userID;
         }
+
+        // compose query
+        $query = "{$select}
+            {$additionalJoin}
+            {$where}
+            {$additionalWhere}
+            {$groupBy}
+            {$orderBy}
+        ";
+
+        // execute select
+        $dbrows = $DB->pselect(
+            $query,
+            $conditions
+        );
+
         $modules = \Module::getActiveModulesIndexed($loris);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description

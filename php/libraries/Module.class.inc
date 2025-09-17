@@ -4,7 +4,7 @@
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -92,6 +92,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             }
         );
     }
+
     /**
      * Creates a new module instance
      *
@@ -194,6 +195,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
         return true;
     }
+
     /**
      * Loads a page within this module and calls all necessary setup.
      *
@@ -359,14 +361,12 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Unless overridden, this defaults to the empty string (which
      * results in the module not being added to the LORIS menu.)
      *
-     * @return string The category (dropdown) of the LORIS menu to add
-     *                this module to.
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "";
+        return null;
     }
-
 
     /**
      * Return a list of \LORIS\GUI\MenuItems to add to the LORIS
@@ -388,10 +388,11 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         $category = $this->getMenuCategory();
         $name     = $this->getLongName();
-        if ($category !== "" && $name !== "") {
+        if ($category !== null && $name !== "") {
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             $url     = $baseURL . '/' . $this->getName() . '/';
+
             return [
                 new \LORIS\GUI\MenuItem($category, $name, $url)
             ];

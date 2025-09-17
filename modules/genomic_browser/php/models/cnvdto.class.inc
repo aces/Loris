@@ -72,13 +72,6 @@ class CnvDTO implements DataInstance, SiteHaver
     private $_Cohort = "";
 
     /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
-
-    /**
      * The ExternalID
      *
      * @var string
@@ -224,7 +217,6 @@ class CnvDTO implements DataInstance, SiteHaver
             'PSCID'             => $this->_PSCID,
             'Sex'               => $this->_Sex,
             'Cohort'            => $this->_Cohort,
-            'DoB'               => $this->_DoB,
             'ExternalID'        => $this->_ExternalID,
             'Chromosome'        => $this->_Chromosome,
             'Strand'            => $this->_Strand,

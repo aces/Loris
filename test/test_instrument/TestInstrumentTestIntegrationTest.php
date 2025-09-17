@@ -7,7 +7,7 @@ use Facebook\WebDriver\WebDriverSelect;
 /**
  * Instrument_builder automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -127,6 +127,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
+
     /**
      * Testing instrument element appears in the body.
      *

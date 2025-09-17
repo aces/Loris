@@ -3,7 +3,7 @@
 /**
  * AcknowledgementsIntegrationTest automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -59,6 +59,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'end_date'      => '2017-11-11',
         'present'       => 'Yes',
     ];
+
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -77,6 +78,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         );
 
     }
+
     /**
      * Delete testing data from database
      * author: Wang Shen
@@ -90,6 +92,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
     }
+
     /**
      * Tests that, when loading the Acknowledgements module, some
      * text appears in the body.
@@ -113,6 +116,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the Acknowledgements module, some
      * text appears in the body.
@@ -136,6 +140,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Ensures that the module loads if and only if the user has one of the
      * module permissions codes.
@@ -216,6 +221,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString("Add Acknowledgement", $pagetext);
 
     }
+
     /**
      * Tests that, can't find Add Acknowledgement button on the page if
      * user doesn't have acknowledgements_edit permission

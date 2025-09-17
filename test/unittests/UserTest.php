@@ -3,7 +3,7 @@
 /**
  * Unit tests for the User and UserPermissions class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -160,30 +160,60 @@ class UserTest extends TestCase
             'code'        => "superuser",
             'description' => "superuser description",
             'categoryID'  => 1,
-            'action'      => null,
             'moduleID'    => null
         ],
         1 => ['permID' => 2,
             'code'        => "test_permission",
             'description' => "description 1",
             'categoryID'  => 2,
-            'action'      => 'View',
             'moduleID'    => 2
         ],
         2 => ['permID' => 3,
             'code'        => "test_permission2",
             'description' => "description 2",
             'categoryID'  => 3,
-            'action'      => 'Edit',
             'moduleID'    => 5
         ],
         3 => ['permID' => 4,
             'code'        => "test_permission3",
             'description' => "description 3",
             'categoryID'  => 4,
-            'action'      => 'View/Create',
             'moduleID'    => 5
         ]
+    ];
+
+    private $_permActionInfo = [
+        0 => [
+            "ID"   => 1,
+            "name" => "View",
+        ],
+        1 => [
+            "ID"   => 2,
+            "name" => "Edit",
+        ],
+        2 => [
+            "ID"   => 3,
+            "name" => "Create",
+        ],
+    ];
+
+    private $_permPermActionRelInfo = [
+        0 => [
+            "permID"   => 2,
+            "actionID" => 1,
+        ],
+        1 => [
+            "permID"   => 3,
+            "actionID" => 2,
+        ],
+        2 => [
+            "permID"   => 4,
+            "actionID" => 1,
+        ],
+        3 => [
+            "permID"   => 4,
+            "actionID" => 3,
+        ],
     ];
 
     private $_moduleInfo = [
@@ -272,6 +302,7 @@ class UserTest extends TestCase
      * @var array config name => value
      */
     private $_configMap = [];
+
     /**
      * This method is called before each test is executed.
      *
@@ -1158,9 +1189,9 @@ class UserTest extends TestCase
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,
-                    'action'      => 'View/Create',
+                    'action'      => 'Create/View',
                     'moduleID'    => '5',
-                    'label'       => 'Timepoint List: View/Create description 3'
+                    'label'       => 'Timepoint List: Create/View description 3'
                 ]
             ]
         );
@@ -1256,8 +1287,13 @@ class UserTest extends TestCase
      */
     private function _setPermissions()
     {
+        // delete tables
+        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS perm_perm_action_rel");
+        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permissions_action");
         $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permissions");
         $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS user_perm_rel");
+
+        // set tables
         $this->_dbMock->setFakeTableData(
             "permissions",
             $this->_permInfo
@@ -1266,6 +1302,16 @@ class UserTest extends TestCase
             "user_perm_rel",
             $this->_userPermInfo
         );
+        $this->_dbMock->setFakeTableData(
+            "permissions_action",
+            $this->_permActionInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "perm_perm_action_rel",
+            $this->_permPermActionRelInfo
+        );
+
+        // set user
         $this->_user->select(self::USERNAME);
     }
 

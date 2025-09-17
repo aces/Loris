@@ -73,6 +73,16 @@
                 toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
+
+            headerPolicyRoot = ReactDOM.createRoot(
+                document.getElementById("header-policy-button")
+            );
+            headerPolicyRoot.render(
+                React.createElement(PolicyButton, {
+                    onClickPolicy: {$header_policy|json_encode},
+                    popUpPolicy: {$pop_up_policy|json_encode},
+                })
+            );
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -124,16 +134,16 @@
                    </div>
                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
                         <ul class="nav navbar-nav">
-                            {foreach from=$menus item=menuitems key=category}
+		            {section name=category loop=$menus}
                                  <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$category}<b class="caret"></b>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$menus[category].Category}<b class="caret"></b>
                                         <ul class="dropdown-menu">
-                                            {section name=itemloop loop=$menuitems}
-                                            <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                            {section name=item loop=$menus[category].Items}
+                                            <li><a href="{$menus[category].Items[item]->link}">{$menus[category].Items[item]->label}</a></li>
                                             {/section}
                                         </ul>
                                     </a>
-                            {/foreach}
+                            {/section}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
                             {if $bvl_feedback|default}
@@ -142,6 +152,9 @@
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
                             </li>
+                            {/if}
+                            {if $header_policy}
+                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>

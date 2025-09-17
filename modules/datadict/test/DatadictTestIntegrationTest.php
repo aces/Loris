@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Datadict automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -49,6 +49,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
+
     /**
      * Inserting testing data
      *
@@ -71,6 +72,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             ]
         );
     }
+
     /**
      * Deleting testing data
      *
@@ -84,6 +86,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             ['Name' => 'TestParameterNotRealMAGICNUMBER335']
         );
     }
+
     /**
      * Tests that, when loading the datadict module, some
      * text appears in the body.
@@ -113,6 +116,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Testing UI elements when page loads
      *
@@ -128,6 +132,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             $this->assertStringContainsString($key, $text);
         }
     }
+
     /**
      * Tests filter in the form
      * The form should refreash and the data should be gone.

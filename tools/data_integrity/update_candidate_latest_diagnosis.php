@@ -4,7 +4,7 @@
  * This script updates each candidate's latest diagnosis based on the
  * configured diagnosis evolution trajectory.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

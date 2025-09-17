@@ -1377,6 +1377,11 @@ CREATE TABLE `examiners_psc_rel` (
   CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- REDCap examiner
+INSERT INTO examiners (full_name) VALUES ('REDCap');
+INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
+    SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
+
 CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `examinerID` int(10) unsigned NOT NULL,
@@ -1420,6 +1425,38 @@ CREATE TABLE `user_account_history` (
   `ChangeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version INT NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- ********************************
 -- user_login_history tables
@@ -2515,12 +2552,12 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-CREATE TABLE Login_Summary_Statistics (
+CREATE TABLE login_summary_statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
     QueryOrder INT,
-     PRIMARY KEY (Title, Project)
+    PRIMARY KEY (Title, Project)
 );
 
 CREATE TABLE dataquery_queries (
@@ -2612,6 +2649,7 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `openid_connect_providers` (
     `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` varchar(255) NOT NULL,
@@ -2630,4 +2668,24 @@ CREATE TABLE `openid_connect_csrf` (
     `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`State`),
     CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- REDCap tables
+-- ********************************
+
+CREATE TABLE `redcap_notification` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `complete` char(1) NOT NULL,
+  `project_id` varchar(50) NOT NULL,
+  `record` varchar(20) NOT NULL COMMENT 'PSCID',
+  `redcap_event_name` varchar(50) NOT NULL COMMENT 'Visit_label',
+  `instrument` varchar(150) NOT NULL COMMENT 'Test_name',
+  `username` varchar(100) NOT NULL,
+  `redcap_url` varchar(255) NOT NULL,
+  `project_url` varchar(255) NOT NULL,
+  `received_dt` datetime NOT NULL,
+  `handled_dt` datetime NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_redcap_notif_received_dt` (`received_dt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
