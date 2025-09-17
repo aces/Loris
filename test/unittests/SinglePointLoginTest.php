@@ -46,33 +46,35 @@ class SinglePointLoginTest extends TestCase
      *
      * @return void
      */
-protected function setUp(): void
-{
-    $factory    = NDB_Factory::singleton();
-    $mockdb     = $this->getMockBuilder("\Database")->getMock();
-    $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+    protected function setUp(): void
+    {
+        $factory    = NDB_Factory::singleton();
+        $mockdb     = $this->getMockBuilder("\Database")->getMock();
+        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-    $mockconfig->method('getSetting')
-        ->willReturnMap([
-            ['JWTKey', 'example_key'],
-        ]);
+        $mockconfig->method('getSetting')
+            ->willReturnMap(
+                [
+                    ['JWTKey', 'example_key'],
+                ]
+            );
 
-    '@phan-var \Database $mockdb';
-    '@phan-var \NDB_Config $mockconfig';
-    $factory->setConfig($mockconfig);
-    $factory->setDatabase($mockdb);
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+        $factory->setConfig($mockconfig);
+        $factory->setDatabase($mockdb);
 
-    $methodsToKeep   = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
-    $allMethods      = get_class_methods('SinglePointLogin');
-    $exceptMethods   = array_values(array_diff($allMethods, $methodsToKeep));
+        $methodsToKeep = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
+        $allMethods    = get_class_methods('SinglePointLogin');
+        $exceptMethods = array_values(array_diff($allMethods, $methodsToKeep));
 
-    $login = $this->getMockBuilder('SinglePointLogin')
-        ->onlyMethods($exceptMethods)
-        ->getMock();
+        $login = $this->getMockBuilder('SinglePointLogin')
+            ->onlyMethods($exceptMethods)
+            ->getMock();
 
-    '@phan-var \SinglePointLogin $login';
-    $this->_login = $login;
-}
+        '@phan-var \SinglePointLogin $login';
+        $this->_login = $login;
+    }
 
     /**
      * Test JWTAuthenticate with valid token
