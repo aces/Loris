@@ -28,6 +28,7 @@ class QueryStub extends \LORIS\Database\Query
      * @var array
      */
     private array $rows = [];
+
     /**
      * Constructor
      *
@@ -37,6 +38,7 @@ class QueryStub extends \LORIS\Database\Query
     {
         $this->rows = $rows;
     }
+
     /**
      * Return all rows
      *
@@ -46,6 +48,7 @@ class QueryStub extends \LORIS\Database\Query
     {
         return $this->rows;
     }
+
     /**
      * Return the first row
      *
@@ -78,6 +81,7 @@ class SessionStub
     {
         return null;
     }
+
     /**
      * Set a session property
      *
@@ -99,6 +103,7 @@ class SessionStub
     {
         return "tester";
     }
+
     /**
      * Check if the session is logged in
      *
@@ -122,6 +127,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     protected \Loris\Behavioural\NDB_BVL_Instrument_LINST $i;
     protected \NDB_Client $Client;
+
     /**
      * Sets up the environment before each test is executed.
      *
@@ -180,6 +186,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $this->i = $i;
     }
+
     /**
      * Test that metadata is retrieved and correct.
      *
@@ -212,6 +219,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
+
     /**
      * Test the retrieval and correctness of metadata.
      *
@@ -237,6 +245,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->assertArrayHasKey('Meta', $outArray);
         $this->assertArrayHasKey('Elements', $outArray);
     }
+
     /**
      * Test that all expected elements are present.
      *

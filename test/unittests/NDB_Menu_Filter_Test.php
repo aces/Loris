@@ -27,6 +27,7 @@ class SessionStub
     public function setProperty($key, $value)
     {
     }
+
     /**
      * Get a session property.
      *
@@ -38,6 +39,7 @@ class SessionStub
     {
         return null;
     }
+
     /**
      * Get the username from the session.
      *
@@ -47,6 +49,7 @@ class SessionStub
     {
         return 'testuser';
     }
+
     /**
      * Check if the session is logged in.
      *
@@ -83,6 +86,7 @@ class NDB_Menu_Filter_Test extends TestCase
             'State' => $this->Session
         ];
     }
+
     /**
      * Get all methods of NDB_Menu_Filter except the specified ones.
      *
@@ -95,6 +99,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $AllMethods = get_class_methods('NDB_Menu_Filter');
         return array_diff($AllMethods, $methods);
     }
+
     /**
      * Test the resetFilters function of NDB_Menu_Filter.
      *
@@ -136,6 +141,7 @@ class NDB_Menu_Filter_Test extends TestCase
 
         $stub->_resetFilters();
     }
+
     /**
      * Test that the search keyword is set correctly.
      *
@@ -158,6 +164,7 @@ class NDB_Menu_Filter_Test extends TestCase
 
         $this->assertEquals('abc', $stub->searchKey['keyword']);
     }
+
     /**
      * Test that filters are set correctly.
      *

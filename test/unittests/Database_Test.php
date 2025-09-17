@@ -60,6 +60,7 @@ class FakeDatabase extends Database
         string $type='U'
     ) : void {
     }
+
     /**
      * Escapes HTML special characters in all values of the given array.
      *
@@ -74,7 +75,6 @@ class FakeDatabase extends Database
     {
         return $arr;
     }
-
 }
 
 use PHPUnit\Framework\TestCase;
@@ -238,6 +238,7 @@ class Database_Test extends TestCase
         $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
     }
+
     /**
      * Test that insert automatically escapes any HTML in the data for security.
      *
@@ -260,6 +261,7 @@ class Database_Test extends TestCase
         $this->lastInsertID = $this->_PDO->lastInsertId();  // <-- important
         return $ok;
     }
+
     /**
      * Test that delete deletes a row from a specified table
      * when provided null values
@@ -775,6 +777,7 @@ class Database_Test extends TestCase
             ]
         );
     }
+
     /**
      * Escape HTML characters in all values of an array.
      *
@@ -793,6 +796,7 @@ class Database_Test extends TestCase
         }
         return $escaped;
     }
+
     /**
      * Test that insertOnDuplicateUpdate automatically escapes any HTML
      * in the data for security
@@ -1801,5 +1805,4 @@ class Database_Test extends TestCase
         $val = $stub->isConnected();
         $this->assertEquals($val, false);
     }
-
 }

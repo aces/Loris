@@ -881,7 +881,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
     }
 
-
     /**
      * Test that setup correctly sets the commentID and page values of the
      * instrument and that getCommentID returns the commentID value.

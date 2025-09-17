@@ -277,6 +277,7 @@ class UtilityTest extends TestCase
             Utility::getCohortList()
         );
     }
+
     /**
      * Test that getCohortList() returns the correct cohort
      * when a ProjectID is specified
@@ -306,6 +307,7 @@ class UtilityTest extends TestCase
             Utility::getCohortList(new ProjectID("123"))
         );
     }
+
     /**
      * Test that getCohortsForProject calls getCohortList and
      * returns the same information as the test above
@@ -999,6 +1001,7 @@ class UtilityTest extends TestCase
     {
         $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
     }
+
     /**
      * Test that valueIsPositiveInteger returns true for positive integers
      *
@@ -1018,6 +1021,7 @@ class UtilityTest extends TestCase
         yield [null];
         yield [new \stdClass()];
     }
+
     /**
      * Test that valueIsPositiveInteger returns true for positive integers
      *
@@ -1030,6 +1034,7 @@ class UtilityTest extends TestCase
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
+
     /**
      * Data provider for testValueIsPositiveIntegerReturnsTrue
      *
@@ -1043,6 +1048,7 @@ class UtilityTest extends TestCase
         yield [5];
         yield [100];
     }
+
     /**
      * Tests the
      * n function. Test cases adapted from blog post on
@@ -1262,6 +1268,7 @@ class UtilityTest extends TestCase
         $expected = [123 => 'scan 1', 234 => 'scan 2'];
         $this->assertEquals($expected, Utility::getScanTypeList());
     }
+
     /**
      * Test that appendForwardSlash appends a forward slash to the given path.
      * Also asserts that if the path already has a forward slash, it does nothing.

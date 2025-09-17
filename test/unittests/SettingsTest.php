@@ -155,6 +155,7 @@ class SettingsTest extends TestCase
             );
         }
     }
+
     /**
      * Test dbName() returns correct database name
      *

@@ -584,6 +584,7 @@ class CandidateTest extends TestCase
         // Assert getValidCohorts() returns empty array
         $this->assertEquals([], $this->_candidate->getValidCohorts());
     }
+
     /**
      * Test getFirstVisit returns first visit's label
      *
@@ -1235,6 +1236,7 @@ class CandidateTest extends TestCase
         $this->_configMock->method('getSetting')
             ->willReturnMap($this->_configMap);
     }
+
     /**
      * Set up mock database and config information
      * This is only necessary to test the functions that use
@@ -1275,6 +1277,7 @@ class CandidateTest extends TestCase
 class QueryStub extends Query implements \IteratorAggregate, \Countable
 {
     private array $rows;
+
     /**
      * Constructor.
      *
@@ -1284,6 +1287,7 @@ class QueryStub extends Query implements \IteratorAggregate, \Countable
     {
         $this->rows = $rows;
     }
+
     /**
      * Get all rows.
      *
@@ -1293,6 +1297,7 @@ class QueryStub extends Query implements \IteratorAggregate, \Countable
     {
         return $this->rows[0] ?? [];
     }
+
     /**
      * Count the number of rows.
      *
@@ -1302,6 +1307,7 @@ class QueryStub extends Query implements \IteratorAggregate, \Countable
     {
         return count($this->rows);
     }
+
     /**
      * Retrieve an external iterator.
      *
