@@ -119,6 +119,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Cancel"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""

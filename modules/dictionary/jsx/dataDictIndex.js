@@ -76,9 +76,10 @@ class DataDictIndex extends Component {
       swal.fire({
         title: t('Edit Description', {ns: 'dictionary'}),
         input: 'text',
-        inputValue: row.Description,
+        inputValue: row[t('Description', {ns: 'dictionary'})],
         confirmButtonText: t('Modify', {ns: 'dictionary'}),
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
         inputValidator: (value) => {
           if (!value) {
             return t('Missing description', {ns: 'dictionary'});
@@ -89,9 +90,10 @@ class DataDictIndex extends Component {
           return;
         }
 
+        const fieldname = row[t('Field Name', {ns: 'dictionary'})];
         const url = this.props.BaseURL
               + '/dictionary/fields/'
-              + encodeURI(row['Field Name']);
+              + encodeURI(fieldname);
 
         // The fetch happens asynchronously, which means that the
         // swal closes before it returns. We find the index that
@@ -101,7 +103,7 @@ class DataDictIndex extends Component {
         let odesc;
         let ostat;
         for (i = 0; i < this.state.data.Data.length; i++) {
-          if (this.state.data.Data[i][2] == row['Field Name']) {
+          if (this.state.data.Data[i][2] == fieldname) {
             // Store the original values in case the fetch
             // fails and we need to restore them.
             odesc = this.state.data.Data[i][3];
@@ -140,7 +142,10 @@ class DataDictIndex extends Component {
           // good, but it's possible the status was changed
           // back to the original. So update the status
           // based on what the response said the value was.
-          this.state.data.Data[i][4] = response.headers.get('X-StatusDesc');
+          this.state.data.Data[i][4] = this.props.t(
+            response.headers.get('X-StatusDesc'),
+            {ns: 'dictionary'}
+          );
           this.setState({state: this.state});
         }).catch(() => {
           // Something went wrong, restore the original

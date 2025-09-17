@@ -119,6 +119,9 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Cancel"
+msgstr "取り消す"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
