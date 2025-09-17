@@ -63,6 +63,9 @@ msgstr ""
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr ""
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -116,6 +119,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Cancel"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -129,10 +135,19 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Module"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
 msgid "Cohort"
+msgstr ""
+
+msgid "Cohorts"
+msgstr ""
+
+msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
@@ -156,7 +171,22 @@ msgstr ""
 msgid "Date of Birth"
 msgstr ""
 
+msgid "Visits"
+msgstr ""
+
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Entity Type"
+msgstr ""
+
+msgid "Scan Done"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
 msgstr ""
 
 # Data table strings

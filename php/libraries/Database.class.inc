@@ -741,6 +741,7 @@ class Database implements LoggerAwareInterface
         }
         return $rows;
     }
+
     /**
      * Runs an SQL select statement as a prepared query
      *

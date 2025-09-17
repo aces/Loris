@@ -64,6 +64,9 @@ msgstr "行政上の"
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 #: modules/document_repository/php/module.class.inc:56
+msgid "Data Dictionary"
+msgstr "データ辞書"
+
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
@@ -116,6 +119,9 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Cancel"
+msgstr "取り消す"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
@@ -142,11 +148,20 @@ msgstr "ラベルを訪問"
 msgid "Site"
 msgstr "サイト"
 
+msgid "Module"
+msgstr "モジュール"
+
 msgid "Project"
 msgstr "プロジェクト"
 
 msgid "Cohort"
 msgstr "コホート"
+
+msgid "Cohorts"
+msgstr "コホート"
+
+msgid "Session"
+msgstr "セッション"
 
 msgid "Date of registration"
 msgstr "入学日"
@@ -165,6 +180,27 @@ msgstr "フィードバック"
 
 msgid "Scans"
 msgstr "スキャン"
+
+msgid "Date of Birth"
+msgstr "生年月日"
+
+msgid "Visits"
+msgstr "訪問"
+
+msgid "An error occured while loading the page."
+msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Entity Type"
+msgstr "エンティティタイプ"
+
+msgid "Scan Done"
+msgstr "スキャン完了"
+
+msgid "Show Advanced Filters"
+msgstr "詳細フィルターを表示"
+
+msgid "Hide Advanced Filters"
+msgstr "詳細フィルターを非表示"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."

@@ -10,7 +10,7 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 /**
  * Contains the Events class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology

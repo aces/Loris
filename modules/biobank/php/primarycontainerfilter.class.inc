@@ -3,7 +3,7 @@
 /**
  * This file provides an implementation of the Primary Container Filter.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Filter
  * @package    Loris
@@ -18,7 +18,7 @@ namespace LORIS\biobank;
  * PrimaryContainerFilter filters out primary or non primary containers,
  * depending on the value passed to the constructor.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Filter
  * @package    Loris

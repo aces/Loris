@@ -4,7 +4,7 @@
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -383,7 +383,6 @@ class Database_Test extends TestCase
 
     }
 
-
     /**
      * Test that update updates a specified row in a specified table
      * when given null values
@@ -441,7 +440,6 @@ class Database_Test extends TestCase
         );
     }
 
-
     /**
      * Test that update correctly alters a specified row from a specified table
      *
@@ -498,7 +496,6 @@ class Database_Test extends TestCase
         );
     }
 
-
     /**
      * Test that insert correctly inserts a specified row into a table
      * when given null values
@@ -554,7 +551,6 @@ class Database_Test extends TestCase
         );
     }
 
-
     /**
      * Test that insert correctly adds a specified row to a specified table
      *
@@ -608,7 +604,6 @@ class Database_Test extends TestCase
             ]
         );
     }
-
 
     /**
      * Test that replace correctly replaces a given row and adds a row
@@ -673,7 +668,6 @@ class Database_Test extends TestCase
             ]
         );
     }
-
 
     /**
      * Test that replace correctly replaces and adds rows to  a specified table

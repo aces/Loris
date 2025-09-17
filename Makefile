@@ -12,7 +12,7 @@ VERSION: .
 phpdev:
 	composer install
 
-dev: locales phpdev jsdev fastdev
+dev: jsdev locales phpdev fastdev
 
 jsdev:
 	npm ci
@@ -71,6 +71,8 @@ locales:
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
+	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	msgfmt -o modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po
 	msgfmt -o modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
@@ -89,6 +91,9 @@ locales:
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
 	msgfmt -o modules/dictionary/locale/ja/LC_MESSAGES/dictionary.mo modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po
+	npx i18next-conv -l ja -s modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/ja/LC_MESSAGES/dictionary.json
+	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
+	npx i18next-conv -l hi -s modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/hi/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/document_repository/locale/ja/LC_MESSAGES/document_repository.mo modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po
 	msgfmt -o modules/dqt/locale/ja/LC_MESSAGES/dqt.mo modules/dqt/locale/ja/LC_MESSAGES/dqt.po
 	msgfmt -o modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.mo modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po
@@ -133,6 +138,7 @@ instrument_manager:
 	target=instrument_manager npm run compile
 
 dataquery:
+	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	target=dataquery npm run compile
 
 login:
@@ -150,6 +156,8 @@ issue_tracker:
 candidate_list:
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
+	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
+	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
 candidate_parameters:

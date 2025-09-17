@@ -3,7 +3,7 @@
 /**
  * User accounts automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -136,6 +136,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that searching for users using thei user IDs works
      *
@@ -147,6 +148,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
         $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
     }
+
     /**
      * Testing filter funtion and clear button
      *
@@ -203,7 +205,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         $this->assertEquals("", $inputText);
     }
-
 
     /**
      * Tests various user account edit operations.
@@ -496,6 +497,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $this->url . "/user_accounts/edit_user/?identifier=$userId"
         );
     }
+
     /**
      * Performed after every test.
      *

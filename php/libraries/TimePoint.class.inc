@@ -4,7 +4,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -119,7 +119,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $timePointList["$sessionID"];
     }
 
-
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
@@ -222,7 +221,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
     }
-
 
     /**
      * Registers a new timepoint into the session table
@@ -581,7 +579,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->_timePointInfo["Active"] == 'Y';
     }
-
 
     /**
      * Gets whether or not a scan was done for this TimePoint

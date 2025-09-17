@@ -3,7 +3,7 @@
 /**
  * Candidate_list automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -75,6 +75,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
     }
+
     /**
      * Tests that, the homepage should not have "You do not have access
      * to this page." on the page with permission.
@@ -94,6 +95,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
@@ -115,6 +117,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         )->getText();
         $this->assertStringContainsString("Advanced", $buttonText);
     }
+
     /**
      * Tests that, after clicking the "Advanced" button, all of the
      * advanced filters appear on the page and are the correct element type.
@@ -160,6 +163,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
            $this->assertEquals("select", $feedbackOptions->getTagName());
     }
+
     /**
      * Tests clear button in the form
      * The form should refreash and the data should be gone.
@@ -297,6 +301,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '2 rows'
         );
     }
+
     /**
      * Tests that, when user only has data_entry permisson, user
      * can click open profile button to input PSCID and DCCID
@@ -330,6 +335,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
     }
+
     /**
      * Tests that, click the pscid link, and it will goto the candidate profile page
      *
@@ -349,6 +355,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $bodyText
         );
     }
+
     /**
      * Tests that, click the scan_done ="y" link,
      * and it will goto the imaging browser page.

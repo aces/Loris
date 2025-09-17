@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Notification
  * @package  Notification
@@ -442,7 +442,6 @@ abstract class NDB_Notifier_Abstract
         }
         return $n_services;
     }
-
 
     /**
      * Static Getter for list of services for the study

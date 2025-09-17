@@ -3,7 +3,7 @@
 /**
  * Imaging Browser automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__
 /**
  * Imaging Browser automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -46,7 +46,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                            .'a:nth-child(1)';
     static $selectedLink = '#dynamictable tbody tr:nth-child(1) td:nth-child(12) '
                            .'a:nth-child(2)';
-
 
     /**
      * Does basic setting up of Loris variables for this test, such as

@@ -3,7 +3,7 @@
 /**
  * Mri_violations automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Mri_violations automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -34,6 +34,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     private $_loadingUI = [
         'MRI Violated Scans' => '#bc2 > a:nth-child(2) > div'
     ];
+
     /**
      * Insert testing data
      *
@@ -222,6 +223,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
     }
+
     /**
      * Delete the test data
      *
@@ -372,7 +374,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
 
-
     /**
      * Verify that for a user with 'violated_scans_view_allsites' permission the
      * number of MRI violated scans is reported in the My Task panel.
@@ -462,6 +463,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("reset")
         )->click();
     }
+
     /**
      * Testing UI when page loads
      *

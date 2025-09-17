@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -76,7 +76,6 @@ class Module extends \Module
         return \LORIS\GUI\MenuCategory::singleton("Candidate");
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -97,4 +96,60 @@ class Module extends \Module
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        switch ($type) {
+        case 'study-progression':
+            $DB   = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                "SELECT
+                    ProjectID,
+                    COUNT(DISTINCT PSCID) AS count,
+                    CONCAT('$baseURL/candidate_list/?project=', ProjectName)
+                    AS url,
+                    ProjectName
+                FROM (
+                    SELECT 
+                        c.PSCID,
+                        COALESCE(p.ProjectID, p2.ProjectID) AS ProjectID,
+                        COALESCE(p.Name, p2.Name) AS ProjectName
+                    FROM candidate c
+                    LEFT JOIN session s ON s.CandidateID = c.ID 
+                    LEFT JOIN Project p ON p.ProjectID = s.ProjectID
+                    JOIN Project p2 ON c.RegistrationProjectID = p2.ProjectID 
+                    WHERE c.Active <> 'N' 
+                    AND s.Active <> 'N' 
+                    AND s.CenterID <> 1
+                ) AS sub
+                GROUP BY ProjectID, ProjectName;",
+                [],
+                'ProjectID'
+            );
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "loris",
+                        "Candidate",
+                        "Candidates"
+                    ),
+                    $data,
+                    "",
+                    'rgb(255, 252, 199)',
+                )
+            ];
+        }
+        return [];
+    }
 }

@@ -3,7 +3,7 @@
 /**
  * Instrument_builder automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Instrument_builder automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -50,6 +50,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the Instrument builder module with permission, some
      * text appears in the body.
@@ -65,6 +66,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringContainsString("Instrument Builder", $bodyText);
         $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the Instrument builder module without permisson, some
      * text appears in the body.
@@ -83,6 +85,5 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
-
 }
 

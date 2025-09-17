@@ -3,7 +3,7 @@
 /**
  * Unit test for Candidate class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -397,6 +397,7 @@ class CandidateTest extends TestCase
             $this->_candidate->getCandidateSite()
         );
     }
+
     /**
      * Test getCenterID returns the correct RegistrationCenterID for the candidate
      *
@@ -412,6 +413,7 @@ class CandidateTest extends TestCase
             $this->_candidate->getCenterID()
         );
     }
+
     /**
      * Test getCandidateDoB returns the correct DoB for the candidate
      *
@@ -784,6 +786,7 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(1, $this->_candidate->getNextVisitNo());
     }
+
     /**
      * Test getAge returns correct DateTime Interval $y, $m, $d properties
      *
@@ -800,6 +803,7 @@ class CandidateTest extends TestCase
         $this->assertEquals(11, $this->_candidate->getAge($referenceDate)->m);
         $this->assertEquals(23, $this->_candidate->getAge($referenceDate)->d);
     }
+
     /**
      * Test getAgeInYears returns age as int years
      *
@@ -816,6 +820,7 @@ class CandidateTest extends TestCase
             $this->_candidate->getAgeInYears()
         );
     }
+
     /**
      * Test getAgeInMonths returns age in months
      *
@@ -832,6 +837,7 @@ class CandidateTest extends TestCase
                * intval($this->_candidate->getAge()->format('%y'));
         $this->assertEquals($expectedAge, $this->_candidate->getAgeInMonths());
     }
+
     /**
      * Test getAgeInDays returns age in days
      *
@@ -848,6 +854,7 @@ class CandidateTest extends TestCase
             $this->_candidate->getAgeInDays()
         );
     }
+
     /**
      * Test getSessionID returns session ID for a given existing visit
      *
@@ -1060,7 +1067,6 @@ class CandidateTest extends TestCase
             'Invalid PSCID: validatePSCID should return 0'
         );
     }
-
 
     /**
      * Test getConsents returns correct array of information

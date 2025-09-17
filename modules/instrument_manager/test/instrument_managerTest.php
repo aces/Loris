@@ -3,7 +3,7 @@
 /**
  * Instrument_manager automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Instrument_manager automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -51,6 +51,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the instrument_manager module with permission,
      * some text appears in the body.
@@ -77,6 +78,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringContainsString("Instrument Manager", $bodyText);
         $this->resetPermissions();
     }
+
     /**
      * Tests that, when loading the instrument_manager module without
      * permission, some text appears in the body.
@@ -96,7 +98,5 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
-
-
 }
 

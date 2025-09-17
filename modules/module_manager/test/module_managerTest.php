@@ -3,7 +3,7 @@
 /**
  * Module Manager automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -25,7 +25,6 @@ require_once __DIR__ .
  */
 class ModuleManagerTest extends LorisIntegrationTest
 {
-
     /**
      * Tests that the module_manager loads an error page if
      * the user has no permission.

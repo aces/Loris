@@ -3,7 +3,7 @@
 /**
  * Candidate_profile automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -92,6 +92,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $this->resetUserProject();
     }
+
     /**
      * Test that the page instrument link works on card section
      *
