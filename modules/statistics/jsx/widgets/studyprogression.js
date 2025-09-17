@@ -70,13 +70,17 @@ const StudyProgression = (props) => {
    */
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
-      setupCharts(false, chartDetails).then((data) => {
+      setupCharts(
+        false,
+        chartDetails,
+        t('Total', {ns: 'loris'})
+      ).then((data) => {
         setChartDetails(data);
       });
       json = props.data;
       setLoading(false);
     }
-  }, [props.data]);
+  }, [props.data, t]);
 
   const updateFilters = (formDataObj, section) => {
     props.updateFilters(formDataObj, section,
@@ -96,7 +100,7 @@ const StudyProgression = (props) => {
         activeView={activeView}
         onChangeView={(index) => {
           setActiveView(index);
-          setupCharts(false, chartDetails);
+          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
 
           // reset filters when switching views
           if (index === 0) {

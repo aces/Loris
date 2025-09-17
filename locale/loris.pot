@@ -196,7 +196,7 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
 msgstr ""
 
 # Dashboard panel strings
@@ -213,3 +213,5 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+msgid "Total"
+msgstr ""

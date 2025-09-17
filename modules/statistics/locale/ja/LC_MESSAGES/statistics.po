@@ -41,3 +41,9 @@ msgstr "サイトごとのスキャンセッション"
 
 msgid "Recruitment per site"
 msgstr "サイトごとの募集"
+
+msgid "Download as PNG"
+msgstr "PNGとしてダウンロード"
+
+msgid "Labels"
+msgstr "ラベル"

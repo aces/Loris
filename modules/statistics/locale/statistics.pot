@@ -41,3 +41,9 @@ msgstr ""
 
 msgid "Recruitment per site"
 msgstr ""
+
+msgid "Download as PNG"
+msgstr ""
+
+msgid "Labels"
+msgstr ""
