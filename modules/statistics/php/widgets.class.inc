@@ -210,7 +210,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             FROM physiological_file pf
             JOIN session s ON (s.ID=pf.SessionID)
             WHERE s.ProjectID IN (" .
-                join($user->getProjectIDs())
+                join(',', $user->getProjectIDs())
             . ")",
             []
         );
@@ -241,7 +241,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $values['size_byproject'] = $projectsSizes;
 
         $values['eeg_data'] = [
-            $eeg_data
+            'total_recordings' => $eeg_data
         ];
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
@@ -638,7 +638,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     && isset($value['ProjectID'])
                     && strval($value['ProjectID']) === $projectID
                 ) {
-                    $title = $widgetConfig['ref']->label()->getN($value['count']);
+                    $title = $widgetConfig['ref']->label()->getN(
+                        intval(preg_split('/\s+/', strval($value['count']))[0])
+                    );
 
                     $projectData[] = [
                         'title'  => $title,
