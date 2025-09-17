@@ -62,6 +62,8 @@ locales:
 	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
 	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
 	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json
+	msgfmt -o locale/es/LC_MESSAGES/loris.mo locale/es/LC_MESSAGES/loris.po
+	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
@@ -121,6 +123,7 @@ locales:
 	msgfmt -o modules/statistics/locale/ja/LC_MESSAGES/statistics.mo modules/statistics/locale/ja/LC_MESSAGES/statistics.po
 	msgfmt -o modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.mo modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po
 	msgfmt -o modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po
+	msgfmt -o modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 

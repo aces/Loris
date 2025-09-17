@@ -4,13 +4,13 @@
   <thead>
   <tr class="info">
     <th>
-      Derived Age
+      {dgettext("timepoint_list", "Derived Age")}
     </th>
     <th>
-      EDC Age
+      {dgettext("timepoint_list", "EDC Age")}
     </th>
     <th>
-      Biological Sex
+      {dgettext("timepoint_list", "Biological Sex")}
     </th>
     <th>
       Project
@@ -57,25 +57,25 @@
 <br>
 
 <!-- table title -->
-<strong>List of Visits (Time Points)</strong>
+<strong>{dgettext("timepoint_list", "List of Visits (Time Points)")}</strong>
 <!-- list of timepoints table -->
 <table style="margin-top:0" class="table table-hover table-primary table-bordered dynamictable" cellpadding="2">
     <!-- table column headings -->
     <thead>
         <tr class="info">
-            <th>Visit Label<BR>(Click to Open)</th>
-            <th>Cohort</th>
-            <th>Site</th>
-            <th>Project</th>
-            <th>Stage</th>
-            <th>Stage Status</th>
-            <th>Date of Stage</th>
-            <th>Sent To DCC</th>
-            <th>Imaging Scan Done</th>
-            <th>Feedback</th>
-            <th>BVL QC</th>
-            <th>BVL Exclusion</th>
-            <th>Registered By</th>
+            <th>{dgettext("loris", "Visit Label")}<BR>({dgettext("timepoint_list", "Click to Open")})</th>
+            <th>{dgettext("loris", "Cohort")}</th>
+            <th>{dgettext("loris", "Site")}</th>
+            <th>{dgettext("loris", "Project")}</th>
+            <th>{dgettext("loris", "Stage")}</th>
+            <th>{dgettext("timepoint_list", "Stage Status")}</th>
+            <th>{dgettext("timepoint_list", "Date of Stage")}</th>
+            <th>{dgettext("loris", "Sent To DCC")}</th>
+            <th>{dgettext("timepoint_list", "Imaging Scan Done")}</th>
+            <th>{dgettext("loris", "Feedback")}</th>
+            <th>{dgettext("timepoint_list", "BVL QC")}</th>
+            <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
+            <th>{dgettext("timepoint_list", "Registered By")}</th>
         </tr>
     </thead>
     <tbody>
@@ -151,7 +151,7 @@
             </td>
         </tr>
     {sectionelse}
-        <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>
+        <tr><td colspan="10">{dgettext("timepoint_list", "You do not have access to any timepoints registered for this candidate.")}</td></tr>
     {/section}
     </tbody>
 </table>
