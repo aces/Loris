@@ -104,8 +104,6 @@ class Charts extends \NDB_Page
             return $this->_handleProjectSizeBreakdown();
         case 'agedistribution_line':
             return $this->_handleAgeDistributionByProject();
-        case 'eeg_recordings_by_site':
-            return $this->_handleSiteEEGRecordingsBreakdown();
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }

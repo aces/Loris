@@ -191,10 +191,12 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 }
             }
 
-            if (in_array($projectName, array_keys($cachedSizeData))) {
-                $projectSize = $cachedSizeData[$projectName]['total'];
-                $projectsSizes[$projectName] = $projectSize;
-                $totalSizeOfProjectsGB      += floatval($projectSize);
+            if (!is_null($cachedSizeData)) {
+                if (in_array($projectName, array_keys($cachedSizeData))) {
+                    $projectSize = $cachedSizeData[$projectName]['total'];
+                    $projectsSizes[$projectName] = $projectSize;
+                    $totalSizeOfProjectsGB      += floatval($projectSize);
+                }
             }
         }
 
