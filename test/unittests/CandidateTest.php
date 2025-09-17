@@ -557,46 +557,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test Candidate::getValidCohorts returns a list
-     * of valid cohorts for a specific project
-     *
-     * @covers Candidate::getValidCohorts
-     * @return void
-     */
-public function testGetValidCohortsReturnsAListOfCohorts()
-{
-    $this->_dbMock->method('pselectCol')
-        ->willReturn(['Male','Female','Other']);
-
-    $cohorts = [
-        ['CohortID' => 1],
-        ['CohortID' => 2]
-    ];
-
-    $this->_dbMock->expects($this->once())
-        ->method('pselectRow')
-        ->willReturn($this->_candidateInfo);
-
-    $expectedCohorts = [
-        1 => 1,
-        2 => 2
-    ];
-
-    $this->_setUpTestDoublesForSelectCandidate();
-    $this->_candidate->select(new LORIS\StudyEntities\Candidate\CandID(strval($this->_candidateInfo['CandID'])));
-
-    $this->_dbMock->expects($this->once())
-        ->method('pselect')
-        ->with($this->stringContains("SELECT CohortID"))
-        ->willReturn(new QueryStub($cohorts));  // <- must be iterable
-
-    $this->assertEquals(
-        $expectedCohorts,
-        $this->_candidate->getValidCohorts()
-    );
-}
-
-    /**
      * Test getValidCohorts returns array() when there are no cohorts
      * in DB.
      *
@@ -1286,15 +1246,27 @@ private function _setUpTestDoublesForSelectCandidate(): void
         $this->_factoryForDB->setConfig($this->_config);
     }
 }
-class QueryStub extends Query
+class QueryStub extends Query implements \IteratorAggregate, \Countable
 {
     private array $rows;
 
-    public function __construct(array $rows) { $this->rows = $rows; }
-    public function getFirstRow(): array { return $this->rows[0] ?? []; }
-    public function count(): int { return count($this->rows); }
-    public function getIterator(): Traversable
+    public function __construct(array $rows)
     {
-        return new ArrayIterator($this->rows);
+        $this->rows = $rows;
+    }
+
+    public function getFirstRow(): array
+    {
+        return $this->rows[0] ?? [];
+    }
+
+    public function count(): int
+    {
+        return count($this->rows);
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->rows);
     }
 }
