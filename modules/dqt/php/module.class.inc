@@ -100,10 +100,11 @@ class Module extends \Module
                         continue;
                     }
 
-                    $data[] = [
+                    $datasetSize = "{$cachedSizeData[$projectName]['total']} GB";
+                    $data[]      = [
                         'ProjectID'   => $project->getId(),
                         'ProjectName' => $projectName,
-                        'count'       => "{$cachedSizeData[$projectName]['total']} GB",
+                        'count'       => $datasetSize,
                         'url'         => "$baseURL/dqt",
                     ];
                 }
