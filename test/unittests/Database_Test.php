@@ -94,9 +94,13 @@ class Database_Test extends TestCase
     protected $DB;
 
     private $_PDO;
-
+    private ?string $lastInsertID = null;
     protected \NDB_Config $config;
 
+    public function getLastInsertID(): ?string
+    {
+        return $this->lastInsertID;
+    }
     /**
      * This method is called before each test is executed.
      * Sets up fixtures: factory, config, database

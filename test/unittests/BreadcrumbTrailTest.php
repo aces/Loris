@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * BreadcrumbTrail class tests
  *
@@ -31,7 +30,6 @@ class BreadcrumbTrailTest extends TestCase
      * @var BreadcrumbTrail
      */
     protected ?BreadcrumbTrail $breadcrumbTrail = null;
-
     /**
      * This method is called before each test is executed.
      *
@@ -42,7 +40,6 @@ class BreadcrumbTrailTest extends TestCase
         parent::setUp();
         $this->breadcrumbTrail = null;
     }
-
     /**
      * Test __toString() returns correct string
      *
@@ -50,7 +47,6 @@ class BreadcrumbTrailTest extends TestCase
      */
     public function testToString(): void
     {
-        // Define test data directly
         $testCases = [
             [
                 'crumbs'   => [
@@ -78,7 +74,7 @@ class BreadcrumbTrailTest extends TestCase
 
             $this->breadcrumbTrail = new BreadcrumbTrail(...$crumbs);
 
-            $this->assertEquals($case['expected'], (string)$this->breadcrumbTrail);
+            $this->assertSame($case['expected'], (string)$this->breadcrumbTrail);
         }
     }
 }

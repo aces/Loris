@@ -13,7 +13,6 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
-use PHPUnit\Framework\MockObject\MockObject;
 use ArrayIterator;
 use PHPUnit\Framework\MockObject\Stub\ConsecutiveCalls;
 use LORIS\Database\Query;
@@ -195,7 +194,7 @@ class CandidateTest extends TestCase
             ->getMock();
         $resultMock->method("getIterator")
             ->willReturn(
-                new ArrayIterator(
+                new \ArrayIterator(
                     [
                         [
                             "ID"        => 97,
@@ -744,9 +743,7 @@ class CandidateTest extends TestCase
             ->willReturn($this->_candidateInfo);
         $this->_dbMock
             ->method('pselect')
-            ->will(
-                new ConsecutiveCalls(
-                    [
+            ->willReturnOnConsecutiveCalls(
                         [
                             [
                                 "ID"        => 97,
@@ -782,9 +779,7 @@ class CandidateTest extends TestCase
                                 "ProjectID" => 1,
                                 "CenterID"  => 2,
                             ]
-                        ],
-                    ]
-                )
+                        ]
             );
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(97, $this->_candidate->getSessionID(1));
@@ -1207,7 +1202,7 @@ class CandidateTest extends TestCase
 
         $resultMock->method('getIterator')
             ->willReturn(
-                new ArrayIterator(
+                new \ArrayIterator(
                     [
                         [
                             'ID'        => 97,
