@@ -108,7 +108,11 @@ class Module extends \Module
 
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Dataset Size",
+                    new \LORIS\GUI\LocalizableString(
+                        "dqt",
+                        "Dataset Size",
+                        "Dataset Size",
+                    ),
                     $data,
                     "",
                     'rgb(186,225,255)',
