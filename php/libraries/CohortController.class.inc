@@ -3,7 +3,7 @@
 /**
  * This file contains the CohortController class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Controller
  * @package  Cohorts

@@ -3,7 +3,7 @@
 /**
   * Automated integration tests for conflict resolver module
   *
-  * PHP Version 7
+  * PHP Version 8
   *
   * @category Test
   * @package  Loris

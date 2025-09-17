@@ -4,7 +4,7 @@
  * Base class for files containing help text information
  * as well as DB wrappers for CRUD operations
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Help_Editor
  * @package  Main
@@ -18,7 +18,7 @@ namespace LORIS\help_editor;
  * Base class for files containing help text information
  * as well as DB wrappers for CRUD operations
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Help_Editor
  * @package  Main

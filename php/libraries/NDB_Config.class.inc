@@ -3,7 +3,7 @@
 /**
  * Provides an interface to the NeuroDB configuration
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

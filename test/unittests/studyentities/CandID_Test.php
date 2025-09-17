@@ -3,7 +3,7 @@
 /**
  * This file contains unit test for the CandID value object.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  StudyEntities
@@ -21,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Unit test class for the CandID value object
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  StudyEntities

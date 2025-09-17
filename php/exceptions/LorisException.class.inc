@@ -5,7 +5,7 @@
  * It represents the base of the exception hierarchy, as well as any
  * other type of exception that does not fit into any other category.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

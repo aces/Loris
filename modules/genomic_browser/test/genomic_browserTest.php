@@ -3,7 +3,7 @@
 /**
  * Genomic_browser automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__
 /**
  * GenomicBrowserTestIntegrationTest
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris

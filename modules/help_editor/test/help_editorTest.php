@@ -3,7 +3,7 @@
 /**
  * Help editor automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ use Facebook\WebDriver\WebDriverBy;
  /**
   * Help_editor automated integration tests
   *
-  * PHP Version 5
+  * PHP Version 8
   *
   * @category Test
   * @package  Loris

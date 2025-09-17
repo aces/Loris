@@ -5,7 +5,7 @@
  * menu filter where the front end is generated from React and the
  * data comes from a \LORIS\Data\Provisioner.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main

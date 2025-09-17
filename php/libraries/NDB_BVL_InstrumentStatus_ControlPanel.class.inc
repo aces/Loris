@@ -3,7 +3,7 @@
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural

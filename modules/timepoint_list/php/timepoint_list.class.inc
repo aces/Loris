@@ -3,7 +3,7 @@
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -21,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * The timepoint list menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List

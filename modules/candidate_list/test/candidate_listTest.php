@@ -3,7 +3,7 @@
 /**
  * Candidate_list automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
