@@ -105,7 +105,9 @@ class Charts extends \NDB_Page
         case 'agedistribution_line':
             return $this->_handleAgeDistributionByProject($request);
         case 'eeg_recordings_by_site':
-            return $this->_handleSiteEEGRecordingsBreakdown();
+            return $this->_handleSiteEEGRecordingsBreakdown($request);
+        case 'eeg_recordings_by_project':
+            return $this->_handleProjectEEGRecordingsBreakdown($request);
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -873,6 +875,128 @@ class Charts extends \NDB_Page
                         ...$cachedSizeData[$projectName],
                     ];
                 }
+            }
+        }
+        return (new \LORIS\Http\Response\JsonResponse($projectData));
+    }
+
+    /**
+     * Handle an incoming request for EEG recordings by site breakdown.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handleSiteEEGRecordingsBreakdown(
+        ServerRequestInterface $request
+    ) {
+        $DB       = \NDB_Factory::singleton()->database();
+        $user     = \NDB_Factory::singleton()->user();
+        $sites    = $user->getSites();
+
+        $conditions = $this->_buildQueryConditions();
+
+        $data = iterator_to_array(
+            $DB->pselect(
+                "SELECT
+                s.CenterID,
+                psc.Name,
+                COUNT(distinct s.ID) as count
+            FROM physiological_file pf
+            JOIN session s ON (s.ID=pf.SessionID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            JOIN psc USING (CenterID)
+            {$conditions['participantStatusJoin']}
+            WHERE 1 = 1
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}
+            GROUP BY s.CenterID
+            ORDER BY s.CenterID",
+                []
+            )
+        );
+
+        $processedData = [];
+        foreach ($data as $row) {
+            $processedData[$row['CenterID']] = [
+                'CenterID' => $row['CenterID'],
+                'Name'     => $row['Name'],
+                'count'    => intval($row['count']),
+            ];
+        }
+
+        $siteData = [];
+        foreach ($sites as $siteID => $siteName) {
+            if (in_array($siteID, array_keys($processedData))) {
+                $siteData[] = [
+                    'label' => $siteName,
+                    'total' => $processedData[$siteID]['count'],
+                ];
+            }
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($siteData));
+    }
+
+    /**
+     * Handle an incoming request for EEG recordings by project breakdown.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handleProjectEEGRecordingsBreakdown(
+        ServerRequestInterface $request
+    ) {
+        $DB       = \NDB_Factory::singleton()->database();
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjects();
+
+        $conditions = $this->_buildQueryConditions();
+
+        $data = iterator_to_array(
+            $DB->pselect(
+                "SELECT
+                s.ProjectID,
+                p.Name,
+                COUNT(distinct s.ID) as count
+            FROM physiological_file pf
+            JOIN session s ON (s.ID=pf.SessionID)
+            JOIN Project p USING (ProjectID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            {$conditions['participantStatusJoin']}
+            WHERE 1 = 1
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}
+            GROUP BY s.CenterID
+            ORDER BY s.CenterID",
+                []
+            )
+        );
+
+        $processedData = [];
+        foreach ($data as $row) {
+            $processedData[$row['ProjectID']] = [
+                'ProjectID' => $row['ProjectID'],
+                'Name'      => $row['Name'],
+                'count'     => intval($row['count']),
+            ];
+        }
+
+        $projectData = [];
+        foreach ($projects as $projectID => $projectName) {
+            if (in_array($projectID, array_keys($processedData))) {
+                $projectData[] = [
+                    'label' => $projectName,
+                    'total' => $processedData[$projectID]['count'],
+                ];
             }
         }
 
