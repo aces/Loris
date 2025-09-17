@@ -183,38 +183,40 @@ class NDB_ConfigTest extends TestCase
      * @covers NDB_Config::getSettingFromDB
      * @return void
      */
-public function testGetSettingFromDB()
-{
-    // Mock database connection
-    $this->_dbMock->method('isConnected')->willReturn(true);
+    public function testGetSettingFromDB()
+    {
+        // Mock database connection
+        $this->_dbMock->method('isConnected')->willReturn(true);
 
-    // Mock the Query object returned by pselect
-    $mockQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+        // Mock the Query object returned by pselect
+        $mockQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Ensure count() returns 1 so ConfigurationException is not thrown
-    $mockQuery->method('count')->willReturn(1);
+        // Ensure count() returns 1 so ConfigurationException is not thrown
+        $mockQuery->method('count')->willReturn(1);
 
-    // getFirstRow() returns one row from ConfigSettings
-    $mockQuery->method('getFirstRow')->willReturn([
-        'ParentID' => 1,
-        'ChildID' => null,
-        'AllowMultiple' => '0',
-        'Name' => 'test'
-    ]);
+        // getFirstRow() returns one row from ConfigSettings
+        $mockQuery->method('getFirstRow')->willReturn(
+            [
+                'ParentID'      => 1,
+                'ChildID'       => null,
+                'AllowMultiple' => '0',
+                'Name'          => 'test'
+            ]
+        );
 
-    // pselect() returns the mocked Query
-    $this->_dbMock->method('pselect')->willReturn($mockQuery);
+        // pselect() returns the mocked Query
+        $this->_dbMock->method('pselect')->willReturn($mockQuery);
 
-    // pselectOne() returns the value of the setting
-    $this->_dbMock->method('pselectOne')->willReturn('some_value');
+        // pselectOne() returns the value of the setting
+        $this->_dbMock->method('pselectOne')->willReturn('some_value');
 
-    // Now this should succeed
-    $result = $this->_config->getSettingFromDB('test');
+        // Now this should succeed
+        $result = $this->_config->getSettingFromDB('test');
 
-    $this->assertEquals('some_value', $result);
-}
+        $this->assertEquals('some_value', $result);
+    }
 
     /**
      * Test getSettingFromXML() method. Given an array,
@@ -354,28 +356,32 @@ public function testGetSettingFromDB()
      * @covers NDB_Config::getExternalLinks
      * @return void
      */
-public function testGetExternalLinks()
-{
-    // Create a fake Query object that is iterable
-    $fakeQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetExternalLinks()
+    {
+        // Create a fake Query object that is iterable
+        $fakeQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make it return an iterator over the fake rows
-    $fakeQuery->method('getIterator')
-        ->willReturn(new ArrayIterator([
-            ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
-        ]));
+        // Make it return an iterator over the fake rows
+        $fakeQuery->method('getIterator')
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
+                    ]
+                )
+            );
 
-    // Make pselect return our fake Query
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($fakeQuery);
+        // Make pselect return our fake Query
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($fakeQuery);
 
-    $this->assertEquals(
-        ['GitHub' => 'github/Loris'],
-        $this->_config->getExternalLinks('GitHub')
-    );
-}
+        $this->assertEquals(
+            ['GitHub' => 'github/Loris'],
+            $this->_config->getExternalLinks('GitHub')
+        );
+    }
 
 }

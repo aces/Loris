@@ -828,48 +828,58 @@ class NDB_BVL_Instrument_Test extends TestCase
      * @covers NDB_BVL_Instrument::toJSON
      * @return void
      */
-function testPageGroup()
-{
-    $this->_setUpMockDB();
-$i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
-    ->disableOriginalConstructor()
-    ->onlyMethods([
-        "getFullName",
-        "getSubtestList",
-        "getDataDictionary"
-    ])->getMock();
-    $i->method('getFullName')->willReturn("Test Instrument");
-    $i->method('getSubtestList')->willReturn([
-        ['Name' => 'Page 1', 'Description' => 'The first page'],
-        ['Name' => 'Page 2', 'Description' => 'The second page'],
-    ]);
-    $i->method('getDataDictionary')->willReturn([]);
+    function testPageGroup()
+    {
+        $this->_setUpMockDB();
+        $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(
+                [
+                    "getFullName",
+                    "getSubtestList",
+                    "getDataDictionary"
+                ]
+            )->getMock();
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSubtestList')->willReturn(
+            [
+                ['Name' => 'Page 1', 'Description' => 'The first page'],
+                ['Name' => 'Page 2', 'Description' => 'The second page'],
+            ]
+        );
+        $i->method('getDataDictionary')->willReturn([]);
 
-    '@phan-var \NDB_BVL_Instrument $i';
-    $i->form     = $this->quickForm;
-    $i->testName = "Test";
+        '@phan-var \NDB_BVL_Instrument $i';
+        $i->form     = $this->quickForm;
+        $i->testName = "Test";
 
-    $json     = $i->toJSON();
-    $outArray = json_decode($json, true);
-    assert(is_array($outArray));
+        $json     = $i->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
 
-    $page1 = $outArray['Elements'][0];
-    $page2 = $outArray['Elements'][1];
+        $page1 = $outArray['Elements'][0];
+        $page2 = $outArray['Elements'][1];
 
-    $this->assertEquals($page1, [
-        'Type'        => 'ElementGroup',
-        'GroupType'   => 'Page',
-        'Elements'    => [],
-        'Description' => 'The first page'
-    ]);
+        $this->assertEquals(
+            $page1,
+            [
+                'Type'        => 'ElementGroup',
+                'GroupType'   => 'Page',
+                'Elements'    => [],
+                'Description' => 'The first page'
+            ]
+        );
 
-    $this->assertEquals($page2, [
-        'Type'        => 'ElementGroup',
-        'GroupType'   => 'Page',
-        'Elements'    => [],
-        'Description' => 'The second page'
-    ]);
-}
+        $this->assertEquals(
+            $page2,
+            [
+                'Type'        => 'ElementGroup',
+                'GroupType'   => 'Page',
+                'Elements'    => [],
+                'Description' => 'The second page'
+            ]
+        );
+    }
 
 
     /**

@@ -253,29 +253,30 @@ class UtilityTest extends TestCase
      * @covers Utility::getCohortList
      * @return void
      */
-public function testGetCohortList(): void
-{
-    $cohortRows = [
-        ['CohortID' => '1', 'title' => 'cohort1'],
-        ['CohortID' => '2', 'title' => 'cohort2']
-    ];
+    public function testGetCohortList(): void
+    {
+        $cohortRows = [
+            ['CohortID' => '1', 'title' => 'cohort1'],
+            ['CohortID' => '2', 'title' => 'cohort2']
+        ];
 
-    // Create a Query mock that iterates over $cohortRows
-    $queryMock = $this->createMock(\LORIS\Database\Query::class);
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator($cohortRows));
+        $queryMock = $this->createMock(\LORIS\Database\Query::class);
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator($cohortRows)
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        [
-            '1' => 'cohort1',
-            '2' => 'cohort2'
-        ],
-        Utility::getCohortList()
-    );
-}
+        $this->assertEquals(
+            [
+                '1' => 'cohort1',
+                '2' => 'cohort2'
+            ],
+            Utility::getCohortList()
+        );
+    }
     /**
      * Test that getCohortList() returns the correct cohort
      * when a ProjectID is specified
@@ -283,26 +284,28 @@ public function testGetCohortList(): void
      * @covers Utility::getCohortList
      * @return void
      */
-public function testGetCohortListWithProjectID(): void
-{
-    $cohortRows = [
-        ['CohortID' => '123', 'title' => 'DemoProject']
-    ];
+    public function testGetCohortListWithProjectID(): void
+    {
+        $cohortRows = [
+            ['CohortID' => '123', 'title' => 'DemoProject']
+        ];
 
-    // Mock a Query object that is iterable
-    $queryMock = $this->createMock(\LORIS\Database\Query::class);
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator($cohortRows));
+        // Mock a Query object that is iterable
+        $queryMock = $this->createMock(\LORIS\Database\Query::class);
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator($cohortRows)
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        ['123' => 'DemoProject'],
-        Utility::getCohortList(new ProjectID("123"))
-    );
-}
+        $this->assertEquals(
+            ['123' => 'DemoProject'],
+            Utility::getCohortList(new ProjectID("123"))
+        );
+    }
     /**
      * Test that getCohortsForProject calls getCohortList and
      * returns the same information as the test above
@@ -310,27 +313,28 @@ public function testGetCohortListWithProjectID(): void
      * @return void
      * @covers Utility::getCohortsForProject
      */
+    public function testGetCohortsForProject(): void
+    {
+        $cohortRows = [
+            ['CohortID' => '123', 'title' => 'DemoProject']
+        ];
 
-public function testGetCohortsForProject(): void
-{
-    $cohortRows = [
-        ['CohortID' => '123', 'title' => 'DemoProject']
-    ];
+        // Create a Query mock that is iterable
+        $queryMock = $this->createMock(\LORIS\Database\Query::class);
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator($cohortRows)
+        );
 
-    // Create a Query mock that is iterable
-    $queryMock = $this->createMock(\LORIS\Database\Query::class);
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator($cohortRows));
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
+            ->willReturn($queryMock);
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
-        ->willReturn($queryMock);
-
-    $this->assertEquals(
-        ['123' => 'DemoProject'],
-        Utility::getCohortsForProject(new \ProjectID("123"))
-    );
-}
+        $this->assertEquals(
+            ['123' => 'DemoProject'],
+            Utility::getCohortsForProject(new \ProjectID("123"))
+        );
+    }
 
     /**
      * Test that getCohortsForProject returns an empty array
@@ -353,29 +357,31 @@ public function testGetCohortsForProject(): void
      * @covers Utility::getAllInstruments
      * @return void
      */
-public function testGetInstruments()
-{
-    $testNameInfo = [
-        ['Test_name' => 'test1', 'Full_name' => 'description1'],
-        ['Test_name' => 'test2', 'Full_name' => 'description2']
-    ];
+    public function testGetInstruments()
+    {
+        $testNameInfo = [
+            ['Test_name' => 'test1', 'Full_name' => 'description1'],
+            ['Test_name' => 'test2', 'Full_name' => 'description2']
+        ];
 
-    // Create a Query mock that iterates over $testNameInfo
-    $queryMock = $this->createMock(\LORIS\Database\Query::class);
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator($testNameInfo));
+        // Create a Query mock that iterates over $testNameInfo
+        $queryMock = $this->createMock(\LORIS\Database\Query::class);
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator($testNameInfo)
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        [
-            'test1' => 'description1',
-            'test2' => 'description2'
-        ],
-        Utility::getAllInstruments()
-    );
-}
+        $this->assertEquals(
+            [
+                'test1' => 'description1',
+                'test2' => 'description2'
+            ],
+            Utility::getAllInstruments()
+        );
+    }
 
     /**
      * Test that getAllDDEInstruments() returns the proper information
@@ -383,28 +389,30 @@ public function testGetInstruments()
      * @covers Utility::getAllDDEInstruments
      * @return void
      */
-public function testGetAllDDEInstruments()
-{
-    $test_battery = [
-        [
-            'Test_name' => 'test_name2',
-            'Full_name' => 'full_name2'
-        ]
-    ];
+    public function testGetAllDDEInstruments()
+    {
+        $test_battery = [
+            [
+                'Test_name' => 'test_name2',
+                'Full_name' => 'full_name2'
+            ]
+        ];
 
-    // Mock a Query object that returns our test array
-    $queryMock = $this->createMock(\LORIS\Database\Query::class);
-    $queryMock->method('getIterator')->willReturn(new \ArrayIterator($test_battery));
+        // Mock a Query object that returns our test array
+        $queryMock = $this->createMock(\LORIS\Database\Query::class);
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator($test_battery)
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        ['test_name2' => 'full_name2'],
-        Utility::getAllDDEInstruments()
-    );
-}
+        $this->assertEquals(
+            ['test_name2' => 'full_name2'],
+            Utility::getAllDDEInstruments()
+        );
+    }
 
     /**
      * Test that getDirectInstruments() returns tests with isDirectEntry=true
@@ -412,36 +420,37 @@ public function testGetAllDDEInstruments()
      * @covers Utility::getDirectInstruments
      * @return void
      */
-public function testGetDirectInstruments(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetDirectInstruments(): void
+    {
+        // Mock Query
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make the Query iterable
-    $queryMock->method('getIterator')->willReturn(
-        new \ArrayIterator([
-            [
-                'Test_name'     => 'test1',
-                'Full_name'     => 'description1',
-                'isDirectEntry' => 1,
-            ],
-        ])
-    );
+        // Make the Query iterable
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator(
+                [
+                    [
+                        'Test_name'     => 'test1',
+                        'Full_name'     => 'description1',
+                        'isDirectEntry' => 1,
+                    ],
+                ]
+            )
+        );
 
-    // Mock DB to return the Query mock
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        // Mock DB to return the Query mock
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    // Assert
-    $this->assertEquals(
-        ['test1' => 'description1'],
-        Utility::getDirectInstruments()
-    );
-}
+        // Assert
+        $this->assertEquals(
+            ['test1' => 'description1'],
+            Utility::getDirectInstruments()
+        );
+    }
 
     /**
      * Test that getSiteList() returns the correct list from the database
@@ -454,35 +463,33 @@ public function testGetDirectInstruments(): void
      * @covers Utility::getSiteList
      * @return void
      */
-public function testGetSiteList(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetSiteList(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make the Query iterable
-    $queryMock->method('getIterator')->willReturn(
-        new \ArrayIterator([
-            ['CenterID' => '1', 'Name' => 'site1'],
-            ['CenterID' => '2', 'Name' => 'site2'],
-        ])
-    );
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator(
+                [
+                    ['CenterID' => '1', 'Name' => 'site1'],
+                    ['CenterID' => '2', 'Name' => 'site2'],
+                ]
+            )
+        );
 
-    // Mock DB to return the Query mock
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        [
-            '1' => 'site1',
-            '2' => 'site2',
-        ],
-        Utility::getSiteList()
-    );
-}
+        $this->assertEquals(
+            [
+                '1' => 'site1',
+                '2' => 'site2',
+            ],
+            Utility::getSiteList()
+        );
+    }
 
     /**
      * Test that getStageUsingCandID returns the proper
@@ -491,32 +498,29 @@ public function testGetSiteList(): void
      * @covers Utility::getStageUsingCandID
      * @return void
      */
-public function testGetStageUsingCandID(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetStageUsingCandID(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make getFirstRow() return a fake row
-    $queryMock->method('getFirstRow')->willReturn([
-        'Current_stage' => 'Not Started',
-    ]);
+        $queryMock->method('getFirstRow')->willReturn(
+            [
+                'Current_stage' => 'Not Started',
+            ]
+        );
 
-    // Mock DB to return the Query mock
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    // Assert
-    $this->assertEquals(
-        'Not Started',
-        Utility::getStageUsingCandID(
-           new \Loris\StudyEntities\Candidate\CandID('100001')
-        )
-    );
-}
+        $this->assertEquals(
+            'Not Started',
+            Utility::getStageUsingCandID(
+                new \Loris\StudyEntities\Candidate\CandID('100001')
+            )
+        );
+    }
 
     /**
      * Test that getVisitList returns a list of visit labels
@@ -526,46 +530,46 @@ public function testGetStageUsingCandID(): void
      * @covers Utility::getVisitList
      * @return void
      */
-public function testGetVisitList(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetVisitList(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make it iterable
-    $queryMock->method('getIterator')->willReturn(
-        new \ArrayIterator([
+        // Make it iterable
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator(
+                [
+                    [
+                        'Visit_label' => 'VL1',
+                        'CandidateID' => '100001',
+                        'CenterID'    => '2',
+                        'Active'      => 'Y',
+                    ],
+                    [
+                        'Visit_label' => 'VL2',
+                        'CandidateID' => '100003',
+                        'CenterID'    => '4',
+                        'Active'      => 'Y',
+                    ],
+                ]
+            )
+        );
+
+        // Mock DB to return the Query mock
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
+
+        // Assert
+        $this->assertEquals(
             [
-                'Visit_label' => 'VL1',
-                'CandidateID' => '100001',
-                'CenterID'    => '2',
-                'Active'      => 'Y',
+                'VL1' => 'VL1',
+                'VL2' => 'VL2',
             ],
-            [
-                'Visit_label' => 'VL2',
-                'CandidateID' => '100003',
-                'CenterID'    => '4',
-                'Active'      => 'Y',
-            ],
-        ])
-    );
-
-    // Mock DB to return the Query mock
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
-
-    // Assert
-    $this->assertEquals(
-        [
-            'VL1' => 'VL1',
-            'VL2' => 'VL2',
-        ],
-        Utility::getVisitList()
-    );
-}
+            Utility::getVisitList()
+        );
+    }
 
     /**
      * Test that getVisitList returns only
@@ -574,42 +578,42 @@ public function testGetVisitList(): void
      * @covers Utility::getVisitList
      * @return void
      */
-public function testGetVisitListWithProjectID(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetVisitListWithProjectID(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make the Query iterable: return rows via ArrayIterator
-    $queryMock->method('getIterator')->willReturn(
-        new \ArrayIterator([
-            [
-                'Visit_label' => 'VL1',
-                'CandidateID' => '123456',
-                'CenterID'    => '1234567890',
-                'Active'      => 'Y',
-            ]
-        ])
-    );
-
-    // Mock DB so pselect() returns the Query mock
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with(
-            $this->stringContains(
-                "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
+        // Make the Query iterable: return rows via ArrayIterator
+        $queryMock->method('getIterator')->willReturn(
+            new \ArrayIterator(
+                [
+                    [
+                        'Visit_label' => 'VL1',
+                        'CandidateID' => '123456',
+                        'CenterID'    => '1234567890',
+                        'Active'      => 'Y',
+                    ]
+                ]
             )
-        )
-        ->willReturn($queryMock);
+        );
 
-    // Call method under test
-    $this->assertEquals(
-        ['VL1' => 'VL1'],
-        Utility::getVisitList(new \ProjectID("1"))
-    );
-}
+        // Mock DB so pselect() returns the Query mock
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
+                )
+            )
+            ->willReturn($queryMock);
+
+        // Call method under test
+        $this->assertEquals(
+            ['VL1' => 'VL1'],
+            Utility::getVisitList(new \ProjectID("1"))
+        );
+    }
 
     /**
      * Test that getLanguageList returns the proper information
@@ -618,31 +622,31 @@ public function testGetVisitListWithProjectID(): void
      * @covers Utility::getLanguageList
      * @return void
      */
-public function testGetLanguageList(): void
-{
-    // Mock Query
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    public function testGetLanguageList(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // getIterator() returns rows as ArrayIterator
-    $queryMock->method('getIterator')->willReturn(
-        new ArrayIterator([
-            ['language_id' => '1', 'language_label' => 'LA1'],
-            ['language_id' => '2', 'language_label' => 'LA2']
-        ])
-    );
+        // getIterator() returns rows as ArrayIterator
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    ['language_id' => '1', 'language_label' => 'LA1'],
+                    ['language_id' => '2', 'language_label' => 'LA2']
+                ]
+            )
+        );
 
-    // Mock DB to return the Query mock
-    $this->_dbMock->method('pselect')->willReturn($queryMock);
+        // Mock DB to return the Query mock
+        $this->_dbMock->method('pselect')->willReturn($queryMock);
 
-    // Call the method under test
-    $this->assertEquals(
-        ['1' => 'LA1', '2' => 'LA2'],
-        Utility::getLanguageList()
-    );
-}
+        // Call the method under test
+        $this->assertEquals(
+            ['1' => 'LA1', '2' => 'LA2'],
+            Utility::getLanguageList()
+        );
+    }
 
     /**
      * Test that getVisitInstruments() returns the correct
@@ -676,30 +680,31 @@ public function testGetLanguageList(): void
      * @covers Utility::lookupBattery
      * @return void
      */
-public function testLookupBattery(): void
-{
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['getIterator'])
-        ->getMock();
+    public function testLookupBattery(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getIterator'])
+            ->getMock();
 
-    $queryMock->method('getIterator')->willReturn(
-        new ArrayIterator([
-            ['Test_name' => 'test1'],
-            ['Test_name' => 'test2']
-        ])
-    );
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    ['Test_name' => 'test1'],
+                    ['Test_name' => 'test2']
+                ]
+            )
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        ['test1', 'test2'],
-        Utility::lookupBattery(25)
-    );
-}
+        $this->assertEquals(
+            ['test1', 'test2'],
+            Utility::lookupBattery(25)
+        );
+    }
 
     /**
      * Test that lookupBattery returns the correct information
@@ -708,33 +713,34 @@ public function testLookupBattery(): void
      * @covers Utility::lookupBattery
      * @return void
      */
-public function testLookupBatteryWithStage(): void
-{
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['getIterator'])
-        ->getMock();
+    public function testLookupBatteryWithStage(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getIterator'])
+            ->getMock();
 
-    $queryMock->method('getIterator')->willReturn(
-        new ArrayIterator([
-            [
-                'Test_name' => 'test1',
-                'Stage'     => 'stage1'
-            ]
-        ])
-    );
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    [
+                        'Test_name' => 'test1',
+                        'Stage'     => 'stage1'
+                    ]
+                ]
+            )
+        );
 
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with($this->stringContains(" AND b.Stage=:BatStage"))
-        ->willReturn($queryMock);
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains(" AND b.Stage=:BatStage"))
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        ['test1'],
-        Utility::lookupBattery(25, 'stage1')
-    );
-}
+        $this->assertEquals(
+            ['test1'],
+            Utility::lookupBattery(25, 'stage1')
+        );
+    }
 
     /**
      * Test that associativeToNumericArray correctly converts
@@ -835,38 +841,39 @@ public function testLookupBatteryWithStage(): void
      * @covers Utility::getSourcefields
      * @return void
      */
-public function testGetSourcefieldsWithInstrumentSpecified(): void
-{
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['getIterator'])
-        ->getMock();
+    public function testGetSourcefieldsWithInstrumentSpecified(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getIterator'])
+            ->getMock();
 
-    $queryMock->method('getIterator')->willReturn(
-        new ArrayIterator([
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    [
+                        'SourceField' => 'instrument_field',
+                        'Name'        => 'instrument_name'
+                    ]
+                ]
+            )
+        );
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->willReturn($queryMock);
+
+        $this->assertEquals(
             [
-                'SourceField' => 'instrument_field',
-                'Name'        => 'instrument_name'
-            ]
-        ])
-    );
-
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with($this->stringContains("AND sourcefrom = :sf"))
-        ->willReturn($queryMock);
-
-    $this->assertEquals(
-        [
-            [
-                'SourceField' => 'instrument_field',
-                'Name'        => 'instrument_name'
-            ]
-        ],
-        Utility::getSourcefields('instrument1', null, null)
-    );
-}
+                [
+                    'SourceField' => 'instrument_field',
+                    'Name'        => 'instrument_name'
+                ]
+            ],
+            Utility::getSourcefields('instrument1', null, null)
+        );
+    }
 
     /**
      * Test that getSourcefields returns the correct information
@@ -875,37 +882,38 @@ public function testGetSourcefieldsWithInstrumentSpecified(): void
      * @covers Utility::getSourcefields
      * @return void
      */
-public function testGetSourcefieldsWithCommentIDSpecified(): void
-{
-    /** @var \LORIS\Database\Query|MockObject $queryMock */
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['getIterator'])
-        ->getMock();
+    public function testGetSourcefieldsWithCommentIDSpecified(): void
+    {
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getIterator'])
+            ->getMock();
 
-    $queryMock->method('getIterator')->willReturn(
-        new ArrayIterator([
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    [
+                        'SourceField' => 'commentID_field',
+                        'Name'        => 'commentID_name'
+                    ]
+                ]
+            )
+        );
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->willReturn($queryMock);
+
+        $this->assertEquals(
             [
-                'SourceField' => 'commentID_field',
-                'Name'        => 'commentID_name'
-            ]
-        ])
-    );
-
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->willReturn($queryMock);
-
-    $this->assertEquals(
-        [
-            [
-                'SourceField' => 'commentID_field',
-                'Name'        => 'commentID_name'
-            ]
-        ],
-        Utility::getSourcefields(null, '1', null)
-    );
-}
+                [
+                    'SourceField' => 'commentID_field',
+                    'Name'        => 'commentID_name'
+                ]
+            ],
+            Utility::getSourcefields(null, '1', null)
+        );
+    }
 
     /**
      * Test that getSourcefields returns the correct information
@@ -944,37 +952,46 @@ public function testGetSourcefieldsWithCommentIDSpecified(): void
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
-    // Create a fake Query object
-    $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+        // Create a fake Query object
+        $queryMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    // Make the Query iterable so Utility::getSourcefields() can consume it
-    $queryMock->method('getIterator')->willReturn(new ArrayIterator([
-        [
-            'SourceField' => 'instrument_field',
-            'Name'        => 'instrument_name',
-        ]
-    ]));
+        // Make the Query iterable so Utility::getSourcefields() can consume it
+        $queryMock->method('getIterator')->willReturn(
+            new ArrayIterator(
+                [
+                    [
+                        'SourceField' => 'instrument_field',
+                        'Name'        => 'instrument_name',
+                    ]
+                ]
+            )
+        );
 
-    // Make pselect() return the fake Query
-    $this->_dbMock->expects($this->any())
-        ->method('pselect')
-        ->with($this->stringContains("AND sourcefrom = :sf"))
-        ->willReturn($queryMock);
+        // Make pselect() return the fake Query
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->willReturn($queryMock);
 
-    $this->assertEquals(
-        [
+        $this->assertEquals(
             [
-                'SourceField' => 'instrument_field',
-                'Name'        => 'instrument_name',
-            ]
-        ],
-        Utility::getSourcefields('instrument1', '1', 'name')
-    );
+                [
+                    'SourceField' => 'instrument_field',
+                    'Name'        => 'instrument_name',
+                ]
+            ],
+            Utility::getSourcefields('instrument1', '1', 'name')
+        );
     }
 
     /**
+     * Test that valueIsPositiveInteger returns false for values
+     * that are not positive integers
+     *
+     * @param mixed $notInt The value to test
+     *
      * @return iterable<array{0:mixed}>
      */
     #[DataProvider('notPositiveIntegerValues')]
@@ -982,7 +999,11 @@ public function testGetSourcefieldsWithCommentIDSpecified(): void
     {
         $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
     }
-
+    /**
+     * Test that valueIsPositiveInteger returns true for positive integers
+     *
+     * @return void
+     */
     public static function notPositiveIntegerValues(): iterable
     {
         yield [-1];
@@ -997,13 +1018,25 @@ public function testGetSourcefieldsWithCommentIDSpecified(): void
         yield [null];
         yield [new \stdClass()];
     }
-
+    /**
+     * Test that valueIsPositiveInteger returns true for positive integers
+     *
+     * @param int $int The positive integer value to test
+     *
+     * @return void
+     */
     #[DataProvider('positiveIntegerValues')]
     public function testValueIsPositiveIntegerReturnsTrue(int $int): void
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
-
+    /**
+     * Data provider for testValueIsPositiveIntegerReturnsTrue
+     *
+     * Provides positive integer values
+     *
+     * @return iterable<array{0:int}>
+     */
     public static function positiveIntegerValues(): iterable
     {
         yield [1];

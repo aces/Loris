@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * BreadcrumbTrail class tests
  *
@@ -43,13 +44,15 @@ class BreadcrumbTrailTest extends TestCase
 
     /**
      * Test __toString() returns correct string
+     *
+     * @return void
      */
     public function testToString(): void
     {
         // Define test data directly
         $testCases = [
             [
-                'crumbs' => [
+                'crumbs'   => [
                     ['testLabel', 'testLink'],
                     ['testLabel2', 'testLink2'],
                 ],
@@ -57,7 +60,7 @@ class BreadcrumbTrailTest extends TestCase
                             . '{"text":"testLabel2","query":"testLink2"}'
             ],
             [
-                'crumbs' => [
+                'crumbs'   => [
                     ['aLabel', 'aLink'],
                     ['anotherLabel', 'anotherLink'],
                 ],

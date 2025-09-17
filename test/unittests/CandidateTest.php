@@ -563,21 +563,21 @@ class CandidateTest extends TestCase
      * @covers Candidate::getValidCohorts
      * @return void
      */
-public function testGetValidCohortsReturnsEmptyArray(): void
-{
-    $this->_setUpTestDoublesForSelectCandidate();
+    public function testGetValidCohortsReturnsEmptyArray(): void
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
 
-    // Mock pselect() to return QueryStub with empty array
-    $this->_dbMock->expects($this->exactly(2))
-        ->method('pselect')
-        ->willReturn(new QueryStub([]));
+        // Mock pselect() to return QueryStub with empty array
+        $this->_dbMock->expects($this->exactly(2))
+            ->method('pselect')
+            ->willReturn(new QueryStub([]));
 
-    // Initialize candidate
-    $this->_candidate->select(new LORIS\StudyEntities\Candidate\CandID(strval($this->_candidateInfo['CandID'])));
+        // Initialize candidate
+        $this->_candidate->select(new LORIS\StudyEntities\Candidate\CandID(strval($this->_candidateInfo['CandID'])));
 
-    // Assert getValidCohorts() returns empty array
-    $this->assertEquals([], $this->_candidate->getValidCohorts());
-}
+        // Assert getValidCohorts() returns empty array
+        $this->assertEquals([], $this->_candidate->getValidCohorts());
+    }
     /**
      * Test getFirstVisit returns first visit's label
      *
@@ -730,48 +730,50 @@ public function testGetValidCohortsReturnsEmptyArray(): void
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
-$this->_dbMock
-    ->method('pselect')
-    ->will(
-        new ConsecutiveCalls([
-            [
-                [
-                    "ID"        => 97,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ],
-                [ 
-                    "ID"        =>98,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ]
-            ],
-            [
-                [
-                    "ID"        => 97,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ],
-                [
-                    "ID"        =>98,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ]
-            ],
-            [
-                [
-                    "ID"        => 97,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ],
-                [
-                    "ID"        =>98,
-                    "ProjectID" => 1,
-                    "CenterID"  => 2,
-                ]
-            ],
-        ])
-    );
+        $this->_dbMock
+            ->method('pselect')
+            ->will(
+                new ConsecutiveCalls(
+                    [
+                        [
+                            [
+                                "ID"        => 97,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ],
+                            [
+                                "ID"        =>98,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ]
+                        ],
+                        [
+                            [
+                                "ID"        => 97,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ],
+                            [
+                                "ID"        =>98,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ]
+                        ],
+                        [
+                            [
+                                "ID"        => 97,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ],
+                            [
+                                "ID"        =>98,
+                                "ProjectID" => 1,
+                                "CenterID"  => 2,
+                            ]
+                        ],
+                    ]
+                )
+            );
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(97, $this->_candidate->getSessionID(1));
         $this->assertEquals(98, $this->_candidate->getSessionID(2));
@@ -840,44 +842,45 @@ $this->_dbMock
      * @covers Candidate::validatePSCID
      * @return void
      */
-public function testValidateProjectPSCID()
-{
-    $seq = [
-        'seq' => [
-            0 => [
-                '#' => '',
-                '@' => ['type' => 'projectAbbrev'],
-            ],
-            1 => [
-                '#' => '',
-                '@' => [
-                    'type'   => 'numeric',
-                    'length' => '4',
+    public function testValidateProjectPSCID()
+    {
+        $seq = [
+            'seq' => [
+                0 => [
+                    '#' => '',
+                    '@' => ['type' => 'projectAbbrev'],
+                ],
+                1 => [
+                    '#' => '',
+                    '@' => [
+                        'type'   => 'numeric',
+                        'length' => '4',
+                    ],
                 ],
             ],
-        ],
-    ];
-    $this->_configMap = [
-        ['PSCID', [
-            'generation' => 'sequential',
-            'structure'  => $seq,
-        ]],
-    ];
+        ];
+        $this->_configMap = [
+            ['PSCID', [
+                'generation' => 'sequential',
+                'structure'  => $seq,
+            ]
+            ],
+        ];
 
-    $this->_configMock->method('getSetting')
-        ->willReturnMap($this->_configMap);   // <-- modern replacement
+        $this->_configMock->method('getSetting')
+            ->willReturnMap($this->_configMap);   // <-- modern replacement
 
-    $this->assertEquals(
-        1,
-        Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
-        'Valid PSCID: validatePSCID should return 1'
-    );
-    $this->assertEquals(
-        0,
-        Candidate::validatePSCID('BBB001', 'AAA', 'BBB'),
-        'Invalid PSCID: validatePSCID should return 0'
-    );
-}
+        $this->assertEquals(
+            1,
+            Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
+            'Valid PSCID: validatePSCID should return 1'
+        );
+        $this->assertEquals(
+            0,
+            Candidate::validatePSCID('BBB001', 'AAA', 'BBB'),
+            'Invalid PSCID: validatePSCID should return 0'
+        );
+    }
 
 
     /**
@@ -1185,42 +1188,46 @@ public function testValidateProjectPSCID()
      *
      * @return void
      */
-private function _setUpTestDoublesForSelectCandidate(): void
-{
-    /** @var \LORIS\Database\Query|MockObject $resultMock */
-    $resultMock = $this->getMockBuilder(\LORIS\Database\Query::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+    private function _setUpTestDoublesForSelectCandidate(): void
+    {
+        /**
+ * @var \LORIS\Database\Query|MockObject $resultMock
+*/
+        $resultMock = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-    $resultMock->method('getIterator')
-        ->willReturn(
-            new ArrayIterator([
-                [
-                    'ID'        => 97,
-                    'ProjectID' => 1,
-                    'CenterID'  => 2,
-                ],
-                [
-                    'ID'        => 98,
-                    'ProjectID' => 1,
-                    'CenterID'  => 2,
-                ],
-            ])
-        );
+        $resultMock->method('getIterator')
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        [
+                            'ID'        => 97,
+                            'ProjectID' => 1,
+                            'CenterID'  => 2,
+                        ],
+                        [
+                            'ID'        => 98,
+                            'ProjectID' => 1,
+                            'CenterID'  => 2,
+                        ],
+                    ]
+                )
+            );
 
-    $this->_dbMock->method('pselect')
-        ->willReturn($resultMock);
+        $this->_dbMock->method('pselect')
+            ->willReturn($resultMock);
 
-    $this->_dbMock->expects($this->once())
-        ->method('pselectRow')
-        ->willReturn($this->_candidateInfo);
+        $this->_dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn($this->_candidateInfo);
 
-    $this->_dbMock->method('pselectCol')
-        ->willReturn(['Male', 'Female', 'Other']);
+        $this->_dbMock->method('pselectCol')
+            ->willReturn(['Male', 'Female', 'Other']);
 
-    $this->_configMock->method('getSetting')
-        ->willReturnMap($this->_configMap);
-}
+        $this->_configMock->method('getSetting')
+            ->willReturnMap($this->_configMap);
+    }
     /**
      * Set up mock database and config information
      * This is only necessary to test the functions that use

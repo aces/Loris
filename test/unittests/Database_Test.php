@@ -170,29 +170,29 @@ class Database_Test extends TestCase
      * @return void
      * @covers Database::update
      */
-function testUpdateEscapesHTML()
-{
-    $stub = $this->getMockBuilder(FakeDatabase::class)
-        ->onlyMethods($this->_getAllMethodsExcept(['update']))
-        ->getMock();
+    function testUpdateEscapesHTML()
+    {
+        $stub = $this->getMockBuilder(FakeDatabase::class)
+            ->onlyMethods($this->_getAllMethodsExcept(['update']))
+            ->getMock();
 
-    $PDO  = $this->getMockBuilder(FakePDO::class)->getMock();
-    $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $PDO  = $this->getMockBuilder(FakePDO::class)->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
 
-    $stmt->expects($this->once())
-        ->method("execute")
-        ->with($this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;']))
-        ->willReturn(true);   // ✅ FIXED
+        $stmt->expects($this->once())
+            ->method("execute")
+            ->with($this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;']))
+            ->willReturn(true);   // ✅ FIXED
 
-    $PDO->expects($this->once())
-        ->method("prepare")
-        ->willReturn($stmt);
+        $PDO->expects($this->once())
+            ->method("prepare")
+            ->willReturn($stmt);
 
-    '@phan-var \Database $stub';
-    '@phan-var \PDO $PDO';
-    $stub->_PDO = $PDO;
-    $stub->update("test", ['field' => '<b>Hello</b>'], []);
-}
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
+        $stub->update("test", ['field' => '<b>Hello</b>'], []);
+    }
 
     /**
      * Test that unsafeupdate does not escape HTML when called intead of update
@@ -200,29 +200,29 @@ function testUpdateEscapesHTML()
      * @return void
      * @covers Database::unsafeupdate
      */
-function testUnsafeUpdateDoesntEscapeHTML()
-{
-    $stub = $this->getMockBuilder('FakeDatabase')
-        ->onlyMethods($this->_getAllMethodsExcept(['unsafeupdate']))
-        ->getMock();
+    function testUnsafeUpdateDoesntEscapeHTML()
+    {
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['unsafeupdate']))
+            ->getMock();
 
-    $PDO  = $this->getMockBuilder('FakePDO')->getMock();
-    $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
-    $stmt->expects($this->once())
-        ->method("execute")
-        ->with($this->equalTo(['set_field' => '<b>Hello</b>']))
-        ->willReturn(true);
+        $stmt->expects($this->once())
+            ->method("execute")
+            ->with($this->equalTo(['set_field' => '<b>Hello</b>']))
+            ->willReturn(true);
 
-    $PDO->expects($this->once())
-        ->method("prepare")
-        ->willReturn($stmt);
+        $PDO->expects($this->once())
+            ->method("prepare")
+            ->willReturn($stmt);
 
-    '@phan-var \Database $stub';
-    '@phan-var \PDO $PDO';
-    $stub->_PDO = $PDO;
-    $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
-}
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
+        $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
+    }
 
     /**
      * Test that insert automatically escapes any HTML in the data for security
@@ -230,14 +230,13 @@ function testUnsafeUpdateDoesntEscapeHTML()
      * @return void
      * @covers Database::insert
      */
-
-
-public function unsafeInsert(string $table, array $data, array $options = []): bool {
-    $stmt = $this->_PDO->prepare("INSERT INTO {$table} (...) VALUES (...)");
-    $ok = $stmt->execute($data);
-    $this->lastInsertID = $this->_PDO->lastInsertId();  // <-- important
-    return $ok;
-}
+    public function unsafeInsert(string $table, array $data, array $options = []): bool
+    {
+        $stmt = $this->_PDO->prepare("INSERT INTO {$table} (...) VALUES (...)");
+        $ok   = $stmt->execute($data);
+        $this->lastInsertID = $this->_PDO->lastInsertId();  // <-- important
+        return $ok;
+    }
     /**
      * Test that unsafeinsert does not escape HTML when called intead of insert
      *
@@ -782,43 +781,43 @@ public function unsafeInsert(string $table, array $data, array $options = []): b
      * @return void
      * @covers Database::insertOnDuplicateUpdate
      */
-public function testInsertOnDuplicateUpdateEscapesHTML(): void
-{
-    // Use existing FakeDatabase class
-    $stub = $this->getMockBuilder(FakeDatabase::class)
-        ->onlyMethods($this->_getAllMethodsExcept(['insertOnDuplicateUpdate']))
-        ->getMock();
+    public function testInsertOnDuplicateUpdateEscapesHTML(): void
+    {
+        // Use existing FakeDatabase class
+        $stub = $this->getMockBuilder(FakeDatabase::class)
+            ->onlyMethods($this->_getAllMethodsExcept(['insertOnDuplicateUpdate']))
+            ->getMock();
 
-    // Mock PDOStatement
-    $stmt = $this->getMockBuilder(PDOStatement::class)
-        ->onlyMethods(['execute', 'rowCount'])
-        ->getMock();
-    $stmt->expects($this->once())
-        ->method('execute')
-        ->with($this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;']))
-        ->willReturn(true);
-    $stmt->method('rowCount')->willReturn(1);
+        // Mock PDOStatement
+        $stmt = $this->getMockBuilder(PDOStatement::class)
+            ->onlyMethods(['execute', 'rowCount'])
+            ->getMock();
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;']))
+            ->willReturn(true);
+        $stmt->method('rowCount')->willReturn(1);
 
-    // Mock PDO
-    $PDO = $this->getMockBuilder(PDO::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['prepare', 'lastInsertId'])
-        ->getMock();
-    $PDO->expects($this->once())->method('prepare')->willReturn($stmt);
-    $PDO->method('lastInsertId')->willReturn('123');
+        // Mock PDO
+        $PDO = $this->getMockBuilder(PDO::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['prepare', 'lastInsertId'])
+            ->getMock();
+        $PDO->expects($this->once())->method('prepare')->willReturn($stmt);
+        $PDO->method('lastInsertId')->willReturn('123');
 
-    $stub->_PDO = $PDO;
+        $stub->_PDO = $PDO;
 
-    // Call the method
-    $result = $stub->insertOnDuplicateUpdate(
-        'test',
-        ['field' => '<b>Hello</b>'],
-        []
-    );
+        // Call the method
+        $result = $stub->insertOnDuplicateUpdate(
+            'test',
+            ['field' => '<b>Hello</b>'],
+            []
+        );
 
-    $this->assertTrue($result);
-    $this->assertEquals('123', $stub->lastInsertID);
-}
+        $this->assertTrue($result);
+        $this->assertEquals('123', $stub->lastInsertID);
+    }
 
     /**
      * Test that unsafeInsertOnDuplicateUpdate does not escape HTML
@@ -826,45 +825,45 @@ public function testInsertOnDuplicateUpdateEscapesHTML(): void
      * @return void
      * @covers Database::unsafeInsertOnDuplicateUpdate
      */
-public function testUnsafeInsertOnDuplicateUpdateDoesntEscapeHTML(): void
-{
-    // Mock the Database class
-    $stub = $this->getMockBuilder(FakeDatabase::class)
-        ->onlyMethods(['_HTMLEscapeArray', '_implodeAsPrepared', '_implodeWithKeys', '_printQuery', 'trackChanges'])
-        ->getMock();
+    public function testUnsafeInsertOnDuplicateUpdateDoesntEscapeHTML(): void
+    {
+        // Mock the Database class
+        $stub = $this->getMockBuilder(FakeDatabase::class)
+            ->onlyMethods(['_HTMLEscapeArray', '_implodeAsPrepared', '_implodeWithKeys', '_printQuery', 'trackChanges'])
+            ->getMock();
 
-    // Mock PDOStatement
-    $stmt = $this->getMockBuilder(PDOStatement::class)
-        ->onlyMethods(['execute', 'rowCount'])
-        ->getMock();
-    $stmt->expects($this->once())
-        ->method('execute')
-        ->with($this->equalTo(['field' => '<b>Hello</b>']))
-        ->willReturn(true);
-    $stmt->method('rowCount')->willReturn(1); // simulate update instead of insert
+        // Mock PDOStatement
+        $stmt = $this->getMockBuilder(PDOStatement::class)
+            ->onlyMethods(['execute', 'rowCount'])
+            ->getMock();
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->equalTo(['field' => '<b>Hello</b>']))
+            ->willReturn(true);
+        $stmt->method('rowCount')->willReturn(1); // simulate update instead of insert
 
-    // Mock PDO
-    $PDO = $this->getMockBuilder(PDO::class)
-        ->disableOriginalConstructor()
-        ->onlyMethods(['prepare', 'lastInsertId'])
-        ->getMock();
-    $PDO->expects($this->once())
-        ->method('prepare')
-        ->willReturn($stmt);
-    $PDO->method('lastInsertId')->willReturn('123');
+        // Mock PDO
+        $PDO = $this->getMockBuilder(PDO::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['prepare', 'lastInsertId'])
+            ->getMock();
+        $PDO->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmt);
+        $PDO->method('lastInsertId')->willReturn('123');
 
-    // Inject PDO into the stub
-    $stub->_PDO = $PDO;
+        // Inject PDO into the stub
+        $stub->_PDO = $PDO;
 
-    // Call the method
-    $result = $stub->unsafeInsertOnDuplicateUpdate(
-        'test_table',
-        ['field' => '<b>Hello</b>']
-    );
+        // Call the method
+        $result = $stub->unsafeInsertOnDuplicateUpdate(
+            'test_table',
+            ['field' => '<b>Hello</b>']
+        );
 
-    $this->assertTrue($result);
-    $this->assertEquals('123', $stub->lastInsertID);
-}
+        $this->assertTrue($result);
+        $this->assertEquals('123', $stub->lastInsertID);
+    }
 
     /**
      * Tests that getLastInsertId gets the ID of the row just inserted

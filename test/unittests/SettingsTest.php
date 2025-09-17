@@ -104,20 +104,20 @@ class SettingsTest extends TestCase
      * @covers Settings::isSandbox
      * @return void
      */
-public function testIsSandboxReturnsTrue(): void
-{
-    $valuesToTest = [true, 1, 'yes'];
+    public function testIsSandboxReturnsTrue(): void
+    {
+        $valuesToTest = [true, 1, 'yes'];
 
-    foreach ($valuesToTest as $sandboxVal) {
-        $this->_configMock->method('getSetting')
-            ->willReturn($sandboxVal);
+        foreach ($valuesToTest as $sandboxVal) {
+            $this->_configMock->method('getSetting')
+                ->willReturn($sandboxVal);
 
-        $this->assertTrue(
-            $this->_settings->isSandbox(),
-            "Failed asserting that isSandbox() returns true for value: " . var_export($sandboxVal, true)
-        );
+            $this->assertTrue(
+                $this->_settings->isSandbox(),
+                "Failed asserting that isSandbox() returns true for value: " . var_export($sandboxVal, true)
+            );
+        }
     }
-}
 
     /**
      * Data provider for testIsSandboxReturnsFalse($sandboxVal)
@@ -153,20 +153,20 @@ public function testIsSandboxReturnsTrue(): void
      * @covers Settings::isSandbox
      * @return void
      */
-public function testIsSandboxReturnsFalse(): void
-{
-    $valuesToTest = [false, 0, null, 'no'];
+    public function testIsSandboxReturnsFalse(): void
+    {
+        $valuesToTest = [false, 0, null, 'no'];
 
-    foreach ($valuesToTest as $sandboxVal) {
-        $this->_configMock->method('getSetting')
-            ->willReturn($sandboxVal);
+        foreach ($valuesToTest as $sandboxVal) {
+            $this->_configMock->method('getSetting')
+                ->willReturn($sandboxVal);
 
-        $this->assertFalse(
-            $this->_settings->isSandbox(),
-            "Failed asserting that isSandbox() returns false for value: " . var_export($sandboxVal, true)
-        );
+            $this->assertFalse(
+                $this->_settings->isSandbox(),
+                "Failed asserting that isSandbox() returns false for value: " . var_export($sandboxVal, true)
+            );
+        }
     }
-}
     /**
      * Test dbName() returns correct database name
      *

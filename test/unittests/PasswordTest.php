@@ -116,26 +116,24 @@ class PasswordTest extends TestCase
     /**
      * Test the CandID constructor with invalid values
      *
-     * @param string $invalidValue An invalid value
-     *
      * @dataProvider invalidValues
      *
      * @expectedException \InvalidArgumentException
      * @return            void
      */
-public function testConstructorInvalidValues(): void
-{
-    $invalidValues = [null, '', 123, [], new stdClass()]; // all invalid values
+    public function testConstructorInvalidValues(): void
+    {
+        $invalidValues = [null, '', 123, [], new stdClass()]; // all invalid values
 
-    foreach ($invalidValues as $invalidValue) {
-        $this->expectException(\TypeError::class);
-        $this->_configMock->expects($this->any())
-            ->method('getSetting')
-            ->willReturn('false');
+        foreach ($invalidValues as $invalidValue) {
+            $this->expectException(\TypeError::class);
+            $this->_configMock->expects($this->any())
+                ->method('getSetting')
+                ->willReturn('false');
 
-        new \Password($invalidValue);
+            new \Password($invalidValue);
+        }
     }
-}
 
     /**
      * Ensures that a password object is returned when given valid input. No

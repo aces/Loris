@@ -11,54 +11,124 @@ require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 
 use PHPUnit\Framework\TestCase;
-
+/**
+ * Stub class to simulate Query behavior for testing
+ *
+ * PHP Version 8
+ *
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
+ */
 class QueryStub extends \LORIS\Database\Query
 {
+    /**
+     * Rows to simulate database query results
+     *
+     * @var array
+     */
     private array $rows = [];
-
+    /**
+     * Constructor
+     *
+     * @param array $rows Optional array of rows to initialize the stub
+     */
     public function __construct(array $rows = [])
     {
         $this->rows = $rows;
     }
-
+    /**
+     * Return all rows
+     *
+     * @return array The rows in the query stub
+     */
     public function getAll(): array
     {
         return $this->rows;
     }
-
+    /**
+     * Return the first row
+     *
+     * @return array The first row or empty array if none exist
+     */
     public function getFirstRow(): array
     {
         return $this->rows[0] ?? [];
     }
 }
-
+/**
+ *  Stub class to simulate Session behavior for testing
+ *
+ * PHP Version 8
+ *
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
+ */
 class SessionStub
 {
-    public function getProperty($name)
+    /**
+     * Get a session property
+     *
+     * @param string $name Property name
+     *
+     * @return mixed|null The value of the property or null if not set
+     */
+    public function getProperty($name): mixed
     {
         return null;
     }
-
-    public function setProperty($name, $value)
+    /**
+     * Set a session property
+     *
+     * @param string $name  Property name
+     * @param mixed  $value Property value
+     *
+     * @return void
+     */
+    public function setProperty($name, $value): void
     {
     }
 
-    public function getUsername()
+    /**
+     * Get the username from the session
+     *
+     * @return string The username
+     */
+    public function getUsername(): string
     {
         return "tester";
     }
-
-    public function isLoggedIn()
+    /**
+     * Check if the session is logged in
+     *
+     * @return bool True if logged in
+     */
+    public function isLoggedIn(): bool
     {
         return true;
     }
 }
-
+/**
+ * Unit test for NDB_BVL_Instrument_LINST_ToJSON class
+ *
+ * PHP Version 8
+ *
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
+ */
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     protected \Loris\Behavioural\NDB_BVL_Instrument_LINST $i;
     protected \NDB_Client $Client;
-
+    /**
+     * Sets up the environment before each test is executed.
+     *
+     * This method is called automatically by PHPUnit before each test method.
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         global $_SESSION;
@@ -78,7 +148,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         // -----------------------------
         $factory = \NDB_Factory::singleton();
 
-        $mockdb = $this->createMock(\Database::class);
+        $mockdb     = $this->createMock(\Database::class);
         $mockconfig = $this->createMock(\NDB_Config::class);
 
         // pselect returns QueryStub instead of raw array
@@ -105,19 +175,23 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSessionID')->willReturn(new \SessionID("123456"));
 
-        $i->form = new \LorisForm();
+        $i->form     = new \LorisForm();
         $i->testName = "Test";
 
         $this->i = $i;
     }
-
-    // -----------------------------
-    // Example test: metadata
-    // -----------------------------
+    /**
+     * Test that metadata is retrieved and correct.
+     *
+     * This test checks that the metadata returned by the system
+     * matches expected values and structure.
+     *
+     * @return void
+     */
     public function testMetaData(): void
     {
         $instrument = "table{@}Test\ntitle{@}Test Instrument";
-        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $base64     = "data://text/plain;base64," . base64_encode($instrument);
 
         try {
             $this->i->loadInstrumentFile($base64, true);
@@ -125,7 +199,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // ignore
         }
 
-        $json = $this->i->toJSON();
+        $json     = $this->i->toJSON();
         $outArray = json_decode($json, true);
 
         $ExpectedMeta = [
@@ -138,42 +212,50 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
-
-    // -----------------------------
-    // Test all elements
-    // -----------------------------
+    /**
+     * Test the retrieval and correctness of metadata.
+     *
+     * This test ensures that metadata is returned correctly and
+     * matches expected values.
+     *
+     * @return void
+     */
     public function testAllElements(): void
     {
-        $instrument = "table{@}Test\n";
+        $instrument  = "table{@}Test\n";
         $instrument .= "title{@}Test Instrument\n";
-        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $base64      = "data://text/plain;base64," . base64_encode($instrument);
 
         try {
             $this->i->loadInstrumentFile($base64, true);
         } catch (\NotFound $e) {
         }
 
-        $json = $this->i->toJSON();
+        $json     = $this->i->toJSON();
         $outArray = json_decode($json, true);
 
         $this->assertArrayHasKey('Meta', $outArray);
         $this->assertArrayHasKey('Elements', $outArray);
     }
-
-    // -----------------------------
-    // Test page element
-    // -----------------------------
+    /**
+     * Test that all expected elements are present.
+     *
+     * This test verifies that the collection contains all
+     * required elements and no unexpected items.
+     *
+     * @return void
+     */
     public function testPageElement(): void
     {
         $instrument = "table{@}Test\ntitle{@}Test Instrument\nheader{@}{@}Page 1";
-        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $base64     = "data://text/plain;base64," . base64_encode($instrument);
 
         try {
             $this->i->loadInstrumentFile($base64, true);
         } catch (\NotFound $e) {
         }
 
-        $json = $this->i->toJSON();
+        $json     = $this->i->toJSON();
         $outArray = json_decode($json, true);
 
         $this->assertArrayHasKey('Meta', $outArray);

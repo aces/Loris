@@ -5,24 +5,75 @@ require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
 
 use PHPUnit\Framework\TestCase;
 /**
- * Stub class to simulate session methods
+ * Session stub class for testing.
+ *
+ * Provides dummy session behavior for unit tests.
+ *
+ * @category Tests
+ * @package  LORIS\TestStubs
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class SessionStub {
-    public function setProperty($key, $value) {}
-    public function getProperty($key) { return null; }
-    public function getUsername() { return 'testuser'; }
-    public function isLoggedIn() { return true; }
+
+class SessionStub
+{
+    /**
+     * Set a session property.
+     *
+     * @param string $key   Property name
+     * @param mixed  $value Property value
+     *
+     * @return void
+     */
+    public function setProperty($key, $value)
+    {
+    }
+    /**
+     * Get a session property.
+     *
+     * @param string $key Property name
+     *
+     * @return mixed|null The value of the property or null if not set
+     */
+    public function getProperty($key)
+    {
+        return null;
+    }
+    /**
+     * Get the username from the session.
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return 'testuser';
+    }
+    /**
+     * Check if the session is logged in.
+     *
+     * @return bool True if logged in
+     */
+    public function isLoggedIn()
+    {
+        return true;
+    }
 }
 /**
  * Unit test for NDB_Menu_Filter class
+ *
+ * PHP Version 7
+ *
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
  */
 class NDB_Menu_Filter_Test extends TestCase
 {
     protected $Session;
 
-
     /**
-     * Set up a fake $_SESSION object
+     * Sets up a fake $_SESSION object before each test.
+     *
+     * @return void
      */
     protected function setUp(): void
     {
@@ -32,23 +83,27 @@ class NDB_Menu_Filter_Test extends TestCase
             'State' => $this->Session
         ];
     }
-
     /**
-     * Helper function to get all methods except the ones being tested
+     * Get all methods of NDB_Menu_Filter except the specified ones.
+     *
+     * @param array $methods List of method names to exclude
+     *
+     * @return array Remaining method names
      */
-    protected function _getAllMethodsExcept(array $methods): array
+    protected function getAllMethodsExcept(array $methods): array
     {
         $AllMethods = get_class_methods('NDB_Menu_Filter');
         return array_diff($AllMethods, $methods);
     }
-
     /**
-     * Test the _resetFilters function
+     * Test the resetFilters function of NDB_Menu_Filter.
+     *
+     * @return void
      */
     public function testResetFilters(): void
     {
         $method          = ['_resetFilters'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
+        $allOtherMethods = $this->getAllMethodsExcept($method);
 
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
             ->onlyMethods($allOtherMethods)
@@ -62,31 +117,37 @@ class NDB_Menu_Filter_Test extends TestCase
 
         $mockSession->expects($this->exactly(2))
             ->method('setProperty')
-            ->willReturnCallback(function($key, $value) {
-                static $call = 0;
-                if ($call === 0) {
-                    TestCase::assertEquals('filter', $key);
-                    TestCase::assertNull($value);
-                } elseif ($call === 1) {
-                    TestCase::assertEquals('keyword', $key);
-                    TestCase::assertNull($value);
+            ->willReturnCallback(
+                function ($key, $value) {
+                    static $call = 0;
+                    if ($call === 0) {
+                        TestCase::assertEquals('filter', $key);
+                        TestCase::assertNull($value);
+                    } elseif ($call === 1) {
+                        TestCase::assertEquals('keyword', $key);
+                        TestCase::assertNull($value);
+                    }
+                    $call++;
                 }
-                $call++;
-            });
+            );
 
         global $_SESSION;
         $_SESSION['State'] = $mockSession;
 
         $stub->_resetFilters();
     }
-
     /**
-     * Test the _setSearchKeyword function
+     * Test that the search keyword is set correctly.
+     *
+     * This test verifies that the setSearchKeyword method
+     * updates the internal state as expected.
+     *
+     * @return void
      */
     public function testSetSearchKeyword(): void
     {
         $method          = ['_setSearchKeyword'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
+        $allOtherMethods = $this->getAllMethodsExcept($method);
 
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
             ->onlyMethods($allOtherMethods)
@@ -97,14 +158,18 @@ class NDB_Menu_Filter_Test extends TestCase
 
         $this->assertEquals('abc', $stub->searchKey['keyword']);
     }
-
     /**
-     * Test the _setFilters function
+     * Test that filters are set correctly.
+     *
+     * This test verifies that the setFilters method properly
+     * updates the internal filter state.
+     *
+     * @return void
      */
     public function testSetFilters(): void
     {
         $method          = ['_setFilters'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
+        $allOtherMethods = $this->getAllMethodsExcept($method);
 
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
             ->onlyMethods($allOtherMethods)
@@ -120,7 +185,7 @@ class NDB_Menu_Filter_Test extends TestCase
             'FakeInvalidField' => 'I should not be set',
             'FakeHaving'       => 'I should be put into having'
         ];
-        $_REQUEST =& $submittedValues;
+        $_REQUEST        =& $submittedValues;
 
         $stub->formToFilter       = [
             'FakeField'  => 'table.column',
