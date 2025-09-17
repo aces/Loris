@@ -1262,9 +1262,9 @@ class CandidateTest extends TestCase
  *
  * PHP Version 8
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @category Tests
  * @package  Database
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class QueryStub extends Query implements \IteratorAggregate, \Countable
 {
