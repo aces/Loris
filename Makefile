@@ -138,6 +138,7 @@ instrument_manager:
 	target=instrument_manager npm run compile
 
 dataquery:
+	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	target=dataquery npm run compile
 
 login:
