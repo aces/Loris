@@ -42,7 +42,6 @@ class Module extends \Module
         );
     }
 
-
     /**
      * {@inheritDoc}
      *

@@ -472,7 +472,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
                 $widgetData = [
                     ...$widget->data(),
-                    "colour" => $widget->colour()
+                    "colour" => $widget->colour(),
+                    "ref"    => $widget,
                 ];
 
                 // Remove URLs if user doesn't have access to the module
@@ -480,7 +481,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                     $widgetData = $this->_removeUrlsFromWidgetData($widgetData);
                 }
 
-                $studyWidgets[$widget->label()] = $widgetData;
+                $studyWidgets[$widget->label()->getN(1)] = $widgetData;
             }
         }
 
@@ -591,15 +592,17 @@ class Widgets extends \NDB_Page implements ETagCalculator
     {
         $projectData = [];
 
-        foreach ($widgets as $widgetName => $widgetConfig) {
+        foreach ($widgets as $widgetConfig) {
             // Search through numeric indices for matching ProjectID
             foreach ($widgetConfig as $value) {
                 if (is_array($value)
                     && isset($value['ProjectID'])
                     && strval($value['ProjectID']) === $projectID
                 ) {
+                    $title = $widgetConfig['ref']->label()->getN($value['count']);
+
                     $projectData[] = [
-                        'title'  => $widgetName,
+                        'title'  => $title,
                         'url'    => $value['url'] ?? null,
                         'colour' => $widgetConfig['colour'] ?? null,
                         'count'  => $value['count'] ?? 0

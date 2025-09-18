@@ -177,7 +177,6 @@ class User extends UserPermissions implements
         return $obj;
     }
 
-
     /**
      * Singleton method. Retrieve the user passed as parameter, but only
      * 1 instance.
@@ -206,7 +205,6 @@ class User extends UserPermissions implements
         return $instance;
     }
 
-
     /**
      * Inserts data into the `users` table.
      *
@@ -220,7 +218,6 @@ class User extends UserPermissions implements
     {
         \NDB_Factory::singleton()->database()->insert('users', $set);
     }
-
 
     /**
      * Updates a user
@@ -361,7 +358,6 @@ class User extends UserPermissions implements
         return $this->userInfo['ProjectIDs'] ?? [];
     }
 
-
     /**
      * Get the user's projects
      *
@@ -437,7 +433,6 @@ class User extends UserPermissions implements
         }
         return $sites;
     }
-
 
     /**
      * Returns all user's sites that are StudySites

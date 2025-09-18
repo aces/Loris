@@ -31,7 +31,6 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
     protected $DBRow;
     protected $CreatedBy;
 
-
     /**
      * Create a new DICOMArchiveRow without a session.
      *
@@ -77,6 +76,4 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
-
-
 }

@@ -55,6 +55,7 @@ class DeleteCategory extends \NDB_Page
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
         }
     }
+
     /**
      * Handles the delete category process
      *

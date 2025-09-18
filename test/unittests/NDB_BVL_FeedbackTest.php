@@ -33,7 +33,6 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
 
     private $_sessionID;
 
-
     /**
      * Setup test
      *

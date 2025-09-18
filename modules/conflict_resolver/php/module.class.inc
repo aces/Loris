@@ -113,9 +113,11 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "conflict_resolver",
-                    "Data entry conflict",
-                    "Data entry conflicts",
+                    new \LORIS\GUI\LocalizableString(
+                        "conflict_resolver",
+                        "Data entry conflict",
+                        "Data entry conflicts",
+                    ),
                     $DB,
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                          LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
@@ -191,5 +193,4 @@ class Module extends \Module
     {
         return true;
     }
-
 }

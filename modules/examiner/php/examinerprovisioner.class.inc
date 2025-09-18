@@ -88,5 +88,4 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         $row['centerIds'] = $cids;
         return new ExaminerRow($row, $cids, $pids);
     }
-
 }

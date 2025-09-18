@@ -27,7 +27,6 @@ namespace LORIS\behavioural_qc;
  */
 class Module extends \Module
 {
-
     /**
      * {@inheritDoc}
      *
@@ -98,7 +97,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Behavioural Session",
+                    new \LORIS\GUI\LocalizableString(
+                        "behavioural_qc",
+                        "Behavioural Session",
+                        "Behavioural Sessions"
+                    ),
                     $data,
                     "",
                     'rgb(252, 241, 255)'

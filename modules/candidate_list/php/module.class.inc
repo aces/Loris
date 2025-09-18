@@ -76,7 +76,6 @@ class Module extends \Module
         return \LORIS\GUI\MenuCategory::singleton("Candidate");
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -140,7 +139,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Candidate",
+                    new \LORIS\GUI\LocalizableString(
+                        "loris",
+                        "Candidate",
+                        "Candidates"
+                    ),
                     $data,
                     "",
                     'rgb(255, 252, 199)',
@@ -149,5 +152,4 @@ class Module extends \Module
         }
         return [];
     }
-
 }

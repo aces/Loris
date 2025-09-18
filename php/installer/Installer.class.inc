@@ -285,6 +285,7 @@ class Installer
         }
 
     }
+
     /**
      * Updates the basic config files required by LORIS.
      *

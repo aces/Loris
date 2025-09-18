@@ -57,6 +57,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#upload",
         ],
     ];
+
     /**
      * Tests that, when loading the Electrophysiology_uploader module, some
      * text appears in the body.
@@ -83,6 +84,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the Electrophysiology_uploader
      *  module without permission,
@@ -102,6 +104,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that, when loading the
      *   Electrophysiology_uploader module with permission,
@@ -126,6 +129,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *
@@ -144,6 +148,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             $this->_loadingUploadUI
         );
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *

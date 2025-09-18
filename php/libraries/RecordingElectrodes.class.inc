@@ -30,6 +30,7 @@ class RecordingElectrodes
     private ?string $_z;
     private ?string $_impedance;
     private ?string $_filepath;
+
     /**
      * Contructor
      *

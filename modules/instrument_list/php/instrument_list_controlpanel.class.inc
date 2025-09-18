@@ -322,6 +322,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return;
         }
     }
+
     /**
      * DeterminePreviousStage function
      *
@@ -340,7 +341,6 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return  'Not Started';
     }
-
 
     /**
      * DisplayStatus function
@@ -461,6 +461,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
         return $hasAccess;
     }
+
     /**
      * DisplayStatus function
      *
@@ -480,6 +481,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         return $user->hasPermission('data_entry')
             && $user->hasCenter($this->getCenterID());
     }
+
     /**
      * DisplayStatus function
      *
@@ -723,6 +725,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return "All instruments must have data entry marked as complete.";
         }
     }
+
     /**
      * HasAccessSendToDCC function
      *
@@ -769,6 +772,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return false;
     }
+
     /**
      * DisplayStartNextStage function
      *
@@ -789,6 +793,5 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return $this->isStartable();
     }
-
 }
 

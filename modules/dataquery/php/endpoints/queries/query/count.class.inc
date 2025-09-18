@@ -45,7 +45,6 @@ class Count extends \LORIS\Http\Endpoint
         }
     }
 
-
     /**
      * Return a count of the number of matches for the query with ID $queryID
      * if it is run by $user

@@ -160,7 +160,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return $html;
     }
 
-
     /**
      * Saves changes to the flags based on interaction with the control panel
      *

@@ -47,7 +47,6 @@ class UploadCategory extends \NDB_Page
         );
     }
 
-
     /**
      * Handle a post form
      *
@@ -78,6 +77,7 @@ class UploadCategory extends \NDB_Page
                 ->withHeader("Allow", "POST");
         }
     }
+
     /**
      * Handles the upload category process
      *
@@ -120,6 +120,7 @@ class UploadCategory extends \NDB_Page
         $Notifier->notify($msg_data);
         return true;
     }
+
     /**
      * Check the category name under the same parent folder in the database,
      * if exists return true
