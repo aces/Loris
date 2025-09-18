@@ -242,6 +242,9 @@ abstract class NDB_Notifier_Abstract
                     JOIN user_psc_rel upsc ON (u.ID=upsc.UserID)
                   WHERE nm.module_name=:nm
                     AND nm.operation_type=:ot
+                    AND u.Pending_approval = 'N'
+                    AND u.Active = 'Y'
+                    AND u.active_to < NOW()
                     ";
         $params = [
             "nm" => $this->module,
