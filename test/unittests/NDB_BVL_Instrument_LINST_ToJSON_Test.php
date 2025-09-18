@@ -9,7 +9,11 @@ require_once __DIR__ . '/../../modules/instruments/php/dictionaryitem.class.inc'
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
-/** @phan-file-suppress PhanUndeclaredProperty */
+/**
+ * Phan-file-suppress
+ * 
+ * @phan-file-suppress PhanUndeclaredProperty
+*/
 
 use PHPUnit\Framework\TestCase;
 /**
