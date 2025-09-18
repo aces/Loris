@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * BreadcrumbTrail class tests
  *
@@ -30,6 +31,7 @@ class BreadcrumbTrailTest extends TestCase
      * @var BreadcrumbTrail
      */
     protected ?BreadcrumbTrail $breadcrumbTrail = null;
+
     /**
      * This method is called before each test is executed.
      *
@@ -40,6 +42,7 @@ class BreadcrumbTrailTest extends TestCase
         parent::setUp();
         $this->breadcrumbTrail = null;
     }
+
     /**
      * Test __toString() returns correct string
      *

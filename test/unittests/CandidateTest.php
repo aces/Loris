@@ -744,42 +744,42 @@ class CandidateTest extends TestCase
         $this->_dbMock
             ->method('pselect')
             ->willReturnOnConsecutiveCalls(
-                        [
-                            [
-                                "ID"        => 97,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ],
-                            [
-                                "ID"        =>98,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ]
-                        ],
-                        [
-                            [
-                                "ID"        => 97,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ],
-                            [
-                                "ID"        =>98,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ]
-                        ],
-                        [
-                            [
-                                "ID"        => 97,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ],
-                            [
-                                "ID"        =>98,
-                                "ProjectID" => 1,
-                                "CenterID"  => 2,
-                            ]
-                        ]
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ],
+                    [
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ],
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ],
+                    [
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ],
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ],
+                    [
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ]
             );
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(97, $this->_candidate->getSessionID(1));

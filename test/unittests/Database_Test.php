@@ -97,10 +97,16 @@ class Database_Test extends TestCase
     private ?string $lastInsertID = null;
     protected \NDB_Config $config;
 
+    /**
+     * Get the last auto-generated insert ID.
+     *
+     * @return string|null Last insert ID or null if none.
+     */
     public function getLastInsertID(): ?string
     {
         return $this->lastInsertID;
     }
+
     /**
      * This method is called before each test is executed.
      * Sets up fixtures: factory, config, database
