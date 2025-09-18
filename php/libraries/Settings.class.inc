@@ -82,6 +82,22 @@ class Settings
     }
 
     /**
+     * Get the project description which is displayed on the dashboard
+     * for a user.
+     *
+     * @param \User $user The user seeing the description.
+     *
+     * @return string
+     */
+    public function projectDescription(\User $user): string
+    {
+        return $this->_config->getMultilingualSetting(
+            $user->getLanguageCode(),
+            "projectDescription"
+        );
+    }
+
+    /**
      * Get database name from config
      *
      * @return string database name
