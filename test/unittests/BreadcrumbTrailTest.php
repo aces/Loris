@@ -40,7 +40,7 @@ class BreadcrumbTrailTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->breadcrumbTrail = null;
+        $this->breadcrumbTrail = new BreadcrumbTrail();
     }
 
     /**

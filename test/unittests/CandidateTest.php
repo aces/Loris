@@ -13,8 +13,6 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
-use ArrayIterator;
-use PHPUnit\Framework\MockObject\Stub\ConsecutiveCalls;
 use LORIS\Database\Query;
 /**
  * Unit test for Candidate class
@@ -830,6 +828,8 @@ class CandidateTest extends TestCase
      */
     public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists()
     {
+        $this->_dbMock = $this->createMock(Database::class);
+
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(null);
