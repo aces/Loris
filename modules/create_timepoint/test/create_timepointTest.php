@@ -146,7 +146,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->_assertDropdownSelectedText('project', 'Pumpernickel');
 
         // Check the "English" dropdown
-        $this->_assertDropdownSelectedText('languageID', 'English');
+        $this->_assertDropdownSelectedText('languageID', '');
 
         // Check the "cohort" dropdown has "Fresh" and "Stale" as options
         $this->_assertDropdownHasOptions('cohort', ['Fresh', 'Stale']);

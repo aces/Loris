@@ -336,7 +336,7 @@ class NDB_BVL_Battery
 
         // craft the select query
         $query = "SELECT t.Test_name,
-                      t.Full_name,
+                      COALESCE(tnm.Full_name, t.Full_name) AS Full_name,
                       f.CommentID,
                       CONCAT('DDE_', f.CommentID) AS DDECommentID,
                       ts.Subgroup_name as Sub_group,
@@ -347,6 +347,8 @@ class NDB_BVL_Battery
             	      JOIN test_names t ON (f.TestID=t.ID)
             	      JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	      LEFT JOIN session s ON (s.ID=f.SessionID)
+                      LEFT JOIN test_names_multilingual tnm
+                        ON tnm.LanguageID=s.LanguageID
             	      LEFT JOIN test_battery b
        	                ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
       	                AND (s.CohortID=b.CohortID OR b.CohortID IS NULL)
@@ -354,7 +356,9 @@ class NDB_BVL_Battery
        	                AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
        	          WHERE f.SessionID=:SID
                       AND LEFT(f.CommentID, 4) != 'DDE_'
+                      AND (tnm.Test_name=t.Test_name OR tnm.Test_name IS NULL)
                   GROUP BY t.Test_name,
+                           tnm.Full_name,
                            t.Full_name,
                            f.CommentID,
                            DDECommentID,
@@ -366,7 +370,7 @@ class NDB_BVL_Battery
         } else {
             $query .= " ORDER BY Subgroup_order";
         }
-        $query  .= ", instrument_order, Full_name";
+        $query  .= ", instrument_order, t.Full_name";
         $qparams = ['SID' => $this->sessionID];
 
         // get the list of instruments

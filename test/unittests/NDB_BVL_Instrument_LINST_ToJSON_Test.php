@@ -93,6 +93,35 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
         $i->form     = new \LorisForm();
         $i->testName = "Test";
+        $i->labels["age_out_of_range"]          = " (Age out of range)";
+        $i->labels["data_entry_error_detected"]
+            ="A data entry error has been detected so this data";
+
+        $i->labels["age_not_found"]          = "Candidate age could not be found.";
+        $i->labels["date_of_administration"] = "Date of Administration";
+        $i->labels["candidate_age"]          = "Candidate Age (Months)";
+        $i->labels["candidate_age_death"]    = "Candidate Age at Death (Months)";
+        $i->labels["window_difference"]      = "Window Difference (+/- Days)";
+        $i->labels["examiner"] = "Examiner";
+        $i->labels["date_of_administration_required"]
+            = "Date of Administration is required";
+        $i->labels["examiner_required"] = "Examiner is required";
+        $i->labels["required"]          = "Required.";
+        $i->labels["field_required"]    = "This field is required.";
+        $i->labels["yes"]          = "Yes";
+        $i->labels["no"]           = "No";
+        $i->labels["not_answered"] = "Not Answered";
+        $i->labels["specify_or_select"]
+            = "You must specify or select from the drop-down";
+        $i->labels["88_refused"]        = "88 Refused";
+        $i->labels["99_do_not_know"]    = "99 Do not know";
+        $i->labels["select_status_leave_blank"]
+            = "You are required to select a status".
+             " if you want to leave this time blank.";
+        $i->labels["dnk"]     = "DNK";
+        $i->labels["refusal"] = "Refusal";
+        $i->labels["date_or_NA_required"] = "A Date, or Not Answered is required.";
+        $i->labels["must_be_numeric"]     = "Value must be numeric.";
 
         $this->i = $i;
     }
@@ -314,6 +343,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         try {
+            $decoded = base64_decode($base64);
+            error_log("Decoded Instrument Data: " . $decoded);
+            var_dump($decoded);
             $this->i->loadInstrumentFile($base64, true);
         } catch (\NotFound $e) {
             // This can occur when no SessionID exists. It's not important
