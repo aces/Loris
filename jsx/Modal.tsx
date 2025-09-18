@@ -5,6 +5,7 @@ import {
   ButtonElement,
   FormElement,
 } from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 export type ModalProps = PropsWithChildren<{
   throwWarning?: boolean;
@@ -38,6 +39,7 @@ const Modal = ({
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
+  const {t} = useTranslation('loris'); // Initialize translation
 
   /**
    * Handles modal close event. Shows a confirmation if `throwWarning` is true.
@@ -45,13 +47,14 @@ const Modal = ({
   const handleClose = () => {
     if (throwWarning) { // Display warning if enabled
       Swal.fire({
-        title: 'Are You Sure?',
-        text: 'Leaving the form will result in the loss of any information ' +
-          'entered.',
+        title: t('Are You Sure?'),
+        text:
+        t('Leaving the form will result in the'
+          +' loss of any information entered.'),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('Proceed'),
+        cancelButtonText: t('Cancel'),
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
@@ -89,7 +92,7 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return <div style={submitStyle}><ButtonElement/></div>;
+      return <div style={submitStyle}><ButtonElement label={t('Save')}/></div>;
     }
   };
 
@@ -175,7 +178,7 @@ const Modal = ({
   const loader = loading && (
     <div style={processStyle}>
       <Loader size={20}/>
-      <h5 className='animate-flicker'>Saving</h5>
+      <h5 className='animate-flicker'>{t('Saving')}</h5>
     </div>
   );
 
@@ -188,7 +191,7 @@ const Modal = ({
         style={{color: 'green', marginBottom: '2px'}}
         className='glyphicon glyphicon-ok-circle'
       />
-      <h5>Success!</h5>
+      <h5>{t('Success!')}</h5>
     </div>
   );
 
