@@ -157,7 +157,7 @@ const Recruitment = (props) => {
               <div className ='recruitment-panel' id='overall-recruitment'>
                 {progressBarBuilder(json['recruitment']['overall'])}
               </div>
-              <br />
+              <hr />
               {showFilters('generalBreakdown')}
               <div className={'charts-grid'}>
                 {Object
@@ -200,12 +200,10 @@ const Recruitment = (props) => {
           },
           {
             content: <>
-              {showFilters('projectBreakdown')}
-              {showChart('projectBreakdown', 'agedistribution_line')}
               <div
                 style={{
                   maxHeight: '400px',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
               >
@@ -219,6 +217,9 @@ const Recruitment = (props) => {
                   }
                 )}
               </div>
+              <hr />
+              {showFilters('projectBreakdown')}
+              {showChart('projectBreakdown', 'agedistribution_line')}
             </>,
             title: 'Recruitment - project breakdown',
             subtitle: `Projects: ${getTotalProjectsCount()}`,
@@ -228,7 +229,7 @@ const Recruitment = (props) => {
               <div
                 style={{
                   maxHeight: '400px',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
               >
